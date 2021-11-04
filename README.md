@@ -28,7 +28,7 @@
 
   - Under **Mobile & Desktop** select **Desktop development with C++** 	
 
-    ![](https://github.com/parodyBit/witnet_wallet/blob/main/readme_assets/desktop_dev_cpp_options.PNG)
+    ![](https://github.com/parodyBit/witnet_wallet/blob/main/readme_assets/desktop_dev_cpp.PNG)
 
   - Ensure these options are selected for the **Desktop development with C++** workload
 
