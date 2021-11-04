@@ -91,9 +91,6 @@ class ReviewStepState extends State<ReviewStep>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Row(
-            children: [FeeTypeSelectorChip()],
-          ),
           inputCards(),
           outputCards(),
           changeCard(),
@@ -110,7 +107,7 @@ class ReviewStepState extends State<ReviewStep>
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                        onPressed:()=> _showSignAndSendDialog(vttBody), child: Text('Send')),
+                        onPressed:()=> _showSignAndSendDialog(vttBody), child: Text('Sign')),
                   ],
                 );
               }

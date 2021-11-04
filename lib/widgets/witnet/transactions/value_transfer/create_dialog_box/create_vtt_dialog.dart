@@ -103,10 +103,11 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      Expanded(flex: 5, child:
                       Padding(
                         padding: EdgeInsets.all(10),
                         child: AutoSizeText(
-                          'Send Value Transfer Transaction',
+                          'Send Value Transfer ',
                           maxLines: 1,
                           minFontSize: 14,
                           style: TextStyle(
@@ -114,7 +115,8 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
                               fontWeight: FontWeight.w700,
                               color: theme.primaryColorDark),
                         ),
-                      ),
+                      ),),
+                      Expanded(flex: 1, child:
                       RoundButton(
                         onPressed: () {
                           BlocProvider.of<BlocCreateVTT>(context)
@@ -129,6 +131,8 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
                         label: '',
                         size: 25,
                       ),
+                      ),
+
                     ],
                   ),
                   _buildDisclaimerTextScrollView(theme, deviceSize),

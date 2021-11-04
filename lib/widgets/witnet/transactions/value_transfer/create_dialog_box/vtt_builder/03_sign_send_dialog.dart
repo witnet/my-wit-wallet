@@ -254,7 +254,7 @@ class SignSendDialogState extends State<SignSendDialog>
             if (state is SubmittingState)
               Container(
                 child: Column(
-                  children: [Text('Submitting')],
+                  children: [Text('Signing Transaction')],
                 ),
               ),
             if (state is FinishState)

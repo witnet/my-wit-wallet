@@ -345,9 +345,8 @@ class RecipientStepState extends State<RecipientStep>
               children: [
                 Row(
                   children: [
-                    TextButton(
-                      onPressed: widget.onStepCancel,
-                      child: const Text('Back'),
+                    SizedBox(
+                      height: 5,
                     ),
                   ],
                 ),
@@ -411,14 +410,7 @@ class RecipientStepState extends State<RecipientStep>
         return Container(
           child: Column(
             children: [
-              Row(
-                children: [
-                  TextButton(
-                    onPressed: widget.onStepCancel,
-                    child: const Text('Back'),
-                  ),
-                ],
-              ),
+
               _buildRecipientInput(),
               SizedBox(
                 height: 5,
