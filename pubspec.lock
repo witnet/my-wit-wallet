@@ -7,7 +7,7 @@ packages:
       name: another_flushbar
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.10.24"
+    version: "1.10.25"
   args:
     dependency: transitive
     description:
@@ -131,7 +131,7 @@ packages:
       name: flutter_bloc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.3.1"
+    version: "7.3.2"
   flutter_spinkit:
     dependency: "direct main"
     description:
@@ -537,9 +537,9 @@ packages:
   witnet:
     dependency: "direct main"
     description:
-      path: "../witnet"
-      relative: true
-    source: path
+      name: witnet
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.1.2-dev"
   worker_manager:
     dependency: "direct main"
