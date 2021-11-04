@@ -45,7 +45,7 @@
 
   - run the doctor on flutter to check the pre-build
 
-    - `PS> flutter pub doctor`
+    - `PS> flutter doctor`
 
     - should look something like this
 
