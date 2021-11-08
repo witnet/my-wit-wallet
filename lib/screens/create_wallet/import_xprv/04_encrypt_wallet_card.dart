@@ -44,9 +44,9 @@ class EncryptWalletCardState extends State<EncryptWalletCard>  with TickerProvid
   }
   @override
   void dispose(){
-    super.dispose();
     passwordInputTextController.dispose();
     passwordInputConfirmTextController.dispose();
+    super.dispose();
   }
 
   Widget _buildPasswordField(double width) {

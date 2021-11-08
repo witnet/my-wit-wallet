@@ -42,7 +42,7 @@ class BuildWalletCardState extends State<BuildWalletCard>  with TickerProviderSt
     _nameController = TextEditingController();
     _descController = TextEditingController();
     ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
-    acw.printDebug();
+    // acw.printDebug();
 
     BlocProvider.of<BlocCrypto>(context).add(
         CryptoInitializeWalletEvent(

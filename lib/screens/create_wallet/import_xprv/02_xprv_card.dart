@@ -84,7 +84,6 @@ class EnterXprvCardState extends State<EnterXprvCard>
   bool validXprv(String xprvString) {
     try {
       Xprv _xprv = Xprv.fromXprv(xprvString);
-      print(_xprv.address.address);
     } catch (e) {
       return false;
     }

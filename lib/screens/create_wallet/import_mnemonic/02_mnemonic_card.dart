@@ -46,7 +46,6 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
               controller: textController,
               onChanged: (String e) {
                 setState(() {
-                  print(e);
                   mnemonic = textController.value.text;
                   numLines = '\n'.allMatches(e).length + 1;
                 });
@@ -85,7 +84,6 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
   bool validMnemonic(String mnemonic) {
     List<String> words = mnemonic.split(' ');
     int wordCount = words.length;
-    print('wordCount: $wordCount');
     List<int> validMnemonicLengths = [12, 15, 18, 24];
     if (validMnemonicLengths.contains(wordCount)) {
       if (words.last.isEmpty) {

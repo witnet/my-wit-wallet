@@ -107,7 +107,7 @@ class EnterXprvCardState extends State<EnterXprvCard>
   bool validXprv(String xprvString) {
     try {
       Xprv _xprv = Xprv.fromXprv(xprvString);
-      print(_xprv.address.address);
+
     } catch (e) {
       return false;
     }
@@ -188,7 +188,7 @@ class EnterXprvCardState extends State<EnterXprvCard>
   }
 
   Widget buildErrorList(List<dynamic> errors) {
-    print(errors);
+
     List<Widget> _children = [];
     errors.forEach((element) {
       _children.add(Text(

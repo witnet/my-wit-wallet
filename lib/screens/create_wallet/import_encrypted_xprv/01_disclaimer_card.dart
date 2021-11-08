@@ -33,7 +33,6 @@ class DisclaimerCardState extends State<DisclaimerCard>
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.position.atEdge) {
-        print(_scrollController.position);
         if (_scrollController.position.pixels == 0) {
           // You're at the top.
         } else {

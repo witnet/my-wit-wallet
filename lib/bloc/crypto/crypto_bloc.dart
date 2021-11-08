@@ -111,7 +111,6 @@ Future<Map<String, dynamic>> initWalletRunner(
       port: resp.sendPort);
 
   Map<String, dynamic> data = await resp.first.then((value) {
-    print(value);
     return {
       'wallet': value['wallet'] as Wallet,
       'external_accounts': value['external_accounts'],
@@ -171,7 +170,7 @@ class BlocCrypto extends Bloc<CryptoEvent, CryptoState> {
           int externalIndex = 0;
 
           int internalGapCount = 0;
-          int internalGapMax = 20;
+          int internalGapMax = 1;
           int internalIndex = 0;
           Map<int, Account> externalAccounts = {};
           Map<int, Account> internalAccounts = {};
@@ -183,8 +182,6 @@ class BlocCrypto extends Bloc<CryptoEvent, CryptoState> {
           while (externalGapCount < externalGapMax) {
             /// wait to not overload the explorer
             await Future.delayed(Duration(milliseconds: bufferTime));
-
-            print('index = $externalGapCount');
 
             // the Wallet.getKey uses the crypto isolate internally
             Xprv xprv = await _wallet.getKey(
@@ -219,7 +216,6 @@ class BlocCrypto extends Bloc<CryptoEvent, CryptoState> {
 
                 // adjust time to not overload explorer
                 int explorerResponseTime = stopwatch.elapsedMilliseconds;
-                print('Explorer Responded in $explorerResponseTime ms');
                 if (explorerResponseTime > bufferTime) {
                   bufferTime = explorerResponseTime;
                 } else
@@ -250,8 +246,6 @@ class BlocCrypto extends Bloc<CryptoEvent, CryptoState> {
             /// wait to not overload the explorer
             await Future.delayed(Duration(milliseconds: bufferTime));
 
-            print('index = $internalGapCount');
-
             // the Wallet.getKey uses the crypto isolate internally
             Xprv xprv = await _wallet.getKey(
                 index: internalIndex, keyType: KeyType.internal);
@@ -261,7 +255,6 @@ class BlocCrypto extends Bloc<CryptoEvent, CryptoState> {
             yield CryptoInitializingWalletState(
                 message: '${account.path} ${account.address}');
 
-            ////
             AddressValueTransfers addressValueTransfers = await apiExplorer
                     .address(value: account.address, tab: 'value_transfers')
                 as AddressValueTransfers;
@@ -277,7 +270,6 @@ class BlocCrypto extends Bloc<CryptoEvent, CryptoState> {
                 ValueTransferInfo vti;
                 if (cache.containsHash(transactionID)) {
                   vti = cache.getVtt(transactionID);
-                  print('using cache');
                 } else {
                   vti = await apiExplorer.hash(transactionID, true)
                       as ValueTransferInfo;
@@ -285,7 +277,6 @@ class BlocCrypto extends Bloc<CryptoEvent, CryptoState> {
 
                 // adjust time to not overload explorer
                 int explorerResponseTime = stopwatch.elapsedMilliseconds;
-                print('Explorer Responded in $explorerResponseTime ms');
                 if (explorerResponseTime > bufferTime) {
                   bufferTime = explorerResponseTime;
                 } else
@@ -318,24 +309,20 @@ class BlocCrypto extends Bloc<CryptoEvent, CryptoState> {
           //Map<String, dynamic> initResp = await initWalletRunner(event);
           //
           // Wallet wallet = initResp['wallet'];
-          print('**************************************************');
+
           for (int i = 0; i < externalAccounts.keys.length; i++) {
             int key = externalAccounts.keys.elementAt(i);
             Account account = externalAccounts[key]!;
-            print('$i ${account.address}');
             List<Utxo> utxos =
                 await apiExplorer.utxos(address: account.address);
-            print(utxos);
             account.utxos.addAll(utxos);
             externalAccounts[key] = account;
           }
           for (int i = 0; i < internalAccounts.keys.length; i++) {
             int key = internalAccounts.keys.elementAt(i);
             Account account = internalAccounts[key]!;
-            print('$i ${account.address}');
             List<Utxo> utxos =
                 await apiExplorer.utxos(address: account.address);
-            print(utxos);
             account.utxos.addAll(utxos);
             internalAccounts[key] = account;
           }
@@ -368,7 +355,6 @@ class BlocCrypto extends Bloc<CryptoEvent, CryptoState> {
           Map<String, dynamic> _intAccounts = {};
           event.internalAccounts.forEach((key, value) {
             _intAccounts[value.address] = value.jsonMap();
-            print(value.address);
           });
           await db.writeDatabaseRecord(
               key: 'xprv',
@@ -383,7 +369,6 @@ class BlocCrypto extends Bloc<CryptoEvent, CryptoState> {
 
           yield CryptoLoadedWalletState(
               wallet: event.wallet, password: event.password);
-
           // clear the temporary data used to create the wallet
           Locator.instance<ApiCreateWallet>().clearFormData();
 

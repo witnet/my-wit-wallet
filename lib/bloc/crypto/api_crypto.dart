@@ -71,7 +71,6 @@ class ApiCrypto {
 
       return wallet;
     } catch (e) {
-      print(e);
       rethrow;
     }
   }

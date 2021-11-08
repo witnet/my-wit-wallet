@@ -58,7 +58,6 @@ class ReviewStepState extends State<ReviewStep>
     final deviceSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final List<String> localAddresses = allUtxos.keys.toList();
-    print(localAddresses);
 
     Map<String, int> signers = {};
 
@@ -141,8 +140,6 @@ class ReviewStepState extends State<ReviewStep>
   Widget buildInputCards(BuildContext context, List<Input> inputs) {
     List<InputUtxo> _inputs = [];
 
-    print('input cards');
-    print(inputs);
     List<Widget> _cards = [];
     inputs.forEach((input) {
       widget.externalAccounts.forEach((key, value) {

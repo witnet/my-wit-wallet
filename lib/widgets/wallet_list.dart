@@ -74,46 +74,6 @@ class WalletListWidgetState extends State<WalletListWidget> {
     });
   }
 
-  Widget _getListItemTile(BuildContext context, ThemeData theme, int index) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          for (int i = 0; i < files.length; i++) {
-            if (i == index) {
-              files[i].isSelected = true;
-              Locator.instance.get<ApiAuth>().setWalletName(files[i].data);
-            } else {
-              files[i].isSelected = false;
-            }
-          }
-        });
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 3),
-        color: files[index].isSelected ? Colors.indigo : Colors.black26,
-        child: ListTile(
-          title: Column(
-            children: [
-              Text(files[index].data),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        print(index);
-                      },
-                      child: Text('Button'))
-                ],
-              ),
-            ],
-          ),
-          leading: Icon(FontAwesomeIcons.wallet),
-          trailing: Icon(FontAwesomeIcons.receipt),
-        ),
-      ),
-    );
-  }
-
   Widget _buildDropDownView(BuildContext context, ThemeData theme) {
     return DropdownButton<String>(
       isExpanded: true,

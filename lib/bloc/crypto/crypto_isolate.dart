@@ -40,23 +40,15 @@ class CryptoIsolate {
 void _cryptIso(SendPort sendPort) async {
   Stopwatch mainTimer = new Stopwatch()..start();
   ReceivePort receivePort = ReceivePort();
-  print('isolate: ${receivePort}');
-
-  print('receivePort: $receivePort');
-  print('sendPort: ${receivePort.sendPort}');
 
   // tell whoever created us what port they can reach us
   sendPort.send(receivePort.sendPort);
   // listen for messages
-  print('wait for message');
   await for (var msg in receivePort) {
-    print(msg);
     var data = msg[0] as String;
     SendPort replyToPort = msg[1];
     var method = data.split('?')[0];
     var params = json.decode(data.split('?')[1]);
-    print('method: $method');
-    print('params: $params');
     switch (method) {
       case 'generateMnemonic':
         String mnemonic = generateMnemonic(
@@ -65,7 +57,6 @@ void _cryptIso(SendPort sendPort) async {
         replyToPort.send(mnemonic);
         break;
       case 'initializeWallet':
-        print('initializeWallet');
         Wallet? wallet;
         switch (params['seedSource']) {
           case 'mnemonic':
@@ -73,7 +64,6 @@ void _cryptIso(SendPort sendPort) async {
                 name: params['walletName'],
                 description: params['walletDescription'],
                 mnemonic: params['seed']);
-            print(wallet);
             break;
           case 'xprv':
             wallet = await Wallet.fromXprvStr(
@@ -98,11 +88,9 @@ void _cryptIso(SendPort sendPort) async {
 
         break;
       case 'generateKey':
-        print('generateKey');
         Xprv _xprv = Xprv.fromXprv(params['keychain']);
         int index = params['index'];
         String keytype = params['keyType'];
-        print(keytype);
         if (keytype.endsWith('external')) {
           replyToPort.send({'xprv': _xprv / 3.0 / 4919.0 / 0.0 / 0 / index});
         } else if (keytype.endsWith('internal')) {

@@ -44,7 +44,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
     _nameController = TextEditingController();
     _descController = TextEditingController();
     ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
-    acw.printDebug();
+    // acw.printDebug();
 
     BlocProvider.of<BlocCrypto>(context).add(CryptoInitializeWalletEvent(
         walletDescription: acw.walletDescription!,

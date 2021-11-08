@@ -60,7 +60,7 @@ class Wallet {
       {required int index, KeyType keyType = KeyType.external}) async {
     ReceivePort response = ReceivePort();
     // initialize the crypto isolate if not already done so
-    if (!Locator.instance<CryptoIsolate>().initialized) print('initializing');
+
     await Locator.instance<CryptoIsolate>().init();
     // send the request
 

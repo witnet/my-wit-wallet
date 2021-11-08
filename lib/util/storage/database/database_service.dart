@@ -142,7 +142,6 @@ class DBService {
 
   Future<dynamic> writeRecord(dynamic key, dynamic value) async {
     if (unlocked) {
-      print('writing db record: $key');
       var store = StoreRef.main();
       assert(key.runtimeType == String || key.runtimeType == int,
           'Key value Must be int or String.');

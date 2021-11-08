@@ -195,7 +195,6 @@ class BlocExplorer extends Bloc<ExplorerEvent, ExplorerState> {
             ///
             yield ReadyState();
           } catch (e) {
-            print(e);
             yield ExplorerErrorState();
           }
           break;
@@ -203,21 +202,19 @@ class BlocExplorer extends Bloc<ExplorerEvent, ExplorerState> {
           yield DataLoadingState();
           event as VTTransactionPostEvent;
           try {
-            print(event.vtTransaction.jsonMap(asHex: true));
 
             var resp = await Locator.instance
                 .get<ApiExplorer>()
                 .sendTransaction(Transaction(transaction: event.vtTransaction, transactionType: TransactionType.ValueTransfer));
-            print(resp);
+
           } catch (e) {
-            print(e);
+
           }
           break;
         case UtxoQueryEvent:
           event as UtxoQueryEvent;
           yield DataLoadingState();
           try {
-            print(event.account.address);
             var resp = await Locator.instance
                 .get<ApiExplorer>()
                 .utxos(address: event.account.address);
@@ -226,11 +223,9 @@ class BlocExplorer extends Bloc<ExplorerEvent, ExplorerState> {
               utxoList[element.outputPointer.transactionId] = element;
             });
 
-            print(resp);
-            print(utxoList);
             yield DataLoadedState(data: {'utxos': utxoList});
           } catch (e) {
-            print(e.toString());
+            rethrow;
           }
           break;
         default:

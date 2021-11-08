@@ -56,7 +56,7 @@ class BlocImportEcnryptedXprv
   @override
   Stream<ImportEncryptedXprvState> mapEventToState(
       ImportEncryptedXprvEvent event) async* {
-    print(event.runtimeType);
+
     try {
       if (event is NextCardEvent) {
         switch (state.runtimeType) {
@@ -114,11 +114,9 @@ class BlocImportEcnryptedXprv
           var errors = [];
           var tmp = await resp.first.then((value) {
             var val = value as Map<String, Object?>;
-            print(value);
-            print(val);
+
             if (val.containsKey('error')) {
               errors.add(val['error']);
-              print('the Error ${val['error']!.runtimeType.toString()}');
             }
             return value;
           });
@@ -127,7 +125,6 @@ class BlocImportEcnryptedXprv
               wallet.masterXprv.toSlip32(),
               wallet.masterXprv.address.address,
               wallet.externalKeys[0]!.address.address);
-          print(errors);
           if (errors.length > 0) {
             yield LoadingErrorState(errors);
           }

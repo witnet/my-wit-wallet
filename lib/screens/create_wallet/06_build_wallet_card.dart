@@ -44,7 +44,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
     _nameController = TextEditingController();
     _descController = TextEditingController();
     ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
-    acw.printDebug();
+    // acw.printDebug();
 
     BlocProvider.of<BlocCrypto>(context).add(CryptoInitializeWalletEvent(
         walletDescription: acw.walletDescription!,
@@ -56,9 +56,9 @@ class BuildWalletCardState extends State<BuildWalletCard>
 
   @override
   void dispose() {
-    super.dispose();
     _nameController.dispose();
     _descController.dispose();
+    super.dispose();
   }
 
   Widget buildWallet() {

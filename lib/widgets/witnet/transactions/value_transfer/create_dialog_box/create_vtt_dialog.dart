@@ -44,12 +44,10 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.position.atEdge) {
-        print(_scrollController.position);
         if (_scrollController.position.pixels == 0) {
           // You're at the top.
         } else {
           scrolledToBottom = true;
-          print('Bottom!');
         }
       }
     });
@@ -62,10 +60,7 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
 
     widget.externalAccounts.forEach((key, value) {
       Account account = value;
-      print(value.jsonMap());
-      print(account.valueTransfers);
       account.setBalance();
-      print(account.utxos);
       availableFunds += account.balance;
     });
     _loadingController.forward();

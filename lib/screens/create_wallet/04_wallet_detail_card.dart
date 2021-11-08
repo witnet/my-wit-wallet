@@ -44,9 +44,9 @@ class WalletDetailCardState extends State<WalletDetailCard>
 
   @override
   void dispose() {
-    super.dispose();
     _nameController.dispose();
     _descController.dispose();
+    super.dispose();
   }
 
   Widget _buildUserField(double width) {

@@ -39,7 +39,6 @@ class TransactionCache {
         final Map<String, dynamic> data = await _readFile();
       }
     } on io.FileSystemException catch (e) {
-      print(e.path);
       if (e.osError!.errorCode == 2) {}
       rethrow;
     }

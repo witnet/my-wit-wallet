@@ -46,7 +46,6 @@ class Account {
 
   Map<String, dynamic> jsonMap() {
     List<Map<String, dynamic>> _utxos = [];
-    print(utxos);
     utxos.forEach((element) {
       _utxos.add(element.jsonMap());
     });

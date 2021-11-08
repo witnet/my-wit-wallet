@@ -112,15 +112,12 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
         /// -----------------------------------------------------------------
         case AddValueTransferOutputEvent:
           event as AddValueTransferOutputEvent;
-          print('${event.pkh} ${event.value}');
 
           // check to see if we already added a change address
           // if we did -> remove the change address and recompute
           for (int i = 0; i < outputs.length; i++) {
-            print('output addr: ${outputs[i].pkh.address}');
 
             if (internalAccounts.keys.contains(outputs[i].pkh.address)) {
-              print('removing change addr ${outputs[i].pkh}');
               outputs.removeAt(i);
             }
           }
@@ -132,8 +129,6 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
             outputs[receivers.indexOf(event.pkh)].value += event.value;
           } else {
             receivers.add(event.pkh);
-            print(
-                'pkk: ${event.pkh}\nvalue: ${event.value}\n timelock: ${event.timeLock}');
             outputs.add(ValueTransferOutput.fromJson({
               'pkh': event.pkh,
               'value': event.value,
@@ -141,9 +136,6 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
             }));
           }
 
-          outputs.forEach((element) {
-            print(element.jsonMap());
-          });
           selectedUtxos = utxoPool.selectUtxos(
               outputs: outputs, utxoStrategy: utxoSelectionStrategy);
           inputs.clear();
@@ -168,13 +160,11 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
             valueChange = (valuePaid - valueOwed) - weight;
 
             if (valueChange > 0) {
-              print('add change');
+              // add change
               weight = (inputs.length * INPUT_SIZE) +
                   (outputs.length + 1 * OUTPUT_SIZE * GAMMA);
               valueChange = (valuePaid - valueOwed) - weight;
               bool changeAccountSet = false;
-              print('Change: $valueChange');
-              print(internalAccounts.length);
               outputs.add(ValueTransferOutput.fromJson({
                 'pkh': internalAccounts.entries.first.value.address,
                 'value': valueChange,
@@ -196,11 +186,8 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
         case SignTransactionEvent:
           event as SignTransactionEvent;
           yield SubmittingState();
-          print(event.vtTransactionBody.toRawJson());
           var encryptedXprv = await Locator.instance<ApiDatabase>()
               .readDatabaseRecord(key: 'xprv', type: String) as String;
-          print(encryptedXprv);
-
           try {
             CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
 
@@ -210,7 +197,6 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
             selectedUtxos.forEach((element) {
               externalAccounts.forEach((key, value) {
                 if (value.utxos.contains(element)) {
-                  print('add signer ${value.address} ${value.path}');
                   signers.add(value.path);
                 }
               });
@@ -231,16 +217,12 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
               value.forEach((element) {
                 signatures.add(KeyedSignature.fromJson(element));
               });
-              print(value.runtimeType);
             });
             VTTransaction vtTransaction = VTTransaction(
                 body: event.vtTransactionBody, signatures: signatures);
 
-            print(vtTransaction.jsonMap(asHex: true));
-
             yield FinishState(vtTransaction: vtTransaction);
           } catch (e) {
-            print(e);
             yield ErrorState(errorMsg: e.toString());
             rethrow;
           }

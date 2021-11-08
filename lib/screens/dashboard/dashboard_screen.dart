@@ -183,13 +183,9 @@ class DashboardScreenState extends State<DashboardScreen>
     int balance = 0;
     state.externalAccounts.forEach((key, value) {
       Account account = value;
-      print(value.jsonMap());
-      print(account.valueTransfers);
       account.setBalance();
-      print(account.utxos);
       balance += account.balance;
     });
-    print(balance);
     state.internalAccounts.forEach((key, value) {
       balance += value.balance;
     });

@@ -61,15 +61,8 @@ class RecipientStepState extends State<RecipientStep>
       try {
         Address _address = Address.fromAddress(address);
 
-        print('-----');
-        print(address);
-        print(_address.publicKeyHash!.hex);
-
-        print(address.length);
-
         return true;
       } catch (e) {
-        print(e);
         return false;
       }
     }

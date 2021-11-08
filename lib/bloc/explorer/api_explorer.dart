@@ -96,7 +96,6 @@ class ApiExplorer {
   Future<List<Utxo>> utxos({required String address}) async {
     try {
       var tmp = await client.getUtxoInfo(address: address);
-      print(tmp);
       return tmp;
     } on ExplorerException {
       rethrow;
