@@ -80,11 +80,10 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
     final double cardWidth =
         (deviceSize.width < 600.0) ? deviceSize.width : 600;
     return SizedBox(
-      height: 180,
       child: Wrap(
         children: [
           Container(
-            height: deviceSize.height * 0.7,
+            height: deviceSize.height,
             alignment: Alignment.topCenter,
             margin: EdgeInsets.zero,
             width: cardWidth,
@@ -102,13 +101,13 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
                       Padding(
                         padding: EdgeInsets.all(10),
                         child: AutoSizeText(
-                          'Send Value Transfer ',
+                          'Value Transfer Transaction ',
                           maxLines: 1,
                           minFontSize: 14,
                           style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w700,
-                              color: theme.primaryColorDark),
+                              color: theme.primaryColor),
                         ),
                       ),),
                       Expanded(flex: 1, child:
@@ -141,7 +140,7 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
   Widget _buildDisclaimerTextScrollView(ThemeData theme, Size deviceSize) {
     return Container(
       decoration: BoxDecoration(),
-      height: deviceSize.height * 0.6 - 5,
+      height: deviceSize.height * 0.8,
       child: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(0),
@@ -152,9 +151,6 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
                 internalAccounts: widget.internalAccounts,
               ),
 
-              SizedBox(
-                height: 10,
-              ),
             ],
           ),
         ),
@@ -170,7 +166,7 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
       elevation: 0,
       child: Container(
           decoration: BoxDecoration(),
-          height: deviceSize.height * 0.7,
+          height: deviceSize.height,
           child: contentBox(context)),
     );
   }

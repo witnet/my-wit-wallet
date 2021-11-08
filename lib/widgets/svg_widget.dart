@@ -8,6 +8,7 @@ const Map<String, String> _assetNames = {
   'favicon': 'assets/img/favicon.svg',
   'wit': 'assets/img/wit.svg',
   'witnet_dark': 'assets/img/witnet_dark.svg',
+  'witnet_logo':'assets/img/witnet_logo.svg',
 };
 
 class SVGWidget extends StatefulWidget {
@@ -40,12 +41,12 @@ class _SVGWidgetState extends State<SVGWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (_dimension > MediaQuery.of(context).size.width - 10.0) {
-      _dimension = MediaQuery.of(context).size.width - 10.0;
+    if (_dimension > MediaQuery.of(context).size.width) {
+      _dimension = MediaQuery.of(context).size.width;
     }
     return SizedBox(
-      width: _dimension,
-      height: _dimension,
+      //width: _dimension,
+      //height: _dimension,
       child: SvgPicture.asset(_assetNames[widget.img]!),
     );
   }

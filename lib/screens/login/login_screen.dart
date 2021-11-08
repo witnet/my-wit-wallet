@@ -52,20 +52,14 @@ class LoginScreenState extends State<LoginScreen>
           FocusScope.of(context).requestFocus(new FocusNode());
         },
         child: Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+          child:
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Container(
                     height: size.height * 0.25,
-                    width: size.width * 0.25,
-                    child: SVGWidget(
-                      size: 1,
-                      title: '',
-                      img: 'wit',
-                    ),
+                    width: size.width ,
+                    child: Image(image:AssetImage('assets/img/witnet_logo.png')),
                   ),
                   FittedBox(
                     child: Container(
@@ -86,10 +80,8 @@ class LoginScreenState extends State<LoginScreen>
                   ),
                 ],
               ),
-            ],
           ),
         ),
-      ),
-    );
+      );
   }
 }

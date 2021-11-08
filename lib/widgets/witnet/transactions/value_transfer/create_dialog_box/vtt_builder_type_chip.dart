@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class UtxoSelectionStrategyChip extends StatefulWidget {
-  const UtxoSelectionStrategyChip({Key? key}) : super(key: key);
+class VttBuilderTypeChip extends StatefulWidget {
+  const VttBuilderTypeChip({Key? key}) : super(key: key);
 
   @override
-  State<UtxoSelectionStrategyChip> createState() =>
-      UtxoSelectionStrategyChipState();
+  State<VttBuilderTypeChip> createState() =>
+      VttBuilderTypeChipState();
 }
 
-class UtxoSelectionStrategyChipState extends State<UtxoSelectionStrategyChip> {
-  // default value is small first
-  int? _value = 2;
-  List<String> items = ['Random', 'Big First', 'Small First', 'Manual'];
+class VttBuilderTypeChipState extends State<VttBuilderTypeChip> {
+  //default value is `Simple`
+  int? _value = 0;
+  List<String> items = ['Simple', 'Advanced'];
   @override
   Widget build(BuildContext context) {
     return Wrap(

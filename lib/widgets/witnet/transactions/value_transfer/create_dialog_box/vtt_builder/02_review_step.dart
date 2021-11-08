@@ -5,6 +5,7 @@ import 'package:witnet/schema.dart';
 import 'package:witnet_wallet/bloc/create_vtt/create_vtt_bloc.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/03_sign_send_dialog.dart';
+import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder_type_chip.dart';
 
 import '../../../../../auto_size_text.dart';
 import '../../../../../round_button.dart';
@@ -12,6 +13,7 @@ import '../../../fee_type_selector_chip.dart';
 import '../../fee_container.dart';
 import '../../input_container.dart';
 import '../../value_transfer_output_container.dart';
+import '../vtt_stepper.dart';
 
 class ReviewStep extends StatefulWidget {
   ReviewStep({
@@ -90,6 +92,7 @@ class ReviewStepState extends State<ReviewStep>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          //AdvancedVttSettingsPanel(localAddresses: localAddresses,),
           inputCards(),
           outputCards(),
           changeCard(),
@@ -115,10 +118,11 @@ class ReviewStepState extends State<ReviewStep>
               );
             },
           ),
+
         ],
       ),
 
-      //AdvancedVttSettingsPanel(localAddresses: localAddresses,),
+
     );
   }
 

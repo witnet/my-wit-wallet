@@ -135,17 +135,6 @@ class VttStepperState extends State<VttStepper> {
           ),
         ),
         Step(
-          title: Text('Review'),
-          content: Container(
-            alignment: Alignment.topCenter,
-            child: ReviewStep(
-              externalAccounts: widget.externalAccounts,
-              internalAccounts: widget.internalAccounts,
-            ),
-            //TransactionSettingsStep(),
-          ),
-        ),
-        Step(
           title: Text('Sign and Send'),
           content: Container(
             child: FeeTypeSelectorChip(),
@@ -298,8 +287,17 @@ class AdvancedVttSettingsPanelState extends State<AdvancedVttSettingsPanel> {
         headerBuilder: (context, isOpen) {
           return Container(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [Text('Advanced Settings')],
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                Text('Advanced Settings')
+
+                  ],
+                )
+              ],
             ),
           );
         },
@@ -313,7 +311,7 @@ class AdvancedVttSettingsPanelState extends State<AdvancedVttSettingsPanel> {
           _isOpenMain = !isOpen;
         });
       },
-      elevation: 1,
+      elevation: 0,
     );
   }
 }

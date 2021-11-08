@@ -13,6 +13,7 @@ import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
 import 'package:witnet_wallet/shared/api_auth.dart';
 import 'package:witnet_wallet/util/paddings.dart';
 import 'package:witnet_wallet/util/storage/path_provider_interface.dart';
+import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/button_login.dart';
 import 'package:witnet_wallet/widgets/card/card_header.dart';
 import 'package:witnet_wallet/widgets/input_login.dart';
@@ -170,16 +171,16 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
     }, builder: (context, state) {
       final deviceSize = MediaQuery.of(context).size;
       size = deviceSize;
-      final cardWidth = min(deviceSize.width * 0.95, 360.0);
+      final cardWidth = min(deviceSize.width, 360.0);
       const cardPadding = 10.0;
-      final textFieldWidth = cardWidth - cardPadding * 2;
+      final textFieldWidth = cardWidth - (cardPadding * 2);
       final theme = Theme.of(context);
       return Form(
         key: _formKey,
         child: Column(
           children: <Widget>[
-            new CardHeader(
-                title: 'Unlock Wallet', width: cardWidth, height: 50),
+           // new CardHeader(
+            //    title: 'Unlock Wallet', width: cardWidth, height: 50),
             Container(
               padding: EdgeInsets.only(
                 left: cardPadding,
@@ -192,6 +193,7 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  //AutoSizeText('Unlock Wallet',maxLines: 1,minFontSize: 14,),
                   _buildWalletField(context, textFieldWidth),
                   IconButton(
                     icon: Icon(Icons.settings),
@@ -235,7 +237,7 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
           return Column(
             children: [
               ButtonLogin(
-                label: 'UNLOCK WALLET',
+                label: 'login',
                 onPressed: () => _login(),
               ),
               Text(
@@ -247,7 +249,7 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
           ;
         } else {
           return ButtonLogin(
-            label: 'UNLOCK WALLET',
+            label: 'login',
             onPressed: () => _login(),
           );
         }
@@ -274,7 +276,7 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
                         if (snapshot.hasData) {
                           children = <Widget>[
                             Container(
-                              child: Text(
+                              child: AutoSizeText(
                                 'Select Wallet:',
                                 textAlign: TextAlign.left,
                               ),
@@ -371,8 +373,6 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return FittedBox(
-      child: Card(child: _formLogin()),
-    );
+    return _formLogin();
   }
 }
