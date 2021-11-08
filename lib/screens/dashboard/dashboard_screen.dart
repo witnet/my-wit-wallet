@@ -15,6 +15,7 @@ import 'package:witnet_wallet/widgets/fade_in.dart';
 import 'package:witnet_wallet/widgets/round_button.dart';
 import 'package:witnet_wallet/widgets/svg_widget.dart';
 import 'package:witnet_wallet/widgets/vtt_list.dart';
+import 'package:witnet_wallet/widgets/witnet/transactions/transaction_history.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/create_vtt_dialog.dart';
 import 'package:witnet_wallet/widgets/witnet/wallet/receive_dialog.dart';
 import 'package:witnet_wallet/widgets/witnet/wallet/wallet_settings/wallet_settings_dialog.dart';
@@ -24,57 +25,7 @@ import '../screen_transitions/fade_transition.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class TransactionHistory extends StatelessWidget {
-  final ThemeData themeData;
-  final LoggedInState state;
 
-  TransactionHistory({required this.themeData, required this.state});
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
-    List<VttListItem> vtts = [];
-    state.externalAccounts.forEach((addr, acc) {
-      acc.valueTransfers.forEach((trxHash, vti) {
-        vtts.add(VttListItem(vti));
-      });
-    });
-
-    return Container(
-      width: size.width,
-      child: Card(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-              child: Text(
-                'Transaction History:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(0),
-              child: Card(
-                  shadowColor: Colors.transparent,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      VttListWidget(
-                        width: 300,
-                        accounts: state.externalAccounts,
-                      ),
-                    ],
-                  )),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class DashboardScreen extends StatefulWidget {
   @override
