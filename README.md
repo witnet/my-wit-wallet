@@ -24,15 +24,15 @@
 
   - modify the Visual Studio 2019 installation
 
-    ![](https://github.com/parodyBit/witnet_wallet/blob/main/readme_assets/visual_studio_installer.PNG)
+    ![](https://github.com/parodyBit/witnet_wallet/blob/main/assets/readme/visual_studio_installer.PNG)
 
   - Under **Mobile & Desktop** select **Desktop development with C++** 	
 
-    ![](https://github.com/parodyBit/witnet_wallet/blob/main/readme_assets/desktop_dev_cpp.PNG)
+    ![](https://github.com/parodyBit/witnet_wallet/blob/main/assets/readme/desktop_dev_cpp.PNG)
 
   - Ensure these options are selected for the **Desktop development with C++** workload
 
-    ![](https://github.com/parodyBit/witnet_wallet/blob/main/readme_assets/desktop_dev_cpp_options.PNG)
+    ![](https://github.com/parodyBit/witnet_wallet/blob/main/assets/readme/desktop_dev_cpp_options.PNG)
 
 - Download the **witnet_wallet** repository 
 
@@ -49,7 +49,7 @@
 
     - should look something like this
 
-      ![](https://github.com/parodyBit/witnet_wallet/blob/main/readme_assets/flutter_doctor.PNG)
+      ![](https://github.com/parodyBit/witnet_wallet/blob/main/assets/readme/flutter_doctor.PNG)
 
   - build the application for windows
 
