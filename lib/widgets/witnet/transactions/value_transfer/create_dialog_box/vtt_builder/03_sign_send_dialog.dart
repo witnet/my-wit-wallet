@@ -59,8 +59,8 @@ class SignSendDialogState extends State<SignSendDialog>
   }
 
   void send(VTTransaction vtTransaction) {
-    BlocProvider.of<BlocExplorer>(context)
-        .add(VTTransactionPostEvent(vtTransaction));
+    BlocProvider.of<BlocCreateVTT>(context)
+        .add(SendTransactionEvent(vtTransaction));
   }
 
   void backToDashboard() {
@@ -127,21 +127,14 @@ class SignSendDialogState extends State<SignSendDialog>
     );
   }
 
-
-  Widget explorerBlocContainer(){
-    return BlocBuilder<BlocExplorer, ExplorerState>(
-        builder: (context, state){
-          return Container(
-              child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-              Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: []),
-          ]),
-          );
-
-        });
+  Widget explorerBlocContainer() {
+    return BlocBuilder<BlocExplorer, ExplorerState>(builder: (context, state) {
+      return Container(
+        child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: []),
+        ]),
+      );
+    });
   }
 
   Widget vtBlocContainer() {
@@ -251,7 +244,7 @@ class SignSendDialogState extends State<SignSendDialog>
                   ],
                 ),
               ),
-            if (state is SubmittingState)
+            if (state is SigningState)
               Container(
                 child: Column(
                   children: [Text('Signing Transaction')],
@@ -270,12 +263,18 @@ class SignSendDialogState extends State<SignSendDialog>
                       children: [
                         Icon(FontAwesomeIcons.arrowRight),
                         ElevatedButton(
-                          //onPressed: () => send(state.vtTransaction),
+                            //onPressed: () => send(state.vtTransaction),
                             onPressed: null,
                             child: Text('Send To Explorer')),
                       ],
                     )
                   ],
+                ),
+              ),
+            if (state is SendingState)
+              Container(
+                child: Column(
+                  children: [],
                 ),
               )
           ],

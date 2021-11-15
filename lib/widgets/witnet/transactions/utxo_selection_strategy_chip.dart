@@ -11,7 +11,7 @@ class UtxoSelectionStrategyChip extends StatefulWidget {
 class UtxoSelectionStrategyChipState extends State<UtxoSelectionStrategyChip> {
   // default value is small first
   int? _value = 2;
-  List<String> items = ['Random', 'Big First', 'Small First', 'Manual'];
+  List<String> items = ['Random', 'Big First', 'Small First'];
   @override
   Widget build(BuildContext context) {
     return Wrap(
@@ -20,7 +20,7 @@ class UtxoSelectionStrategyChipState extends State<UtxoSelectionStrategyChip> {
       spacing: 5,
       children: List<Widget>.generate(
         items.length,
-            (int index) {
+        (int index) {
           return ChoiceChip(
             label: Text('${items[index]}'),
             selected: _value == index,

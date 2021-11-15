@@ -1,16 +1,22 @@
 import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
+import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
 class ApiCreateWallet {
   late String walletName;
   late String? walletDescription;
   late String? password;
-  late String seedData;
-  late String seedSource;
+  late String? seedData;
+  late String? seedSource;
+  late WalletType walletType;
 
   void setSeed(String data, String source) {
     seedData = data;
     seedSource = source;
+  }
+
+  void setWalletType(WalletType type) {
+    walletType = type;
   }
 
   void setPassword(String value) => password = value;
@@ -24,6 +30,7 @@ class ApiCreateWallet {
     seedSource = '';
     walletName = '';
     walletDescription = '';
+    password = null;
   }
 
   Future<String> createMnemonic(

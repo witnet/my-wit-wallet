@@ -4,49 +4,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/crypto.dart';
 import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
-import 'package:witnet_wallet/bloc/auth/create_wallet/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/theme/wallet_theme.dart';
+import 'package:witnet_wallet/widgets/auto_size_text.dart';
 
-class ConfirmMnemonicCard extends StatefulWidget {
-  ConfirmMnemonicCard({Key? key}) : super(key: key);
+import 'create_wallet_bloc.dart';
 
-  ConfirmMnemonicCardState createState() => ConfirmMnemonicCardState();
+class EnterMnemonicCard extends StatefulWidget {
+  EnterMnemonicCard({Key? key}) : super(key: key);
+
+  EnterMnemonicCardState createState() => EnterMnemonicCardState();
 }
 
-class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
+class EnterMnemonicCardState extends State<EnterMnemonicCard>
     with TickerProviderStateMixin {
   String mnemonic = '';
   final TextEditingController textController = TextEditingController();
   int numLines = 0;
-  int _phraseLength = 12;
 
   Widget _buildConfirmField() {
+    final theme = Theme.of(context);
     return SizedBox(
       child: Padding(
         padding: EdgeInsets.all(3),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             SizedBox(
               height: 10,
-            ), //SizedBox
-            Text(
-              'Recovery Phrase',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
-              ), //Textstyle
-            ), //Text
-            SizedBox(
-              height: 10,
             ),
-            Text(
-              'Please type your $_phraseLength word seed phrase exactly as shown to you on the previous screen. This will ensure that you have noted down your seed phrase correctly.',
+            AutoSizeText(
+              'Please type your secret word phrase used for recovery. ',
+              maxLines: 1,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-              ),
-            ),
+              ), //Textstyle
+            ), //Text
             SizedBox(
               height: 10,
             ),
@@ -57,25 +51,26 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
               controller: textController,
               onChanged: (String e) {
                 setState(() {
-                  print(e);
                   mnemonic = textController.value.text;
                   numLines = '\n'.allMatches(e).length + 1;
                 });
               },
               decoration: new InputDecoration(
+                  fillColor: Colors.white,
                   border: new OutlineInputBorder(
                       borderRadius: new BorderRadius.circular(10.0))),
             ),
             SizedBox(
               height: 10,
             ),
-            Text(
+            AutoSizeText(
               'Please ensure you do not add any extra spaces between words or at the beginning or end of the phrase.',
+              maxLines: 2,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-              ),
-            ),
+              ), //Textstyle
+            ), //Text
             SizedBox(
               height: 10,
             ),
@@ -85,19 +80,36 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
     );
   }
 
-  void onBack() =>
-      BlocProvider.of<BlocCreateWallet>(context).add(PreviousCardEvent());
+  void onBack() {
+    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
+    BlocProvider.of<BlocCreateWallet>(context).add(PreviousCardEvent(type));
+  }
 
   void onNext() {
     Locator.instance<ApiCreateWallet>().setSeed(mnemonic, 'mnemonic');
-    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent());
+    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
+    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent(type));
   }
 
   bool validMnemonic(String mnemonic) {
-    assert(Locator.instance.get<ApiCreateWallet>().seedSource == 'mnemonic');
-    String _mn = Locator.instance.get<ApiCreateWallet>().seedData;
-    if (mnemonic != _mn) return false;
-    return validateMnemonic(mnemonic);
+    List<String> words = mnemonic.split(' ');
+    int wordCount = words.length;
+    List<int> validMnemonicLengths = [12, 15, 18, 24];
+    if (validMnemonicLengths.contains(wordCount)) {
+      if (words.last.isEmpty) {
+        return false;
+      } else {
+        try {
+          var tmp = validateMnemonic(mnemonic);
+          return tmp;
+        } catch (e) {
+          print(e);
+          return false;
+        }
+      }
+    } else {
+      return false;
+    }
   }
 
   Widget _buildButtonRow() {
@@ -108,7 +120,7 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
           padding: EdgeInsets.only(top: 10, bottom: 10),
           child: ElevatedButton(
             onPressed: onBack,
-            child: Text('Go back!'),
+            child: Text('Cancel'),
           ),
         ),
         Padding(
@@ -130,47 +142,26 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
     const cardPadding = 10.0;
     final textFieldWidth = cardWidth - cardPadding * 2;
     final theme = Theme.of(context);
-    return FittedBox(
-      child: Card(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              height: 50,
-              width: cardWidth,
-              alignment: Alignment.topCenter,
-              decoration: BoxDecoration(
-                  color: theme.primaryColor,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(5.0),
-                      topRight: Radius.circular(5.0))),
-              child: Padding(
-                padding: EdgeInsets.only(top: 1),
-                child: Text(
-                  'Confirm Word Phrase',
-                  style: theme.textTheme.headline4,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          width: cardWidth,
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  height: deviceSize.height * 0.25,
+                  width: deviceSize.width,
+                  child: witnetLogo(theme),
                 ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(
-                left: cardPadding,
-                right: cardPadding,
-                top: cardPadding + 10,
-              ),
-              width: cardWidth,
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    _buildConfirmField(),
-                    _buildButtonRow(),
-                  ]),
-            ),
-          ],
+                _buildConfirmField(),
+                _buildButtonRow(),
+              ]),
         ),
-      ),
+      ],
     );
   }
 }

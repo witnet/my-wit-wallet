@@ -2,8 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
-import 'package:witnet_wallet/bloc/auth/create_wallet/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
+import 'package:witnet_wallet/theme/wallet_theme.dart';
+import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/widgets/witnet/password_input.dart';
 
@@ -14,12 +17,15 @@ class EncryptWalletCard extends StatefulWidget {
 
 class EncryptWalletCardState extends State<EncryptWalletCard>
     with TickerProviderStateMixin {
-  void onBack() =>
-      BlocProvider.of<BlocCreateWallet>(context).add(PreviousCardEvent());
+  void onBack() {
+    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
+    BlocProvider.of<BlocCreateWallet>(context).add(PreviousCardEvent(type));
+  }
 
   void onNext() {
     Locator.instance<ApiCreateWallet>().setPassword(_password);
-    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent());
+    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
+    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent(type));
   }
 
   late TextEditingController passwordInputTextController;
@@ -130,22 +136,41 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          'Encrypt your wallet with a password',
-          style: theme.textTheme.headline6,
-        ), //Text
-        SizedBox(
-          height: 10,
+        Row(
+          children: [
+            Expanded(
+              flex: 2,
+              child: AutoSizeText(
+                'Encrypt your wallet.',
+                textAlign: TextAlign.right,
+                maxLines: 1,
+                style: theme.textTheme.headline6,
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Tooltip(
+                  height: 75,
+                  textStyle: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white,
+                  ),
+                  margin: EdgeInsets.only(left: 20, right: 20),
+                  preferBelow: false,
+                  message:
+                      'PLEASE NOTE:\nThis password encrypts your Witnet wallet only on this computer.\nThis is not your backup and you cannot restore your wallet with this password.\nYour ${Locator.instance.get<ApiCreateWallet>().seedData!.split(' ').length} word seed phrase is still your ultimate recovery method.',
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      FontAwesomeIcons.questionCircle,
+                      size: 15,
+                    ),
+                    iconSize: 10,
+                    padding: EdgeInsets.all(3),
+                  )),
+            )
+          ],
         ),
-
-        Text(
-          'PLEASE NOTE: this password encrypts your Witnet wallet only on this computer. This is not your backup and you cannot restore your wallet with this password. Your ${Locator.instance.get<ApiCreateWallet>().seedData.split(' ').length} word seed phrase is still your ultimate recovery method.',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-
         SizedBox(height: 10),
       ],
     );
@@ -153,13 +178,13 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
 
   Widget _buildButtonRow() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: ElevatedButton(
             onPressed: onBack,
-            child: Text('Go back!'),
+            child: Text('Cancel'),
           ), // ElevatedButton
         ),
         Padding(
@@ -181,83 +206,80 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     const cardPadding = 10.0;
     final textFieldWidth = cardWidth - cardPadding * 2;
     final theme = Theme.of(context);
-    return FittedBox(
-      child: Card(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              height: 50,
-              width: cardWidth,
-              alignment: Alignment.topCenter,
-              decoration: BoxDecoration(
-                  color: theme.primaryColor,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(5.0),
-                      topRight: Radius.circular(5.0))),
-              child: Padding(
-                padding: EdgeInsets.only(top: 1),
-                child: Text(
-                  'Encrypt Wallet',
-                  style: theme.textTheme.headline4,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          width: cardWidth,
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  height: deviceSize.height * 0.25,
+                  width: deviceSize.width,
+                  child: witnetLogo(theme),
                 ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(
-                left: cardPadding,
-                right: cardPadding,
-                top: cardPadding + 10,
-              ),
-              width: cardWidth,
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                _buildInfoText(theme),
+                _buildPasswordField(textFieldWidth),
+                SizedBox(
+                  height: 10,
+                ),
+                _buildConfirmPasswordField(textFieldWidth),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  // mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    _buildInfoText(theme),
-                    _buildPasswordField(textFieldWidth),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    _buildConfirmPasswordField(textFieldWidth),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      // mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Checkbox(
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: Checkbox(
                             value: useStrongPassword,
                             onChanged: (bool? value) {
                               setState(() {
                                 this.useStrongPassword = value!;
                               });
-                            }),
-                        Column(mainAxisSize: MainAxisSize.min, children: [
-                          Text(
-                            'Use strong password',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ]),
-                      ],
-                    ),
-                    Text(
-                      'Enabling this will ensure: minimum length 8, 2 uppercase letters, 1 special case !@#\$&*, 2 digits, and 3 lowercase letters. ',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                            })),
+                    Expanded(
+                      flex: 3,
+                      child: AutoSizeText(
+                        'Use a strong password',
+                        textAlign: TextAlign.left,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
-                    _buildButtonRow(),
-                    SizedBox(height: 10),
-                  ]),
-            ),
-          ],
+                    Expanded(
+                      flex: 1,
+                      child: Tooltip(
+                          height: 75,
+                          textStyle:
+                              TextStyle(fontSize: 12, color: Colors.white),
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          padding: EdgeInsets.all(10),
+                          preferBelow: false,
+                          message:
+                              'Enabling this will ensure:\n - minimum length 8\n - 2 uppercase letters\n - 1 special case !@#\$&*\n - 2 digits\n - 3 lowercase letters.',
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              FontAwesomeIcons.questionCircle,
+                              size: 15,
+                            ),
+                            iconSize: 10,
+                            padding: EdgeInsets.all(3),
+                          )),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                _buildButtonRow(),
+              ]),
         ),
-      ),
+      ],
     );
   }
 }

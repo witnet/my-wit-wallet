@@ -8,11 +8,11 @@ import 'crypto_isolate.dart';
 enum SeedSource { mnemonic, xprv, encryptedXprv }
 
 class ApiCrypto {
-  late String walletName;
-  late String walletDescription;
-  late String seed;
-  late String seedSource;
-  late String password;
+  late String? walletName;
+  late String? walletDescription;
+  late String? seed;
+  late String? seedSource;
+  late String? password;
   ApiCrypto();
 
   void setInitialWalletData(String walletName, String walletDescription,
@@ -22,6 +22,14 @@ class ApiCrypto {
     this.seed = seed;
     this.seedSource = seedSource;
     this.password = password;
+  }
+
+  void clearInitialWalletData() {
+    this.walletName = null;
+    this.walletDescription = null;
+    this.seed = null;
+    this.seedSource = null;
+    this.password = null;
   }
 
   Future<String> generateMnemonic(int wordCount, String language) async {

@@ -97,39 +97,41 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Expanded(flex: 5, child:
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                        child: AutoSizeText(
-                          'Value Transfer Transaction ',
-                          maxLines: 1,
-                          minFontSize: 14,
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                              color: theme.primaryColor),
+                      Expanded(
+                        flex: 5,
+                        child: Padding(
+                          padding: EdgeInsets.all(10),
+                          child: AutoSizeText(
+                            'Value Transfer Transaction ',
+                            maxLines: 1,
+                            minFontSize: 14,
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                                color: theme.primaryColor),
+                          ),
                         ),
-                      ),),
-                      Expanded(flex: 1, child:
-                      RoundButton(
-                        onPressed: () {
-                          BlocProvider.of<BlocCreateVTT>(context)
-                              .add(ResetTransactionEvent());
-                          Navigator.of(context).pop();
-                        },
-                        icon: Text(
-                          'X',
-                          style: TextStyle(fontSize: 33),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: RoundButton(
+                          onPressed: () {
+                            BlocProvider.of<BlocCreateVTT>(context)
+                                .add(ResetTransactionEvent());
+                            Navigator.of(context).pop();
+                          },
+                          icon: Text(
+                            'X',
+                            style: TextStyle(fontSize: 33),
+                          ),
+                          loadingController: _loadingController,
+                          label: '',
+                          size: 25,
                         ),
-                        loadingController: _loadingController,
-                        label: '',
-                        size: 25,
                       ),
-                      ),
-
                     ],
                   ),
-                  _buildDisclaimerTextScrollView(theme, deviceSize),
+                  _buildVttForm(theme, deviceSize),
                 ]),
           ),
         ],
@@ -137,7 +139,7 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
     );
   }
 
-  Widget _buildDisclaimerTextScrollView(ThemeData theme, Size deviceSize) {
+  Widget _buildVttForm(ThemeData theme, Size deviceSize) {
     return Container(
       decoration: BoxDecoration(),
       height: deviceSize.height * 0.8,
@@ -150,7 +152,6 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
                 externalAccounts: widget.externalAccounts,
                 internalAccounts: widget.internalAccounts,
               ),
-
             ],
           ),
         ),

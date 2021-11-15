@@ -6,7 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
-import 'package:witnet_wallet/screens/create_wallet/import_xprv/import_xprv_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
 class EnterXprvCard extends StatefulWidget {
@@ -61,14 +61,16 @@ class EnterXprvCardState extends State<EnterXprvCard>
   }
 
   void onBack() {
-    BlocProvider.of<BlocImportXprv>(context)
-        .add(SetStateEvent(EnterXprvState()));
-    BlocProvider.of<BlocImportXprv>(context).add(PreviousCardEvent());
+    BlocProvider.of<BlocCreateWallet>(context)
+        .add(SetStateEvent(WalletType.xprv, EnterXprvState(WalletType.xprv)));
+    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
+    BlocProvider.of<BlocCreateWallet>(context).add(PreviousCardEvent(type));
   }
 
   void onNext() {
     Locator.instance<ApiCreateWallet>().setSeed(xprv, 'xprv');
-    BlocProvider.of<BlocImportXprv>(context).add(NextCardEvent());
+    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
+    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent(type));
   }
 
   bool validBech(String xprvString) {
@@ -126,7 +128,9 @@ class EnterXprvCardState extends State<EnterXprvCard>
   Widget _verifyButton() {
     return ElevatedButton(
       onPressed: () {
-        BlocProvider.of<BlocImportXprv>(context).add(VerifyXprvEvent(xprv));
+        WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
+        BlocProvider.of<BlocCreateWallet>(context)
+            .add(VerifyXprvEvent(type, xprv));
         try {
           print('Valid bech? ${validBech(xprv)}');
           print('Valid xprv? ${validXprv(xprv)}');
@@ -141,7 +145,7 @@ class EnterXprvCardState extends State<EnterXprvCard>
   }
 
   Widget verifyXprvButton() {
-    return BlocBuilder<BlocImportXprv, ImportXprvState>(
+    return BlocBuilder<BlocCreateWallet, CreateWalletState>(
         builder: (context, state) {
       final theme = Theme.of(context);
       if (state is EnterXprvState) {

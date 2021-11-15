@@ -2,9 +2,9 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
+import 'package:witnet_wallet/theme/wallet_theme.dart';
 import 'package:witnet_wallet/widgets/card/card_header.dart';
-
-import 'import_encrypted_xprv_bloc.dart';
 
 class DisclaimerCard extends StatefulWidget {
   DisclaimerCard({Key? key}) : super(key: key);
@@ -15,8 +15,6 @@ class DisclaimerCard extends StatefulWidget {
 
 class DisclaimerCardState extends State<DisclaimerCard>
     with TickerProviderStateMixin {
-  final _passwordFocusNode = FocusNode();
-  final _confirmPasswordFocusNode = FocusNode();
   bool scrolledToBottom = false;
   late ScrollController _scrollController;
   late AnimationController _loadingController;
@@ -37,7 +35,6 @@ class DisclaimerCardState extends State<DisclaimerCard>
           // You're at the top.
         } else {
           scrolledToBottom = true;
-          print('Bottom!');
         }
       }
     });
@@ -46,6 +43,9 @@ class DisclaimerCardState extends State<DisclaimerCard>
       duration: Duration(milliseconds: 1150),
       reverseDuration: Duration(milliseconds: 300),
     )..value = 1.0;
+
+    BlocProvider.of<BlocCreateWallet>(context)
+        .add(ResetEvent(WalletType.newWallet));
   }
 
   void handleLoadingAnimationStatus(AnimationStatus status) {
@@ -66,12 +66,12 @@ class DisclaimerCardState extends State<DisclaimerCard>
   }
 
   void _nextCreateWalletMode() {
-    BlocProvider.of<BlocImportEcnryptedXprv>(context).add(NextCardEvent());
+    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
+    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent(type));
   }
 
   Widget _buildDisclaimerTextScrollView(ThemeData theme, Size deviceSize) {
     return Container(
-      decoration: BoxDecoration(border: Border.all(color: Colors.black45)),
       height: deviceSize.height * 0.6,
       child: SingleChildScrollView(
         child: Padding(
@@ -169,24 +169,13 @@ class DisclaimerCardState extends State<DisclaimerCard>
     return Container(
       padding: EdgeInsets.only(bottom: 5),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Padding(
             padding: EdgeInsets.all(5),
             child: ElevatedButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Go back!'),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(5),
-            child: ElevatedButton(
-              onPressed: mnemonic.isNotEmpty
-                  ? () {
-                      Clipboard.setData(ClipboardData(text: mnemonic));
-                    }
-                  : null,
-              child: Text('Copy'),
+              child: Text('Cancel'),
             ),
           ),
           Padding(
@@ -209,31 +198,27 @@ class DisclaimerCardState extends State<DisclaimerCard>
     const cardPadding = 10.0;
     final textFieldWidth = cardWidth - cardPadding * 2;
     final theme = Theme.of(context);
-    return FittedBox(
-      child: Card(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new CardHeader(title: 'DISCLAIMER', width: cardWidth, height: 50),
-            Container(
-              padding: EdgeInsets.only(
-                left: cardPadding,
-                right: cardPadding,
-                top: cardPadding + 10,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          width: cardWidth,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                height: deviceSize.height * 0.25,
+                width: deviceSize.width,
+                child: witnetLogo(theme),
               ),
-              width: cardWidth,
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    _buildDisclaimerTextScrollView(theme, deviceSize),
-                    _buildButtonRow(),
-                  ]),
-            ),
-          ],
+              _buildDisclaimerTextScrollView(theme, deviceSize),
+              _buildButtonRow(),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }

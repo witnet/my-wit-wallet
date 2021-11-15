@@ -9,7 +9,11 @@ final walletThemeData = {
   WalletTheme.Light: lightTheme,
   WalletTheme.Dark: darkTheme,
 };
-
+Widget witnetLogo(ThemeData theme){
+  return  (theme.brightness == Brightness.light)
+      ? Image(image:AssetImage('assets/img/witnet_logo.png'))
+      : Image(image:AssetImage('assets/img/witnet_logo_light.png'));
+}
 class WalletButtonTheme {
   const WalletButtonTheme({
     required this.backgroundColor,
@@ -34,12 +38,8 @@ ThemeData lightTheme = ThemeData(
   backgroundColor: Color(0xFFF7F7F8),
   cardColor: Color(0xFFF9F9F9),
   buttonColor: Color(0xFF4582B9),
-  cardTheme: CardTheme(
-    elevation: 5.0,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.0)),
-    shadowColor: Color(0xFF112338),
-  ),
-  visualDensity: VisualDensity(horizontal: 0.0, vertical: 0.0),
+  cardTheme: lightCardTheme,
+  visualDensity: defaultDensity,
   textTheme: TextTheme(
     headline3: TextStyle(
       fontFamily: 'OpenSans',
@@ -58,6 +58,8 @@ ThemeData lightTheme = ThemeData(
     overline:  TextStyle(fontFamily: 'NotoSans'),
   ),
   inputDecorationTheme: InputDecorationTheme(
+    fillColor: Color(0xFFFFFFFF),
+    filled: true,
     labelStyle: TextStyle(),
     prefixStyle: TextStyle(),
     suffixStyle: TextStyle(),
@@ -70,7 +72,7 @@ ThemeData lightTheme = ThemeData(
     helperMaxLines: 1,
     errorMaxLines: 1,
     hintStyle: TextStyle(),
-    hoverColor: Color(0xFF238FBF),
+    hoverColor: Color(0xFFFFFFFF),
     focusColor: Color(0xFF41BEA5),
     floatingLabelBehavior: FloatingLabelBehavior.always,
     isDense: false,
@@ -121,5 +123,17 @@ ThemeData lightTheme = ThemeData(
 ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   primaryColor: Color(0xFF17151E),
-  visualDensity: VisualDensity(horizontal: 0.0, vertical: 0.0),
+  visualDensity: defaultDensity,
+);
+
+VisualDensity defaultDensity = VisualDensity(horizontal: 0.0, vertical: 0.0);
+CardTheme lightCardTheme = CardTheme(
+  elevation: 5.0,
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.0)),
+  shadowColor: Color(0xFF112338),
+);
+CardTheme darkCardTheme = CardTheme(
+  elevation: 5.0,
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.0)),
+  shadowColor: null,
 );

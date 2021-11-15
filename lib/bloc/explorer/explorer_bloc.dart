@@ -202,14 +202,11 @@ class BlocExplorer extends Bloc<ExplorerEvent, ExplorerState> {
           yield DataLoadingState();
           event as VTTransactionPostEvent;
           try {
-
             var resp = await Locator.instance
                 .get<ApiExplorer>()
-                .sendTransaction(Transaction(transaction: event.vtTransaction, transactionType: TransactionType.ValueTransfer));
-
-          } catch (e) {
-
-          }
+                .sendVtTransaction(event.vtTransaction);
+            print(resp);
+          } catch (e) {}
           break;
         case UtxoQueryEvent:
           event as UtxoQueryEvent;

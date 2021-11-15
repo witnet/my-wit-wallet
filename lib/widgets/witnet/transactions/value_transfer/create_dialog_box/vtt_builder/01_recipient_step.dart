@@ -11,6 +11,7 @@ import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_
 import '../../../../../auto_size_text.dart';
 import '../../value_transfer_output_container.dart';
 import '../recipient_address_input.dart';
+import '../vtt_stepper.dart';
 
 class RecipientStep extends StatefulWidget {
   final VoidCallback? onStepCancel;
@@ -356,6 +357,7 @@ class RecipientStepState extends State<RecipientStep>
                   height: 5,
                 ),
                 outputCards(),
+                AdvancedVttSettingsPanel(),
                 Row(
                   children: [
                     if (validVTO(recipientAddress))
@@ -403,7 +405,6 @@ class RecipientStepState extends State<RecipientStep>
         return Container(
           child: Column(
             children: [
-
               _buildRecipientInput(),
               SizedBox(
                 height: 5,

@@ -1,59 +1,72 @@
+import 'dart:convert';
 import 'dart:core';
 import 'dart:isolate';
 
+import 'package:witnet/data_structures.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_isolate.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/util/witnet/wallet/wallet.dart';
 
 class DbWallet {
   DbWallet({
+    required this.xprv,
     required this.walletName,
     required this.walletDescription,
-  });
+    required this.externalAccounts,
+    required this.internalAccounts,
+
+  }){
+   externalAccounts.forEach((int index, Account account) {
+     account.setBalance();
+     balance += account.balance;
+   });
+   internalAccounts.forEach((int index, Account account) {
+     account.setBalance();
+     balance += account.balance;
+   });
+  }
 
   final String walletName;
   final String walletDescription;
-  String? encryptedMasterXprv;
-  late String? masterXprv;
+  final String xprv;
+  Map<int, Account> externalAccounts = {};
+  Map<int, Account> internalAccounts = {};
   bool nodeAddressActive = false;
-  WalletAddress? nodeAddress;
-  List<WalletAddress> externalAddresses = [];
-  List<WalletAddress> internalAddresses = [];
+  int balance = 0;
+  int addressCount = 0;
+  Map<String, Utxo> utxoSet = {};
+  void addAccount({required Account account, required int index, required KeyType keyType}){
+    switch (keyType){
+      case KeyType.internal:
+        internalAccounts[index] = account;
+        break;
+      case KeyType.external:
+        externalAccounts[index] = account;
+        break;
+    }
 
-  void initialSetup(
-      {required String seedSource,
-      required String seed,
-      String? password}) async {
-    /*
-    ran one time at wallet creation.
-    the rest of the time the wallet is synced.
-
-    generate all addresses and randomize order of query to exporer
-     */
-    Wallet wallet = Wallet(walletName, walletDescription);
-    CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
-    final receivePort = ReceivePort();
-    await cryptoIsolate.init();
-
-    cryptoIsolate.send(
-        method: 'initializeWallet',
-        params: {
-          'seedSource': seedSource,
-          'walletName': walletName,
-          'walletDescription': walletDescription,
-          'seed': seed,
-          'password': password,
-        },
-        port: receivePort.sendPort);
   }
-}
 
-class WalletAddress {
-  WalletAddress(this.address, this.path);
+  Map<String, dynamic> accountMap({required KeyType keyType})  {
+    switch (keyType){
 
-  String address;
-  String path;
-  int? lastBlockSynced;
+      case KeyType.internal:
+        Map<String, dynamic> _int = {};
+        internalAccounts.forEach((key, value) {
+          _int[value.address] = value.jsonMap();
+        });
+        return _int;
+      case KeyType.external:
+        Map<String, dynamic> _ext = {};
+        externalAccounts.forEach((key, value) {
+          _ext[value.address] = value.jsonMap();
+        });
+        return _ext;
+    }
 
-  List<String> transactions = [];
+
+  }
+
+
 }

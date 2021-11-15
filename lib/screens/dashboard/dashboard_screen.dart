@@ -7,10 +7,12 @@ import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/bloc/auth/auth_bloc.dart';
+import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/widgets/animated_numeric_text.dart';
+import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/fade_in.dart';
 import 'package:witnet_wallet/widgets/round_button.dart';
 import 'package:witnet_wallet/widgets/svg_widget.dart';
@@ -25,7 +27,7 @@ import '../screen_transitions/fade_transition.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-
+import 'dashboard_bloc.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -33,11 +35,12 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class DashboardScreenState extends State<DashboardScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   Map<String, Account> externalAccounts = {};
   Map<String, Account> internalAccounts = {};
   static const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
   late AnimationController _loadingController;
+  late AnimationController _headerController;
   late Animation<double> _headerScaleAnimation;
 
   @override
@@ -47,19 +50,18 @@ class DashboardScreenState extends State<DashboardScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
+    _headerController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
 
     _headerScaleAnimation =
         Tween<double>(begin: .6, end: 1).animate(CurvedAnimation(
       parent: _loadingController,
       curve: headerAniInterval,
     ));
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: _logout(),
-    );
+    //BlocProvider.of<BlocDashboard>(context).add(DashboardInitEvent(externalAccounts: {}, internalAccounts: {}));
   }
 
   Future<bool> _goToSettings(BuildContext context) {
@@ -80,7 +82,10 @@ class DashboardScreenState extends State<DashboardScreen>
     final logoutButton = IconButton(
       icon: const Icon(FontAwesomeIcons.userLock),
       color: theme.accentColor,
-      onPressed: () => BlocProvider.of<BlocAuth>(context).add(LogoutEvent()),
+      onPressed: () {
+        BlocProvider.of<BlocDashboard>(context).add(DashboardResetEvent());
+        BlocProvider.of<BlocAuth>(context).add(LogoutEvent());
+      },
     );
 
     final title = Center(
@@ -130,16 +135,19 @@ class DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  Widget _buildHeader(ThemeData theme, LoggedInState state) {
+  Widget _buildHeader(
+    ThemeData theme,
+  ) {
     int balance = 0;
-    state.externalAccounts.forEach((key, value) {
-      Account account = value;
-      account.setBalance();
-      balance += account.balance;
-    });
-    state.internalAccounts.forEach((key, value) {
+    externalAccounts.forEach((key, value) {
+      print(value.jsonMap());
       balance += value.balance;
     });
+    internalAccounts.forEach((key, value) {
+      balance += value.balance;
+    });
+
+    print(balance);
     final primaryColor = theme.primaryColor;
     final accentColor = theme.accentColor;
     final bgMat = createMaterialColor(accentColor);
@@ -153,7 +161,7 @@ class DashboardScreenState extends State<DashboardScreen>
     return ScaleTransition(
       scale: _headerScaleAnimation,
       child: FadeIn(
-        controller: _loadingController,
+        controller: _headerController,
         curve: headerAniInterval,
         fadeDirection: FadeDirection.bottomToTop,
         offset: .5,
@@ -168,7 +176,7 @@ class DashboardScreenState extends State<DashboardScreen>
                   initialValue: 0,
                   targetValue: nanoWitToWit(balance),
                   curve: Interval(0, .5, curve: Curves.easeOut),
-                  controller: _loadingController,
+                  controller: _headerController,
                   style: theme.textTheme.headline5!.copyWith(
                     foreground: Paint()..shader = linearGradient,
                   ),
@@ -229,45 +237,54 @@ class DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  Widget _buildDashboardGrid(ThemeData themeData, LoggedInState state) {
+  Widget _buildDashboardGrid(ThemeData themeData, DashboardState state) {
     final size = MediaQuery.of(context).size;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        _buildHeader(themeData, state),
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RoundButton(
-                size: 40,
-                icon: Icon(FontAwesomeIcons.arrowUp),
-                onPressed: _showCreateVTTDialog,
-                label: 'Send',
-                loadingController: _loadingController,
+    switch (state.runtimeType) {
+      case DashboardReadyState:
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _buildHeader(themeData),
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  RoundButton(
+                    size: 40,
+                    icon: Icon(FontAwesomeIcons.arrowUp),
+                    onPressed: _showCreateVTTDialog,
+                    label: 'Send',
+                    loadingController: _loadingController,
+                  ),
+                  RoundButton(
+                    size: 40,
+                    icon: Icon(FontAwesomeIcons.arrowDown),
+                    onPressed: _showReceiveDialog,
+                    label: 'Receive',
+                    loadingController: _loadingController,
+                  ),
+                  RoundButton(
+                    size: 40,
+                    icon: Icon(FontAwesomeIcons.userCog),
+                    onPressed: _showWalletSettingsDialog,
+                    label: 'Settings',
+                    loadingController: _loadingController,
+                  ),
+                  buildSyncButton(),
+                ],
               ),
-              RoundButton(
-                size: 40,
-                icon: Icon(FontAwesomeIcons.arrowDown),
-                onPressed: _showReceiveDialog,
-                label: 'Receive',
-                loadingController: _loadingController,
-              ),
-              RoundButton(
-                size: 40,
-                icon: Icon(FontAwesomeIcons.userCog),
-                onPressed: _showWalletSettingsDialog,
-                label: 'Settings',
-                loadingController: _loadingController,
-              ),
-              buildSyncButton(),
-            ],
+            ),
+            // TransactionHistory(themeData: themeData, externalAccounts: externalAccounts, internalAccounts: internalAccounts,),
+          ],
+        );
+      default:
+        return Container(
+          child: SizedBox(
+            height: 5,
           ),
-        ),
-        TransactionHistory(themeData: themeData, state: state),
-      ],
-    );
+        );
+    }
   }
 
   Widget buildSyncButton() {
@@ -307,27 +324,75 @@ class DashboardScreenState extends State<DashboardScreen>
     });
   }
 
-  _logout() {
+  _dashboardBuilder() {
+    final theme = Theme.of(context);
+    final size = MediaQuery.of(context).size;
+    return BlocBuilder<BlocDashboard, DashboardState>(
+        builder: (BuildContext context, DashboardState dashboardState) {
+      switch (dashboardState.runtimeType) {
+        case DashboardLoadingState:
+          return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[]);
+        case DashboardSynchronizedState:
+        case DashboardSynchronizingState:
+        case DashboardReadyState:
+          return _buildDashboardGrid(theme, dashboardState);
+        default:
+          return SizedBox(
+            child: SpinKitWave(
+              color: theme.primaryColor,
+            ),
+          );
+      }
+    });
+  }
+
+  Widget _authBuilder() {
     final theme = Theme.of(context);
     final bgMat = createMaterialColor(theme.cardColor);
-    return BlocBuilder<BlocAuth, AuthState>(buildWhen: (previousState, state) {
-      if (state is LoggedOutState) {
+    return BlocBuilder<BlocAuth, AuthState>(
+        buildWhen: (previousState, authState) {
+      if (authState is LoggedOutState) {
         Navigator.pushReplacement(context, FadeRoute(page: LoginScreen()));
       }
       return true;
-    }, builder: (context, state) {
-      if (state is LoadingLogoutState) {
-        return SizedBox(
-          child: SpinKitWave(
-            color: theme.primaryColor,
-          ),
-        );
-      } else if (state is LoggedInState) {
-        externalAccounts = state.externalAccounts;
-        internalAccounts = state.internalAccounts;
-        return WillPopScope(
-          onWillPop: () async => false,
-          child: Scaffold(
+    }, builder: (BuildContext context, AuthState authState) {
+      switch (authState.runtimeType) {
+        case LoadingLogoutState:
+          return Scaffold(
+            appBar: _buildAppBar(theme),
+            body: Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: theme.primaryColor.withOpacity(.1),
+              child: Stack(
+                children: <Widget>[
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        child: SpinKitWave(
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        case LoggedInState:
+          authState as LoggedInState;
+
+          externalAccounts = authState.externalAccounts;
+          internalAccounts = authState.internalAccounts;
+
+          return Scaffold(
             appBar: _buildAppBar(theme),
             body: Container(
               width: double.infinity,
@@ -342,38 +407,44 @@ class DashboardScreenState extends State<DashboardScreen>
                         height: 10,
                       ),
                       Container(
-                        child: _buildDashboardGrid(theme, state),
+                        child: _dashboardBuilder(),
+                        //_buildDashboardGrid(theme, authState),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-          ),
-        );
-      }
-      return WillPopScope(
-        onWillPop: () async => false,
-        child: Scaffold(
-          appBar: _buildAppBar(theme),
-          body: Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: theme.primaryColor.withOpacity(.1),
-            child: Stack(
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 10,
-                    ),
-                  ],
-                ),
-              ],
+          );
+        default:
+          return Scaffold(
+            appBar: _buildAppBar(theme),
+            body: Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: theme.primaryColor.withOpacity(.1),
+              child: Stack(
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ),
-      );
+          );
+      }
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: _authBuilder(),
+    );
   }
 }

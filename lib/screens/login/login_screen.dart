@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:witnet_wallet/screens/login/create_or_recover_card.dart';
 import 'package:witnet_wallet/screens/login/login_card.dart';
+import 'package:witnet_wallet/theme/wallet_theme.dart';
 import 'package:witnet_wallet/widgets/svg_widget.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -44,6 +45,7 @@ class LoginScreenState extends State<LoginScreen>
   @override
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: new GestureDetector(
@@ -52,14 +54,18 @@ class LoginScreenState extends State<LoginScreen>
           FocusScope.of(context).requestFocus(new FocusNode());
         },
         child: Container(
-          child:
+          width: double.infinity,
+          height: double.infinity,
+          color: theme.primaryColor.withOpacity(.01),
+          child: Stack(
+            children: <Widget>[
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Container(
                     height: size.height * 0.25,
-                    width: size.width ,
-                    child: Image(image:AssetImage('assets/img/witnet_logo.png')),
+                    width: size.width,
+                    child: witnetLogo(theme),
                   ),
                   FittedBox(
                     child: Container(
@@ -80,8 +86,10 @@ class LoginScreenState extends State<LoginScreen>
                   ),
                 ],
               ),
+            ],
           ),
         ),
-      );
+      ),
+    );
   }
 }

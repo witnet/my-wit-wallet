@@ -4,20 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/crypto.dart';
 import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
-import 'package:witnet_wallet/screens/create_wallet/import_mnemonic/import_mnemonic_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
-class EnterMnemonicCard extends StatefulWidget {
-  EnterMnemonicCard({Key? key}) : super(key: key);
+class ConfirmMnemonicCard extends StatefulWidget {
+  ConfirmMnemonicCard({Key? key}) : super(key: key);
 
-  EnterMnemonicCardState createState() => EnterMnemonicCardState();
+  ConfirmMnemonicCardState createState() => ConfirmMnemonicCardState();
 }
 
-class EnterMnemonicCardState extends State<EnterMnemonicCard>
+class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
     with TickerProviderStateMixin {
   String mnemonic = '';
   final TextEditingController textController = TextEditingController();
   int numLines = 0;
+  int _phraseLength = 12;
 
   Widget _buildConfirmField() {
     return SizedBox(
@@ -28,14 +29,24 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
           children: <Widget>[
             SizedBox(
               height: 10,
-            ),
+            ), //SizedBox
             Text(
-              'Please type your secret word phrase used for recovery. ',
+              'Recovery Phrase',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 24,
                 fontWeight: FontWeight.w500,
               ), //Textstyle
             ), //Text
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              'Please type your $_phraseLength word seed phrase exactly as shown to you on the previous screen. This will ensure that you have noted down your seed phrase correctly.',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
             SizedBox(
               height: 10,
             ),
@@ -46,6 +57,7 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
               controller: textController,
               onChanged: (String e) {
                 setState(() {
+                  print(e);
                   mnemonic = textController.value.text;
                   numLines = '\n'.allMatches(e).length + 1;
                 });
@@ -62,8 +74,8 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-              ), //Textstyle
-            ), //Text
+              ),
+            ),
             SizedBox(
               height: 10,
             ),
@@ -73,33 +85,21 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
     );
   }
 
-  void onBack() =>
-      BlocProvider.of<BlocImportMnemonic>(context).add(PreviousCardEvent());
+  void onBack() {
+    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
+    BlocProvider.of<BlocCreateWallet>(context).add(PreviousCardEvent(type));
+  }
 
   void onNext() {
-    Locator.instance<ApiCreateWallet>().setSeed(mnemonic, 'mnemonic');
-    BlocProvider.of<BlocImportMnemonic>(context).add(NextCardEvent());
+    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
+    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent(type));
   }
 
   bool validMnemonic(String mnemonic) {
-    List<String> words = mnemonic.split(' ');
-    int wordCount = words.length;
-    List<int> validMnemonicLengths = [12, 15, 18, 24];
-    if (validMnemonicLengths.contains(wordCount)) {
-      if (words.last.isEmpty) {
-        return false;
-      } else {
-        try {
-          var tmp = validateMnemonic(mnemonic);
-          return tmp;
-        } catch (e) {
-          print(e);
-          return false;
-        }
-      }
-    } else {
-      return false;
-    }
+    assert(Locator.instance.get<ApiCreateWallet>().seedSource == 'mnemonic');
+    String _mn = Locator.instance.get<ApiCreateWallet>().seedData!;
+    if (mnemonic != _mn) return false;
+    return validateMnemonic(mnemonic);
   }
 
   Widget _buildButtonRow() {
@@ -149,9 +149,8 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
               child: Padding(
                 padding: EdgeInsets.only(top: 1),
                 child: Text(
-                  'Import Secret Word Phrase',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: theme.backgroundColor, fontSize: 25),
+                  'Confirm Word Phrase',
+                  style: theme.textTheme.headline4,
                 ),
               ),
             ),

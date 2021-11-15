@@ -1,4 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:witnet_wallet/screens/dashboard/dashboard_bloc.dart';
 import 'package:witnet_wallet/shared/api_auth.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
@@ -17,6 +20,8 @@ class LoginErrorEvent extends AuthEvent {
 }
 
 class LogoutEvent extends AuthEvent {}
+
+class ReadWalletEvent extends AuthEvent {}
 
 class CreateWalletEvent extends AuthEvent {}
 
@@ -117,8 +122,8 @@ class BlocAuth extends Bloc<AuthEvent, AuthState> {
             Account _account = Account.fromJson(account);
             _account.setBalance();
             nt[_account.address] = _account;
+            print(_account.utxos);
           });
-
           yield LoggedInState(
               masterNode: masterNode,
               externalAccounts: xt,
@@ -135,6 +140,7 @@ class BlocAuth extends Bloc<AuthEvent, AuthState> {
         yield LoadedCreateState();
       } else if (event is LoginErrorEvent) {
         yield LoginErrorState(exception: event.exception);
+      } else if (event is ReadWalletEvent) {
       } else {
         yield LoggedOutState();
       }

@@ -189,10 +189,6 @@ class TransactionSettingsStep extends StatelessWidget {
 }
 
 class AdvancedVttSettingsPanel extends StatefulWidget {
-  AdvancedVttSettingsPanel({
-    required this.localAddresses,
-  });
-  final List<String> localAddresses;
   @override
   State<AdvancedVttSettingsPanel> createState() =>
       AdvancedVttSettingsPanelState();
@@ -259,23 +255,7 @@ class AdvancedVttSettingsPanelState extends State<AdvancedVttSettingsPanel> {
                   )),
             ],
           ),
-          UtxoSelectionStrategyChip(),
-          Column(
-            children:
-                List<Widget>.generate(widget.localAddresses.length, (index) {
-              return Container(
-                child: Column(
-                  children: [
-                    AutoSizeText(
-                      widget.localAddresses[index],
-                      maxLines: 1,
-                      minFontSize: 9,
-                    ),
-                  ],
-                ),
-              );
-            }),
-          ),
+          //UtxoSelectionStrategyChip(),
         ],
       ),
     );
@@ -292,10 +272,7 @@ class AdvancedVttSettingsPanelState extends State<AdvancedVttSettingsPanel> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                Text('Advanced Settings')
-
-                  ],
+                  children: [Text('Advanced Settings')],
                 )
               ],
             ),

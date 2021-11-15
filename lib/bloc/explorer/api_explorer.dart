@@ -1,3 +1,4 @@
+import 'dart:collection';
 
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
@@ -102,11 +103,25 @@ class ApiExplorer {
     }
   }
 
+  Future<dynamic> sendVtTransaction(VTTransaction transaction) async {
+    try {
+      var tmp =
+          await client.send(transaction: transaction.jsonMap(asHex: true));
+      return tmp;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> sendTransaction(Transaction transaction) async {
     try {
-      return await client.send(
-          transaction: transaction.jsonMap(asHex: true), test: true);
-    } on ExplorerException {
+      var tmp = await client.send(
+          transaction: transaction.transaction.jsonMap(asHex: true),
+          test: true);
+      print(tmp);
+      return tmp;
+    } catch (e) {
+      print(e);
       rethrow;
     }
   }

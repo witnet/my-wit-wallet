@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/bloc/auth/create_wallet/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
 import 'package:witnet_wallet/bloc/cache/cache_bloc.dart' as cache;
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 
@@ -16,14 +16,6 @@ class TestCardState extends State<TestCard> with TickerProviderStateMixin {
   late TextEditingController _nameController;
   late TextEditingController _descController;
   late AnimationController _loadingController;
-  void onBack() {
-    BlocProvider.of<BlocCrypto>(context).add(CryptoReadyEvent());
-    Navigator.pop(context);
-  }
-
-  void onNext() {
-    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent());
-  }
 
   @override
   void initState() {
@@ -44,8 +36,6 @@ class TestCardState extends State<TestCard> with TickerProviderStateMixin {
     super.dispose();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -59,7 +49,6 @@ class TestCardState extends State<TestCard> with TickerProviderStateMixin {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-
             Container(
               padding: EdgeInsets.only(
                 left: cardPadding,
@@ -72,7 +61,6 @@ class TestCardState extends State<TestCard> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-
                     SizedBox(height: 10),
                   ]),
             ),

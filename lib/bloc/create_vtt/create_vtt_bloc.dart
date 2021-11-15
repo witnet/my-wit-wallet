@@ -6,6 +6,7 @@ import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_isolate.dart';
+import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
@@ -24,9 +25,16 @@ class AddValueTransferOutputEvent extends CreateVTTEvent {
   });
 }
 
-class UpdateFeeTypeEvent extends CreateVTTEvent {
+class UpdateFeeEvent extends CreateVTTEvent {
   final FeeType feeType;
-  UpdateFeeTypeEvent({required this.feeType});
+  final int? feeNanoWit;
+  UpdateFeeEvent({required this.feeType, this.feeNanoWit});
+}
+
+class UpdateUtxoSelectionStrategyEvent extends CreateVTTEvent {
+  final UtxoSelectionStrategy strategy;
+  final List<Utxo>? utxos;
+  UpdateUtxoSelectionStrategyEvent({required this.strategy, this.utxos});
 }
 
 class AddUtxosEvent extends CreateVTTEvent {
@@ -60,6 +68,11 @@ class SignTransactionEvent extends CreateVTTEvent {
       {required this.password, required this.vtTransactionBody});
 }
 
+class SendTransactionEvent extends CreateVTTEvent {
+  final VTTransaction transaction;
+  SendTransactionEvent(this.transaction);
+}
+
 class ResetTransactionEvent extends CreateVTTEvent {}
 
 abstract class CreateVTTState {}
@@ -72,7 +85,9 @@ class BuildingVTTState extends CreateVTTState {
   BuildingVTTState({required this.inputs, required this.outputs});
 }
 
-class SubmittingState extends CreateVTTState {}
+class SigningState extends CreateVTTState {}
+
+class SendingState extends CreateVTTState {}
 
 class FinishState extends CreateVTTState {
   final VTTransaction vtTransaction;
@@ -101,6 +116,7 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
   List<Utxo> selectedUtxos = [];
   UtxoPool utxoPool = UtxoPool();
   FeeType feeType = FeeType.Weighted;
+  int feeNanoWit = 0;
   UtxoSelectionStrategy utxoSelectionStrategy =
       UtxoSelectionStrategy.SmallFirst;
   @override
@@ -116,7 +132,6 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
           // check to see if we already added a change address
           // if we did -> remove the change address and recompute
           for (int i = 0; i < outputs.length; i++) {
-
             if (internalAccounts.keys.contains(outputs[i].pkh.address)) {
               outputs.removeAt(i);
             }
@@ -155,16 +170,30 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
           });
 
           if (feeType == FeeType.Weighted) {
+            // calculate weight
             int weight = (inputs.length * INPUT_SIZE) +
-                (outputs.length + 1 * OUTPUT_SIZE * GAMMA);
+                (outputs.length * OUTPUT_SIZE * GAMMA);
+            feeNanoWit = weight;
+
             valueChange = (valuePaid - valueOwed) - weight;
 
             if (valueChange > 0) {
               // add change
+              // +1 to the outputs length to include for change address
               weight = (inputs.length * INPUT_SIZE) +
                   (outputs.length + 1 * OUTPUT_SIZE * GAMMA);
               valueChange = (valuePaid - valueOwed) - weight;
               bool changeAccountSet = false;
+              outputs.add(ValueTransferOutput.fromJson({
+                'pkh': internalAccounts.entries.first.value.address,
+                'value': valueChange,
+                'time_lock': 0,
+              }));
+            }
+          } else {
+            // feeType == Absolute
+            valueChange = (valuePaid - valueOwed) - feeNanoWit;
+            if (valueChange > 0) {
               outputs.add(ValueTransferOutput.fromJson({
                 'pkh': internalAccounts.entries.first.value.address,
                 'value': valueChange,
@@ -185,7 +214,7 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
         /// -----------------------------------------------------------------
         case SignTransactionEvent:
           event as SignTransactionEvent;
-          yield SubmittingState();
+          yield SigningState();
           var encryptedXprv = await Locator.instance<ApiDatabase>()
               .readDatabaseRecord(key: 'xprv', type: String) as String;
           try {
@@ -201,6 +230,7 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
                 }
               });
             });
+            print(signers);
             cryptoIsolate.send(
                 method: 'signTransaction',
                 params: {
@@ -230,13 +260,40 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
           break;
 
         /// -----------------------------------------------------------------
-        case UpdateFeeTypeEvent:
-          event as UpdateFeeTypeEvent;
+
+        case SendTransactionEvent:
+          event as SendTransactionEvent;
+          try {
+            var resp = await Locator.instance
+                .get<ApiExplorer>()
+                .sendVtTransaction(event.transaction);
+            print(resp);
+          } catch (e) {}
+          break;
+
+        /// -----------------------------------------------------------------
+        case UpdateFeeEvent:
+          event as UpdateFeeEvent;
+          feeType = event.feeType;
+          switch (feeType) {
+            case FeeType.Absolute:
+              feeNanoWit = event.feeNanoWit!;
+              break;
+            case FeeType.Weighted:
+              break;
+          }
 
           break;
 
         /// -----------------------------------------------------------------
+        case UpdateUtxoSelectionStrategyEvent:
+          event as UpdateUtxoSelectionStrategyEvent;
+          utxoSelectionStrategy = event.strategy;
+          break;
+
+        /// -----------------------------------------------------------------
         case ValidRecipientAddressEvent:
+          break;
 
         /// -----------------------------------------------------------------
         case AddUtxosEvent:

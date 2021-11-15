@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:witnet_wallet/bloc/auth/auth_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/import_encrypted_xprv/import_encrypted_xprv_screen.dart';
-import 'package:witnet_wallet/screens/create_wallet/import_mnemonic/import_mnemonic_screen.dart';
-import 'package:witnet_wallet/screens/create_wallet/import_xprv/import_xprv_screen.dart';
+import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
+import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
+import 'package:witnet_wallet/screens/dashboard/dashboard_bloc.dart';
 import 'package:witnet_wallet/screens/dashboard/dashboard_screen.dart';
 import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
 import 'package:witnet_wallet/shared/api_auth.dart';
+import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/paddings.dart';
 import 'package:witnet_wallet/util/storage/path_provider_interface.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
@@ -97,7 +99,11 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
               ),
               child: new Text('Create New Wallet'),
               onPressed: () {
-                Navigator.pushNamed(context, '/create_wallet');
+                Locator.instance<ApiCreateWallet>()
+                    .setWalletType(WalletType.newWallet);
+                Navigator.pushNamed(context, CreateWalletScreen.route);
+                BlocProvider.of<BlocCreateWallet>(context)
+                    .add(ResetEvent(WalletType.newWallet));
               },
             ),
           ),
@@ -110,7 +116,11 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
               ),
               child: new Text('Recover Wallet from Secret Word Phrase'),
               onPressed: () {
-                Navigator.pushNamed(context, ImportMnemonicScreen.route);
+                Locator.instance<ApiCreateWallet>()
+                    .setWalletType(WalletType.mnemonic);
+                Navigator.pushNamed(context, CreateWalletScreen.route);
+                BlocProvider.of<BlocCreateWallet>(context)
+                    .add(ResetEvent(WalletType.mnemonic));
               },
             ),
           ),
@@ -123,7 +133,11 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
               ),
               child: new Text('Import Node from XPRV'),
               onPressed: () {
-                Navigator.pushNamed(context, ImportXprvScreen.route);
+                Locator.instance<ApiCreateWallet>()
+                    .setWalletType(WalletType.xprv);
+                Navigator.pushNamed(context, CreateWalletScreen.route);
+                BlocProvider.of<BlocCreateWallet>(context)
+                    .add(ResetEvent(WalletType.xprv));
               },
             ),
           ),
@@ -136,7 +150,11 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
               ),
               child: new Text('Import Wallet from Encrypted XPRV'),
               onPressed: () {
-                Navigator.pushNamed(context, ImportEncryptedXprvScreen.route);
+                Locator.instance<ApiCreateWallet>()
+                    .setWalletType(WalletType.encryptedXprv);
+                Navigator.pushNamed(context, CreateWalletScreen.route);
+                BlocProvider.of<BlocCreateWallet>(context)
+                    .add(ResetEvent(WalletType.encryptedXprv));
               },
             ),
           ),
@@ -166,6 +184,9 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
       if (state is LoggedInState) {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => DashboardScreen()));
+        BlocProvider.of<BlocDashboard>(context).add(DashboardLoadEvent(
+            externalAccounts: state.externalAccounts,
+            internalAccounts: state.internalAccounts));
       }
       return true;
     }, builder: (context, state) {
@@ -179,7 +200,7 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
         key: _formKey,
         child: Column(
           children: <Widget>[
-           // new CardHeader(
+            // new CardHeader(
             //    title: 'Unlock Wallet', width: cardWidth, height: 50),
             Container(
               padding: EdgeInsets.only(

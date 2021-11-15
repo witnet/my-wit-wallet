@@ -2,10 +2,13 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/screens/create_wallet/import_encrypted_xprv/import_encrypted_xprv_screen.dart';
-import 'package:witnet_wallet/screens/create_wallet/import_mnemonic/import_mnemonic_screen.dart';
-import 'package:witnet_wallet/screens/create_wallet/import_xprv/import_xprv_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
+import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
+import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/widgets/styled_button.dart';
 
 class CreateOrRecoverCard extends StatefulWidget {
@@ -72,7 +75,9 @@ class CreateOrRecoverCardState extends State<CreateOrRecoverCard>
               ),
               child: new Text('Create New Wallet'),
               onPressed: () {
-                Navigator.pushNamed(context, '/create_wallet');
+                Locator.instance<ApiCreateWallet>()
+                    .setWalletType(WalletType.newWallet);
+                Navigator.pushNamed(context, CreateWalletScreen.route);
               },
             ),
           ),
@@ -86,7 +91,10 @@ class CreateOrRecoverCardState extends State<CreateOrRecoverCard>
               ),
               child: new Text('Recover Wallet from Secret Word Phrase'),
               onPressed: () {
-                Navigator.pushNamed(context, ImportMnemonicScreen.route);
+                BlocProvider.of<BlocCrypto>(context).add(CryptoReadyEvent());
+                Locator.instance<ApiCreateWallet>()
+                    .setWalletType(WalletType.mnemonic);
+                Navigator.pushNamed(context, CreateWalletScreen.route);
               },
             ),
           ),
@@ -100,7 +108,9 @@ class CreateOrRecoverCardState extends State<CreateOrRecoverCard>
               ),
               child: new Text('Import Node from XPRV'),
               onPressed: () {
-                Navigator.pushNamed(context, ImportXprvScreen.route);
+                Locator.instance<ApiCreateWallet>()
+                    .setWalletType(WalletType.xprv);
+                Navigator.pushNamed(context, CreateWalletScreen.route);
               },
             ),
           ),
@@ -114,7 +124,9 @@ class CreateOrRecoverCardState extends State<CreateOrRecoverCard>
               ),
               child: new Text('Import Wallet from Encrypted XPRV'),
               onPressed: () {
-                Navigator.pushNamed(context, ImportEncryptedXprvScreen.route);
+                Locator.instance<ApiCreateWallet>()
+                    .setWalletType(WalletType.encryptedXprv);
+                Navigator.pushNamed(context, CreateWalletScreen.route);
               },
             ),
           ),
@@ -188,10 +200,6 @@ class CreateOrRecoverCardState extends State<CreateOrRecoverCard>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return FittedBox(
-      child: Card(
-          elevation: _showShadow ? theme.cardTheme.elevation : 0,
-          child: _formLogin()),
-    );
+    return FittedBox(child: _formLogin());
   }
 }

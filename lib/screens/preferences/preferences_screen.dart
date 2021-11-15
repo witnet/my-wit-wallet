@@ -48,9 +48,7 @@ class PreferencePage extends StatelessWidget {
           child: Column(
             children: [
               themeWidget(deviceSize.height * 0.25),
-              ElevatedButton(
-                  onPressed: () => Navigator.pushNamed(context, '/test'),
-                  child: Text('test page'))
+
             ],
           ),
         ));

@@ -2,9 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Explorer Settings
-const bool USE_EXPLORER_DEV = true;
+const bool USE_EXPLORER_DEV = false;
 String EXPLORER_ADDRESS = dotenv.get('EXPLORER_ADDRESS');
 String EXPLORER_DEV_ADDRESS = dotenv.get('EXPLORER_DEV_ADDRESS');
+const int EXPLORER_DELAY_MS = 100;
 
 class Constants {
   static const String appName = 'Witnet';

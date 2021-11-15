@@ -12,6 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_localizations:
+    sdk: flutter
+
   bloc: ^7.1.0
   get_it: ^7.2.0
   flutter_bloc: ^7.2.0
@@ -33,7 +36,7 @@ dependencies:
   toml: ^0.11.0
 
 
-  witnet: 0.1.2-dev
+  witnet: 0.1.2
   #witnet:
   #  path: ../witnet
   table_calendar: ^3.0.3
@@ -57,3 +60,6 @@ flutter:
           style: italic
         - asset: assets/fonts/Nunito-Sans-Bold.ttf
           weight: 700
+
+  # flag to generate localization files on build. file location .dart_tool/flutter_gen/
+  generate: true

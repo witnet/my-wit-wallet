@@ -7,17 +7,17 @@ import 'package:witnet/crypto.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
+import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
 import 'package:witnet_wallet/widgets/witnet/password_input.dart';
-import 'import_encrypted_xprv_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
-class EnterXprvCard extends StatefulWidget {
-  EnterXprvCard({Key? key}) : super(key: key);
+class EnterEncryptedXprvCard extends StatefulWidget {
+  EnterEncryptedXprvCard({Key? key}) : super(key: key);
 
   EnterXprvCardState createState() => EnterXprvCardState();
 }
 
-class EnterXprvCardState extends State<EnterXprvCard>
+class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     with TickerProviderStateMixin {
   String xprv = '';
   String _password = '';
@@ -84,14 +84,16 @@ class EnterXprvCardState extends State<EnterXprvCard>
   }
 
   void onBack() {
-    BlocProvider.of<BlocImportEcnryptedXprv>(context)
-        .add(SetStateEvent(EnterXprvState()));
-    BlocProvider.of<BlocImportEcnryptedXprv>(context).add(PreviousCardEvent());
+    BlocProvider.of<BlocCreateWallet>(context).add(SetStateEvent(
+        WalletType.encryptedXprv, EnterXprvState(WalletType.encryptedXprv)));
+    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
+    BlocProvider.of<BlocCreateWallet>(context).add(PreviousCardEvent(type));
   }
 
   void onNext() {
     Locator.instance<ApiCreateWallet>().setSeed(xprv, 'encryptedXprv');
-    BlocProvider.of<BlocImportEcnryptedXprv>(context).add(NextCardEvent());
+    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
+    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent(type));
   }
 
   bool validBech(String xprvString) {
@@ -107,7 +109,6 @@ class EnterXprvCardState extends State<EnterXprvCard>
   bool validXprv(String xprvString) {
     try {
       Xprv _xprv = Xprv.fromXprv(xprvString);
-
     } catch (e) {
       return false;
     }
@@ -188,7 +189,6 @@ class EnterXprvCardState extends State<EnterXprvCard>
   }
 
   Widget buildErrorList(List<dynamic> errors) {
-
     List<Widget> _children = [];
     errors.forEach((element) {
       _children.add(Text(
@@ -200,7 +200,7 @@ class EnterXprvCardState extends State<EnterXprvCard>
   }
 
   Widget verifyXprvButton() {
-    return BlocBuilder<BlocImportEcnryptedXprv, ImportEncryptedXprvState>(
+    return BlocBuilder<BlocCreateWallet, CreateWalletState>(
         builder: (context, state) {
       final theme = Theme.of(context);
       if (state is EnterXprvState) {
@@ -208,8 +208,10 @@ class EnterXprvCardState extends State<EnterXprvCard>
           onPressed: _password.isEmpty
               ? null
               : () {
-                  BlocProvider.of<BlocImportEcnryptedXprv>(context)
-                      .add(VerifyXprvEvent(xprv, _password));
+                  WalletType type =
+                      BlocProvider.of<BlocCreateWallet>(context).state.type;
+                  BlocProvider.of<BlocCreateWallet>(context)
+                      .add(VerifyEncryptedXprvEvent(type, xprv, _password));
                   try {
                     print('Valid bech? ${validBech(xprv)}');
                     print('Valid xprv? ${validXprv(xprv)}');
@@ -222,9 +224,7 @@ class EnterXprvCardState extends State<EnterXprvCard>
           child: Text('Verify'),
         );
       } else if (state is LoadingState) {
-        return SpinKitCircle(
-          color: theme.primaryColor,
-        );
+        return Container();
       } else if (state is ValidXprvState) {
         return Container(
           padding: EdgeInsets.all(5.0),
@@ -264,9 +264,7 @@ class EnterXprvCardState extends State<EnterXprvCard>
           ),
         );
       } else {
-        return SpinKitCircle(
-          color: theme.primaryColor,
-        );
+        return Container();
       }
     });
   }

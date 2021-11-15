@@ -147,7 +147,7 @@ class DBService {
           'Key value Must be int or String.');
       await store.record(key).put(_database, value);
     } else {
-      throw DBException(code: -5, message: 'unable to write $key.');
+      throw DBException(code: -5, message: 'unable to write $key. $value');
     }
   }
 

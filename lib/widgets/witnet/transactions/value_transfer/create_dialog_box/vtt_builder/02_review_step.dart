@@ -56,7 +56,8 @@ class ReviewStepState extends State<ReviewStep>
     super.dispose();
   }
 
-  Future<void> _showSignAndSendDialog(VTTransactionBody vtTransactionBody) async {
+  Future<void> _showSignAndSendDialog(
+      VTTransactionBody vtTransactionBody) async {
     final deviceSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final List<String> localAddresses = allUtxos.keys.toList();
@@ -72,7 +73,9 @@ class ReviewStepState extends State<ReviewStep>
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return SignSendDialog(vtTransactionBody: vtTransactionBody,);
+        return SignSendDialog(
+          vtTransactionBody: vtTransactionBody,
+        );
       },
     );
   }
@@ -92,7 +95,6 @@ class ReviewStepState extends State<ReviewStep>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          //AdvancedVttSettingsPanel(localAddresses: localAddresses,),
           inputCards(),
           outputCards(),
           changeCard(),
@@ -103,13 +105,15 @@ class ReviewStepState extends State<ReviewStep>
           BlocBuilder<BlocCreateVTT, CreateVTTState>(
             builder: (context, state) {
               if (state is BuildingVTTState) {
-                VTTransactionBody vttBody = VTTransactionBody(inputs: state.inputs, outputs: state.outputs);
+                VTTransactionBody vttBody = VTTransactionBody(
+                    inputs: state.inputs, outputs: state.outputs);
 
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                        onPressed:()=> _showSignAndSendDialog(vttBody), child: Text('Sign')),
+                        onPressed: () => _showSignAndSendDialog(vttBody),
+                        child: Text('Sign')),
                   ],
                 );
               }
@@ -118,11 +122,8 @@ class ReviewStepState extends State<ReviewStep>
               );
             },
           ),
-
         ],
       ),
-
-
     );
   }
 

@@ -122,14 +122,18 @@ void _cryptIso(SendPort sendPort) async {
           List<KeyedSignature> signatures = [];
           signerPaths.forEach((element) {
             List<dynamic> path = element.toString().split('/');
+            print(path[0]);
             assert(path.length == 6);
-            if (path[4] == 0) {
-              Xprv signer = externalXprv / int.parse(path.last);
+            if (path.elementAt(4) == '0') {
+              Xprv signer = externalXprv / 0 / int.parse(path.last);
 
+              print(signer.path);
               signatures.add(
                   signer.address.signHash(transactionId, signer.privateKey));
             } else {
-              Xprv signer = internalXprv / int.parse(path.last);
+              Xprv signer = internalXprv / 1 / int.parse(path.last);
+              print(signer.address.address);
+              print(signer.path);
               signatures.add(
                   signer.address.signHash(transactionId, signer.privateKey));
             }
@@ -141,6 +145,7 @@ void _cryptIso(SendPort sendPort) async {
 
           replyToPort.send(sigMap);
         } catch (e) {
+          print(e);
           errorMsg = e.toString();
         }
         replyToPort.send(errorMsg);
