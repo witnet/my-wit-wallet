@@ -1,6 +1,10 @@
 import 'dart:isolate';
 
+import 'package:witnet/witnet.dart';
+import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
+import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/util/witnet/wallet/wallet.dart';
 
 import 'crypto_isolate.dart';
@@ -49,7 +53,35 @@ class ApiCrypto {
       });
       return mnemonic;
     } catch (e) {
-      print(e);
+      rethrow;
+    }
+  }
+
+  Future<Account> generateAccount(KeyType keyType, int index) async {
+    try {
+      CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
+
+      DbWallet dbWallet = Locator.instance<ApiDashboard>().dbWallet!;
+
+      final receivePort = ReceivePort();
+
+      cryptoIsolate.send(
+        method: 'generateKey',
+        params: {
+          'keyType': 'internal',
+          'external_keychain': dbWallet.externalXpub,
+          'internal_keychain': dbWallet.internalXpub,
+          'index': index
+        },
+        port: receivePort.sendPort,
+      );
+      Xpub xpub = await receivePort.first.then((value) {
+        var val = value as Map<String, dynamic>;
+        var _xpub = val['xpub'];
+        return _xpub;
+      });
+      return Account(address: xpub.address, path: xpub.path!);
+    } catch (e) {
       rethrow;
     }
   }
