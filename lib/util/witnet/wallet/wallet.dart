@@ -1,5 +1,6 @@
 import 'dart:isolate';
 
+import 'package:witnet/constants.dart';
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_isolate.dart';
 import 'package:witnet_wallet/shared/locator.dart';
@@ -11,10 +12,13 @@ class Wallet {
   final String? description;
 
   late Xprv masterXprv;
-  late Xprv externalChain;
-  late Xprv internalChain;
-  final Map<int, Xprv> externalKeys = {};
-  final Map<int, Xprv> internalKeys = {};
+  late Xprv walletXprv;
+  late Xprv internalXprv;
+  late Xprv externalXprv;
+  late Xpub internalXpub;
+  late Xpub externalXpub;
+  final Map<int, Xpub> externalKeys = {};
+  final Map<int, Xpub> internalKeys = {};
 
   Wallet(this.name, this.description);
 
@@ -52,11 +56,15 @@ class Wallet {
 
   void _setMasterXprv(Xprv xprv) {
     masterXprv = xprv;
-    internalChain = masterXprv / 3.0 / 4919.0 / 0.0 / 1;
-    externalChain = masterXprv / 3.0 / 4919.0 / 0.0 / 0;
+    walletXprv = xprv / KEYPATH_PURPOSE / KEYPATH_COIN_TYPE / KEYPATH_ACCOUNT;
+    externalXprv = walletXprv / 0;
+    internalXprv = walletXprv / 1;
+    internalXpub = internalXprv.toXpub();
+    externalXpub = externalXprv.toXpub();
+
   }
 
-  Future<Xprv> generateKey(
+  Future<Xpub> generateKey(
       {required int index, KeyType keyType = KeyType.external}) async {
     ReceivePort response = ReceivePort();
     // initialize the crypto isolate if not already done so
@@ -67,13 +75,14 @@ class Wallet {
     Locator.instance<CryptoIsolate>().send(
         method: 'generateKey',
         params: {
-          'keychain': masterXprv.toSlip32(),
+          'external_keychain': externalXpub.toSlip32(),
+          'internal_keychain': internalXpub.toSlip32(),
           'index': index,
           'keyType': keyType.toString()
         },
         port: response.sendPort);
     var resp = await response.first.then((value) {
-      return value['xprv'] as Xprv;
+      return value['xpub'] as Xpub;
     });
     switch (keyType) {
       case KeyType.external:
@@ -86,7 +95,7 @@ class Wallet {
     return resp;
   }
 
-  Future<Xprv> getKey({required int index, required KeyType keyType}) async {
+  Future<Xpub> getXpub({required int index, required KeyType keyType}) async {
     switch (keyType) {
       case KeyType.internal:
         if (!internalKeys.containsKey(index)) {
