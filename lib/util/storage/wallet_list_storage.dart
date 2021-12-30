@@ -38,7 +38,7 @@ class WalletListStorage {
       final contents = await file.readAsString();
       return json.decode(contents);
     } catch (error) {
-      var file = await writeFile({'wallets': []});
+      //var file = await writeFile({'wallets': []});
       return {'wallets': []};
     }
   }

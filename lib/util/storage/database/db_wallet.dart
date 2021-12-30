@@ -1,20 +1,23 @@
-import 'dart:convert';
+
 import 'dart:core';
-import 'dart:isolate';
 
 import 'package:witnet/data_structures.dart';
-import 'package:witnet_wallet/bloc/crypto/crypto_isolate.dart';
-import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/util/witnet/wallet/wallet.dart';
 
+
+/// DbWallet formats the wallet for the database
+///
 class DbWallet {
   DbWallet({
     required this.xprv,
+    required this.externalXpub,
+    required this.internalXpub,
     required this.walletName,
     required this.walletDescription,
     required this.externalAccounts,
     required this.internalAccounts,
+    required this.lastSynced,
 
   }){
    externalAccounts.forEach((int index, Account account) {
@@ -30,6 +33,9 @@ class DbWallet {
   final String walletName;
   final String walletDescription;
   final String xprv;
+  final String externalXpub;
+  final String internalXpub;
+  int lastSynced = -1;
   Map<int, Account> externalAccounts = {};
   Map<int, Account> internalAccounts = {};
   bool nodeAddressActive = false;
@@ -50,7 +56,6 @@ class DbWallet {
 
   Map<String, dynamic> accountMap({required KeyType keyType})  {
     switch (keyType){
-
       case KeyType.internal:
         Map<String, dynamic> _int = {};
         internalAccounts.forEach((key, value) {
@@ -64,9 +69,5 @@ class DbWallet {
         });
         return _ext;
     }
-
-
   }
-
-
 }

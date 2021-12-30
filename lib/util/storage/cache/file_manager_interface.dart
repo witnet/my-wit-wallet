@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io' as io;
-import 'package:sembast/timestamp.dart';
 import 'package:witnet/explorer.dart';
 
 import '../path_provider_interface.dart';
@@ -37,6 +36,7 @@ class TransactionCache {
       if (!await file.exists()) {
       } else {
         final Map<String, dynamic> data = await _readFile();
+
       }
     } on io.FileSystemException catch (e) {
       if (e.osError!.errorCode == 2) {}

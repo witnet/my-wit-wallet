@@ -96,7 +96,7 @@ class DBService {
       } on TypeError catch (e) {
         dbError = ' ->${e.toString()}';
         throw DBException(code: -1, message: 'Unable to unlock Wallet.');
-      } on DBException catch (e) {
+      } on DBException {
         rethrow;
       }
       if (dbError != '') {
@@ -105,7 +105,7 @@ class DBService {
         _dbService.unlocked = true;
       }
       return dbError;
-    } on DBException catch (e) {
+    } on DBException {
       rethrow;
     }
   }
@@ -145,7 +145,8 @@ class DBService {
       var store = StoreRef.main();
       assert(key.runtimeType == String || key.runtimeType == int,
           'Key value Must be int or String.');
-      await store.record(key).put(_database, value);
+      await store.record(key).put(_database, value,merge: false);
+
     } else {
       throw DBException(code: -5, message: 'unable to write $key. $value');
     }
