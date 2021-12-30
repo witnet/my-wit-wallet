@@ -1,17 +1,14 @@
-import 'dart:collection';
-
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet_wallet/util/storage/cache/file_manager_interface.dart';
-import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 
 import '../../constants.dart';
 
 class ApiExplorer {
   TransactionCache cache = TransactionCache();
   late ExplorerClient client;
-
+  late Status status;
   ApiExplorer() {
     client = (USE_EXPLORER_DEV)
         ? ExplorerClient(
@@ -19,7 +16,7 @@ class ApiExplorer {
         : ExplorerClient(url: EXPLORER_ADDRESS, mode: ExplorerMode.production);
   }
 
-  Future<dynamic> hash(String value, bool simple) async {
+  Future<dynamic> hash(String value, [bool simple=true]) async {
     if (cache.containsHash(value)) {
       return cache.getValue(value);
     }
@@ -46,9 +43,10 @@ class ApiExplorer {
     }
   }
 
-  Future<Status> status() async {
+  Future<Status> getStatus() async {
     try {
-      return await client.status();
+      status = await client.status();
+      return status;
     } on ExplorerException {
       rethrow;
     }
@@ -102,12 +100,19 @@ class ApiExplorer {
       rethrow;
     }
   }
+  Future<Map<String, List<Utxo>>> utxosMulti({required List<String> addresses}) async {
+    try {
+      var tmp = await client.getMultiUtxoInfo(addresses: addresses);
 
+      return tmp;
+    } on ExplorerException {
+      rethrow;
+    }
+  }
   Future<dynamic> sendVtTransaction(VTTransaction transaction) async {
     try {
-      var tmp =
-          await client.send(transaction: transaction.jsonMap(asHex: true));
-      return tmp;
+      return await client.send(transaction: transaction.jsonMap(asHex: true));
+
     } catch (e) {
       rethrow;
     }
@@ -115,26 +120,10 @@ class ApiExplorer {
 
   Future<dynamic> sendTransaction(Transaction transaction) async {
     try {
-      var tmp = await client.send(
-          transaction: transaction.transaction.jsonMap(asHex: true),
-          test: true);
-      print(tmp);
-      return tmp;
+      return await client.send(
+          transaction: transaction.transaction.jsonMap(asHex: true));
     } catch (e) {
-      print(e);
       rethrow;
-    }
-  }
-
-  Future<Account> syncAccount(Account account) async {
-    try {
-      List<Utxo> utxoList = await utxos(address: account.address);
-      List<ValueTransferInfo> vtts =
-          await address(value: account.address, tab: 'value_transfers')
-              as List<ValueTransferInfo>;
-      return account;
-    } catch (e) {
-      throw ExplorerException(code: -4, message: 'unable to sync account');
     }
   }
 
