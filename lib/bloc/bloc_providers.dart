@@ -45,7 +45,7 @@ List<BlocProvider> getProviders(BuildContext context) {
 
     /// BlocDashboard manages the ui for the main dashboard
     BlocProvider<BlocDashboard>(
-      create: (BuildContext context) => BlocDashboard(DashboardLoadingState()),
+      create: (BuildContext context) => BlocDashboard(DashboardLoadingState(null)),
     )
   ];
 }
