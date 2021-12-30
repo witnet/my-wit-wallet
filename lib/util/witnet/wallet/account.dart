@@ -14,8 +14,10 @@ class Account {
     balance = _balance;
   }
 
+
   final String path;
   final String address;
+  List<String> vttHashes = [];
   Map<String, ValueTransferInfo> valueTransfers = {};
   List<Utxo> utxos = [];
 
@@ -34,6 +36,7 @@ class Account {
 
     Account account = Account(address: data['address'], path: data['path']);
     account.utxos = _utxos;
+    account.vttHashes = List<String>.from(data['value_transfer_hashes']);
     account.valueTransfers.addAll(_vtts);
     account.lastSynced = data['last_synced'];
     return account;
@@ -60,6 +63,7 @@ class Account {
       'path': path,
       'utxos': _utxos.toList(),
       'balance': balance,
+      'value_transfer_hashes': vttHashes.toList(),
       'value_transfer_transactions': vtts,
       'last_synced': lastSynced,
     };
