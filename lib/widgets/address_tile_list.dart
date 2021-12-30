@@ -49,7 +49,7 @@ class AddressTileListState extends State<AddressTileList> {
     );
   }
 
-  DropdownMenuItem _buildWalletDropdownItem(String value) {
+  DropdownMenuItem buildWalletDropdownItem(String value) {
     return DropdownMenuItem<String>(
       value: value,
       child: Text(
