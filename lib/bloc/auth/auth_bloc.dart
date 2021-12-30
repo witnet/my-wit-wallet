@@ -1,11 +1,9 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/screens/dashboard/dashboard_bloc.dart';
 import 'package:witnet_wallet/shared/api_auth.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/util/witnet/wallet/account.dart';
+import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 
 abstract class AuthEvent {}
 
@@ -36,14 +34,10 @@ abstract class AuthState {}
 class LoadingLoginState extends AuthState {}
 
 class LoggedInState extends AuthState {
-  Map<String, Object?> masterNode;
-  Map<String, Account> externalAccounts;
-  Map<String, Account> internalAccounts;
+  final DbWallet wallet;
 
   LoggedInState({
-    required this.masterNode,
-    required this.externalAccounts,
-    required this.internalAccounts,
+    required this.wallet,
   });
 }
 
@@ -80,6 +74,16 @@ class LoadedAddState extends AuthState {}
 
 class ErrorAddState extends AuthState {}
 
+Future<bool> _login(String password) async {
+  // unlock wallet
+  Map<String, dynamic> result = await Locator.instance
+      .get<ApiAuth>()
+      .unlockWallet(password: password);
+  return result['result'];
+}
+
+
+
 class BlocAuth extends Bloc<AuthEvent, AuthState> {
   BlocAuth(initialState) : super(initialState);
   get initialState => LoggedOutState();
@@ -91,43 +95,14 @@ class BlocAuth extends Bloc<AuthEvent, AuthState> {
         /// LoginEvent contains sensitive password data
         yield LoadingLoginState();
         try {
-          // unlock wallet
-          await Locator.instance
-              .get<ApiAuth>()
-              .unlockWallet(password: event.password);
-          // get the bip32 masterNode and extended keys
-          //await Locator.instance<ApiDatabase>().
-          var masterNode = await Locator.instance<ApiDatabase>()
-                  .readDatabaseRecord(key: 'master_node', type: Map)
-              as Map<String, Object?>;
-          var internalAccounts = await Locator.instance<ApiDatabase>()
-                  .readDatabaseRecord(key: 'internal_accounts', type: Map)
-              as Map<String, Object?>;
-          var externalAccounts = await Locator.instance<ApiDatabase>()
-                  .readDatabaseRecord(key: 'external_accounts', type: Map)
-              as Map<String, Object?>;
+          bool loggedIn = await _login(event.password);
+          assert(loggedIn);
 
-          // parse into structure
-          Map<String, Account> xt = {};
-          externalAccounts.forEach((address, account) {
-            account as Map<String, Object?>;
-            Account _account = Account.fromJson(account);
-            _account.setBalance();
-            xt[_account.address] = _account;
-          });
-          // parse into structure
-          Map<String, Account> nt = {};
-          internalAccounts.forEach((address, account) {
-            account as Map<String, Object?>;
-            Account _account = Account.fromJson(account);
-            _account.setBalance();
-            nt[_account.address] = _account;
-            print(_account.utxos);
-          });
-          yield LoggedInState(
-              masterNode: masterNode,
-              externalAccounts: xt,
-              internalAccounts: nt);
+          ApiDatabase db =Locator.instance<ApiDatabase>();
+          DbWallet dbWallet = await db.loadWallet();
+
+          yield LoggedInState(wallet: dbWallet);
+
         } on AuthException catch (e) {
           yield LoginErrorState(exception: e);
         }
