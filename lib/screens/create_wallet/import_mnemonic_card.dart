@@ -23,7 +23,6 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
   int numLines = 0;
 
   Widget _buildConfirmField() {
-    final theme = Theme.of(context);
     return SizedBox(
       child: Padding(
         padding: EdgeInsets.all(3),
@@ -103,7 +102,6 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
           var tmp = validateMnemonic(mnemonic);
           return tmp;
         } catch (e) {
-          print(e);
           return false;
         }
       }
@@ -150,7 +148,6 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
           child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
                   height: deviceSize.height * 0.25,

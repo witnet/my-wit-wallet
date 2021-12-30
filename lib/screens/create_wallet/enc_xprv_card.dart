@@ -2,8 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:witnet/crypto.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
@@ -62,7 +60,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
               controller: textController,
               onChanged: (String e) {
                 setState(() {
-                  print(e);
                   xprv = textController.value.text;
                   numLines = '\n'.allMatches(e).length + 1;
                 });
@@ -99,9 +96,9 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   bool validBech(String xprvString) {
     try {
       Bech32 bech = bech32.decode(xprvString);
+      assert(bech.hrp.isNotEmpty);
       return true;
     } catch (e) {
-      print(e);
       return false;
     }
   }
@@ -109,6 +106,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   bool validXprv(String xprvString) {
     try {
       Xprv _xprv = Xprv.fromXprv(xprvString);
+      assert(_xprv.address.address.isNotEmpty);
     } catch (e) {
       return false;
     }
@@ -202,7 +200,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   Widget verifyXprvButton() {
     return BlocBuilder<BlocCreateWallet, CreateWalletState>(
         builder: (context, state) {
-      final theme = Theme.of(context);
       if (state is EnterXprvState) {
         return ElevatedButton(
           onPressed: _password.isEmpty
@@ -213,9 +210,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
                   BlocProvider.of<BlocCreateWallet>(context)
                       .add(VerifyEncryptedXprvEvent(type, xprv, _password));
                   try {
-                    print('Valid bech? ${validBech(xprv)}');
-                    print('Valid xprv? ${validXprv(xprv)}');
-                    Xprv _xprv = Xprv.fromXprv(xprv);
                     setState(() {
                       _xprvVerified = validXprv(xprv);
                     });

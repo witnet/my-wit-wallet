@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
@@ -140,7 +139,6 @@ class CreateOrRecoverCardState extends State<CreateOrRecoverCard>
     size = deviceSize;
     final cardWidth = min(deviceSize.width * 0.95, 360.0);
     const cardPadding = 10.0;
-    final textFieldWidth = cardWidth - cardPadding * 2;
     final theme = Theme.of(context);
     return Form(
       key: _formKey,
@@ -199,7 +197,6 @@ class CreateOrRecoverCardState extends State<CreateOrRecoverCard>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return FittedBox(child: _formLogin());
   }
 }

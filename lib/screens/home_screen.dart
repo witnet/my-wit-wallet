@@ -1,10 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/bloc/auth/auth_bloc.dart';
 import 'package:witnet_wallet/screens/screen_transitions/fade_transition.dart';
-import 'package:witnet_wallet/theme/colors.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'login/login_screen.dart';

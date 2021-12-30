@@ -18,7 +18,6 @@ import 'package:witnet_wallet/widgets/svg_widget.dart';
 import '../../constants.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/util/witnet/wallet/wallet.dart';
 
 class BuildWalletCard extends StatefulWidget {
   BuildWalletCard({Key? key}) : super(key: key);
@@ -29,8 +28,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
     with TickerProviderStateMixin {
   late AnimationController _loadingController;
   late AnimationController _balanceController;
-  late AnimationController _transactionCountController;
-  late AnimationController _addressCountController;
   int balance = 0;
   int currentAddressCount = 0;
   int currentTransactionCount = 0;
@@ -62,7 +59,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
     _nameController = TextEditingController();
     _descController = TextEditingController();
     ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
-    // acw.printDebug();
+    acw.printDebug();
 
     //BlocProvider.of<BlocCrypto>(context).add(CryptoInitializeWalletEvent(
     //    walletDescription: acw.walletDescription!,
@@ -82,14 +79,14 @@ class BuildWalletCardState extends State<BuildWalletCard>
 
   AppBar _buildAppBar(ThemeData theme) {
     final menuBtn = IconButton(
-      color: theme.accentColor,
+      color: theme.primaryColor,
       icon: const Icon(FontAwesomeIcons.bars),
       onPressed: null,
     );
 
     final logoutButton = IconButton(
       icon: const Icon(FontAwesomeIcons.userLock),
-      color: theme.accentColor,
+      color: theme.primaryColor,
       onPressed: null,
     );
 
@@ -135,8 +132,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
       title: title,
       backgroundColor: theme.cardColor,
       elevation: 0,
-      textTheme: theme.accentTextTheme,
-      iconTheme: theme.accentIconTheme,
+      iconTheme: theme.iconTheme,
     );
   }
 
@@ -147,7 +143,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
       required int balanceNanoWit,
       required int transactionCount,
       required String message}) {
-    final accentColor = theme.accentColor;
+    final accentColor = theme.primaryColor;
     final bgMat = createMaterialColor(accentColor);
     final linearGradient = LinearGradient(colors: [
       bgMat.shade700,
@@ -205,7 +201,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
               )),
           Expanded(
             flex: 1,
-            child: AutoSizeText('Transactions: ${transactionCount}',
+            child: AutoSizeText('Transactions: $transactionCount',
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 minFontSize: 9,
@@ -222,7 +218,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
         children: [
           Expanded(
             flex: 1,
-            child: AutoSizeText('Current Address: ${message}',
+            child: AutoSizeText('Current Address: $message',
                 maxLines: 2,
                 minFontSize: 14,
                 style: theme.textTheme.bodyText1!.copyWith(
@@ -240,8 +236,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
   Widget buildWallet() {
     return BlocBuilder<BlocCrypto, CryptoState>(
       buildWhen: (previousState, state) {
-        print(previousState);
-        print(state);
         if (previousState is CryptoLoadedWalletState) {
           BlocProvider.of<BlocCreateWallet>(context)
               .add(ResetEvent(WalletType.newWallet));
@@ -267,7 +261,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
       },
       builder: (context, state) {
         final theme = Theme.of(context);
-        print(state.runtimeType);
         if (state is CryptoInitializingWalletState) {
           return Column(
             children: [
@@ -309,7 +302,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
               keyData: acw.seedData!,
               seedSource: acw.seedSource!,
               password: acw.password!));
-          acw.printDebug();
+          //acw.printDebug();
           return Column(
             children: [
               SizedBox(
@@ -333,7 +326,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
   }
 
   Widget buildBalance(ThemeData theme) {
-    final accentColor = theme.accentColor;
+    final accentColor = theme.primaryColor;
     final bgMat = createMaterialColor(accentColor);
     final linearGradient = LinearGradient(colors: [
       bgMat.shade700,
@@ -367,9 +360,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
       if (state is LoggedInState) {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => DashboardScreen()));
-        BlocProvider.of<BlocDashboard>(context).add(DashboardLoadEvent(
-            externalAccounts: state.externalAccounts,
-            internalAccounts: state.internalAccounts));
+        BlocProvider.of<BlocDashboard>(context).add(DashboardLoadEvent(dbWallet: state.wallet));
       }
       return true;
     }, builder: (context, state) {
@@ -382,8 +373,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
     final deviceSize = MediaQuery.of(context).size;
 
     final cardWidth = min(deviceSize.width * 0.95, 360.0);
-    const cardPadding = 10.0;
-    final textFieldWidth = cardWidth - cardPadding * 2;
     final theme = Theme.of(context);
 
     return Column(

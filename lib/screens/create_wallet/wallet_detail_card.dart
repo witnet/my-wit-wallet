@@ -85,6 +85,11 @@ class WalletDetailCardState extends State<WalletDetailCard>
             decoration: InputDecoration(labelText: 'Wallet Description'),
             controller: _descController,
             onSubmitted: (String value) => null,
+            onChanged: (String value) {
+              setState(() {
+                _walletDescription = value;
+              });
+            },
           )
         ],
       ),

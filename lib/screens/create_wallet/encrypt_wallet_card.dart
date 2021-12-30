@@ -36,7 +36,6 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
 
   String _password = '';
   bool _passwordsMatch = false;
-  String _walletDescription = '';
   bool useStrongPassword = false;
   void setPassword(String password) {
     setState(() {

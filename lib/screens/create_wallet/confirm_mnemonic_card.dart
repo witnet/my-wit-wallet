@@ -6,6 +6,7 @@ import 'package:witnet/crypto.dart';
 import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/theme/wallet_theme.dart';
 
 class ConfirmMnemonicCard extends StatefulWidget {
   ConfirmMnemonicCard({Key? key}) : super(key: key);
@@ -57,7 +58,6 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
               controller: textController,
               onChanged: (String e) {
                 setState(() {
-                  print(e);
                   mnemonic = textController.value.text;
                   numLines = '\n'.allMatches(e).length + 1;
                 });
@@ -129,50 +129,27 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
     final deviceSize = MediaQuery.of(context).size;
 
     final cardWidth = min(deviceSize.width * 0.95, 360.0);
-    const cardPadding = 10.0;
-    final textFieldWidth = cardWidth - cardPadding * 2;
     final theme = Theme.of(context);
-    return FittedBox(
-      child: Card(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              height: 50,
-              width: cardWidth,
-              alignment: Alignment.topCenter,
-              decoration: BoxDecoration(
-                  color: theme.primaryColor,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(5.0),
-                      topRight: Radius.circular(5.0))),
-              child: Padding(
-                padding: EdgeInsets.only(top: 1),
-                child: Text(
-                  'Confirm Word Phrase',
-                  style: theme.textTheme.headline4,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          width: cardWidth,
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  height: deviceSize.height * 0.25,
+                  width: deviceSize.width,
+                  child: witnetLogo(theme),
                 ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(
-                left: cardPadding,
-                right: cardPadding,
-                top: cardPadding + 10,
-              ),
-              width: cardWidth,
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
                     _buildConfirmField(),
                     _buildButtonRow(),
                   ]),
             ),
           ],
-        ),
-      ),
-    );
+        );
   }
 }

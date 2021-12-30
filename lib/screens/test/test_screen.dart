@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:witnet_wallet/screens/test/test_card.dart';
 
 class TestScreen extends StatefulWidget {

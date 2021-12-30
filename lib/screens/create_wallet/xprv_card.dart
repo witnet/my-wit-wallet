@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
@@ -41,7 +40,6 @@ class EnterXprvCardState extends State<EnterXprvCard>
               controller: textController,
               onChanged: (String e) {
                 setState(() {
-                  print(e);
                   xprv = textController.value.text;
                   numLines = '\n'.allMatches(e).length + 1;
                 });
@@ -73,19 +71,12 @@ class EnterXprvCardState extends State<EnterXprvCard>
     BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent(type));
   }
 
-  bool validBech(String xprvString) {
-    try {
-      Bech32 bech = bech32.decode(xprvString);
-      return true;
-    } catch (e) {
-      print(e);
-      return false;
-    }
-  }
+
 
   bool validXprv(String xprvString) {
     try {
       Xprv _xprv = Xprv.fromXprv(xprvString);
+      assert(_xprv.address.address.isNotEmpty);
     } catch (e) {
       return false;
     }
@@ -132,9 +123,6 @@ class EnterXprvCardState extends State<EnterXprvCard>
         BlocProvider.of<BlocCreateWallet>(context)
             .add(VerifyXprvEvent(type, xprv));
         try {
-          print('Valid bech? ${validBech(xprv)}');
-          print('Valid xprv? ${validXprv(xprv)}');
-          Xprv _xprv = Xprv.fromXprv(xprv);
           setState(() {
             _xprvVerified = validXprv(xprv);
           });
@@ -208,7 +196,6 @@ class EnterXprvCardState extends State<EnterXprvCard>
 
     final cardWidth = min(deviceSize.width * 0.95, 360.0);
     const cardPadding = 10.0;
-    final textFieldWidth = cardWidth - cardPadding * 2;
     final theme = Theme.of(context);
     return FittedBox(
       child: Card(

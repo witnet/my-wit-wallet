@@ -1,23 +1,20 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:witnet/explorer.dart';
-import 'package:witnet/schema.dart';
-import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/bloc/auth/auth_bloc.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_status_bloc.dart';
 import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
+import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
-import 'package:witnet_wallet/widgets/animated_numeric_text.dart';
-import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/fade_in.dart';
 import 'package:witnet_wallet/widgets/round_button.dart';
 import 'package:witnet_wallet/widgets/svg_widget.dart';
-import 'package:witnet_wallet/widgets/vtt_list.dart';
-import 'package:witnet_wallet/widgets/witnet/transactions/transaction_history.dart';
+import 'package:witnet_wallet/widgets/witnet/balance_display.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/create_vtt_dialog.dart';
 import 'package:witnet_wallet/widgets/witnet/wallet/receive_dialog.dart';
 import 'package:witnet_wallet/widgets/witnet/wallet/wallet_settings/wallet_settings_dialog.dart';
@@ -27,7 +24,10 @@ import '../screen_transitions/fade_transition.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import 'api_dashboard.dart';
 import 'dashboard_bloc.dart';
+
+const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -38,10 +38,9 @@ class DashboardScreenState extends State<DashboardScreen>
     with TickerProviderStateMixin {
   Map<String, Account> externalAccounts = {};
   Map<String, Account> internalAccounts = {};
-  static const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
+
+  late DbWallet? dbWallet;
   late AnimationController _loadingController;
-  late AnimationController _headerController;
-  late Animation<double> _headerScaleAnimation;
 
   @override
   void initState() {
@@ -50,18 +49,9 @@ class DashboardScreenState extends State<DashboardScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-    _headerController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    );
-
-    _headerScaleAnimation =
-        Tween<double>(begin: .6, end: 1).animate(CurvedAnimation(
-      parent: _loadingController,
-      curve: headerAniInterval,
-    ));
-
-    //BlocProvider.of<BlocDashboard>(context).add(DashboardInitEvent(externalAccounts: {}, internalAccounts: {}));
+    //BlocStatusVtt blocStatusVtt = BlocStatusVtt(UnknownHashState());
+    //blocStatusVtt.add(CheckStatusEvent(transactionHash: 'a90a59d47f8b3a9c696e67b5c7591ebe244cd24421e9c0f24def1f9d5763051b'));
+    // BlocProvider.of<BlocDashboard>(context).add(DashboardInitEvent(externalAccounts: {}, internalAccounts: {}));
   }
 
   Future<bool> _goToSettings(BuildContext context) {
@@ -74,16 +64,17 @@ class DashboardScreenState extends State<DashboardScreen>
 
   AppBar _buildAppBar(ThemeData theme) {
     final menuBtn = IconButton(
-      color: theme.accentColor,
+      color: theme.primaryColor,
       icon: const Icon(FontAwesomeIcons.bars),
       onPressed: () => _goToSettings(context),
     );
 
     final logoutButton = IconButton(
       icon: const Icon(FontAwesomeIcons.userLock),
-      color: theme.accentColor,
+      color: theme.primaryColor,
       onPressed: () {
         BlocProvider.of<BlocDashboard>(context).add(DashboardResetEvent());
+        BlocProvider.of<BlocCrypto>(context).add(CryptoReadyEvent());
         BlocProvider.of<BlocAuth>(context).add(LogoutEvent());
       },
     );
@@ -130,71 +121,9 @@ class DashboardScreenState extends State<DashboardScreen>
       title: title,
       backgroundColor: theme.primaryColor.withOpacity(.1),
       elevation: 0,
-      textTheme: theme.accentTextTheme,
-      iconTheme: theme.accentIconTheme,
-    );
-  }
-
-  Widget _buildHeader(
-    ThemeData theme,
-  ) {
-    int balance = 0;
-    externalAccounts.forEach((key, value) {
-      print(value.jsonMap());
-      balance += value.balance;
-    });
-    internalAccounts.forEach((key, value) {
-      balance += value.balance;
-    });
-
-    print(balance);
-    final primaryColor = theme.primaryColor;
-    final accentColor = theme.accentColor;
-    final bgMat = createMaterialColor(accentColor);
-    final linearGradient = LinearGradient(colors: [
-      bgMat.shade700,
-      bgMat.shade600,
-      bgMat.shade500,
-      bgMat.shade400,
-    ]).createShader(Rect.fromLTWH(0.0, 0.0, 418.0, 78.0));
-
-    return ScaleTransition(
-      scale: _headerScaleAnimation,
-      child: FadeIn(
-        controller: _headerController,
-        curve: headerAniInterval,
-        fadeDirection: FadeDirection.bottomToTop,
-        offset: .5,
-        duration: Duration(milliseconds: 600),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                AnimatedNumericText(
-                  initialValue: 0,
-                  targetValue: nanoWitToWit(balance),
-                  curve: Interval(0, .5, curve: Curves.easeOut),
-                  controller: _headerController,
-                  style: theme.textTheme.headline5!.copyWith(
-                    foreground: Paint()..shader = linearGradient,
-                  ),
-                ),
-                SizedBox(width: 5),
-                Text(
-                  'wit',
-                  style: theme.textTheme.headline5!.copyWith(
-                    fontWeight: FontWeight.w300,
-                    color: accentColor.withOpacity(0.9),
-                  ),
-                ),
-              ],
-            ),
-            Text('Wallet Balance', style: theme.textTheme.caption),
-          ],
-        ),
-      ),
+      iconTheme: theme.iconTheme,
+      toolbarTextStyle: theme.textTheme.bodyText2,
+      titleTextStyle: theme.textTheme.headline6,
     );
   }
 
@@ -204,8 +133,7 @@ class DashboardScreenState extends State<DashboardScreen>
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return WalletSettingsDialog(
-          internalAccounts: internalAccounts,
-          externalAccounts: externalAccounts,
+          dbWallet: dbWallet!,
         );
       },
     );
@@ -216,10 +144,7 @@ class DashboardScreenState extends State<DashboardScreen>
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return CreateVTTDialogBox(
-          internalAccounts: internalAccounts,
-          externalAccounts: externalAccounts,
-        );
+        return CreateVTTDialogBox(dbWallet: dbWallet!,);
       },
     );
   }
@@ -229,23 +154,22 @@ class DashboardScreenState extends State<DashboardScreen>
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return ReceiveDialogBox(
-          internalAccounts: internalAccounts,
-          externalAccounts: externalAccounts,
-        );
+        return ReceiveDialogBox(dbWallet: dbWallet!,);
       },
     );
   }
 
   Widget _buildDashboardGrid(ThemeData themeData, DashboardState state) {
     final size = MediaQuery.of(context).size;
-    switch (state.runtimeType) {
-      case DashboardReadyState:
+
+    ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
+
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _buildHeader(themeData),
+
+            BalanceDisplay(_loadingController),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -278,18 +202,42 @@ class DashboardScreenState extends State<DashboardScreen>
             // TransactionHistory(themeData: themeData, externalAccounts: externalAccounts, internalAccounts: internalAccounts,),
           ],
         );
-      default:
-        return Container(
-          child: SizedBox(
-            height: 5,
-          ),
-        );
-    }
+
+
+
+  }
+
+  Widget explorerWatcher() {
+      final theme = Theme.of(context);
+    return BlocBuilder<BlocExplorer, ExplorerState>(builder: (context, state) {
+      ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
+      if (state is ReadyState) {
+
+        this.dbWallet = apiDashboard.dbWallet;
+
+        return Container();
+      } else if (state is DataLoadingState) {
+
+          dbWallet = apiDashboard.dbWallet;
+
+        return Container();
+      } else if (state is DataLoadedState) {
+
+          dbWallet = apiDashboard.dbWallet;
+
+        return Container();
+      } else {
+        return Container();
+      }
+    },
+    );
   }
 
   Widget buildSyncButton() {
-    return BlocBuilder<BlocExplorer, ExplorerState>(builder: (context, state) {
+    return BlocConsumer<BlocExplorer,ExplorerState>(builder: (context, state) {
       final theme = Theme.of(context);
+
+
       if (state is ReadyState) {
         return Column(
           children: <Widget>[
@@ -310,34 +258,61 @@ class DashboardScreenState extends State<DashboardScreen>
         );
       } else if (state is DataLoadedState) {
         return Column(
-          children: [
-            Text('default'),
+          children: <Widget>[
+            RoundButton(
+              size: 40,
+              icon: Icon(FontAwesomeIcons.sync),
+              onPressed: () {
+                BlocProvider.of<BlocExplorer>(context).add(SyncWalletEvent());
+              },
+              label: 'Sync',
+              loadingController: _loadingController,
+            ),
           ],
         );
       } else {
         return Column(
-          children: [
-            Text('default'),
+          children: <Widget>[
+            RoundButton(
+              size: 40,
+              icon: Icon(FontAwesomeIcons.sync),
+              onPressed: () {
+                BlocProvider.of<BlocExplorer>(context).add(SyncWalletEvent());
+              },
+              label: 'Sync',
+              loadingController: _loadingController,
+            ),
           ],
         );
       }
+    }, listener: (context, state) {
+      if (state is ReadyState){
+        ApiDashboard apiDashboard = Locator.instance.get<ApiDashboard>();
+       setState(() {
+         dbWallet = apiDashboard.dbWallet;
+       });
+      }
+
     });
   }
 
-  _dashboardBuilder() {
+  Widget _dashboardBuilder() {
     final theme = Theme.of(context);
-    final size = MediaQuery.of(context).size;
     return BlocBuilder<BlocDashboard, DashboardState>(
         builder: (BuildContext context, DashboardState dashboardState) {
       switch (dashboardState.runtimeType) {
         case DashboardLoadingState:
-          return Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[]);
+          return _buildDashboardGrid(theme, dashboardState);
         case DashboardSynchronizedState:
+          dbWallet = dashboardState.dbWallet;
+          return _buildDashboardGrid(theme, dashboardState);
         case DashboardSynchronizingState:
         case DashboardReadyState:
+          dbWallet = dashboardState.dbWallet;
+          if(dbWallet != null){
+
+          BlocProvider.of<BlocCreateVTT>(context).setDbWallet(dbWallet);
+          }
           return _buildDashboardGrid(theme, dashboardState);
         default:
           return SizedBox(
@@ -351,7 +326,6 @@ class DashboardScreenState extends State<DashboardScreen>
 
   Widget _authBuilder() {
     final theme = Theme.of(context);
-    final bgMat = createMaterialColor(theme.cardColor);
     return BlocBuilder<BlocAuth, AuthState>(
         buildWhen: (previousState, authState) {
       if (authState is LoggedOutState) {
@@ -359,84 +333,88 @@ class DashboardScreenState extends State<DashboardScreen>
       }
       return true;
     }, builder: (BuildContext context, AuthState authState) {
+          Widget _body;
       switch (authState.runtimeType) {
         case LoadingLogoutState:
-          return Scaffold(
-            appBar: _buildAppBar(theme),
-            body: Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: theme.primaryColor.withOpacity(.1),
-              child: Stack(
-                children: <Widget>[
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 10,
+          _body = Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: theme.primaryColor.withOpacity(.1),
+            child: Stack(
+              children: <Widget>[
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                      child: SpinKitWave(
+                        color: theme.primaryColor,
                       ),
-                      SizedBox(
-                        child: SpinKitWave(
-                          color: theme.primaryColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           );
+          break;
         case LoggedInState:
           authState as LoggedInState;
 
-          externalAccounts = authState.externalAccounts;
-          internalAccounts = authState.internalAccounts;
+          dbWallet = authState.wallet;
+          _body = Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: theme.primaryColor.withOpacity(.1),
+            child: Stack(
+              children: <Widget>[
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      child: _dashboardBuilder(),
+                      //_buildDashboardGrid(theme, authState),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        break;
+          default:
+          _body =  Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: theme.primaryColor.withOpacity(.1),
+            child: Stack(
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
 
-          return Scaffold(
-            appBar: _buildAppBar(theme),
-            body: Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: theme.primaryColor.withOpacity(.1),
-              child: Stack(
-                children: <Widget>[
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        child: _dashboardBuilder(),
-                        //_buildDashboardGrid(theme, authState),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        default:
-          return Scaffold(
-            appBar: _buildAppBar(theme),
-            body: Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: theme.primaryColor.withOpacity(.1),
-              child: Stack(
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      SizedBox(
-                        height: 10,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
       }
+
+      return Scaffold(
+        appBar: _buildAppBar(theme),
+        resizeToAvoidBottomInset: false,
+        body: new GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+          },
+          child: _body
+        ),
+      );
     });
   }
 
@@ -448,3 +426,4 @@ class DashboardScreenState extends State<DashboardScreen>
     );
   }
 }
+

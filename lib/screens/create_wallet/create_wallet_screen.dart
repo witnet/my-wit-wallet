@@ -36,7 +36,6 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
   _formCards() {
     return BlocBuilder<BlocCreateWallet, CreateWalletState>(
         builder: (context, state) {
-      final theme = Theme.of(context);
       switch (state.runtimeType) {
         case DisclaimerState:
           currentFormCard = DisclaimerCard();

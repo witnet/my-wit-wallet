@@ -1,7 +1,6 @@
 import 'dart:isolate';
 
 import 'package:bloc/bloc.dart';
-import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_isolate.dart';
 import 'package:witnet_wallet/shared/locator.dart';
@@ -150,10 +149,8 @@ class BlocCreateWallet extends Bloc<CreateWalletEvent, CreateWalletState> {
     try {
       WalletType type = Locator.instance<ApiCreateWallet>().walletType;
       if (event is NextCardEvent) {
-        print(event);
         switch (state.runtimeType) {
           case DisclaimerState:
-            print(type);
             switch (type) {
               case WalletType.newWallet:
                 yield GenerateMnemonicState(type);
@@ -232,7 +229,6 @@ class BlocCreateWallet extends Bloc<CreateWalletEvent, CreateWalletState> {
         yield LoadingState(type);
         String xprvStr = event.xprv;
 
-        Xprv _xprv;
         var errors = ['Invalid XPRV:'];
         if (xprvStr.isEmpty) errors.add('Field is blank');
         if (!xprvStr.startsWith('xprv1'))
@@ -259,7 +255,7 @@ class BlocCreateWallet extends Bloc<CreateWalletEvent, CreateWalletState> {
               event.type,
               event.xprv,
               wallet.masterXprv.address.address,
-              wallet.externalKeys[0]!.address.address);
+              wallet.externalKeys[0]!.address);
         } catch (e) {
           errors.add(e.runtimeType.toString());
           yield LoadingErrorState(event.type, errors);
@@ -295,7 +291,7 @@ class BlocCreateWallet extends Bloc<CreateWalletEvent, CreateWalletState> {
               event.type,
               wallet.masterXprv.toSlip32(),
               wallet.masterXprv.address.address,
-              wallet.externalKeys[0]!.address.address);
+              wallet.externalKeys[0]!.address);
           if (errors.length > 0) {
             yield LoadingErrorState(event.type, errors);
           }

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -17,7 +16,6 @@ import 'package:witnet_wallet/util/paddings.dart';
 import 'package:witnet_wallet/util/storage/path_provider_interface.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/button_login.dart';
-import 'package:witnet_wallet/widgets/card/card_header.dart';
 import 'package:witnet_wallet/widgets/input_login.dart';
 import 'package:witnet_wallet/widgets/wallet_list.dart';
 
@@ -175,7 +173,7 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
     }
   }
 
-  String? _validatorPassword(String value) {
+  String? validatorPassword(String value) {
     //final regExp = RegExp("^(?=.*[A-Z].*[A-Z])(?=.*[!@#\$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}\$");
     // regExp.hasMatch(value)
   }
@@ -185,8 +183,7 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => DashboardScreen()));
         BlocProvider.of<BlocDashboard>(context).add(DashboardLoadEvent(
-            externalAccounts: state.externalAccounts,
-            internalAccounts: state.internalAccounts));
+            dbWallet: state.wallet));
       }
       return true;
     }, builder: (context, state) {
@@ -195,7 +192,6 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
       final cardWidth = min(deviceSize.width, 360.0);
       const cardPadding = 10.0;
       final textFieldWidth = cardWidth - (cardPadding * 2);
-      final theme = Theme.of(context);
       return Form(
         key: _formKey,
         child: Column(
@@ -267,7 +263,6 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
               ),
             ],
           );
-          ;
         } else {
           return ButtonLogin(
             label: 'login',
@@ -392,8 +387,6 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return _formLogin();
   }
 }

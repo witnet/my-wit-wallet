@@ -1,10 +1,8 @@
 import 'dart:math';
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
-import 'package:witnet_wallet/widgets/card/card_header.dart';
 
 class DisclaimerCard extends StatefulWidget {
   DisclaimerCard({Key? key}) : super(key: key);
@@ -38,7 +36,7 @@ class DisclaimerCardState extends State<DisclaimerCard>
         }
       }
     });
-    _loadingController = AnimationController(
+    this._loadingController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1150),
       reverseDuration: Duration(milliseconds: 300),
@@ -195,8 +193,6 @@ class DisclaimerCardState extends State<DisclaimerCard>
     final deviceSize = MediaQuery.of(context).size;
 
     final cardWidth = min(deviceSize.width * 0.95, 360.0);
-    const cardPadding = 10.0;
-    final textFieldWidth = cardWidth - cardPadding * 2;
     final theme = Theme.of(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,

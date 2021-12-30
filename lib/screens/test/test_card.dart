@@ -1,11 +1,7 @@
-import 'dart:async';
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
-import 'package:witnet_wallet/bloc/cache/cache_bloc.dart' as cache;
-import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 
 class TestCard extends StatefulWidget {
   TestCard({Key? key}) : super(key: key);
@@ -42,8 +38,6 @@ class TestCardState extends State<TestCard> with TickerProviderStateMixin {
 
     final cardWidth = min(deviceSize.width * 0.95, 360.0);
     const cardPadding = 10.0;
-    final textFieldWidth = cardWidth - cardPadding * 2;
-    final theme = Theme.of(context);
     return FittedBox(
       child: Card(
         child: Column(

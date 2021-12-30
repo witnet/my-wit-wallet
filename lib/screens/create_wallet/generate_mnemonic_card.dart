@@ -7,7 +7,7 @@ import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
 import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/widgets/card/card_header.dart';
+import 'package:witnet_wallet/theme/wallet_theme.dart';
 import 'package:witnet_wallet/widgets/dashed_rect.dart';
 
 class GenerateMnemonicCard extends StatefulWidget {
@@ -21,11 +21,7 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
   String _language = 'English';
   int _radioWordCount = 12;
 
-  Future<void> _setText() async {
-    setState(() async* {
-      mnemonic = await _genMnemonic();
-    });
-  }
+
 
   void _setLanguage(String language) {
     setState(() {
@@ -40,8 +36,6 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
   }
 
   Future<String> _genMnemonic() async {
-    var lang = _language;
-    print(lang);
     return await Locator.instance
         .get<ApiCrypto>()
         .generateMnemonic(_radioWordCount, _language);
@@ -250,7 +244,6 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
-              print('snapshot data: ${snapshot.data}');
               mnemonic = snapshot.data as String;
               return DashedRect(
                 color: Colors.grey,
@@ -316,25 +309,21 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
     const cardPadding = 10.0;
     final textFieldWidth = cardWidth - cardPadding * 2;
     final theme = Theme.of(context);
-    return FittedBox(
-      child: Card(
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+        Container(
+        width: cardWidth,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            new CardHeader(
-                title: 'Secret Word Phrase', width: cardWidth, height: 50),
-            Container(
-              padding: EdgeInsets.only(
-                left: cardPadding,
-                right: cardPadding,
-                top: cardPadding + 10,
-              ),
-              width: cardWidth,
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
+        Container(
+        height: deviceSize.height * 0.25,
+          width: deviceSize.width,
+          child: witnetLogo(theme),
+        ),
+
                     _buildMnemonicBox(),
                     SizedBox(
                       height: 10,
@@ -344,8 +333,6 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
                   ]),
             ),
           ],
-        ),
-      ),
-    );
+        );
   }
 }
