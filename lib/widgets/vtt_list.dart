@@ -1,17 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/theme/colors.dart';
-import 'package:witnet_wallet/util/paddings.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/info_dialog_box/vtt_dialog_box.dart';
-import 'package:witnet_wallet/widgets/wallet_list.dart';
+
 
 String formatDate(int ts) {
   DateTime dt = DateTime.fromMillisecondsSinceEpoch(ts * 1000);
@@ -250,7 +247,6 @@ class VttListWidgetState extends State<VttListWidget> {
   }
 
   Widget _build(BuildContext context) {
-    final theme = Theme.of(context);
     return ListView.builder(
       itemCount: transactions.length,
       itemBuilder: (context, int index) {
@@ -269,7 +265,6 @@ class VttListWidgetState extends State<VttListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final deviceSize = MediaQuery.of(context).size;
     if (emptyList) {
       return SingleChildScrollView(

@@ -1,14 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet/witnet.dart';
-import 'package:witnet_wallet/bloc/create_vtt/create_vtt_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/value_input.dart';
 
 import '../value_transfer_output_container.dart';

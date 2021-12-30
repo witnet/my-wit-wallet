@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/bloc/auth/auth_bloc.dart';
-import 'package:witnet_wallet/screens/dashboard/dashboard_bloc.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 
 import '../../vtt_list.dart';

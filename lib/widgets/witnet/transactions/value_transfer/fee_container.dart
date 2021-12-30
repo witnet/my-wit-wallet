@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/bloc/create_vtt/create_vtt_bloc.dart';
 
 import '../../../auto_size_text.dart';
 
@@ -14,7 +11,6 @@ class FeeContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    final theme = Theme.of(context);
     double cardWidth;
     if (deviceSize.width > 400) {
       cardWidth = (400 * 0.7);

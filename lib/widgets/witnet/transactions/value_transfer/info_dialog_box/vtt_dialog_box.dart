@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:witnet/explorer.dart';
-import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/util/paddings.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
@@ -247,7 +246,7 @@ class VttDialogBoxState extends State<VTTDialogBox>
               Expanded(
                 flex: 5,
                 child: AutoSizeText(
-                  vti.blockHash,
+                  vti.blockHash!,
                   maxLines: 1,
                   minFontSize: 9,
                 ),
