@@ -2,6 +2,7 @@ import 'dart:isolate';
 
 import 'package:witnet_wallet/bloc/database/database_isolate.dart';
 import 'package:witnet_wallet/util/storage/database/database_service.dart';
+import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/util/storage/path_provider_interface.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/util/witnet/wallet/wallet.dart';
@@ -28,7 +29,7 @@ class ApiDatabase {
       PathProviderInterface interface = PathProviderInterface();
       await interface.init();
       path = interface.getWalletPath(name);
-      bool databaseExists = await interface.fileExists(path);
+
       DatabaseIsolate databaseIsolate = Locator.instance.get<DatabaseIsolate>();
       if (!databaseIsolate.initialized) await databaseIsolate.init();
       ReceivePort response = ReceivePort();
@@ -70,6 +71,7 @@ class ApiDatabase {
           params: {'path': path, 'password': password},
           port: resp.sendPort);
       var respValue = await resp.first.then((value) => value);
+      assert(respValue != null);
       return true;
     } on DBException {
       return false;
@@ -122,7 +124,7 @@ class ApiDatabase {
       if (value == resp) {
         throw DatabaseException(code: -1, message: 'Record does not exist.');
       }
-    } on DBException catch (e) {
+    } on DBException {
       rethrow;
     }
   }
@@ -143,20 +145,57 @@ class ApiDatabase {
     return false;
   }
 
-  Future<Wallet> parseWallet() async {
-    String walletName = '';
-    String walletDescription = '';
-    DatabaseIsolate databaseIsolate = Locator.instance.get<DatabaseIsolate>();
-    ReceivePort response = ReceivePort();
-    Wallet wallet = Wallet(walletName, walletDescription);
-    //wallet.masterXprv =
-    var params = [
-      {'key': 'xprv', 'value': String},
-      {'key': 'external_key', 'type': Map},
-    ];
-    var vals = await readBatchRecords(values: params);
-    return wallet;
-  }
 
   Future<void> syncAccount(Account account) async {}
+
+  Future<void> saveDbWallet(DbWallet dbWallet) async{
+    await writeDatabaseRecord(key: 'xprv', value: dbWallet.xprv);
+    await writeDatabaseRecord(key: 'name', value: dbWallet.walletName);
+    await writeDatabaseRecord(key: 'external_xpub', value: dbWallet.externalXpub);
+    await writeDatabaseRecord(key: 'internal_xpub', value: dbWallet.internalXpub);
+    await writeDatabaseRecord(key: 'description', value: dbWallet.walletDescription);
+    await writeDatabaseRecord(key: 'external_accounts', value: dbWallet.accountMap(keyType: KeyType.external));
+    await writeDatabaseRecord(key: 'internal_accounts', value: dbWallet.accountMap(keyType: KeyType.internal));
+    await writeDatabaseRecord(key: 'last_synced', value: dbWallet.lastSynced);
+
+  }
+  Future<DbWallet> loadWallet() async{
+    String xprv = await readDatabaseRecord(key: 'xprv', type: String);
+    String externalXpub = await readDatabaseRecord(key: 'external_xpub', type: String);
+    String internalXpub = await readDatabaseRecord(key: 'internal_xpub', type: String);
+    String description = await readDatabaseRecord(key: 'description', type: String);
+    String name = await readDatabaseRecord(key: 'name', type: String);
+    Map<String, dynamic> externalAccounts = await readDatabaseRecord(key: 'external_accounts', type: Map);
+    Map<String, dynamic> internalAccounts = await readDatabaseRecord(key: 'internal_accounts', type: Map);
+
+    Map<int, Account> xt = {};
+    externalAccounts.forEach((address, account) {
+      account as Map<String, Object?>;
+      Account _account = Account.fromJson(account);
+      _account.setBalance();
+      xt[int.parse(_account.path.split('/').last)] = _account;
+    });
+
+    // parse into structure
+    Map<int, Account> nt = {};
+    internalAccounts.forEach((address, account) {
+      account as Map<String, Object?>;
+      Account _account = Account.fromJson(account);
+      _account.setBalance();
+      nt[int.parse(_account.path.split('/').last)] = _account;
+
+    });
+    return DbWallet(
+      xprv: xprv,
+      walletName: name,
+      externalAccounts: xt,
+      internalAccounts: nt,
+      externalXpub: externalXpub,
+      internalXpub: internalXpub,
+      walletDescription: description,
+      lastSynced: -1,
+    );
+  }
+
+
 }
