@@ -1,6 +1,5 @@
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'animated_text.dart';
 import 'ring.dart';
 
@@ -46,7 +45,6 @@ class AnimatedDropDownState extends State<AnimatedDropDown>
   bool _hover = false;
   double _width = 120.0;
   static const _height = 40.0;
-  static const _loadingCircleRadius = _height / 2;
   static const _loadingCircleThickness = 4.0;
 
   @override
@@ -71,11 +69,7 @@ class AnimatedDropDownState extends State<AnimatedDropDown>
   }
 
   void _updateColorAnimation() {
-    final theme = Theme.of(context);
-    final buttonTheme = theme.floatingActionButtonTheme;
 
-    _color = (widget.color ?? buttonTheme.backgroundColor)!;
-    _loadingColor = widget.loadingColor ?? theme.accentColor;
 
     _colorAnimation = ColorTween(
       begin: _color,
@@ -129,6 +123,8 @@ class AnimatedDropDownState extends State<AnimatedDropDown>
       child: DropdownButton(
         items: dropDownItems,
         style: theme.textTheme.button,
+        onChanged: (dynamic newValue) {setState(() {
+        });  },
       ),
     );
   }

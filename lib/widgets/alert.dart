@@ -13,7 +13,7 @@ class Alert extends AlertDialog {
       title: Text(titleText),
       content: Text(contentText),
       actions: <Widget>[
-        RaisedButton(
+        ElevatedButton(
           onPressed: () => Navigator.pop(context),
           child: Text('Ok'),
         )
