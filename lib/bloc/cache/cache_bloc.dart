@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:witnet/explorer.dart';
+import 'package:witnet/explorer.dart' show ValueTransferInfo;
 import 'package:witnet_wallet/util/storage/cache/file_manager_interface.dart';
 
 abstract class CacheEvent {}
@@ -50,7 +50,7 @@ class BlocCache extends Bloc<CacheEvent, CacheState> {
           yield CacheLoadedState();
           break;
         case SaveVttCacheEvent:
-
+          // TODO:
         case AddBatchVttEvent:
           event as AddBatchVttEvent;
           event.transactions.forEach((vti) async {
@@ -59,7 +59,6 @@ class BlocCache extends Bloc<CacheEvent, CacheState> {
           await cache.updateCache();
       }
     } catch (e) {
-      print(e.toString());
       yield CacheErrorState(exception: e);
     }
   }
