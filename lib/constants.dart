@@ -22,3 +22,10 @@ const kMinLogoHeight = 50.0; // hide logo if less than this
 const kMaxLogoHeight = 125.0;
 
 /// Wallet Settings
+
+Map<String, String> WIT_UNIT = {
+  'WIT': 'Wit',
+  'MILLI': 'milliWit',
+  'MICRO': 'microWit',
+  'NANO': 'nanoWit',
+};
