@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
 
 import 'package:flutter/material.dart';
 
