@@ -5,13 +5,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
-import 'package:witnet_wallet/bloc/create_vtt/create_vtt_bloc.dart';
-import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/value_input.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
 
 import '../../../../../auto_size_text.dart';
 import '../../value_transfer_output_container.dart';
+import '../advanced_settings_panel.dart';
 import '../recipient_address_input.dart';
-import '../vtt_stepper.dart';
+
 
 class RecipientStep extends StatefulWidget {
   final VoidCallback? onStepCancel;
@@ -61,7 +61,7 @@ class RecipientStepState extends State<RecipientStep>
     if (address.length == 42) {
       try {
         Address _address = Address.fromAddress(address);
-
+        assert (_address.address.isNotEmpty);
         return true;
       } catch (e) {
         return false;
@@ -257,7 +257,7 @@ class RecipientStepState extends State<RecipientStep>
     );
   }
 
-  Widget _buildTimeLockInput() {
+  Widget buildTimeLockInput() {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -325,13 +325,6 @@ class RecipientStepState extends State<RecipientStep>
   Widget build(BuildContext context) {
     return BlocBuilder<BlocCreateVTT, CreateVTTState>(
       builder: (context, state) {
-        final deviceSize = MediaQuery.of(context).size;
-        final theme = Theme.of(context);
-        double cardWidth;
-        if (deviceSize.width > 400) {
-          cardWidth = (400 * 0.7);
-        } else
-          cardWidth = deviceSize.width * 0.7;
         if (state is BuildingVTTState || state is InitialState) {
           return Container(
             alignment: Alignment.topCenter,
@@ -352,7 +345,7 @@ class RecipientStepState extends State<RecipientStep>
                 SizedBox(
                   height: 5,
                 ),
-                if (validAddress(recipientAddress)) _buildTimeLockInput(),
+                //if (validAddress(recipientAddress)) _buildTimeLockInput(),
                 SizedBox(
                   height: 5,
                 ),
@@ -364,10 +357,12 @@ class RecipientStepState extends State<RecipientStep>
                       TextButton(
                         onPressed: () {
                           BlocProvider.of<BlocCreateVTT>(context).add(
-                              AddValueTransferOutputEvent(
-                                  pkh: recipientAddress,
-                                  value: witToNanoWit(witValue),
-                                  timeLock: timeLock));
+                              AddValueTransferOutputEvent(output: ValueTransferOutput.fromJson({
+                                'pkh': recipientAddress,
+                                'value': witToNanoWit(witValue),
+                                'time_lock': timeLock
+                              })
+                                  ));
                           //widget.onStepContinue!.call();
                           setState(() {
                             _addressController.text = '';
@@ -382,10 +377,14 @@ class RecipientStepState extends State<RecipientStep>
                       TextButton(
                         onPressed: () {
                           BlocProvider.of<BlocCreateVTT>(context).add(
-                              AddValueTransferOutputEvent(
-                                  pkh: recipientAddress,
-                                  value: witToNanoWit(witValue),
-                                  timeLock: timeLock));
+                            AddValueTransferOutputEvent(
+                              output: ValueTransferOutput.fromJson({
+                              'pkh': recipientAddress,
+                              'value': witToNanoWit(witValue),
+                              'time_lock': timeLock,
+                              }),
+                            ),
+                          );
                           widget.onStepContinue!.call();
                           setState(() {
                             _addressController.text = '';
@@ -413,7 +412,7 @@ class RecipientStepState extends State<RecipientStep>
               SizedBox(
                 height: 5,
               ),
-              if (validAddress(recipientAddress)) _buildTimeLockInput(),
+             //if (validAddress(recipientAddress)) _buildTimeLockInput(),
               SizedBox(
                 height: 5,
               ),

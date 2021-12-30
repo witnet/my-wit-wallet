@@ -1,28 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
-import 'package:witnet_wallet/bloc/create_vtt/create_vtt_bloc.dart';
-import 'package:witnet_wallet/util/witnet/wallet/account.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
+import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/03_sign_send_dialog.dart';
-import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder_type_chip.dart';
 
 import '../../../../../auto_size_text.dart';
-import '../../../../../round_button.dart';
-import '../../../fee_type_selector_chip.dart';
 import '../../fee_container.dart';
 import '../../input_container.dart';
 import '../../value_transfer_output_container.dart';
-import '../vtt_stepper.dart';
 
 class ReviewStep extends StatefulWidget {
-  ReviewStep({
-    required this.externalAccounts,
-    required this.internalAccounts,
-  });
-
-  final Map<String, Account> externalAccounts;
-  final Map<String, Account> internalAccounts;
+  ReviewStep();
 
   @override
   State<StatefulWidget> createState() => ReviewStepState();
@@ -30,8 +19,6 @@ class ReviewStep extends StatefulWidget {
 
 class ReviewStepState extends State<ReviewStep>
     with SingleTickerProviderStateMixin {
-  late UtxoPool utxoPool;
-  Map<String, List<Utxo>> allUtxos = {};
   late AnimationController _loadingController;
   @override
   void initState() {
@@ -40,13 +27,7 @@ class ReviewStepState extends State<ReviewStep>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-    widget.externalAccounts.forEach((key, account) {
-      allUtxos[key] = account.utxos;
-    });
 
-    widget.internalAccounts.forEach((key, account) {
-      allUtxos[key] = account.utxos;
-    });
     _loadingController.forward();
   }
 
@@ -58,17 +39,6 @@ class ReviewStepState extends State<ReviewStep>
 
   Future<void> _showSignAndSendDialog(
       VTTransactionBody vtTransactionBody) async {
-    final deviceSize = MediaQuery.of(context).size;
-    final theme = Theme.of(context);
-    final List<String> localAddresses = allUtxos.keys.toList();
-
-    Map<String, int> signers = {};
-
-    double cardWidth;
-    if (deviceSize.width > 400) {
-      cardWidth = (400 * 0.7);
-    } else
-      cardWidth = deviceSize.width * 0.7;
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -82,14 +52,6 @@ class ReviewStepState extends State<ReviewStep>
 
   Widget contentBox(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    final theme = Theme.of(context);
-    final List<String> localAddresses = allUtxos.keys.toList();
-
-    double cardWidth;
-    if (deviceSize.width > 400) {
-      cardWidth = (400 * 0.7);
-    } else
-      cardWidth = deviceSize.width * 0.7;
     return Container(
       width: deviceSize.width,
       child: Column(
@@ -144,10 +106,10 @@ class ReviewStepState extends State<ReviewStep>
   //////////////////////////////////////////////////////////////////////////////
   Widget buildInputCards(BuildContext context, List<Input> inputs) {
     List<InputUtxo> _inputs = [];
-
+    DbWallet dbWallet = BlocProvider.of<BlocCreateVTT>(context).dbWallet;
     List<Widget> _cards = [];
     inputs.forEach((input) {
-      widget.externalAccounts.forEach((key, value) {
+      dbWallet.externalAccounts.forEach((index, value) {
         value.utxos.forEach((element) {
           if (input.toString() == element.toInput().toString()) {
             _inputs.add(InputUtxo(
@@ -158,7 +120,7 @@ class ReviewStepState extends State<ReviewStep>
           }
         });
       });
-      widget.internalAccounts.forEach((key, value) {
+      dbWallet.internalAccounts.forEach((index, value) {
         value.utxos.forEach((element) {
           if (input.toString() == element.toInput().toString()) {
             _inputs.add(InputUtxo(
@@ -333,49 +295,9 @@ class ReviewStepState extends State<ReviewStep>
 
   //////////////////////////////////////////////////////////////////////////////
   Widget buildFeeCard(
-    BuildContext context,
-    List<Input> inputs,
-    List<ValueTransferOutput> outputs,
-  ) {
-    int inputValue = 0;
-
-    List<InputUtxo> _inputs = [];
-
-    inputs.forEach((input) {
-      widget.externalAccounts.forEach((key, value) {
-        value.utxos.forEach((element) {
-          if (input.toString() == element.toInput().toString()) {
-            _inputs.add(InputUtxo(
-                address: value.address,
-                utxo: element,
-                value: element.value,
-                path: value.path));
-          }
-        });
-      });
-      widget.internalAccounts.forEach((key, value) {
-        value.utxos.forEach((element) {
-          if (input.toString() == element.toInput().toString()) {
-            _inputs.add(InputUtxo(
-                address: value.address,
-                utxo: element,
-                value: element.value,
-                path: value.path));
-          }
-        });
-      });
-    });
-
-    _inputs.forEach((element) {
-      inputValue += element.value;
-    });
-    int outputValue = 0;
-    outputs.forEach((element) {
-      outputValue += element.value;
-    });
-    int feeValue = inputValue - outputValue;
-
-    return FeeContainer(feeValue: feeValue);
+    BuildContext context) {
+    int fee = BlocProvider.of<BlocCreateVTT>(context).feeNanoWit;
+    return FeeContainer(feeValue: fee);
   }
 
   Widget feeCard() {
@@ -396,7 +318,7 @@ class ReviewStepState extends State<ReviewStep>
             children: [
               Row(
                 children: [
-                  buildFeeCard(context, state.inputs, state.outputs),
+                  buildFeeCard(context),
                 ],
               )
             ],

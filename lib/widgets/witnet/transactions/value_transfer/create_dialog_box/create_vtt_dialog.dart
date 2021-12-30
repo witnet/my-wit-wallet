@@ -1,33 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/data_structures.dart';
-import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/bloc/create_vtt/create_vtt_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
 import 'package:witnet_wallet/util/paddings.dart';
+import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
-import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/recipient_address_input.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_stepper.dart';
 
 import '../../../../round_button.dart';
-import '../../../../toggle_switch.dart';
 
 class CreateVTTDialogBox extends StatefulWidget {
   CreateVTTDialogBox({
-    required this.externalAccounts,
-    required this.internalAccounts,
+    required this.dbWallet,
   });
-  final Map<String, Account> externalAccounts;
-  final Map<String, Account> internalAccounts;
+  final DbWallet dbWallet;
 
   @override
   CreateVTTDialogBoxState createState() => CreateVTTDialogBoxState();
 }
 
-class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
-    with TickerProviderStateMixin {
+class CreateVTTDialogBoxState
+    extends State<CreateVTTDialogBox> with TickerProviderStateMixin {
   late TextEditingController _nameController;
   late TextEditingController _descController;
   late AnimationController _loadingController;
@@ -38,6 +32,7 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
   List<String> requiredSignerPaths = [];
   Map<String, List<Utxo>> selectedUtxos = {};
   List<String> recipients = [];
+
   @override
   void initState() {
     super.initState();
@@ -58,7 +53,7 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
       duration: const Duration(milliseconds: 500),
     );
 
-    widget.externalAccounts.forEach((key, value) {
+    widget.dbWallet.externalAccounts.forEach((index, value) {
       Account account = value;
       account.setBalance();
       availableFunds += account.balance;
@@ -81,7 +76,7 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
         (deviceSize.width < 600.0) ? deviceSize.width : 600;
     return SizedBox(
       child: Wrap(
-        children: [
+        children: <Widget>[
           Container(
             height: deviceSize.height,
             alignment: Alignment.topCenter,
@@ -96,9 +91,9 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
                 children: <Widget>[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
+                    children: <Widget>[
                       Expanded(
-                        flex: 5,
+                        flex: 9,
                         child: Padding(
                           padding: EdgeInsets.all(10),
                           child: AutoSizeText(
@@ -132,7 +127,8 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
                     ],
                   ),
                   _buildVttForm(theme, deviceSize),
-                ]),
+                ],
+            ),
           ),
         ],
       ),
@@ -148,10 +144,7 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
           padding: EdgeInsets.all(0),
           child: Column(
             children: [
-              VttStepper(
-                externalAccounts: widget.externalAccounts,
-                internalAccounts: widget.internalAccounts,
-              ),
+              VttStepper(),
             ],
           ),
         ),
@@ -165,10 +158,16 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
     return Dialog(
       insetPadding: EdgeInsets.all(0),
       elevation: 0,
-      child: Container(
+      child: new GestureDetector(
+      onTap: () {
+/*This method here will hide the soft keyboard.*/
+    FocusScope.of(context).requestFocus(new FocusNode());
+    },
+    child:Container(
           decoration: BoxDecoration(),
           height: deviceSize.height,
           child: contentBox(context)),
+    ),
     );
   }
 }

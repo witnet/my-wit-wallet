@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/data_structures.dart';
-import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/bloc/create_vtt/create_vtt_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
 
 import '../../auto_size_text.dart';
 
@@ -109,6 +108,9 @@ class FeeTypeSelectorChipState extends State<FeeTypeSelectorChip> {
                     if (_value == 0) {
                       BlocProvider.of<BlocCreateVTT>(context)
                           .add(UpdateFeeEvent(feeType: FeeType.Weighted));
+                    } else {
+                      BlocProvider.of<BlocCreateVTT>(context)
+                          .add(UpdateFeeEvent(feeType: FeeType.Absolute));
                     }
                   });
                 },

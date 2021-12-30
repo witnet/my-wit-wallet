@@ -1,79 +1,133 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
+import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/util/paddings.dart';
+import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
+
+import 'account_info_dialog.dart';
 
 class AccountCard extends StatelessWidget {
   final Account account;
   AccountCard({required this.account});
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
+
+
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
-                flex: 7,
-                child: Column(
-                  children: [
-                    AutoSizeText(
-                      account.address,
-                      maxLines: 1,
-                      minFontSize: 9,
-                    ),
-                    AutoSizeText(
-                      account.path,
-                      maxLines: 1,
-                      minFontSize: 8,
-                      maxFontSize: 10,
-                    ),
-                    AutoSizeText(
-                      '${account.valueTransfers.length.toString()} transactions',
-                      maxLines: 1,
-                      minFontSize: 8,
-                      maxFontSize: 10,
-                    ),
-                  ],
+                flex: 1,
+                child:Column(
+                  children: [AutoSizeText(
+                  account.path.split('/').last,
+                  maxLines: 1,
+                  minFontSize: 9,
+                )]
                 ),
               ),
+
+
               Expanded(
                 flex: 1,
-                child: Column(
-                  children: [],
-                ),
-              ),
+                child:
+                AutoSizeText(
+                  '${account.vttHashes.length} ',
+                  textAlign: TextAlign.right,
+                  maxLines: 1,
+                  minFontSize: 10,
+                  maxFontSize: 12,
+                ),),
+
+              Expanded(
+                flex: 2,
+                child:
+                AutoSizeText(
+                  '${nanoWitToWit(account.balance).toString()} WIT',
+                  textAlign: TextAlign.right,
+                  maxLines: 1,
+                  minFontSize: 10,
+                  maxFontSize: 12,
+                ),),
+              Expanded(
+                flex: 1,
+                child:
+                IconButton(icon: Icon(FontAwesomeIcons.infoCircle),color: theme.primaryColor, onPressed:() =>_showWalletSettingsDialog(context, account),),),
             ],
-          )
+          ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+
+          ],
+      ),
         ],
       ),
     );
   }
+  Future<void> _showWalletSettingsDialog(BuildContext context, Account account) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AccountInfoDialog(account: account,);
+      },
+    );
+  }
 }
 
-class WalletSettingsDialog extends StatelessWidget {
+class WalletSettingsDialog extends StatefulWidget {
   WalletSettingsDialog({
-    required this.internalAccounts,
-    required this.externalAccounts,
+    required this.dbWallet,
   });
 
-  final Map<String, dynamic> externalAccounts;
-  final Map<String, Account> internalAccounts;
+  final DbWallet dbWallet;
+
+
+
+
+  @override
+  WalletSettingsDialogState createState() => WalletSettingsDialogState();
+}
+
+class WalletSettingsDialogState extends State<WalletSettingsDialog>{
+
+
+  int? selectedAccountIndex;
+  bool showZeroBalanceAccounts = false;
+  Account? selectedAccount;
 
   Widget _buildWalletInfoContainer(
       BuildContext context, ThemeData theme, Size deviceSize) {
-    List<Widget> addressCards = [];
-    externalAccounts.forEach((key, value) {
-      addressCards.add(AccountCard(account: value));
+    List<Widget> externalAddressCards = [];
+    List<Widget> internalAddressCards = [];
+    widget.dbWallet.externalAccounts.forEach((index, account) {
+      if(showZeroBalanceAccounts && account.balance == 0){
+        externalAddressCards.add(AccountCard(account: account));
+      }
+      if(account.balance > 0)
+        externalAddressCards.add(AccountCard(account: account));
     });
+    widget.dbWallet.internalAccounts.forEach((index, account) {
+      if(showZeroBalanceAccounts && account.balance == 0){
+        internalAddressCards.add(AccountCard(account: account));
+      }
+      if(account.balance > 0)
+        internalAddressCards.add(AccountCard(account: account));
+    });
+
     return Container(
       height: deviceSize.height * 0.5,
       child: SingleChildScrollView(
@@ -83,13 +137,110 @@ class WalletSettingsDialog extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
+
               SizedBox(
                 height: 15,
               ),
-              Column(
+              Row(children: [
+                AutoSizeText('External Accounts:', minFontSize: 16,),
+
+              ],),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: addressCards,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child:Column(
+                        children: [
+                          AutoSizeText(
+                            'Index',
+                            maxLines: 1,
+                            minFontSize: 9,
+                          ),
+                        ]),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child:Column(
+                        children: [
+                          AutoSizeText(
+                            'Transactions',
+                            maxLines: 1,
+                            minFontSize: 9,
+                          ),
+                        ]),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child:Column(
+                        children: [
+                          AutoSizeText(
+                            'Balance',
+                            maxLines: 1,
+                            minFontSize: 9,
+                          ),
+                        ]),
+                  ),
+
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: externalAddressCards,
+              ),
+              SizedBox(height: 10,),
+              Row(children: [
+                AutoSizeText('Internal Accounts:', minFontSize: 16,),
+
+              ],),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child:Column(
+                        children: [
+                          AutoSizeText(
+                            'Index',
+                            maxLines: 1,
+                            minFontSize: 9,
+                          ),
+                        ]),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child:Column(
+                        children: [
+                          AutoSizeText(
+                            'Transactions',
+                            maxLines: 1,
+                            minFontSize: 9,
+                          ),
+                        ]),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child:Column(
+                        children: [
+                          AutoSizeText(
+                            'Balance',
+                            maxLines: 1,
+                            minFontSize: 9,
+                          ),
+                        ]),
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: internalAddressCards,
               ),
             ],
           ),
@@ -101,10 +252,7 @@ class WalletSettingsDialog extends StatelessWidget {
   Widget buildAccountList(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
-    List<Widget> addressCards = [];
-    externalAccounts.forEach((key, value) {
-      addressCards.add(AccountCard(account: value));
-    });
+
     return Stack(
       children: [
         Container(
@@ -131,6 +279,14 @@ class WalletSettingsDialog extends StatelessWidget {
                     FontAwesomeIcons.sync,
                     size: 15,
                   )),
+              Padding(padding: EdgeInsets.all(5),child: Row(children: [
+                AutoSizeText('Show accounts with zero balance', minFontSize: 10,),
+                Checkbox(value: showZeroBalanceAccounts, onChanged: (value){
+                  setState(() {
+                    showZeroBalanceAccounts = value!;
+                  });
+                }),],),),
+
               _buildWalletInfoContainer(context, theme, deviceSize),
             ],
           ),
@@ -138,6 +294,7 @@ class WalletSettingsDialog extends StatelessWidget {
       ],
     );
   }
+
 
   contentBox(context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -156,14 +313,22 @@ class WalletSettingsDialog extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              Text(
-                'Wallet Settings',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+              Row(
+                children: [
+
+                  Text(
+                    'Wallet Settings', textAlign: TextAlign.left,
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                  ),
+                ],
               ),
               buildAccountList(context),
               Align(
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(theme.primaryColor),
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -188,4 +353,5 @@ class WalletSettingsDialog extends StatelessWidget {
       child: contentBox(context),
     );
   }
+
 }

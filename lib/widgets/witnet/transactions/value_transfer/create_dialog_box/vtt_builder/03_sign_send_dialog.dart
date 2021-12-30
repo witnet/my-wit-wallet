@@ -1,14 +1,12 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/schema.dart';
-import 'package:witnet_wallet/bloc/create_vtt/create_vtt_bloc.dart';
-import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
-import 'package:witnet_wallet/widgets/witnet/password_input.dart';
 
 import '../../../../../input_login.dart';
 import '../../../../../round_button.dart';
@@ -27,6 +25,7 @@ class SignSendDialogState extends State<SignSendDialog>
   late FocusNode _passwordFocusNode;
   String password = '';
 
+  bool sent = false;
   @override
   void initState() {
     super.initState();
@@ -116,7 +115,7 @@ class SignSendDialogState extends State<SignSendDialog>
                   ),
                 ],
               ),
-              Text(vtTransaction.rawJson(asHex: true)),
+              //Text(vtTransaction.rawJson(asHex: true)),
               SizedBox(
                 height: 15,
               ),
@@ -140,14 +139,6 @@ class SignSendDialogState extends State<SignSendDialog>
   Widget vtBlocContainer() {
     return BlocBuilder<BlocCreateVTT, CreateVTTState>(
         builder: (context, state) {
-      final deviceSize = MediaQuery.of(context).size;
-      final theme = Theme.of(context);
-      double cardWidth;
-      if (deviceSize.width > 700) {
-        cardWidth = (700 * 0.9);
-      } else
-        cardWidth = deviceSize.width * 0.9;
-
       return Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -258,13 +249,20 @@ class SignSendDialogState extends State<SignSendDialog>
                     SizedBox(
                       height: 5,
                     ),
-                    Row(
+                    (sent) 
+                        ?Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [AutoSizeText('Sent!')])
+                        : Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Icon(FontAwesomeIcons.arrowRight),
                         ElevatedButton(
-                            //onPressed: () => send(state.vtTransaction),
-                            onPressed: null,
+                            onPressed: () {
+                            //onPressed: () {
+                              print(state.vtTransaction.jsonMap(asHex: true));
+                              send(state.vtTransaction);
+                            },
                             child: Text('Send To Explorer')),
                       ],
                     )
@@ -290,9 +288,10 @@ class SignSendDialogState extends State<SignSendDialog>
     if (deviceSize.width > 400) {
       cardWidth = (400 * 0.8);
     } else
-      cardWidth = deviceSize.width * 0.8;
+      cardWidth = deviceSize.width;
 
     return Dialog(
+      insetPadding: EdgeInsets.all(0),
       child: Container(
         width: cardWidth,
         height: deviceSize.height * 0.8,
@@ -306,3 +305,6 @@ class SignSendDialogState extends State<SignSendDialog>
     );
   }
 }
+/*
+{"transaction":{"ValueTransfer":{"body":{"inputs":[{"output_pointer":"3c3a5cb5bf82c3cc0e239c8c22a2f1ed8398ff7980f7a7cf7c6b2e33aa973664:1"}],"outputs":[{"pkh":"wit1p0tdyrujhhadpvtqp4v4u3xpmf4mfn2af0k5yg","time_lock":0,"value":1200000},{"pkh":"wit1x0rknjj87plj489cumtqwr3fj2r92u2tyrujde","time_lock":0,"value":998799997}]},"signatures":[{"public_key":{"bytes":"0d8029c4cc4dfb30f89af81634b61e812486d91442cb931802a9d5e7c5ff0100","compressed":2},"signature":{"Secp256k1":{"der":"304502210083d5abe4cf5cf8e3bc1a4853f514230b05b0032da39511f842c3ee47de51b58302205e9e8f3b8fd66bc3e6c7219b6e35c34a686d21a19a02cb9a2ded98eb24b561fa"}}}]}}}
+ */
