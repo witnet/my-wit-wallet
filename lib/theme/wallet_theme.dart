@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:witnet_wallet/theme/colors.dart';
 enum WalletTheme {
   Light,
   Dark,
@@ -31,13 +32,19 @@ class WalletButtonTheme {
   final ShapeBorder shape;
 }
 
+ThemeData defaultTheme = ThemeData(
+    brightness: Brightness.light,
+    visualDensity: defaultDensity,
+    primarySwatch: createMaterialColor(WitnetPallet.main),
+    primaryColor: WitnetPallet.main,
+);
+
 ThemeData lightTheme = ThemeData(
+  primarySwatch: createMaterialColor(WitnetPallet.main),
   brightness: Brightness.light,
-  primaryColor: Color(0xFF0094A8),
-  accentColor: Color(0xFF11877D),
+  primaryColor: WitnetPallet.main,
   backgroundColor: Color(0xFFF7F7F8),
   cardColor: Color(0xFFF9F9F9),
-  buttonColor: Color(0xFF4582B9),
   cardTheme: lightCardTheme,
   visualDensity: defaultDensity,
   textTheme: TextTheme(
