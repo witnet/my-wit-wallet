@@ -5,6 +5,7 @@ import 'package:witnet/schema.dart';
 import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 
 abstract class ExplorerEvent {}
@@ -59,16 +60,22 @@ class DataLoadedState extends ExplorerState {
   DataLoadedState({required this.data});
 }
 
+class SyncedState extends ExplorerState {
+
+}
 class ExplorerErrorState extends ExplorerState {}
 
-class ReadyState extends ExplorerState {}
+class ReadyState extends ExplorerState {
+  Status? status;
+}
+
 
 class BlocExplorer extends Bloc<ExplorerEvent, ExplorerState> {
   BlocExplorer(ExplorerState initialState) : super(initialState);
   ExplorerState get initialState => ReadyState();
   @override
   Stream<ExplorerState> mapEventToState(ExplorerEvent event) async* {
-    print(event.runtimeType);
+
     try {
       switch (event.runtimeType) {
         case HashQueryEvent:
@@ -88,8 +95,8 @@ class BlocExplorer extends Bloc<ExplorerEvent, ExplorerState> {
         case StatusQueryEvent:
           try {
             yield DataLoadingState();
-            var resp = await Locator.instance.get<ApiExplorer>().status();
-            print(resp.toRawJson());
+            var resp = await Locator.instance.get<ApiExplorer>().getStatus();
+
             yield DataLoadedState(data: resp.jsonMap());
           } on ExplorerException {
             yield ExplorerErrorState();
@@ -112,86 +119,122 @@ class BlocExplorer extends Bloc<ExplorerEvent, ExplorerState> {
         case SyncWalletEvent:
           yield DataLoadingState();
           try {
-            Status status = await Locator.instance<ApiExplorer>().status();
-            var internalAccounts = await Locator.instance<ApiDatabase>()
-                    .readDatabaseRecord(key: 'internal_accounts', type: Map)
-                as Map<String, Object?>;
-            var externalAccounts = await Locator.instance<ApiDatabase>()
-                    .readDatabaseRecord(key: 'external_accounts', type: Map)
-                as Map<String, Object?>;
+            // check explorer status
+            Status status = await Locator.instance<ApiExplorer>().getStatus();
 
+            print('status.databaseMessage: ${status.databaseMessage}');
+
+
+            List<String> addressList = [];
+            DbWallet dbWallet = await Locator.instance<ApiDatabase>().loadWallet();
             /// external chain
+            ///
             Map<String, Account> _extAccounts = {};
-            externalAccounts.forEach((key, value) {
-              print(value);
-              _extAccounts[key] =
-                  Account.fromJson(value as Map<String, dynamic>);
+
+            dbWallet.externalAccounts.forEach((index, account) {
+
+              print(account.address);
+              addressList.add(account.address);
+              _extAccounts[account.address] = account;
             });
-
-            List<Account> extAccounts = _extAccounts.values.toList();
-            for (int i = 0; i < extAccounts.length; i++) {
-              Account _account = extAccounts[i];
-              if (_account.lastSynced == -1) {
-                List<Utxo> _utxos = await Locator.instance<ApiExplorer>()
-                    .utxos(address: _account.address);
-                print(_utxos);
-                await Future.delayed(Duration(milliseconds: 150));
-                _account.utxos = _utxos;
-                _account.lastSynced = status.nodePool.currentEpoch;
-                _account.setBalance();
-                _extAccounts[_account.address] = _account;
-              }
-            }
-            _extAccounts.forEach((key, value) {
-              print(
-                  '$key, ${value.address} ${value.valueTransfers.length} ${value.utxos.length} ${value.lastSynced}');
-            });
-
-            Map<String, dynamic> _extAccntsDb = {};
-            _extAccounts.forEach((key, value) {
-              _extAccntsDb[key] = value.jsonMap();
-            });
-
-            await Locator.instance<ApiDatabase>().writeDatabaseRecord(
-                key: 'external_accounts', value: _extAccntsDb);
-
             /// internal chain
             Map<String, Account> _intAccounts = {};
+            dbWallet.internalAccounts.forEach((index, account) {
 
-            internalAccounts.forEach((key, value) {
-              print(value);
-              _intAccounts[key] =
-                  Account.fromJson(value as Map<String, dynamic>);
+              addressList.add(account.address);
+              _intAccounts[account.address] = account;
             });
 
-            List<Account> intAccounts = _intAccounts.values.toList();
+            print('getting utxos for ${addressList.length} accounts.');
+            print(addressList);
 
-            for (int i = 0; i < extAccounts.length; i++) {
-              Account _account = extAccounts[i];
-              if (_account.lastSynced == -1) {
-                List<Utxo> _utxos = await Locator.instance<ApiExplorer>()
-                    .utxos(address: _account.address);
-                print(_utxos);
-                await Future.delayed(Duration(milliseconds: 150));
-                _account.utxos = _utxos;
-                _account.lastSynced = status.nodePool.currentEpoch;
-                _account.setBalance();
-                _intAccounts[_account.address] = _account;
-              }
+            int addressLimit = 10;
+            List<List<String>> addressChunks = [];
+
+            for (int i = 0; i < addressList.length; i += addressLimit) {
+              int end = (i + addressLimit < addressList.length)
+                  ? i + addressLimit
+                  : addressList.length;
+              addressChunks.add([addressList.sublist(i, end).join(',')]);
             }
 
-            _intAccounts.forEach((key, value) {
-              print(
-                  '$key, ${value.address} ${value.valueTransfers.length} ${value.utxos.length} ${value.lastSynced}');
+            for(int i = 0; i < addressChunks.length; i++){
+
+            Map<String, List<Utxo>> _utxos = await Locator.instance<ApiExplorer>().utxosMulti(addresses: addressChunks[i]);
+            print(_utxos);
+            for(int j = 0; j < _utxos.keys.length; j ++){
+              String currentAddress = _utxos.keys.elementAt(j);
+              print('----- $currentAddress');
+            }
+            _utxos.forEach((key, utxoList) {
+              print('$key ----');
+              if(_extAccounts.containsKey(key)){
+                if(utxoList.isNotEmpty){
+                  _extAccounts[key]!.utxos.clear();
+                  _extAccounts[key]!.utxos = utxoList;
+                  _extAccounts[key]!.setBalance();
+                } else {
+                  _extAccounts[key]!.utxos.clear();
+                }
+              }
+              if(_intAccounts.containsKey(key)){
+                if(utxoList.isNotEmpty){
+                  _intAccounts[key]!.utxos.clear();
+                  _intAccounts[key]!.utxos = utxoList;
+                  _intAccounts[key]!.setBalance();
+                } else {
+                  _intAccounts[key]!.utxos.clear();
+                }
+              }
+            });
+            await Future.delayed(Duration(milliseconds: 300));
+            }
+
+
+
+            _extAccounts.forEach((key, value) {
+              print('$key ${value.utxos} ${value.path}');
             });
 
-            Map<String, dynamic> _intAccntsDb = {};
-            _intAccounts.forEach((key, value) {
-              _intAccntsDb[key] = value.jsonMap();
-            });
-            await Locator.instance<ApiDatabase>()
-                .writeDatabaseRecord(key: 'internal_keys', value: _intAccntsDb);
+            dbWallet.internalAccounts.forEach((index, account) {
+              if(_extAccounts.containsKey(account.address)){
+                if(_extAccounts[account.address]!.utxos.length > 0){
 
+                print('${_extAccounts[account.address]!.utxos.map((e) => e.toRawJson())}');
+                }
+              }
+
+            });
+
+
+            Map<int, Account> _extAccntsDb = {};
+            _extAccounts.forEach((key, value) {
+              int index = int.parse(value.path.split('/').last);
+              _extAccntsDb[index] = value;
+              print('${dbWallet.externalAccounts[index]!.utxos.length} ${value.utxos.length}');
+              dbWallet.externalAccounts[index] =value;
+            });
+            Map<int, Account> _intAccntsDb = {};
+            _intAccounts.forEach((key, value) {
+              dbWallet.internalAccounts[int.parse(value.path.split('/').last)] = value;
+
+              _intAccntsDb[int.parse(value.path.split('/').last)] = value;
+            });
+            dbWallet.internalAccounts.forEach((key, value) {
+
+            });
+            dbWallet.externalAccounts = _extAccntsDb;
+            dbWallet.externalAccounts.forEach((key, value) {
+              print('${value.path} ${value.utxos.length}');
+
+            });
+            dbWallet.internalAccounts.forEach((key, value) {
+              print('${value.path} ${value.utxos.length}');
+
+            });
+            //await Locator.instance<ApiDatabase>().saveDbWallet(dbWallet);
+
+            ///
             ///
             yield ReadyState();
           } catch (e) {
