@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_status_bloc.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 
 import '../../../../../input_login.dart';
@@ -17,7 +19,14 @@ class SignSendDialog extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => SignSendDialogState();
 }
-
+launchExplorerSearch(String searchItem) async {
+  String url = 'https://witnet.network/search/$searchItem';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
 class SignSendDialogState extends State<SignSendDialog>
     with SingleTickerProviderStateMixin {
   late AnimationController _loadingController;
@@ -57,15 +66,24 @@ class SignSendDialogState extends State<SignSendDialog>
         vtTransactionBody: widget.vtTransactionBody));
   }
 
+  ///
   void send(VTTransaction vtTransaction) {
     BlocProvider.of<BlocCreateVTT>(context)
         .add(SendTransactionEvent(vtTransaction));
   }
 
+  void queryHash(String transactionHash){
+    BlocProvider.of<BlocStatusVtt>(context)
+        .add(CheckStatusEvent(transactionHash: transactionHash));
+  }
   void backToDashboard() {
     BlocProvider.of<BlocCreateVTT>(context).add(ResetTransactionEvent());
     Navigator.of(context).pop();
     Navigator.of(context).pop();
+    if(sent){
+      BlocProvider.of<BlocExplorer>(context).add(SyncWalletEvent());
+    }
+
   }
 
   Widget buildTransactionJsonViewer(
@@ -136,8 +154,10 @@ class SignSendDialogState extends State<SignSendDialog>
     });
   }
 
+
+
   Widget vtBlocContainer() {
-    return BlocBuilder<BlocCreateVTT, CreateVTTState>(
+    return BlocConsumer<BlocCreateVTT, CreateVTTState>(
         builder: (context, state) {
       return Container(
         child: Column(
@@ -249,18 +269,15 @@ class SignSendDialogState extends State<SignSendDialog>
                     SizedBox(
                       height: 5,
                     ),
-                    (sent) 
-                        ?Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [AutoSizeText('Sent!')])
-                        : Row(
+
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Icon(FontAwesomeIcons.arrowRight),
                         ElevatedButton(
                             onPressed: () {
-                            //onPressed: () {
-                              print(state.vtTransaction.jsonMap(asHex: true));
+
+                              // print(state.vtTransaction.jsonMap(asHex: true));
                               send(state.vtTransaction);
                             },
                             child: Text('Send To Explorer')),
@@ -274,11 +291,44 @@ class SignSendDialogState extends State<SignSendDialog>
                 child: Column(
                   children: [],
                 ),
+              ),
+            if (state is TransactionAcceptedState)
+              Container(
+                child: Column(
+                  children: [
+                    AutoSizeText('Transaction Sent!',maxLines: 1,),
+                    buildTransactionJsonViewer(context, state.vtTransaction),
+                    SizedBox(
+                      height: 5,
+                    ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(FontAwesomeIcons.arrowRight),
+                        ElevatedButton(
+                            onPressed: () {
+                              /// Launch the Explorer in the machines default browser
+                              launchExplorerSearch(state.vtTransaction.transactionID);
+                            },
+                            child: Text('View on Explorer')),
+                      ],
+                    )
+                  ],
+                ),
               )
           ],
         ),
       );
-    });
+    },
+    listener: (context, state) {
+          if(state is TransactionAcceptedState){
+            setState(() {
+              sent = true;
+            });
+          }
+    },
+    );
   }
 
   @override
@@ -305,6 +355,3 @@ class SignSendDialogState extends State<SignSendDialog>
     );
   }
 }
-/*
-{"transaction":{"ValueTransfer":{"body":{"inputs":[{"output_pointer":"3c3a5cb5bf82c3cc0e239c8c22a2f1ed8398ff7980f7a7cf7c6b2e33aa973664:1"}],"outputs":[{"pkh":"wit1p0tdyrujhhadpvtqp4v4u3xpmf4mfn2af0k5yg","time_lock":0,"value":1200000},{"pkh":"wit1x0rknjj87plj489cumtqwr3fj2r92u2tyrujde","time_lock":0,"value":998799997}]},"signatures":[{"public_key":{"bytes":"0d8029c4cc4dfb30f89af81634b61e812486d91442cb931802a9d5e7c5ff0100","compressed":2},"signature":{"Secp256k1":{"der":"304502210083d5abe4cf5cf8e3bc1a4853f514230b05b0032da39511f842c3ee47de51b58302205e9e8f3b8fd66bc3e6c7219b6e35c34a686d21a19a02cb9a2ded98eb24b561fa"}}}]}}}
- */

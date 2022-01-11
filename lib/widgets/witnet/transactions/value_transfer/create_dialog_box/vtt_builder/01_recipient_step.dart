@@ -6,6 +6,7 @@ import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
+import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 
 import '../../../../../auto_size_text.dart';
 import '../../value_transfer_output_container.dart';
@@ -34,20 +35,26 @@ class RecipientStepState extends State<RecipientStep>
   String recipientAddress = '';
   double witValue = 0;
   int timeLock = 0;
+  int balanceNanoWit = 0;
   late TextEditingController _addressController;
   late TextEditingController _valueController;
   late TextEditingController _timeLockController;
   late AnimationController _loadingController;
-
+  late DbWallet _dbWallet;
   @override
   void initState() {
     _addressController = TextEditingController();
     _valueController = TextEditingController();
+    _valueController.addListener(() {
+
+    });
     _timeLockController = TextEditingController();
     _loadingController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
+    _dbWallet = BlocProvider.of<BlocCreateVTT>(context).dbWallet;
+    balanceNanoWit = _dbWallet.balanceNanoWit();
     super.initState();
   }
 
@@ -74,8 +81,15 @@ class RecipientStepState extends State<RecipientStep>
   Widget buildOutputCards(
       BuildContext context, List<ValueTransferOutput> outputs) {
     List<Widget> _cards = [];
-    for (int i = 0; i < outputs.length - 1; i++) {
-      _cards.add(ValueTransferOutputContainer(vto: outputs[i]));
+    for (int i = 0; i < outputs.length; i++) {
+      String address = outputs[i].pkh.address;
+      bool isChangeAccount = false;
+      _dbWallet.internalAccounts.forEach((index, account) {
+        if(account.address == address) isChangeAccount = true;
+      });
+      /// only add a card if it is not a change account
+      if(!isChangeAccount) _cards.add(ValueTransferOutputContainer(vto: outputs[i]));
+
     }
     return Container(
       child: Column(
@@ -133,16 +147,44 @@ class RecipientStepState extends State<RecipientStep>
   //////////////////////////////////////////////////////////////////////////////
   bool validVTO(String address) {
     if (!validAddress(address) || witValue == 0) {
-      //setState(() {
-      //  _loadingController.reverse();
-      //});
       return false;
     }
-
-    //setState(() {
-    //  _loadingController.forward();
-    //});
     return true;
+  }
+
+
+  int _estimatedFeeNanoWit(){
+
+
+    return 0;
+  }
+
+  bool _validAmount(){
+    if(witValue<_dbWallet.balanceNanoWit()){
+
+    }
+
+    return false;
+  }
+  bool _addVTO(BuildContext context, ){
+
+    BlocProvider.of<BlocCreateVTT>(context).add(
+        AddValueTransferOutputEvent(output: ValueTransferOutput.fromJson({
+          'pkh': recipientAddress,
+          'value': witToNanoWit(witValue),
+          'time_lock': timeLock
+        })
+        ));
+    //widget.onStepContinue!.call();
+    setState(() {
+      _addressController.text = '';
+      recipientAddress = '';
+      witValue = 0;
+      _valueController.text = '';
+
+    });
+
+    return false;
   }
 
   Widget _buildRecipientInput() {
@@ -209,8 +251,9 @@ class RecipientStepState extends State<RecipientStep>
                   setState(() {
                     if (value == '') {
                       witValue = 0;
-                    } else
+                    } else{
                       witValue = double.parse(value);
+                    }
                   });
                 },
                 decoration: new InputDecoration(labelText: "Amount"),
@@ -321,85 +364,77 @@ class RecipientStepState extends State<RecipientStep>
     );
   }
 
+  Widget buildForm(BuildContext context) {
+    return Container(
+      alignment: Alignment.topCenter,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              SizedBox(height: 5,),
+            ],
+          ),
+          Row(
+            children: [
+             // AutoSizeText('Available Balance: ${nanoWitToWit(_dbWallet.balanceNanoWit())} Wit'),
+            ],
+          ),
+          
+          
+          Row(
+            children: [
+              SizedBox(height: 5,),
+            ],
+          ),
+          _buildRecipientInput(),
+          SizedBox(
+            height: 5,
+          ),
+          if (validAddress(recipientAddress)) _buildValueInput(),
+          SizedBox(
+            height: 5,
+          ),
+          //if (validAddress(recipientAddress)) _buildTimeLockInput(),
+          SizedBox(
+            height: 5,
+          ),
+          outputCards(),
+          AdvancedVttSettingsPanel(),
+          Row(
+            children: [
+              if (validVTO(recipientAddress))
+                TextButton(
+                  onPressed: () {
+                    _addVTO(context);
+                    BlocProvider.of<BlocCreateVTT>(context).add(ValidateTransactionEvent());
+                  },
+                  child: const Text('Additional Recipient'),
+                ),
+              if (validVTO(recipientAddress))
+                TextButton(
+                  onPressed: () {
+                    _addVTO(context);
+                    BlocProvider.of<BlocCreateVTT>(context).add(ValidateTransactionEvent());
+                    widget.onStepContinue!.call();
+                  },
+                  child: const Text('Continue'),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BlocCreateVTT, CreateVTTState>(
       builder: (context, state) {
-        if (state is BuildingVTTState || state is InitialState) {
-          return Container(
-            alignment: Alignment.topCenter,
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      height: 5,
-                    ),
-                  ],
-                ),
-                _buildRecipientInput(),
-                SizedBox(
-                  height: 5,
-                ),
-                if (validAddress(recipientAddress)) _buildValueInput(),
-                SizedBox(
-                  height: 5,
-                ),
-                //if (validAddress(recipientAddress)) _buildTimeLockInput(),
-                SizedBox(
-                  height: 5,
-                ),
-                outputCards(),
-                AdvancedVttSettingsPanel(),
-                Row(
-                  children: [
-                    if (validVTO(recipientAddress))
-                      TextButton(
-                        onPressed: () {
-                          BlocProvider.of<BlocCreateVTT>(context).add(
-                              AddValueTransferOutputEvent(output: ValueTransferOutput.fromJson({
-                                'pkh': recipientAddress,
-                                'value': witToNanoWit(witValue),
-                                'time_lock': timeLock
-                              })
-                                  ));
-                          //widget.onStepContinue!.call();
-                          setState(() {
-                            _addressController.text = '';
-                            recipientAddress = '';
-                            witValue = 0;
-                            _valueController.text = '';
-                          });
-                        },
-                        child: const Text('Additional Recipient'),
-                      ),
-                    if (validVTO(recipientAddress))
-                      TextButton(
-                        onPressed: () {
-                          BlocProvider.of<BlocCreateVTT>(context).add(
-                            AddValueTransferOutputEvent(
-                              output: ValueTransferOutput.fromJson({
-                              'pkh': recipientAddress,
-                              'value': witToNanoWit(witValue),
-                              'time_lock': timeLock,
-                              }),
-                            ),
-                          );
-                          widget.onStepContinue!.call();
-                          setState(() {
-                            _addressController.text = '';
-                            recipientAddress = '';
-                            witValue = 0;
-                            _valueController.text = '';
-                          });
-                        },
-                        child: const Text('Continue'),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          );
+        if(state is InitialState) {
+          return buildForm(context);
+        }
+        if (state is BuildingVTTState) {
+          return buildForm(context);
         }
         return Container(
           child: Column(

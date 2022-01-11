@@ -103,7 +103,7 @@ class ReviewStepState extends State<ReviewStep>
     );
   }
 
-  //////////////////////////////////////////////////////////////////////////////
+
   Widget buildInputCards(BuildContext context, List<Input> inputs) {
     List<InputUtxo> _inputs = [];
     DbWallet dbWallet = BlocProvider.of<BlocCreateVTT>(context).dbWallet;
@@ -190,7 +190,7 @@ class ReviewStepState extends State<ReviewStep>
     });
   }
 
-  //////////////////////////////////////////////////////////////////////////////
+
   Widget buildOutputCards(
       BuildContext context, List<ValueTransferOutput> outputs) {
     List<Widget> _cards = [];
@@ -248,7 +248,6 @@ class ReviewStepState extends State<ReviewStep>
     });
   }
 
-  //////////////////////////////////////////////////////////////////////////////
   Widget buildChangeCard(
       BuildContext context, List<ValueTransferOutput> outputs) {
     List<Widget> _cards = [];
@@ -293,7 +292,6 @@ class ReviewStepState extends State<ReviewStep>
     });
   }
 
-  //////////////////////////////////////////////////////////////////////////////
   Widget buildFeeCard(
     BuildContext context) {
     int fee = BlocProvider.of<BlocCreateVTT>(context).feeNanoWit;
@@ -331,11 +329,9 @@ class ReviewStepState extends State<ReviewStep>
     });
   }
 
-  //////////////////////////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     return contentBox(context);
   }
-  //////////////////////////////////////////////////////////////////////////////
 
 }
