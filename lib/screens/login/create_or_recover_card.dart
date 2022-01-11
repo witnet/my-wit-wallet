@@ -99,18 +99,19 @@ class CreateOrRecoverCardState extends State<CreateOrRecoverCard>
           ),
           Padding(
             padding: EdgeInsets.all(5),
-            child: StyledButton(
+            child: ElevatedButton(
               // double.infinity is the width and 30 is the height
-              minimumSize: Size(double.infinity, 30),
+
               style: ElevatedButton.styleFrom(
                 minimumSize: Size(double.infinity, 30),
               ),
               child: new Text('Import Node from XPRV'),
-              onPressed: () {
-                Locator.instance<ApiCreateWallet>()
-                    .setWalletType(WalletType.xprv);
-                Navigator.pushNamed(context, CreateWalletScreen.route);
-              },
+              onPressed: null,
+              // {
+              //   Locator.instance<ApiCreateWallet>()
+              //       .setWalletType(WalletType.xprv);
+              //   Navigator.pushNamed(context, CreateWalletScreen.route);
+              // },
             ),
           ),
           Padding(

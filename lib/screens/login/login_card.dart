@@ -130,13 +130,14 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
                     30), // double.infinity is the width and 30 is the height
               ),
               child: new Text('Import Node from XPRV'),
-              onPressed: () {
-                Locator.instance<ApiCreateWallet>()
-                    .setWalletType(WalletType.xprv);
-                Navigator.pushNamed(context, CreateWalletScreen.route);
-                BlocProvider.of<BlocCreateWallet>(context)
-                    .add(ResetEvent(WalletType.xprv));
-              },
+              onPressed: null
+              // {
+              //   Locator.instance<ApiCreateWallet>()
+              //       .setWalletType(WalletType.xprv);
+              //   Navigator.pushNamed(context, CreateWalletScreen.route);
+              //   BlocProvider.of<BlocCreateWallet>(context)
+              //       .add(ResetEvent(WalletType.xprv));
+              // },
             ),
           ),
           Padding(

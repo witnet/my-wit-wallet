@@ -20,7 +20,6 @@ class LoginScreenState extends State<LoginScreen>
   @override
   void initState() {
     super.initState();
-
     currentCard = LoginCard(onCreateOrRecover: switchToCreateOrRecoverCard);
   }
 
