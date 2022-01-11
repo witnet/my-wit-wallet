@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/bloc/theme/theme_bloc.dart';
 import 'package:witnet_wallet/bloc/cache/cache_bloc.dart' as cache;
 import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_status_bloc.dart';
 import 'package:witnet_wallet/screens/dashboard/dashboard_bloc.dart';
 import 'auth/auth_bloc.dart';
 import '../screens/create_wallet/create_wallet_bloc.dart';
@@ -41,6 +42,9 @@ List<BlocProvider> getProviders(BuildContext context) {
     /// BlocCreateVTT is the logic behind value transfer transaction construction.
     BlocProvider<BlocCreateVTT>(
       create: (BuildContext context) => BlocCreateVTT(InitialState()),
+    ),
+    BlocProvider<BlocStatusVtt>(
+      create: (BuildContext context) => BlocStatusVtt(UnknownHashState()),
     ),
 
     /// BlocDashboard manages the ui for the main dashboard
