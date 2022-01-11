@@ -293,11 +293,11 @@ class BlocCrypto extends Bloc<CryptoEvent, CryptoState> {
           /// reference (https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki)
 
           int externalGapCount = 0;
-          int externalGapMax = 20;
+          int externalGapMax = EXTERNAL_GAP_LIMIT;
           int externalIndex = 0;
 
           int internalGapCount = 0;
-          int internalGapMax = 1;
+          int internalGapMax = INTERNAL_GAP_LIMIT;
           int internalIndex = 0;
           Map<int, Account> externalAccounts = {};
           Map<int, Account> internalAccounts = {};
@@ -340,7 +340,7 @@ class BlocCrypto extends Bloc<CryptoEvent, CryptoState> {
 
 
           }
-          //////////////////////////////////////////////////////////////////////
+
           /// search the Internal keychain for accounts with past transactions
           /// requirement: 1 consecutive account without transactions
           while (internalGapCount < internalGapMax) {
