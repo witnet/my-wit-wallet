@@ -41,7 +41,7 @@ class DashboardScreenState extends State<DashboardScreen>
 
   late DbWallet? dbWallet;
   late AnimationController _loadingController;
-
+  late AnimationController _balanceController;
   @override
   void initState() {
     super.initState();
@@ -49,11 +49,17 @@ class DashboardScreenState extends State<DashboardScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-    //BlocStatusVtt blocStatusVtt = BlocStatusVtt(UnknownHashState());
-    //blocStatusVtt.add(CheckStatusEvent(transactionHash: 'a90a59d47f8b3a9c696e67b5c7591ebe244cd24421e9c0f24def1f9d5763051b'));
-    // BlocProvider.of<BlocDashboard>(context).add(DashboardInitEvent(externalAccounts: {}, internalAccounts: {}));
+    _balanceController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+
+    _balanceController.forward();
+
   }
 
+  /// _goToSettings
+  /// [BuildContext] context
   Future<bool> _goToSettings(BuildContext context) {
     return Navigator.of(context)
         .push(MaterialPageRoute(
@@ -62,6 +68,8 @@ class DashboardScreenState extends State<DashboardScreen>
         .then((_) => true);
   }
 
+  /// _buildAppBar
+  /// [ThemeData] theme
   AppBar _buildAppBar(ThemeData theme) {
     final menuBtn = IconButton(
       color: theme.primaryColor,
@@ -168,8 +176,7 @@ class DashboardScreenState extends State<DashboardScreen>
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-
-            BalanceDisplay(_loadingController),
+            _buildBalanceDisplay(),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -207,6 +214,10 @@ class DashboardScreenState extends State<DashboardScreen>
 
   }
 
+  void _setWallet(DbWallet dbWallet){
+    this.dbWallet = dbWallet;
+  }
+
   Widget explorerWatcher() {
       final theme = Theme.of(context);
     return BlocBuilder<BlocExplorer, ExplorerState>(builder: (context, state) {
@@ -225,6 +236,9 @@ class DashboardScreenState extends State<DashboardScreen>
 
           dbWallet = apiDashboard.dbWallet;
 
+        return Container();
+      } else if (state is SyncedState){
+        dbWallet = apiDashboard.dbWallet;
         return Container();
       } else {
         return Container();
@@ -290,10 +304,34 @@ class DashboardScreenState extends State<DashboardScreen>
         ApiDashboard apiDashboard = Locator.instance.get<ApiDashboard>();
        setState(() {
          dbWallet = apiDashboard.dbWallet;
+
        });
       }
 
     });
+  }
+
+  Widget _buildBalanceDisplay() {
+    return BlocConsumer<BlocExplorer, ExplorerState>(builder: (context, state) {
+      final theme = Theme.of(context);
+    return BalanceDisplay(_balanceController);
+
+
+
+    },
+        listener: (context, state) {
+          if (state is SyncedState) {
+            ApiDashboard apiDashboard = Locator.instance.get<ApiDashboard>();
+            setState(() {
+              BlocProvider.of<BlocDashboard>(context).add(DashboardLoadEvent(dbWallet:state.dbWallet));
+              dbWallet = state.dbWallet;
+              apiDashboard.setDbWallet(dbWallet);
+
+              _balanceController.reset();
+              _balanceController.forward();
+            });
+          }
+        });
   }
 
   Widget _dashboardBuilder() {
@@ -311,7 +349,7 @@ class DashboardScreenState extends State<DashboardScreen>
           dbWallet = dashboardState.dbWallet;
           if(dbWallet != null){
 
-          BlocProvider.of<BlocCreateVTT>(context).setDbWallet(dbWallet);
+            BlocProvider.of<BlocCreateVTT>(context).setDbWallet(dbWallet);
           }
           return _buildDashboardGrid(theme, dashboardState);
         default:
