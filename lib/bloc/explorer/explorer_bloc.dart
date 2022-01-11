@@ -2,11 +2,16 @@ import 'package:bloc/bloc.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
+import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
+import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/util/storage/database/database_service.dart';
 import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
+import 'package:witnet_wallet/util/witnet/wallet/wallet.dart';
 
 abstract class ExplorerEvent {}
 
@@ -61,21 +66,21 @@ class DataLoadedState extends ExplorerState {
 }
 
 class SyncedState extends ExplorerState {
-
+  final DbWallet dbWallet;
+  SyncedState(this.dbWallet);
 }
+
 class ExplorerErrorState extends ExplorerState {}
 
 class ReadyState extends ExplorerState {
   Status? status;
 }
 
-
 class BlocExplorer extends Bloc<ExplorerEvent, ExplorerState> {
   BlocExplorer(ExplorerState initialState) : super(initialState);
   ExplorerState get initialState => ReadyState();
   @override
   Stream<ExplorerState> mapEventToState(ExplorerEvent event) async* {
-
     try {
       switch (event.runtimeType) {
         case HashQueryEvent:
@@ -116,127 +121,172 @@ class BlocExplorer extends Bloc<ExplorerEvent, ExplorerState> {
             rethrow;
           }
           break;
+
         case SyncWalletEvent:
           yield DataLoadingState();
           try {
-            // check explorer status
-            Status status = await Locator.instance<ApiExplorer>().getStatus();
+            /// check explorer status
+            bool explorerReady = true;
 
-            print('status.databaseMessage: ${status.databaseMessage}');
+            if(explorerReady){
+              List<String> addressList = [];
 
+              /// get the current state of the wallet from the database
+              DbWallet dbWallet =
+              await Locator.instance<ApiDatabase>().loadWallet();
 
-            List<String> addressList = [];
-            DbWallet dbWallet = await Locator.instance<ApiDatabase>().loadWallet();
-            /// external chain
-            ///
-            Map<String, Account> _extAccounts = {};
+              /// verify gap limit
 
-            dbWallet.externalAccounts.forEach((index, account) {
+              /// external chain
+              Map<String, Account> _extAccounts = {};
+              int externalGap = 0;
+              for(int i = 1; i < dbWallet.externalAccounts.length-1; i ++ ){
 
-              print(account.address);
-              addressList.add(account.address);
-              _extAccounts[account.address] = account;
-            });
-            /// internal chain
-            Map<String, Account> _intAccounts = {};
-            dbWallet.internalAccounts.forEach((index, account) {
-
-              addressList.add(account.address);
-              _intAccounts[account.address] = account;
-            });
-
-            print('getting utxos for ${addressList.length} accounts.');
-            print(addressList);
-
-            int addressLimit = 10;
-            List<List<String>> addressChunks = [];
-
-            for (int i = 0; i < addressList.length; i += addressLimit) {
-              int end = (i + addressLimit < addressList.length)
-                  ? i + addressLimit
-                  : addressList.length;
-              addressChunks.add([addressList.sublist(i, end).join(',')]);
-            }
-
-            for(int i = 0; i < addressChunks.length; i++){
-
-            Map<String, List<Utxo>> _utxos = await Locator.instance<ApiExplorer>().utxosMulti(addresses: addressChunks[i]);
-            print(_utxos);
-            for(int j = 0; j < _utxos.keys.length; j ++){
-              String currentAddress = _utxos.keys.elementAt(j);
-              print('----- $currentAddress');
-            }
-            _utxos.forEach((key, utxoList) {
-              print('$key ----');
-              if(_extAccounts.containsKey(key)){
-                if(utxoList.isNotEmpty){
-                  _extAccounts[key]!.utxos.clear();
-                  _extAccounts[key]!.utxos = utxoList;
-                  _extAccounts[key]!.setBalance();
+                addressList.add(dbWallet.externalAccounts[i]!.address);
+                if(dbWallet.externalAccounts[i]!.vttHashes.length>0){
+                  externalGap = 0;
                 } else {
-                  _extAccounts[key]!.utxos.clear();
+                  externalGap += 1;
                 }
               }
-              if(_intAccounts.containsKey(key)){
-                if(utxoList.isNotEmpty){
-                  _intAccounts[key]!.utxos.clear();
-                  _intAccounts[key]!.utxos = utxoList;
-                  _intAccounts[key]!.setBalance();
+
+
+              /// if the gap limit is not maintained then generate additional accounts
+              ///
+              int lastExternalIndex = dbWallet.externalAccounts.length;
+              while(externalGap <= EXTERNAL_GAP_LIMIT){
+                Account account = await dbWallet.generateKey(index: lastExternalIndex, keyType: KeyType.external);
+                lastExternalIndex+=1;
+                externalGap += 1;
+              }
+
+
+              int internalGap = 0;
+
+              for(int i = 0; i < dbWallet.internalAccounts.length; i ++){
+                final Account currentAccount = dbWallet.internalAccounts[i]!;
+                if(currentAccount.vttHashes.length > 0){
+                  internalGap = 0;
                 } else {
-                  _intAccounts[key]!.utxos.clear();
+                  internalGap += 1;
                 }
               }
-            });
-            await Future.delayed(Duration(milliseconds: 300));
+              int lastInternalIndex = dbWallet.internalAccounts.length;
+              while(internalGap <= INTERNAL_GAP_LIMIT){
+                Account account = await dbWallet.generateKey(index: lastInternalIndex, keyType: KeyType.internal);
+                lastInternalIndex+=1;
+                internalGap += 1;
+              }
+
+              dbWallet.externalAccounts.forEach((index, account) {
+                addressList.add(account.address);
+                _extAccounts[account.address] = account;
+              });
+
+              /// internal chain
+              Map<String, Account> _intAccounts = {};
+              dbWallet.internalAccounts.forEach((index, account) {
+                addressList.add(account.address);
+                _intAccounts[account.address] = account;
+              });
+
+
+
+              /// address limit is the limit of the explorer API
+              int addressLimit = 10;
+              List<List<String>> addressChunks = [];
+
+              /// break the address list into chunks of 10 addresses
+              for (int i = 0; i < addressList.length; i += addressLimit) {
+                int end = (i + addressLimit < addressList.length)
+                    ? i + addressLimit
+                    : addressList.length;
+                addressChunks.add([addressList.sublist(i, end).join(',')]);
+              }
+
+              /// get the UTXOs from the explorer
+              for (int i = 0; i < addressChunks.length; i++) {
+                Map<String, List<Utxo>> _utxos =
+                await Locator.instance<ApiExplorer>()
+                    .utxosMulti(addresses: addressChunks[i]);
+
+                /// loop over the explorer response
+                /// which is Map<String, List<Utxo>> key = address
+                for(int addressIndex = 0; addressIndex < _utxos.length; addressIndex ++){
+                  String address = _utxos.keys.toList()[addressIndex];
+                  List<Utxo> utxoList = _utxos[address]!;
+
+                  /// update the external xprv utxo list and balance
+                  if (_extAccounts.containsKey(address)) {
+
+                    /// check if the UTXO set is different
+                    int currentLength = _extAccounts[address]!.utxos.length;
+                    int newLength = utxoList.length;
+
+                    /// check if the UTXO set is different
+                    if(currentLength != newLength){
+                      if (utxoList.isNotEmpty) {
+                        _extAccounts[address]!.utxos.clear();
+                        _extAccounts[address]!.utxos.addAll(utxoList);
+                      } else {
+                        _extAccounts[address]!.utxos.clear();
+                      }
+                      AddressValueTransfers vtts = await Locator.instance
+                          .get<ApiExplorer>().address(value: address, tab: 'value_transfers');
+                      await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
+                      _extAccounts[address]!.vttHashes.clear();
+                      _extAccounts[address]!.vttHashes.addAll(vtts.transactionHashes);
+                      _extAccounts[address]!.setBalance();
+                    }
+                  }
+
+                  /// update the internal xprv utxo list and balance
+                  if (_intAccounts.containsKey(address)) {
+                    int currentLength = _intAccounts[address]!.utxos.length;
+                    int newLength = utxoList.length;
+
+                    /// check if the UTXO set is different
+                    if (currentLength != newLength) {
+                      if (utxoList.isNotEmpty) {
+                        _intAccounts[address]!.utxos.clear();
+                        _intAccounts[address]!.utxos.addAll(utxoList);
+                      } else {
+                        _intAccounts[address]!.utxos.clear();
+                      }
+                      AddressValueTransfers vtts = await Locator.instance
+                          .get<ApiExplorer>().address(value: address, tab: 'value_transfers');
+                      await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
+                      _intAccounts[address]!.vttHashes.clear();
+                      _intAccounts[address]!.vttHashes.addAll(vtts.transactionHashes);
+                      _intAccounts[address]!.setBalance();
+                    }
+                  }
+                }
+
+                /// pause to not overload the explorer
+                await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
+              }
+
+
+              /// restructure  the accounts map to store in the database
+              Map<int, Account> _extAccntsDb = {};
+              _extAccounts.forEach((key, account) {
+                dbWallet.externalAccounts[int.parse(account.path.split('/').last)]
+                = account;
+              });
+
+              /// restructure  the accounts map to store in the database
+              Map<int, Account> _intAccntsDb = {};
+              _intAccounts.forEach((key, account) {
+                dbWallet.internalAccounts[int.parse(account.path.split('/').last)]
+                = account;
+              });
+
+              /// save the synced data to the local database (encrypts salsa20)
+              await Locator.instance<ApiDatabase>().saveDbWallet(dbWallet);
+
+              yield SyncedState(dbWallet);
             }
-
-
-
-            _extAccounts.forEach((key, value) {
-              print('$key ${value.utxos} ${value.path}');
-            });
-
-            dbWallet.internalAccounts.forEach((index, account) {
-              if(_extAccounts.containsKey(account.address)){
-                if(_extAccounts[account.address]!.utxos.length > 0){
-
-                print('${_extAccounts[account.address]!.utxos.map((e) => e.toRawJson())}');
-                }
-              }
-
-            });
-
-
-            Map<int, Account> _extAccntsDb = {};
-            _extAccounts.forEach((key, value) {
-              int index = int.parse(value.path.split('/').last);
-              _extAccntsDb[index] = value;
-              print('${dbWallet.externalAccounts[index]!.utxos.length} ${value.utxos.length}');
-              dbWallet.externalAccounts[index] =value;
-            });
-            Map<int, Account> _intAccntsDb = {};
-            _intAccounts.forEach((key, value) {
-              dbWallet.internalAccounts[int.parse(value.path.split('/').last)] = value;
-
-              _intAccntsDb[int.parse(value.path.split('/').last)] = value;
-            });
-            dbWallet.internalAccounts.forEach((key, value) {
-
-            });
-            dbWallet.externalAccounts = _extAccntsDb;
-            dbWallet.externalAccounts.forEach((key, value) {
-              print('${value.path} ${value.utxos.length}');
-
-            });
-            dbWallet.internalAccounts.forEach((key, value) {
-              print('${value.path} ${value.utxos.length}');
-
-            });
-            //await Locator.instance<ApiDatabase>().saveDbWallet(dbWallet);
-
-            ///
-            ///
-            yield ReadyState();
           } catch (e) {
             yield ExplorerErrorState();
           }
@@ -248,7 +298,6 @@ class BlocExplorer extends Bloc<ExplorerEvent, ExplorerState> {
             var resp = await Locator.instance
                 .get<ApiExplorer>()
                 .sendVtTransaction(event.vtTransaction);
-            print(resp);
           } catch (e) {}
           break;
         case UtxoQueryEvent:
