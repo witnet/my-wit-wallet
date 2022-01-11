@@ -98,6 +98,7 @@ class AdvancedVttSettingsPanelState extends State<AdvancedVttSettingsPanel> {
                 maxLines: 1,
                 minFontSize: 9,
               ),
+
               Tooltip(
                   height: 100,
                   textStyle: TextStyle(fontSize: 12, color: Colors.white),
@@ -120,6 +121,7 @@ class AdvancedVttSettingsPanelState extends State<AdvancedVttSettingsPanel> {
             children: [],
           ),
           FeeTypeSelectorChip(),
+          /*
           Row(
             children: [
               AutoSizeText(
@@ -142,8 +144,8 @@ class AdvancedVttSettingsPanelState extends State<AdvancedVttSettingsPanel> {
                     iconSize: 10,
                     padding: EdgeInsets.all(3),
                   )),
-            ],
-          ),
+
+           */
           //UtxoSelectionStrategyChip(),
         ],
       ),
