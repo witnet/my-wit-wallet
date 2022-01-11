@@ -133,6 +133,14 @@ Future<void> _generateKeys(SendPort port, Map<String, dynamic> params) async{
   port.send({'wallet': wallet});
 }
 
+
+/// _signTranstion
+/// [SendPort] [port] sends the message back to the receiver
+/// [params] is a Map containing:
+/// 'xprv' [String] AES.CBC encrypted XPRV
+/// 'password' [String] used to decrypt the xprv
+/// 'signers' [List] List<String> contains the paths of the signers
+/// 'transaction_id' [String] the hash of the transaction.
 Future<void> _signTransaction(SendPort port, Map<String, dynamic> params) async {
   String encryptedXprv = params['xprv'];
   String password = params['password'];
@@ -140,10 +148,13 @@ Future<void> _signTransaction(SendPort port, Map<String, dynamic> params) async 
   String transactionId = params['transaction_id'];
   String errorMsg = '';
 
+
+
   try {
     Xprv masterXprv = Xprv.fromEncryptedXprv(encryptedXprv, password);
 
 
+    // get external xprv
     Xprv externalXprv = masterXprv
         / KEYPATH_PURPOSE
         / KEYPATH_COIN_TYPE
@@ -151,37 +162,46 @@ Future<void> _signTransaction(SendPort port, Map<String, dynamic> params) async 
         / EXTERNAL_KEYCHAIN;
 
 
+    // get internal xprv
     Xprv internalXprv = masterXprv
         / KEYPATH_PURPOSE
         / KEYPATH_COIN_TYPE
         / KEYPATH_ACCOUNT
         / INTERNAL_KEYCHAIN;
 
+    // storage for signatures
     List<KeyedSignature> signatures = [];
-    signerPaths.forEach((element) {
-      List<dynamic> path = element.toString().split('/');
-
-      assert(path.length == 6);
-      if (path.elementAt(4) == '0') {
-
-        Xprv signer = externalXprv / int.parse(path.last);
 
 
-        print(signer.path);
-        signatures.add(
-            signer.address.signHash(transactionId, signer.privateKey));
-      } else {
-        Xprv signer = internalXprv / int.parse(path.last);
-
-        signatures.add(
-            signer.address.signHash(transactionId, signer.privateKey));
+    Map<String, KeyedSignature> _sigMap = {};
+    signerPaths.forEach((path) {
+      List<String> indexedPath = path.split('/');
+      assert(indexedPath.length == 6, 'Path does not derive a valid Wallet');
+      /// ['M','3h','4919h','0h','0', ...] 
+      /// index 4 is the external[0] or internal[1] key path
+      Xprv signer;
+      if(indexedPath.elementAt(4) == '0') {
+        signer = externalXprv / int.parse(indexedPath.last);
+      } else{
+        assert(indexedPath.elementAt(4) == '1');
+        signer = internalXprv / int.parse(indexedPath.last);
       }
+      String address = signer.address.address;
+
+      if(_sigMap.containsKey(address)){
+        signatures.add(_sigMap[address]!);
+      } else {
+      KeyedSignature signature = signer.address.signHash(transactionId, signer.privateKey);
+        _sigMap[address] = signature;
+        signatures.add(_sigMap[address]!);
+      }
+
+
     });
     List<dynamic> sigMap = [];
     signatures.forEach((element) {
       sigMap.add(element.jsonMap());
     });
-
     port.send(sigMap);
   } catch (e) {
     errorMsg = e.toString();
