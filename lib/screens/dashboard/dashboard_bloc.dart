@@ -19,6 +19,13 @@ class DashboardInitEvent extends DashboardEvent {
   DbWallet dbWallet;
 }
 
+
+class DashboardUpdateEvent extends DashboardEvent {
+  DashboardUpdateEvent(
+      {required this.dbWallet});
+  DbWallet dbWallet;
+}
+
 class DashboardResetEvent extends DashboardEvent {}
 
 abstract class DashboardState {
@@ -62,7 +69,11 @@ class BlocDashboard extends Bloc<DashboardEvent, DashboardState> {
       } else if (event is DashboardInitEvent) {
         await Future.delayed(Duration(seconds: 4));
         yield DashboardLoadingState(event.dbWallet);
-      } else if (event is DashboardResetEvent) {
+      } else if(event is DashboardUpdateEvent) {
+        await Future.delayed(Duration(seconds: 4));
+        yield DashboardLoadingState(event.dbWallet);
+      }
+      else if (event is DashboardResetEvent) {
         CryptoReadyState();
         apiDashboard.setDbWallet(null);
         yield DashboardLoadingState(null);
