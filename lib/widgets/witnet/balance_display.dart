@@ -28,6 +28,7 @@ const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 class BalanceDisplayState extends State<BalanceDisplay>
     with TickerProviderStateMixin {
   int balanceNanoWit = 0;
+  int currentValueNanoWit = 0;
   late DbWallet dbWallet;
   late AnimationController _headerController;
   late Animation<double> _headerScaleAnimation;
@@ -45,6 +46,7 @@ class BalanceDisplayState extends State<BalanceDisplay>
           parent: widget.loadingController,
           curve: headerAniInterval,
         ));
+    _headerController.forward();
     super.initState();
   }
 
@@ -64,22 +66,7 @@ class BalanceDisplayState extends State<BalanceDisplay>
     return _balanceNanoWit;
   }
 
-  Widget explorerWatcher() {
-    return Container(child: BlocBuilder<BlocExplorer, ExplorerState>(
-      builder: (context, state) {
-        Container container = Container();
 
-
-        if (state is ReadyState) {
-          return dashboardBlocWidget(balance());
-        } else if (state is DataLoadingState) {
-          return dashboardBlocWidget(balance());
-        } else if (state is DataLoadedState) {
-        } else if (state is ExplorerErrorState) {}
-        return container;
-      },
-    ));
-  }
 
   Widget dashboardBlocWidget(int balanceNanoWit) {
     final theme = Theme.of(context);
@@ -94,17 +81,14 @@ class BalanceDisplayState extends State<BalanceDisplay>
 
     ///
     ///
-    return Container(child: BlocBuilder<BlocDashboard, DashboardState>(
-      builder: (context, state) {
-        final theme = Theme.of(context);
-        return Column(
+    return Container(child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 AnimatedNumericText(
-                  initialValue: 0,
+                  initialValue: nanoWitToWit(currentValueNanoWit),
                   targetValue: nanoWitToWit(balanceNanoWit),
                   curve: Interval(0, .5, curve: Curves.easeOut),
                   controller: _headerController,
@@ -124,29 +108,30 @@ class BalanceDisplayState extends State<BalanceDisplay>
             ),
             Text('Wallet Balance', style: theme.textTheme.caption),
           ],
-        );
-      },
-    ));
+        ),
+      );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Column(
-          children: <Widget>[
+    return BlocConsumer<BlocExplorer, ExplorerState>(builder: (context, state) {
 
-            ScaleTransition(
-              scale: _headerScaleAnimation,
-              child: FadeIn(
-                  controller: _headerController,
-                  curve: headerAniInterval,
-                  fadeDirection: FadeDirection.bottomToTop,
-                  offset: .5,
-                  duration: Duration(milliseconds: 600),
-                  child: dashboardBlocWidget(balance())),
-            ),
-          ],
-        )
-    );
+    return dashboardBlocWidget(balance());
+    },
+    listener: (context, state) {
+      if(state is DataLoadingState){
+        setState(() {
+          this.currentValueNanoWit = balance();
+        });
+      }
+    if (state is SyncedState) {
+      setState(() {
+        dbWallet = state.dbWallet;
+        _headerController.reset();
+        _headerController.forward();
+      });
+    }
+
+    },);
   }
 }
