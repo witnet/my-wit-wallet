@@ -48,10 +48,15 @@ class ValidRecipientAddressEvent extends CreateVTTEvent {
   ValidRecipientAddressEvent({required this.address});
 }
 
+
 class AddValueTransferInputEvent extends CreateVTTEvent {
   final Input input;
   AddValueTransferInputEvent({required this.input});
 }
+
+class BuildTransactionEvent extends CreateVTTEvent {}
+
+class ValidateTransactionEvent extends CreateVTTEvent {}
 
 class SignTransactionEvent extends CreateVTTEvent {
   final String password;
@@ -78,11 +83,15 @@ class BuildingVTTState extends CreateVTTState {
   final List<Input> inputs;
   BuildingVTTState({required this.inputs, required this.outputs});
 }
+class BusyState extends CreateVTTState {}
 
 class SigningState extends CreateVTTState {}
 
 class SendingState extends CreateVTTState {}
-
+class TransactionAcceptedState extends CreateVTTState {
+  final VTTransaction vtTransaction;
+  TransactionAcceptedState({required this.vtTransaction});
+}
 class FinishState extends CreateVTTState {
   final VTTransaction vtTransaction;
   FinishState({required this.vtTransaction});
@@ -136,11 +145,11 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
     feeType = newFeeType;
     switch (feeType) {
       case FeeType.Absolute:
-        print('Absolute Fee: $feeNanoWit NanoWit.');
+        // print('Absolute Fee: $feeNanoWit NanoWit.');
         this.feeNanoWit = feeNanoWit;
         break;
       case FeeType.Weighted:
-        print('Weighted Fee: ${getFee()}');
+        // print('Weighted Fee: ${getFee()}');
         break;
     }
   }
@@ -174,6 +183,7 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
 
   Future<void> setDbWallet(DbWallet? newDbWallet) async{
     if(newDbWallet != null){
+      utxos.clear();
       this.dbWallet = newDbWallet;
       balanceNanoWit = 0;
       /// setup the external accounts
@@ -213,12 +223,11 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
       if(!changeAccountSet){
         ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
         Account changeAccount = await apiCrypto.generateAccount(KeyType.internal, internalAddresses.length+1);
-        print(changeAccount.address);
-        //dbWallet.internalAccounts[internalAddresses.length+1] = changeAccount;
-        //await Locator.instance<ApiDatabase>().saveDbWallet(dbWallet);
+
       }
 
       /// update the utxo pool
+      utxoPool.clear();
       utxos.forEach((utxo) {
         utxoPool.insert(utxo);
       });
@@ -235,66 +244,101 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
     receivers.clear();
   }
 
-  VTTransactionBody buildTransactionBody(){
+  void buildTransactionBody(){
 
-    int valueOwed = 0;
-    int valuePaid = 0;
-    int valueChange = 0;
-    /// calculate value owed
-    outputs.forEach((element) {
-      valueOwed += element.value;
-    });
-    /// compare to balance
-    print('Balance: $balanceNanoWit');
-    if(balanceNanoWit < valueOwed){
-      /// TODO:: throw insufficient funds exception
-    } else {
-      /// get utxos from the pool
-      selectedUtxos = selectUtxos();
+    int valueOwedNanoWit = 0;
+    int valuePaidNanoWit = 0;
+    int valueChangeNanoWit = 0;
+
+
+    try {
+
+      /// calculate value owed
+      outputs.map((e) => null);
+
+      bool containsChangeAddress = false;
+      int changeIndex = 0 ;
+      int outIdx = 0;
+      outputs.forEach((element) {
+        if (element.pkh.address == changeAccount.address) {
+          /// check if a change address is already in the outputs
+          containsChangeAddress = true;
+          changeIndex = outIdx;
+        }
+        outIdx += 1;
+      });
+
+      if(containsChangeAddress) {
+        
+        outputs.removeAt(changeIndex);
+      }
+          outputs.forEach((element) {
+          ///
+          valueOwedNanoWit += element.value;
+
+      });
       /// sets the fee weighted and absolute
       feeNanoWit = getFee();
-      valueOwed += feeNanoWit;
-      /// convert utxo to input
-      selectedUtxos.forEach((utxo) {
-        inputs.add(utxo.toInput());
-        /// track value
-        valuePaid += utxo.value;
-      });
-    }
+      valueOwedNanoWit += feeNanoWit;
+      /// compare to balance
+      if (balanceNanoWit < valueOwedNanoWit) {
+        /// TODO:: throw insufficient funds exception
+      } else {
+        /// get utxos from the pool
+        selectedUtxos = utxoPool.cover(amountNanoWit: valueOwedNanoWit, utxoStrategy: utxoSelectionStrategy);
 
-    if (feeType == FeeType.Weighted) {
-      /// calculate change
-      valueChange = (valuePaid - valueOwed);
-      ///
-      if (valueChange > 0) {
-        // add change
-        // +1 to the outputs length to include for change address
-        feeNanoWit = getFee(1);
-        valueChange = (valuePaid - valueOwed);
-        outputs.add(ValueTransferOutput.fromJson({
-          'pkh': changeAccount.address,
-          'value': valueChange,
-          'time_lock': 0,
-        }));
+        // print('Selected UTXOS: ${List<String>.from(selectedUtxos.map((e) => e.outputPointer.rawJson))}');
+
+
+
+
+        /// convert utxo to input
+        /// '
+        inputs.clear();
+        for (int i = 0; i < selectedUtxos.length; i++) {
+          Utxo currentUtxo = selectedUtxos[i];
+          Input _input = currentUtxo.toInput();
+          inputs.add(_input);
+          valuePaidNanoWit += currentUtxo.value;
+        }
       }
 
-    } else {
-      feeNanoWit = getFee();
-      // feeType == Absolute
-      valueChange = (valuePaid - valueOwed);
-      if (valueChange > 0) {
-        outputs.add(ValueTransferOutput.fromJson({
-          'pkh': changeAccount.address,
-          'value': valueChange,
-          'time_lock': 0,
-        }));
+      if (feeType == FeeType.Weighted) {
+        /// calculate change
+        valueChangeNanoWit = (valuePaidNanoWit - valueOwedNanoWit);
+
+        ///
+        if (valueChangeNanoWit > 0) {
+          // add change
+          // +1 to the outputs length to include for change address
+          feeNanoWit = getFee(1);
+          valueChangeNanoWit = (valuePaidNanoWit - valueOwedNanoWit);
+
+          outputs.add(ValueTransferOutput.fromJson({
+            'pkh': changeAccount.address,
+            'value': valueChangeNanoWit,
+            'time_lock': 0,
+          }));
+        }
+      } else {
+        feeNanoWit = getFee();
+        valueChangeNanoWit = (valuePaidNanoWit - valueOwedNanoWit);
+        if (valueChangeNanoWit > 0) {
+          outputs.add(ValueTransferOutput.fromJson({
+            'pkh': changeAccount.address,
+            'value': valueChangeNanoWit,
+            'time_lock': 0,
+          }));
+        }
       }
+    } catch(e) {
+      rethrow;
     }
-    return VTTransactionBody(inputs: inputs, outputs: outputs);
   }
 
   /// signTransaction
-  ///
+  /// transactionBody [VTTransactionBody]
+  /// password [String]
   Future<VTTransaction> signTransaction({
     required VTTransactionBody transactionBody,
     required String password
@@ -311,31 +355,24 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
       Map<String, int> signingRequirements = {};
       List<String> signers = [];
 
+      // print(List<String>.from(selectedUtxos.map((e) => e.outputPointer.rawJson)));
       selectedUtxos.forEach((selectedUtxo) {
 
         dbWallet.externalAccounts.forEach((index, value) {
-          print('$index - ${value.address}');
           if (value.utxos.contains(selectedUtxo)) {
-            print('adding signer: ${value.path}');
-
-            if(signingRequirements.containsKey(value.path)){
-              signingRequirements.update(value.path, (sigValue) => sigValue += 1);
-            } else {
-              signingRequirements[value.path] = 1;
-            }
+            // print('adding signer: ${value.path} ${value.address} for ${selectedUtxo.outputPointer.rawJson}');
             signers.add(value.path);
           }
         });
 
         dbWallet.internalAccounts.forEach((index, value) {
           if (value.utxos.contains(selectedUtxo)) {
-
-          }
           signers.add(value.path);
+          // print('adding signer: ${value.path} ${value.address} for ${selectedUtxo.outputPointer.rawJson}');
+          }
         });
 
       });
-      print(signers);
       cryptoIsolate.send(
           method: 'signTransaction',
           params: {
@@ -353,9 +390,7 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
           signatures.add(KeyedSignature.fromJson(element));
         });
       });
-/*
-{"transaction":{"ValueTransfer":{"body":{"inputs":[{"output_pointer":"746e67940d78316afceef50966c7a133cce42e98098cf0ef9c74686b4b4125a7:0"}],"outputs":[{"pkh":"wit1597ry956a2rsc80ayye9w3rgckfwtasals6wv7","time_lock":0,"value":1000},{"pkh":"wit1ykpatn87jgahnzmlx647wtyarzurey8s6fh3ms","time_lock":0,"value":9998998}]},"signatures":[{"public_key":{"bytes":"7c2363370f0faac449b09a99d9170b096826d6389f7c486f694d82bb2135732d","compressed":2},"signature":{"Secp256k1":{"der":"30450221009aea587e049cfa6203fb7884ea2dc77c7b7577bb23269589aebc2da7b12af87102206864a4c92a78353e54f48135a1c79782c536c882786b362090bc5fdca5897cbc"}}}]}}}
- */
+
       return VTTransaction(
         body: transactionBody,
         signatures: signatures
@@ -390,22 +425,21 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
     try {
       switch (event.runtimeType) {
 
-        /// -----------------------------------------------------------------
+        /// 
         case AddValueTransferOutputEvent:
           event as AddValueTransferOutputEvent;
+          yield BusyState();
           addOutput(event.output);
           buildTransactionBody();
           yield BuildingVTTState(inputs: inputs, outputs: outputs);
           break;
 
-        /// -----------------------------------------------------------------
-        case AddValueTransferInputEvent:
-          event as AddValueTransferInputEvent;
-          inputs.add(event.input);
-          yield BuildingVTTState(inputs: inputs, outputs: outputs);
-          break;
+        ///
+          
+        /// 
 
-        /// -----------------------------------------------------------------
+          
+
         /// sign the transaction
         case SignTransactionEvent:
           event as SignTransactionEvent;
@@ -424,15 +458,21 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
 
           break;
 
-        /// -----------------------------------------------------------------
+        /// 
 
         case SendTransactionEvent:
           event as SendTransactionEvent;
+          yield(SendingState());
           bool transactionAccepted = await sendTransaction(event.transaction);
-          print(transactionAccepted);
+
+          if(transactionAccepted){
+            yield TransactionAcceptedState(vtTransaction: event.transaction);
+          } else {
+            yield ErrorState(errorMsg: 'Error Sending Transaction');
+          }
           break;
 
-        /// -----------------------------------------------------------------
+        /// 
         case UpdateFeeEvent:
           event as UpdateFeeEvent;
           if (event.feeNanoWit != null) {
@@ -442,27 +482,49 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
           }
           break;
 
-        /// -----------------------------------------------------------------
+        /// 
         case UpdateUtxoSelectionStrategyEvent:
           event as UpdateUtxoSelectionStrategyEvent;
           utxoSelectionStrategy = event.strategy;
           break;
 
-        /// -----------------------------------------------------------------
+        /// 
         case ValidRecipientAddressEvent:
           break;
 
-        /// -----------------------------------------------------------------
+        /// 
         case AddSourceWalletEvent:
           event as AddSourceWalletEvent;
           setDbWallet(event.dbWallet);
           yield BuildingVTTState(inputs: inputs, outputs: outputs);
           break;
-        /// -----------------------------------------------------------------
+        /// 
         case ResetTransactionEvent:
           resetTransaction();
           yield BuildingVTTState(inputs: inputs, outputs: outputs);
           break;
+
+        case ValidateTransactionEvent:
+        /// ensure that the wallet has sufficient funds
+
+          int utxoValueNanoWit = selectedUtxos
+              .map((Utxo utxo) => utxo.value)
+              .toList()
+              .reduce((value, element) => value + element);
+          int outputValueNanoWit = outputs
+              .map((ValueTransferOutput output) => output.value)
+              .toList()
+              .reduce((value, element) => value + element);
+
+          int feeValueNanoWit = feeNanoWit;
+          int walletBalanceNanoWit = dbWallet.balanceNanoWit();
+
+          if(walletBalanceNanoWit<=(outputValueNanoWit + feeValueNanoWit)){
+            yield BuildingVTTState(inputs: inputs, outputs: outputs);
+          } else {
+            yield ErrorState(errorMsg: 'Insufficient Funds');
+          }
+
       }
 
     } catch (e) {}
