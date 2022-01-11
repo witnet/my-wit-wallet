@@ -47,3 +47,4 @@ app.*.map.json
 *.env
 # dev folder
 /dev/
+pubspec.lock
