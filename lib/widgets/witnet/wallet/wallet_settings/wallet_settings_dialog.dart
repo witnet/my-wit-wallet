@@ -27,12 +27,12 @@ class AccountCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
-                flex: 1,
+                flex: 5,
                 child:Column(
                   children: [AutoSizeText(
-                  account.path.split('/').last,
+                  account.address,
                   maxLines: 1,
-                  minFontSize: 9,
+                  minFontSize: 12,
                 )]
                 ),
               ),
@@ -151,11 +151,11 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog>{
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
-                    flex: 1,
+                    flex: 5,
                     child:Column(
                         children: [
                           AutoSizeText(
-                            'Index',
+                            'Address',
                             maxLines: 1,
                             minFontSize: 9,
                           ),
@@ -203,11 +203,11 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog>{
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
-                    flex: 1,
+                    flex: 5,
                     child:Column(
                         children: [
                           AutoSizeText(
-                            'Index',
+                            'Address',
                             maxLines: 1,
                             minFontSize: 9,
                           ),
