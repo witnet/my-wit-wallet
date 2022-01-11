@@ -29,3 +29,6 @@ Map<String, String> WIT_UNIT = {
   'MICRO': 'microWit',
   'NANO': 'nanoWit',
 };
+
+const int EXTERNAL_GAP_LIMIT = 20;
+const int INTERNAL_GAP_LIMIT = 1;
