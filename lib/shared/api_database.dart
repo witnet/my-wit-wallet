@@ -146,7 +146,7 @@ class ApiDatabase {
   }
 
 
-  Future<void> syncAccount(Account account) async {}
+
 
   Future<void> saveDbWallet(DbWallet dbWallet) async{
     await writeDatabaseRecord(key: 'xprv', value: dbWallet.xprv);
