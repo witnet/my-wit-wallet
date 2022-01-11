@@ -22,7 +22,7 @@ class QrAddressGeneratorState extends State<QrAddressGenerator> {
       future: _loadOverlayImage(),
       builder: (ctx, snapshot) {
         final size =
-            (deviceSize.width > 300) ? 300 * 0.8 : deviceSize.width * 0.8;
+            (deviceSize.width > 175) ? 175.0 : 175 * 0.7;
         if (!snapshot.hasData) {
           return Container(width: size, height: size);
         }
