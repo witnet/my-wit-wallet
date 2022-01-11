@@ -29,9 +29,9 @@ class  BlocStatusVtt extends Bloc<VttStatusEvent, VttStatusState> {
     ApiExplorer apiExplorer = Locator.instance.get<ApiExplorer>();
     try{
       var status = await apiExplorer.getStatus();
-      print(status.toRawJson());
+
       var response = await apiExplorer.hash(transactionHash);
-      print(response.runtimeType);
+
     } catch (e){
     }
 
@@ -49,4 +49,5 @@ class  BlocStatusVtt extends Bloc<VttStatusEvent, VttStatusState> {
     }
 
   }
+
 }
