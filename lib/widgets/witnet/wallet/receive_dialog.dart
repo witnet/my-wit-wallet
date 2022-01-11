@@ -8,7 +8,9 @@ import 'package:witnet_wallet/widgets/round_button.dart';
 
 class ReceiveDialogBox extends StatefulWidget {
   final DbWallet dbWallet;
-  ReceiveDialogBox({required this.dbWallet,});
+  ReceiveDialogBox({
+    required this.dbWallet,
+  });
 
   @override
   State<ReceiveDialogBox> createState() => ReceiveDialogBoxState();
@@ -27,16 +29,15 @@ class ReceiveDialogBoxState extends State<ReceiveDialogBox>
       duration: const Duration(milliseconds: 200),
     );
     bool foundAddress = false;
-    for (int i = widget.dbWallet.externalAccounts.length-1; i >= 0; i--) {
-      if (nextAddress == '') {
 
-        if(!foundAddress){
-          if (widget.dbWallet.externalAccounts[i]!.utxos.isNotEmpty) {
+    for (int i = 0 ; i < widget.dbWallet.externalAccounts.length; i++) {
+      if (nextAddress == '') {
+        if (!foundAddress) {
+          if (widget.dbWallet.externalAccounts[i]!.vttHashes.isEmpty) {
             foundAddress = true;
-            nextAddress =widget.dbWallet.externalAccounts[i+1]!.address;
+            nextAddress = widget.dbWallet.externalAccounts[i]!.address;
           }
         }
-
       }
     }
     _loadingController.forward();
@@ -110,9 +111,22 @@ class ReceiveDialogBoxState extends State<ReceiveDialogBox>
 
   @override
   Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
+    final double cardWidth =
+    (deviceSize.width < 600.0) ? deviceSize.width : 600;
     return Dialog(
-        insetPadding: EdgeInsets.all(0),
-        elevation: 0,
-        child: contentBox(context));
+      insetPadding: EdgeInsets.all(0),
+      elevation: 0,
+      child: new GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: Container(
+          decoration: BoxDecoration(),
+          width: (deviceSize.width > 300) ? 300 : deviceSize.width * 0.8,
+          child: contentBox(context),
+        ),
+      ),
+    );
   }
 }
