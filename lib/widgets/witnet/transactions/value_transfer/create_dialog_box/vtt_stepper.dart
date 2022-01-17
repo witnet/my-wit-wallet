@@ -5,6 +5,7 @@ import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
+import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/recipient_address_input.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/01_recipient_step.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/02_review_step.dart';
@@ -12,7 +13,9 @@ import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_
 import '../../fee_type_selector_chip.dart';
 
 class VttStepper extends StatefulWidget {
-  VttStepper();
+  final DbWallet dbWallet;
+
+  VttStepper({required this.dbWallet});
   @override
   State<StatefulWidget> createState() => VttStepperState();
 }
@@ -26,25 +29,22 @@ class VttStepperState extends State<VttStepper> {
   @override
   void initState() {
     super.initState();
-
-
   }
 
   void addValueTransferOutput(
       {required String pkh, required double witValue, required int timeLock}) {
     setState(() {
-      BlocProvider.of<BlocCreateVTT>(context)
-        .add(AddValueTransferOutputEvent(
-        output: ValueTransferOutput.fromJson({
-          'pkh': pkh,
-          'value': witToNanoWit(witValue),
-          'time_lock': timeLock,
-        }),
+      BlocProvider.of<BlocCreateVTT>(context).add(
+        AddValueTransferOutputEvent(
+          output: ValueTransferOutput.fromJson({
+            'pkh': pkh,
+            'value': witToNanoWit(witValue),
+            'time_lock': timeLock,
+          }),
         ),
       );
     });
   }
-
 
   void onStepCancel() {
     if (_index > 0) {
@@ -80,7 +80,8 @@ class VttStepperState extends State<VttStepper> {
     return false;
   }
 
-  Widget controlsBuilder(BuildContext context, ControlsDetails controlsDetails) {
+  Widget controlsBuilder(
+      BuildContext context, ControlsDetails controlsDetails) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[],
@@ -123,15 +124,7 @@ class VttStepperState extends State<VttStepper> {
             //TransactionSettingsStep(),
           ),
         ),
-        Step(
-          title: Text('Sign and Send'),
-          content: Container(
-            child: FeeTypeSelectorChip(),
-          ),
-        ),
       ],
     );
   }
 }
-
-

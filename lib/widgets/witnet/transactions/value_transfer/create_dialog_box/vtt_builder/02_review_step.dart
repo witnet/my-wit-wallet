@@ -52,8 +52,11 @@ class ReviewStepState extends State<ReviewStep>
 
   Widget contentBox(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
     return Container(
       width: deviceSize.width,
+
+      decoration: BoxDecoration(color: theme.splashColor.withOpacity(.1)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -150,7 +153,7 @@ class ReviewStepState extends State<ReviewStep>
     return BlocBuilder<BlocCreateVTT, CreateVTTState>(
         builder: (context, state) {
       final deviceSize = MediaQuery.of(context).size;
-      final theme = Theme.of(context);
+
       double cardWidth;
       if (deviceSize.width > 400) {
         cardWidth = (400 * 0.7);
@@ -159,7 +162,6 @@ class ReviewStepState extends State<ReviewStep>
       if (state is BuildingVTTState) {
         return Container(
           width: cardWidth,
-          decoration: BoxDecoration(color: theme.primaryColor.withOpacity(.1)),
           child: Column(
             children: [
               Row(
@@ -217,7 +219,6 @@ class ReviewStepState extends State<ReviewStep>
       if (state is BuildingVTTState) {
         return Container(
           width: cardWidth,
-          decoration: BoxDecoration(color: theme.primaryColor.withOpacity(.1)),
           child: Column(
             children: [
               Row(
@@ -243,7 +244,9 @@ class ReviewStepState extends State<ReviewStep>
         );
       }
       return Container(
-        child: Column(),
+        child: Column(
+
+        ),
       );
     });
   }
@@ -274,7 +277,6 @@ class ReviewStepState extends State<ReviewStep>
       if (state is BuildingVTTState) {
         return Container(
           width: cardWidth,
-          decoration: BoxDecoration(color: theme.primaryColor.withOpacity(.1)),
           child: Column(
             children: [
               Row(
@@ -311,7 +313,6 @@ class ReviewStepState extends State<ReviewStep>
       if (state is BuildingVTTState) {
         return Container(
           width: cardWidth,
-          decoration: BoxDecoration(color: theme.primaryColor.withOpacity(.1)),
           child: Column(
             children: [
               Row(

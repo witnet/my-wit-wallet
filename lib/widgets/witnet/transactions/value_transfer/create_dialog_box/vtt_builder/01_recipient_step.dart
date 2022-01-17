@@ -7,12 +7,13 @@ import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
 import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
+import 'package:witnet_wallet/widgets/witnet/transactions/time_lock_calendar/datetime_picker.dart';
 
 import '../../../../../auto_size_text.dart';
+import '../../../fee_type_selector_chip.dart';
 import '../../value_transfer_output_container.dart';
 import '../advanced_settings_panel.dart';
 import '../recipient_address_input.dart';
-
 
 class RecipientStep extends StatefulWidget {
   final VoidCallback? onStepCancel;
@@ -33,21 +34,23 @@ class RecipientStep extends StatefulWidget {
 class RecipientStepState extends State<RecipientStep>
     with SingleTickerProviderStateMixin {
   String recipientAddress = '';
-  double witValue = 0;
+  double valueWit = 0;
   int timeLock = 0;
   int balanceNanoWit = 0;
   late TextEditingController _addressController;
-  late TextEditingController _valueController;
+  final TextEditingController _valueController = TextEditingController();
+
   late TextEditingController _timeLockController;
   late AnimationController _loadingController;
   late DbWallet _dbWallet;
+  late DateTime selectedTimelock;
+  bool timelockSet = false;
+
+  bool useTimelock = false;
   @override
   void initState() {
     _addressController = TextEditingController();
-    _valueController = TextEditingController();
-    _valueController.addListener(() {
 
-    });
     _timeLockController = TextEditingController();
     _loadingController = AnimationController(
       vsync: this,
@@ -55,6 +58,7 @@ class RecipientStepState extends State<RecipientStep>
     );
     _dbWallet = BlocProvider.of<BlocCreateVTT>(context).dbWallet;
     balanceNanoWit = _dbWallet.balanceNanoWit();
+
     super.initState();
   }
 
@@ -64,11 +68,102 @@ class RecipientStepState extends State<RecipientStep>
     super.dispose();
   }
 
+  String? get _errorText {
+    final text = _valueController.value.text;
+    if (text == '') {
+      return null;
+    }
+
+    if (valueWit > balanceNanoWit) {
+      return 'Insufficient Funds';
+    }
+  }
+
+  Widget buildValueInput(BuildContext context) {
+    return ValueListenableBuilder(
+      // Note: pass _controller to the animation argument
+      valueListenable: _valueController,
+      builder: (context, TextEditingValue value, __) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              flex: 7,
+              child: Column(
+                children: [
+                  TextField(
+                    textAlign: TextAlign.right,
+                    controller: _valueController,
+                    onChanged: (String value) {
+                      int outputValueNanoWit = 0;
+                      String changeAddress =
+                          BlocProvider.of<BlocCreateVTT>(context)
+                              .changeAccount
+                              .address;
+                      BlocProvider.of<BlocCreateVTT>(context)
+                          .outputs
+                          .forEach((element) {
+                        if (element.pkh.address != changeAddress) {
+                          outputValueNanoWit += element.value;
+                        }
+                      });
+                      setState(() {
+                        if (value == '') {
+                          valueWit = 0;
+                          balanceNanoWit =
+                              _dbWallet.balanceNanoWit() - outputValueNanoWit;
+                        } else {
+                          valueWit = double.parse(value);
+
+                          balanceNanoWit = _dbWallet.balanceNanoWit() -
+                              outputValueNanoWit -
+                              witToNanoWit(valueWit);
+                        }
+                      });
+                    },
+                    decoration: new InputDecoration(
+                        labelText: "Amount", errorText: _errorText),
+                    keyboardType:
+                        TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d+\.?\d{0,9}')),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              flex: 1,
+              child: Column(
+                children: [
+                  //Icon(FontAwesomeIcons.box,size: 15,)
+                  AutoSizeText(
+                    'WIT',
+                    maxLines: 1,
+                    minFontSize: 9,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 7,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   bool validAddress(String address) {
     if (address.length == 42) {
       try {
         Address _address = Address.fromAddress(address);
-        assert (_address.address.isNotEmpty);
+        assert(_address.address.isNotEmpty);
         return true;
       } catch (e) {
         return false;
@@ -85,11 +180,12 @@ class RecipientStepState extends State<RecipientStep>
       String address = outputs[i].pkh.address;
       bool isChangeAccount = false;
       _dbWallet.internalAccounts.forEach((index, account) {
-        if(account.address == address) isChangeAccount = true;
+        if (account.address == address) isChangeAccount = true;
       });
-      /// only add a card if it is not a change account
-      if(!isChangeAccount) _cards.add(ValueTransferOutputContainer(vto: outputs[i]));
 
+      /// only add a card if it is not a change account
+      if (!isChangeAccount)
+        _cards.add(ValueTransferOutputContainer(vto: outputs[i]));
     }
     return Container(
       child: Column(
@@ -144,55 +240,49 @@ class RecipientStepState extends State<RecipientStep>
     });
   }
 
-  //////////////////////////////////////////////////////////////////////////////
   bool validVTO(String address) {
-    if (!validAddress(address) || witValue == 0) {
-      return false;
-    }
+    if (!validAddress(address) || valueWit == 0) return false;
+    if (nanoWitToWit(balanceNanoWit) < 0) return false;
     return true;
   }
 
+  bool _addVTO(BuildContext context) {
+    BlocProvider.of<BlocCreateVTT>(context).add(AddValueTransferOutputEvent(
+        output: ValueTransferOutput.fromJson({
+      'pkh': recipientAddress,
+      'value': witToNanoWit(valueWit),
+      'time_lock': timeLock
+    })));
 
-  int _estimatedFeeNanoWit(){
-
-
-    return 0;
-  }
-
-  bool _validAmount(){
-    if(witValue<_dbWallet.balanceNanoWit()){
-
-    }
-
-    return false;
-  }
-  bool _addVTO(BuildContext context, ){
-
-    BlocProvider.of<BlocCreateVTT>(context).add(
-        AddValueTransferOutputEvent(output: ValueTransferOutput.fromJson({
-          'pkh': recipientAddress,
-          'value': witToNanoWit(witValue),
-          'time_lock': timeLock
-        })
-        ));
-    //widget.onStepContinue!.call();
     setState(() {
       _addressController.text = '';
       recipientAddress = '';
-      witValue = 0;
+      valueWit = 0;
       _valueController.text = '';
-
     });
 
     return false;
   }
 
+  bool isTimelockSet() {
+    bool _set = BlocProvider.of<BlocCreateVTT>(context).timelockSet;
+    if (_set) {
+      timeLock = BlocProvider.of<BlocCreateVTT>(context)
+              .selectedTimelock!
+              .millisecondsSinceEpoch ~/
+          1000;
+    }
+    return _set;
+  }
+
+  DateTime? getTimelock() {
+    return BlocProvider.of<BlocCreateVTT>(context).selectedTimelock;
+  }
+
   Widget _buildRecipientInput() {
     {
       return Container(
-        decoration: BoxDecoration(
-            //border: Border.all(color: Colors.grey)
-            ),
+        decoration: BoxDecoration(),
         child: Column(
           children: [
             Row(
@@ -235,68 +325,74 @@ class RecipientStepState extends State<RecipientStep>
     }
   }
 
-  Widget _buildValueInput() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Expanded(
-          flex: 7,
-          child: Column(
+  Future<void> _showDateTimePicker() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return DateTimePicker();
+      },
+    );
+  }
+
+  Widget _feeBody(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(5),
+      child: Column(
+        children: [
+          // _buildTimeLockInput(),
+          Row(
             children: [
-              TextField(
-                textAlign: TextAlign.right,
-                controller: _valueController,
-                onChanged: (String value) {
-                  setState(() {
-                    if (value == '') {
-                      witValue = 0;
-                    } else{
-                      witValue = double.parse(value);
-                    }
-                  });
-                },
-                decoration: new InputDecoration(labelText: "Amount"),
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,9}')),
-                ],
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        Expanded(
-          flex: 1,
-          child: Column(
-            children: [
-              Image.asset('assets/img/favicon.ico'),
-              //Icon(FontAwesomeIcons.box,size: 15,)
-            ],
-          ),
-        ),
-        SizedBox(
-          width: 7,
-        ),
-        Expanded(
-          flex: 1,
-          child: Column(
-            children: [
-              //Icon(FontAwesomeIcons.box,size: 15,)
               AutoSizeText(
-                'WIT',
+                'Fee Type',
                 maxLines: 1,
                 minFontSize: 9,
               ),
+              Tooltip(
+                  height: 100,
+                  message:
+                      'By default, \'Weighted fee\' is selected.\n\nThe amount of the fee will be calculated, taking into account the weight of the transaction.\n\nTo set an absolute fee, you need to toggle \'Absolute fee\' in the advance options below.',
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      FontAwesomeIcons.questionCircle,
+                      size: 15,
+                    ),
+                    iconSize: 10,
+                    padding: EdgeInsets.all(3),
+                  )),
             ],
           ),
-        ),
-        SizedBox(
-          width: 7,
-        ),
-      ],
+
+          FeeTypeSelectorChip(),
+          /*
+          Row(
+            children: [
+              AutoSizeText(
+                'Utxo Selection Strategy',
+                maxLines: 1,
+                minFontSize: 9,
+              ),
+              Tooltip(
+                  height: 75,
+                  textStyle: TextStyle(fontSize: 12, color: Colors.white),
+                  margin: EdgeInsets.only(left: 20, right: 20),
+                  preferBelow: false,
+                  message: 'Strategy to sort our own unspent outputs pool',
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      FontAwesomeIcons.questionCircle,
+                      size: 15,
+                    ),
+                    iconSize: 10,
+                    padding: EdgeInsets.all(3),
+                  )),
+
+           */
+          //UtxoSelectionStrategyChip(),
+        ],
+      ),
     );
   }
 
@@ -305,35 +401,27 @@ class RecipientStepState extends State<RecipientStep>
       mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
-          flex: 8,
-          child: Container(
-            //height: deviceSize.width/3,
-            child: TextField(
-                controller: _timeLockController,
-                textAlign: TextAlign.right,
-                decoration: new InputDecoration(
-                  labelText: "Time Lock",
-                  hintText: '0',
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    timeLock = int.parse(value);
-                    if (value.isEmpty) timeLock = 0;
-                  });
-                },
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
-                ]),
-          ),
-        ),
+            flex: 4,
+            child: Column(
+              children: [
+                (isTimelockSet())
+                    ? Container(
+                        child: Text('${getTimelock().toString()}'),
+                      )
+                    : Container(
+                        child: Text('Timelock: (none)'),
+                      )
+              ],
+            )),
         SizedBox(
           width: 7,
         ),
         Expanded(
             flex: 1,
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                _showDateTimePicker();
+              },
               icon: Icon(
                 FontAwesomeIcons.calendarAlt,
               ),
@@ -343,9 +431,6 @@ class RecipientStepState extends State<RecipientStep>
         Expanded(
           flex: 1,
           child: Tooltip(
-              height: 75,
-              textStyle: TextStyle(fontSize: 12, color: Colors.white),
-              margin: EdgeInsets.only(left: 20, right: 20),
               preferBelow: false,
               message:
                   'Time Lock is a unix `TimeStamp`.\nNeed to implement the calendar',
@@ -359,54 +444,81 @@ class RecipientStepState extends State<RecipientStep>
                 padding: EdgeInsets.all(3),
               )),
         )
-        //
       ],
     );
   }
 
   Widget buildForm(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       alignment: Alignment.topCenter,
       child: Column(
         children: [
           Row(
             children: [
-              SizedBox(height: 5,),
+              SizedBox(
+                height: 5,
+              ),
             ],
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-             // AutoSizeText('Available Balance: ${nanoWitToWit(_dbWallet.balanceNanoWit())} Wit'),
-            ],
-          ),
-          
-          
-          Row(
-            children: [
-              SizedBox(height: 5,),
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: AutoSizeText(
+                    'Available Funds: ',
+                    maxLines: 1,
+                    minFontSize: 12,
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w300,
+                        color: theme.primaryColor),
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: AutoSizeText(
+                    '${nanoWitToWit(balanceNanoWit)} wit',
+                    maxLines: 1,
+                    minFontSize: 12,
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: theme.primaryColor),
+                  ),
+                ),
+              ),
             ],
           ),
           _buildRecipientInput(),
           SizedBox(
-            height: 5,
+            height: 15,
           ),
-          if (validAddress(recipientAddress)) _buildValueInput(),
+          if (validAddress(recipientAddress)) buildValueInput(context),
           SizedBox(
             height: 5,
           ),
-          //if (validAddress(recipientAddress)) _buildTimeLockInput(),
+          if (validAddress(recipientAddress)) buildTimeLockInput(),
           SizedBox(
             height: 5,
           ),
           outputCards(),
-          AdvancedVttSettingsPanel(),
+          _feeBody(context),
           Row(
             children: [
               if (validVTO(recipientAddress))
                 TextButton(
                   onPressed: () {
                     _addVTO(context);
-                    BlocProvider.of<BlocCreateVTT>(context).add(ValidateTransactionEvent());
+                    BlocProvider.of<BlocCreateVTT>(context)
+                        .add(ValidateTransactionEvent());
                   },
                   child: const Text('Additional Recipient'),
                 ),
@@ -414,7 +526,8 @@ class RecipientStepState extends State<RecipientStep>
                 TextButton(
                   onPressed: () {
                     _addVTO(context);
-                    BlocProvider.of<BlocCreateVTT>(context).add(ValidateTransactionEvent());
+                    BlocProvider.of<BlocCreateVTT>(context)
+                        .add(ValidateTransactionEvent());
                     widget.onStepContinue!.call();
                   },
                   child: const Text('Continue'),
@@ -430,7 +543,7 @@ class RecipientStepState extends State<RecipientStep>
   Widget build(BuildContext context) {
     return BlocBuilder<BlocCreateVTT, CreateVTTState>(
       builder: (context, state) {
-        if(state is InitialState) {
+        if (state is InitialState) {
           return buildForm(context);
         }
         if (state is BuildingVTTState) {
@@ -443,15 +556,7 @@ class RecipientStepState extends State<RecipientStep>
               SizedBox(
                 height: 5,
               ),
-              if (validAddress(recipientAddress)) _buildValueInput(),
-              SizedBox(
-                height: 5,
-              ),
-             //if (validAddress(recipientAddress)) _buildTimeLockInput(),
-              SizedBox(
-                height: 5,
-              ),
-              outputCards(),
+              if (validAddress(recipientAddress)) buildValueInput(context),
             ],
           ),
         );

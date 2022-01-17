@@ -28,15 +28,6 @@ class InputContainer extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                  flex: 1,
-                  child: Icon(
-                    FontAwesomeIcons.fileInvoice,
-                    color: theme.accentColor,
-                  )),
-              SizedBox(
-                width: 3,
-              ),
-              Expanded(
                   flex: 9,
                   child: AutoSizeText(
                     inputUtxo.address,

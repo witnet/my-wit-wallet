@@ -101,9 +101,6 @@ class AdvancedVttSettingsPanelState extends State<AdvancedVttSettingsPanel> {
 
               Tooltip(
                   height: 100,
-                  textStyle: TextStyle(fontSize: 12, color: Colors.white),
-                  margin: EdgeInsets.only(left: 20, right: 20),
-                  preferBelow: false,
                   message:
                   'By default, \'Weighted fee\' is selected.\n\nThe amount of the fee will be calculated, taking into account the weight of the transaction.\n\nTo set an absolute fee, you need to toggle \'Absolute fee\' in the advance options below.',
                   child: IconButton(

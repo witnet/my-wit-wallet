@@ -251,7 +251,6 @@ class DashboardScreenState extends State<DashboardScreen>
     return BlocConsumer<BlocExplorer,ExplorerState>(builder: (context, state) {
       final theme = Theme.of(context);
 
-
       if (state is ReadyState) {
         return Column(
           children: <Widget>[
@@ -377,7 +376,7 @@ class DashboardScreenState extends State<DashboardScreen>
           _body = Container(
             width: double.infinity,
             height: double.infinity,
-            color: theme.primaryColor.withOpacity(.1),
+            color: theme.canvasColor.withOpacity(.9),
             child: Stack(
               children: <Widget>[
                 Column(

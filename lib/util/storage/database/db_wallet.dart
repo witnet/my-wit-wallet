@@ -1,4 +1,3 @@
-
 import 'dart:core';
 import 'dart:isolate';
 
@@ -7,8 +6,8 @@ import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_isolate.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
+import 'package:witnet_wallet/util/witnet/wallet/balance_info.dart';
 import 'package:witnet_wallet/util/witnet/wallet/wallet.dart';
-
 
 /// DbWallet formats the wallet for the database
 ///
@@ -22,14 +21,13 @@ class DbWallet {
     required this.externalAccounts,
     required this.internalAccounts,
     required this.lastSynced,
-
-  }){
-   externalAccounts.forEach((int index, Account account) {
-     account.setBalance();
-   });
-   internalAccounts.forEach((int index, Account account) {
-     account.setBalance();
-   });
+  }) {
+    externalAccounts.forEach((int index, Account account) {
+      account.setBalance();
+    });
+    internalAccounts.forEach((int index, Account account) {
+      account.setBalance();
+    });
   }
 
   final String walletName;
@@ -44,8 +42,11 @@ class DbWallet {
 
   int addressCount = 0;
   Map<String, Utxo> utxoSet = {};
-  void addAccount({required Account account, required int index, required KeyType keyType}){
-    switch (keyType){
+  void addAccount(
+      {required Account account,
+      required int index,
+      required KeyType keyType}) {
+    switch (keyType) {
       case KeyType.internal:
         internalAccounts[index] = account;
         break;
@@ -53,11 +54,10 @@ class DbWallet {
         externalAccounts[index] = account;
         break;
     }
-
   }
 
-  Map<String, dynamic> accountMap({required KeyType keyType})  {
-    switch (keyType){
+  Map<String, dynamic> accountMap({required KeyType keyType}) {
+    switch (keyType) {
       case KeyType.internal:
         Map<String, dynamic> _int = {};
         internalAccounts.forEach((key, value) {
@@ -72,6 +72,7 @@ class DbWallet {
         return _ext;
     }
   }
+
   Future<Account> generateKey(
       {required int index, KeyType keyType = KeyType.external}) async {
     ReceivePort response = ReceivePort();
@@ -94,22 +95,30 @@ class DbWallet {
     });
     switch (keyType) {
       case KeyType.internal:
-        internalAccounts[index] = Account(address: xpub.address, path: xpub.path!);
+        internalAccounts[index] =
+            Account(address: xpub.address, path: xpub.path!);
         return internalAccounts[index]!;
       case KeyType.external:
-        externalAccounts[index] = Account(address: xpub.address, path: xpub.path!);
+        externalAccounts[index] =
+            Account(address: xpub.address, path: xpub.path!);
         return externalAccounts[index]!;
     }
   }
 
   int balanceNanoWit() {
-    int _balanceNanoWit = 0;
+    int _availableBalanceNanoWit = 0;
+    int _lockedBalanceNanoWit = 0;
+
     internalAccounts.forEach((address, account) {
-      _balanceNanoWit += account.balance;
+      BalanceInfo balanceInfo = BalanceInfo.fromUtxoList(account.utxos);
+      _lockedBalanceNanoWit += balanceInfo.lockedNanoWit;
+      _availableBalanceNanoWit += balanceInfo.availableNanoWit;
     });
     externalAccounts.forEach((address, account) {
-      _balanceNanoWit += account.balance;
+      BalanceInfo balanceInfo = BalanceInfo.fromUtxoList(account.utxos);
+      _lockedBalanceNanoWit += balanceInfo.lockedNanoWit;
+      _availableBalanceNanoWit += balanceInfo.availableNanoWit;
     });
-    return _balanceNanoWit;
+    return _availableBalanceNanoWit;
   }
 }

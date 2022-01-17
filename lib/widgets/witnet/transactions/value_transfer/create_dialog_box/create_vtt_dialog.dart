@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/data_structures.dart';
+import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
 import 'package:witnet_wallet/util/paddings.dart';
 import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
@@ -20,8 +21,8 @@ class CreateVTTDialogBox extends StatefulWidget {
   CreateVTTDialogBoxState createState() => CreateVTTDialogBoxState();
 }
 
-class CreateVTTDialogBoxState
-    extends State<CreateVTTDialogBox> with TickerProviderStateMixin {
+class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
+    with TickerProviderStateMixin {
   late TextEditingController _nameController;
   late TextEditingController _descController;
   late AnimationController _loadingController;
@@ -53,11 +54,7 @@ class CreateVTTDialogBoxState
       duration: const Duration(milliseconds: 500),
     );
 
-    widget.dbWallet.externalAccounts.forEach((index, value) {
-      Account account = value;
-      account.setBalance();
-      availableFunds += account.balance;
-    });
+    availableFunds = widget.dbWallet.balanceNanoWit();
     _loadingController.forward();
   }
 
@@ -85,49 +82,49 @@ class CreateVTTDialogBoxState
             padding: Paddings.fromLTR(5),
             decoration: BoxDecoration(color: theme.cardColor),
             child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      Expanded(
-                        flex: 9,
-                        child: Padding(
-                          padding: EdgeInsets.all(10),
-                          child: AutoSizeText(
-                            'Value Transfer Transaction ',
-                            maxLines: 1,
-                            minFontSize: 14,
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                                color: theme.primaryColor),
-                          ),
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Expanded(
+                      flex: 9,
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: AutoSizeText(
+                          'Value Transfer Transaction ',
+                          maxLines: 1,
+                          minFontSize: 14,
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: theme.primaryColor),
                         ),
                       ),
-                      Expanded(
-                        flex: 1,
-                        child: RoundButton(
-                          onPressed: () {
-                            BlocProvider.of<BlocCreateVTT>(context)
-                                .add(ResetTransactionEvent());
-                            Navigator.of(context).pop();
-                          },
-                          icon: Text(
-                            'X',
-                            style: TextStyle(fontSize: 33),
-                          ),
-                          loadingController: _loadingController,
-                          label: '',
-                          size: 25,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: RoundButton(
+                        onPressed: () {
+                          BlocProvider.of<BlocCreateVTT>(context)
+                              .add(ResetTransactionEvent());
+                          Navigator.of(context).pop();
+                        },
+                        icon: Text(
+                          'X',
+                          style: TextStyle(fontSize: 33),
                         ),
+                        loadingController: _loadingController,
+                        label: '',
+                        size: 25,
                       ),
-                    ],
-                  ),
-                  _buildVttForm(theme, deviceSize),
-                ],
+                    ),
+                  ],
+                ),
+                _buildVttForm(theme, deviceSize),
+              ],
             ),
           ),
         ],
@@ -144,7 +141,9 @@ class CreateVTTDialogBoxState
           padding: EdgeInsets.all(0),
           child: Column(
             children: [
-              VttStepper(),
+              VttStepper(
+                dbWallet: widget.dbWallet,
+              ),
             ],
           ),
         ),
@@ -159,15 +158,15 @@ class CreateVTTDialogBoxState
       insetPadding: EdgeInsets.all(0),
       elevation: 0,
       child: new GestureDetector(
-      onTap: () {
+        onTap: () {
 /*This method here will hide the soft keyboard.*/
-    FocusScope.of(context).requestFocus(new FocusNode());
-    },
-    child:Container(
-          decoration: BoxDecoration(),
-          height: deviceSize.height,
-          child: contentBox(context)),
-    ),
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: Container(
+            decoration: BoxDecoration(),
+            height: deviceSize.height,
+            child: contentBox(context)),
+      ),
     );
   }
 }

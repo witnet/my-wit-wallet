@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
+import 'package:witnet_wallet/theme/colors.dart';
 
 import '../../../auto_size_text.dart';
 
@@ -28,7 +29,7 @@ class ValueTransferOutputContainer extends StatelessWidget {
                   flex: 1,
                   child: Icon(
                     FontAwesomeIcons.addressCard,
-                    color: theme.accentColor,
+                    color: theme.primaryColor,
                   )),
               Expanded(
                   flex: 5,
@@ -39,6 +40,7 @@ class ValueTransferOutputContainer extends StatelessWidget {
                   ))
             ],
           ),
+
           Row(
             children: [
               Expanded(
@@ -52,15 +54,8 @@ class ValueTransferOutputContainer extends StatelessWidget {
               SizedBox(
                 width: 3,
               ),
-              Expanded(
-                flex: 1,
-                child: Image.asset(
-                  'assets/img/favicon.ico',
-                ),
-              ),
-              SizedBox(
-                width: 3,
-              ),
+
+
               Expanded(
                   flex: 1,
                   child: AutoSizeText(
@@ -71,6 +66,18 @@ class ValueTransferOutputContainer extends StatelessWidget {
                   )),
             ],
           ),
+          if(vto.timeLock>0)
+            Row(children: [
+
+              Expanded(
+                  flex: 7,
+                  child: AutoSizeText(
+                    'Time locked: ${DateTime.fromMillisecondsSinceEpoch(vto.timeLock*1000)}',
+                    maxLines: 1,
+                    minFontSize: 9,
+                    textAlign: TextAlign.right,
+                  )),
+          ],),
         ],
       ),
     );
