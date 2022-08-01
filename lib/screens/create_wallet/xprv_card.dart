@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:witnet/witnet.dart';
-import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
-import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
 class EnterXprvCard extends StatefulWidget {
@@ -59,16 +59,17 @@ class EnterXprvCardState extends State<EnterXprvCard>
   }
 
   void onBack() {
-    BlocProvider.of<BlocCreateWallet>(context)
-        .add(SetStateEvent(WalletType.xprv, EnterXprvState(WalletType.xprv)));
-    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-    BlocProvider.of<BlocCreateWallet>(context).add(PreviousCardEvent(type));
+    CreateWalletState state = BlocProvider.of<CreateWalletBloc>(context).state;
+    BlocProvider.of<CreateWalletBloc>(context)
+        .add(SetWalletStateEvent(WalletType.xprv, state));
+    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void onNext() {
     Locator.instance<ApiCreateWallet>().setSeed(xprv, 'xprv');
-    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent(type));
+    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
   }
 
 
@@ -119,9 +120,9 @@ class EnterXprvCardState extends State<EnterXprvCard>
   Widget _verifyButton() {
     return ElevatedButton(
       onPressed: () {
-        WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-        BlocProvider.of<BlocCreateWallet>(context)
-            .add(VerifyXprvEvent(type, xprv));
+        WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+        BlocProvider.of<CreateWalletBloc>(context)
+            .add(VerifyXprvEvent(type, xprv: xprv));
         try {
           setState(() {
             _xprvVerified = validXprv(xprv);
@@ -133,21 +134,21 @@ class EnterXprvCardState extends State<EnterXprvCard>
   }
 
   Widget verifyXprvButton() {
-    return BlocBuilder<BlocCreateWallet, CreateWalletState>(
+    return BlocBuilder<CreateWalletBloc, CreateWalletState>(
         builder: (context, state) {
       final theme = Theme.of(context);
-      if (state is EnterXprvState) {
+      if (state.status == CreateWalletStatus.EnterXprv) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             _verifyButton(),
           ],
         );
-      } else if (state is LoadingState) {
+      } else if (state.status == CreateWalletStatus.Loading) {
         return SpinKitCircle(
           color: theme.primaryColor,
         );
-      } else if (state is ValidXprvState) {
+      } else if (state.status == CreateWalletStatus.ValidXprv) {
         return Container(
           child: Column(
             children: [
@@ -163,14 +164,14 @@ class EnterXprvCardState extends State<EnterXprvCard>
             ],
           ),
         );
-      } else if (state is LoadingErrorState) {
+      } else if (state.status == CreateWalletStatus.LoadingException) {
         return Container(
           child: Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildErrorList(state.errors),
+                  buildErrorList([state.message]),
                 ],
               ),
               Row(

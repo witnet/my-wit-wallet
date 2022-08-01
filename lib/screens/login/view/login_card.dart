@@ -3,12 +3,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:witnet_wallet/bloc/auth/auth_bloc.dart';
-import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
-import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
-import 'package:witnet_wallet/screens/dashboard/dashboard_bloc.dart';
-import 'package:witnet_wallet/screens/dashboard/dashboard_screen.dart';
+import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
+import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
+import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
+import 'package:witnet_wallet/screens/login/view/login_form.dart';
 import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
 import 'package:witnet_wallet/shared/api_auth.dart';
 import 'package:witnet_wallet/shared/locator.dart';
@@ -50,27 +51,7 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _loginController.text = '';
-    _passController.text = '';
-    _loadingController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 1150),
-      reverseDuration: Duration(milliseconds: 300),
-    )..value = 1.0;
-    _loadingController.addStatusListener(handleLoadingAnimationStatus);
-    _logoController = AnimationController(
-      vsync: this,
-      duration: loadingDuration,
-    );
-    _titleController = AnimationController(
-      vsync: this,
-      duration: loadingDuration,
-    );
-    _passInertiaController =
-        AnimationController(vsync: this, duration: loadingDuration);
-    _passTextFieldLoadingAnimationInterval = const Interval(.15, 1.0);
-    _textButtonLoadingAnimationInterval =
-        const Interval(.6, 1.0, curve: Curves.easeOut);
+
   }
 
   void handleLoadingAnimationStatus(AnimationStatus status) {
@@ -100,7 +81,7 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
                 Locator.instance<ApiCreateWallet>()
                     .setWalletType(WalletType.newWallet);
                 Navigator.pushNamed(context, CreateWalletScreen.route);
-                BlocProvider.of<BlocCreateWallet>(context)
+                BlocProvider.of<CreateWalletBloc>(context)
                     .add(ResetEvent(WalletType.newWallet));
               },
             ),
@@ -117,7 +98,7 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
                 Locator.instance<ApiCreateWallet>()
                     .setWalletType(WalletType.mnemonic);
                 Navigator.pushNamed(context, CreateWalletScreen.route);
-                BlocProvider.of<BlocCreateWallet>(context)
+                BlocProvider.of<CreateWalletBloc>(context)
                     .add(ResetEvent(WalletType.mnemonic));
               },
             ),
@@ -125,34 +106,34 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
           Padding(
             padding: EdgeInsets.all(5),
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity,
-                    30), // double.infinity is the width and 30 is the height
-              ),
-              child: new Text('Import Node from XPRV'),
-              onPressed: null
-              // {
-              //   Locator.instance<ApiCreateWallet>()
-              //       .setWalletType(WalletType.xprv);
-              //   Navigator.pushNamed(context, CreateWalletScreen.route);
-              //   BlocProvider.of<BlocCreateWallet>(context)
-              //       .add(ResetEvent(WalletType.xprv));
-              // },
-            ),
+                style: ElevatedButton.styleFrom(
+                  // double.infinity is the width and 30 is the height
+                  minimumSize: Size(double.infinity, 30),
+                ),
+                child: new Text('Import Node from XPRV'),
+                onPressed: null
+                // {
+                //   Locator.instance<ApiCreateWallet>()
+                //       .setWalletType(WalletType.xprv);
+                //   Navigator.pushNamed(context, CreateWalletScreen.route);
+                //   BlocProvider.of<BlocCreateWallet>(context)
+                //       .add(ResetEvent(WalletType.xprv));
+                // },
+                ),
           ),
           Padding(
             padding: EdgeInsets.all(5),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity,
-                    30), // double.infinity is the width and 30 is the height
+                // double.infinity is the width and 30 is the height
+                minimumSize: Size(double.infinity, 30),
               ),
               child: new Text('Import Wallet from Encrypted XPRV'),
               onPressed: () {
                 Locator.instance<ApiCreateWallet>()
                     .setWalletType(WalletType.encryptedXprv);
                 Navigator.pushNamed(context, CreateWalletScreen.route);
-                BlocProvider.of<BlocCreateWallet>(context)
+                BlocProvider.of<CreateWalletBloc>(context)
                     .add(ResetEvent(WalletType.encryptedXprv));
               },
             ),
@@ -162,6 +143,7 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
     );
   }
 
+  /*
   _login() {
     if (_formKey.currentState!.validate()) {
       if (password.isNotEmpty) {
@@ -173,18 +155,20 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
       }
     }
   }
+  */
 
   String? validatorPassword(String value) {
     //final regExp = RegExp("^(?=.*[A-Z].*[A-Z])(?=.*[!@#\$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}\$");
     // regExp.hasMatch(value)
   }
+  /*
   Widget _formLogin() {
     return BlocBuilder<BlocAuth, AuthState>(buildWhen: (previousState, state) {
       if (state is LoggedInState) {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => DashboardScreen()));
-        BlocProvider.of<BlocDashboard>(context).add(DashboardLoadEvent(
-            dbWallet: state.wallet));
+        BlocProvider.of<BlocDashboard>(context)
+            .add(DashboardLoadEvent(dbWallet: state.wallet));
       }
       return true;
     }, builder: (context, state) {
@@ -230,7 +214,8 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
       );
     });
   }
-
+  */
+  /*
   Widget _buttonLogin() {
     return BlocBuilder<BlocAuth, AuthState>(
       builder: (context, state) {
@@ -273,7 +258,8 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
       },
     );
   }
-
+  */
+  /*
   Widget _buildWalletField(BuildContext context, double width) {
     final theme = Theme.of(context);
     PathProviderInterface interface = PathProviderInterface();
@@ -362,32 +348,23 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
           }),
     );
   }
+  */
 
-  Widget _buildPasswordField(ThemeData theme) {
-    return InputLogin(
-      prefixIcon: Icons.lock,
-      hint: 'Password',
-      obscureText: true,
-      textEditingController: _passController,
-      focusNode: _passwordFocusNode,
-      onChanged: (String? value) {
-        setState(() {
-          password = value!;
-        });
-      },
-    );
-  }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _loadingController.removeStatusListener(handleLoadingAnimationStatus);
-    _loginController.dispose();
-    _passController.dispose();
-  }
+
+
 
   @override
   Widget build(BuildContext context) {
-    return _formLogin();
-  }
+    //return _formLogin();
+    return Flex(direction: Axis.vertical,
+    children: [
+      Padding(
+          padding: const EdgeInsets.all(0),
+          child: LoginForm())
+    ],);
+    return Padding(
+      padding: const EdgeInsets.all(0),
+      child: LoginForm());
+    }
 }

@@ -1,6 +1,3 @@
 {
-  "helloWorld": "Hello World!",
-  "@helloWorld": {
-    "description": "TODO: localization"
-  }
+  "helloWorld": "Hello World!"
 }

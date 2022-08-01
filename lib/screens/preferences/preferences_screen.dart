@@ -27,7 +27,7 @@ class PreferencePage extends StatelessWidget {
               onTap: () {
                 // This will make the Bloc output a new ThemeState,
                 // which will rebuild the UI because of the BlocBuilder in main.dart
-                BlocProvider.of<BlocTheme>(context)
+                BlocProvider.of<ThemeBloc>(context)
                     .add(ThemeChanged(itemAppTheme));
               },
             ),
@@ -41,16 +41,16 @@ class PreferencePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Preferences'),
+      appBar: AppBar(
+        title: Text('Preferences'),
+      ),
+      body: Container(
+        child: Column(
+          children: [
+            themeWidget(deviceSize.height * 0.25),
+          ],
         ),
-        body: Container(
-          child: Column(
-            children: [
-              themeWidget(deviceSize.height * 0.25),
-
-            ],
-          ),
-        ));
+      ),
+    );
   }
 }

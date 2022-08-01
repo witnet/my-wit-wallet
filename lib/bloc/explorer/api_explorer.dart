@@ -5,6 +5,22 @@ import 'package:witnet_wallet/util/storage/cache/file_manager_interface.dart';
 
 import '../../constants.dart';
 
+enum ExplorerQuery {
+  hash,
+  home,
+  network,
+  status,
+  pending,
+  addressList,
+  address,
+  blockchain,
+  tapi,
+  utxos,
+  utxosMulti,
+  sendVtt,
+  sendTransaction,
+}
+
 class ApiExplorer {
   TransactionCache cache = TransactionCache();
   late ExplorerClient client;
@@ -16,7 +32,7 @@ class ApiExplorer {
         : ExplorerClient(url: EXPLORER_ADDRESS, mode: ExplorerMode.production);
   }
 
-  Future<dynamic> hash(String value, [bool simple=true]) async {
+  Future<dynamic> hash(String value, [bool simple = true]) async {
     if (cache.containsHash(value)) {
       return cache.getValue(value);
     }
@@ -100,7 +116,9 @@ class ApiExplorer {
       rethrow;
     }
   }
-  Future<Map<String, List<Utxo>>> utxosMulti({required List<String> addresses}) async {
+
+  Future<Map<String, List<Utxo>>> utxosMulti(
+      {required List<String> addresses}) async {
     try {
       var tmp = await client.getMultiUtxoInfo(addresses: addresses);
 
@@ -109,10 +127,10 @@ class ApiExplorer {
       rethrow;
     }
   }
+
   Future<dynamic> sendVtTransaction(VTTransaction transaction) async {
     try {
       return await client.send(transaction: transaction.jsonMap(asHex: true));
-
     } catch (e) {
       rethrow;
     }

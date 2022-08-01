@@ -4,38 +4,18 @@ import 'package:equatable/equatable.dart';
 
 import 'package:flutter/material.dart';
 
-@immutable
-class ThemeState extends Equatable {
-  final ThemeData themeData;
-  ThemeState({required this.themeData}) : super();
+part 'theme_event.dart';
+part 'theme_state.dart';
 
-  @override
-  List<Object?> get props => [themeData];
-}
-
-@immutable
-abstract class ThemeEvent extends Equatable {
-  const ThemeEvent() : super();
-}
-
-class ThemeChanged extends ThemeEvent {
-  ThemeChanged(this.theme);
-  final WalletTheme theme;
-
-  @override
-  List<Object?> get props => [theme];
-}
-
-class BlocTheme extends Bloc<ThemeEvent, ThemeState> {
-  BlocTheme() : super(initialState);
+class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
+  ThemeBloc() : super(initialState) {
+    on<ThemeChanged>(_themeChange);
+  }
 
   static ThemeState get initialState =>
       ThemeState(themeData: walletThemeData[WalletTheme.Light]!);
 
-  @override
-  Stream<ThemeState> mapEventToState(ThemeEvent event) async* {
-    if (event is ThemeChanged) {
-      yield ThemeState(themeData: walletThemeData[event.theme]!);
-    }
+  void _themeChange(ThemeChanged event, Emitter<ThemeState> emit){
+    emit(ThemeState(themeData: walletThemeData[event.theme]!));
   }
 }

@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/value_input.dart';
 
-import '../value_transfer_output_container.dart';
+import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/value_transfer_output_container.dart';
 
 class RecipientAddressInput extends StatefulWidget {
   RecipientAddressInput(
@@ -75,15 +75,15 @@ class RecipientAddressInputState extends State<RecipientAddressInput>
   }
 
   Widget outputCards() {
-    return BlocBuilder<BlocCreateVTT, CreateVTTState>(
+    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
         builder: (context, state) {
-      if (state is BuildingVTTState) {
+      if (state.vttCreateStatus == VTTCreateStatus.building) {
         return Container(
           child: Column(
             children: [
               Row(
                 children: [
-                  buildOutputCards(context, state.outputs),
+                  buildOutputCards(context, state.vtTransaction.body.outputs),
                 ],
               )
             ],

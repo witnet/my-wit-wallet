@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/data_structures.dart';
-import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:witnet_wallet/util/paddings.dart';
 import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
-import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_stepper.dart';
 
-import '../../../../round_button.dart';
+import 'package:witnet_wallet/widgets/round_button.dart';
 
 class CreateVTTDialogBox extends StatefulWidget {
   CreateVTTDialogBox({
@@ -108,7 +106,7 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
                       flex: 1,
                       child: RoundButton(
                         onPressed: () {
-                          BlocProvider.of<BlocCreateVTT>(context)
+                          BlocProvider.of<VTTCreateBloc>(context)
                               .add(ResetTransactionEvent());
                           Navigator.of(context).pop();
                         },

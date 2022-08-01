@@ -2,7 +2,7 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 
 class DateTimePicker extends StatefulWidget {
   @override
@@ -160,7 +160,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
                             Expanded(
                                 child: ElevatedButton(
                               onPressed: () {
-                                BlocProvider.of<BlocCreateVTT>(context).add(
+                                BlocProvider.of<VTTCreateBloc>(context).add(
                                     SetTimelockEvent(
                                         dateTime: DateTime(
                                             selectedDate.year,

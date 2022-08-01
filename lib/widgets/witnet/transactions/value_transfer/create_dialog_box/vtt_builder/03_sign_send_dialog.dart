@@ -6,8 +6,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_status_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_status/vtt_status_bloc.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 
 import '../../../../../input_login.dart';
@@ -61,14 +61,14 @@ class SignSendDialogState extends State<SignSendDialog>
   }
 
   void sign() {
-    BlocProvider.of<BlocCreateVTT>(context).add(SignTransactionEvent(
+    BlocProvider.of<VTTCreateBloc>(context).add(SignTransactionEvent(
         password: _passController.text,
         vtTransactionBody: widget.vtTransactionBody));
   }
 
   ///
   void send(VTTransaction vtTransaction) {
-    BlocProvider.of<BlocCreateVTT>(context)
+    BlocProvider.of<VTTCreateBloc>(context)
         .add(SendTransactionEvent(vtTransaction));
   }
 
@@ -77,11 +77,11 @@ class SignSendDialogState extends State<SignSendDialog>
         .add(CheckStatusEvent(transactionHash: transactionHash));
   }
   void backToDashboard() {
-    BlocProvider.of<BlocCreateVTT>(context).add(ResetTransactionEvent());
+    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
     Navigator.of(context).pop();
     Navigator.of(context).pop();
     if(sent){
-      BlocProvider.of<BlocExplorer>(context).add(SyncWalletEvent());
+      BlocProvider.of<ExplorerBloc>(context).add(SyncWalletEvent(ExplorerStatus.dataloading));
     }
 
   }
@@ -145,7 +145,7 @@ class SignSendDialogState extends State<SignSendDialog>
   }
 
   Widget explorerBlocContainer() {
-    return BlocBuilder<BlocExplorer, ExplorerState>(builder: (context, state) {
+    return BlocBuilder<ExplorerBloc, ExplorerState>(builder: (context, state) {
       return Container(
         child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
           Row(mainAxisAlignment: MainAxisAlignment.end, children: []),
@@ -157,7 +157,7 @@ class SignSendDialogState extends State<SignSendDialog>
 
 
   Widget vtBlocContainer() {
-    return BlocConsumer<BlocCreateVTT, CreateVTTState>(
+    return BlocConsumer<VTTCreateBloc, VTTCreateState>(
         builder: (context, state) {
       return Container(
         child: Column(
@@ -178,7 +178,7 @@ class SignSendDialogState extends State<SignSendDialog>
                 ),
               ],
             ),
-            if (state is BuildingVTTState)
+            if (state.vttCreateStatus == VTTCreateStatus.building)
               Container(
                 child: Column(
                   children: [
@@ -214,7 +214,7 @@ class SignSendDialogState extends State<SignSendDialog>
                   ],
                 ),
               ),
-            if (state is ErrorState)
+            if (state.vttCreateStatus == VTTCreateStatus.exception)
               Container(
                 child: Column(
                   children: [
@@ -255,13 +255,13 @@ class SignSendDialogState extends State<SignSendDialog>
                   ],
                 ),
               ),
-            if (state is SigningState)
+            if (state.vttCreateStatus == VTTCreateStatus.signing)
               Container(
                 child: Column(
                   children: [Text('Signing Transaction')],
                 ),
               ),
-            if (state is FinishState)
+            if (state.vttCreateStatus == VTTCreateStatus.finished)
               Container(
                 child: Column(
                   children: [
@@ -286,13 +286,13 @@ class SignSendDialogState extends State<SignSendDialog>
                   ],
                 ),
               ),
-            if (state is SendingState)
+            if (state.vttCreateStatus == VTTCreateStatus.sending)
               Container(
                 child: Column(
                   children: [],
                 ),
               ),
-            if (state is TransactionAcceptedState)
+            if (state.vttCreateStatus == VTTCreateStatus.accepted)
               Container(
                 child: Column(
                   children: [
@@ -322,7 +322,7 @@ class SignSendDialogState extends State<SignSendDialog>
       );
     },
     listener: (context, state) {
-          if(state is TransactionAcceptedState){
+          if(state.vttCreateStatus == VTTCreateStatus.accepted){
             setState(() {
               sent = true;
             });

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:witnet_wallet/screens/login/create_or_recover_card.dart';
-import 'package:witnet_wallet/screens/login/login_card.dart';
+import 'package:witnet_wallet/screens/login/view/login_card.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
 
 class LoginScreen extends StatefulWidget {

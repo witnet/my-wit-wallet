@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/data_structures.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 
 import '../../auto_size_text.dart';
 
@@ -43,7 +43,7 @@ class FeeTypeSelectorChipState extends State<FeeTypeSelectorChip> {
                       absoluteFeeNanoWit = 0;
                     } else
                       absoluteFeeNanoWit = int.parse(value);
-                    BlocProvider.of<BlocCreateVTT>(context).add(UpdateFeeEvent(
+                    BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
                         feeType: FeeType.Absolute,
                         feeNanoWit: absoluteFeeNanoWit));
                   });
@@ -106,10 +106,10 @@ class FeeTypeSelectorChipState extends State<FeeTypeSelectorChip> {
                   setState(() {
                     _value = index;
                     if (_value == 0) {
-                      BlocProvider.of<BlocCreateVTT>(context)
+                      BlocProvider.of<VTTCreateBloc>(context)
                           .add(UpdateFeeEvent(feeType: FeeType.Weighted));
                     } else {
-                      BlocProvider.of<BlocCreateVTT>(context)
+                      BlocProvider.of<VTTCreateBloc>(context)
                           .add(UpdateFeeEvent(feeType: FeeType.Absolute));
                     }
                   });

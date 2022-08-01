@@ -53,7 +53,8 @@ class QrAddressGeneratorState extends State<QrAddressGenerator> {
       child: Column(
         children: <Widget>[
           Container(
-            child: qrFutureBuilder,
+            color: Colors.white,
+            child: Padding(padding: EdgeInsets.all(5), child: qrFutureBuilder,),
           ),
         ],
       ),

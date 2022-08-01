@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
 
 class DisclaimerCard extends StatefulWidget {
@@ -36,14 +36,12 @@ class DisclaimerCardState extends State<DisclaimerCard>
         }
       }
     });
+
     this._loadingController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1150),
       reverseDuration: Duration(milliseconds: 300),
     )..value = 1.0;
-
-    BlocProvider.of<BlocCreateWallet>(context)
-        .add(ResetEvent(WalletType.newWallet));
   }
 
   void handleLoadingAnimationStatus(AnimationStatus status) {
@@ -64,8 +62,10 @@ class DisclaimerCardState extends State<DisclaimerCard>
   }
 
   void _nextCreateWalletMode() {
-    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent(type));
+    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+
+    print('type: ${type.name}');
+    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
   }
 
   Widget _buildDisclaimerTextScrollView(ThemeData theme, Size deviceSize) {

@@ -3,7 +3,7 @@ import 'dart:isolate';
 
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/witnet.dart';
-import 'package:witnet_wallet/bloc/crypto/crypto_isolate.dart';
+import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/util/witnet/wallet/balance_info.dart';
@@ -30,11 +30,11 @@ class DbWallet {
     });
   }
 
-  final String walletName;
-  final String walletDescription;
-  final String xprv;
-  final String externalXpub;
-  final String internalXpub;
+  final String? walletName;
+  final String? walletDescription;
+  final String? xprv;
+  final String? externalXpub;
+  final String? internalXpub;
   int lastSynced = -1;
   Map<int, Account> externalAccounts = {};
   Map<int, Account> internalAccounts = {};

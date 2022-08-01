@@ -7,7 +7,7 @@ import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/util/witnet/wallet/wallet.dart';
 
-import 'crypto_isolate.dart';
+import 'crypto_bloc.dart';
 
 enum SeedSource { mnemonic, xprv, encryptedXprv }
 
@@ -19,8 +19,12 @@ class ApiCrypto {
   late String? password;
   ApiCrypto();
 
-  void setInitialWalletData(String walletName, String walletDescription,
-      String seed, String seedSource, String password) {
+  void setInitialWalletData(
+      String walletName,
+      String walletDescription,
+      String seed,
+      String seedSource,
+      String password) {
     this.walletName = walletName;
     this.walletDescription = walletDescription;
     this.seed = seed;
@@ -36,7 +40,9 @@ class ApiCrypto {
     this.password = null;
   }
 
-  Future<String> generateMnemonic(int wordCount, String language) async {
+  Future<String> generateMnemonic(
+      int wordCount,
+      String language) async {
     try {
       CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
       var receivePort = ReceivePort();
@@ -108,7 +114,6 @@ class ApiCrypto {
         var _wallet = val['wallet'];
         return _wallet;
       });
-
       return wallet;
     } catch (e) {
       rethrow;

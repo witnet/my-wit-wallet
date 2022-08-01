@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:witnet_wallet/bloc/bloc_providers.dart';
 import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
-import 'package:witnet_wallet/screens/login/login_screen.dart';
-import 'package:witnet_wallet/screens/test/test_screen.dart';
+import 'package:witnet_wallet/screens/login/view/login_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'bloc/theme/theme_bloc.dart';
@@ -14,7 +13,10 @@ class WitnetWalletApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: getProviders(context),
-      child: BlocBuilder<BlocTheme, ThemeState>(
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+        buildWhen: (previousState, state) {
+          return previousState != state;
+        },
         builder: _buildWithTheme,
       ),
     );
@@ -26,7 +28,7 @@ Widget _buildWithTheme(BuildContext context, ThemeState state) {
     debugShowCheckedModeBanner: false,
     title: 'Material App',
     localizationsDelegates: [
-      AppLocalizations.delegate, // Add this line
+      AppLocalizations.delegate,
       GlobalMaterialLocalizations.delegate,
       GlobalWidgetsLocalizations.delegate,
       GlobalCupertinoLocalizations.delegate,
@@ -42,7 +44,7 @@ Widget _buildWithTheme(BuildContext context, ThemeState state) {
     routes: {
       LoginScreen.route: (context) => LoginScreen(),
       CreateWalletScreen.route: (context) => CreateWalletScreen(),
-      TestScreen.route: (context) => TestScreen(),
+
     },
   );
 }

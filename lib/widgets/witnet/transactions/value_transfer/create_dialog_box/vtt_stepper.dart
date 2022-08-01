@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/recipient_address_input.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/01_recipient_step.dart';
@@ -34,13 +34,13 @@ class VttStepperState extends State<VttStepper> {
   void addValueTransferOutput(
       {required String pkh, required double witValue, required int timeLock}) {
     setState(() {
-      BlocProvider.of<BlocCreateVTT>(context).add(
+      BlocProvider.of<VTTCreateBloc>(context).add(
         AddValueTransferOutputEvent(
           output: ValueTransferOutput.fromJson({
             'pkh': pkh,
             'value': witToNanoWit(witValue),
             'time_lock': timeLock,
-          }),
+          }), merge: true,
         ),
       );
     });
@@ -52,7 +52,7 @@ class VttStepperState extends State<VttStepper> {
         _index -= 1;
       });
     } else {
-      BlocProvider.of<BlocCreateVTT>(context).add(ResetTransactionEvent());
+      BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
       Navigator.of(context).pop();
     }
   }

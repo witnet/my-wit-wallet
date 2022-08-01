@@ -5,19 +5,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/bloc/auth/auth_bloc.dart';
-import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
-import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
-import 'package:witnet_wallet/screens/dashboard/dashboard_bloc.dart';
-import 'package:witnet_wallet/screens/dashboard/dashboard_screen.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/models/wallet_name.dart';
+import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
+import 'package:witnet_wallet/screens/login/models/models.dart';
 import 'package:witnet_wallet/theme/colors.dart';
+import 'package:witnet_wallet/util/witnet/wallet/wallet.dart';
 import 'package:witnet_wallet/widgets/animated_numeric_text.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/fade_in.dart';
 import 'package:witnet_wallet/widgets/svg_widget.dart';
-import '../../constants.dart';
+import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+
 
 class BuildWalletCard extends StatefulWidget {
   BuildWalletCard({Key? key}) : super(key: key);
@@ -33,13 +35,16 @@ class BuildWalletCardState extends State<BuildWalletCard>
   int currentTransactionCount = 0;
   static const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
   void onBack() {
-    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-    BlocProvider.of<BlocCreateWallet>(context).add(PreviousCardEvent(type));
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void onNext() {
-    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent(type));
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context)
+        .add(NextCardEvent(type, data: {}));
   }
 
   late TextEditingController _nameController;
@@ -60,13 +65,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
     _descController = TextEditingController();
     ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
     acw.printDebug();
-
-    //BlocProvider.of<BlocCrypto>(context).add(CryptoInitializeWalletEvent(
-    //    walletDescription: acw.walletDescription!,
-    //    walletName: acw.walletName,
-    //    keyData: acw.seedData,
-    //    seedSource: acw.seedSource,
-    //    password: acw.password!));
   }
 
   @override
@@ -75,6 +73,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
     _nameController.dispose();
     _descController.dispose();
     _balanceController.dispose();
+    _loadingController.dispose();
   }
 
   AppBar _buildAppBar(ThemeData theme) {
@@ -234,21 +233,27 @@ class BuildWalletCardState extends State<BuildWalletCard>
   }
 
   Widget buildWallet() {
-    return BlocBuilder<BlocCrypto, CryptoState>(
+    return BlocBuilder<CryptoBloc, CryptoState>(
       buildWhen: (previousState, state) {
+        print(previousState.runtimeType);
+        print(state.runtimeType);
+        print(state.props);
         if (previousState is CryptoLoadedWalletState) {
-          BlocProvider.of<BlocCreateWallet>(context)
+          BlocProvider.of<CreateWalletBloc>(context)
               .add(ResetEvent(WalletType.newWallet));
         }
         if (state is CryptoLoadedWalletState) {
-          BlocProvider.of<BlocAuth>(context)
-              .add(LoginEvent(password: state.password));
-          //
-          //BlocProvider.of<BlocImportMnemonic>(context).add(NextCardEvent());
           Locator.instance<ApiCreateWallet>().clearFormData();
+
+          BlocProvider.of<LoginBloc>(context).add(LoginSubmittedEvent(
+              walletName: WalletName.dirty(state.wallet.name),
+              password: Password.dirty(state.password)));
         } else if (state is CryptoInitializingWalletState) {
           _balanceController.reset();
           _balanceController.forward();
+          if (state.props[0].runtimeType == Wallet) {
+            print('boom');
+          }
           if (previousState is CryptoInitializingWalletState) {
             setState(() {
               balance = previousState.balanceNanoWit;
@@ -296,7 +301,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
           ]);
         } else if (state is CryptoReadyState) {
           ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
-          BlocProvider.of<BlocCrypto>(context).add(CryptoInitializeWalletEvent(
+          BlocProvider.of<CryptoBloc>(context).add(CryptoInitializeWalletEvent(
               walletDescription: acw.walletDescription!,
               walletName: acw.walletName,
               keyData: acw.seedData!,
@@ -355,19 +360,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
     ]);
   }
 
-  Widget _formLogin() {
-    return BlocBuilder<BlocAuth, AuthState>(buildWhen: (previousState, state) {
-      if (state is LoggedInState) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => DashboardScreen()));
-        BlocProvider.of<BlocDashboard>(context).add(DashboardLoadEvent(dbWallet: state.wallet));
-      }
-      return true;
-    }, builder: (context, state) {
-      return Container();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -388,7 +380,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
               //buildBalance(theme),
               SizedBox(height: deviceSize.height / 4),
               buildWallet(),
-              _formLogin(),
               SizedBox(height: 10),
             ],
           ),
