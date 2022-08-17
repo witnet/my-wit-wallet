@@ -32,4 +32,4 @@ Map<String, String> WIT_UNIT = {
 
 const int EXTERNAL_GAP_LIMIT = 3;
 const int INTERNAL_GAP_LIMIT = 1;
-const bool ENCRYPT_DB = true;
+const bool ENCRYPT_DB = false;
