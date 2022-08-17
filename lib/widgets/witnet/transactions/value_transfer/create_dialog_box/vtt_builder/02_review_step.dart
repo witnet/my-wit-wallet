@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/schema.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/03_sign_send_dialog.dart';
 
+import '../../../../../../screens/dashboard/api_dashboard.dart';
+import '../../../../../../shared/locator.dart';
 import '../../../../../auto_size_text.dart';
 import '../../fee_container.dart';
 import '../../input_container.dart';
@@ -67,11 +69,10 @@ class ReviewStepState extends State<ReviewStep>
           SizedBox(
             height: 5,
           ),
-          BlocBuilder<BlocCreateVTT, CreateVTTState>(
+          BlocBuilder<VTTCreateBloc, VTTCreateState>(
             builder: (context, state) {
-              if (state is BuildingVTTState) {
-                VTTransactionBody vttBody = VTTransactionBody(
-                    inputs: state.inputs, outputs: state.outputs);
+              if (state.vttCreateStatus == VTTCreateStatus.building) {
+                VTTransactionBody vttBody = state.vtTransaction.body;
 
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -109,7 +110,8 @@ class ReviewStepState extends State<ReviewStep>
 
   Widget buildInputCards(BuildContext context, List<Input> inputs) {
     List<InputUtxo> _inputs = [];
-    DbWallet dbWallet = BlocProvider.of<BlocCreateVTT>(context).dbWallet;
+    ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
+    DbWallet dbWallet = apiDashboard.dbWallet!;
     List<Widget> _cards = [];
     inputs.forEach((input) {
       dbWallet.externalAccounts.forEach((index, value) {
@@ -150,7 +152,7 @@ class ReviewStepState extends State<ReviewStep>
   }
 
   Widget inputCards() {
-    return BlocBuilder<BlocCreateVTT, CreateVTTState>(
+    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
         builder: (context, state) {
       final deviceSize = MediaQuery.of(context).size;
 
@@ -159,7 +161,7 @@ class ReviewStepState extends State<ReviewStep>
         cardWidth = (400 * 0.7);
       } else
         cardWidth = deviceSize.width * 0.7;
-      if (state is BuildingVTTState) {
+      if (state.vttCreateStatus == VTTCreateStatus.building) {
         return Container(
           width: cardWidth,
           child: Column(
@@ -179,7 +181,7 @@ class ReviewStepState extends State<ReviewStep>
               ),
               Row(
                 children: [
-                  buildInputCards(context, state.inputs),
+                  buildInputCards(context, state.vtTransaction.body.inputs),
                 ],
               )
             ],
@@ -207,7 +209,7 @@ class ReviewStepState extends State<ReviewStep>
   }
 
   Widget outputCards() {
-    return BlocBuilder<BlocCreateVTT, CreateVTTState>(
+    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
         builder: (context, state) {
       final deviceSize = MediaQuery.of(context).size;
       final theme = Theme.of(context);
@@ -216,7 +218,7 @@ class ReviewStepState extends State<ReviewStep>
         cardWidth = (400 * 0.7);
       } else
         cardWidth = deviceSize.width * 0.7;
-      if (state is BuildingVTTState) {
+      if (state.vttCreateStatus == VTTCreateStatus.building) {
         return Container(
           width: cardWidth,
           child: Column(
@@ -236,7 +238,7 @@ class ReviewStepState extends State<ReviewStep>
               ),
               Row(
                 children: [
-                  buildOutputCards(context, state.outputs),
+                  buildOutputCards(context, state.vtTransaction.body.outputs),
                 ],
               )
             ],
@@ -265,7 +267,7 @@ class ReviewStepState extends State<ReviewStep>
   }
 
   Widget changeCard() {
-    return BlocBuilder<BlocCreateVTT, CreateVTTState>(
+    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
         builder: (context, state) {
       final deviceSize = MediaQuery.of(context).size;
       final theme = Theme.of(context);
@@ -274,14 +276,14 @@ class ReviewStepState extends State<ReviewStep>
         cardWidth = (400 * 0.7);
       } else
         cardWidth = deviceSize.width * 0.7;
-      if (state is BuildingVTTState) {
+      if (state.vttCreateStatus == VTTCreateStatus.building) {
         return Container(
           width: cardWidth,
           child: Column(
             children: [
               Row(
                 children: [
-                  buildChangeCard(context, state.outputs),
+                  buildChangeCard(context, state.vtTransaction.body.outputs),
                 ],
               )
             ],
@@ -296,12 +298,12 @@ class ReviewStepState extends State<ReviewStep>
 
   Widget buildFeeCard(
     BuildContext context) {
-    int fee = BlocProvider.of<BlocCreateVTT>(context).feeNanoWit;
+    int fee = BlocProvider.of<VTTCreateBloc>(context).feeNanoWit;
     return FeeContainer(feeValue: fee);
   }
 
   Widget feeCard() {
-    return BlocBuilder<BlocCreateVTT, CreateVTTState>(
+    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
         builder: (context, state) {
       final deviceSize = MediaQuery.of(context).size;
       final theme = Theme.of(context);
@@ -310,7 +312,7 @@ class ReviewStepState extends State<ReviewStep>
         cardWidth = (400 * 0.7);
       } else
         cardWidth = deviceSize.width * 0.7;
-      if (state is BuildingVTTState) {
+      if (state.vttCreateStatus == VTTCreateStatus.building) {
         return Container(
           width: cardWidth,
           child: Column(

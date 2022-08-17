@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:sembast/blob.dart';
+import 'package:witnet/witnet.dart';
 
+import '../../../constants.dart';
 import '../path_provider_interface.dart';
 import 'encrypt/salsa20/codec.dart';
 import 'package:sembast/sembast_io.dart';
@@ -12,8 +14,10 @@ class _DBConfiguration {
   late SembastCodec codec;
   int timeout = 300;
 
-  _DBConfiguration({required this.path, required String password}) {
-    codec = getSembastCodecSalsa20(password: password);
+  _DBConfiguration({required this.path, required String password}){
+   if (ENCRYPT_DB == true){
+     codec = getSembastCodecSalsa20(password: password);
+   }
   }
 
   String get name => this.path.split('/').last;
@@ -75,22 +79,48 @@ class DBService {
         mode = DatabaseMode.create;
       }
       String dbError = '';
+
+
       try {
-        _dbService._database = await dbFactory
-            .openDatabase(
+        if(ENCRYPT_DB){
+          _dbService._database = await dbFactory.openDatabase(
+            _dbService._dbConfig!.path,
+            version: 2,
+            codec: _dbService._dbConfig!.codec,
+            mode: mode,
+          )
+              .catchError((error) {
+            dbError = error.toString();
+
+            /// codes for Sembast Database Exception
+            /// [0] bad parameters
+            /// [1] not found
+            /// [2] invalid codec signature
+            /// [3] action failed because db is closed
+            throw DBException(code: error.code, message: error.message);
+          });
+        } else {
+          _dbService._database = await dbFactory.openDatabase(
+            _dbService._dbConfig!.path,
+            version: 2,
+            mode: mode,
+          ).catchError((error) {
+            dbError = error.toString();
+
+            /// codes for Sembast Database Exception
+            /// [0] bad parameters
+            /// [1] not found
+            /// [2] invalid codec signature
+            /// [3] action failed because db is closed
+            throw DBException(code: error.code, message: error.message);
+          });
+        }
+        _dbService._database = await dbFactory.openDatabase(
           _dbService._dbConfig!.path,
-          codec: _dbService._dbConfig!.codec,
           version: 2,
           mode: mode,
-        )
-            .catchError((error) {
+        ).catchError((error) {
           dbError = error.toString();
-
-          /// codes for Sembast Database Exception
-          /// [0] bad parameters
-          /// [1] not found
-          /// [2] invalid codec signature
-          /// [3] action failed because db is closed
           throw DBException(code: error.code, message: error.message);
         });
       } on TypeError catch (e) {
@@ -102,6 +132,9 @@ class DBService {
       if (dbError != '') {
         throw DBException(code: -2, message: 'Unable to unlock Wallet.');
       } else {
+
+
+        // Xprv.fromEncryptedXprv('xprv', 'password');
         _dbService.unlocked = true;
       }
       return dbError;

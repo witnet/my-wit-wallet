@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 
@@ -68,20 +69,24 @@ void dbIsolate(SendPort sendPort) async {
   }
 }
 
-Future<void> _unlockDatabase(DBService dbService, SendPort port, Map<String, dynamic> params) async{
-  var tmp = await dbService.unlockWallet(params['path'], params['password']);
+Future<void> _unlockDatabase(
+    DBService dbService, SendPort port, Map<String, dynamic> params) async {
+  FutureOr<dynamic> tmp =
+      await dbService.unlockWallet(params['path'], params['password']);
   if (tmp.runtimeType == DBException) {
     port.send(tmp);
   }
   port.send({'unlocked': true});
 }
 
-Future<void> _configure(DBService dbService, SendPort port, Map<String, dynamic> params) async{
+Future<void> _configure(
+    DBService dbService, SendPort port, Map<String, dynamic> params) async {
   dbService.configure(path: params['path'], password: params['password']);
   port.send({'unlocked': true});
 }
 
-Future<void> _readRecord(DBService dbService, SendPort port, Map<String, dynamic> params) async{
+Future<void> _readRecord(
+    DBService dbService, SendPort port, Map<String, dynamic> params) async {
   if (params['type'] == 'String') {
     var value = await dbService.readString(params['key']);
     port.send(value);
@@ -91,11 +96,13 @@ Future<void> _readRecord(DBService dbService, SendPort port, Map<String, dynamic
   }
 }
 
-Future<void> _getDatabaseService(DBService dbService, SendPort port, Map<String, dynamic> params) async{
+Future<void> _getDatabaseService(
+    DBService dbService, SendPort port, Map<String, dynamic> params) async {
   port.send({'dbService': dbService});
 }
 
-Future<void> _batchRead(DBService dbService, SendPort port, Map<String, dynamic> params) async{
+Future<void> _batchRead(
+    DBService dbService, SendPort port, Map<String, dynamic> params) async {
   var readStack = params['read_ops'] as List<Map<String, Type>>;
   var results = [];
   readStack.forEach((op) async {
@@ -104,7 +111,8 @@ Future<void> _batchRead(DBService dbService, SendPort port, Map<String, dynamic>
   port.send({'results': results});
 }
 
-Future<void> _writeRecord(DBService dbService, SendPort port, Map<String, dynamic> params) async{
+Future<void> _writeRecord(
+    DBService dbService, SendPort port, Map<String, dynamic> params) async {
   var result = await dbService.writeRecord(params['key'], params['value']);
   port.send({'result': result});
 }

@@ -1,11 +1,15 @@
 import 'dart:convert';
 import 'dart:io' as io;
+
+import 'package:witnet_wallet/screens/create_wallet/models/wallet_description.dart';
+import 'package:witnet_wallet/screens/create_wallet/models/wallet_name.dart';
+
 import 'path_provider_interface.dart';
 
 class WalletInfo {
   WalletInfo(this.name, this.description);
-  String name;
-  String description;
+  WalletName name;
+  WalletDescription description;
   String get rawJson => json.encode(jsonMap);
 
   factory WalletInfo.fromJson(Map<String, dynamic> data) {

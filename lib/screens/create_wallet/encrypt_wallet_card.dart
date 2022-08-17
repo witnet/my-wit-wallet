@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
-import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/shared/locator.dart';
@@ -18,14 +18,14 @@ class EncryptWalletCard extends StatefulWidget {
 class EncryptWalletCardState extends State<EncryptWalletCard>
     with TickerProviderStateMixin {
   void onBack() {
-    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-    BlocProvider.of<BlocCreateWallet>(context).add(PreviousCardEvent(type));
+    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void onNext() {
     Locator.instance<ApiCreateWallet>().setPassword(_password);
-    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent(type));
+    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
   }
 
   late TextEditingController passwordInputTextController;

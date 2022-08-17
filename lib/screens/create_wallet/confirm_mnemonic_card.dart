@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/crypto.dart';
-import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
-import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
 
@@ -30,14 +30,14 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
           children: <Widget>[
             SizedBox(
               height: 10,
-            ), //SizedBox
+            ),
             Text(
               'Recovery Phrase',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w500,
-              ), //Textstyle
-            ), //Text
+              ),
+            ),
             SizedBox(
               height: 10,
             ),
@@ -86,13 +86,13 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
   }
 
   void onBack() {
-    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-    BlocProvider.of<BlocCreateWallet>(context).add(PreviousCardEvent(type));
+    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void onNext() {
-    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent(type));
+    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
   }
 
   bool validMnemonic(String mnemonic) {

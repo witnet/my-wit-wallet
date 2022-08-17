@@ -55,4 +55,4 @@
 
     - `PS> flutter build windows`
 
-  - The application `witnet_wallet.exe` will be in `\witnet_wallet-main\build\windows\runner\Release`
+  - The application `witnet_wallet.exe` will be in `\witnet_wallet-main\build\windows\runner\Release

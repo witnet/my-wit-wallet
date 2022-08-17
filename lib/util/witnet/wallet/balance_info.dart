@@ -21,7 +21,6 @@ class BalanceInfo{
   factory BalanceInfo.fromUtxoList(List<Utxo> utxos){
     int _lockedNanoWit = 0;
     int _availableNanoWit = 0;
-
     List<Utxo> _lockedUtxos = [];
     List<Utxo> _availableUtxos = [];
     utxos.forEach((Utxo utxo) {

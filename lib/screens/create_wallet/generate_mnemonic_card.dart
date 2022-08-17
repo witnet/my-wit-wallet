@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
-import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
@@ -260,14 +260,14 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
   }
 
   void onBack() {
-    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-    BlocProvider.of<BlocCreateWallet>(context).add(PreviousCardEvent(type));
+    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void onNext() {
     Locator.instance.get<ApiCreateWallet>().setSeed(mnemonic, 'mnemonic');
-    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent(type));
+    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
   }
 
   Widget _buildButtonRow() {

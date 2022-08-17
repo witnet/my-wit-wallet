@@ -30,6 +30,6 @@ Map<String, String> WIT_UNIT = {
   'NANO': 'nanoWit',
 };
 
-const int EXTERNAL_GAP_LIMIT = 20;
+const int EXTERNAL_GAP_LIMIT = 3;
 const int INTERNAL_GAP_LIMIT = 1;
 const bool ENCRYPT_DB = false;

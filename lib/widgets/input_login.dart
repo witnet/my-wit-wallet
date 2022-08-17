@@ -64,7 +64,7 @@ class _InputLoginState extends State<InputLogin> {
       height: (size.height) * 0.056,
       // /width: (size.width) * 0.74,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+        padding: EdgeInsets.all(0.0),
         child: Row(
           children: <Widget>[
             Icon(widget.prefixIcon),
@@ -78,6 +78,7 @@ class _InputLoginState extends State<InputLogin> {
                 keyboardType: widget.keyboardType,
                 onChanged: widget.onChanged,
                 onEditingComplete: widget.onEditingComplete,
+                validator: _validator,
               ),
             ),
             widget.obscureText ? handleShowPass() : Container(),

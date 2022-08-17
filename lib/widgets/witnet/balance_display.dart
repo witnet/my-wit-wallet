@@ -8,7 +8,7 @@ import 'package:witnet/data_structures.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
-import 'package:witnet_wallet/screens/dashboard/dashboard_bloc.dart';
+import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/theme/colors.dart';
@@ -153,25 +153,24 @@ class BalanceDisplayState extends State<BalanceDisplay>
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<BlocExplorer, ExplorerState>(builder: (context, state) {
+    return BlocConsumer<ExplorerBloc, ExplorerState>(builder: (context, state) {
 
     return dashboardBlocWidget();
     },
     listener: (context, state) {
-      if(state is DataLoadingState){
+      if(state.status == ExplorerStatus.ready){
         setState(() {
           setBalance();
         });
       }
-    if (state is SyncedState) {
+    if (state.status == ExplorerStatus.dataloaded ) {
       setState(() {
-        dbWallet = state.dbWallet;
+        dbWallet = state.dbWallet!;
         setBalance();
         _headerController.reset();
         _headerController.forward();
       });
     }
-
     },);
   }
 }

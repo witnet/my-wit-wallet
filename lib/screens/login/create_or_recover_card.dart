@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
 import 'package:witnet_wallet/shared/locator.dart';
@@ -90,7 +90,7 @@ class CreateOrRecoverCardState extends State<CreateOrRecoverCard>
               ),
               child: new Text('Recover Wallet from Secret Word Phrase'),
               onPressed: () {
-                BlocProvider.of<BlocCrypto>(context).add(CryptoReadyEvent());
+                BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
                 Locator.instance<ApiCreateWallet>()
                     .setWalletType(WalletType.mnemonic);
                 Navigator.pushNamed(context, CreateWalletScreen.route);

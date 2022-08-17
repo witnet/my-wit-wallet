@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
-import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
-import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/widgets/witnet/password_input.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
@@ -81,16 +81,15 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   }
 
   void onBack() {
-    BlocProvider.of<BlocCreateWallet>(context).add(SetStateEvent(
-        WalletType.encryptedXprv, EnterXprvState(WalletType.encryptedXprv)));
-    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-    BlocProvider.of<BlocCreateWallet>(context).add(PreviousCardEvent(type));
+    CreateWalletState state = BlocProvider.of<CreateWalletBloc>(context).state;
+    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void onNext() {
     Locator.instance<ApiCreateWallet>().setSeed(xprv, 'encryptedXprv');
-    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent(type));
+    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
   }
 
   bool validBech(String xprvString) {
@@ -198,28 +197,30 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   }
 
   Widget verifyXprvButton() {
-    return BlocBuilder<BlocCreateWallet, CreateWalletState>(
+    return BlocBuilder<CreateWalletBloc, CreateWalletState>(
         builder: (context, state) {
-      if (state is EnterXprvState) {
+      if(state.status == CreateWalletStatus.EnterEncryptedXprv){
         return ElevatedButton(
           onPressed: _password.isEmpty
               ? null
               : () {
-                  WalletType type =
-                      BlocProvider.of<BlocCreateWallet>(context).state.type;
-                  BlocProvider.of<BlocCreateWallet>(context)
-                      .add(VerifyEncryptedXprvEvent(type, xprv, _password));
-                  try {
-                    setState(() {
-                      _xprvVerified = validXprv(xprv);
-                    });
-                  } catch (e) {}
-                },
+            WalletType type =
+                BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+            BlocProvider.of<CreateWalletBloc>(context)
+                .add(VerifyEncryptedXprvEvent(type, xprv:xprv, password: _password));
+
+          },
           child: Text('Verify'),
         );
-      } else if (state is LoadingState) {
+      }
+      else if (state.status == CreateWalletStatus.Loading) {
         return Container();
-      } else if (state is ValidXprvState) {
+      } else if (state.status == CreateWalletStatus.ValidXprv) {
+        try {
+          setState(() {
+            _xprvVerified = true;
+          });
+        } catch (e) {}
         return Container(
           padding: EdgeInsets.all(5.0),
           child: Column(
@@ -229,25 +230,18 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text('Verify the imported addresses match your records.'),
-                ],
               ),
-              Text('Master Node address:'),
-              Text('${truncateAddress(state.nodeAddress)}'),
-              Text('First Wallet address:'),
-              Text('${truncateAddress(state.walletAddress)}'),
             ],
           ),
         );
-      } else if (state is LoadingErrorState) {
+      } else if (state.status == CreateWalletStatus.LoadingException) {
         return Container(
           child: Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildErrorList(state.errors),
+                  buildErrorList([state.message]),
                 ],
               ),
               Row(

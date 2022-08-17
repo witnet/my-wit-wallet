@@ -1,120 +1,66 @@
 import 'dart:isolate';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:witnet/constants.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
-import 'package:witnet_wallet/bloc/crypto/crypto_isolate.dart';
+import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
-import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/util/witnet/wallet/wallet.dart';
 
-abstract class CreateVTTEvent {}
+part 'vtt_create_event.dart';
+part 'vtt_create_state.dart';
 
-class AddValueTransferOutputEvent extends CreateVTTEvent {
-  final ValueTransferOutput output;
-  AddValueTransferOutputEvent({required this.output});
+/// send the transaction via the explorer.
+/// returns true on success
+Future<bool> _sendTransaction(VTTransaction transaction) async {
+  try {
+    var resp = await Locator.instance
+        .get<ApiExplorer>()
+        .sendVtTransaction(transaction);
+    return resp['result'];
+  } catch (e) {
+    return false;
+  }
 }
 
-class UpdateFeeEvent extends CreateVTTEvent {
-  final FeeType feeType;
-  final int? feeNanoWit;
-  UpdateFeeEvent({required this.feeType, this.feeNanoWit});
-}
+class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
+  /// Create new [VTTCreateBloc].
+  ///
+  /// extends [Bloc]
+  /// [on((event, emit) => null)]
+  /// to map [VTTCreateEvent] To [VTTCreateState]
+  VTTCreateBloc()
+      : super(
+          VTTCreateState(
+            vtTransaction: VTTransaction(
+              body: VTTransactionBody(inputs: [], outputs: []),
+              signatures: [],
+            ),
+            message: null,
+            vttCreateStatus: VTTCreateStatus.initial,
+          ),
+        ) {
+    on<AddValueTransferOutputEvent>(_addValueTransferOutputEvent);
+    on<SetTimelockEvent>(_setTimeLockEvent);
+    on<SignTransactionEvent>(_signTransactionEvent);
+    on<SendTransactionEvent>(_sendTransactionEvent);
+    on<UpdateFeeEvent>(_updateFeeEvent);
+    on<UpdateUtxoSelectionStrategyEvent>(_updateUtxoSelectionStrategyEvent);
+    on<AddSourceWalletEvent>(_addSourceWalletEvent);
+    on<ResetTransactionEvent>(_resetTransactionEvent);
+    on<ValidateTransactionEvent>(_validateTransactionEvent);
 
-class SetTimelockEvent extends CreateVTTEvent {
-  final DateTime dateTime;
-  SetTimelockEvent({required this.dateTime});
-}
+    ///
+  }
 
-class UpdateUtxoSelectionStrategyEvent extends CreateVTTEvent {
-  final UtxoSelectionStrategy strategy;
-  final List<Utxo>? utxos;
-  UpdateUtxoSelectionStrategyEvent({required this.strategy, this.utxos});
-}
-
-class AddUtxosEvent extends CreateVTTEvent {
-  final List<Utxo> utxos;
-  AddUtxosEvent({required this.utxos});
-}
-
-class AddSourceWalletEvent extends CreateVTTEvent {
-  final DbWallet dbWallet;
-  AddSourceWalletEvent({required this.dbWallet});
-}
-
-class ValidRecipientAddressEvent extends CreateVTTEvent {
-  String address;
-  ValidRecipientAddressEvent({required this.address});
-}
-
-class AddValueTransferInputEvent extends CreateVTTEvent {
-  final Input input;
-  AddValueTransferInputEvent({required this.input});
-}
-
-class BuildTransactionEvent extends CreateVTTEvent {}
-
-class ValidateTransactionEvent extends CreateVTTEvent {}
-
-class SignTransactionEvent extends CreateVTTEvent {
-  final String password;
-  final VTTransactionBody vtTransactionBody;
-  SignTransactionEvent(
-      {required this.password, required this.vtTransactionBody});
-}
-
-class SendTransactionEvent extends CreateVTTEvent {
-  final VTTransaction transaction;
-  SendTransactionEvent(this.transaction);
-}
-
-class ResetTransactionEvent extends CreateVTTEvent {}
-
-abstract class CreateVTTState {}
-
-class InitialState extends CreateVTTState {}
-
-class BuildingVTTState extends CreateVTTState {
-  final List<ValueTransferOutput> outputs;
-  final List<Input> inputs;
-  BuildingVTTState({required this.inputs, required this.outputs});
-}
-
-class BusyState extends CreateVTTState {}
-
-class SigningState extends CreateVTTState {}
-
-class SendingState extends CreateVTTState {}
-
-class TransactionAcceptedState extends CreateVTTState {
-  final VTTransaction vtTransaction;
-  TransactionAcceptedState({required this.vtTransaction});
-}
-
-class FinishState extends CreateVTTState {
-  final VTTransaction vtTransaction;
-  FinishState({required this.vtTransaction});
-}
-
-class RecipientSetState extends CreateVTTState {}
-
-class InputSetState extends CreateVTTState {}
-
-class ErrorState extends CreateVTTState {
-  final String errorMsg;
-  ErrorState({required this.errorMsg});
-}
-
-class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
-  BlocCreateVTT(initialState) : super(initialState);
-  CreateVTTState get initialState => InitialState();
   final Map<String, Account> utxoAccountMap = {};
   late DbWallet dbWallet;
   List<String> internalAddresses = [];
@@ -269,15 +215,6 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
     }
   }
 
-  void resetTransaction() {
-    selectedUtxos.clear();
-    inputs.clear();
-    outputs.clear();
-    receivers.clear();
-    selectedTimelock = null;
-    timelockSet = false;
-  }
-
   void buildTransactionBody() {
     int valueOwedNanoWit = 0;
     int valuePaidNanoWit = 0;
@@ -365,10 +302,52 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
     }
   }
 
-  /// signTransaction
-  /// transactionBody [VTTransactionBody]
-  /// password [String]
-  Future<VTTransaction> signTransaction(
+  /// add a [ValueTransferOutput] to the [VTTransaction].
+  void _addValueTransferOutputEvent(
+      AddValueTransferOutputEvent event, Emitter<VTTCreateState> emit) {
+    emit(state.copyWith(status: VTTCreateStatus.busy));
+    try {
+      if (event.merge) {
+        /// check to see if the address is already in the list.
+        if (receivers.contains(event.output.pkh)) {
+          /// if the address is in the list add the value instead of
+          /// generating a new output
+          outputs[receivers.indexOf(event.output.pkh.address)].value +=
+              event.output.value;
+          if (selectedTimelock != null) {
+            outputs[receivers.indexOf(event.output.pkh.address)].timeLock =
+                selectedTimelock!.millisecondsSinceEpoch * 100;
+          }
+        } else {
+          receivers.add(event.output.pkh.address);
+          outputs.add(event.output);
+        }
+      } else {
+        // if merge is false then add an additional output.
+        receivers.add(event.output.pkh.address);
+        outputs.add(event.output);
+      }
+    } catch (e) {}
+    buildTransactionBody();
+
+    emit(
+      state.copyWith(
+          inputs: inputs, outputs: outputs, status: VTTCreateStatus.building),
+    );
+  }
+
+  /// set the timelock for the current [ValueTransferOutput].
+  void _setTimeLockEvent(SetTimelockEvent event, Emitter<VTTCreateState> emit) {
+    selectedTimelock = event.dateTime;
+    timelockSet = true;
+    emit(
+      state.copyWith(
+          inputs: inputs, outputs: outputs, status: VTTCreateStatus.building),
+    );
+  }
+
+  /// sign the [VTTransaction]
+  Future<VTTransaction> _signTransaction(
       {required VTTransactionBody transactionBody,
       required String password}) async {
     /// Read the encrypted XPRV string stored in the database
@@ -420,128 +399,136 @@ class BlocCreateVTT extends Bloc<CreateVTTEvent, CreateVTTState> {
     }
   }
 
-  /// send the transaction via the explorer.
-  /// returns true on success
-  Future<bool> sendTransaction(VTTransaction transaction) async {
+  /// sign the transaction
+  Future<void> _signTransactionEvent(
+      SignTransactionEvent event, Emitter<VTTCreateState> emit) async {
+    emit(state.copyWith(status: VTTCreateStatus.signing));
     try {
-      var resp = await Locator.instance
-          .get<ApiExplorer>()
-          .sendVtTransaction(transaction);
-      return resp['result'];
+      /// Read the encrypted XPRV string stored in the database
+      var encryptedXprv = await Locator.instance<ApiDatabase>()
+          .readDatabaseRecord(key: 'xprv', type: String) as String;
+
+      try {
+        CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
+
+        final receivePort = ReceivePort();
+        await cryptoIsolate.init();
+        Map<String, int> signingRequirements = {};
+        List<String> signers = [];
+
+        selectedUtxos.forEach((selectedUtxo) {
+          dbWallet.externalAccounts.forEach((index, value) {
+            if (value.utxos.contains(selectedUtxo)) {
+              signers.add(value.path);
+            }
+          });
+
+          dbWallet.internalAccounts.forEach((index, value) {
+            if (value.utxos.contains(selectedUtxo)) {
+              signers.add(value.path);
+            }
+          });
+        });
+        cryptoIsolate.send(
+            method: 'signTransaction',
+            params: {
+              'xprv': encryptedXprv,
+              'password': event.password,
+              'signers': signers,
+              'transaction_id': bytesToHex(event.vtTransactionBody.hash)
+            },
+            port: receivePort.sendPort);
+        List<KeyedSignature> signatures = [];
+
+        await receivePort.first.then((value) {
+          value as List<dynamic>;
+          value.forEach((element) {
+            signatures.add(KeyedSignature.fromJson(element));
+          });
+        });
+
+        VTTransaction vtTransaction = await _signTransaction(
+            transactionBody: event.vtTransactionBody, password: event.password);
+
+        emit(VTTCreateState(
+            vtTransaction: vtTransaction,
+            vttCreateStatus: VTTCreateStatus.finished,
+            message: null));
+      } catch (e) {
+        emit(
+          state.copyWith(status: VTTCreateStatus.exception, message: '$e'),
+        );
+        rethrow;
+      }
     } catch (e) {
-      return false;
+      emit(state.copyWith(status: VTTCreateStatus.exception, message: '$e'));
+      rethrow;
     }
   }
 
-  @override
-  Stream<CreateVTTState> mapEventToState(CreateVTTEvent event) async* {
-    try {
-      switch (event.runtimeType) {
+  /// send the transaction to the explorer
+  Future<void> _sendTransactionEvent(
+      SendTransactionEvent event, Emitter<VTTCreateState> emit) async {
+    emit(state.copyWith(status: VTTCreateStatus.sending));
+    bool transactionAccepted = await _sendTransaction(event.transaction);
+    if (transactionAccepted) {
+      emit(state.copyWith(status: VTTCreateStatus.accepted));
+    } else {
+      emit(state.copyWith(status: VTTCreateStatus.exception));
+    }
+  }
 
-        ///
-        case AddValueTransferOutputEvent:
-          event as AddValueTransferOutputEvent;
-          yield BusyState();
-          addOutput(event.output);
-          buildTransactionBody();
+  void _updateFeeEvent(UpdateFeeEvent event, Emitter<VTTCreateState> emit) {
+    if (event.feeNanoWit != null) {
+      updateFee(event.feeType, event.feeNanoWit!);
+    } else {
+      updateFee(event.feeType);
+    }
+  }
 
-          yield BuildingVTTState(inputs: inputs, outputs: outputs);
-          break;
+  void _updateUtxoSelectionStrategyEvent(
+      UpdateUtxoSelectionStrategyEvent event, Emitter<VTTCreateState> emit) {
+    utxoSelectionStrategy = event.strategy;
+  }
 
-        case SetTimelockEvent:
-          event as SetTimelockEvent;
-          selectedTimelock = event.dateTime;
-          timelockSet = true;
-          yield BuildingVTTState(inputs: inputs, outputs: outputs);
-          break;
+  void _addSourceWalletEvent(
+      AddSourceWalletEvent event, Emitter<VTTCreateState> emit) {
+    setDbWallet(event.dbWallet);
+    emit(state.copyWith(
+        inputs: inputs, outputs: outputs, status: VTTCreateStatus.building));
+  }
 
-        /// sign the transaction
-        case SignTransactionEvent:
-          event as SignTransactionEvent;
-          yield SigningState();
-          try {
-            VTTransaction vtTransaction = await signTransaction(
-                transactionBody: event.vtTransactionBody,
-                password: event.password);
+  void _resetTransactionEvent(
+      ResetTransactionEvent event, Emitter<VTTCreateState> emit) {
+    selectedUtxos.clear();
+    inputs.clear();
+    outputs.clear();
+    receivers.clear();
+    selectedTimelock = null;
+    timelockSet = false;
+  }
 
-            yield FinishState(vtTransaction: vtTransaction);
-          } catch (e) {
-            yield ErrorState(errorMsg: e.toString());
-            rethrow;
-          }
+  void _validateTransactionEvent(
+      ValidateTransactionEvent event, Emitter<VTTCreateState> emit) {
+    /// ensure that the wallet has sufficient funds
 
-          break;
+    int utxoValueNanoWit = selectedUtxos
+        .map((Utxo utxo) => utxo.value)
+        .toList()
+        .reduce((value, element) => value + element);
+    int outputValueNanoWit = outputs
+        .map((ValueTransferOutput output) => output.value)
+        .toList()
+        .reduce((value, element) => value + element);
 
-        ///
+    int feeValueNanoWit = feeNanoWit;
 
-        case SendTransactionEvent:
-          event as SendTransactionEvent;
-          yield (SendingState());
-          bool transactionAccepted = await sendTransaction(event.transaction);
-
-          if (transactionAccepted) {
-            yield TransactionAcceptedState(vtTransaction: event.transaction);
-          } else {
-            yield ErrorState(errorMsg: 'Error Sending Transaction');
-          }
-          break;
-
-        ///
-        case UpdateFeeEvent:
-          event as UpdateFeeEvent;
-          if (event.feeNanoWit != null) {
-            updateFee(event.feeType, event.feeNanoWit!);
-          } else {
-            updateFee(event.feeType);
-          }
-          break;
-
-        ///
-        case UpdateUtxoSelectionStrategyEvent:
-          event as UpdateUtxoSelectionStrategyEvent;
-          utxoSelectionStrategy = event.strategy;
-          break;
-
-        ///
-        case ValidRecipientAddressEvent:
-          break;
-
-        ///
-        case AddSourceWalletEvent:
-          event as AddSourceWalletEvent;
-          setDbWallet(event.dbWallet);
-          yield BuildingVTTState(inputs: inputs, outputs: outputs);
-          break;
-
-        ///
-        case ResetTransactionEvent:
-          resetTransaction();
-          yield BuildingVTTState(inputs: inputs, outputs: outputs);
-          break;
-
-        case ValidateTransactionEvent:
-
-          /// ensure that the wallet has sufficient funds
-
-          int utxoValueNanoWit = selectedUtxos
-              .map((Utxo utxo) => utxo.value)
-              .toList()
-              .reduce((value, element) => value + element);
-          int outputValueNanoWit = outputs
-              .map((ValueTransferOutput output) => output.value)
-              .toList()
-              .reduce((value, element) => value + element);
-
-          int feeValueNanoWit = feeNanoWit;
-
-          if (utxoValueNanoWit <= (outputValueNanoWit + feeValueNanoWit)) {
-            yield BuildingVTTState(inputs: inputs, outputs: outputs);
-          } else {
-            yield ErrorState(errorMsg: 'Insufficient Funds');
-          }
-      }
-    } catch (e) {
-      rethrow;
+    if (utxoValueNanoWit <= (outputValueNanoWit + feeValueNanoWit)) {
+      emit(state.copyWith(
+          inputs: inputs, outputs: outputs, status: VTTCreateStatus.building));
+    } else {
+      emit(state.copyWith(
+          status: VTTCreateStatus.exception, message: 'Insufficient Funds'));
     }
   }
 }

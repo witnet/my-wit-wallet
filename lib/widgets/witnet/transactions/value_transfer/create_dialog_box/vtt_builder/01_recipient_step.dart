@@ -5,14 +5,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/create_vtt_bloc.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/time_lock_calendar/datetime_picker.dart';
 
-import '../../../../../auto_size_text.dart';
-import '../../../fee_type_selector_chip.dart';
-import '../../value_transfer_output_container.dart';
-import '../advanced_settings_panel.dart';
+import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
+import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/widgets/auto_size_text.dart';
+import 'package:witnet_wallet/widgets/witnet/transactions/fee_type_selector_chip.dart';
+import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/value_transfer_output_container.dart';
 import '../recipient_address_input.dart';
 
 class RecipientStep extends StatefulWidget {
@@ -56,9 +58,11 @@ class RecipientStepState extends State<RecipientStep>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    _dbWallet = BlocProvider.of<BlocCreateVTT>(context).dbWallet;
+    ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
+    _dbWallet = apiDashboard.dbWallet!;
     balanceNanoWit = _dbWallet.balanceNanoWit();
-
+    BlocProvider.of<VTTCreateBloc>(context)
+        .add(AddSourceWalletEvent(dbWallet: _dbWallet));
     super.initState();
   }
 
@@ -80,6 +84,9 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   Widget buildValueInput(BuildContext context) {
+    ApiCreateWallet apiCreateWallet = Locator.instance<ApiCreateWallet>();
+    
+    
     return ValueListenableBuilder(
       // Note: pass _controller to the animation argument
       valueListenable: _valueController,
@@ -98,10 +105,10 @@ class RecipientStepState extends State<RecipientStep>
                     onChanged: (String value) {
                       int outputValueNanoWit = 0;
                       String changeAddress =
-                          BlocProvider.of<BlocCreateVTT>(context)
+                          BlocProvider.of<VTTCreateBloc>(context)
                               .changeAccount
                               .address;
-                      BlocProvider.of<BlocCreateVTT>(context)
+                      BlocProvider.of<VTTCreateBloc>(context)
                           .outputs
                           .forEach((element) {
                         if (element.pkh.address != changeAddress) {
@@ -195,7 +202,7 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   Widget outputCards() {
-    return BlocBuilder<BlocCreateVTT, CreateVTTState>(
+    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
         builder: (context, state) {
       final deviceSize = MediaQuery.of(context).size;
       final theme = Theme.of(context);
@@ -204,13 +211,14 @@ class RecipientStepState extends State<RecipientStep>
         cardWidth = (400 * 0.7);
       } else
         cardWidth = deviceSize.width * 0.7;
-      if (state is BuildingVTTState) {
+
+      if (state.vttCreateStatus == VTTCreateStatus.building) {
         return Container(
           width: cardWidth,
           decoration: BoxDecoration(color: theme.primaryColor.withOpacity(.1)),
           child: Column(
             children: [
-              if (state.outputs.isNotEmpty)
+              if (state.vtTransaction.body.outputs.isNotEmpty)
                 Row(
                   children: [
                     Container(
@@ -224,10 +232,10 @@ class RecipientStepState extends State<RecipientStep>
                     ),
                   ],
                 ),
-              if (state.outputs.isNotEmpty)
+              if (state.vtTransaction.body.outputs.isNotEmpty)
                 Row(
                   children: [
-                    buildOutputCards(context, state.outputs),
+                    buildOutputCards(context, state.vtTransaction.body.outputs),
                   ],
                 )
             ],
@@ -241,18 +249,22 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   bool validVTO(String address) {
+    
+    print(validAddress(address));
+    print(valueWit);
+    print(balanceNanoWit);
     if (!validAddress(address) || valueWit == 0) return false;
     if (nanoWitToWit(balanceNanoWit) < 0) return false;
     return true;
   }
 
   bool _addVTO(BuildContext context) {
-    BlocProvider.of<BlocCreateVTT>(context).add(AddValueTransferOutputEvent(
+    BlocProvider.of<VTTCreateBloc>(context).add(AddValueTransferOutputEvent(
         output: ValueTransferOutput.fromJson({
       'pkh': recipientAddress,
       'value': witToNanoWit(valueWit),
       'time_lock': timeLock
-    })));
+    }), merge: true));
 
     setState(() {
       _addressController.text = '';
@@ -265,9 +277,9 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   bool isTimelockSet() {
-    bool _set = BlocProvider.of<BlocCreateVTT>(context).timelockSet;
+    bool _set = BlocProvider.of<VTTCreateBloc>(context).timelockSet;
     if (_set) {
-      timeLock = BlocProvider.of<BlocCreateVTT>(context)
+      timeLock = BlocProvider.of<VTTCreateBloc>(context)
               .selectedTimelock!
               .millisecondsSinceEpoch ~/
           1000;
@@ -276,7 +288,7 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   DateTime? getTimelock() {
-    return BlocProvider.of<BlocCreateVTT>(context).selectedTimelock;
+    return BlocProvider.of<VTTCreateBloc>(context).selectedTimelock;
   }
 
   Widget _buildRecipientInput() {
@@ -517,7 +529,7 @@ class RecipientStepState extends State<RecipientStep>
                 TextButton(
                   onPressed: () {
                     _addVTO(context);
-                    BlocProvider.of<BlocCreateVTT>(context)
+                    BlocProvider.of<VTTCreateBloc>(context)
                         .add(ValidateTransactionEvent());
                   },
                   child: const Text('Additional Recipient'),
@@ -526,7 +538,7 @@ class RecipientStepState extends State<RecipientStep>
                 TextButton(
                   onPressed: () {
                     _addVTO(context);
-                    BlocProvider.of<BlocCreateVTT>(context)
+                    BlocProvider.of<VTTCreateBloc>(context)
                         .add(ValidateTransactionEvent());
                     widget.onStepContinue!.call();
                   },
@@ -541,12 +553,12 @@ class RecipientStepState extends State<RecipientStep>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BlocCreateVTT, CreateVTTState>(
+    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
       builder: (context, state) {
-        if (state is InitialState) {
+        if (state.vttCreateStatus == VTTCreateStatus.initial) {
           return buildForm(context);
         }
-        if (state is BuildingVTTState) {
+        if (state.vttCreateStatus == VTTCreateStatus.building) {
           return buildForm(context);
         }
         return Container(

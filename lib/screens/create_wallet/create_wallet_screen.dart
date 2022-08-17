@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/import_mnemonic_card.dart';
-import 'package:witnet_wallet/screens/create_wallet/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/confirm_mnemonic_card.dart';
 import 'package:witnet_wallet/screens/create_wallet/disclaimer_card.dart';
 import 'package:witnet_wallet/screens/create_wallet/generate_mnemonic_card.dart';
@@ -34,43 +34,53 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
   }
 
   _formCards() {
-    return BlocBuilder<BlocCreateWallet, CreateWalletState>(
+    return BlocBuilder<CreateWalletBloc, CreateWalletState>(
+
         builder: (context, state) {
-      switch (state.runtimeType) {
-        case DisclaimerState:
+          print(state.status);
+      switch (state.status) {
+
+        case CreateWalletStatus.Disclaimer:
           currentFormCard = DisclaimerCard();
           break;
-        case GenerateMnemonicState:
+        case CreateWalletStatus.GenerateMnemonic:
           currentFormCard = GenerateMnemonicCard();
           break;
-        case EnterMnemonicState:
+        case CreateWalletStatus.EnterMnemonic:
           currentFormCard = EnterMnemonicCard();
           break;
-        case EnterXprvState:
+        case CreateWalletStatus.EnterXprv:
           currentFormCard = EnterXprvCard();
           break;
-        case EnterEncryptedXprvState:
+        case CreateWalletStatus.ValidXprv: break;
+        case CreateWalletStatus.EnterEncryptedXprv:
           currentFormCard = EnterEncryptedXprvCard();
           break;
-        case ConfirmMnemonicState:
+        case CreateWalletStatus.ConfirmMnemonic:
           currentFormCard = ConfirmMnemonicCard();
           break;
-        case WalletDetailState:
+        case CreateWalletStatus.WalletDetail:
           currentFormCard = WalletDetailCard();
           break;
-        case EncryptWalletState:
+        case CreateWalletStatus.EncryptWallet:
           currentFormCard = EncryptWalletCard();
           break;
-        case BuildWalletState:
+        case CreateWalletStatus.BuildWallet:
           currentFormCard = BuildWalletCard();
           break;
-        case CompleteState:
+        case CreateWalletStatus.CreateWallet:
+          // TODO: Handle this case.
+          break;
+        case CreateWalletStatus.Complete:
           {
             currentFormCard = Container();
-            BlocProvider.of<BlocCreateWallet>(context)
+            BlocProvider.of<CreateWalletBloc>(context)
                 .add(ResetEvent(WalletType.newWallet));
           }
-        //case ResetState: break;
+          break;
+        case CreateWalletStatus.Loading:break;
+        case CreateWalletStatus.LoadingException:break;
+        case CreateWalletStatus.Reset:break;
       }
 
       return Center(

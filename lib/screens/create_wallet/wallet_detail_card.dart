@@ -2,10 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/bloc/auth/create_wallet/api_create_wallet.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
-import 'create_wallet_bloc.dart';
+import 'bloc/create_wallet_bloc.dart';
 
 class WalletDetailCard extends StatefulWidget {
   WalletDetailCard({Key? key}) : super(key: key);
@@ -15,8 +15,8 @@ class WalletDetailCard extends StatefulWidget {
 class WalletDetailCardState extends State<WalletDetailCard>
     with TickerProviderStateMixin {
   void onBack() {
-    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-    BlocProvider.of<BlocCreateWallet>(context).add(PreviousCardEvent(type));
+    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void onNext() {
@@ -24,8 +24,8 @@ class WalletDetailCardState extends State<WalletDetailCard>
     Locator.instance
         .get<ApiCreateWallet>()
         .setWalletDescription(_walletDescription);
-    WalletType type = BlocProvider.of<BlocCreateWallet>(context).state.type;
-    BlocProvider.of<BlocCreateWallet>(context).add(NextCardEvent(type));
+    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
   }
 
   late TextEditingController _nameController;
