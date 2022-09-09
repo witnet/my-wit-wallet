@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,6 +18,7 @@ class SignSendDialog extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => SignSendDialogState();
 }
+
 launchExplorerSearch(String searchItem) async {
   String url = 'https://witnet.network/search/$searchItem';
   if (await canLaunch(url)) {
@@ -27,6 +27,7 @@ launchExplorerSearch(String searchItem) async {
     throw 'Could not launch $url';
   }
 }
+
 class SignSendDialogState extends State<SignSendDialog>
     with SingleTickerProviderStateMixin {
   late AnimationController _loadingController;
@@ -45,7 +46,7 @@ class SignSendDialogState extends State<SignSendDialog>
     _passController = TextEditingController();
     _passwordFocusNode = FocusNode();
     _passController.text = '';
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_passwordFocusNode);
     });
 
@@ -72,10 +73,11 @@ class SignSendDialogState extends State<SignSendDialog>
         .add(SendTransactionEvent(vtTransaction));
   }
 
-  void queryHash(String transactionHash){
+  void queryHash(String transactionHash) {
     BlocProvider.of<BlocStatusVtt>(context)
         .add(CheckStatusEvent(transactionHash: transactionHash));
   }
+
   void backToDashboard() {
     BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
     Navigator.of(context).pop();
@@ -83,7 +85,6 @@ class SignSendDialogState extends State<SignSendDialog>
     if(sent){
       BlocProvider.of<ExplorerBloc>(context).add(SyncWalletEvent(ExplorerStatus.dataloading));
     }
-
   }
 
   Widget buildTransactionJsonViewer(
@@ -153,8 +154,6 @@ class SignSendDialogState extends State<SignSendDialog>
       );
     });
   }
-
-
 
   Widget vtBlocContainer() {
     return BlocConsumer<VTTCreateBloc, VTTCreateState>(

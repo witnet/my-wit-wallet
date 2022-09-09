@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +17,8 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/fee_type_selector_chip.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/value_transfer_output_container.dart';
+import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
+import 'package:witnet/data_structures.dart';
 import '../recipient_address_input.dart';
 
 class RecipientStep extends StatefulWidget {
@@ -39,6 +43,14 @@ class RecipientStepState extends State<RecipientStep>
   double valueWit = 0;
   int timeLock = 0;
   int balanceNanoWit = 0;
+  String _feeType = 'Stinky';
+  String _stinkyFee = '0';
+  String _lowFee = '0';
+  String _mediumFee = '0';
+  String _highFee = '0';
+  String _opulentFee = '0';
+  String _selectedFee = '';
+
   late TextEditingController _addressController;
   final TextEditingController _valueController = TextEditingController();
 
@@ -63,6 +75,10 @@ class RecipientStepState extends State<RecipientStep>
     balanceNanoWit = _dbWallet.balanceNanoWit();
     BlocProvider.of<VTTCreateBloc>(context)
         .add(AddSourceWalletEvent(dbWallet: _dbWallet));
+    Timer.periodic(Duration(seconds: 5), (timer) async {
+      this.priority();
+    });
+
     super.initState();
   }
 
@@ -70,6 +86,30 @@ class RecipientStepState extends State<RecipientStep>
   void dispose() {
     _loadingController.dispose();
     super.dispose();
+  }
+
+  void _setPriorities(
+      String stinky, String low, String medium, String high, String opulent) {
+    setState(() {
+      _stinkyFee = stinky;
+      _lowFee = low;
+      _mediumFee = medium;
+      _highFee = high;
+      _opulentFee = opulent;
+    });
+  }
+
+  void _setFee(String priority, String feeNanoWit) {
+    if (feeNanoWit != "") {
+      // Only use estimated fee if selected is not custom
+      int absoluteFeeNanoWit = int.parse(feeNanoWit);
+      BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
+          feeType: FeeType.Absolute, feeNanoWit: absoluteFeeNanoWit));
+    }
+
+    setState(() {
+      _selectedFee = priority;
+    });
   }
 
   String? get _errorText {
@@ -348,35 +388,41 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   Widget _feeBody(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
-      padding: EdgeInsets.all(5),
-      child: Column(
-        children: [
+        padding: EdgeInsets.all(5),
+        child: Column(children: [
           // _buildTimeLockInput(),
           Row(
             children: [
-              AutoSizeText(
-                'Fee Type',
-                maxLines: 1,
-                minFontSize: 9,
-              ),
-              Tooltip(
-                  height: 100,
-                  message:
-                      'By default, \'Weighted fee\' is selected.\n\nThe amount of the fee will be calculated, taking into account the weight of the transaction.\n\nTo set an absolute fee, you need to toggle \'Absolute fee\' in the advance options below.',
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      FontAwesomeIcons.questionCircle,
-                      size: 15,
-                    ),
-                    iconSize: 10,
-                    padding: EdgeInsets.all(3),
-                  )),
+              Expanded(
+                flex: 1,
+                // child: _feeTypeButtonGroup(context),
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: AutoSizeText(
+                    'Choose a fee: ',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w300,
+                        color: theme.primaryColor),
+                  ),
+                ),
+              )
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                  flex: 1,
+                  // child: _feeTypeButtonGroup(context),
+                  child: _buildFeeTypeButtonGroup(context))
             ],
           ),
 
-          FeeTypeSelectorChip(),
+          _selectedFee == "Custom" ? FeeTypeSelectorChip() : Container(),
+
           /*
           Row(
             children: [
@@ -403,9 +449,58 @@ class RecipientStepState extends State<RecipientStep>
 
            */
           //UtxoSelectionStrategyChip(),
-        ],
-      ),
-    );
+        ]));
+  }
+
+  Widget _buildFeeTypeButtonGroup(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+        children: <Map<String, String>>[
+      {"label": "Stinky", "value": _stinkyFee},
+      {"label": "Low", "value": _lowFee},
+      {"label": "Medium", "value": _mediumFee},
+      {"label": "High", "value": _highFee},
+      {"label": "Opulent", "value": _opulentFee},
+      {"label": "Custom", "value": ""},
+    ].map<OutlinedButton>((Map<String, String> _priority) {
+      return OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            side: BorderSide(
+                width: 1.0,
+                color: _selectedFee == _priority["label"]
+                    ? theme.primaryColor
+                    : theme
+                        .inputDecorationTheme.enabledBorder!.borderSide.color),
+          ),
+          onPressed: () {
+            _setFee(_priority["label"]!, _priority["value"]!);
+          },
+          child: Row(children: [
+            Expanded(flex: 1, child: Text(_priority["label"]!)),
+            Expanded(
+                flex: 0,
+                child: _priority["value"] != ""
+                    ? Text("${_priority["value"]!} nanoWits")
+                    : Text("")),
+          ]));
+    }).toList());
+  }
+
+  Future<bool> priority() async {
+    try {
+      var resp = await Locator.instance.get<ApiExplorer>().priority();
+
+      this._setPriorities(
+        resp["vttStinky"]["priority"]["nanoWit"],
+        resp["vttLow"]["priority"]["nanoWit"],
+        resp["vttMedium"]["priority"]["nanoWit"],
+        resp["vttHigh"]["priority"]["nanoWit"],
+        resp["vttOpulent"]["priority"]["nanoWit"],
+      );
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   Widget buildTimeLockInput() {

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
@@ -143,6 +145,91 @@ class ApiExplorer {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<dynamic> priority() async {
+    return Future.delayed(const Duration(milliseconds: 500), () {
+      try {
+        // return await client.priority();
+        // TODO: Remove when implemented
+        var random = Random();
+
+        return {
+          "drtStinky": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "drtLow": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "drtMedium": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "drtHigh": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "drtOpulent": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "vttStinky": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "vttLow": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "vttMedium": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "vttHigh": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "vttOpulent": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+        };
+      } catch (e) {
+        rethrow;
+      }
+    });
   }
 
   bool isCached(String hash) {
