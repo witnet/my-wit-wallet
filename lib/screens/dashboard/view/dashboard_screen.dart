@@ -438,7 +438,8 @@ class DashboardScreenState extends State<DashboardScreen>
           );
       }
 
-      return Scaffold(
+    return Scaffold(
+        backgroundColor: theme.backgroundColor,
         appBar: _buildAppBar(theme),
         resizeToAvoidBottomInset: false,
         body: new GestureDetector(

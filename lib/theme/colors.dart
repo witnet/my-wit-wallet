@@ -12,6 +12,21 @@ class WitnetPallet {
   static const darkShade4 = Color(0xFF17151E);
   static const darkShade5 = Color(0xFF3763AD);
   static const darkShade6 = Color(0xFFE1DEDF);
+
+  static const lightGrey = Color.fromARGB(255, 193, 196, 198);
+  static const darkGrey = Color.fromARGB(255, 50, 50, 50);
+  static const white = Color.fromARGB(255, 240, 243, 245);
+  static const witnetGreen1 = Color.fromARGB(255, 74, 182, 160);
+  static const witnetGreen2 = Color.fromARGB(255, 56, 144, 129);
+  static const darkBlue1 = Color.fromARGB(255, 13, 45, 67);
+  static const darkBlue2 = Color.fromARGB(255, 2, 29, 48);
+  static const opacityWitnetGreen = Color.fromRGBO(54, 140, 125, 0.40);
+  static const opacityWhite = Color.fromRGBO(240, 243, 245, 80);
+  static const opacityWhite2 = Color.fromRGBO(240, 243, 245, 95);
+  static const darkRed = Color.fromARGB(255, 179, 0, 12);
+  static const brightRed = Color.fromARGB(255, 255, 65, 78);
+  static const darkGreen = Color.fromARGB(255, 54, 140, 83);
+  static const brightGreen = Color.fromARGB(255, 54, 140, 83);
 }
 
 class BaseColorPallet {

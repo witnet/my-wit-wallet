@@ -73,107 +73,107 @@ class DisclaimerCardState extends State<DisclaimerCard>
   Widget _buildDisclaimerTextScrollView(ThemeData theme, Size deviceSize) {
     return Container(
       height: deviceSize.height * 0.6,
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(5),
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.all(10),
-                child: Text(
-                  'Hey, listen!\nPlease, read carefully before continuing.',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+      child: Padding(
+        padding: EdgeInsets.all(5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Hey, listen!\nPlease, read carefully before continuing.',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
               ),
-              Text(
-                'A wallet is an app that keeps your credentials safe and lets you interface with the Witnet blockchain in many ways: from transferring Wit to someone else to creating smart contracts.',
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              'A wallet is an app that keeps your credentials safe and lets you interface with the Witnet blockchain in many ways: from transferring Wit to someone else to creating smart contracts.',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              'You should never share your seed phrase with anyone. We at Witnet do not store your seed phrase and will never ask you to share it with us. If you lose your seed phrase, you will permanently lose access to your wallet and your funds.',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              'If someone finds or sees your seed phrase, they will have access to your wallet and all of your funds.',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              'We recommend storing your seed phrase on paper somewhere safe. Do not store it in a file on your computer or anywhere electronically.',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              'By accepting these disclaimers, you commit to comply with the explained restrictions and digitally sign your conformance using your Witnet wallet.',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.leading,
+              activeColor: Colors.cyan,
+              contentPadding: EdgeInsets.symmetric(horizontal: 0),
+              title: Text(
+                "I will be careful, I promise!",
+                textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                'You should never share your seed phrase with anyone. We at Witnet do not store your seed phrase and will never ask you to share it with us. If you lose your seed phrase, you will permanently lose access to your wallet and your funds.',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                'If someone finds or sees your seed phrase, they will have access to your wallet and all of your funds.',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                'We recommend storing your seed phrase on paper somewhere safe. Do not store it in a file on your computer or anywhere electronically.',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                'By accepting these disclaimers, you commit to comply with the explained restrictions and digitally sign your conformance using your Witnet wallet.',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              CheckboxListTile(
-                activeColor: Colors.cyan,
-                title: Text(
-                  "I will be careful,\nI promise!",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                value: acceptedDisclaimer,
-                onChanged: (value) {
-                  setState(() {
-                    print(value);
-                    acceptedDisclaimer = !acceptedDisclaimer;
-                  });
-                },
-                controlAffinity:
-                    ListTileControlAffinity.leading, //  <-- leading Checkbox
-              ),
-            ],
-          ),
+              value: acceptedDisclaimer,
+              onChanged: (value) {
+                setState(() {
+                  print(value);
+                  acceptedDisclaimer = !acceptedDisclaimer;
+                });
+              },
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget _buildButtonRow() {
+    // final theme = Theme.of(context);
     return Container(
       padding: EdgeInsets.only(bottom: 5),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           Padding(
             padding: EdgeInsets.all(5),
-            child: ElevatedButton(
+            child: OutlinedButton(
               onPressed: () => Navigator.pop(context),
               child: Text('Cancel'),
             ),
