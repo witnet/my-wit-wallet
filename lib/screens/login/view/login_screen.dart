@@ -45,6 +45,7 @@ class LoginScreenState extends State<LoginScreen>
     size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     return Scaffold(
+      backgroundColor: theme.backgroundColor,
       resizeToAvoidBottomInset: false,
       body: new GestureDetector(
         onTap: () {

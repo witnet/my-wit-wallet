@@ -79,14 +79,12 @@ class _RoundButtonState extends State<RoundButton>
                   child: FloatingActionButton(
                       // allow more than 1 FAB in the same screen (hero tag cannot be duplicated)
                       heroTag: null,
-                      backgroundColor: theme.primaryColor,
                       onPressed: () {
                         _pressController.forward().then((_) {
                           _pressController.reverse();
                         });
                         widget.onPressed();
                       },
-                      foregroundColor: theme.backgroundColor,
                       child: widget.icon),
                 ),
               ),

@@ -17,12 +17,12 @@ class PreferencePage extends StatelessWidget {
           final itemAppTheme = WalletTheme.values[index];
           return Card(
             // Style the cards with the to-be-selected theme colors
-            color: walletThemeData[itemAppTheme]!.primaryColor,
+            color: walletThemeData[itemAppTheme]!.cardTheme.color,
             child: ListTile(
               title: Text(
                 itemAppTheme.toString(),
                 // To show light text with the dark variants...
-                style: walletThemeData[itemAppTheme]!.textTheme.bodyText2,
+                style: walletThemeData[itemAppTheme]!.textTheme.button,
               ),
               onTap: () {
                 // This will make the Bloc output a new ThemeState,
@@ -40,7 +40,9 @@ class PreferencePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
     return Scaffold(
+      backgroundColor: theme.backgroundColor,
       appBar: AppBar(
         title: Text('Preferences'),
       ),

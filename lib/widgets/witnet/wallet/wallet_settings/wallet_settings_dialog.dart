@@ -326,9 +326,6 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog>{
               Align(
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(theme.primaryColor),
-                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },

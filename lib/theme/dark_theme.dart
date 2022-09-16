@@ -1,24 +1,11 @@
-
 import 'package:flutter/material.dart';
-
-import 'app_themes.dart';
 import 'colors.dart';
 
 Brightness brightness = Brightness.dark;
-VisualDensity visualDensity = defaultDensity;
-MaterialColor primarySwatch = createMaterialColor(WitnetPallet.darkShade);
-Color primaryColor = WitnetPallet.darkShade;
+MaterialColor primarySwatch =
+    createMaterialColor(WitnetPallet.opacityWitnetGreen);
+Color primaryColor = WitnetPallet.opacityWitnetGreen;
 Brightness primaryColorBrightness = brightness;
-
-TooltipThemeData tooltipTheme = TooltipThemeData(
-    height: 10,
-    padding: EdgeInsets.all(5),
-    margin: EdgeInsets.all(5),
-    verticalOffset: 0.0,
-    preferBelow: false,
-    decoration: BoxDecoration(color:  WitnetPallet.darkShade6,),
-    textStyle: TextStyle(color: WitnetPallet.darkShade6)
-);
 TextTheme textTheme = TextTheme(
   headline3: TextStyle(
     fontFamily: 'OpenSans',
@@ -34,39 +21,16 @@ TextTheme textTheme = TextTheme(
   bodyText1: TextStyle(fontFamily: 'NotoSans'),
   bodyText2: TextStyle(fontFamily: 'NotoSans'),
   subtitle2: TextStyle(fontFamily: 'NotoSans'),
-  overline:  TextStyle(fontFamily: 'NotoSans'),
+  overline: TextStyle(fontFamily: 'NotoSans'),
 );
-
-AppBarTheme appBarTheme = AppBarTheme(
-  color: WitnetPallet.darkShade6,
-  backgroundColor: Colors.black,
-  //foregroundColor: ,
-  //elevation: ,
-  //shadowColor: ,
-  //shape: ,
-  //iconTheme: ,
-  //actionsIconTheme: ,
-  //centerTitle: ,
-//
-  //titleSpacing: ,
-  //toolbarHeight: ,
-  //toolbarTextStyle: ,
-  //systemOverlayStyle: ,
-
-);
-
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: Color(0xFFFFFFFF),
   filled: true,
   labelStyle: TextStyle(),
   prefixStyle: TextStyle(),
   suffixStyle: TextStyle(),
-  errorStyle: TextStyle(
-      backgroundColor: Color(0xFFFFFFFF)
-  ),
-  helperStyle: TextStyle(
-      backgroundColor: Color(0xFFFFFF00)
-  ),
+  errorStyle: TextStyle(backgroundColor: Color(0xFFFFFFFF)),
+  helperStyle: TextStyle(backgroundColor: Color(0xFFFFFF00)),
   helperMaxLines: 1,
   errorMaxLines: 1,
   hintStyle: TextStyle(),
@@ -78,134 +42,77 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: const Color(0x55948C80),
-        width: 1.0,
-        style: BorderStyle.solid
-    ),
+        color: const Color(0x55948C80), width: 1.0, style: BorderStyle.solid),
     borderRadius: BorderRadius.circular(7.0),
-
   ),
   focusedBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: const Color(0x551DA3B2),
-        width: 2.0,
-        style: BorderStyle.solid
-    ),
+        color: const Color(0x551DA3B2), width: 2.0, style: BorderStyle.solid),
     borderRadius: BorderRadius.circular(7.0),
-
   ),
   focusedErrorBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: const Color(0xFFF7F7F8),
-        width: 2.0,
-        style: BorderStyle.solid
-    ),
+        color: const Color(0xFFF7F7F8), width: 2.0, style: BorderStyle.solid),
     borderRadius: BorderRadius.circular(7.0),
-
   ),
   border: OutlineInputBorder(
     borderSide: BorderSide(
-        color: const Color(0xFFF7F7F8),
-        width: 1.0,
-        style: BorderStyle.solid
-    ),
+        color: const Color(0xFFF7F7F8), width: 1.0, style: BorderStyle.solid),
     borderRadius: BorderRadius.circular(7.0),
-
   ),
   alignLabelWithHint: true,
 );
-
-ThemeData darkTheme = ThemeData(
-  brightness: brightness,
-  colorScheme: ColorScheme.dark(),
-
-  primaryColor: primaryColor,
-  primarySwatch: primarySwatch,
-  visualDensity: defaultDensity,
-
-  tooltipTheme: tooltipTheme,
-    dialogBackgroundColor:Color(0xFF17151E),
-  canvasColor: Color(0xFF17151E),
-  shadowColor: Color(0xFF17151E),
-  scaffoldBackgroundColor: Color(0xFF17151E),
-  bottomAppBarColor: Color(0xFF17151E),
-  cardColor: Color(0xFF17151E),
-  inputDecorationTheme: inputDecorationTheme,
- ///
-  ///
-  textTheme: textTheme
- //  dividerColor: ,
- //  focusColor: ,
- //  hoverColor: ,
- //  highlightColor: ,
- //  splashColor: ,
- //  splashFactory: ,
- //  selectedRowColor: ,
- //  unselectedWidgetColor: ,
- //  disabledColor: ,
-
+TooltipThemeData tooltipTheme = TooltipThemeData(
+    height: 10,
+    padding: EdgeInsets.all(5),
+    margin: EdgeInsets.all(5),
+    verticalOffset: 0.0,
+    preferBelow: false,
+    decoration: BoxDecoration(
+      color: WitnetPallet.darkShade6,
+    ),
+    textStyle: TextStyle(color: WitnetPallet.darkShade6));
+ButtonThemeData buttonTheme = ButtonThemeData(
+  buttonColor: WitnetPallet.opacityWitnetGreen,
 );
-
-/*
-primaryColorLight
-primaryColorDark
-
-
-buttonTheme
-toggleButtonsTheme
-secondaryHeaderColor
-backgroundColor
-dialogBackgroundColor
-indicatorColor
-hintColor
-errorColor
-toggleableActiveColor
-fontFamily
-- textTheme
-primaryTextTheme
-inputDecorationTheme
-iconTheme
-primaryIconTheme
-sliderTheme
-tabBarTheme
-tooltipTheme
-cardTheme
-chipTheme
-platform
-materialTapTargetSize
-applyElevationOverlayColor
-
-pageTransitionsTheme
-appBarTheme
-scrollbarTheme
-bottomAppBarTheme
-colorScheme
-dialogTheme
-floatingActionButtonTheme
-navigationBarTheme
-navigationRailTheme
-typography
-cupertinoOverrideTheme
-snackBarTheme
-bottomSheetTheme
-popupMenuTheme
-bannerTheme
-dividerTheme
-
-buttonBarTheme
-
-bottomNavigationBarTheme
-timePickerTheme
-textButtonTheme
-elevatedButtonTheme
-outlinedButtonTheme
-dataTableTheme
-checkboxTheme
-radioTheme
-switchTheme
-progressIndicatorTheme
-drawerTheme
-listTileTheme
-androidOverscrollIndicator
- */
-
+ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
+  style: ElevatedButton.styleFrom(
+    padding: const EdgeInsets.all(16),
+    onSurface: Color.fromARGB(102, 164, 212, 204),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+    primary: WitnetPallet.opacityWitnetGreen, // background color
+    textStyle: const TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.normal,
+      color: WitnetPallet.white,
+    )
+  ),
+);
+OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
+  style: OutlinedButton.styleFrom(
+    primary: WitnetPallet.white,
+    onSurface: Color.fromARGB(78, 240, 243, 245),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+    side: BorderSide(width: 2, color: WitnetPallet.white),
+    padding: const EdgeInsets.all(16),
+    textStyle: const TextStyle(
+      fontSize: 16,
+      color: WitnetPallet.white,
+    ),
+  )
+);
+CardTheme cardTheme = CardTheme(
+  elevation: 5.0,
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.0)),
+  color: WitnetPallet.opacityWitnetGreen,
+  // shadowColor: Color(0xFF112338),
+);
+ThemeData darkTheme = ThemeData(
+  primaryColor: primaryColor,
+  backgroundColor: WitnetPallet.darkBlue2,
+  elevatedButtonTheme: elevatedButtonTheme,
+  outlinedButtonTheme: outlinedButtonTheme,
+  cardTheme: cardTheme,
+  textTheme: textTheme,
+  inputDecorationTheme: inputDecorationTheme,
+);
