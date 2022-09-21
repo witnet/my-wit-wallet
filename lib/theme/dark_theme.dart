@@ -7,21 +7,12 @@ MaterialColor primarySwatch =
 Color primaryColor = WitnetPallet.opacityWitnetGreen;
 Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
-  headline3: TextStyle(
-    fontFamily: 'OpenSans',
-    fontSize: 45.0,
-    fontWeight: FontWeight.w100,
-  ),
-  headline1: TextStyle(fontFamily: 'Quicksand'),
-  headline2: TextStyle(fontFamily: 'Quicksand'),
-  headline4: TextStyle(fontFamily: 'Quicksand'),
-  headline5: TextStyle(fontFamily: 'NotoSans'),
-  headline6: TextStyle(fontFamily: 'NotoSans'),
-  subtitle1: TextStyle(fontFamily: 'NotoSans'),
-  bodyText1: TextStyle(fontFamily: 'NotoSans'),
-  bodyText2: TextStyle(fontFamily: 'NotoSans'),
-  subtitle2: TextStyle(fontFamily: 'NotoSans'),
-  overline: TextStyle(fontFamily: 'NotoSans'),
+  headline1: TextStyle(fontFamily: 'Quicksand', color: WitnetPallet.opacityWhite, fontSize: 24, fontWeight: FontWeight.bold),
+  headline2: TextStyle(fontFamily: 'Quicksand', color: WitnetPallet.opacityWhite, fontSize: 24, fontWeight: FontWeight.normal),
+  bodyText1: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 16, fontWeight: FontWeight.normal),
+  bodyText2: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 14, fontWeight: FontWeight.normal),
+  caption: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 12, fontWeight: FontWeight.normal),
+  button: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 16, fontWeight: FontWeight.normal),
 );
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: Color(0xFFFFFFFF),

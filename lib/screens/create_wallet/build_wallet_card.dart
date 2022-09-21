@@ -156,17 +156,12 @@ class BuildWalletCardState extends State<BuildWalletCard>
           targetValue: nanoWitToWit(balanceNanoWit),
           curve: Interval(0, .5, curve: Curves.easeOut),
           controller: _balanceController,
-          style: theme.textTheme.headline5!.copyWith(
-            foreground: Paint()..shader = linearGradient,
-          ),
+          style: theme.textTheme.bodyText1!,
         ),
         SizedBox(width: 5),
         Text(
           'wit',
-          style: theme.textTheme.headline5!.copyWith(
-            fontWeight: FontWeight.w300,
-            color: accentColor.withOpacity(0.9),
-          ),
+          style: theme.textTheme.bodyText1!,
         ),
       ]),
       SizedBox(
@@ -344,17 +339,12 @@ class BuildWalletCardState extends State<BuildWalletCard>
         targetValue: nanoWitToWit(0),
         curve: Interval(0, .5, curve: Curves.easeOut),
         controller: _loadingController,
-        style: theme.textTheme.headline5!.copyWith(
-          foreground: Paint()..shader = linearGradient,
-        ),
+        style: theme.textTheme.bodyText1!,
       ),
       SizedBox(width: 5),
       Text(
         'wit',
-        style: theme.textTheme.headline5!.copyWith(
-          fontWeight: FontWeight.w300,
-          color: accentColor.withOpacity(0.9),
-        ),
+        style: theme.textTheme.bodyText1!,
       ),
     ]);
   }

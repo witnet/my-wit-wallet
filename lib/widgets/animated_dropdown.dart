@@ -108,7 +108,7 @@ class AnimatedDropDownState extends State<AnimatedDropDown>
         DropdownMenuItem(
           child: AnimatedText(
             text: element,
-            style: theme.textTheme.headline4!,
+            style: theme.textTheme.bodyText1!,
           ),
         ),
       );

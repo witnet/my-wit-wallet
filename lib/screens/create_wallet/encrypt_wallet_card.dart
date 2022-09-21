@@ -146,7 +146,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                 'Encrypt your wallet.',
                 textAlign: TextAlign.right,
                 maxLines: 1,
-                style: theme.textTheme.headline6,
+                style: theme.textTheme.bodyText1,
               ),
             ),
             Expanded(
