@@ -27,6 +27,7 @@ class WitnetPallet {
   static const brightRed = Color.fromARGB(255, 255, 65, 78);
   static const darkGreen = Color.fromARGB(255, 54, 140, 83);
   static const brightGreen = Color.fromARGB(255, 54, 140, 83);
+  static const transparent = Color.fromARGB(0, 255, 255, 255);
 }
 
 class BaseColorPallet {

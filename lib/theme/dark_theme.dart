@@ -5,51 +5,51 @@ Brightness brightness = Brightness.dark;
 MaterialColor primarySwatch =
     createMaterialColor(WitnetPallet.opacityWitnetGreen);
 Color primaryColor = WitnetPallet.opacityWitnetGreen;
+TextSelectionThemeData textSelectionTheme =
+    TextSelectionThemeData(cursorColor: WitnetPallet.opacityWitnetGreen);
 Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
   headline1: TextStyle(fontFamily: 'Quicksand', color: WitnetPallet.opacityWhite, fontSize: 24, fontWeight: FontWeight.bold),
   headline2: TextStyle(fontFamily: 'Quicksand', color: WitnetPallet.opacityWhite, fontSize: 24, fontWeight: FontWeight.normal),
+  subtitle1: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 16, fontWeight: FontWeight.normal),
   bodyText1: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 16, fontWeight: FontWeight.normal),
   bodyText2: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 14, fontWeight: FontWeight.normal),
   caption: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 12, fontWeight: FontWeight.normal),
   button: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 16, fontWeight: FontWeight.normal),
 );
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
-  fillColor: Color(0xFFFFFFFF),
+  fillColor: WitnetPallet.darkBlue2,
   filled: true,
-  labelStyle: TextStyle(),
-  prefixStyle: TextStyle(),
-  suffixStyle: TextStyle(),
-  errorStyle: TextStyle(backgroundColor: Color(0xFFFFFFFF)),
-  helperStyle: TextStyle(backgroundColor: Color(0xFFFFFF00)),
+  errorStyle: TextStyle(backgroundColor: WitnetPallet.brightRed),
+  helperStyle: TextStyle(backgroundColor: WitnetPallet.opacityWhite),
   helperMaxLines: 1,
   errorMaxLines: 1,
-  hintStyle: TextStyle(),
-  hoverColor: Color(0xFFFFFFFF),
-  focusColor: Color(0xFF41BEA5),
-  floatingLabelBehavior: FloatingLabelBehavior.always,
+  hintStyle: TextStyle(color: WitnetPallet.opacityWhite),
+  labelStyle: TextStyle(color: WitnetPallet.opacityWhite),
+  hoverColor: WitnetPallet.darkBlue2,
+  focusColor: WitnetPallet.opacityWitnetGreen,
   isDense: false,
   isCollapsed: false,
-  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+  contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: const Color(0x55948C80), width: 1.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(7.0),
+        color: WitnetPallet.opacityWhite, width: 1.0, style: BorderStyle.solid),
+    borderRadius: BorderRadius.circular(4),
   ),
   focusedBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: const Color(0x551DA3B2), width: 2.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(7.0),
+        color: WitnetPallet.opacityWitnetGreen, width: 1.0, style: BorderStyle.solid),
+    borderRadius: BorderRadius.circular(4),
   ),
   focusedErrorBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: const Color(0xFFF7F7F8), width: 2.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(7.0),
+        color: WitnetPallet.brightRed, width: 1.0, style: BorderStyle.solid),
+    borderRadius: BorderRadius.circular(4),
   ),
   border: OutlineInputBorder(
     borderSide: BorderSide(
-        color: const Color(0xFFF7F7F8), width: 1.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(7.0),
+        color: WitnetPallet.opacityWhite, width: 1.0, style: BorderStyle.solid),
+    borderRadius: BorderRadius.circular(4),
   ),
   alignLabelWithHint: true,
 );
@@ -98,9 +98,20 @@ CardTheme cardTheme = CardTheme(
   color: WitnetPallet.opacityWitnetGreen,
   // shadowColor: Color(0xFF112338),
 );
+IconThemeData iconTheme = IconThemeData(
+  color: WitnetPallet.opacityWhite,
+  size: 16,
+);
+IconThemeData primaryIconTheme = IconThemeData(
+  color: WitnetPallet.opacityWhite,
+  size: 24,
+);
 ThemeData darkTheme = ThemeData(
   primaryColor: primaryColor,
   backgroundColor: WitnetPallet.darkBlue2,
+  iconTheme: iconTheme,
+  textSelectionTheme: textSelectionTheme,
+  primaryIconTheme: primaryIconTheme,
   elevatedButtonTheme: elevatedButtonTheme,
   outlinedButtonTheme: outlinedButtonTheme,
   cardTheme: cardTheme,

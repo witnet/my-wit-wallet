@@ -111,11 +111,6 @@ class _DateTimePickerState extends State<DateTimePicker> {
                               onSaved: (String? val) {
                                 if (val != null) _setDate = val;
                               },
-                              decoration: InputDecoration(
-                                  disabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide.none),
-                                  // labelText: 'Time',
-                                  contentPadding: EdgeInsets.only(top: 0.0)),
                             ),
                           ),
                         ),

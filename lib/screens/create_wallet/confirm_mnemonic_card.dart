@@ -61,9 +61,6 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
                   numLines = '\n'.allMatches(e).length + 1;
                 });
               },
-              decoration: new InputDecoration(
-                  border: new OutlineInputBorder(
-                      borderRadius: new BorderRadius.circular(10.0))),
             ),
             SizedBox(
               height: 10,

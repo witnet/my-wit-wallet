@@ -46,8 +46,7 @@ class EnterXprvCardState extends State<EnterXprvCard>
               },
               decoration: new InputDecoration(
                   labelText: 'XPRV',
-                  border: new OutlineInputBorder(
-                      borderRadius: new BorderRadius.circular(10.0))),
+              )
             ),
             SizedBox(
               height: 10,
