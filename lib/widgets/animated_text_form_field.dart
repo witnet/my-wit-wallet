@@ -199,26 +199,6 @@ class _AnimatedTextFormFieldState extends State<AnimatedTextFormField> {
 
   InputDecoration _getInputDecoration(ThemeData theme) {
     return InputDecoration(
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.white, width: 1),
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide(color: Colors.red, width: 1),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide(color: Colors.red, width: 1),
-      ),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide.none,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide.none,
-      ),
       labelText: widget.labelText,
       prefixIcon: _buildInertiaAnimation(widget.prefixIcon),
       suffixIcon: _buildInertiaAnimation(widget.loadingController != null

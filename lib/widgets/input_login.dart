@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:witnet_wallet/theme/colors.dart';
 
 class InputLogin extends StatefulWidget {
   InputLogin({
@@ -59,18 +60,28 @@ class _InputLoginState extends State<InputLogin> {
   }
 
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return Container(
-      height: (size.height) * 0.056,
-      // /width: (size.width) * 0.74,
-      child: Padding(
-        padding: EdgeInsets.all(0.0),
-        child: Row(
-          children: <Widget>[
-            Icon(widget.prefixIcon),
-            Flexible(
-              child: TextFormField(
-                decoration: InputDecoration(labelText: 'Password'),
+    final deviceSize = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
+    return Column(
+      children: <Widget>[
+        Container(
+          height: deviceSize.height * 0.045,
+          child: TextFormField(
+                decoration: InputDecoration(
+                  hintText: 'Input your password',
+                  suffixIcon: IconButton(
+                    splashRadius: 1,
+                    padding: const EdgeInsets.all(2),
+                    color: theme.iconTheme.color,
+                    iconSize: theme.iconTheme.size,
+                    icon: showPassword
+                        ? Icon(Icons.remove_red_eye)
+                        : Icon(Icons.visibility_off),
+                    onPressed: () {
+                      setState(() => showPassword = !showPassword);
+                    },
+                  ),
+                ),
                 minLines: 1,
                 focusNode: widget.focusNode,
                 controller: widget.textEditingController,
@@ -81,10 +92,7 @@ class _InputLoginState extends State<InputLogin> {
                 validator: _validator,
               ),
             ),
-            widget.obscureText ? handleShowPass() : Container(),
           ],
-        ),
-      ),
     );
   }
 }

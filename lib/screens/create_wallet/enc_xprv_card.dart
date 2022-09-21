@@ -65,9 +65,8 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
                 });
               },
               decoration: new InputDecoration(
-                  labelText: 'Encrypted XPRV',
-                  border: new OutlineInputBorder(
-                      borderRadius: new BorderRadius.circular(10.0))),
+                labelText: 'Encrypted XPRV',
+              )
             ),
             SizedBox(
               height: 10,

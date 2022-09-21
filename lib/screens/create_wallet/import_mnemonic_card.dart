@@ -57,10 +57,6 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
                   numLines = '\n'.allMatches(e).length + 1;
                 });
               },
-              decoration: new InputDecoration(
-                  fillColor: Colors.white,
-                  border: new OutlineInputBorder(
-                      borderRadius: new BorderRadius.circular(10.0))),
             ),
             SizedBox(
               height: 10,
