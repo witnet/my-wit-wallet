@@ -133,7 +133,7 @@ class DashboardScreenState extends State<DashboardScreen>
       elevation: 0,
       iconTheme: theme.iconTheme,
       toolbarTextStyle: theme.textTheme.bodyText2,
-      titleTextStyle: theme.textTheme.headline6,
+      titleTextStyle: theme.textTheme.bodyText1,
     );
   }
 
