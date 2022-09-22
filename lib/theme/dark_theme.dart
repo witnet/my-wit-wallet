@@ -16,6 +16,12 @@ TextTheme textTheme = TextTheme(
   bodyText2: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 14, fontWeight: FontWeight.normal),
   caption: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 12, fontWeight: FontWeight.normal),
   button: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 16, fontWeight: FontWeight.normal),
+    labelMedium: TextStyle(
+    fontFamily: 'NotoSans',
+    color: WitnetPallet.opacityWitnetGreen,
+    fontSize: 16,
+    fontWeight: FontWeight.normal
+  )
 );
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.darkBlue2,
@@ -106,9 +112,18 @@ IconThemeData primaryIconTheme = IconThemeData(
   color: WitnetPallet.opacityWhite,
   size: 24,
 );
+CheckboxThemeData checkboxTheme = CheckboxThemeData(
+  splashRadius: 0,
+  side: MaterialStateBorderSide.resolveWith(
+    (_) => const BorderSide(width: 2, color: WitnetPallet.opacityWitnetGreen)),
+  fillColor: MaterialStateProperty.all(WitnetPallet.opacityWitnetGreen),
+  checkColor: MaterialStateProperty.all(WitnetPallet.white),
+  overlayColor: MaterialStateProperty.all(WitnetPallet.white),
+);
 ThemeData darkTheme = ThemeData(
   primaryColor: primaryColor,
   backgroundColor: WitnetPallet.darkBlue2,
+  checkboxTheme: checkboxTheme,
   iconTheme: iconTheme,
   textSelectionTheme: textSelectionTheme,
   primaryIconTheme: primaryIconTheme,
