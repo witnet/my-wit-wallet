@@ -9,6 +9,7 @@ import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
 import 'package:witnet_wallet/widgets/dashed_rect.dart';
+import 'package:witnet_wallet/widgets/select.dart';
 
 class GenerateMnemonicCard extends StatefulWidget {
   GenerateMnemonicCard({Key? key}) : super(key: key);
@@ -40,43 +41,22 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
   }
 
   Widget _buildMnemonicLanguageSelector() {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-      Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          new Text(
-            'Select Language:',
-            style: new TextStyle(fontSize: 16.0),
-          ),
-          DropdownButton<String>(
-            value: _language,
-            //elevation: 5,
-            items: <String>[
-              'ChineseSimplified',
-              'ChineseTraditional',
-              'English',
-              'French',
-              'Italian',
-              'Japanese',
-              'Korean',
-              'Spanish',
-            ].map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(), // items
-            hint: Text(
-              "Please choose a langauage",
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-            onChanged: (String? value) {
-              _setLanguage(value!);
-            },
-          ),
-        ],
-      ),
-    ]);
+    return Select(
+      listItems: <String>[
+        'ChineseSimplified',
+        'ChineseTraditional',
+        'English',
+        'French',
+        'Italian',
+        'Japanese',
+        'Korean',
+        'Spanish',
+      ],
+      selectedItem: _language,
+      onChanged: (String? value) => {
+        _setLanguage(value!)
+      },
+    );
   }
 
   Widget _buildMnemonicLengthSelector() {

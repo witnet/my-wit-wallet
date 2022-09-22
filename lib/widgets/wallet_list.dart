@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:witnet_wallet/shared/api_auth.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/widgets/select.dart';
 
 class ListItem {
   bool isSelected = false;
@@ -11,7 +12,6 @@ class ListItem {
 
 class WalletListWidget extends StatefulWidget {
   final double width;
-
   final List<String> walletFiles;
 
   const WalletListWidget(
@@ -59,13 +59,6 @@ class WalletListWidgetState extends State<WalletListWidget> {
     );
   }
 
-  DropdownMenuItem<String> _buildWalletDropdownItem(String value) {
-    return DropdownMenuItem<String>(
-      value: value,
-      child: Text(value),
-    );
-  }
-
   void populateData() {
     widget.walletFiles.forEach((element) {
       files.add(ListItem('$element'));
@@ -73,24 +66,15 @@ class WalletListWidgetState extends State<WalletListWidget> {
   }
 
   Widget _buildDropDownView(BuildContext context, ThemeData theme) {
-    return DropdownButton<String>(
-      isExpanded: true,
-      focusColor: Colors.white,
-      value: selectedWallet,
-      //elevation: 5,
-      items: widget.walletFiles.map<DropdownMenuItem<String>>((String value) {
-        return _buildWalletDropdownItem(value);
-      }).toList(),
-      hint: Text(
-        "Please choose wallet",
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-      ),
-      onChanged: (String? value) {
+    return Select(
+      listItems: widget.walletFiles,
+      selectedItem: selectedWallet,
+      onChanged: (String? value) => {
         setState(() {
           selectedWallet = value!;
           Locator.instance.get<ApiAuth>().setWalletName(value);
           walletSelected = true;
-        });
+        })
       },
     );
   }
