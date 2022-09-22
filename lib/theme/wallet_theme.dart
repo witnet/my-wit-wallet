@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'extended_theme.dart';
 import 'dark_theme.dart' show darkTheme;
 import 'light_theme.dart' show lightTheme;
 
@@ -8,8 +9,10 @@ enum WalletTheme {
 }
 
 final walletThemeData = {
-  WalletTheme.Light: lightTheme,
-  WalletTheme.Dark: darkTheme,
+  WalletTheme.Light: lightTheme
+      .copyWith(extensions: <ThemeExtension<dynamic>>[ExtendedTheme.light]),
+  WalletTheme.Dark: darkTheme
+      .copyWith(extensions: <ThemeExtension<dynamic>>[ExtendedTheme.dark]),
 };
 
 Widget witnetLogo(ThemeData theme) {
@@ -17,7 +20,3 @@ Widget witnetLogo(ThemeData theme) {
       ? Image(image: AssetImage('assets/img/witnet_logo.png'))
       : Image(image: AssetImage('assets/img/witnet_logo_light.png'));
 }
-
-
-
-

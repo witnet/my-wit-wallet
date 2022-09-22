@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/theme/colors.dart';
+import 'package:witnet_wallet/theme/extended_theme.dart';
 
 DropdownMenuItem<String> _buildWalletDropdownItem(String value) {
   return DropdownMenuItem<String>(
@@ -22,47 +22,44 @@ class Select extends StatelessWidget {
   });
 
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).extension<ExtendedTheme>()!;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: WitnetPallet.darkBlue2, //background color of dropdown button
-        border: Border.all(
-            color: WitnetPallet.darkBlue2,
-            width: 1), //border of dropdown button
+        color: theme.selectBackgroundColor, //background color of dropdown button
         borderRadius:
             BorderRadius.circular(4), //border raiuds of dropdown button
       ),
       child: Padding(
         padding: EdgeInsets.only(left: 8, right: 8),
         child: DropdownButton<String>(
-          value: selectedItem,
-          focusColor: WitnetPallet.white,
-          iconEnabledColor: WitnetPallet.white, //Icon color
-          style: TextStyle(
-              color: WitnetPallet.darkGrey, //Font color
-              fontSize: 16 //font size on dropdown button
-              ),
-          selectedItemBuilder: (BuildContext context) {
-            return listItems.map<Widget>((String item) {
-              return Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  item,
-                  style: const TextStyle(
-                      color: WitnetPallet.white,
-                      fontWeight: FontWeight.normal),
+            value: selectedItem,
+            dropdownColor: theme.dropdownBackgroundColor,
+            focusColor: theme.dropdownBackgroundColor,
+            iconEnabledColor: theme.dropdownTextColor, //Icon color
+            style: TextStyle(
+                color: theme.dropdownTextColor, //Font color
+                fontSize: 16 //font size on dropdown button
                 ),
-              );
-            }).toList();
-          }, //dropdown background color
-          underline: Container(),
-          borderRadius: BorderRadius.circular(4), //remove underline
-          isExpanded: true,
-          items: listItems.map<DropdownMenuItem<String>>((String value) {
-            return _buildWalletDropdownItem(value);
-          }).toList(),
-          onChanged: (String? value) => {
-            onChanged(value)
-          }),
+            selectedItemBuilder: (BuildContext context) {
+              return listItems.map<Widget>((String item) {
+                return Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    item,
+                    style: TextStyle(
+                      color: theme.selectedTextColor,
+                      fontWeight: FontWeight.normal),
+                  ),
+                );
+              }).toList();
+            }, //dropdown background color
+            underline: Container(),
+            borderRadius: BorderRadius.circular(4), //remove underline
+            isExpanded: true,
+            items: listItems.map<DropdownMenuItem<String>>((String value) {
+              return _buildWalletDropdownItem(value);
+            }).toList(),
+            onChanged: (String? value) => {onChanged(value)}),
       ),
     );
   }
