@@ -43,6 +43,12 @@ TextTheme textTheme = TextTheme(
       color: WitnetPallet.white,
       fontSize: 16,
       fontWeight: FontWeight.normal),
+  labelMedium: TextStyle(
+    fontFamily: 'NotoSans',
+    color: WitnetPallet.witnetGreen2,
+    fontSize: 16,
+    fontWeight: FontWeight.normal
+  )
 );
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.white,
@@ -117,8 +123,17 @@ IconThemeData primaryIconTheme = IconThemeData(
   color: WitnetPallet.witnetGreen2,
   size: 24,
 );
+CheckboxThemeData checkboxTheme = CheckboxThemeData(
+  splashRadius: 0,
+  side: MaterialStateBorderSide.resolveWith(
+    (_) => const BorderSide(width: 2, color: WitnetPallet.witnetGreen2)),
+  fillColor: MaterialStateProperty.all(WitnetPallet.witnetGreen2),
+  checkColor: MaterialStateProperty.all(WitnetPallet.white),
+  overlayColor: MaterialStateProperty.all(WitnetPallet.white),
+);
 ThemeData lightTheme = ThemeData(
   primaryColor: primaryColor,
+  checkboxTheme: checkboxTheme,
   splashColor: Colors.transparent,
   iconTheme: iconTheme,
   primaryIconTheme: primaryIconTheme,

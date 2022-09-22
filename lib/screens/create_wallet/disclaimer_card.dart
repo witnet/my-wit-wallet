@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:witnet_wallet/widgets/labeled_checkbox.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
 
 class DisclaimerCard extends StatefulWidget {
@@ -138,25 +139,15 @@ class DisclaimerCardState extends State<DisclaimerCard>
             SizedBox(
               height: 10,
             ),
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
-              activeColor: Colors.cyan,
-              contentPadding: EdgeInsets.symmetric(horizontal: 0),
-              title: Text(
-                "I will be careful, I promise!",
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              value: acceptedDisclaimer,
-              onChanged: (value) {
+            LabeledCheckbox(
+              checked: acceptedDisclaimer, 
+              label: 'I will be carefull, I promise!', 
+              onChanged: (value) => {
                 setState(() {
                   print(value);
                   acceptedDisclaimer = !acceptedDisclaimer;
-                });
-              },
+                })
+              }
             ),
           ],
         ),
