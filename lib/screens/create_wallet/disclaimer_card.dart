@@ -12,8 +12,7 @@ class DisclaimerCard extends StatefulWidget {
   State<StatefulWidget> createState() => DisclaimerCardState();
 }
 
-class DisclaimerCardState extends State<DisclaimerCard>
-    with TickerProviderStateMixin {
+class DisclaimerCardState extends State<DisclaimerCard> with TickerProviderStateMixin {
   bool scrolledToBottom = false;
   late ScrollController _scrollController;
   late AnimationController _loadingController;

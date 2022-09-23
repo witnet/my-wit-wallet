@@ -8,48 +8,46 @@ TextSelectionThemeData textSelectionTheme =
     TextSelectionThemeData(cursorColor: WitnetPallet.witnetGreen2);
 Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
-  headline1: TextStyle(
-      fontFamily: 'Quicksand',
-      color: WitnetPallet.darkGrey,
-      fontSize: 24,
-      fontWeight: FontWeight.bold),
-  headline2: TextStyle(
-      fontFamily: 'Quicksand',
-      color: WitnetPallet.darkGrey,
-      fontSize: 24,
-      fontWeight: FontWeight.normal),
-  subtitle1: TextStyle(
-      fontFamily: 'NotoSans',
-      color: WitnetPallet.darkGrey,
-      fontSize: 16,
-      fontWeight: FontWeight.normal),
-  bodyText1: TextStyle(
-      fontFamily: 'NotoSans',
-      color: WitnetPallet.darkGrey,
-      fontSize: 16,
-      fontWeight: FontWeight.normal),
-  bodyText2: TextStyle(
-      fontFamily: 'NotoSans',
-      color: WitnetPallet.darkGrey,
-      fontSize: 14,
-      fontWeight: FontWeight.normal),
-  caption: TextStyle(
-      fontFamily: 'NotoSans',
-      color: WitnetPallet.darkGrey,
-      fontSize: 12,
-      fontWeight: FontWeight.normal),
-  button: TextStyle(
-      fontFamily: 'NotoSans',
-      color: WitnetPallet.white,
-      fontSize: 16,
-      fontWeight: FontWeight.normal),
-  labelMedium: TextStyle(
-    fontFamily: 'NotoSans',
-    color: WitnetPallet.witnetGreen2,
-    fontSize: 16,
-    fontWeight: FontWeight.normal
-  )
-);
+    headline1: TextStyle(
+        fontFamily: 'Quicksand',
+        color: WitnetPallet.darkGrey,
+        fontSize: 24,
+        fontWeight: FontWeight.bold),
+    headline2: TextStyle(
+        fontFamily: 'Quicksand',
+        color: WitnetPallet.darkGrey,
+        fontSize: 24,
+        fontWeight: FontWeight.normal),
+    subtitle1: TextStyle(
+        fontFamily: 'NotoSans',
+        color: WitnetPallet.darkGrey,
+        fontSize: 16,
+        fontWeight: FontWeight.normal),
+    bodyText1: TextStyle(
+        fontFamily: 'NotoSans',
+        color: WitnetPallet.darkGrey,
+        fontSize: 16,
+        fontWeight: FontWeight.normal),
+    bodyText2: TextStyle(
+        fontFamily: 'NotoSans',
+        color: WitnetPallet.darkGrey,
+        fontSize: 14,
+        fontWeight: FontWeight.normal),
+    caption: TextStyle(
+        fontFamily: 'NotoSans',
+        color: WitnetPallet.darkGrey,
+        fontSize: 12,
+        fontWeight: FontWeight.normal),
+    button: TextStyle(
+        fontFamily: 'NotoSans',
+        color: WitnetPallet.white,
+        fontSize: 16,
+        fontWeight: FontWeight.normal),
+    labelMedium: TextStyle(
+        fontFamily: 'NotoSans',
+        color: WitnetPallet.witnetGreen2,
+        fontSize: 16,
+        fontWeight: FontWeight.normal));
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.white,
   filled: true,
@@ -126,13 +124,41 @@ IconThemeData primaryIconTheme = IconThemeData(
 CheckboxThemeData checkboxTheme = CheckboxThemeData(
   splashRadius: 0,
   side: MaterialStateBorderSide.resolveWith(
-    (_) => const BorderSide(width: 2, color: WitnetPallet.witnetGreen2)),
+      (_) => const BorderSide(width: 2, color: WitnetPallet.witnetGreen2)),
   fillColor: MaterialStateProperty.all(WitnetPallet.witnetGreen2),
   checkColor: MaterialStateProperty.all(WitnetPallet.white),
   overlayColor: MaterialStateProperty.all(WitnetPallet.white),
 );
+
+Color getColorPrimary(Set<MaterialState> states) {
+  const Set<MaterialState> activeStates = <MaterialState>{
+    MaterialState.selected
+  };
+  if (states.any(activeStates.contains)) {
+    return WitnetPallet.witnetGreen1;
+  }
+  return Color.fromARGB(126, 193, 196, 198);
+}
+
+Color getColorSecondary(Set<MaterialState> states) {
+  const Set<MaterialState> activeStates = <MaterialState>{
+    MaterialState.selected
+  };
+  if (states.any(activeStates.contains)) {
+    return WitnetPallet.opacityWitnetGreen;
+  }
+  return WitnetPallet.lightGrey;
+}
+
+SwitchThemeData switchTheme = SwitchThemeData(
+  thumbColor: MaterialStateProperty.resolveWith(getColorPrimary),
+  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+  trackColor: MaterialStateProperty.resolveWith(getColorSecondary),
+  splashRadius: 1,
+);
 ThemeData lightTheme = ThemeData(
   primaryColor: primaryColor,
+  switchTheme: switchTheme,
   checkboxTheme: checkboxTheme,
   splashColor: Colors.transparent,
   iconTheme: iconTheme,

@@ -120,8 +120,35 @@ CheckboxThemeData checkboxTheme = CheckboxThemeData(
   checkColor: MaterialStateProperty.all(WitnetPallet.white),
   overlayColor: MaterialStateProperty.all(WitnetPallet.white),
 );
+Color getColorPrimary(Set<MaterialState> states) {
+  const Set<MaterialState> activeStates = <MaterialState>{
+    MaterialState.selected
+  };
+  if (states.any(activeStates.contains)) {
+    return WitnetPallet.witnetGreen1;
+  }
+  return WitnetPallet.opacityWhite2;
+}
+
+Color getColorSecondary(Set<MaterialState> states) {
+  const Set<MaterialState> activeStates = <MaterialState>{
+    MaterialState.selected
+  };
+  if (states.any(activeStates.contains)) {
+    return WitnetPallet.opacityWitnetGreen;
+  }
+  return WitnetPallet.opacityWhite;
+}
+
+SwitchThemeData switchTheme = SwitchThemeData(
+  thumbColor: MaterialStateProperty.resolveWith(getColorPrimary),
+  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+  trackColor: MaterialStateProperty.resolveWith(getColorSecondary),
+  splashRadius: 1,
+);
 ThemeData darkTheme = ThemeData(
   primaryColor: primaryColor,
+  switchTheme: switchTheme,
   backgroundColor: WitnetPallet.darkBlue2,
   checkboxTheme: checkboxTheme,
   iconTheme: iconTheme,
