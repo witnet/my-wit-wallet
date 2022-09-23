@@ -57,16 +57,14 @@ class LoginScreenState extends State<LoginScreen>
           height: double.infinity,
           color: theme.primaryColor.withOpacity(.01),
           child: Stack(
+            alignment: Alignment.topCenter,
             children: <Widget>[
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Container(
-                    height: size.height * 0.25,
-                    width: size.width,
-                    child: witnetLogo(theme),
-                  ),
+                  witnetLogo(theme),
                   FittedBox(
+                    alignment: Alignment.topCenter,
                     child: Container(
                       alignment: Alignment.topCenter,
                       child: AnimatedSwitcher(
