@@ -58,6 +58,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/img/
+    - assets/img/2x/
+    - assets/img/3x/
     - .env
 
   fonts:
