@@ -12,6 +12,7 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/path_provider_interface.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/widgets/button_login.dart';
+import 'package:witnet_wallet/widgets/carrousel.dart';
 import 'package:witnet_wallet/widgets/input_login.dart';
 import 'package:witnet_wallet/widgets/wallet_list.dart';
 
