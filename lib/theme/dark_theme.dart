@@ -18,7 +18,7 @@ TextTheme textTheme = TextTheme(
   button: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 16, fontWeight: FontWeight.normal),
     labelMedium: TextStyle(
     fontFamily: 'NotoSans',
-    color: WitnetPallet.opacityWitnetGreen,
+    color: WitnetPallet.witnetGreen2,
     fontSize: 16,
     fontWeight: FontWeight.normal
   )
@@ -66,9 +66,9 @@ TooltipThemeData tooltipTheme = TooltipThemeData(
     verticalOffset: 0.0,
     preferBelow: false,
     decoration: BoxDecoration(
-      color: WitnetPallet.darkShade6,
+      color: WitnetPallet.lightGrey,
     ),
-    textStyle: TextStyle(color: WitnetPallet.darkShade6));
+    textStyle: TextStyle(color: WitnetPallet.lightGrey));
 ButtonThemeData buttonTheme = ButtonThemeData(
   buttonColor: WitnetPallet.opacityWitnetGreen,
 );
@@ -90,7 +90,7 @@ OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
     primary: WitnetPallet.white,
     onSurface: Color.fromARGB(78, 240, 243, 245),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-    side: BorderSide(width: 2, color: WitnetPallet.white),
+    side: BorderSide(width: 1, color: WitnetPallet.white),
     padding: const EdgeInsets.all(16),
     textStyle: const TextStyle(
       fontSize: 16,
@@ -115,8 +115,8 @@ IconThemeData primaryIconTheme = IconThemeData(
 CheckboxThemeData checkboxTheme = CheckboxThemeData(
   splashRadius: 0,
   side: MaterialStateBorderSide.resolveWith(
-    (_) => const BorderSide(width: 2, color: WitnetPallet.opacityWitnetGreen)),
-  fillColor: MaterialStateProperty.all(WitnetPallet.opacityWitnetGreen),
+    (_) => const BorderSide(width: 2, color: WitnetPallet.witnetGreen2)),
+  fillColor: MaterialStateProperty.all(WitnetPallet.witnetGreen2),
   checkColor: MaterialStateProperty.all(WitnetPallet.white),
   overlayColor: MaterialStateProperty.all(WitnetPallet.white),
 );
