@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/screens/login/create_or_recover_card.dart';
-import 'package:witnet_wallet/screens/login/view/login_card.dart';
+import 'package:witnet_wallet/screens/login/view/login_form.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,36 +13,16 @@ class LoginScreen extends StatefulWidget {
 
 class LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
-  var size;
-  dynamic currentCard;
 
   @override
   void initState() {
     super.initState();
-    currentCard = LoginCard(onCreateOrRecover: switchToCreateOrRecoverCard);
-  }
-
-  void switchToCreateOrRecoverCard() {
-    setState(() {
-      currentCard = CreateOrRecoverCard(onBack: switchToLoginCard);
-    });
-  }
-
-  void switchToLoginCard() {
-    setState(() {
-      currentCard = LoginCard(onCreateOrRecover: switchToCreateOrRecoverCard);
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
+
     return Scaffold(
       backgroundColor: theme.backgroundColor,
       resizeToAvoidBottomInset: false,
@@ -70,7 +49,7 @@ class LoginScreenState extends State<LoginScreen>
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 230),
                         reverseDuration: const Duration(microseconds: 1100),
-                        child: currentCard,
+                        child: LoginForm(),
                         transitionBuilder:
                             (Widget child, Animation<double> animation) {
                           return FadeTransition(

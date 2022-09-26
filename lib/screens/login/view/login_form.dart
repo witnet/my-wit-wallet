@@ -12,7 +12,6 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/path_provider_interface.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/widgets/button_login.dart';
-import 'package:witnet_wallet/widgets/carrousel.dart';
 import 'package:witnet_wallet/widgets/input_login.dart';
 import 'package:witnet_wallet/widgets/wallet_list.dart';
 
@@ -24,23 +23,12 @@ class LoginForm extends StatefulWidget {
 class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
   late WalletName walletName;
   late Password password;
-
-  final _formKey = GlobalKey<FormState>();
-
-  late AnimationController _loadingController;
   final _passController = TextEditingController();
   final _passwordFocusNode = FocusNode();
   final _loginController = TextEditingController();
-
-  var _isLoading = false;
-
   static const loadingDuration = Duration(milliseconds: 400);
-
-  late AnimationController _logoController;
-  late AnimationController _passInertiaController;
-  late Interval _passTextFieldLoadingAnimationInterval;
-  late Interval _textButtonLoadingAnimationInterval;
-  late AnimationController _titleController;
+  late AnimationController _loadingController;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -59,27 +47,14 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
     )..value = 1.0;
 
     _loadingController.addStatusListener(handleLoadingAnimationStatus);
-    _logoController = AnimationController(
-      vsync: this,
-      duration: loadingDuration,
-    );
-    _titleController = AnimationController(
-      vsync: this,
-      duration: loadingDuration,
-    );
-    _passInertiaController =
-        AnimationController(vsync: this, duration: loadingDuration);
-    _passTextFieldLoadingAnimationInterval = const Interval(.15, 1.0);
-    _textButtonLoadingAnimationInterval =
-        const Interval(.6, 1.0, curve: Curves.easeOut);
   }
 
   void handleLoadingAnimationStatus(AnimationStatus status) {
     if (status == AnimationStatus.forward) {
-      setState(() => _isLoading = true);
+      setState(() => isLoading = true);
     }
     if (status == AnimationStatus.completed) {
-      setState(() => _isLoading = false);
+      setState(() => isLoading = false);
     }
   }
 
@@ -106,7 +81,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
           return Column(children: [
             ButtonLogin(
               isLoading: true,
-              label: 'LOGIN ...',
+              label: 'Login...',
               onPressed: () => {},
             ),
             SpinKitCircle(
@@ -115,7 +90,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
           ]);
         } else if (state.status == LoginStatus.LoginSuccess) {
           return ButtonLogin(
-            label: 'CONECTED!',
+            label: 'Connected!',
             onPressed: () {},
           );
         } else if (state.status == LoginStatus.LoginInvalid) {
@@ -148,20 +123,15 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           PaddedButton(
-              padding: EdgeInsets.all(5),
-              text: 'Create New Wallet',
+              padding: EdgeInsets.only(top: 8, bottom: 8),
+              text: 'Create new wallet',
               onPressed: () => _createNewWallet(context)),
           PaddedButton(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.only(top: 8, bottom: 8),
               text: 'Recover Wallet from Word Phrase',
               onPressed: () => _recoverWallet(context)),
           PaddedButton(
-            padding: EdgeInsets.all(5),
-            text: 'Import Node from Xprv',
-            onPressed: () => null, // _importNode(context)
-          ),
-          PaddedButton(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.only(top: 8, bottom: 8),
               text: 'Import Wallet from Encrypted XPRV',
               onPressed: () => _importEncryptedWallet(context)),
         ],
@@ -272,8 +242,6 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            //_PasswordInput(),
-
             Padding(
               padding: EdgeInsets.only(top: 7, bottom: 7),
               child: _buildWalletField(context, 300),
@@ -298,12 +266,6 @@ void _recoverWallet(BuildContext context) {
   Navigator.pushNamed(context, CreateWalletScreen.route);
   BlocProvider.of<CreateWalletBloc>(context)
       .add(ResetEvent(WalletType.mnemonic));
-}
-
-void _importNode(BuildContext context) {
-  Locator.instance<ApiCreateWallet>().setWalletType(WalletType.xprv);
-  Navigator.pushNamed(context, CreateWalletScreen.route);
-  BlocProvider.of<CreateWalletBloc>(context).add(ResetEvent(WalletType.xprv));
 }
 
 void _importEncryptedWallet(BuildContext context) {
