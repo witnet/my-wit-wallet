@@ -51,7 +51,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   static const dark = ExtendedTheme(
     selectBackgroundColor: WitnetPallet.opacityWitnetGreen,
     selectedTextColor: WitnetPallet.white,
-    dropdownBackgroundColor: Color.fromRGBO(24, 75, 79, 1),
+    dropdownBackgroundColor: WitnetPallet.opacityWitnetGreen,
     dropdownTextColor: WitnetPallet.white,
   );
 }

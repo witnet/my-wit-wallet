@@ -106,7 +106,7 @@ OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
   primary: WitnetPallet.darkBlue2,
   onSurface: Color.fromARGB(114, 2, 29, 48),
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-  side: BorderSide(width: 2, color: WitnetPallet.darkBlue2),
+  side: BorderSide(width: 1, color: WitnetPallet.darkBlue2),
   padding: const EdgeInsets.all(16),
   textStyle: const TextStyle(
     fontSize: 16,

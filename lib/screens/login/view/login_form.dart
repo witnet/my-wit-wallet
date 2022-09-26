@@ -192,7 +192,6 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
                         List<Widget> children;
                         if (snapshot.hasData) {
                           children = <Widget>[
-                            Carousel(list: ['1', '2', '3']),
                             WalletListWidget(
                               walletFiles: snapshot.data!,
                               width: width,
