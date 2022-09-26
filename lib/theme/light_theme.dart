@@ -165,6 +165,7 @@ ThemeData lightTheme = ThemeData(
   primaryIconTheme: primaryIconTheme,
   textSelectionTheme: textSelectionTheme,
   backgroundColor: WitnetPallet.white,
+  shadowColor: Colors.transparent,
   elevatedButtonTheme: elevatedButtonTheme,
   outlinedButtonTheme: outlinedButtonTheme,
   cardTheme: cardTheme,

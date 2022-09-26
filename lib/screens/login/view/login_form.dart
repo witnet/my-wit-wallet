@@ -1,3 +1,6 @@
+
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -13,6 +16,7 @@ import 'package:witnet_wallet/util/storage/path_provider_interface.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/button_login.dart';
+import 'package:witnet_wallet/widgets/carrousel.dart';
 import 'package:witnet_wallet/widgets/input_login.dart';
 import 'package:witnet_wallet/widgets/wallet_list.dart';
 
@@ -188,13 +192,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
                         List<Widget> children;
                         if (snapshot.hasData) {
                           children = <Widget>[
-                            Container(
-                              child: AutoSizeText(
-                                'Select Wallet:',
-                                textAlign: TextAlign.left,
-                              ),
-                              alignment: Alignment.topLeft,
-                            ),
+                            Carousel(list: ['1', '2', '3']),
                             WalletListWidget(
                               walletFiles: snapshot.data!,
                               width: width,
