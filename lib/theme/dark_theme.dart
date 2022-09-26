@@ -152,6 +152,7 @@ ThemeData darkTheme = ThemeData(
   backgroundColor: WitnetPallet.darkBlue2,
   checkboxTheme: checkboxTheme,
   iconTheme: iconTheme,
+  shadowColor: Colors.transparent,
   textSelectionTheme: textSelectionTheme,
   primaryIconTheme: primaryIconTheme,
   elevatedButtonTheme: elevatedButtonTheme,
