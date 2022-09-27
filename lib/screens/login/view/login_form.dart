@@ -128,12 +128,8 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
               onPressed: () => _createNewWallet(context)),
           PaddedButton(
               padding: EdgeInsets.only(top: 8, bottom: 8),
-              text: 'Recover Wallet from Word Phrase',
-              onPressed: () => _recoverWallet(context)),
-          PaddedButton(
-              padding: EdgeInsets.only(top: 8, bottom: 8),
-              text: 'Import Wallet from Encrypted XPRV',
-              onPressed: () => _importEncryptedWallet(context)),
+              text: 'Import wallet',
+              onPressed: () => _importWallet(context)),
         ],
       ),
     );
@@ -261,16 +257,9 @@ void _createNewWallet(BuildContext context) {
       .add(ResetEvent(WalletType.newWallet));
 }
 
-void _recoverWallet(BuildContext context) {
-  Locator.instance<ApiCreateWallet>().setWalletType(WalletType.mnemonic);
+void _importWallet(BuildContext context) {
+  Locator.instance<ApiCreateWallet>().setWalletType(WalletType.unset);
   Navigator.pushNamed(context, CreateWalletScreen.route);
   BlocProvider.of<CreateWalletBloc>(context)
-      .add(ResetEvent(WalletType.mnemonic));
-}
-
-void _importEncryptedWallet(BuildContext context) {
-  Locator.instance<ApiCreateWallet>().setWalletType(WalletType.encryptedXprv);
-  Navigator.pushNamed(context, CreateWalletScreen.route);
-  BlocProvider.of<CreateWalletBloc>(context)
-      .add(ResetEvent(WalletType.encryptedXprv));
+      .add(ResetEvent(WalletType.unset));
 }

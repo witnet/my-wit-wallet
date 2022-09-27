@@ -64,8 +64,6 @@ class DisclaimerCardState extends State<DisclaimerCard> with TickerProviderState
   void _nextCreateWalletMode() {
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-
-    print('type: ${type.name}');
     BlocProvider.of<CreateWalletBloc>(context)
         .add(NextCardEvent(type, data: {}));
   }
@@ -143,7 +141,6 @@ class DisclaimerCardState extends State<DisclaimerCard> with TickerProviderState
               label: 'I will be carefull, I promise!', 
               onChanged: (value) => {
                 setState(() {
-                  print(value);
                   acceptedDisclaimer = !acceptedDisclaimer;
                 })
               }

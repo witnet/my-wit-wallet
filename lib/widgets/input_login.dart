@@ -60,12 +60,11 @@ class _InputLoginState extends State<InputLogin> {
   }
 
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     return Column(
       children: <Widget>[
         Container(
-          height: deviceSize.height * 0.045,
+          height: 40,
           child: TextFormField(
                 decoration: InputDecoration(
                   hintText: 'Input your password',

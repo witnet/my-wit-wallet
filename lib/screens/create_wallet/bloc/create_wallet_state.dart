@@ -1,9 +1,8 @@
 part of 'create_wallet_bloc.dart';
 
-
-
 enum CreateWalletStatus {
   Disclaimer,
+  Imported,
   GenerateMnemonic,
   EnterMnemonic,
   EnterXprv,
@@ -20,10 +19,7 @@ enum CreateWalletStatus {
   Reset,
 }
 
-
-
 class CreateWalletState extends Equatable {
-
   const CreateWalletState({
     required this.walletType,
     required this.message,
@@ -34,12 +30,12 @@ class CreateWalletState extends Equatable {
   });
 
   final CreateWalletStatus status;
-
   final WalletType walletType;
   final String? message;
   final String? xprvString;
   final String? nodeAddress;
   final String? walletAddress;
+
   CreateWalletState copyWith({
     WalletType? walletType,
     String? message,
@@ -58,7 +54,8 @@ class CreateWalletState extends Equatable {
     );
   }
 
-  @override
-  List<Object?> get props => [walletType, message, xprvString, nodeAddress, walletAddress, status];
-}
 
+  @override
+  List<Object?> get props =>
+      [walletType, message, xprvString, nodeAddress, walletAddress, status];
+}
