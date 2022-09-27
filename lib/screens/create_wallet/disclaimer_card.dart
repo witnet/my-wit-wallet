@@ -65,8 +65,6 @@ class DisclaimerCardState extends State<DisclaimerCard>
   void _nextCreateWalletMode() {
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-
-    print('type: ${type.name}');
     BlocProvider.of<CreateWalletBloc>(context)
         .add(NextCardEvent(type, data: {}));
   }
@@ -140,14 +138,14 @@ class DisclaimerCardState extends State<DisclaimerCard>
               height: 10,
             ),
             LabeledCheckbox(
-                checked: acceptedDisclaimer,
-                label: 'I will be carefull, I promise!',
-                onChanged: (value) => {
-                      setState(() {
-                        print(value);
-                        acceptedDisclaimer = !acceptedDisclaimer;
-                      })
-                    }),
+              checked: acceptedDisclaimer, 
+              label: 'I will be carefull, I promise!', 
+              onChanged: (value) => {
+                setState(() {
+                  acceptedDisclaimer = !acceptedDisclaimer;
+                })
+              }
+            ),
           ],
         ),
       ),

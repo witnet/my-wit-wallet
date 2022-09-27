@@ -12,6 +12,7 @@ part 'create_wallet_state.dart';
 part 'create_wallet_event.dart';
 
 enum WalletType {
+  unset,
   newWallet,
   mnemonic,
   xprv,
@@ -40,18 +41,20 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
   }
 
   CreateWalletState get initialState => CreateWalletState(
-      walletType: WalletType.newWallet,
+      walletType: WalletType.unset,
       message: null,
       xprvString: null,
       nodeAddress: null,
       walletAddress: null,
-      status: CreateWalletStatus.Disclaimer);
+      status: CreateWalletStatus.Imported);
 
   void _nextCardEvent(
       CreateWalletEvent event, Emitter<CreateWalletState> emit) {
     switch (state.status) {
       case CreateWalletStatus.Disclaimer:
         switch (event.walletType) {
+          case WalletType.unset:
+            break;
           case WalletType.newWallet:
             emit(state.copyWith(status: CreateWalletStatus.GenerateMnemonic));
             break;
@@ -106,8 +109,11 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       case CreateWalletStatus.CreateWallet:
         break;
 
+      case CreateWalletStatus.Imported:
+        emit(state.copyWith(status: CreateWalletStatus.Imported));
+        break;
+
       case CreateWalletStatus.Complete:
-        print("${state.status} ${event.walletType} ->");
         break;
 
       case CreateWalletStatus.Loading:
@@ -159,6 +165,9 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         break;
       case CreateWalletStatus.Complete:
         emit(state.copyWith(status: CreateWalletStatus.CreateWallet));
+        break;
+      case CreateWalletStatus.Imported:
+        emit(state.copyWith(status: CreateWalletStatus.Imported));
         break;
       case CreateWalletStatus.Loading:
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
@@ -252,7 +261,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
 
   void _setWalletTypeEvent(
       SetWalletTypeEvent event, Emitter<CreateWalletState> emit) {
-    emit(state.copyWith(walletType: event.walletType));
+    emit(state.copyWith(walletType: event.walletType, status: _getStatus(event)));
   }
 
   void _finishEvent(FinishEvent event, Emitter<CreateWalletState> emit) {
@@ -260,8 +269,15 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
   }
 
   void _resetEvent(ResetEvent event, Emitter<CreateWalletState> emit) {
-    print(event.walletType);
-    emit(state.copyWith(
-        status: CreateWalletStatus.Disclaimer, walletType: event.walletType));
+    emit(state.copyWith(walletType: event.walletType, status: _getStatus(event)));
+  }
+
+  _getStatus(CreateWalletEvent event) {
+    if (event.walletType == WalletType.newWallet) {
+      return CreateWalletStatus.Disclaimer;
+    }
+    if (event.walletType == WalletType.unset) {
+      return CreateWalletStatus.Imported;
+    }
   }
 }

@@ -6,6 +6,7 @@ import 'package:witnet_wallet/screens/create_wallet/confirm_mnemonic_card.dart';
 import 'package:witnet_wallet/screens/create_wallet/disclaimer_card.dart';
 import 'package:witnet_wallet/screens/create_wallet/generate_mnemonic_card.dart';
 import 'package:witnet_wallet/screens/create_wallet/wallet_detail_card.dart';
+import 'package:witnet_wallet/screens/create_wallet/select_imported_option.dart';
 
 import 'build_wallet_card.dart';
 import 'enc_xprv_card.dart';
@@ -15,10 +16,10 @@ import 'xprv_card.dart';
 class CreateWalletScreen extends StatefulWidget {
   static final route = '/create_wallet';
   @override
-  _CreateWalletScreenState createState() => _CreateWalletScreenState();
+  CreateWalletScreenState createState() => CreateWalletScreenState();
 }
 
-class _CreateWalletScreenState extends State<CreateWalletScreen> {
+class CreateWalletScreenState extends State<CreateWalletScreen> {
   dynamic currentFormCard;
 
   @override
@@ -38,7 +39,6 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
   _formCards() {
     return BlocBuilder<CreateWalletBloc, CreateWalletState>(
         builder: (context, state) {
-      print(state.status);
       switch (state.status) {
         case CreateWalletStatus.Disclaimer:
           currentFormCard = DisclaimerCard();
@@ -68,6 +68,9 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
           break;
         case CreateWalletStatus.BuildWallet:
           currentFormCard = BuildWalletCard();
+          break;
+        case CreateWalletStatus.Imported:
+          currentFormCard = SelectImportedOption();
           break;
         case CreateWalletStatus.CreateWallet:
           // TODO: Handle this case.

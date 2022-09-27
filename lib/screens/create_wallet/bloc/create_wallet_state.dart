@@ -2,6 +2,7 @@ part of 'create_wallet_bloc.dart';
 
 enum CreateWalletStatus {
   Disclaimer,
+  Imported,
   GenerateMnemonic,
   EnterMnemonic,
   EnterXprv,
@@ -29,12 +30,12 @@ class CreateWalletState extends Equatable {
   });
 
   final CreateWalletStatus status;
-
   final WalletType walletType;
   final String? message;
   final String? xprvString;
   final String? nodeAddress;
   final String? walletAddress;
+
   CreateWalletState copyWith({
     WalletType? walletType,
     String? message,
