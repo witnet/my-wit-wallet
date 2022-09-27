@@ -11,6 +11,7 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/widgets/fade_in.dart';
+import 'package:witnet_wallet/widgets/layout.dart';
 import 'package:witnet_wallet/widgets/round_button.dart';
 import 'package:witnet_wallet/widgets/svg_widget.dart';
 import 'package:witnet_wallet/widgets/witnet/balance_display.dart';
@@ -102,7 +103,6 @@ class DashboardScreenState extends State<DashboardScreen>
               ),
             ),
           ),
-          SizedBox(width: 20),
         ],
       ),
     );
@@ -306,7 +306,6 @@ class DashboardScreenState extends State<DashboardScreen>
 
   Widget _buildBalanceDisplay() {
     return BlocConsumer<ExplorerBloc, ExplorerState>(builder: (context, state) {
-      final theme = Theme.of(context);
       return BalanceDisplay(_balanceController);
     }, listener: (context, state) {
       if (state.status == ExplorerStatus.ready) {
@@ -334,10 +333,8 @@ class DashboardScreenState extends State<DashboardScreen>
         dbWallet = state.dbWallet;
         return _buildDashboardGrid(theme, state);
       } else if (state.status == DashboardStatus.Synchronizing) {
-        return SizedBox(
-          child: SpinKitWave(
-            color: theme.primaryColor,
-          ),
+        return SpinKitWave(
+          color: theme.primaryColor,
         );
       } else if (state.status == DashboardStatus.Ready) {
         dbWallet = state.dbWallet;
@@ -346,10 +343,8 @@ class DashboardScreenState extends State<DashboardScreen>
         }
         return _buildDashboardGrid(theme, state);
       } else {
-        return SizedBox(
-          child: SpinKitWave(
-            color: theme.primaryColor,
-          ),
+        return SpinKitWave(
+          color: theme.primaryColor,
         );
       }
     });
@@ -372,81 +367,49 @@ class DashboardScreenState extends State<DashboardScreen>
       print(loginState.status);
       switch (loginState.status) {
         case LoginStatus.LoggedOut:
-          _body = Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: theme.canvasColor.withOpacity(.9),
-            child: Stack(
-              children: <Widget>[
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      child: SpinKitWave(
-                        color: theme.primaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+          _body = Stack(
+            children: <Widget>[
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SpinKitWave(
+                    color: theme.primaryColor,
+                  ),
+                ],
+              ),
+            ],
           );
           break;
         case LoginStatus.LoginSuccess:
           //authState as LoggedInState;
 
-          _body = Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: theme.primaryColor.withOpacity(.1),
-            child: Stack(
-              children: <Widget>[
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      child: _dashboardBuilder(),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+          _body = Stack(
+            children: <Widget>[
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    child: _dashboardBuilder(),
+                  ),
+                ],
+              ),
+            ],
           );
           break;
         default:
-          _body = Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: theme.primaryColor.withOpacity(.1),
-            child: Stack(
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 10,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+          _body = Stack(
+            children: <Widget>[
+              Column(
+                children: <Widget>[],
+              ),
+            ],
           );
       }
-
-    return Scaffold(
-        backgroundColor: theme.backgroundColor,
+      return Layout(
+        widgetList: [
+          _body,
+        ],
         appBar: _buildAppBar(theme),
-        resizeToAvoidBottomInset: false,
-        body: new GestureDetector(
-            onTap: () {
-              FocusScope.of(context).requestFocus(new FocusNode());
-            },
-            child: _body),
       );
     });
   }

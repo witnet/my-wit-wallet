@@ -7,6 +7,7 @@ import 'package:witnet_wallet/screens/create_wallet/disclaimer_card.dart';
 import 'package:witnet_wallet/screens/create_wallet/generate_mnemonic_card.dart';
 import 'package:witnet_wallet/screens/create_wallet/wallet_detail_card.dart';
 import 'package:witnet_wallet/screens/create_wallet/select_imported_option.dart';
+import 'package:witnet_wallet/widgets/layout.dart';
 
 import 'build_wallet_card.dart';
 import 'enc_xprv_card.dart';
@@ -24,16 +25,9 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      backgroundColor: theme.backgroundColor,
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(new FocusNode());
-        },
-        child: _formCards(),
-      ),
-    );
+    return Layout(widgetList: [
+      _formCards(),
+    ]);
   }
 
   _formCards() {
