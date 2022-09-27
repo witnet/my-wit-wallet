@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:witnet_wallet/screens/test/test_card.dart';
+import 'package:witnet_wallet/widgets/layout.dart';
 
 class TestScreen extends StatefulWidget {
   static final route = '/test';
@@ -10,11 +11,9 @@ class TestScreen extends StatefulWidget {
 class _TestScreenState extends State<TestScreen> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      backgroundColor: theme.backgroundColor,
-      body: _body(),
-    );
+    return Layout(widgetList: [
+      _body(),
+    ]);
   }
 
   _body() {
@@ -22,5 +21,4 @@ class _TestScreenState extends State<TestScreen> {
       child: TestCard(),
     );
   }
-
 }
