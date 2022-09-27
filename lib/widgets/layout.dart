@@ -9,8 +9,10 @@ class Layout extends StatelessWidget {
     this.appBar,
   });
 
+
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Scaffold(
       appBar: appBar,
       resizeToAvoidBottomInset: false,
@@ -21,7 +23,14 @@ class Layout extends StatelessWidget {
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: widgetList,
+          children: [
+            Flexible(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minWidth: 100, maxWidth: 600),
+                child: Column(children: widgetList),
+              )
+            )
+          ],
         ),
       ),
     );
