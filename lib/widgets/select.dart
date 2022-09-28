@@ -35,11 +35,11 @@ class Select extends StatelessWidget {
             value: selectedItem,
             dropdownColor: theme.dropdownBackgroundColor,
             focusColor: theme.dropdownBackgroundColor,
-            iconEnabledColor: theme.dropdownTextColor, //Icon color
+            iconEnabledColor: theme.selectedTextColor, //Icon color
             style: TextStyle(
-                color: theme.dropdownTextColor, //Font color
-                fontSize: 16 //font size on dropdown button
-                ),
+              color: theme.dropdownTextColor, //Font color
+              fontSize: 16 //font size on dropdown button
+            ),
             selectedItemBuilder: (BuildContext context) {
               return listItems.map<Widget>((String item) {
                 return Container(
