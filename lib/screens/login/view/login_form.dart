@@ -117,21 +117,18 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
   }
 
   Widget _buildInitialButtons(BuildContext context, ThemeData theme) {
-    return Padding(
-      padding: EdgeInsets.all(5),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          PaddedButton(
-              padding: EdgeInsets.only(top: 8, bottom: 8),
-              text: 'Create new wallet',
-              onPressed: () => _createNewWallet(context)),
-          PaddedButton(
-              padding: EdgeInsets.only(top: 8, bottom: 8),
-              text: 'Import wallet',
-              onPressed: () => _importWallet(context)),
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        PaddedButton(
+            padding: EdgeInsets.only(top: 8, bottom: 8),
+            text: 'Create new wallet',
+            onPressed: () => _createNewWallet(context)),
+        PaddedButton(
+            padding: EdgeInsets.only(top: 8, bottom: 8),
+            text: 'Import wallet',
+            onPressed: () => _importWallet(context)),
+      ],
     );
   }
 
@@ -183,12 +180,9 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
                             CircularProgressIndicator(),
                           ];
                         }
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: children,
-                          ),
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: children,
                         );
                       }),
                   Divider(
@@ -209,12 +203,10 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
               ];
             }
 
-            return Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: children,
-              ),
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: children,
             );
           }),
     );
@@ -260,6 +252,5 @@ void _createNewWallet(BuildContext context) {
 void _importWallet(BuildContext context) {
   Locator.instance<ApiCreateWallet>().setWalletType(WalletType.unset);
   Navigator.pushNamed(context, CreateWalletScreen.route);
-  BlocProvider.of<CreateWalletBloc>(context)
-      .add(ResetEvent(WalletType.unset));
+  BlocProvider.of<CreateWalletBloc>(context).add(ResetEvent(WalletType.unset));
 }
