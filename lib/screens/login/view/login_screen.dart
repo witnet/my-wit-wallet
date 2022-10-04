@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:witnet_wallet/screens/login/view/login_form.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
 import 'package:witnet_wallet/widgets/layout.dart';
-import 'package:witnet_wallet/widgets/PaddedButton.dart';
+import 'package:witnet_wallet/widgets/carousel.dart';
 
 class LoginScreen extends StatefulWidget {
   static final route = '/login';
@@ -25,17 +25,22 @@ class LoginScreenState extends State<LoginScreen>
     final theme = Theme.of(context);
     return Layout(
       widgetList: [
-      Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          witnetLogo(theme),
-          PaddedButton(
-            padding: EdgeInsets.only(top: 8, bottom: 8),
-            text: 'Create new wallet',
-            onPressed: () => {}),
-          LoginForm(),
-        ],
-      ),
-    ]);
+        Padding(
+          padding: EdgeInsets.only(left: 24, right: 24),
+          child:  witnetLogo(theme),
+        ),
+        Text(
+          'Welcome',
+          style: theme.textTheme.headline1,
+        ),
+        Carousel(list: [
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+          'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+          'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+        ]),
+      ],
+      actions: [LoginForm()],
+      actionsSize: 300,
+    );
   }
 }

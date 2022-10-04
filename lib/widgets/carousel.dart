@@ -23,7 +23,8 @@ class _CarouselState extends State<Carousel> {
           return buildView(context, widget.list[itemIndex]);
         },
         options: CarouselOptions(
-            height: 300,
+            enlargeCenterPage: true,
+            height: 200,
             onPageChanged: (val, _) {
               setState(() {
                 page = val;
@@ -62,6 +63,7 @@ class _CarouselState extends State<Carousel> {
 
   //Widget
   Widget buildView(BuildContext context, item) {
+    final theme = Theme.of(context);
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -69,7 +71,14 @@ class _CarouselState extends State<Carousel> {
       color: WitnetPallet.transparent,
       child: Align(
         alignment: Alignment.center,
-        child: Text(item),
+        child: Padding(
+          padding: EdgeInsets.all(32),
+          child: Text(
+            item,
+            style: theme.textTheme.bodyText1,
+            textAlign: TextAlign.center,
+          ),
+        ),
       ),
     );
   }

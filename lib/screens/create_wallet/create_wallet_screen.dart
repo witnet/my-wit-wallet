@@ -25,9 +25,13 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Layout(widgetList: [
-      _formCards(),
-    ]);
+    return Layout(
+      widgetList: [
+        _formCards(),
+      ],
+      actions: [],
+      actionsSize: 0,
+    );
   }
 
   _formCards() {

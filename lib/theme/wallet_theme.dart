@@ -30,3 +30,20 @@ Widget witnetLogo(ThemeData theme) {
           fit: BoxFit.fitWidth,
         );
 }
+
+Widget witnetEyeIcon(ThemeData theme) {
+  return (theme.primaryColor == lightTheme.primaryColor)
+      ? Image.asset(
+        'assets/img/witnet_light_icon.png',
+        width: 100,
+        height: 118.52,
+        fit:BoxFit.fitWidth,
+      )
+      : Image.asset(
+        'assets/img/witnet_dark_icon.png',
+        width: 100,
+        height: 118.52,
+        fit: BoxFit.fitWidth,
+        filterQuality: FilterQuality.high,
+      );
+}
