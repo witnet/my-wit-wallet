@@ -118,7 +118,6 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
 
   Widget _buildInitialButtons(BuildContext context, ThemeData theme) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         PaddedButton(
             padding: EdgeInsets.only(top: 8, bottom: 8),
@@ -225,16 +224,9 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
         }
       },
       child: Container(
-        width: 300,
-        alignment: const Alignment(0, -1 / 3),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: EdgeInsets.only(top: 7, bottom: 7),
-              child: _buildWalletField(context, 300),
-            ),
-            Padding(padding: EdgeInsets.all(7)),
+            _buildWalletField(context, 300)
           ],
         ),
       ),

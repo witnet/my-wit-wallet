@@ -11,9 +11,13 @@ class TestScreen extends StatefulWidget {
 class _TestScreenState extends State<TestScreen> {
   @override
   Widget build(BuildContext context) {
-    return Layout(widgetList: [
-      _body(),
-    ]);
+    return Layout(
+      widgetList: [
+        _body(),
+      ],
+      actions: [],
+      actionsSize: 0,
+    );
   }
 
   _body() {

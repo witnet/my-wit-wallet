@@ -41,6 +41,8 @@ class _PreferencePageState extends State<PreferencePage> {
       appBar: AppBar(
         title: Text('Preferences'),
       ),
+      actions: [],
+      actionsSize: 0,
     );
   }
 }

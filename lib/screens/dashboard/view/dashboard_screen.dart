@@ -410,6 +410,8 @@ class DashboardScreenState extends State<DashboardScreen>
           _body,
         ],
         appBar: _buildAppBar(theme),
+        actions: [],
+        actionsSize: 0,
       );
     });
   }
