@@ -5,7 +5,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 
+typedef void FunctionCallback(Function? value);
+
 class SelectImportedOption extends StatefulWidget {
+  final Function nextAction;
+  final Function prevAction;
+  SelectImportedOption({
+    Key? key,
+    required FunctionCallback this.nextAction,
+    required FunctionCallback this.prevAction,
+  }) : super(key: key);
   @override
   State<StatefulWidget> createState() => ImportedOptionState();
 }
@@ -29,6 +38,40 @@ class ImportedOptionState extends State<SelectImportedOption> {
     );
   }
 
+  void prev() {
+    Navigator.pop(context);
+  }
+
+  void nextSeed() {
+    Locator.instance<ApiCreateWallet>()
+      .setWalletType(WalletType.mnemonic);
+    BlocProvider.of<CreateWalletBloc>(context)
+      .add(ResetEvent(WalletType.mnemonic));
+    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(
+        Locator.instance<ApiCreateWallet>().walletType,
+        data: {}));
+  }
+
+  void nextXprv() {
+    Locator.instance<ApiCreateWallet>()
+      .setWalletType(WalletType.encryptedXprv);
+    BlocProvider.of<CreateWalletBloc>(context)
+      .add(ResetEvent(WalletType.encryptedXprv));
+    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(
+        Locator.instance<ApiCreateWallet>().walletType,
+        data: {}));
+  }
+
+  @override
+  void initState() {
+    print('select imported option');
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.prevAction(prev));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.nextAction(nextSeed));
+    super.initState();
+  }
+
   Widget _buildInitialButtons(BuildContext context, ThemeData theme) {
     return Padding(
       padding: EdgeInsets.all(5),
@@ -38,27 +81,21 @@ class ImportedOptionState extends State<SelectImportedOption> {
           PaddedButton(
               padding: EdgeInsets.only(top: 8, bottom: 8),
               text: 'Back',
-              onPressed: () {
-                Navigator.pop(context);
-              }),
+              type: 'secondary',
+              onPressed: () => widget.prevAction(prev),
+          ),
           PaddedButton(
               padding: EdgeInsets.only(top: 8, bottom: 8),
               text: 'Import from seed phrase',
-              onPressed: () {
-                Locator.instance<ApiCreateWallet>()
-                    .setWalletType(WalletType.mnemonic);
-                BlocProvider.of<CreateWalletBloc>(context)
-                    .add(ResetEvent(WalletType.mnemonic));
-              }),
+              type: 'primary',
+              onPressed: () => widget.nextAction(nextSeed),
+          ),
           PaddedButton(
               padding: EdgeInsets.only(top: 8, bottom: 8),
               text: 'Import from xprv file',
-              onPressed: () {
-                Locator.instance<ApiCreateWallet>()
-                    .setWalletType(WalletType.encryptedXprv);
-                BlocProvider.of<CreateWalletBloc>(context)
-                    .add(ResetEvent(WalletType.encryptedXprv));
-              }),
+              type: 'primary',
+              onPressed: () => nextXprv(),
+          ),
         ],
       ),
     );

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,12 +5,19 @@ import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/theme/wallet_theme.dart';
 import 'package:witnet_wallet/widgets/dashed_rect.dart';
 import 'package:witnet_wallet/widgets/select.dart';
 
+typedef void FunctionCallback(Function? value);
+
 class GenerateMnemonicCard extends StatefulWidget {
-  GenerateMnemonicCard({Key? key}) : super(key: key);
+  final Function nextAction;
+  final Function prevAction;
+  GenerateMnemonicCard({
+    Key? key,
+    required FunctionCallback this.nextAction,
+    required FunctionCallback this.prevAction,
+  }) : super(key: key);
   GenerateMnemonicCardState createState() => GenerateMnemonicCardState();
 }
 
@@ -21,8 +26,6 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
   String mnemonic = '';
   String _language = 'English';
   int _radioWordCount = 12;
-
-
 
   void _setLanguage(String language) {
     setState(() {
@@ -55,9 +58,7 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
         'Spanish',
       ],
       selectedItem: _language,
-      onChanged: (String? value) => {
-        _setLanguage(value!)
-      },
+      onChanged: (String? value) => {_setLanguage(value!)},
     );
   }
 
@@ -151,70 +152,54 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
   }
 
   Widget _buildInfoTextScrollBox(Size deviceSize) {
-    return Container(
-      height: deviceSize.height * 0.5,
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(3),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                'These $_radioWordCount random words are your Witnet seed phrase. They will allow you to recover your tokens if you uninstall this application or forget your password:',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                'Please write down these $_radioWordCount words on a piece of paper and store them somewhere private and secure. You must write the complete words in the exact order they are presented to you.',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                'Keeping your seed phrase secret is paramount. If someone gains access to these $_radioWordCount words, they will be able to take and spend your tokens.',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                'Do not store these words on a computer or an electronic device. It is your sole responsibility to store the paper with your seed phrase in a safe place -',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              Text(
-                'if you exit this setup or fail to write down or keep your seed phrase safe, we cannot help you access your wallet.',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              _buildMnemonicLanguageSelector(),
-              _buildMnemonicLengthSelector(),
-            ],
-          ),
+    final theme = Theme.of(context);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ElevatedButton(
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: mnemonic));
+            },
+            child: Text('Copy'),
         ),
-      ),
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          'These $_radioWordCount random words are your Witnet seed phrase. They will allow you to recover your tokens if you uninstall this application or forget your password:',
+          style: theme.textTheme.bodyText1,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          'Please write down these $_radioWordCount words on a piece of paper and store them somewhere private and secure. You must write the complete words in the exact order they are presented to you.',
+          style: theme.textTheme.headline3,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          'Keeping your seed phrase secret is paramount. If someone gains access to these $_radioWordCount words, they will be able to take and spend your tokens.',
+          style: theme.textTheme.bodyText1,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          'Do not store these words on a computer or an electronic device. It is your sole responsibility to store the paper with your seed phrase in a safe place -',
+          style: theme.textTheme.bodyText1,
+        ),
+        Text(
+          'if you exit this setup or fail to write down or keep your seed phrase safe, we cannot help you access your wallet.',
+          style: theme.textTheme.bodyText1,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        _buildMnemonicLanguageSelector(),
+      ],
     );
   }
 
@@ -239,80 +224,39 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
         });
   }
 
-  void onBack() {
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+  void prev() {
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
-  void onNext() {
+  void next() {
     Locator.instance.get<ApiCreateWallet>().setSeed(mnemonic, 'mnemonic');
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context)
+        .add(NextCardEvent(type, data: {}));
   }
 
-  Widget _buildButtonRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(top: 5, bottom: 10),
-          child: ElevatedButton(
-            onPressed: onBack,
-            child: Text('Back'),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 5, top: 5, bottom: 10),
-          child: ElevatedButton(
-            onPressed: () {
-              Clipboard.setData(ClipboardData(text: mnemonic));
-            },
-            child: Text('Copy'),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 5, top: 5, bottom: 10),
-          child: ElevatedButton(
-            onPressed: onNext,
-            child: Text('Next'),
-          ),
-        ),
-      ],
-    );
+  @override
+  void initState() {
+    print('generate mnemonic card');
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.prevAction(prev));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.nextAction(next));
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-
-    final cardWidth = min(deviceSize.width * 0.95, 360.0);
-    const cardPadding = 10.0;
-    final textFieldWidth = cardWidth - cardPadding * 2;
-    final theme = Theme.of(context);
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-        Container(
-        width: cardWidth,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-        Container(
-        height: deviceSize.height * 0.25,
-          width: deviceSize.width,
-          child: witnetLogo(theme),
-        ),
-
-                    _buildMnemonicBox(),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    _buildInfoTextScrollBox(deviceSize),
-                    _buildButtonRow(),
-                  ]),
-            ),
-          ],
-        );
+    return Column(children: [
+      _buildMnemonicBox(),
+      SizedBox(
+        height: 16,
+      ),
+      _buildInfoTextScrollBox(deviceSize),
+    ]);
   }
 }

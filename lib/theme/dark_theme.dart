@@ -16,7 +16,7 @@ TextTheme textTheme = TextTheme(
   bodyText2: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 14, fontWeight: FontWeight.normal),
   caption: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 12, fontWeight: FontWeight.normal),
   button: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 16, fontWeight: FontWeight.normal),
-    labelMedium: TextStyle(
+  headline3: TextStyle(
     fontFamily: 'NotoSans',
     color: WitnetPallet.witnetGreen2,
     fontSize: 16,

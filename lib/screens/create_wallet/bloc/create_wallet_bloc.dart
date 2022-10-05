@@ -110,7 +110,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         break;
 
       case CreateWalletStatus.Imported:
-        emit(state.copyWith(status: CreateWalletStatus.Imported));
+        emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
         break;
 
       case CreateWalletStatus.Complete:
@@ -261,7 +261,8 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
 
   void _setWalletTypeEvent(
       SetWalletTypeEvent event, Emitter<CreateWalletState> emit) {
-    emit(state.copyWith(walletType: event.walletType, status: _getStatus(event)));
+    emit(state.copyWith(
+        walletType: event.walletType, status: _getStatus(event)));
   }
 
   void _finishEvent(FinishEvent event, Emitter<CreateWalletState> emit) {
@@ -269,7 +270,8 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
   }
 
   void _resetEvent(ResetEvent event, Emitter<CreateWalletState> emit) {
-    emit(state.copyWith(walletType: event.walletType, status: _getStatus(event)));
+    emit(state.copyWith(
+        walletType: event.walletType, status: _getStatus(event)));
   }
 
   _getStatus(CreateWalletEvent event) {

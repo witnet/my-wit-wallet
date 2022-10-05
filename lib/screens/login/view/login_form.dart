@@ -122,10 +122,12 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
         PaddedButton(
             padding: EdgeInsets.only(top: 8, bottom: 8),
             text: 'Create new wallet',
+            type: 'primary',
             onPressed: () => _createNewWallet(context)),
         PaddedButton(
             padding: EdgeInsets.only(top: 8, bottom: 8),
             text: 'Import wallet',
+            type: 'secondary',
             onPressed: () => _importWallet(context)),
       ],
     );

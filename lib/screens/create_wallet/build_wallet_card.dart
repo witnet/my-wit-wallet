@@ -20,9 +20,16 @@ import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
+typedef void FunctionCallback(Function? value);
 
 class BuildWalletCard extends StatefulWidget {
-  BuildWalletCard({Key? key}) : super(key: key);
+  final Function nextAction;
+  final Function prevAction;
+  BuildWalletCard({
+    Key? key,
+    required FunctionCallback this.nextAction,
+    required FunctionCallback this.prevAction,
+  }) : super(key: key);
   BuildWalletCardState createState() => BuildWalletCardState();
 }
 
@@ -34,13 +41,13 @@ class BuildWalletCardState extends State<BuildWalletCard>
   int currentAddressCount = 0;
   int currentTransactionCount = 0;
   static const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
-  void onBack() {
+  void prev() {
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
-  void onNext() {
+  void next() {
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context)
@@ -63,6 +70,10 @@ class BuildWalletCardState extends State<BuildWalletCard>
     );
     _nameController = TextEditingController();
     _descController = TextEditingController();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.prevAction(prev));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.nextAction(next));
     ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
     acw.printDebug();
   }
@@ -230,9 +241,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
   Widget buildWallet() {
     return BlocBuilder<CryptoBloc, CryptoState>(
       buildWhen: (previousState, state) {
-        print(previousState.runtimeType);
-        print(state.runtimeType);
-        print(state.props);
         if (previousState is CryptoLoadedWalletState) {
           BlocProvider.of<CreateWalletBloc>(context)
               .add(ResetEvent(WalletType.newWallet));
@@ -326,14 +334,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
   }
 
   Widget buildBalance(ThemeData theme) {
-    final accentColor = theme.primaryColor;
-    final bgMat = createMaterialColor(accentColor);
-    final linearGradient = LinearGradient(colors: [
-      bgMat.shade700,
-      bgMat.shade600,
-      bgMat.shade500,
-      bgMat.shade400,
-    ]).createShader(Rect.fromLTWH(0.0, 0.0, 100.0, 78.0));
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
       AnimatedNumericText(
         initialValue: 0,

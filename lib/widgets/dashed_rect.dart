@@ -14,6 +14,7 @@ class DashedRect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       child: Padding(
         padding: EdgeInsets.all(strokeWidth / 2),
@@ -21,9 +22,10 @@ class DashedRect extends StatelessWidget {
           painter:
               DashRectPainter(color: color, strokeWidth: strokeWidth, gap: gap),
           child: Padding(
-            padding: EdgeInsets.all(5),
+            padding: EdgeInsets.all(16),
             child: Text(
               text,
+              style: theme.textTheme.headline2,
             ),
           ),
         ),

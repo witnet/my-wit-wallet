@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -8,8 +6,16 @@ import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
+typedef void FunctionCallback(Function? value);
+
 class EnterXprvCard extends StatefulWidget {
-  EnterXprvCard({Key? key}) : super(key: key);
+  final Function nextAction;
+  final Function prevAction;
+  EnterXprvCard({
+    Key? key,
+    required FunctionCallback this.nextAction,
+    required FunctionCallback this.prevAction,
+  }) : super(key: key);
 
   EnterXprvCardState createState() => EnterXprvCardState();
 }
@@ -35,19 +41,18 @@ class EnterXprvCardState extends State<EnterXprvCard>
               height: 10,
             ),
             TextField(
-              keyboardType: TextInputType.multiline,
-              maxLines: 4,
-              controller: textController,
-              onChanged: (String e) {
-                setState(() {
-                  xprv = textController.value.text;
-                  numLines = '\n'.allMatches(e).length + 1;
-                });
-              },
-              decoration: new InputDecoration(
+                keyboardType: TextInputType.multiline,
+                maxLines: 4,
+                controller: textController,
+                onChanged: (String e) {
+                  setState(() {
+                    xprv = textController.value.text;
+                    numLines = '\n'.allMatches(e).length + 1;
+                  });
+                },
+                decoration: new InputDecoration(
                   labelText: 'XPRV',
-              )
-            ),
+                )),
             SizedBox(
               height: 10,
             ),
@@ -57,21 +62,22 @@ class EnterXprvCardState extends State<EnterXprvCard>
     );
   }
 
-  void onBack() {
+  void prev() {
     CreateWalletState state = BlocProvider.of<CreateWalletBloc>(context).state;
     BlocProvider.of<CreateWalletBloc>(context)
         .add(SetWalletStateEvent(WalletType.xprv, state));
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
-  void onNext() {
+  void next() {
     Locator.instance<ApiCreateWallet>().setSeed(xprv, 'xprv');
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context)
+        .add(NextCardEvent(type, data: {}));
   }
-
-
 
   bool validXprv(String xprvString) {
     try {
@@ -90,14 +96,14 @@ class EnterXprvCardState extends State<EnterXprvCard>
         Padding(
           padding: EdgeInsets.only(top: 10, bottom: 10),
           child: ElevatedButton(
-            onPressed: onBack,
+            onPressed: prev,
             child: Text('Go back!'),
           ),
         ),
         Padding(
           padding: EdgeInsets.only(left: 5, top: 10, bottom: 10),
           child: ElevatedButton(
-            onPressed: xprvVerified() ? onNext : null,
+            onPressed: xprvVerified() ? next : null,
             child: Text('Confirm'),
           ),
         ),
@@ -119,7 +125,8 @@ class EnterXprvCardState extends State<EnterXprvCard>
   Widget _verifyButton() {
     return ElevatedButton(
       onPressed: () {
-        WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+        WalletType type =
+            BlocProvider.of<CreateWalletBloc>(context).state.walletType;
         BlocProvider.of<CreateWalletBloc>(context)
             .add(VerifyXprvEvent(type, xprv: xprv));
         try {
@@ -191,55 +198,22 @@ class EnterXprvCardState extends State<EnterXprvCard>
   }
 
   @override
-  Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
+  void initState() {
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.prevAction(prev));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.nextAction(next));
+    super.initState();
+  }
 
-    final cardWidth = min(deviceSize.width * 0.95, 360.0);
-    const cardPadding = 10.0;
-    final theme = Theme.of(context);
-    return FittedBox(
-      child: Card(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              height: 50,
-              width: cardWidth,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: theme.primaryColor,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(5.0),
-                      topRight: Radius.circular(5.0))),
-              child: Padding(
-                padding: EdgeInsets.only(top: 1),
-                child: Text(
-                  'Import XPRV',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: theme.backgroundColor, fontSize: 25),
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(
-                left: cardPadding,
-                right: cardPadding,
-                top: cardPadding + 10,
-              ),
-              width: cardWidth,
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    _buildConfirmField(),
-                    verifyXprvButton(),
-                    _buildButtonRow(),
-                  ]),
-            ),
-          ],
-        ),
-      ),
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        _buildConfirmField(),
+        verifyXprvButton(),
+      ]
     );
   }
 }
