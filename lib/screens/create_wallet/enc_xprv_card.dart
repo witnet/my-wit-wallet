@@ -9,8 +9,16 @@ import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:witnet_wallet/widgets/witnet/password_input.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
+typedef void FunctionCallback(Function? value);
+
 class EnterEncryptedXprvCard extends StatefulWidget {
-  EnterEncryptedXprvCard({Key? key}) : super(key: key);
+  final Function nextAction;
+  final Function prevAction;
+  EnterEncryptedXprvCard({
+    Key? key,
+    required FunctionCallback this.nextAction,
+    required FunctionCallback this.prevAction,
+  }) : super(key: key);
 
   EnterXprvCardState createState() => EnterXprvCardState();
 }
@@ -36,8 +44,12 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
 
   @override
   void initState() {
+    print('enc_xprv_card view');
     super.initState();
-
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.prevAction(prev));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.nextAction(next));
     passwordInputTextController = TextEditingController();
   }
 
@@ -78,14 +90,14 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     );
   }
 
-  void onBack() {
+  void prev() {
     CreateWalletState state = BlocProvider.of<CreateWalletBloc>(context).state;
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
-  void onNext() {
+  void next() {
     Locator.instance<ApiCreateWallet>().setSeed(xprv, 'encryptedXprv');
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
@@ -113,7 +125,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     return true;
   }
 
-  Widget _buildPasswordField(double width) {
+  Widget _buildPasswordField() {
     return Container(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -171,14 +183,14 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
         Padding(
           padding: EdgeInsets.only(top: 10, bottom: 10),
           child: ElevatedButton(
-            onPressed: onBack,
+            onPressed: prev,
             child: Text('Go back!'),
           ),
         ),
         Padding(
           padding: EdgeInsets.only(left: 5, top: 10, bottom: 10),
           child: ElevatedButton(
-            onPressed: xprvVerified() ? onNext : null,
+            onPressed: xprvVerified() ? next : null,
             child: Text('Confirm'),
           ),
         ),
@@ -260,65 +272,21 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
-
-    final cardWidth = min(deviceSize.width * 0.95, 360.0);
-    const cardPadding = 10.0;
-    final textFieldWidth = cardWidth - cardPadding * 2;
-    final theme = Theme.of(context);
-    return FittedBox(
-      child: Card(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              height: 50,
-              width: cardWidth,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: theme.primaryColor,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(5.0),
-                      topRight: Radius.circular(5.0))),
-              child: Padding(
-                padding: EdgeInsets.only(top: 1),
-                child: Text(
-                  'Import Ecnrypted XPRV',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: theme.backgroundColor, fontSize: 25),
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(
-                left: cardPadding,
-                right: cardPadding,
-                top: cardPadding + 10,
-              ),
-              width: cardWidth,
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    _buildConfirmField(),
-                    _buildPasswordField(textFieldWidth * 0.9),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        verifyXprvButton(),
-                      ],
-                    ),
-                    _buildButtonRow(),
-                  ]),
-            ),
-          ],
-        ),
-      ),
-    );
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          _buildConfirmField(),
+          _buildPasswordField(),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              verifyXprvButton(),
+            ],
+          ),
+        ]);
   }
 }

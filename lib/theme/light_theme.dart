@@ -47,7 +47,13 @@ TextTheme textTheme = TextTheme(
         fontFamily: 'NotoSans',
         color: WitnetPallet.witnetGreen2,
         fontSize: 16,
-        fontWeight: FontWeight.normal));
+        fontWeight: FontWeight.normal),
+    headline3: TextStyle(
+        fontFamily: 'NotoSans',
+        color: WitnetPallet.darkGrey,
+        fontSize: 16,
+        fontWeight: FontWeight.bold),
+    );
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.white,
   filled: true,
