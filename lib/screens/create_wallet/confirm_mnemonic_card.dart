@@ -57,10 +57,14 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
           maxLines: 4,
           controller: textController,
           onChanged: (String e) {
+            if (validMnemonic(textController.value.text)) {
+              widget.nextAction(next);
+            } else {
+              widget.nextAction(null);
+            }
             setState(() {
               mnemonic = textController.value.text;
               numLines = '\n'.allMatches(e).length + 1;
-              widget.nextAction(next);
             });
           },
         ),

@@ -45,17 +45,18 @@ class Layout extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(minWidth: 100, maxWidth: 600),
-          child: Padding(
-            padding: EdgeInsets.only(left: 32),
-            child: Column(
-              key: contentKey,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: actions,
-            ),
-          ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Container(
+        height: actionsSize,
+        alignment: Alignment.bottomCenter,
+        constraints: BoxConstraints(minWidth: 100, maxWidth: 600),
+        color: theme.backgroundColor,
+        padding: EdgeInsets.only(left: 16, right: 16),
+        child:  Column(
+          key: contentKey,
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: actions,
         ),
       ),
     );
