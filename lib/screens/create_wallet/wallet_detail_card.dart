@@ -38,14 +38,11 @@ class WalletDetailCardState extends State<WalletDetailCard>
 
   late TextEditingController _nameController;
   late TextEditingController _descController;
-
+  final _nameFocusNode = FocusNode();
   String _walletName = '';
   String _walletDescription = '';
-  void setWalletName(String walletName) {
-    setState(() {
-      _walletName = walletName;
-    });
-  }
+  bool _hasInputError = false;
+  String errorText = 'Password mismatch';
 
   @override
   void initState() {
@@ -54,8 +51,6 @@ class WalletDetailCardState extends State<WalletDetailCard>
     _descController = TextEditingController();
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => widget.nextAction(next));
   }
 
   @override
@@ -65,14 +60,47 @@ class WalletDetailCardState extends State<WalletDetailCard>
     _descController.dispose();
   }
 
-  Widget _buildUserField() {
-    return Container(
+  final _formKey = GlobalKey<FormState>();
+
+  void setValidation() {
+    if (!_nameFocusNode.hasFocus) {
+      if (_walletName.isEmpty) {
+        widget.nextAction(null);
+        setState(() {
+          _hasInputError = true;
+          errorText = 'Please add a name for your wallet';
+        });
+      } else {
+        setState(() {
+          _hasInputError = false;
+        });
+        widget.nextAction(next);
+      }
+    } else if (_walletName.isEmpty) {
+      widget.nextAction(null);
+    }
+  }
+
+  Widget _buildWalletDetailsForm(theme) {
+    _nameFocusNode.addListener(() => setValidation());
+    return Form(
+      key: _formKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
+        children: [
+          Text(
+            'Name',
+            style: theme.textTheme.subtitle2,
+          ),
+          SizedBox(height: 8),
           TextField(
-            decoration: InputDecoration(labelText: 'Wallet Name'),
+            decoration: InputDecoration(
+              hintText: 'Wallet Name',
+              errorText: _hasInputError ? errorText : null,
+            ),
             controller: _nameController,
+            focusNode: _nameFocusNode,
             onSubmitted: (String value) => null,
             onChanged: (String value) {
               setState(() {
@@ -80,21 +108,16 @@ class WalletDetailCardState extends State<WalletDetailCard>
               });
             },
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDescriptionField() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(
-            height: 10,
+          SizedBox(height: 16),
+          Text(
+            'Description',
+            style: theme.textTheme.subtitle2,
           ),
+          SizedBox(height: 8),
           TextField(
-            decoration: InputDecoration(labelText: 'Wallet Description'),
+            decoration: InputDecoration(
+              hintText: 'Wallet Description',
+            ),
             controller: _descController,
             onSubmitted: (String value) => null,
             onChanged: (String value) {
@@ -108,35 +131,34 @@ class WalletDetailCardState extends State<WalletDetailCard>
     );
   }
 
-  Widget _buildInfoText() {
-    final theme = Theme.of(context);
+  Widget _buildInfoText(theme) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Identify your Wallet',
           style: theme.textTheme.headline3, //Textstyle
         ), //Text
         SizedBox(
-          height: 10,
+          height: 16,
         ),
         Text(
           'Keep track of and describe your Witnet wallet by filling in the boxes below.',
           style: theme.textTheme.bodyText1, //Textstyle
         ), //Text
         SizedBox(
-          height: 10,
-        ),
-        SizedBox(height: 10), //SizedBox
+          height: 16,
+        ), //SizedBox
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-      _buildInfoText(),
-      _buildUserField(),
-      _buildDescriptionField(),
+      _buildInfoText(theme),
+      _buildWalletDetailsForm(theme),
     ]);
   }
 }
