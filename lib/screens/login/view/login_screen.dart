@@ -40,7 +40,7 @@ class LoginScreenState extends State<LoginScreen>
         ]),
       ],
       actions: [LoginForm()],
-      actionsSize: 300,
+      actionsSize: 325,
     );
   }
 }

@@ -18,11 +18,21 @@ TextTheme textTheme = TextTheme(
         color: WitnetPallet.darkGrey,
         fontSize: 24,
         fontWeight: FontWeight.normal),
+    headline3: TextStyle(
+        fontFamily: 'NotoSans',
+        color: WitnetPallet.darkGrey,
+        fontSize: 16,
+        fontWeight: FontWeight.bold),
     subtitle1: TextStyle(
         fontFamily: 'NotoSans',
         color: WitnetPallet.darkGrey,
         fontSize: 16,
         fontWeight: FontWeight.normal),
+    subtitle2: TextStyle(
+        fontFamily: 'NotoSans',
+        color: WitnetPallet.darkGrey,
+        fontSize: 14,
+        fontWeight: FontWeight.bold),
     bodyText1: TextStyle(
         fontFamily: 'NotoSans',
         color: WitnetPallet.darkGrey,
@@ -48,11 +58,6 @@ TextTheme textTheme = TextTheme(
         color: WitnetPallet.witnetGreen2,
         fontSize: 16,
         fontWeight: FontWeight.normal),
-    headline3: TextStyle(
-        fontFamily: 'NotoSans',
-        color: WitnetPallet.darkGrey,
-        fontSize: 16,
-        fontWeight: FontWeight.bold),
     );
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.white,

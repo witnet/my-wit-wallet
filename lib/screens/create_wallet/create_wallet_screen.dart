@@ -34,21 +34,33 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
       ],
       actions: [
         PaddedButton(
-          padding: EdgeInsets.all(5),
+          padding: EdgeInsets.only(bottom: 8),
           text: 'Continue',
           type: 'primary',
           enabled: nextAction != null,
-          onPressed: () => nextAction != null ? nextAction() : null,
+          onPressed: () => {
+            nextAction != null ? nextAction() : null,
+            nextAction = null
+          }
         ),
         PaddedButton(
-          padding: EdgeInsets.all(5),
+          padding: EdgeInsets.all(0),
           text: 'Back',
           type: 'secondary',
-          onPressed: () => prevAction != null ? prevAction() : null,
+          onPressed: () =>
+          {
+            prevAction != null ? prevAction() : null,
+            _clearActions()
+          },
         ),
       ],
-      actionsSize: 150,
+      actionsSize: 125,
     );
+  }
+
+  _clearActions() {
+    nextAction = null;
+    prevAction = null;
   }
 
   _setNextAction(action) {
@@ -63,42 +75,51 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
     });
   }
 
-
   _formCards() {
     return BlocBuilder<CreateWalletBloc, CreateWalletState>(
         builder: (context, state) {
       switch (state.status) {
         case CreateWalletStatus.Disclaimer:
-          currentFormCard = DisclaimerCard(nextAction: _setNextAction, prevAction: _setPrevAction);
+          currentFormCard = DisclaimerCard(
+              nextAction: _setNextAction, prevAction: _setPrevAction);
           break;
         case CreateWalletStatus.GenerateMnemonic:
-          currentFormCard = GenerateMnemonicCard(nextAction: _setNextAction, prevAction: _setPrevAction);
+          currentFormCard = GenerateMnemonicCard(
+              nextAction: _setNextAction, prevAction: _setPrevAction);
           break;
         case CreateWalletStatus.EnterMnemonic:
-          currentFormCard = EnterMnemonicCard(nextAction: _setNextAction, prevAction: _setPrevAction);
+          currentFormCard = EnterMnemonicCard(
+              nextAction: _setNextAction, prevAction: _setPrevAction);
           break;
         case CreateWalletStatus.EnterXprv:
-          currentFormCard = EnterXprvCard(nextAction: _setNextAction, prevAction: _setPrevAction);
+          currentFormCard = EnterXprvCard(
+              nextAction: _setNextAction, prevAction: _setPrevAction);
           break;
         case CreateWalletStatus.ValidXprv:
           break;
         case CreateWalletStatus.EnterEncryptedXprv:
-          currentFormCard = EnterEncryptedXprvCard(nextAction: _setNextAction, prevAction: _setPrevAction);
+          currentFormCard = EnterEncryptedXprvCard(
+              nextAction: _setNextAction, prevAction: _setPrevAction);
           break;
         case CreateWalletStatus.ConfirmMnemonic:
-          currentFormCard = ConfirmMnemonicCard(nextAction: _setNextAction, prevAction: _setPrevAction);
+          currentFormCard = ConfirmMnemonicCard(
+              nextAction: _setNextAction, prevAction: _setPrevAction);
           break;
         case CreateWalletStatus.WalletDetail:
-          currentFormCard = WalletDetailCard(nextAction: _setNextAction, prevAction: _setPrevAction);
+          currentFormCard = WalletDetailCard(
+              nextAction: _setNextAction, prevAction: _setPrevAction);
           break;
         case CreateWalletStatus.EncryptWallet:
-          currentFormCard = EncryptWalletCard(nextAction: _setNextAction, prevAction: _setPrevAction);
+          currentFormCard = EncryptWalletCard(
+              nextAction: _setNextAction, prevAction: _setPrevAction);
           break;
         case CreateWalletStatus.BuildWallet:
-          currentFormCard = BuildWalletCard(nextAction: _setNextAction, prevAction: _setPrevAction);
+          currentFormCard = BuildWalletCard(
+              nextAction: _setNextAction, prevAction: _setPrevAction);
           break;
         case CreateWalletStatus.Imported:
-          currentFormCard = SelectImportedOption(nextAction: _setNextAction, prevAction: _setPrevAction);
+          currentFormCard = SelectImportedOption(
+              nextAction: _setNextAction, prevAction: _setPrevAction);
           break;
         case CreateWalletStatus.CreateWallet:
           // TODO: Handle this case.
