@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/crypto.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'bloc/create_wallet_bloc.dart';
 
 //genius merge win culture lemon remember work native omit digital canal update
@@ -30,25 +29,33 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
   Widget _buildConfirmField() {
     final theme = Theme.of(context);
     return Column(
-      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
+        Text(
+          'Recover with seed phrase',
+          style: theme.textTheme.headline3, //Textstyle
+        ), //Text
         SizedBox(
-          height: 10,
+          height: 16,
         ),
-        AutoSizeText(
+        Text(
           'Please type your secret word phrase used for recovery. ',
-          maxLines: 1,
           style: theme.textTheme.bodyText1, //Textstyle
         ), //Text
         SizedBox(
-          height: 10,
+          height: 16,
         ),
-
         TextField(
           keyboardType: TextInputType.multiline,
+          style: theme.textTheme.headline2,
           maxLines: 4,
           controller: textController,
           onChanged: (String e) {
+            if (validMnemonic(textController.value.text)) {
+              widget.nextAction(next);
+            } else {
+              widget.nextAction(null);
+            }
             setState(() {
               mnemonic = textController.value.text;
               numLines = '\n'.allMatches(e).length + 1;
@@ -56,16 +63,12 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
           },
         ),
         SizedBox(
-          height: 10,
+          height: 16,
         ),
-        AutoSizeText(
+        Text(
           'Please ensure you do not add any extra spaces between words or at the beginning or end of the phrase.',
-          maxLines: 2,
           style: theme.textTheme.bodyText1, //Textstyle
         ), //Text
-        SizedBox(
-          height: 10,
-        ),
       ],
     );
   }
@@ -85,11 +88,8 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
 
   @override
   void initState() {
-    print('import mnemonic card');
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => widget.nextAction(next));
     super.initState();
   }
 

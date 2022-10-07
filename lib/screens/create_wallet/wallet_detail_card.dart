@@ -95,6 +95,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
           ),
           SizedBox(height: 8),
           TextField(
+            style: theme.textTheme.bodyText1,
             decoration: InputDecoration(
               hintText: 'Wallet Name',
               errorText: _hasInputError ? errorText : null,
@@ -115,6 +116,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
           ),
           SizedBox(height: 8),
           TextField(
+            style: theme.textTheme.bodyText1,
             decoration: InputDecoration(
               hintText: 'Wallet Description',
             ),

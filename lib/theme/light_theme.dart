@@ -9,15 +9,15 @@ TextSelectionThemeData textSelectionTheme =
 Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
     headline1: TextStyle(
-        fontFamily: 'Quicksand',
+        fontFamily: 'NotoSans',
         color: WitnetPallet.darkGrey,
         fontSize: 24,
         fontWeight: FontWeight.bold),
     headline2: TextStyle(
-        fontFamily: 'Quicksand',
+        fontFamily: 'NotoSans',
         color: WitnetPallet.darkGrey,
-        fontSize: 24,
-        fontWeight: FontWeight.normal),
+        fontSize: 18,
+        fontWeight: FontWeight.bold),
     headline3: TextStyle(
         fontFamily: 'NotoSans',
         color: WitnetPallet.darkGrey,
@@ -71,7 +71,7 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   focusColor: WitnetPallet.witnetGreen2,
   isDense: false,
   isCollapsed: false,
-  contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+  contentPadding: EdgeInsets.all(16),
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.lightGrey, width: 1.0, style: BorderStyle.solid),
