@@ -6,15 +6,25 @@ import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
-typedef void FunctionCallback(Function? value);
+typedef void VoidCallback(Action? value);
+
+class Action {
+  String label;
+  void action;
+
+  Action({
+    required this.label,
+    required this.action,
+  });
+}
 
 class EnterXprvCard extends StatefulWidget {
   final Function nextAction;
   final Function prevAction;
   EnterXprvCard({
     Key? key,
-    required FunctionCallback this.nextAction,
-    required FunctionCallback this.prevAction,
+    required VoidCallback this.nextAction,
+    required VoidCallback this.prevAction,
   }) : super(key: key);
 
   EnterXprvCardState createState() => EnterXprvCardState();
@@ -62,7 +72,7 @@ class EnterXprvCardState extends State<EnterXprvCard>
     );
   }
 
-  void prev() {
+  void prevAction() {
     CreateWalletState state = BlocProvider.of<CreateWalletBloc>(context).state;
     BlocProvider.of<CreateWalletBloc>(context)
         .add(SetWalletStateEvent(WalletType.xprv, state));
@@ -71,12 +81,26 @@ class EnterXprvCardState extends State<EnterXprvCard>
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
-  void next() {
+  void nextAction() {
     Locator.instance<ApiCreateWallet>().setSeed(xprv, 'xprv');
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context)
         .add(NextCardEvent(type, data: {}));
+  }
+
+  Action prev() {
+    return Action(
+      label: 'Back',
+      action: prevAction,
+    );
+  }
+
+  Action next() {
+    return Action(
+      label: 'Continue',
+      action: nextAction,
+    );
   }
 
   bool validXprv(String xprvString) {
@@ -87,28 +111,6 @@ class EnterXprvCardState extends State<EnterXprvCard>
       return false;
     }
     return true;
-  }
-
-  Widget _buildButtonRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(top: 10, bottom: 10),
-          child: ElevatedButton(
-            onPressed: prev,
-            child: Text('Go back!'),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 5, top: 10, bottom: 10),
-          child: ElevatedButton(
-            onPressed: xprvVerified() ? next : null,
-            child: Text('Confirm'),
-          ),
-        ),
-      ],
-    );
   }
 
   Widget buildErrorList(List<dynamic> errors) {

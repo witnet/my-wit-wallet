@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/utils.dart';
@@ -9,15 +7,25 @@ import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:witnet_wallet/widgets/witnet/password_input.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
-typedef void FunctionCallback(Function? value);
+typedef void VoidCallback(Action? value);
+
+class Action {
+  String label;
+  void action;
+
+  Action({
+    required this.label,
+    required this.action,
+  });
+}
 
 class EnterEncryptedXprvCard extends StatefulWidget {
   final Function nextAction;
   final Function prevAction;
   EnterEncryptedXprvCard({
     Key? key,
-    required FunctionCallback this.nextAction,
-    required FunctionCallback this.prevAction,
+    required VoidCallback this.nextAction,
+    required VoidCallback this.prevAction,
   }) : super(key: key);
 
   EnterXprvCardState createState() => EnterXprvCardState();
@@ -89,19 +97,33 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     );
   }
 
-  void prev() {
+  void prevAction() {
     CreateWalletState state = BlocProvider.of<CreateWalletBloc>(context).state;
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
-  void next() {
+  void nextAction() {
     Locator.instance<ApiCreateWallet>().setSeed(xprv, 'encryptedXprv');
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context)
         .add(NextCardEvent(type, data: {}));
+  }
+
+  Action prev() {
+    return Action(
+      label: 'Back',
+      action: prevAction,
+    );
+  }
+
+  Action next() {
+    return Action(
+      label: 'Continue',
+      action: nextAction,
+    );
   }
 
   bool validBech(String xprvString) {

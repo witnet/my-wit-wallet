@@ -35,6 +35,7 @@ class _PreferencePageState extends State<PreferencePage> {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     return Layout(
+      headerActions: [],
       widgetList: [
         themeWidget(deviceSize.height * 0.25, context),
       ],

@@ -24,48 +24,86 @@ class CreateWalletScreen extends StatefulWidget {
 class CreateWalletScreenState extends State<CreateWalletScreen> {
   dynamic currentFormCard;
   dynamic nextAction;
+  dynamic secondaryAction;
   dynamic prevAction;
+  double bottomSize = 80;
+
+  List<Widget> _actions() {
+    List<Widget> actions = [
+      PaddedButton(
+          padding: EdgeInsets.only(bottom: 8),
+          text: nextAction != null ? nextAction().label : 'Continue',
+          type: 'primary',
+          enabled: nextAction != null,
+          onPressed: () => {
+                nextAction != null ? nextAction().action() : null,
+                _clearNextActions()
+              }),
+    ];
+    if (secondaryAction != null) {
+      actions = [
+        ...actions,
+        PaddedButton(
+            padding: EdgeInsets.only(bottom: 8),
+            text: nextAction != null ? secondaryAction().label : '',
+            type: 'primary',
+            enabled: nextAction != null,
+            onPressed: () => {
+                  nextAction != null ? secondaryAction().action() : null,
+                  _clearNextActions()
+                }),
+      ];
+      bottomSize = 120;
+    }
+    return actions;
+  }
+
+  List<Widget> _headerActions() {
+    return [
+      PaddedButton(
+          padding: EdgeInsets.only(bottom: 8),
+          text: prevAction != null ? prevAction().label : '',
+          type: 'text',
+          enabled: prevAction != null,
+          onPressed: () => {
+                prevAction != null ? prevAction().action() : null,
+                _clearAllActions()
+              }),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Layout(
+      headerActions: _headerActions(),
       widgetList: [
         _formCards(),
       ],
-      actions: [
-        PaddedButton(
-          padding: EdgeInsets.only(bottom: 8),
-          text: 'Continue',
-          type: 'primary',
-          enabled: nextAction != null,
-          onPressed: () => {
-            nextAction != null ? nextAction() : null,
-            nextAction = null
-          }
-        ),
-        PaddedButton(
-          padding: EdgeInsets.all(0),
-          text: 'Back',
-          type: 'secondary',
-          onPressed: () =>
-          {
-            prevAction != null ? prevAction() : null,
-            _clearActions()
-          },
-        ),
-      ],
-      actionsSize: 125,
+      actions: _actions(),
+      actionsSize: bottomSize,
     );
   }
 
-  _clearActions() {
+  _clearNextActions() {
+    nextAction = null;
+    secondaryAction = null;
+  }
+
+  _clearAllActions() {
     nextAction = null;
     prevAction = null;
+    secondaryAction = null;
   }
 
   _setNextAction(action) {
     setState(() {
       nextAction = action;
+    });
+  }
+
+  _setSecondaryAction(action) {
+    setState(() {
+      secondaryAction = action;
     });
   }
 
@@ -119,7 +157,9 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
           break;
         case CreateWalletStatus.Imported:
           currentFormCard = SelectImportedOption(
-              nextAction: _setNextAction, prevAction: _setPrevAction);
+              nextAction: _setNextAction,
+              secondaryAction: _setSecondaryAction,
+              prevAction: _setPrevAction);
           break;
         case CreateWalletStatus.CreateWallet:
           // TODO: Handle this case.

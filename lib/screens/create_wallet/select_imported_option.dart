@@ -1,22 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/widgets/PaddedButton.dart';
+import 'package:witnet_wallet/widgets/carousel.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 
-typedef void FunctionCallback(Function? value);
+typedef void VoidCallback(Action? value);
 
 class SelectImportedOption extends StatefulWidget {
   final Function nextAction;
+  final Function secondaryAction;
   final Function prevAction;
   SelectImportedOption({
     Key? key,
-    required FunctionCallback this.nextAction,
-    required FunctionCallback this.prevAction,
+    required VoidCallback this.nextAction,
+    required VoidCallback this.secondaryAction,
+    required VoidCallback this.prevAction,
   }) : super(key: key);
   @override
   State<StatefulWidget> createState() => ImportedOptionState();
+}
+
+class Action {
+  String label;
+  void action;
+
+  Action({
+    required this.label,
+    required this.action,
+  });
 }
 
 class ImportedOptionState extends State<SelectImportedOption> {
@@ -38,28 +50,47 @@ class ImportedOptionState extends State<SelectImportedOption> {
     );
   }
 
-  void prev() {
+  void prevAction() {
     Navigator.pop(context);
   }
 
-  void nextSeed() {
-    Locator.instance<ApiCreateWallet>()
-      .setWalletType(WalletType.mnemonic);
+  void nextSeedAction() {
+    Locator.instance<ApiCreateWallet>().setWalletType(WalletType.mnemonic);
     BlocProvider.of<CreateWalletBloc>(context)
-      .add(ResetEvent(WalletType.mnemonic));
+        .add(ResetEvent(WalletType.mnemonic));
     BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(
         Locator.instance<ApiCreateWallet>().walletType,
         data: {}));
   }
 
-  void nextXprv() {
-    Locator.instance<ApiCreateWallet>()
-      .setWalletType(WalletType.encryptedXprv);
+  void nextXprvAction() {
+    Locator.instance<ApiCreateWallet>().setWalletType(WalletType.encryptedXprv);
     BlocProvider.of<CreateWalletBloc>(context)
-      .add(ResetEvent(WalletType.encryptedXprv));
+        .add(ResetEvent(WalletType.encryptedXprv));
     BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(
         Locator.instance<ApiCreateWallet>().walletType,
         data: {}));
+  }
+
+  Action prev() {
+    return Action(
+      label: 'Back',
+      action: prevAction,
+    );
+  }
+
+  Action nextSeed() {
+    return Action(
+      label: 'Import from seed phrase',
+      action: nextSeedAction,
+    );
+  }
+
+  Action nextXprv() {
+    return Action(
+      label: 'Import from xprv',
+      action: nextSeedAction,
+    );
   }
 
   @override
@@ -68,35 +99,32 @@ class ImportedOptionState extends State<SelectImportedOption> {
         .addPostFrameCallback((_) => widget.prevAction(prev));
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.nextAction(nextSeed));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.secondaryAction(nextXprv));
     super.initState();
   }
 
   Widget _buildInitialButtons(BuildContext context, ThemeData theme) {
-    return Padding(
-      padding: EdgeInsets.all(5),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          PaddedButton(
-              padding: EdgeInsets.only(top: 8, bottom: 8),
-              text: 'Back',
-              type: 'secondary',
-              onPressed: () => widget.prevAction(prev),
-          ),
-          PaddedButton(
-              padding: EdgeInsets.only(top: 8, bottom: 8),
-              text: 'Import from seed phrase',
-              type: 'primary',
-              onPressed: () => widget.nextAction(nextSeed),
-          ),
-          PaddedButton(
-              padding: EdgeInsets.only(top: 8, bottom: 8),
-              text: 'Import from xprv file',
-              type: 'primary',
-              onPressed: () => nextXprv(),
-          ),
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Image.asset(
+        'assets/img/witty.png',
+          width: 152,
+          height: 152,
+          fit:BoxFit.fitWidth,
+        ),
+        SizedBox(height: 16),
+        Text(
+          'Import a wallet',
+          style: theme.textTheme.headline1,
+        ),
+        Carousel(list: [
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.',
+          'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+          'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+        ]),
+      ],
     );
   }
 }
