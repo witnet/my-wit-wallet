@@ -44,7 +44,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
 
   @override
   void initState() {
-    print('enc_xprv_card view');
     super.initState();
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));

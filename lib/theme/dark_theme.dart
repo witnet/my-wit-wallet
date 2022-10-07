@@ -10,33 +10,42 @@ TextSelectionThemeData textSelectionTheme =
 Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
   headline1: TextStyle(fontFamily: 'Quicksand', color: WitnetPallet.opacityWhite, fontSize: 24, fontWeight: FontWeight.bold),
-  headline2: TextStyle(fontFamily: 'Quicksand', color: WitnetPallet.opacityWhite, fontSize: 24, fontWeight: FontWeight.normal),
+  headline2: TextStyle(fontFamily: 'Quicksand', color: WitnetPallet.white, fontSize: 18, fontWeight: FontWeight.bold),
+  headline3: TextStyle(
+    fontFamily: 'NotoSans',
+    color: WitnetPallet.white,
+    fontSize: 16,
+    fontWeight: FontWeight.bold),
   subtitle1: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 16, fontWeight: FontWeight.normal),
+  subtitle2: TextStyle(
+    fontFamily: 'NotoSans',
+    color: WitnetPallet.white,
+    fontSize: 14,
+    fontWeight: FontWeight.bold),
   bodyText1: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 16, fontWeight: FontWeight.normal),
   bodyText2: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 14, fontWeight: FontWeight.normal),
   caption: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 12, fontWeight: FontWeight.normal),
   button: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 16, fontWeight: FontWeight.normal),
-  headline3: TextStyle(
+  labelMedium: TextStyle(
     fontFamily: 'NotoSans',
-    color: WitnetPallet.witnetGreen2,
+    color: WitnetPallet.white,
     fontSize: 16,
-    fontWeight: FontWeight.normal
-  )
+    fontWeight: FontWeight.bold),
 );
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.darkBlue2,
   filled: true,
-  errorStyle: TextStyle(backgroundColor: WitnetPallet.brightRed),
-  helperStyle: TextStyle(backgroundColor: WitnetPallet.opacityWhite),
+  errorStyle: TextStyle(color: WitnetPallet.brightRed),
+  helperStyle: TextStyle(color: WitnetPallet.white),
   helperMaxLines: 1,
   errorMaxLines: 1,
-  hintStyle: TextStyle(color: WitnetPallet.opacityWhite),
+  hintStyle: TextStyle(color: Color.fromARGB(159, 190, 191, 192)),
   labelStyle: TextStyle(color: WitnetPallet.opacityWhite),
   hoverColor: WitnetPallet.darkBlue2,
   focusColor: WitnetPallet.opacityWitnetGreen,
   isDense: false,
   isCollapsed: false,
-  contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+  contentPadding: EdgeInsets.all(16),
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.opacityWhite, width: 1.0, style: BorderStyle.solid),

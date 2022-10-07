@@ -20,70 +20,11 @@ class ConfirmMnemonicCard extends StatefulWidget {
 }
 
 class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
-    with TickerProviderStateMixin {
+  with TickerProviderStateMixin {
   String mnemonic = '';
   final TextEditingController textController = TextEditingController();
   int numLines = 0;
   int _phraseLength = 12;
-
-  Widget _buildConfirmField() {
-    return Column(
-      children: <Widget>[
-        SizedBox(
-          height: 10,
-        ),
-        Text(
-          'Recovery Phrase',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Text(
-          'Please type your $_phraseLength word seed phrase exactly as shown to you on the previous screen. This will ensure that you have noted down your seed phrase correctly.',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        TextField(
-          keyboardType: TextInputType.multiline,
-          maxLines: 4,
-          controller: textController,
-          onChanged: (String e) {
-            if (validMnemonic(textController.value.text)) {
-              widget.nextAction(next);
-            } else {
-              widget.nextAction(null);
-            }
-            setState(() {
-              mnemonic = textController.value.text;
-              numLines = '\n'.allMatches(e).length + 1;
-            });
-          },
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Text(
-          'Please ensure you do not add any extra spaces between words or at the beginning or end of the phrase.',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-      ],
-    );
-  }
 
   void prev() {
     WalletType type =
@@ -107,7 +48,6 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
 
   @override
   void initState() {
-    print('confirm mnemonic card');
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
     super.initState();
@@ -115,12 +55,49 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          _buildConfirmField(),
-        ]);
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Recovery Phrase',
+          style: theme.textTheme.headline2,
+        ),
+        SizedBox(
+          height: 16,
+        ),
+        Text(
+          'Please type your $_phraseLength word seed phrase exactly as shown to you on the previous screen. This will ensure that you have noted down your seed phrase correctly.',
+          style: theme.textTheme.bodyText1,
+        ),
+        SizedBox(
+          height: 16,
+        ),
+        TextField(
+          style: theme.textTheme.headline2,
+          keyboardType: TextInputType.multiline,
+          maxLines: 4,
+          controller: textController,
+          onChanged: (String e) {
+            if (validMnemonic(textController.value.text)) {
+              widget.nextAction(next);
+            } else {
+              widget.nextAction(null);
+            }
+            setState(() {
+              mnemonic = textController.value.text;
+              numLines = '\n'.allMatches(e).length + 1;
+            });
+          },
+        ),
+        SizedBox(
+          height: 16,
+        ),
+        Text(
+          'Please ensure you do not add any extra spaces between words or at the beginning or end of the phrase.',
+          style: theme.textTheme.bodyText1,
+        ),
+      ],
+    );
   }
 }

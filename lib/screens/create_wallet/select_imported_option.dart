@@ -64,7 +64,6 @@ class ImportedOptionState extends State<SelectImportedOption> {
 
   @override
   void initState() {
-    print('select imported option');
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
     WidgetsBinding.instance

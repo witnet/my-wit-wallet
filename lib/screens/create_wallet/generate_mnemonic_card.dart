@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/widgets/dashed_rect.dart';
-import 'package:witnet_wallet/widgets/select.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter/services.dart';
 
 typedef void FunctionCallback(Function? value);
 
@@ -27,128 +27,10 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
   String _language = 'English';
   int _radioWordCount = 12;
 
-  void _setLanguage(String language) {
-    setState(() {
-      _language = language;
-    });
-  }
-
-  void _handleWordCountChange(int? _count) {
-    setState(() {
-      _radioWordCount = _count!;
-    });
-  }
-
   Future<String> _genMnemonic() async {
     return await Locator.instance
         .get<ApiCrypto>()
         .generateMnemonic(_radioWordCount, _language);
-  }
-
-  Widget _buildMnemonicLanguageSelector() {
-    return Select(
-      listItems: <String>[
-        'ChineseSimplified',
-        'ChineseTraditional',
-        'English',
-        'French',
-        'Italian',
-        'Japanese',
-        'Korean',
-        'Spanish',
-      ],
-      selectedItem: _language,
-      onChanged: (String? value) => {_setLanguage(value!)},
-    );
-  }
-
-  Widget _buildMnemonicLengthSelector() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Column(
-          children: <Widget>[
-            new Text(
-              'Phrase Length:',
-              style: new TextStyle(
-                fontSize: 16.0,
-              ),
-            ),
-            Row(
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    new Radio(
-                      value: 12,
-                      groupValue: _radioWordCount,
-                      onChanged: _handleWordCountChange,
-                    ),
-                    new Text(
-                      '12',
-                      style: new TextStyle(fontSize: 16.0),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    new Radio(
-                      value: 15,
-                      groupValue: _radioWordCount,
-                      onChanged: _handleWordCountChange,
-                    ),
-                    new Text(
-                      '15',
-                      style: new TextStyle(
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    new Radio(
-                      value: 18,
-                      groupValue: _radioWordCount,
-                      onChanged: _handleWordCountChange,
-                    ),
-                    new Text(
-                      '18',
-                      style: new TextStyle(fontSize: 16.0),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    new Radio(
-                      value: 21,
-                      groupValue: _radioWordCount,
-                      onChanged: _handleWordCountChange,
-                    ),
-                    new Text(
-                      '21',
-                      style: new TextStyle(fontSize: 16.0),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: <Widget>[
-                    new Radio(
-                      value: 24,
-                      groupValue: _radioWordCount,
-                      onChanged: _handleWordCountChange,
-                    ),
-                    new Text(
-                      '24',
-                      style: new TextStyle(fontSize: 16.0),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    );
   }
 
   Widget _buildInfoTextScrollBox(Size deviceSize) {
@@ -157,6 +39,7 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Remove for production
         ElevatedButton(
             onPressed: () {
               Clipboard.setData(ClipboardData(text: mnemonic));
@@ -164,46 +47,45 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
             child: Text('Copy'),
         ),
         SizedBox(
-          height: 10,
+          height: 16,
         ),
         Text(
           'These $_radioWordCount random words are your Witnet seed phrase. They will allow you to recover your tokens if you uninstall this application or forget your password:',
           style: theme.textTheme.bodyText1,
         ),
         SizedBox(
-          height: 10,
+          height: 8,
         ),
         Text(
           'Please write down these $_radioWordCount words on a piece of paper and store them somewhere private and secure. You must write the complete words in the exact order they are presented to you.',
           style: theme.textTheme.headline3,
         ),
         SizedBox(
-          height: 10,
+          height: 8,
         ),
         Text(
           'Keeping your seed phrase secret is paramount. If someone gains access to these $_radioWordCount words, they will be able to take and spend your tokens.',
           style: theme.textTheme.bodyText1,
         ),
         SizedBox(
-          height: 10,
+          height: 8,
         ),
         Text(
-          'Do not store these words on a computer or an electronic device. It is your sole responsibility to store the paper with your seed phrase in a safe place -',
-          style: theme.textTheme.bodyText1,
-        ),
-        Text(
-          'if you exit this setup or fail to write down or keep your seed phrase safe, we cannot help you access your wallet.',
+          'Do not store these words on a computer or an electronic device. It is your sole responsibility to store the paper with your seed phrase in a safe place.',
           style: theme.textTheme.bodyText1,
         ),
         SizedBox(
-          height: 10,
+          height: 8,
         ),
-        _buildMnemonicLanguageSelector(),
+        Text(
+          'If you exit this setup or fail to write down or keep your seed phrase safe, we cannot help you access your wallet.',
+          style: theme.textTheme.bodyText1,
+        ),
       ],
     );
   }
 
-  Widget _buildMnemonicBox() {
+  Widget _buildMnemonicBox(theme) {
     return FutureBuilder(
         future: _genMnemonic(),
         builder: (context, snapshot) {
@@ -219,7 +101,9 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
             }
           }
           return Center(
-            child: CircularProgressIndicator(),
+            child: SpinKitCircle(
+              color: theme.primaryColor,
+            ),
           );
         });
   }
@@ -240,7 +124,6 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
 
   @override
   void initState() {
-    print('generate mnemonic card');
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
     WidgetsBinding.instance
@@ -250,9 +133,10 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final deviceSize = MediaQuery.of(context).size;
     return Column(children: [
-      _buildMnemonicBox(),
+      _buildMnemonicBox(theme),
       SizedBox(
         height: 16,
       ),
