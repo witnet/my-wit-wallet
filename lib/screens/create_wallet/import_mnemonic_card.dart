@@ -6,15 +6,25 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'bloc/create_wallet_bloc.dart';
 
 //genius merge win culture lemon remember work native omit digital canal update
-typedef void FunctionCallback(Function? value);
+typedef void VoidCallback(Action? value);
+
+class Action {
+  String label;
+  void action;
+
+  Action({
+    required this.label,
+    required this.action,
+  });
+}
 
 class EnterMnemonicCard extends StatefulWidget {
   final Function nextAction;
   final Function prevAction;
   EnterMnemonicCard({
     Key? key,
-    required FunctionCallback this.nextAction,
-    required FunctionCallback this.prevAction,
+    required VoidCallback this.nextAction,
+    required VoidCallback this.prevAction,
   }) : super(key: key);
 
   EnterMnemonicCardState createState() => EnterMnemonicCardState();
@@ -73,17 +83,31 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
     );
   }
 
-  void prev() {
+  void prevAction() {
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
-  void next() {
+  void nextAction() {
     Locator.instance<ApiCreateWallet>().setSeed(mnemonic, 'mnemonic');
     BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(
         Locator.instance<ApiCreateWallet>().walletType,
         data: {}));
+  }
+
+  Action prev() {
+    return Action(
+      label: 'Back',
+      action: prevAction,
+    );
+  }
+
+  Action next() {
+    return Action(
+      label: 'Continue',
+      action: nextAction,
+    );
   }
 
   @override

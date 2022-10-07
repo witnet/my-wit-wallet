@@ -5,12 +5,14 @@ class Layout extends StatelessWidget {
   final List<Widget> widgetList;
   final AppBar? appBar;
   final List<Widget> actions;
+  final List<Widget> headerActions;
   final double actionsSize;
 
   const Layout({
     required this.widgetList,
     required this.actions,
     required this.actionsSize,
+    required this.headerActions,
     this.appBar,
   });
 
@@ -27,7 +29,7 @@ class Layout extends StatelessWidget {
         },
         child: ListView(
           children: [
-            HeaderLayout(),
+            HeaderLayout(headerActions: headerActions),
             Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -45,14 +47,14 @@ class Layout extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
         height: actionsSize,
         alignment: Alignment.bottomCenter,
         constraints: BoxConstraints(minWidth: 100, maxWidth: 600),
         color: theme.backgroundColor,
-        padding: EdgeInsets.only(left: 16, right: 16),
-        child:  Column(
+        padding: EdgeInsets.only(left: 16, bottom: 8, right: 16),
+        child: Column(
           key: contentKey,
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.end,

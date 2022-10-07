@@ -10,33 +10,57 @@ final _passFocusNode = FocusNode();
 final _passConfirmFocusNode = FocusNode();
 final _passConfirmController = TextEditingController();
 
-typedef void FunctionCallback(Function? value);
+typedef void VoidCallback(Action? value);
+
+class Action {
+  String label;
+  void action;
+
+  Action({
+    required this.label,
+    required this.action,
+  });
+}
 
 class EncryptWalletCard extends StatefulWidget {
   final Function nextAction;
   final Function prevAction;
   EncryptWalletCard({
     Key? key,
-    required FunctionCallback this.nextAction,
-    required FunctionCallback this.prevAction,
+    required VoidCallback this.nextAction,
+    required VoidCallback this.prevAction,
   }) : super(key: key);
   EncryptWalletCardState createState() => EncryptWalletCardState();
 }
 
 class EncryptWalletCardState extends State<EncryptWalletCard>
     with TickerProviderStateMixin {
-  void prev() {
+  void prevAction() {
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
-  void next() {
+  void nextAction() {
     Locator.instance<ApiCreateWallet>().setPassword(_password);
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context)
         .add(NextCardEvent(type, data: {}));
+  }
+
+  Action prev() {
+    return Action(
+      label: 'Back',
+      action: prevAction,
+    );
+  }
+
+  Action next() {
+    return Action(
+      label: 'Continue',
+      action: nextAction,
+    );
   }
 
   String _password = '';

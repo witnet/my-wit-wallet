@@ -406,6 +406,7 @@ class DashboardScreenState extends State<DashboardScreen>
           );
       }
       return Layout(
+        headerActions: [],
         widgetList: [
           _body,
         ],

@@ -3,7 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/widgets/labeled_checkbox.dart';
 
-typedef void FunctionCallback(Function? value);
+typedef void VoidCallback(Action? value);
+
+class Action {
+  String label;
+  void action;
+
+  Action({
+    required this.label,
+    required this.action,
+  });
+}
 
 class DisclaimerCard extends StatefulWidget {
   final Function nextAction;
@@ -11,8 +21,8 @@ class DisclaimerCard extends StatefulWidget {
 
   DisclaimerCard({
     Key? key,
-    required FunctionCallback this.nextAction,
-    required FunctionCallback this.prevAction,
+    required VoidCallback this.nextAction,
+    required VoidCallback this.prevAction,
   }) : super(key: key);
   @override
   State<StatefulWidget> createState() => DisclaimerCardState();
@@ -38,15 +48,29 @@ class DisclaimerCardState extends State<DisclaimerCard>
     });
   }
 
-  void prev() {
+  void prevAction() {
     Navigator.pop(context);
   }
 
-  void next() {
+  void nextAction() {
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context)
         .add(NextCardEvent(type, data: {}));
+  }
+
+  Action prev() {
+    return Action(
+      label: 'Back',
+      action: prevAction,
+    );
+  }
+
+  Action next() {
+    return Action(
+      label: 'Continue',
+      action: nextAction,
+    );
   }
 
   @override

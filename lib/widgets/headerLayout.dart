@@ -23,36 +23,46 @@ class Customshape extends CustomClipper<Path> {
 }
 
 class HeaderLayout extends StatelessWidget {
-  final List<Widget>? widgetList;
   final AppBar? appBar;
+  final List<Widget> headerActions;
 
   const HeaderLayout({
-    this.widgetList,
+    required this.headerActions,
     this.appBar,
   });
 
   Widget build(BuildContext context) {
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     final theme = Theme.of(context);
-
     return ClipPath(
         clipper: Customshape(),
         child: Container(
           height: 250,
           width: MediaQuery.of(context).size.width,
           color: extendedTheme.headerBackgroundColor,
-          child: Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+          child: Column(children: [
+            Container(
+              padding: EdgeInsets.all(16),
+              child: 
+              Row(
+                children: headerActions,
+              )
+            ),
+            Container(
+              child:
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Flexible(
                       child: ConstrainedBox(
-                    constraints: BoxConstraints(minWidth: 50, maxWidth: MediaQuery.of(context).size.width * 0.2),
-                    child: witnetEyeIcon(theme),
+                    constraints: BoxConstraints(
+                        minWidth: 50,
+                        maxWidth: MediaQuery.of(context).size.width * 0.2),
+                    child: Column(
+                      children: [witnetEyeIcon(theme)],
+                    ),
                   )),
-              ]
-            )
-          ),
+            ])),
+          ]),
+           
         ));
   }
 }

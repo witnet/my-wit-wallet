@@ -24,6 +24,7 @@ class LoginScreenState extends State<LoginScreen>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Layout(
+      headerActions: [],
       widgetList: [
         Padding(
           padding: EdgeInsets.only(left: 24, right: 24),

@@ -18,6 +18,8 @@ class PaddedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPrimary = type == 'primary';
+    final isText = type == 'text';
+
     Widget primaryButton = ElevatedButton(
       style: ElevatedButton.styleFrom(
         minimumSize: Size(double.infinity, 54),
@@ -25,6 +27,7 @@ class PaddedButton extends StatelessWidget {
       child: Text(text),
       onPressed: enabled ? onPressed : null,
     );
+
     Widget secondaryButton = OutlinedButton(
       style: ElevatedButton.styleFrom(
         minimumSize: Size(double.infinity, 54),
@@ -32,9 +35,25 @@ class PaddedButton extends StatelessWidget {
       child: Text(text),
       onPressed: onPressed,
     );
+
+    Widget textButton = TextButton(
+      child: Text(text),
+      onPressed: onPressed,
+    );
+
+    Widget _getButtonByType () {
+      if (isPrimary) {
+        return primaryButton;
+      } else if (isText) {
+        return textButton;
+      } else {
+        return secondaryButton;
+      }
+    }
+
     return Padding(
       padding: padding,
-      child: isPrimary ? primaryButton : secondaryButton,
+      child: _getButtonByType(),
     );
   }
 }

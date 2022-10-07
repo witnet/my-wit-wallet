@@ -8,57 +8,57 @@ TextSelectionThemeData textSelectionTheme =
     TextSelectionThemeData(cursorColor: WitnetPallet.witnetGreen2);
 Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
-    headline1: TextStyle(
-        fontFamily: 'NotoSans',
-        color: WitnetPallet.darkGrey,
-        fontSize: 24,
-        fontWeight: FontWeight.bold),
-    headline2: TextStyle(
-        fontFamily: 'NotoSans',
-        color: WitnetPallet.darkGrey,
-        fontSize: 18,
-        fontWeight: FontWeight.bold),
-    headline3: TextStyle(
-        fontFamily: 'NotoSans',
-        color: WitnetPallet.darkGrey,
-        fontSize: 16,
-        fontWeight: FontWeight.bold),
-    subtitle1: TextStyle(
-        fontFamily: 'NotoSans',
-        color: WitnetPallet.darkGrey,
-        fontSize: 16,
-        fontWeight: FontWeight.normal),
-    subtitle2: TextStyle(
-        fontFamily: 'NotoSans',
-        color: WitnetPallet.darkGrey,
-        fontSize: 14,
-        fontWeight: FontWeight.bold),
-    bodyText1: TextStyle(
-        fontFamily: 'NotoSans',
-        color: WitnetPallet.darkGrey,
-        fontSize: 16,
-        fontWeight: FontWeight.normal),
-    bodyText2: TextStyle(
-        fontFamily: 'NotoSans',
-        color: WitnetPallet.darkGrey,
-        fontSize: 14,
-        fontWeight: FontWeight.normal),
-    caption: TextStyle(
-        fontFamily: 'NotoSans',
-        color: WitnetPallet.darkGrey,
-        fontSize: 12,
-        fontWeight: FontWeight.normal),
-    button: TextStyle(
-        fontFamily: 'NotoSans',
-        color: WitnetPallet.white,
-        fontSize: 16,
-        fontWeight: FontWeight.normal),
-    labelMedium: TextStyle(
-        fontFamily: 'NotoSans',
-        color: WitnetPallet.witnetGreen2,
-        fontSize: 16,
-        fontWeight: FontWeight.normal),
-    );
+  headline1: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.darkGrey,
+      fontSize: 24,
+      fontWeight: FontWeight.bold),
+  headline2: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.darkGrey,
+      fontSize: 18,
+      fontWeight: FontWeight.bold),
+  headline3: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.darkGrey,
+      fontSize: 16,
+      fontWeight: FontWeight.bold),
+  subtitle1: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.darkGrey,
+      fontSize: 16,
+      fontWeight: FontWeight.normal),
+  subtitle2: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.darkGrey,
+      fontSize: 14,
+      fontWeight: FontWeight.bold),
+  bodyText1: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.darkGrey,
+      fontSize: 16,
+      fontWeight: FontWeight.normal),
+  bodyText2: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.darkGrey,
+      fontSize: 14,
+      fontWeight: FontWeight.normal),
+  caption: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.darkGrey,
+      fontSize: 12,
+      fontWeight: FontWeight.normal),
+  button: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.white,
+      fontSize: 16,
+      fontWeight: FontWeight.normal),
+  labelMedium: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.witnetGreen2,
+      fontSize: 16,
+      fontWeight: FontWeight.normal),
+);
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.white,
   filled: true,
@@ -111,6 +111,16 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
         fontWeight: FontWeight.normal,
         color: WitnetPallet.white,
       )),
+);
+TextButtonThemeData textButtonTheme = TextButtonThemeData(
+  style: TextButton.styleFrom(
+    primary: WitnetPallet.witnetGreen1,
+    textStyle: const TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.normal,
+      color: WitnetPallet.witnetGreen1,
+    ),
+  ),
 );
 OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
@@ -178,6 +188,7 @@ ThemeData lightTheme = ThemeData(
   backgroundColor: WitnetPallet.white,
   shadowColor: Colors.transparent,
   elevatedButtonTheme: elevatedButtonTheme,
+  textButtonTheme: textButtonTheme,
   outlinedButtonTheme: outlinedButtonTheme,
   cardTheme: cardTheme,
   textTheme: textTheme,

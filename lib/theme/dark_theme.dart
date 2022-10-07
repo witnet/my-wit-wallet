@@ -81,6 +81,16 @@ TooltipThemeData tooltipTheme = TooltipThemeData(
 ButtonThemeData buttonTheme = ButtonThemeData(
   buttonColor: WitnetPallet.opacityWitnetGreen,
 );
+TextButtonThemeData textButtonTheme = TextButtonThemeData(
+  style: TextButton.styleFrom(
+    primary: WitnetPallet.white,
+    textStyle: const TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.normal,
+      color: WitnetPallet.white,
+    ),
+  ),
+);
 ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
     padding: const EdgeInsets.all(16),
@@ -166,6 +176,7 @@ ThemeData darkTheme = ThemeData(
   primaryIconTheme: primaryIconTheme,
   elevatedButtonTheme: elevatedButtonTheme,
   outlinedButtonTheme: outlinedButtonTheme,
+  textButtonTheme: textButtonTheme,
   cardTheme: cardTheme,
   textTheme: textTheme,
   inputDecorationTheme: inputDecorationTheme,

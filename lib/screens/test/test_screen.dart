@@ -12,6 +12,7 @@ class _TestScreenState extends State<TestScreen> {
   @override
   Widget build(BuildContext context) {
     return Layout(
+      headerActions: [],
       widgetList: [
         _body(),
       ],
