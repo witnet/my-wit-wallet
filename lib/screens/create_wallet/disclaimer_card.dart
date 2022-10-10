@@ -117,14 +117,14 @@ class DisclaimerCardState extends State<DisclaimerCard>
             checked: isNextAllow,
             label: 'I will be carefull, I promise!',
             onChanged: (value) => {
-                  setState(() {
-                    isNextAllow = !isNextAllow;
-                  }),
-                  if (isNextAllow)
-                    {widget.nextAction(next)}
-                  else
-                    {widget.nextAction(null)}
-                })
+              setState(() {
+                isNextAllow = !isNextAllow;
+              }),
+              if (isNextAllow)
+                {widget.nextAction(next)}
+              else
+                {widget.nextAction(null)}
+            })
       ],
     );
   }

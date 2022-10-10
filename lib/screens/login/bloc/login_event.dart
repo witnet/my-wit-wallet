@@ -11,6 +11,20 @@ class LoginLogoutEvent extends LoginEvent {
   LoginLogoutEvent() : super();
 }
 
+class LoginSubmittedEvent extends LoginEvent {
+  const LoginSubmittedEvent({
+    required this.walletName,
+    required this.password
+  }) : super();
+
+  final WalletName walletName;
+  final String password;
+
+  @override
+  List<Object> get props => [walletName, password];
+
+}
+
 ///
 class LoginWalletNameChangedEvent extends LoginEvent {
   const LoginWalletNameChangedEvent(
@@ -18,7 +32,7 @@ class LoginWalletNameChangedEvent extends LoginEvent {
       : super();
 
   final WalletName walletName;
-  final Password password;
+  final String password;
   @override
   List<Object> get props => [walletName];
 }
@@ -27,17 +41,6 @@ class LoginWalletNameChangedEvent extends LoginEvent {
 class LoginPasswordChangedEvent extends LoginEvent {
   const LoginPasswordChangedEvent(
       {required this.walletName, required this.password})
-      : super();
-
-  final WalletName walletName;
-  final Password password;
-
-  @override
-  List<Object> get props => [walletName, password];
-}
-
-class LoginSubmittedEvent extends LoginEvent {
-  const LoginSubmittedEvent({required this.walletName, required this.password})
       : super();
 
   final WalletName walletName;

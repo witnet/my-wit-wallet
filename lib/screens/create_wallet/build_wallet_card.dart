@@ -265,7 +265,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
 
           BlocProvider.of<LoginBloc>(context).add(LoginSubmittedEvent(
               walletName: WalletName.dirty(state.wallet.name),
-              password: Password.dirty(state.password)));
+              password: state.password));
         } else if (state is CryptoInitializingWalletState) {
           _balanceController.reset();
           _balanceController.forward();

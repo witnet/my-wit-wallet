@@ -18,7 +18,6 @@ class Layout extends StatelessWidget {
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    GlobalKey contentKey = GlobalKey();
     return Scaffold(
       appBar: appBar,
       resizeToAvoidBottomInset: false,
@@ -55,7 +54,6 @@ class Layout extends StatelessWidget {
         color: theme.backgroundColor,
         padding: EdgeInsets.only(left: 16, bottom: 8, right: 16),
         child: Column(
-          key: contentKey,
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: actions,

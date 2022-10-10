@@ -169,13 +169,13 @@ Color getColorSecondary(Set<MaterialState> states) {
   }
   return WitnetPallet.lightGrey;
 }
-
 SwitchThemeData switchTheme = SwitchThemeData(
   thumbColor: MaterialStateProperty.resolveWith(getColorPrimary),
   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
   trackColor: MaterialStateProperty.resolveWith(getColorSecondary),
   splashRadius: 1,
 );
+
 ThemeData lightTheme = ThemeData(
   primaryColor: primaryColor,
   switchTheme: switchTheme,
