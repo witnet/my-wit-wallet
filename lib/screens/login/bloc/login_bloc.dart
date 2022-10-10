@@ -21,7 +21,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       message: '' ,
       status: LoginStatus.LoggedOut,
       walletName: WalletName.pure(),
-      password: Password.pure())
+      password: '')
   ) {
     on<LoginWalletNameChangedEvent>(_onWalletChanged);
     on<LoginPasswordChangedEvent>(_onPasswordChanged);
@@ -61,11 +61,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       emit(state.copyWith(status: LoginStatus.LoginInProgress));
     Map<String, dynamic> wallet = await apiAuth.unlockWallet(
-        password: event.password.value);
+        password: event.password);
     DbWallet dbWallet = await apiDatabase.loadWallet();
     try {
       /// test decrypt sheikah compatible XPRV (aes.cbc)
-      Xprv tmp = Xprv.fromEncryptedXprv(dbWallet.xprv!, event.password.value);
+      Xprv tmp = Xprv.fromEncryptedXprv(dbWallet.xprv!, event.password);
     } catch(e){
       print(e);
       throw AuthException(code: 01, message: 'bad password');
