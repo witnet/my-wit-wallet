@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/util/witnet/wallet/account.dart';
+import 'package:witnet/explorer.dart';
+import 'package:witnet_wallet/util/storage/cache/transaction_cache.dart';
 
-import '../../vtt_list.dart';
+import 'package:witnet_wallet/util/storage/database/account.dart';
+import 'package:witnet_wallet/widgets/vtt_list.dart';
 
 class TransactionHistory extends StatelessWidget {
   final ThemeData themeData;
-  Map<String, Account> externalAccounts;
-  Map<String, Account> internalAccounts;
+  final Map<String, Account> externalAccounts;
+  final Map<String, Account> internalAccounts;
   TransactionHistory(
       {required this.themeData,
       required this.externalAccounts,
@@ -17,9 +19,13 @@ class TransactionHistory extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     List<VttListItem> vtts = [];
+    TransactionCache cache = TransactionCache();
+
     externalAccounts.forEach((addr, acc) {
-      acc.valueTransfers.forEach((trxHash, vti) {
-        vtts.add(VttListItem(vti));
+
+      acc.vttHashes.forEach((trxHash) {
+        ValueTransferInfo vtTransaction = cache.getVtt(trxHash);
+        vtts.add(VttListItem(vtTransaction));
       });
     });
 

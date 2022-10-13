@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
-import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/03_sign_send_dialog.dart';
 
 import '../../../../../../screens/dashboard/api_dashboard.dart';
 import '../../../../../../shared/locator.dart';
+import '../../../../../../util/storage/database/wallet_storage.dart';
 import '../../../../../auto_size_text.dart';
 import '../../fee_container.dart';
 import '../../input_container.dart';
@@ -111,31 +111,36 @@ class ReviewStepState extends State<ReviewStep>
   Widget buildInputCards(BuildContext context, List<Input> inputs) {
     List<InputUtxo> _inputs = [];
     ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
-    DbWallet dbWallet = apiDashboard.dbWallet!;
+    WalletStorage walletStorage = apiDashboard.walletStorage!;
     List<Widget> _cards = [];
     inputs.forEach((input) {
-      dbWallet.externalAccounts.forEach((index, value) {
-        value.utxos.forEach((element) {
-          if (input.toString() == element.toInput().toString()) {
-            _inputs.add(InputUtxo(
-                address: value.address,
-                utxo: element,
-                value: element.value,
-                path: value.path));
-          }
+      walletStorage.wallets.forEach((key, dbWallet) {
+        dbWallet.externalAccounts.forEach((index, value) {
+          value.utxos.forEach((element) {
+            if (input.toString() == element.toInput().toString()) {
+              _inputs.add(InputUtxo(
+                  address: value.address,
+                  utxo: element,
+                  value: element.value,
+                  path: value.path));
+            }
+          });
+        });
+        dbWallet.internalAccounts.forEach((index, value) {
+          value.utxos.forEach((element) {
+            if (input.toString() == element.toInput().toString()) {
+              _inputs.add(InputUtxo(
+                  address: value.address,
+                  utxo: element,
+                  value: element.value,
+                  path: value.path));
+            }
+          });
         });
       });
-      dbWallet.internalAccounts.forEach((index, value) {
-        value.utxos.forEach((element) {
-          if (input.toString() == element.toInput().toString()) {
-            _inputs.add(InputUtxo(
-                address: value.address,
-                utxo: element,
-                value: element.value,
-                path: value.path));
-          }
-        });
-      });
+
+
+
     });
 
     _inputs.forEach((inputUtxo) {
@@ -212,7 +217,7 @@ class ReviewStepState extends State<ReviewStep>
     return BlocBuilder<VTTCreateBloc, VTTCreateState>(
         builder: (context, state) {
       final deviceSize = MediaQuery.of(context).size;
-      final theme = Theme.of(context);
+
       double cardWidth;
       if (deviceSize.width > 400) {
         cardWidth = (400 * 0.7);
@@ -270,7 +275,7 @@ class ReviewStepState extends State<ReviewStep>
     return BlocBuilder<VTTCreateBloc, VTTCreateState>(
         builder: (context, state) {
       final deviceSize = MediaQuery.of(context).size;
-      final theme = Theme.of(context);
+
       double cardWidth;
       if (deviceSize.width > 400) {
         cardWidth = (400 * 0.7);
@@ -306,7 +311,7 @@ class ReviewStepState extends State<ReviewStep>
     return BlocBuilder<VTTCreateBloc, VTTCreateState>(
         builder: (context, state) {
       final deviceSize = MediaQuery.of(context).size;
-      final theme = Theme.of(context);
+
       double cardWidth;
       if (deviceSize.width > 400) {
         cardWidth = (400 * 0.7);

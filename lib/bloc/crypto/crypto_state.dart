@@ -13,31 +13,36 @@ class CryptoReadyState extends CryptoState {
 
 class CryptoInitializingWalletState extends CryptoState {
   final String message;
-  final int balanceNanoWit;
+
+  final int availableNanoWit;
+  final int lockedNanoWit;
   final int transactionCount;
   final int addressCount;
 
   CryptoInitializingWalletState(
       {required this.message,
-      required this.balanceNanoWit,
+      required this.availableNanoWit,
+      required this.lockedNanoWit,
       required this.transactionCount,
       required this.addressCount});
 
   @override
-  List<Object?> get props =>
-      [message, balanceNanoWit, transactionCount, addressCount];
+  List<Object?> get props => [
+        message,
+        availableNanoWit,
+        lockedNanoWit,
+        transactionCount,
+        addressCount
+      ];
 }
 
 class CryptoLoadedWalletState extends CryptoState {
-
   final Wallet wallet;
   final String password;
-  final DbWallet dbWallet;
 
   CryptoLoadedWalletState({
     required this.wallet,
     required this.password,
-    required this.dbWallet
   });
 
   @override

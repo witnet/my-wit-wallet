@@ -10,9 +10,6 @@ import 'package:witnet_wallet/widgets/auto_size_text.dart';
 
 import 'bloc/create_wallet_bloc.dart';
 
-
-//genius merge win culture lemon remember work native omit digital canal update
-
 class EnterMnemonicCard extends StatefulWidget {
   EnterMnemonicCard({Key? key}) : super(key: key);
 
@@ -142,7 +139,6 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
 
     final cardWidth = min(deviceSize.width * 0.95, 360.0);
     const cardPadding = 10.0;
-    final textFieldWidth = cardWidth - cardPadding * 2;
     final theme = Theme.of(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,

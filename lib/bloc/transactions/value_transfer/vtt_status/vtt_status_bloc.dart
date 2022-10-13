@@ -1,6 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
-import 'package:witnet_wallet/shared/locator.dart';
 
 enum VttStatus { unknown, pending, mined, confirmed }
 
@@ -22,7 +20,7 @@ class MinedState extends VttStatusState {}
 class ConfirmedState extends VttStatusState {}
 
 class VttStatusBloc extends Bloc<VttStatusEvent, VttStatusState> {
-  VttStatusBloc() : super(initialState) {}
+  VttStatusBloc() : super(initialState);
 
   static VttStatusState initialState = UnknownHashState();
 }
@@ -33,15 +31,14 @@ class BlocStatusVtt extends Bloc<VttStatusEvent, VttStatusState> {
   static VttStatusState get initialState => UnknownHashState();
 
   Future<void> checkStatus(String transactionHash) async {
-    ApiExplorer apiExplorer = Locator.instance.get<ApiExplorer>();
+    // ApiExplorer apiExplorer = Locator.instance.get<ApiExplorer>();
     try {
-      var status = await apiExplorer.getStatus();
+      // var status = await apiExplorer.getStatus();
 
-      var response = await apiExplorer.hash(transactionHash);
+      // var response = await apiExplorer.hash(transactionHash);
     } catch (e) {}
   }
 
-  @override
   Stream<VttStatusState> mapEventToState(VttStatusEvent event) async* {
     Type eventType = event.runtimeType;
     switch (eventType) {

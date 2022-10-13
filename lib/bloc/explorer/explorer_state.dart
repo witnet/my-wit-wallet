@@ -4,16 +4,16 @@ class ExplorerState extends Equatable {
   const ExplorerState._(
       {this.status = ExplorerStatus.unknown,
       this.data = const {},
-      this.dbWallet});
+      this.walletStorage});
   final Map<String, dynamic> data;
 
   final ExplorerStatus status;
-  final DbWallet? dbWallet;
+  final WalletStorage? walletStorage;
 
   const ExplorerState.unknown() : this._();
 
-  const ExplorerState.synced(DbWallet wallet)
-      : this._(status: ExplorerStatus.dataloaded, dbWallet: wallet);
+  const ExplorerState.synced(WalletStorage walletStorage)
+      : this._(status: ExplorerStatus.dataloaded, walletStorage: walletStorage);
 
   const ExplorerState.dataLoading()
       : this._(status: ExplorerStatus.dataloading);

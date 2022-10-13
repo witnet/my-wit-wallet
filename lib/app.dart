@@ -44,7 +44,6 @@ Widget _buildWithTheme(BuildContext context, ThemeState state) {
     routes: {
       LoginScreen.route: (context) => LoginScreen(),
       CreateWalletScreen.route: (context) => CreateWalletScreen(),
-
     },
   );
 }

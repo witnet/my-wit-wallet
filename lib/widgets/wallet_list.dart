@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/shared/api_auth.dart';
-import 'package:witnet_wallet/shared/locator.dart';
 
 class ListItem {
   bool isSelected = false;
@@ -34,7 +32,6 @@ class WalletListWidgetState extends State<WalletListWidget> {
     super.initState();
     if (widget.walletFiles.length >= 1) walletsExist = true;
     selectedWallet = widget.walletFiles[0];
-    Locator.instance.get<ApiAuth>().setWalletName(selectedWallet);
     walletSelected = true;
     populateData();
   }
@@ -88,7 +85,6 @@ class WalletListWidgetState extends State<WalletListWidget> {
       onChanged: (String? value) {
         setState(() {
           selectedWallet = value!;
-          Locator.instance.get<ApiAuth>().setWalletName(value);
           walletSelected = true;
         });
       },

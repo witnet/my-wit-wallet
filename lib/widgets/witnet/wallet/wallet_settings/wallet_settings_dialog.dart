@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/util/paddings.dart';
-import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
-import 'package:witnet_wallet/util/witnet/wallet/account.dart';
+import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 
+import 'package:witnet_wallet/util/storage/database/account.dart';
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 import 'account_info_dialog.dart';
 
 class AccountCard extends StatelessWidget {
@@ -53,7 +54,7 @@ class AccountCard extends StatelessWidget {
                 flex: 2,
                 child:
                 AutoSizeText(
-                  '${nanoWitToWit(account.balance).toString()} WIT',
+                  '${nanoWitToWit(account.balance().availableNanoWit).toString()} WIT',
                   textAlign: TextAlign.right,
                   maxLines: 1,
                   minFontSize: 10,
@@ -62,7 +63,7 @@ class AccountCard extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child:
-                IconButton(icon: Icon(FontAwesomeIcons.infoCircle),color: theme.primaryColor, onPressed:() =>_showWalletSettingsDialog(context, account),),),
+                IconButton(icon: Icon(FontAwesomeIcons.circleInfo),color: theme.primaryColor, onPressed:() =>_showWalletSettingsDialog(context, account),),),
             ],
           ),
       Row(
@@ -90,10 +91,10 @@ class AccountCard extends StatelessWidget {
 
 class WalletSettingsDialog extends StatefulWidget {
   WalletSettingsDialog({
-    required this.dbWallet,
+    required this.walletStorage,
   });
 
-  final DbWallet dbWallet;
+  final WalletStorage walletStorage;
 
 
 
@@ -113,20 +114,29 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog>{
       BuildContext context, ThemeData theme, Size deviceSize) {
     List<Widget> externalAddressCards = [];
     List<Widget> internalAddressCards = [];
-    widget.dbWallet.externalAccounts.forEach((index, account) {
-      if(showZeroBalanceAccounts && account.balance == 0){
-        externalAddressCards.add(AccountCard(account: account));
-      }
-      if(account.balance > 0)
-        externalAddressCards.add(AccountCard(account: account));
-    });
-    widget.dbWallet.internalAccounts.forEach((index, account) {
-      if(showZeroBalanceAccounts && account.balance == 0){
-        internalAddressCards.add(AccountCard(account: account));
-      }
-      if(account.balance > 0)
-        internalAddressCards.add(AccountCard(account: account));
-    });
+
+    Map<String, Wallet> walletList = widget.walletStorage.wallets;
+
+    for(int i = 0; i<walletList.keys.length; i++) {
+      Wallet wallet = walletList.entries.elementAt(i).value;
+
+      wallet.externalAccounts.forEach((index, account) {
+        if (showZeroBalanceAccounts && account.balance().availableNanoWit == 0) {
+          externalAddressCards.add(AccountCard(account: account));
+        }
+        if (account.balance().availableNanoWit > 0)
+          externalAddressCards.add(AccountCard(account: account));
+      });
+      wallet.internalAccounts.forEach((index, account) {
+        if (showZeroBalanceAccounts && account.balance().availableNanoWit == 0) {
+          internalAddressCards.add(AccountCard(account: account));
+        }
+        if (account.balance().availableNanoWit > 0)
+          internalAddressCards.add(AccountCard(account: account));
+      });
+    }
+
+
 
     return Container(
       height: deviceSize.height * 0.5,
@@ -271,14 +281,7 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog>{
                 'Wallet Settings',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
               ),
-              IconButton(
-                  onPressed: () {
-                    //BlocProvider.of<BlocExplorer>(context).add(UtxoQueryEvent(account));
-                  },
-                  icon: Icon(
-                    FontAwesomeIcons.sync,
-                    size: 15,
-                  )),
+
               Padding(padding: EdgeInsets.all(5),child: Row(children: [
                 AutoSizeText('Show accounts with zero balance', minFontSize: 10,),
                 Checkbox(value: showZeroBalanceAccounts, onChanged: (value){

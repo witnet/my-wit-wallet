@@ -7,10 +7,7 @@ class LoginEvent extends Equatable {
   List<Object> get props => [];
 }
 class LoginLogoutEvent extends LoginEvent {
-
-
   LoginLogoutEvent() : super();
-
 
 }
 ///

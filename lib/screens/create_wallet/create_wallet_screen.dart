@@ -37,7 +37,7 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
     return BlocBuilder<CreateWalletBloc, CreateWalletState>(
 
         builder: (context, state) {
-          print(state.status);
+
       switch (state.status) {
 
         case CreateWalletStatus.Disclaimer:

@@ -5,7 +5,7 @@ import 'package:path_provider_windows/path_provider_windows.dart';
 import 'package:path_provider_linux/path_provider_linux.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
-import 'package:path_provider_windows/path_provider_windows.dart';
+
 
 enum Platforms { Linux, Macos, Windows, IOS, Android }
 
@@ -34,7 +34,8 @@ class PathProviderInterface {
   bool initialized = false;
 
   Future<void> init() async {
-    applicationSupportPath = (await getApplicationSupportDirectory()).path;
+
+    applicationSupportPath = await localPath;
     initialized = true;
   }
 
@@ -70,6 +71,9 @@ class PathProviderInterface {
 
   String getWalletPath(String name) {
     return getFilePath(name, 'wit');
+  }
+  String getDbWalletsPath(){
+    return getFilePath('wallets', 'wit');
   }
 
   Future<bool> fileExists(String filename) async =>

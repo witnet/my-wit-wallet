@@ -3,17 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:witnet_wallet/util/paddings.dart';
-import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_stepper.dart';
 
 import 'package:witnet_wallet/widgets/round_button.dart';
 
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
+
 class CreateVTTDialogBox extends StatefulWidget {
   CreateVTTDialogBox({
-    required this.dbWallet,
+    required this.walletStorage,
   });
-  final DbWallet dbWallet;
+  final WalletStorage walletStorage;
 
   @override
   CreateVTTDialogBoxState createState() => CreateVTTDialogBoxState();
@@ -52,7 +53,7 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
       duration: const Duration(milliseconds: 500),
     );
 
-    availableFunds = widget.dbWallet.balanceNanoWit();
+    availableFunds = widget.walletStorage.balanceNanoWit().availableNanoWit;
     _loadingController.forward();
   }
 
@@ -140,7 +141,7 @@ class CreateVTTDialogBoxState extends State<CreateVTTDialogBox>
           child: Column(
             children: [
               VttStepper(
-                dbWallet: widget.dbWallet,
+                walletStorage: widget.walletStorage,
               ),
             ],
           ),
