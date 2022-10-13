@@ -53,7 +53,7 @@ class TimeLockInputState extends State<TimeLockInput> {
             child: IconButton(
               onPressed: () {},
               icon: Icon(
-                FontAwesomeIcons.calendarAlt,
+                FontAwesomeIcons.calendarDays,
               ),
               iconSize: 20,
               padding: EdgeInsets.all(3),
@@ -70,7 +70,7 @@ class TimeLockInputState extends State<TimeLockInput> {
               child: IconButton(
                 onPressed: () {},
                 icon: Icon(
-                  FontAwesomeIcons.questionCircle,
+                  FontAwesomeIcons.circleQuestion,
                   size: 15,
                 ),
                 iconSize: 10,

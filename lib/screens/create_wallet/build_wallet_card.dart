@@ -11,14 +11,13 @@ import 'package:witnet_wallet/screens/create_wallet/models/wallet_name.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:witnet_wallet/screens/login/models/models.dart';
 import 'package:witnet_wallet/theme/colors.dart';
-import 'package:witnet_wallet/util/witnet/wallet/wallet.dart';
 import 'package:witnet_wallet/widgets/animated_numeric_text.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/fade_in.dart';
-import 'package:witnet_wallet/widgets/svg_widget.dart';
-import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+
+import 'package:witnet_wallet/util/storage/database/wallet.dart';
 
 
 class BuildWalletCard extends StatefulWidget {
@@ -63,17 +62,16 @@ class BuildWalletCardState extends State<BuildWalletCard>
     );
     _nameController = TextEditingController();
     _descController = TextEditingController();
-    ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
-    acw.printDebug();
+
   }
 
   @override
   void dispose() {
-    super.dispose();
     _nameController.dispose();
     _descController.dispose();
     _balanceController.dispose();
     _loadingController.dispose();
+    super.dispose();
   }
 
   AppBar _buildAppBar(ThemeData theme) {
@@ -93,17 +91,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: Hero(
-              tag: Constants.logoTag,
-              child: SVGWidget(
-                size: 30,
-                title: '',
-                img: 'favicon',
-              ),
-            ),
-          ),
+
           SizedBox(width: 20),
         ],
       ),
@@ -235,9 +223,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
   Widget buildWallet() {
     return BlocBuilder<CryptoBloc, CryptoState>(
       buildWhen: (previousState, state) {
-        print(previousState.runtimeType);
-        print(state.runtimeType);
-        print(state.props);
+
         if (previousState is CryptoLoadedWalletState) {
           BlocProvider.of<CreateWalletBloc>(context)
               .add(ResetEvent(WalletType.newWallet));
@@ -252,11 +238,11 @@ class BuildWalletCardState extends State<BuildWalletCard>
           _balanceController.reset();
           _balanceController.forward();
           if (state.props[0].runtimeType == Wallet) {
-            print('boom');
+
           }
           if (previousState is CryptoInitializingWalletState) {
             setState(() {
-              balance = previousState.balanceNanoWit;
+              balance = previousState.availableNanoWit;
               currentAddressCount = previousState.addressCount;
               currentTransactionCount = previousState.transactionCount;
             });
@@ -273,7 +259,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
                   theme: theme,
                   addressCount: state.addressCount,
                   startingBalance: balance,
-                  balanceNanoWit: state.balanceNanoWit,
+                  balanceNanoWit: state.availableNanoWit,
                   transactionCount: state.transactionCount,
                   message: state.message),
               SizedBox(
@@ -307,7 +293,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
               keyData: acw.seedData!,
               seedSource: acw.seedSource!,
               password: acw.password!));
-          //acw.printDebug();
+
           return Column(
             children: [
               SizedBox(

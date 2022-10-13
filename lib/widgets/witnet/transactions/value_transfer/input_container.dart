@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 
-import '../../../auto_size_text.dart';
+import 'package:witnet_wallet/widgets/auto_size_text.dart';
 
 class InputContainer extends StatelessWidget {
   InputContainer({
@@ -14,7 +12,7 @@ class InputContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    final theme = Theme.of(context);
+
     double cardWidth;
     if (deviceSize.width > 400) {
       cardWidth = (400 * 0.7);

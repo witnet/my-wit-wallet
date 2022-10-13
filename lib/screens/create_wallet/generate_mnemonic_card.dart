@@ -307,7 +307,6 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
 
     final cardWidth = min(deviceSize.width * 0.95, 360.0);
     const cardPadding = 10.0;
-    final textFieldWidth = cardWidth - cardPadding * 2;
     final theme = Theme.of(context);
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,

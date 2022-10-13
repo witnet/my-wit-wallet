@@ -45,7 +45,7 @@ class SignSendDialogState extends State<SignSendDialog>
     _passController = TextEditingController();
     _passwordFocusNode = FocusNode();
     _passController.text = '';
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_passwordFocusNode);
     });
 

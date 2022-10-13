@@ -1,18 +1,17 @@
-
-
 import 'package:witnet/data_structures.dart';
-import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
+
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 
 class ApiDashboard {
 
-  DbWallet? _dbWallet;
+  WalletStorage? _walletStorage;
   List<Utxo> spentUtxos = [];
   ApiDashboard();
 
-  void setDbWallet(DbWallet? dbWallet){
-    this._dbWallet = dbWallet;
+  void setWallets(WalletStorage? walletStorage){
+    this._walletStorage = walletStorage;
   }
 
-  DbWallet? get dbWallet => _dbWallet;
+  WalletStorage? get walletStorage => _walletStorage;
 
 }

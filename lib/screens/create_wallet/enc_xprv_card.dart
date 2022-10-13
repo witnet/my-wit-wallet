@@ -81,7 +81,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   }
 
   void onBack() {
-    CreateWalletState state = BlocProvider.of<CreateWalletBloc>(context).state;
     WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
@@ -142,16 +141,18 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
                 return null;
               }
             }
+            return null;
           },
           onChanged: (String? value) {
             setState(() {
               _password = value!;
             });
+            return value;
           },
           onEditingComplete: () {
             passwordInputFocusNode.unfocus();
           },
-          onSubmitted: (String? value) {},
+          onSubmitted: (String? value) { return value!; },
         ),
       ],
     ));

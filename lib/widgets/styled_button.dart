@@ -21,12 +21,12 @@ class StyledButton extends MaterialButton {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     return ButtonTheme(
-      buttonColor: theme.accentColor,
+      buttonColor: theme.colorScheme.secondary,
       minWidth: minWidth ?? size.width * 0.316,
       height: height ?? size.height * 0.053,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: theme.primaryColor,
+          backgroundColor: theme.primaryColor,
           minimumSize: Size(double.infinity,
               30), // double.infinity is the width and 30 is the height
         ),

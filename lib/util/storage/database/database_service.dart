@@ -1,26 +1,34 @@
 import 'dart:async';
 
-import 'package:sembast/blob.dart';
-import 'package:witnet/witnet.dart';
-
-import '../../../constants.dart';
-import '../path_provider_interface.dart';
-import 'encrypt/salsa20/codec.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/sembast.dart';
+import 'package:witnet/explorer.dart';
+
+import 'package:witnet_wallet/constants.dart';
+import 'package:witnet_wallet/util/storage/database/account.dart';
+import 'package:witnet_wallet/util/storage/database/account_repository.dart';
+import 'package:witnet_wallet/util/storage/database/encrypt/keychain.dart';
+import 'package:witnet_wallet/util/storage/database/encrypt/salsa20/codec.dart';
+import 'package:witnet_wallet/util/storage/database/wallet.dart';
+import 'package:witnet_wallet/util/storage/database/wallet_repository.dart';
+import 'package:witnet_wallet/util/storage/database/transaction_repository.dart';
 
 class _DBConfiguration {
   String path;
-  late SembastCodec codec;
+  late SembastCodec? codec;
   int timeout = 300;
 
-  _DBConfiguration({required this.path, required String password}){
-   if (ENCRYPT_DB == true){
-     codec = getSembastCodecSalsa20(password: password);
-   }
+  _DBConfiguration({required this.path, String? password}) {
+    if (ENCRYPT_DB == true && password != null) {
+      codec = getSembastCodecSalsa20(password: password);
+    }
   }
 
   String get name => this.path.split('/').last;
+
+  void dispose() {
+    codec = null;
+  }
 }
 
 class DBException {
@@ -32,214 +40,214 @@ class DBException {
   });
 
   @override
-  String toString() => '{"DBException": {"code": $code, "message": $message}}';
+  String toString() =>
+      '${this}{"DBException": {"code": $code, "message": $message}}';
 }
 
-class DBService {
-  //singleton
-  static final DBService _dbService = DBService._internal();
-  DBService._internal();
+class DatabaseService {
+  static final DatabaseService _dbService = DatabaseService._internal();
+  DatabaseService._internal();
 
-  factory DBService() {
-    return DBService._dbService;
+  factory DatabaseService.instance() {
+    return DatabaseService._dbService;
   }
 
-  late DatabaseMode mode;
-  bool initialized = false;
+  WalletRepository walletRepository = WalletRepository();
+  VttRepository vttRepository = VttRepository();
+  AccountRepository accountRepository = AccountRepository();
+
+  KeyChain keyChain = KeyChain();
+
   late Database _database;
 
-  Database get db => _database;
+  String? passwordHash;
 
   _DBConfiguration? _dbConfig;
   DatabaseFactory dbFactory = databaseFactoryIo;
   bool unlocked = false;
-  factory DBService.db() {
-    return _dbService;
-  }
 
-  FutureOr<dynamic> unlockWallet(String name, String password) async {
-    try {
-      _dbService._dbConfig = _DBConfiguration(path: name, password: password);
-      _dbService.configure(path: name, password: password);
-      String response = await _dbService.openDatabase();
-      return response;
-    } on DBException catch (e) {
-      return DBException(code: -1, message: e.message);
-    }
-  }
-
-  Future<String> _initDatabase() async {
-    try {
-      PathProviderInterface interface = PathProviderInterface();
-      var fileExists = await interface.fileExists(_dbService._dbConfig!.path);
-      DatabaseMode mode;
-      if (fileExists) {
-        mode = DatabaseMode.existing;
-      } else {
-        mode = DatabaseMode.create;
-      }
-      String dbError = '';
-
-
-      try {
-        if(ENCRYPT_DB){
-          _dbService._database = await dbFactory.openDatabase(
-            _dbService._dbConfig!.path,
-            version: 2,
-            codec: _dbService._dbConfig!.codec,
-            mode: mode,
-          )
-              .catchError((error) {
-            dbError = error.toString();
-
-            /// codes for Sembast Database Exception
-            /// [0] bad parameters
-            /// [1] not found
-            /// [2] invalid codec signature
-            /// [3] action failed because db is closed
-            throw DBException(code: error.code, message: error.message);
-          });
-        } else {
-          _dbService._database = await dbFactory.openDatabase(
-            _dbService._dbConfig!.path,
-            version: 2,
-            mode: mode,
-          ).catchError((error) {
-            dbError = error.toString();
-
-            /// codes for Sembast Database Exception
-            /// [0] bad parameters
-            /// [1] not found
-            /// [2] invalid codec signature
-            /// [3] action failed because db is closed
-            throw DBException(code: error.code, message: error.message);
-          });
-        }
-        _dbService._database = await dbFactory.openDatabase(
-          _dbService._dbConfig!.path,
-          version: 2,
-          mode: mode,
-        ).catchError((error) {
-          dbError = error.toString();
-          throw DBException(code: error.code, message: error.message);
-        });
-      } on TypeError catch (e) {
-        dbError = ' ->${e.toString()}';
-        throw DBException(code: -1, message: 'Unable to unlock Wallet.');
-      } on DBException {
-        rethrow;
-      }
-      if (dbError != '') {
-        throw DBException(code: -2, message: 'Unable to unlock Wallet.');
-      } else {
-
-
-        // Xprv.fromEncryptedXprv('xprv', 'password');
-        _dbService.unlocked = true;
-      }
-      return dbError;
-    } on DBException {
-      rethrow;
-    }
-  }
 
   void dispose() {
     _database.close();
-    _dbService._database.close();
-    _dbService._dbConfig = null;
-    _dbService.dispose();
+    _dbConfig = null;
   }
 
-  void lockDatabase() {
-    _database.close();
-    _dbService._dbConfig = null;
-  }
 
-  Future<void> configure(
-      {required String path, required String password}) async {
+  Future<void> configure(String path, bool fileExists) async {
+
     if (_dbConfig == null) {
-      _dbConfig = _DBConfiguration(path: path, password: password);
+      _dbConfig = _DBConfiguration(
+        path: path,
+      );
     } else {
       _dbConfig = null;
-      _dbConfig = _DBConfiguration(path: path, password: password);
+      _dbConfig = _DBConfiguration(
+        path: path,
+      );
     }
-  }
-
-  Future<String> openDatabase() async {
-    try {
-      return await _initDatabase();
-    } on DBException {
-      rethrow;
-    }
-  }
-
-  Future<dynamic> writeRecord(dynamic key, dynamic value) async {
-    if (unlocked) {
-      var store = StoreRef.main();
-      assert(key.runtimeType == String || key.runtimeType == int,
-          'Key value Must be int or String.');
-      await store.record(key).put(_database, value,merge: false);
-
+    DatabaseMode mode;
+    if (fileExists) {
+      mode = DatabaseMode.existing;
     } else {
-      throw DBException(code: -5, message: 'unable to write $key. $value');
+      mode = DatabaseMode.create;
+    }
+    _dbService._database = await dbFactory.openDatabase(
+      _dbService._dbConfig!.path,
+      version: 2,
+      mode: mode,
+    );
+  }
+
+  Future<bool> add(dynamic item) async {
+    try {
+      switch (item.runtimeType) {
+        case Wallet:
+          await walletRepository.insertWallet(item, _database);
+          break;
+        case ValueTransferInfo:
+          await vttRepository.insertTransaction(item, _database);
+          break;
+        case Account:
+          await accountRepository.insertAccount(item, _database);
+          break;
+        default:
+          return false;
+      }
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> delete(dynamic item) async {
+    try {
+      switch (item.runtimeType) {
+        case Wallet:
+          await walletRepository.deleteWallet(item.id, _database);
+          break;
+        case ValueTransferInfo:
+          await vttRepository.deleteTransaction(item.txnHash, _database);
+          break;
+        case Account:
+          await accountRepository.deleteAccount(item.address, _database);
+          break;
+        default:
+          return false;
+      }
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> update(dynamic item) async {
+    try {
+      switch (item.runtimeType) {
+        case Wallet:
+          await walletRepository.updateWallet(item.id, _database);
+          break;
+        case ValueTransferInfo:
+          await vttRepository.updateTransaction(item.transactionId, _database);
+          break;
+        case Account:
+          await accountRepository.updateAccount(item, _database);
+          break;
+        default:
+          return false;
+      }
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+  Future<bool> masterKeySet() async {
+
+    bool keyExists = await keyChain.keyExists(_database);
+    return keyExists;
+  }
+  Future<bool> verifyPassword(String password) async {
+    try {
+      bool keyExists = await masterKeySet();
+      if (keyExists) {
+        String? key = await keyChain.getKey(_database);
+
+        bool valid = await keyChain.validatePassword(key, password);
+        if(valid) {
+          unlocked = true;
+        }
+        return valid;
+      }
+    } catch (e) {
+      return false;
+    }
+    return false;
+  }
+
+  Future<bool> setPassword(
+      {required String oldPassword, required String newPassword}) async {
+    try {
+      bool success = await keyChain.setKey(
+          oldPassword: oldPassword,
+          newPassword: newPassword,
+          databaseClient: _database);
+      return success;
+    } catch (e) {
+      return false;
     }
   }
 
-  Future<int> readInt(dynamic key) async {
-    return await readRecord(key, int) as int;
+  Future<List<Account>> getAllAccounts() async {
+    final List<Account> accounts =
+        await accountRepository.getAccounts(_database);
+    return accounts;
   }
 
-  Future<double> readDouble(dynamic key) async {
-    return await readRecord(key, double) as double;
+  Future<List<Wallet>> getAllWallets() async {
+    final List<Wallet> wallets = await walletRepository.getWallets(_database);
+
+    Map<String, Wallet> walletMap = {};
+    for (int i = 0; i < wallets.length; i++) {
+      walletMap[wallets[i].name] = wallets[i];
+    }
+
+    List<Account> accounts = await getAllAccounts();
+
+    for (int i = 0; i < accounts.length; i++) {
+      Account account = accounts[i];
+      if (account.path.contains('M/3h/4919h/0h/0/')) {
+        walletMap[account.walletName]!
+                .externalAccounts[int.parse(account.path.split('/').last)] =
+            account;
+      } else {
+        walletMap[account.walletName]!
+                .internalAccounts[int.parse(account.path.split('/').last)] =
+            account;
+      }
+    }
+
+    return wallets;
   }
 
-  Future<Map<String, Object?>> readMap(dynamic key) async {
-    return await readRecord(key, Map) as Map<String, Object?>;
+  Future<List<ValueTransferInfo>> getAllVtts() async {
+    final List<ValueTransferInfo> transactions =
+        await vttRepository.getAllTransactions(_database);
+    return transactions;
   }
 
-  Future<bool> readBool(dynamic key) async {
-    return await readRecord(key, bool) as bool;
-  }
-
-  Future<Blob> readBlob(dynamic key) async {
-    return await readRecord(key, Blob) as Blob;
-  }
-
-  Future<String?> readString(dynamic key) async {
-    try {
-      return await readRecord(key, String) as String;
-    } catch (e) {
+  Future<String?> getKey() async {
+    if(unlocked) {
+      return keyChain.getKey(_database);
+    } else {
       return null;
     }
   }
 
-  Future<dynamic> readRecord(dynamic key, Type type) async {
-    if (unlocked) {
-      final store = StoreRef.main();
-      final value = await store.record(key).get(_database);
-      if (value == null)
-        throw DBException(code: -2, message: 'item $key is not is database.');
-      return value;
-    } else {
-      throw DBException(code: -2, message: 'Database is not unlocked');
-    }
-  }
+  Future<bool> lock() async {
+    keyChain.keyHash = null;
+    keyChain.unlocked = false;
+    unlocked = false;
 
-  Future<bool> deleteRecord(dynamic key) async {
-    if (unlocked) {
-      try {
-        final store = StoreRef.main();
-        // get the records reference
-        final record = store.record(key);
-        // delete the record
-        await record.delete(db);
-        // return success
-        return true;
-      } catch (e) {
-        throw DBException(code: -2, message: 'Database Error: ${e.toString()}');
-      }
-    } else {
-      throw DBException(code: -2, message: 'Database is not unlocked');
-    }
+    return true;
   }
 }
+

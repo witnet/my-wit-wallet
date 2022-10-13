@@ -4,20 +4,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet/data_structures.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
-import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/theme/colors.dart';
-import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
-import 'package:witnet_wallet/util/witnet/wallet/account.dart';
-import 'package:witnet_wallet/util/witnet/wallet/balance_info.dart';
+import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 
-import '../animated_numeric_text.dart';
-import '../fade_in.dart';
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
+import 'package:witnet_wallet/widgets/animated_numeric_text.dart';
 
 class BalanceDisplay extends StatefulWidget {
   final AnimationController loadingController;
@@ -34,7 +29,7 @@ class BalanceDisplayState extends State<BalanceDisplay>
   int availableBalanceNanoWit = 0;
   int lockedBalanceNanoWit = 0;
   int currentValueNanoWit = 0;
-  late DbWallet dbWallet;
+  late WalletStorage walletStorage;
   late AnimationController _headerController;
   late Animation<double> _headerScaleAnimation;
   late BalanceInfo balanceInfo;
@@ -46,7 +41,7 @@ class BalanceDisplayState extends State<BalanceDisplay>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-    dbWallet = Locator.instance<ApiDashboard>().dbWallet!;
+    walletStorage = Locator.instance<ApiDashboard>().walletStorage!;
     setBalance();
     _headerScaleAnimation =
         Tween<double>(begin: .6, end: 1).animate(CurvedAnimation(
@@ -63,15 +58,7 @@ class BalanceDisplayState extends State<BalanceDisplay>
     super.dispose();
   }
   void setBalance() {
-    List<Utxo> _utxos = [];
-
-    dbWallet.internalAccounts.forEach((int index, Account account) {
-      _utxos.addAll(account.utxos);
-    });
-    dbWallet.externalAccounts.forEach((int index, Account account) {
-      _utxos.addAll(account.utxos);
-    });
-    this.balanceInfo = BalanceInfo.fromUtxoList(_utxos);
+    this.balanceInfo = walletStorage.balanceNanoWit();
   }
 
 
@@ -165,7 +152,7 @@ class BalanceDisplayState extends State<BalanceDisplay>
       }
     if (state.status == ExplorerStatus.dataloaded ) {
       setState(() {
-        dbWallet = state.dbWallet!;
+        walletStorage = state.walletStorage!;
         setBalance();
         _headerController.reset();
         _headerController.forward();

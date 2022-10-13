@@ -1,6 +1,5 @@
 part of 'dashboard_bloc.dart';
 
-
 enum DashboardStatus{
   Ready,
   Loading,
@@ -11,20 +10,20 @@ enum DashboardStatus{
 }
 
 class DashboardState extends Equatable{
-  DashboardState({required this.dbWallet, required this.status});
-  final DbWallet dbWallet;
+  DashboardState({ required this.status, required this.walletStorage});
+  final WalletStorage walletStorage;
   final DashboardStatus status;
 
   DashboardState copyWith({
-    DbWallet? dbWallet,
+    WalletStorage? walletStorage,
     DashboardStatus? status,
   }){
     return DashboardState(
-      dbWallet: dbWallet ?? this.dbWallet,
+      walletStorage: walletStorage ?? this.walletStorage,
       status: status ?? this.status,
     );
   }
 
   @override
-  List<Object> get props => [dbWallet, status];
+  List<Object> get props => [walletStorage, status];
 }

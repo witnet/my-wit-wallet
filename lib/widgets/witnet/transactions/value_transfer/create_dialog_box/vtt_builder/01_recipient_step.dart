@@ -6,8 +6,7 @@ import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
-import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
+import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/time_lock_calendar/datetime_picker.dart';
 
 import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
@@ -15,13 +14,14 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/fee_type_selector_chip.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/value_transfer_output_container.dart';
+import '../../../../../../util/storage/database/wallet_storage.dart';
 import '../recipient_address_input.dart';
 
 class RecipientStep extends StatefulWidget {
   final VoidCallback? onStepCancel;
   final VoidCallback? onStepContinue;
   final Function addValueTransferOutput;
-  late RecipientAddressInput recipientAddressInput;
+  late final RecipientAddressInput recipientAddressInput;
 
   RecipientStep({
     required this.onStepContinue,
@@ -38,13 +38,13 @@ class RecipientStepState extends State<RecipientStep>
   String recipientAddress = '';
   double valueWit = 0;
   int timeLock = 0;
-  int balanceNanoWit = 0;
+  late BalanceInfo balanceInfo;
   late TextEditingController _addressController;
   final TextEditingController _valueController = TextEditingController();
 
   late TextEditingController _timeLockController;
   late AnimationController _loadingController;
-  late DbWallet _dbWallet;
+  late WalletStorage _walletStorage;
   late DateTime selectedTimelock;
   bool timelockSet = false;
 
@@ -59,10 +59,10 @@ class RecipientStepState extends State<RecipientStep>
       duration: const Duration(milliseconds: 400),
     );
     ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
-    _dbWallet = apiDashboard.dbWallet!;
-    balanceNanoWit = _dbWallet.balanceNanoWit();
+    _walletStorage = apiDashboard.walletStorage!;
+    balanceInfo = _walletStorage.balanceNanoWit();
     BlocProvider.of<VTTCreateBloc>(context)
-        .add(AddSourceWalletEvent(dbWallet: _dbWallet));
+        .add(AddSourceWalletsEvent(walletStorage: _walletStorage));
     super.initState();
   }
 
@@ -76,17 +76,15 @@ class RecipientStepState extends State<RecipientStep>
     final text = _valueController.value.text;
     if (text == '') {
       return null;
-    }
-
-    if (valueWit > balanceNanoWit) {
-      return 'Insufficient Funds';
+    } else {
+      if (valueWit > balanceInfo.availableNanoWit) {
+        return 'Insufficient Funds';
+      }
+      return null;
     }
   }
 
   Widget buildValueInput(BuildContext context) {
-    ApiCreateWallet apiCreateWallet = Locator.instance<ApiCreateWallet>();
-    
-    
     return ValueListenableBuilder(
       // Note: pass _controller to the animation argument
       valueListenable: _valueController,
@@ -112,22 +110,19 @@ class RecipientStepState extends State<RecipientStep>
                           .outputs
                           .forEach((element) {
                         if (element.pkh.address != changeAddress) {
-                          outputValueNanoWit += element.value;
+                          outputValueNanoWit += element.value.toInt();
                         }
                       });
                       setState(() {
                         if (value == '') {
                           valueWit = 0;
-                          balanceNanoWit =
-                              _dbWallet.balanceNanoWit() - outputValueNanoWit;
+                          balanceInfo.availableNanoWit = balanceInfo.availableNanoWit  - outputValueNanoWit;
                         } else {
                           valueWit = double.parse(value);
-
-                          balanceNanoWit = _dbWallet.balanceNanoWit() -
-                              outputValueNanoWit -
-                              witToNanoWit(valueWit);
+                          balanceInfo.availableNanoWit = balanceInfo.availableNanoWit - outputValueNanoWit;
                         }
                       });
+
                     },
                     decoration: new InputDecoration(
                         labelText: "Amount", errorText: _errorText),
@@ -186,8 +181,10 @@ class RecipientStepState extends State<RecipientStep>
     for (int i = 0; i < outputs.length; i++) {
       String address = outputs[i].pkh.address;
       bool isChangeAccount = false;
-      _dbWallet.internalAccounts.forEach((index, account) {
-        if (account.address == address) isChangeAccount = true;
+      _walletStorage.wallets.forEach((key, wallet) {
+        wallet.internalAccounts.forEach((key, account) {
+          if (account.address == address) isChangeAccount = true;
+        });
       });
 
       /// only add a card if it is not a change account
@@ -252,9 +249,9 @@ class RecipientStepState extends State<RecipientStep>
     
     print(validAddress(address));
     print(valueWit);
-    print(balanceNanoWit);
+    print(balanceInfo);
     if (!validAddress(address) || valueWit == 0) return false;
-    if (nanoWitToWit(balanceNanoWit) < 0) return false;
+    if (nanoWitToWit(balanceInfo.availableNanoWit) < 0) return false;
     return true;
   }
 
@@ -367,7 +364,7 @@ class RecipientStepState extends State<RecipientStep>
                   child: IconButton(
                     onPressed: () {},
                     icon: Icon(
-                      FontAwesomeIcons.questionCircle,
+                      FontAwesomeIcons.circleQuestion,
                       size: 15,
                     ),
                     iconSize: 10,
@@ -435,7 +432,7 @@ class RecipientStepState extends State<RecipientStep>
                 _showDateTimePicker();
               },
               icon: Icon(
-                FontAwesomeIcons.calendarAlt,
+                FontAwesomeIcons.calendarDays,
               ),
               iconSize: 20,
               padding: EdgeInsets.all(3),
@@ -449,7 +446,7 @@ class RecipientStepState extends State<RecipientStep>
               child: IconButton(
                 onPressed: () {},
                 icon: Icon(
-                  FontAwesomeIcons.questionCircle,
+                  FontAwesomeIcons.circleQuestion,
                   size: 15,
                 ),
                 iconSize: 10,
@@ -497,7 +494,7 @@ class RecipientStepState extends State<RecipientStep>
                 child: Padding(
                   padding: EdgeInsets.all(10),
                   child: AutoSizeText(
-                    '${nanoWitToWit(balanceNanoWit)} wit',
+                    '${nanoWitToWit(balanceInfo.availableNanoWit)} wit',
                     maxLines: 1,
                     minFontSize: 12,
                     style: TextStyle(

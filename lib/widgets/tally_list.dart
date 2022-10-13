@@ -68,7 +68,7 @@ class SolvedDrCard extends StatelessWidget {
                     IconButton(
                         onPressed: () {},
                         icon: Icon(
-                          FontAwesomeIcons.sync,
+                          FontAwesomeIcons.arrowsRotate,
                           size: 15,
                         )),
                   ],

@@ -43,11 +43,11 @@ class AddUtxosEvent extends VTTCreateEvent {
   List<Object?> get props => [utxos];
 }
 
-class AddSourceWalletEvent extends VTTCreateEvent {
-  final DbWallet dbWallet;
-  AddSourceWalletEvent({required this.dbWallet});
+class AddSourceWalletsEvent extends VTTCreateEvent {
+  final WalletStorage walletStorage;
+  AddSourceWalletsEvent({required this.walletStorage});
   @override
-  List<Object?> get props => [dbWallet];
+  List<Object?> get props => [walletStorage];
 }
 
 class ValidRecipientAddressEvent extends VTTCreateEvent {

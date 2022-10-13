@@ -1,12 +1,13 @@
 import 'dart:isolate';
 
-import 'package:witnet_wallet/bloc/database/database_isolate.dart';
+import 'package:witnet/explorer.dart';
+import 'package:witnet_wallet/util/storage/database/database_isolate.dart';
 import 'package:witnet_wallet/util/storage/database/database_service.dart';
-import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
+import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/util/storage/path_provider_interface.dart';
-import 'package:witnet_wallet/util/witnet/wallet/account.dart';
-import 'package:witnet_wallet/util/witnet/wallet/wallet.dart';
 
+import 'package:witnet_wallet/util/storage/database/account.dart';
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 import 'locator.dart';
 
 class DatabaseException {
@@ -15,187 +16,180 @@ class DatabaseException {
   final String message;
 }
 
+/// [ApiDatabase] is used to communicate between the database isolate and the
+/// rest of the application.
 class ApiDatabase {
-  DBService? database;
   late String path;
-  Future<DBService?> getDb() async {
-    DatabaseIsolate databaseIsolate = Locator.instance.get<DatabaseIsolate>();
-    await databaseIsolate.init();
+  Map<String, Wallet> _wallets = {};
+  bool initialized = false;
+  bool unlocked = false;
+
+  DatabaseIsolate get databaseIsolate => Locator.instance<DatabaseIsolate>();
+  PathProviderInterface interface = PathProviderInterface();
+
+  Future<dynamic> _processIsolate(
+      {required String method, required Map<String, dynamic> params}) async {
+    if (!databaseIsolate.initialized) await databaseIsolate.init();
+    final ReceivePort response = ReceivePort();
+
+    databaseIsolate.send(
+        method: method, params: params, port: response.sendPort);
+    return await response.first.then((value) {
+      if (value.runtimeType == DBException) {
+        throw value;
+      }
+      return value;
+    });
   }
 
-  Future<bool> unlockDatabase(
-      {required String name, required String password}) async {
+  Future<bool> masterKeySet() async {
     try {
-      PathProviderInterface interface = PathProviderInterface();
-      await interface.init();
-      path = interface.getWalletPath(name);
-
-      DatabaseIsolate databaseIsolate = Locator.instance.get<DatabaseIsolate>();
-      if (!databaseIsolate.initialized) await databaseIsolate.init();
-      ReceivePort response = ReceivePort();
-      bool unlocked = false;
-      databaseIsolate.send(
-          method: 'unlockDatabase',
-          params: {'path': path, 'password': password},
-          port: response.sendPort);
-      await response.first.then((value) {
-        if (value.runtimeType == DBException) {
-          throw value;
-        }
-        var val = value as Map<String, dynamic>;
-
-        if (val.containsKey('unlocked')) {
-          unlocked = true;
-        }
-      });
-      if (unlocked) {
-        return true;
-      } else {
-        return false;
-      }
-    } on DBException {
-      rethrow;
-    } on DatabaseException {
-      rethrow;
+      var value = await _processIsolate(
+        method: 'masterKeySet',
+        params: {},
+      );
+      return value;
+    } catch (e) {
+      return false;
     }
   }
 
-  Future<bool> createDatabase(
-      {required String path, required String password}) async {
+  Future<bool> verifyPassword(String password) async {
     try {
-      DatabaseIsolate databaseIsolate = Locator.instance.get<DatabaseIsolate>();
-      if (!databaseIsolate.initialized) await databaseIsolate.init();
-      ReceivePort resp = ReceivePort();
-      databaseIsolate.send(
-          method: 'configure',
-          params: {'path': path, 'password': password},
-          port: resp.sendPort);
-      var respValue = await resp.first.then((value) => value);
-      assert(respValue != null);
+      var value = await _processIsolate(
+        method: 'verifyPassword',
+        params: {'password': password},
+      );
+      if (value) {
+        unlocked = true;
+      }
+      return value;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<String> getKeychain() async {
+    try {
+      if (unlocked) {
+        var value = await _processIsolate(
+          method: 'getKeychain',
+          params: {},
+        );
+        return value;
+      } else {
+        throw Exception('Database locked');
+      }
+    } catch (e) {
+      return '';
+    }
+  }
+
+  Future<bool> setPassword(
+      {String? oldPassword, required String newPassword}) async {
+    await _processIsolate(
+      method: 'setPassword',
+      params: {
+        'oldPassword': oldPassword ?? '',
+        'newPassword': newPassword,
+      },
+    );
+    return true;
+  }
+
+  Future<bool> openDatabase() async {
+    await interface.init();
+    var fileExists = await interface.fileExists(interface.getDbWalletsPath());
+    try {
+      var response = await _processIsolate(
+        method: 'configure',
+        params: {
+          'path': interface.getDbWalletsPath(),
+          'fileExists': fileExists
+        },
+      );
+
+      assert(response != null);
       return true;
     } on DBException {
       return false;
     }
   }
 
-  Future<List<dynamic>> readBatchRecords(
-      {required List<Map<String, Object?>> values}) async {
-    try {
-      DatabaseIsolate databaseIsolate = Locator.instance.get<DatabaseIsolate>();
-      ReceivePort response = ReceivePort();
-      databaseIsolate.send(
-          method: 'batchRead',
-          params: {'read_ops': values},
-          port: response.sendPort);
-    } catch (e) {
-      /// TODO
-    }
-    return [];
-  }
-
-  Future<dynamic> readDatabaseRecord(
-      {required dynamic key, required Type type}) async {
-    try {
-      DatabaseIsolate databaseIsolate = Locator.instance.get<DatabaseIsolate>();
-      ReceivePort response = ReceivePort();
-      databaseIsolate.send(
-          method: 'readRecord',
-          params: {'key': key, 'type': type.toString()},
-          port: response.sendPort);
-      var val = await response.first.then((value) => value);
-      return val;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<dynamic> writeDatabaseRecord(
-      {required dynamic key, required dynamic value}) async {
-    try {
-      DatabaseIsolate databaseIsolate = Locator.instance.get<DatabaseIsolate>();
-      ReceivePort response = ReceivePort();
-      databaseIsolate.send(
-          method: 'writeRecord',
-          params: {'key': key, 'value': value},
-          port: response.sendPort);
-      var resp = await response.first.then((value) {
-        return value;
-      });
-      if (value == resp) {
-        throw DatabaseException(code: -1, message: 'Record does not exist.');
-      }
-    } on DBException {
-      rethrow;
-    }
-  }
-
-  Future<bool> deleteRecord({required dynamic key}) async {
-    try {
-      return await database!.deleteRecord(key);
-    } on DatabaseException {
-      rethrow;
-    }
-  }
-
   Future<bool> lockDatabase() async {
-    if (database != null) {
-      database!.lockDatabase();
-      return true;
+    try {
+      var response = await _processIsolate(
+        method: 'lock',
+        params: {},
+      );
+      return response;
+    } catch (e) {
+      return false;
     }
-    return false;
   }
 
-
-
-
-  Future<void> saveDbWallet(DbWallet dbWallet) async{
-    await writeDatabaseRecord(key: 'xprv', value: dbWallet.xprv);
-    await writeDatabaseRecord(key: 'name', value: dbWallet.walletName);
-    await writeDatabaseRecord(key: 'external_xpub', value: dbWallet.externalXpub);
-    await writeDatabaseRecord(key: 'internal_xpub', value: dbWallet.internalXpub);
-    await writeDatabaseRecord(key: 'description', value: dbWallet.walletDescription);
-    await writeDatabaseRecord(key: 'external_accounts', value: dbWallet.accountMap(keyType: KeyType.external));
-    await writeDatabaseRecord(key: 'internal_accounts', value: dbWallet.accountMap(keyType: KeyType.internal));
-    await writeDatabaseRecord(key: 'last_synced', value: dbWallet.lastSynced);
-
+  Future<bool> addWallet(Wallet wallet) async {
+    _wallets[wallet.name] = wallet;
+    return await _processIsolate(
+        method: 'add', params: {'type': 'wallet', 'value': wallet.jsonMap()});
   }
-  Future<DbWallet> loadWallet() async{
-    String xprv = await readDatabaseRecord(key: 'xprv', type: String);
-    String externalXpub = await readDatabaseRecord(key: 'external_xpub', type: String);
-    String internalXpub = await readDatabaseRecord(key: 'internal_xpub', type: String);
-    String description = await readDatabaseRecord(key: 'description', type: String);
-    String name = await readDatabaseRecord(key: 'name', type: String);
-    Map<String, dynamic> externalAccounts = await readDatabaseRecord(key: 'external_accounts', type: Map);
-    Map<String, dynamic> internalAccounts = await readDatabaseRecord(key: 'internal_accounts', type: Map);
 
-    Map<int, Account> xt = {};
-    externalAccounts.forEach((address, account) {
-      account as Map<String, Object?>;
-      Account _account = Account.fromJson(account);
-      _account.setBalance();
-      xt[int.parse(_account.path.split('/').last)] = _account;
-    });
+  Future<bool> addAccount(Account account) async {
+    return await _processIsolate(
+        method: 'add', params: {'type': 'account', 'value': account.jsonMap()});
+  }
 
-    // parse into structure
-    Map<int, Account> nt = {};
-    internalAccounts.forEach((address, account) {
-      account as Map<String, Object?>;
-      Account _account = Account.fromJson(account);
-      _account.setBalance();
-      nt[int.parse(_account.path.split('/').last)] = _account;
+  Future<bool> addVtt(ValueTransferInfo transaction) async {
+    return await _processIsolate(
+        method: 'add', params: {'type': 'vtt', 'value': transaction.jsonMap()});
+  }
 
-    });
-    return DbWallet(
-      xprv: xprv,
-      walletName: name,
-      externalAccounts: xt,
-      internalAccounts: nt,
-      externalXpub: externalXpub,
-      internalXpub: internalXpub,
-      walletDescription: description,
-      lastSynced: -1,
+  Future<WalletStorage> loadWalletsDatabase() async {
+    try {
+      List<Wallet> wallets =
+          await _processIsolate(method: 'getAllWallets', params: {});
+      List<Account> accounts =
+          await _processIsolate(method: 'getAllAccounts', params: {});
+
+      Map<String, Wallet> walletMap = {};
+      for (int i = 0; i < wallets.length; i++) {
+        Wallet wallet = wallets[i];
+        walletMap[wallet.name] = wallet;
+      }
+
+      for (int i = 0; i < accounts.length; i++) {
+        Account account = accounts[i];
+
+        int _type = int.parse(account.path.split('/')[4]);
+        int _index = int.parse(account.path.split('/').last);
+        // external account
+        if (_type == 0) {
+          walletMap[account.walletName]?.externalAccounts[_index] = account;
+
+          // internal account
+        } else if (_type == 1) {
+          walletMap[account.walletName]?.internalAccounts[_index] = account;
+        }
+      }
+      _wallets = walletMap;
+
+    } catch (e) {}
+    return WalletStorage(
+      wallets: _wallets,
+      lastSynced: lastSynced,
     );
   }
 
+  Future<bool> updateWallet(Wallet dbWallet) async {
+    _wallets[dbWallet.name] = dbWallet;
+    return await _processIsolate(
+        method: 'update',
+        params: {'type': 'wallet', 'value': dbWallet.jsonMap()});
+  }
 
+  Future<bool> updateAccount(Account account) async {
+    return await _processIsolate(
+        method: 'update',
+        params: {'type': 'account', 'value': account.jsonMap()});
+  }
 }

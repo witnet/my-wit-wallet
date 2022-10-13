@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+
 import 'package:witnet_wallet/theme/wallet_theme.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/shared/locator.dart';
@@ -23,9 +24,12 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
   }
 
   void onNext() {
+
     Locator.instance<ApiCreateWallet>().setPassword(_password);
+
+
     WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
+    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {'password': _password}));
   }
 
   late TextEditingController passwordInputTextController;
@@ -83,20 +87,21 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                   return 'Need 2 digits. 0-9';
                 if (!ensureThreeLowerCase.hasMatch(value))
                   return 'Need 3 lowercase letters.';
-
                 return null;
               }
             }
+            return null;
           },
           onChanged: (String? value) {
             setState(() {
               _password = value!;
             });
+            return null;
           },
           onEditingComplete: () {
             passwordInputFocusNode.unfocus();
           },
-          onSubmitted: (String? value) {},
+          onSubmitted: (String? value) {return null;},
         ),
       ],
     ));
@@ -117,14 +122,16 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                   return (_password == value) ? null : 'Password Mismatch';
                 }
               }
+              return null;
             },
             onChanged: (String? value) {
               setState(() {
                 _passwordsMatch = (_password == value) ? true : false;
               });
+              return null;
             },
             onEditingComplete: () {},
-            onSubmitted: (String? value) {},
+            onSubmitted: (String? value) {return null;},
           ),
         ],
       ),
@@ -161,7 +168,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                   child: IconButton(
                     onPressed: () {},
                     icon: Icon(
-                      FontAwesomeIcons.questionCircle,
+                      FontAwesomeIcons.circleQuestion,
                       size: 15,
                     ),
                     iconSize: 10,
@@ -265,7 +272,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                           child: IconButton(
                             onPressed: () {},
                             icon: Icon(
-                              FontAwesomeIcons.questionCircle,
+                              FontAwesomeIcons.circleQuestion,
                               size: 15,
                             ),
                             iconSize: 10,

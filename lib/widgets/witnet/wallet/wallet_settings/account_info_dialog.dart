@@ -3,12 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/constants.dart';
-import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/util/paddings.dart';
-import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
-import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
+
+import 'package:witnet_wallet/util/storage/database/account.dart';
 
 launchExplorerSearch(String searchItem) async {
   String url = 'https://witnet.network/search/$searchItem';
@@ -58,7 +56,7 @@ class AccountCard extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: AutoSizeText(
-                  '${nanoWitToWit(account.balance).toString()} WIT',
+                  '${nanoWitToWit(account.balance().availableNanoWit).toString()} WIT',
                   textAlign: TextAlign.right,
                   maxLines: 1,
                   minFontSize: 10,
@@ -68,7 +66,7 @@ class AccountCard extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: IconButton(
-                  icon: Icon(FontAwesomeIcons.infoCircle),
+                  icon: Icon(FontAwesomeIcons.circleInfo),
                   color: theme.primaryColor,
                   onPressed: () {},
                 ),
