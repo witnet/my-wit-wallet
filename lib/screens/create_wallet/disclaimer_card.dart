@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:witnet_wallet/widgets/labeled_checkbox.dart';
 import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 
@@ -40,7 +41,14 @@ class DisclaimerCardState extends State<DisclaimerCard>
   }
 
   void prevAction() {
-    Navigator.pop(context);
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    LoginStatus status = BlocProvider.of<LoginBloc>(context).state.status;
+    if (type == WalletType.newWallet && status != LoginStatus.LoginSuccess) {
+       Navigator.pushNamed(context, '/');
+    } else {
+      BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
+    }
   }
 
   void nextAction() {
@@ -117,14 +125,14 @@ class DisclaimerCardState extends State<DisclaimerCard>
             checked: isNextAllow,
             label: 'I will be carefull, I promise!',
             onChanged: (value) => {
-              setState(() {
-                isNextAllow = !isNextAllow;
-              }),
-              if (isNextAllow)
-                {widget.nextAction(next)}
-              else
-                {widget.nextAction(null)}
-            })
+                  setState(() {
+                    isNextAllow = !isNextAllow;
+                  }),
+                  if (isNextAllow)
+                    {widget.nextAction(next)}
+                  else
+                    {widget.nextAction(null)}
+                })
       ],
     );
   }

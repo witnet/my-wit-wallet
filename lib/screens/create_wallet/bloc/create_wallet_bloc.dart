@@ -7,12 +7,12 @@ import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/witnet/wallet/wallet.dart';
 import 'package:equatable/equatable.dart';
-
 part 'create_wallet_state.dart';
 part 'create_wallet_event.dart';
 
 enum WalletType {
   unset,
+  imported,
   newWallet,
   mnemonic,
   xprv,
@@ -41,7 +41,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
   }
 
   CreateWalletState get initialState => CreateWalletState(
-      walletType: WalletType.unset,
+      walletType: WalletType.imported,
       message: null,
       xprvString: null,
       nodeAddress: null,
@@ -53,6 +53,8 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
     switch (state.status) {
       case CreateWalletStatus.Disclaimer:
         switch (event.walletType) {
+          case WalletType.imported:
+            break;
           case WalletType.unset:
             break;
           case WalletType.newWallet:
@@ -113,6 +115,10 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
         break;
 
+      case CreateWalletStatus.CreateImport:
+        emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
+        break;
+
       case CreateWalletStatus.Complete:
         break;
 
@@ -131,7 +137,13 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       CreateWalletEvent event, Emitter<CreateWalletState> emit) {
     switch (state.status) {
       case CreateWalletStatus.Disclaimer:
-        // unreachable
+        if (event.walletType == WalletType.encryptedXprv) {
+          emit(state.copyWith(status: CreateWalletStatus.Imported));
+        } else if (event.walletType == WalletType.mnemonic) {
+          emit(state.copyWith(status: CreateWalletStatus.Imported));
+        } else {
+          emit(state.copyWith(status: CreateWalletStatus.CreateImport));
+        }
         break;
       case CreateWalletStatus.GenerateMnemonic:
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
@@ -171,7 +183,10 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         emit(state.copyWith(status: CreateWalletStatus.CreateWallet));
         break;
       case CreateWalletStatus.Imported:
-        // unreachable
+        emit(state.copyWith(status: CreateWalletStatus.CreateImport));
+        break;
+      case CreateWalletStatus.CreateImport:
+        emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
         break;
       case CreateWalletStatus.Loading:
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
@@ -283,6 +298,9 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       return CreateWalletStatus.Disclaimer;
     }
     if (event.walletType == WalletType.unset) {
+      return CreateWalletStatus.CreateImport;
+    }
+    if (event.walletType == WalletType.imported) {
       return CreateWalletStatus.Imported;
     }
   }

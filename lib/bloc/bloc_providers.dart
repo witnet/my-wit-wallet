@@ -30,7 +30,7 @@ List<BlocProvider> getProviders(BuildContext context) {
     BlocProvider<CreateWalletBloc>(
       create: (BuildContext context) => CreateWalletBloc(
         CreateWalletState(
-          walletType: WalletType.unset,
+          walletType: WalletType.imported,
           nodeAddress: null,
           message: null,
           walletAddress: null,

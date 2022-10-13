@@ -2,29 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:witnet_wallet/widgets/carousel.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
+import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
+import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 
-typedef void VoidCallback(NavAction? value);
+typedef void VoidCallback(Action? value);
 
-class SelectImportedOption extends StatefulWidget {
+class CreateImportWallet extends StatefulWidget {
   final Function nextAction;
   final Function secondaryAction;
   final Function prevAction;
-  SelectImportedOption({
+  CreateImportWallet({
     Key? key,
     required VoidCallback this.nextAction,
     required VoidCallback this.secondaryAction,
     required VoidCallback this.prevAction,
   }) : super(key: key);
   @override
-  State<StatefulWidget> createState() => ImportedOptionState();
+  State<StatefulWidget> createState() => CreateImportWalletState();
 }
 
-class ImportedOptionState extends State<SelectImportedOption> {
+class Action {
+  String label;
+  void action;
 
+  Action({
+    required this.label,
+    required this.action,
+  });
+}
+
+class CreateImportWalletState extends State<CreateImportWallet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
@@ -34,62 +43,52 @@ class ImportedOptionState extends State<SelectImportedOption> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 8, bottom: 8),
+            padding: EdgeInsets.only(top: 7, bottom: 7),
             child: _buildInitialButtons(context, theme),
           ),
-          Padding(padding: EdgeInsets.all(8)),
+          Padding(padding: EdgeInsets.all(7)),
         ],
       ),
     );
   }
 
   void prevAction() {
-    WalletType type =
-        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-    LoginStatus status = BlocProvider.of<LoginBloc>(context).state.status;
-    if (type == WalletType.newWallet && status != LoginStatus.LoginSuccess) {
-      Navigator.pushNamed(context, '/');
-    } else {
-      BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
-    }
+    Navigator.push(context,
+      MaterialPageRoute(builder: (context) => DashboardScreen()));
   }
 
-  void nextSeedAction() {
-    Locator.instance<ApiCreateWallet>().setWalletType(WalletType.mnemonic);
+  void createWallet() {
+    Locator.instance<ApiCreateWallet>().setWalletType(WalletType.newWallet);
+    Navigator.pushNamed(context, CreateWalletScreen.route);
     BlocProvider.of<CreateWalletBloc>(context)
-        .add(ResetEvent(WalletType.mnemonic));
-    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(
-        Locator.instance<ApiCreateWallet>().walletType,
-        data: {}));
+        .add(ResetEvent(WalletType.newWallet));
   }
 
-  void nextXprvAction() {
-    Locator.instance<ApiCreateWallet>().setWalletType(WalletType.encryptedXprv);
+  void importWallet() {
+    Locator.instance<ApiCreateWallet>().setWalletType(WalletType.imported);
+    Navigator.pushNamed(context, CreateWalletScreen.route);
     BlocProvider.of<CreateWalletBloc>(context)
-        .add(ResetEvent(WalletType.encryptedXprv));
-    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(
-        Locator.instance<ApiCreateWallet>().walletType,
-        data: {}));
+        .add(ResetEvent(WalletType.imported));
   }
 
-  NavAction prev() {
-    return NavAction(
+  Action prev() {
+    return Action(
       label: 'Back',
       action: prevAction,
     );
   }
 
-  NavAction nextSeed() {
-    return NavAction(
-      label: 'Import from seed phrase',
-      action: nextSeedAction,
+  Action nextCreateAction() {
+    return Action(
+      label: 'Create new wallet',
+      action: createWallet,
     );
   }
 
-  NavAction nextXprv() {
-    return NavAction(
-      label: 'Import from xprv',
-      action: nextXprvAction,
+  Action nextImportAction() {
+    return Action(
+      label: 'Import wallet',
+      action: importWallet,
     );
   }
 
@@ -98,9 +97,9 @@ class ImportedOptionState extends State<SelectImportedOption> {
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
     WidgetsBinding.instance
-        .addPostFrameCallback((_) => widget.nextAction(nextSeed));
+        .addPostFrameCallback((_) => widget.nextAction(nextCreateAction));
     WidgetsBinding.instance
-        .addPostFrameCallback((_) => widget.secondaryAction(nextXprv));
+        .addPostFrameCallback((_) => widget.secondaryAction(nextImportAction));
     super.initState();
   }
 

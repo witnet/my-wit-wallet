@@ -4,6 +4,7 @@ enum CreateWalletStatus {
   Disclaimer,
   // Imported is the status where you should choose the imported option (seed phrase or xprv)
   Imported,
+  CreateImport,
   GenerateMnemonic,
   EnterMnemonic,
   EnterXprv,
