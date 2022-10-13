@@ -4,27 +4,23 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_status/vtt_status_bloc.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
+import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/util/witnet/wallet/account.dart';
-import 'package:witnet_wallet/widgets/fade_in.dart';
+import 'package:witnet_wallet/widgets//wallet_list.dart';
 import 'package:witnet_wallet/widgets/layout.dart';
 import 'package:witnet_wallet/widgets/round_button.dart';
-import 'package:witnet_wallet/widgets/svg_widget.dart';
 import 'package:witnet_wallet/widgets/witnet/balance_display.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/create_vtt_dialog.dart';
 import 'package:witnet_wallet/widgets/witnet/wallet/receive_dialog.dart';
 import 'package:witnet_wallet/widgets/witnet/wallet/wallet_settings/wallet_settings_dialog.dart';
 import '../../../bloc/explorer/explorer_bloc.dart';
-import '../../../constants.dart';
 import '../../login/view/login_screen.dart';
 import '../../screen_transitions/fade_transition.dart';
-import 'package:witnet_wallet/theme/colors.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
 import '../api_dashboard.dart';
 import '../bloc/dashboard_bloc.dart';
 
@@ -43,6 +39,7 @@ class DashboardScreenState extends State<DashboardScreen>
   late DbWallet? dbWallet;
   late AnimationController _loadingController;
   late AnimationController _balanceController;
+  List<String>? walletList;
 
   @override
   void initState() {
@@ -61,7 +58,7 @@ class DashboardScreenState extends State<DashboardScreen>
 
   /// _goToSettings
   /// [BuildContext] context
-  Future<bool> _goToSettings(BuildContext context) {
+  Future<bool> _goToSettings() {
     return Navigator.of(context)
         .push(MaterialPageRoute(
           builder: (context) => PreferencePage(),
@@ -69,70 +66,11 @@ class DashboardScreenState extends State<DashboardScreen>
         .then((_) => true);
   }
 
-  /// _buildAppBar
-  /// [ThemeData] theme
-  AppBar _buildAppBar(ThemeData theme) {
-    final menuBtn = IconButton(
-      color: theme.primaryColor,
-      icon: const Icon(FontAwesomeIcons.bars),
-      onPressed: () => _goToSettings(context),
-    );
-
-    final logoutButton = IconButton(
-      icon: const Icon(FontAwesomeIcons.userLock),
-      color: theme.primaryColor,
-      onPressed: () {
-        BlocProvider.of<DashboardBloc>(context).add(DashboardResetEvent());
-        BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
-        BlocProvider.of<LoginBloc>(context).add(LoginLogoutEvent());
-      },
-    );
-
-    final title = Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: Hero(
-              tag: Constants.logoTag,
-              child: SVGWidget(
-                size: 30,
-                title: '',
-                img: 'favicon',
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    return AppBar(
-      leading: FadeIn(
-        controller: _loadingController,
-        offset: .3,
-        curve: headerAniInterval,
-        fadeDirection: FadeDirection.startToEnd,
-        duration: Duration(milliseconds: 300),
-        child: menuBtn,
-      ),
-      actions: <Widget>[
-        FadeIn(
-          controller: _loadingController,
-          offset: .3,
-          curve: headerAniInterval,
-          fadeDirection: FadeDirection.endToStart,
-          duration: Duration(milliseconds: 300),
-          child: logoutButton,
-        ),
-      ],
-      title: title,
-      backgroundColor: theme.primaryColor.withOpacity(.1),
-      elevation: 0,
-      iconTheme: theme.iconTheme,
-      toolbarTextStyle: theme.textTheme.bodyText2,
-      titleTextStyle: theme.textTheme.bodyText1,
-    );
+  //Log out
+  void _logOut() {
+    BlocProvider.of<DashboardBloc>(context).add(DashboardResetEvent());
+    BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
+    BlocProvider.of<LoginBloc>(context).add(LoginLogoutEvent());
   }
 
   Future<void> _showWalletSettingsDialog() async {
@@ -175,44 +113,34 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _buildDashboardGrid(ThemeData themeData, DashboardState state) {
-    final size = MediaQuery.of(context).size;
-    print(state);
-    ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         _buildBalanceDisplay(),
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RoundButton(
-                size: 40,
-                icon: Icon(FontAwesomeIcons.arrowUp),
-                onPressed: _showCreateVTTDialog,
-                label: 'Send',
-                loadingController: _loadingController,
-              ),
-              RoundButton(
-                size: 40,
-                icon: Icon(FontAwesomeIcons.arrowDown),
-                onPressed: _showReceiveDialog,
-                label: 'Receive',
-                loadingController: _loadingController,
-              ),
-              RoundButton(
-                size: 40,
-                icon: Icon(FontAwesomeIcons.userCog),
-                onPressed: _showWalletSettingsDialog,
-                label: 'Settings',
-                loadingController: _loadingController,
-              ),
-              buildSyncButton(),
-            ],
-          ),
+        RoundButton(
+          size: 40,
+          icon: Icon(FontAwesomeIcons.arrowUp),
+          onPressed: _showCreateVTTDialog,
+          label: 'Send',
+          loadingController: _loadingController,
         ),
+        RoundButton(
+          size: 40,
+          icon: Icon(FontAwesomeIcons.arrowDown),
+          onPressed: _showReceiveDialog,
+          label: 'Receive',
+          loadingController: _loadingController,
+        ),
+        RoundButton(
+          size: 40,
+          icon: Icon(FontAwesomeIcons.userCog),
+          onPressed: _showWalletSettingsDialog,
+          label: 'Settings',
+          loadingController: _loadingController,
+        ),
+        buildSyncButton(),
+        WalletList()
         // TransactionHistory(themeData: themeData, externalAccounts: externalAccounts, internalAccounts: internalAccounts,),
       ],
     );
@@ -223,7 +151,6 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget explorerWatcher() {
-    final theme = Theme.of(context);
     return BlocBuilder<ExplorerBloc, ExplorerState>(
       builder: (context, state) {
         ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
@@ -326,7 +253,6 @@ class DashboardScreenState extends State<DashboardScreen>
     final theme = Theme.of(context);
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
-      print(state);
       if (state.status == DashboardStatus.Loading) {
         return _buildDashboardGrid(theme, state);
       } else if (state.status == DashboardStatus.Synchronized) {
@@ -350,6 +276,34 @@ class DashboardScreenState extends State<DashboardScreen>
     });
   }
 
+  List<Widget> _headerActions() {
+    return [
+      PaddedButton(
+        padding: EdgeInsets.only(bottom: 8),
+        text: 'Show wallet list',
+        type: 'text',
+        enabled: true,
+        onPressed: () => {},
+      ),
+      Row(
+        children: [
+        PaddedButton(
+        padding: EdgeInsets.only(bottom: 8),
+        text: 'Log out',
+        type: 'text',
+        enabled: true,
+        onPressed: () => _logOut()
+      ),
+      PaddedButton(
+        padding: EdgeInsets.only(bottom: 8),
+        text: 'Settings',
+        type: 'text',
+        enabled: true,
+        onPressed: () => _goToSettings(),
+      ),]),
+    ];
+  }
+
   Widget _authBuilder() {
     final theme = Theme.of(context);
     // TODO: LoggedOutState
@@ -364,7 +318,6 @@ class DashboardScreenState extends State<DashboardScreen>
       return true;
     }, builder: (BuildContext context, LoginState loginState) {
       Widget _body;
-      print(loginState.status);
       switch (loginState.status) {
         case LoginStatus.LoggedOut:
           _body = Stack(
@@ -406,11 +359,10 @@ class DashboardScreenState extends State<DashboardScreen>
           );
       }
       return Layout(
-        headerActions: [],
+        headerActions: _headerActions(),
         widgetList: [
           _body,
         ],
-        appBar: _buildAppBar(theme),
         actions: [],
         actionsSize: 0,
       );

@@ -98,7 +98,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   }
 
   void prevAction() {
-    CreateWalletState state = BlocProvider.of<CreateWalletBloc>(context).state;
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));

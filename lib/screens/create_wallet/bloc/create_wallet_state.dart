@@ -3,6 +3,7 @@ part of 'create_wallet_bloc.dart';
 enum CreateWalletStatus {
   Disclaimer,
   Imported,
+  CreateImport,
   GenerateMnemonic,
   EnterMnemonic,
   EnterXprv,

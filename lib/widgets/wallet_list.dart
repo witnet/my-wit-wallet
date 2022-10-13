@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/shared/api_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/widgets/select.dart';
+import 'package:witnet_wallet/util/storage/path_provider_interface.dart';
 
 class ListItem {
   bool isSelected = false;
@@ -10,21 +15,16 @@ class ListItem {
   ListItem(this.data);
 }
 
-class WalletListWidget extends StatefulWidget {
-  final double width;
-  final List<String> walletFiles;
-
-  const WalletListWidget(
-      {Key? key, required this.width, required this.walletFiles})
-      : super(key: key);
+class WalletList extends StatefulWidget {
+  const WalletList({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => WalletListWidgetState();
+  State<StatefulWidget> createState() => WalletListState();
 }
 
-class WalletListWidgetState extends State<WalletListWidget> {
-  List<ListItem> files = [];
-  late String selectedWallet;
+class WalletListState extends State<WalletList> {
+  List<String> walletList = [];
+  late String selectedWallet = '';
   bool walletsExist = false;
   bool walletSelected = false;
   late Function onSelected;
@@ -32,68 +32,55 @@ class WalletListWidgetState extends State<WalletListWidget> {
   @override
   void initState() {
     super.initState();
-    if (widget.walletFiles.length >= 1) walletsExist = true;
-    selectedWallet = widget.walletFiles[0];
-    Locator.instance.get<ApiAuth>().setWalletName(selectedWallet);
-    walletSelected = true;
-    populateData();
+    _getWallets();
   }
 
-  Widget _buildInitialButtons(BuildContext context, ThemeData theme) {
-    return Padding(
-      padding: EdgeInsets.all(5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: ElevatedButton(
-              child: new Text('Create Wallet'),
-              onPressed: () {
-                Navigator.pushNamed(context, '/create_wallet');
-              },
-            ),
-          ),
-        ],
-      ),
-    );
+  void _getWallets() async {
+    PathProviderInterface interface = PathProviderInterface();
+    await interface.getWalletFiles().then((value) => {
+          if (value.length > 0)
+            {
+              setState(() {
+                walletList = value;
+                selectedWallet = value[0];
+              })
+            }
+        });
   }
 
-  void populateData() {
-    widget.walletFiles.forEach((element) {
-      files.add(ListItem('$element'));
-    });
+    //Go to create or import wallet view
+  void _createImportWallet() {
+    Locator.instance<ApiCreateWallet>().setWalletType(WalletType.unset);
+    Navigator.pushNamed(context, CreateWalletScreen.route);
+    BlocProvider.of<CreateWalletBloc>(context)
+        .add(ResetEvent(WalletType.unset));
   }
 
-  Widget _buildDropDownView(BuildContext context, ThemeData theme) {
-    return Select(
-      listItems: widget.walletFiles,
-      selectedItem: selectedWallet,
-      onChanged: (String? value) => {
-        setState(() {
-          selectedWallet = value!;
-          Locator.instance.get<ApiAuth>().setWalletName(value);
-          walletSelected = true;
-        })
+  Widget _buildInitialButtons() {
+    return PaddedButton(
+      padding: EdgeInsets.all(0), 
+      text: 'New wallet', 
+      onPressed: () => {
+        _createImportWallet(),
       },
+      type: 'text',
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    Widget _base;
-    if (walletsExist) {
-      _base = _buildDropDownView(context, theme);
-    } else {
-      _base = _buildInitialButtons(context, theme);
-    }
-    return new Row(
-      children: <Widget>[
-        Expanded(
-          child: _base,
-        )
-      ],
-    );
+    return Column(children: [
+      _buildInitialButtons(),
+      Select(
+          listItems: walletList,
+          selectedItem: selectedWallet,
+          onChanged: (String? value) => {
+                setState(() {
+                  selectedWallet = value!;
+                  // Locator.instance.get<ApiAuth>().setWalletName(value);
+                  walletSelected = true;
+                })
+              }),
+    ]);
   }
 }

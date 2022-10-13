@@ -45,6 +45,7 @@ class HeaderLayout extends StatelessWidget {
               padding: EdgeInsets.all(16),
               child: 
               Row(
+                mainAxisAlignment: headerActions.length > 1 ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
                 children: headerActions,
               )
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/create_import_wallet.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/screens/create_wallet/import_mnemonic_card.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
@@ -27,6 +28,11 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   dynamic secondaryAction;
   dynamic prevAction;
   double bottomSize = 80;
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   List<Widget> _actions() {
     List<Widget> actions = [
@@ -157,6 +163,12 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
           break;
         case CreateWalletStatus.Imported:
           currentFormCard = SelectImportedOption(
+              nextAction: _setNextAction,
+              secondaryAction: _setSecondaryAction,
+              prevAction: _setPrevAction);
+          break;
+        case CreateWalletStatus.CreateImport:
+          currentFormCard = CreateImportWallet(
               nextAction: _setNextAction,
               secondaryAction: _setSecondaryAction,
               prevAction: _setPrevAction);
