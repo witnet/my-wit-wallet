@@ -6,7 +6,6 @@ class DecorationsLogin {
     border: Border.all(color: Colors.white10, width: 1.0),
   );
 
-
   static InputDecoration inputDecorationLogin(
       {required prefixIcon, suffixIcon, hint = 'your test', label = 'test'}) {
     return InputDecoration(

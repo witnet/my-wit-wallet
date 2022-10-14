@@ -19,12 +19,8 @@ class ApiCrypto {
   late String? password;
   ApiCrypto();
 
-  void setInitialWalletData(
-      String walletName,
-      String walletDescription,
-      String seed,
-      String seedSource,
-      String password) {
+  void setInitialWalletData(String walletName, String walletDescription,
+      String seed, String seedSource, String password) {
     this.walletName = walletName;
     this.walletDescription = walletDescription;
     this.seed = seed;
@@ -40,9 +36,7 @@ class ApiCrypto {
     this.password = null;
   }
 
-  Future<String> generateMnemonic(
-      int wordCount,
-      String language) async {
+  Future<String> generateMnemonic(int wordCount, String language) async {
     try {
       CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
       var receivePort = ReceivePort();

@@ -20,7 +20,6 @@ import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
-
 class BuildWalletCard extends StatefulWidget {
   BuildWalletCard({Key? key}) : super(key: key);
   BuildWalletCardState createState() => BuildWalletCardState();

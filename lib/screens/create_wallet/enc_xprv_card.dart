@@ -82,14 +82,17 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
 
   void onBack() {
     CreateWalletState state = BlocProvider.of<CreateWalletBloc>(context).state;
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void onNext() {
     Locator.instance<ApiCreateWallet>().setSeed(xprv, 'encryptedXprv');
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context)
+        .add(NextCardEvent(type, data: {}));
   }
 
   bool validBech(String xprvString) {
@@ -199,21 +202,21 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   Widget verifyXprvButton() {
     return BlocBuilder<CreateWalletBloc, CreateWalletState>(
         builder: (context, state) {
-      if(state.status == CreateWalletStatus.EnterEncryptedXprv){
+      if (state.status == CreateWalletStatus.EnterEncryptedXprv) {
         return ElevatedButton(
           onPressed: _password.isEmpty
               ? null
               : () {
-            WalletType type =
-                BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-            BlocProvider.of<CreateWalletBloc>(context)
-                .add(VerifyEncryptedXprvEvent(type, xprv:xprv, password: _password));
-
-          },
+                  WalletType type = BlocProvider.of<CreateWalletBloc>(context)
+                      .state
+                      .walletType;
+                  BlocProvider.of<CreateWalletBloc>(context).add(
+                      VerifyEncryptedXprvEvent(type,
+                          xprv: xprv, password: _password));
+                },
           child: Text('Verify'),
         );
-      }
-      else if (state.status == CreateWalletStatus.Loading) {
+      } else if (state.status == CreateWalletStatus.Loading) {
         return Container();
       } else if (state.status == CreateWalletStatus.ValidXprv) {
         try {

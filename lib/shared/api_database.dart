@@ -145,28 +145,37 @@ class ApiDatabase {
     return false;
   }
 
-
-
-
-  Future<void> saveDbWallet(DbWallet dbWallet) async{
+  Future<void> saveDbWallet(DbWallet dbWallet) async {
     await writeDatabaseRecord(key: 'xprv', value: dbWallet.xprv);
     await writeDatabaseRecord(key: 'name', value: dbWallet.walletName);
-    await writeDatabaseRecord(key: 'external_xpub', value: dbWallet.externalXpub);
-    await writeDatabaseRecord(key: 'internal_xpub', value: dbWallet.internalXpub);
-    await writeDatabaseRecord(key: 'description', value: dbWallet.walletDescription);
-    await writeDatabaseRecord(key: 'external_accounts', value: dbWallet.accountMap(keyType: KeyType.external));
-    await writeDatabaseRecord(key: 'internal_accounts', value: dbWallet.accountMap(keyType: KeyType.internal));
+    await writeDatabaseRecord(
+        key: 'external_xpub', value: dbWallet.externalXpub);
+    await writeDatabaseRecord(
+        key: 'internal_xpub', value: dbWallet.internalXpub);
+    await writeDatabaseRecord(
+        key: 'description', value: dbWallet.walletDescription);
+    await writeDatabaseRecord(
+        key: 'external_accounts',
+        value: dbWallet.accountMap(keyType: KeyType.external));
+    await writeDatabaseRecord(
+        key: 'internal_accounts',
+        value: dbWallet.accountMap(keyType: KeyType.internal));
     await writeDatabaseRecord(key: 'last_synced', value: dbWallet.lastSynced);
-
   }
-  Future<DbWallet> loadWallet() async{
+
+  Future<DbWallet> loadWallet() async {
     String xprv = await readDatabaseRecord(key: 'xprv', type: String);
-    String externalXpub = await readDatabaseRecord(key: 'external_xpub', type: String);
-    String internalXpub = await readDatabaseRecord(key: 'internal_xpub', type: String);
-    String description = await readDatabaseRecord(key: 'description', type: String);
+    String externalXpub =
+        await readDatabaseRecord(key: 'external_xpub', type: String);
+    String internalXpub =
+        await readDatabaseRecord(key: 'internal_xpub', type: String);
+    String description =
+        await readDatabaseRecord(key: 'description', type: String);
     String name = await readDatabaseRecord(key: 'name', type: String);
-    Map<String, dynamic> externalAccounts = await readDatabaseRecord(key: 'external_accounts', type: Map);
-    Map<String, dynamic> internalAccounts = await readDatabaseRecord(key: 'internal_accounts', type: Map);
+    Map<String, dynamic> externalAccounts =
+        await readDatabaseRecord(key: 'external_accounts', type: Map);
+    Map<String, dynamic> internalAccounts =
+        await readDatabaseRecord(key: 'internal_accounts', type: Map);
 
     Map<int, Account> xt = {};
     externalAccounts.forEach((address, account) {
@@ -183,7 +192,6 @@ class ApiDatabase {
       Account _account = Account.fromJson(account);
       _account.setBalance();
       nt[int.parse(_account.path.split('/').last)] = _account;
-
     });
     return DbWallet(
       xprv: xprv,
@@ -196,6 +204,4 @@ class ApiDatabase {
       lastSynced: -1,
     );
   }
-
-
 }

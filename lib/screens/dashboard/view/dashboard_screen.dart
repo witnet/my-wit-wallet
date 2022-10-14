@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -45,7 +44,7 @@ class DashboardScreenState extends State<DashboardScreen>
   late AnimationController _balanceController;
 
   @override
-  void initState()  {
+  void initState() {
     super.initState();
     _loadingController = AnimationController(
       vsync: this,
@@ -57,7 +56,6 @@ class DashboardScreenState extends State<DashboardScreen>
     );
     _loadingController.forward();
     _balanceController.forward();
-
   }
 
   /// _goToSettings
@@ -156,7 +154,9 @@ class DashboardScreenState extends State<DashboardScreen>
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return CreateVTTDialogBox(dbWallet: apiDashboard.dbWallet!,);
+        return CreateVTTDialogBox(
+          dbWallet: apiDashboard.dbWallet!,
+        );
       },
     );
   }
@@ -167,7 +167,9 @@ class DashboardScreenState extends State<DashboardScreen>
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return ReceiveDialogBox(dbWallet: apiDashboard.dbWallet!,);
+        return ReceiveDialogBox(
+          dbWallet: apiDashboard.dbWallet!,
+        );
       },
     );
   }
@@ -177,66 +179,64 @@ class DashboardScreenState extends State<DashboardScreen>
     print(state);
     ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
 
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _buildBalanceDisplay(),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  RoundButton(
-                    size: 40,
-                    icon: Icon(FontAwesomeIcons.arrowUp),
-                    onPressed: _showCreateVTTDialog,
-                    label: 'Send',
-                    loadingController: _loadingController,
-                  ),
-                  RoundButton(
-                    size: 40,
-                    icon: Icon(FontAwesomeIcons.arrowDown),
-                    onPressed: _showReceiveDialog,
-                    label: 'Receive',
-                    loadingController: _loadingController,
-                  ),
-                  RoundButton(
-                    size: 40,
-                    icon: Icon(FontAwesomeIcons.userCog),
-                    onPressed: _showWalletSettingsDialog,
-                    label: 'Settings',
-                    loadingController: _loadingController,
-                  ),
-                  buildSyncButton(),
-                ],
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _buildBalanceDisplay(),
+        Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              RoundButton(
+                size: 40,
+                icon: Icon(FontAwesomeIcons.arrowUp),
+                onPressed: _showCreateVTTDialog,
+                label: 'Send',
+                loadingController: _loadingController,
               ),
-            ),
-            // TransactionHistory(themeData: themeData, externalAccounts: externalAccounts, internalAccounts: internalAccounts,),
-          ],
-        );
-
-
-
+              RoundButton(
+                size: 40,
+                icon: Icon(FontAwesomeIcons.arrowDown),
+                onPressed: _showReceiveDialog,
+                label: 'Receive',
+                loadingController: _loadingController,
+              ),
+              RoundButton(
+                size: 40,
+                icon: Icon(FontAwesomeIcons.userCog),
+                onPressed: _showWalletSettingsDialog,
+                label: 'Settings',
+                loadingController: _loadingController,
+              ),
+              buildSyncButton(),
+            ],
+          ),
+        ),
+        // TransactionHistory(themeData: themeData, externalAccounts: externalAccounts, internalAccounts: internalAccounts,),
+      ],
+    );
   }
 
-  void _setWallet(DbWallet dbWallet){
+  void _setWallet(DbWallet dbWallet) {
     this.dbWallet = dbWallet;
   }
 
   Widget explorerWatcher() {
-      final theme = Theme.of(context);
-    return BlocBuilder<ExplorerBloc, ExplorerState>(builder: (context, state) {
-      ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
-      if (state.status == ExplorerStatus.ready) {
-        //this.dbWallet = apiDashboard.dbWallet;
-        return Container();
-      } else if (state.status == ExplorerStatus.dataloaded) {
+    final theme = Theme.of(context);
+    return BlocBuilder<ExplorerBloc, ExplorerState>(
+      builder: (context, state) {
+        ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
+        if (state.status == ExplorerStatus.ready) {
+          //this.dbWallet = apiDashboard.dbWallet;
+          return Container();
+        } else if (state.status == ExplorerStatus.dataloaded) {
           dbWallet = apiDashboard.dbWallet;
-        return Container();
-      } else {
-        return Container();
-      }
-    },
+          return Container();
+        } else {
+          return Container();
+        }
+      },
     );
   }
 
@@ -251,7 +251,8 @@ class DashboardScreenState extends State<DashboardScreen>
               size: 40,
               icon: Icon(FontAwesomeIcons.sync),
               onPressed: () {
-                BlocProvider.of<ExplorerBloc>(context).add(SyncWalletEvent(ExplorerStatus.dataloading));
+                BlocProvider.of<ExplorerBloc>(context)
+                    .add(SyncWalletEvent(ExplorerStatus.dataloading));
               },
               label: 'Sync',
               loadingController: _loadingController,
@@ -269,7 +270,8 @@ class DashboardScreenState extends State<DashboardScreen>
               size: 40,
               icon: Icon(FontAwesomeIcons.sync),
               onPressed: () {
-                BlocProvider.of<ExplorerBloc>(context).add(SyncWalletEvent(ExplorerStatus.dataloading));
+                BlocProvider.of<ExplorerBloc>(context)
+                    .add(SyncWalletEvent(ExplorerStatus.dataloading));
               },
               label: 'Sync',
               loadingController: _loadingController,
@@ -283,7 +285,8 @@ class DashboardScreenState extends State<DashboardScreen>
               size: 40,
               icon: Icon(FontAwesomeIcons.sync),
               onPressed: () {
-                BlocProvider.of<ExplorerBloc>(context).add(SyncWalletEvent(ExplorerStatus.dataloading));
+                BlocProvider.of<ExplorerBloc>(context)
+                    .add(SyncWalletEvent(ExplorerStatus.dataloading));
               },
               label: 'Sync',
               loadingController: _loadingController,
@@ -292,56 +295,53 @@ class DashboardScreenState extends State<DashboardScreen>
         );
       }
     }, listener: (context, state) {
-      if (state.status == ExplorerStatus.ready){
+      if (state.status == ExplorerStatus.ready) {
         ApiDashboard apiDashboard = Locator.instance.get<ApiDashboard>();
-       setState(() {
-         dbWallet = apiDashboard.dbWallet;
-
-       });
+        setState(() {
+          dbWallet = apiDashboard.dbWallet;
+        });
       }
-
     });
   }
 
   Widget _buildBalanceDisplay() {
     return BlocConsumer<ExplorerBloc, ExplorerState>(builder: (context, state) {
       final theme = Theme.of(context);
-    return BalanceDisplay(_balanceController);
-    },
-        listener: (context, state) {
-          if (state.status == ExplorerStatus.ready) {
-            ApiDashboard apiDashboard = Locator.instance.get<ApiDashboard>();
-            setState(() {
-              BlocProvider.of<DashboardBloc>(context).add(DashboardLoadEvent());
-              dbWallet = state.dbWallet;
-              apiDashboard.setDbWallet(dbWallet);
+      return BalanceDisplay(_balanceController);
+    }, listener: (context, state) {
+      if (state.status == ExplorerStatus.ready) {
+        ApiDashboard apiDashboard = Locator.instance.get<ApiDashboard>();
+        setState(() {
+          BlocProvider.of<DashboardBloc>(context).add(DashboardLoadEvent());
+          dbWallet = state.dbWallet;
+          apiDashboard.setDbWallet(dbWallet);
 
-              _balanceController.reset();
-              _balanceController.forward();
-            });
-          }
+          _balanceController.reset();
+          _balanceController.forward();
         });
+      }
+    });
   }
 
   Widget _dashboardBuilder() {
     final theme = Theme.of(context);
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
-          print(state);
-      if(state.status == DashboardStatus.Loading){
+      print(state);
+      if (state.status == DashboardStatus.Loading) {
         return _buildDashboardGrid(theme, state);
-      } else if (state.status == DashboardStatus.Synchronized){
+      } else if (state.status == DashboardStatus.Synchronized) {
         dbWallet = state.dbWallet;
         return _buildDashboardGrid(theme, state);
-      } else if (state.status == DashboardStatus.Synchronizing){
+      } else if (state.status == DashboardStatus.Synchronizing) {
         return SizedBox(
           child: SpinKitWave(
             color: theme.primaryColor,
           ),
         );
-      } else if (state.status == DashboardStatus.Ready){
+      } else if (state.status == DashboardStatus.Ready) {
         dbWallet = state.dbWallet;
-        if(dbWallet != null){
+        if (dbWallet != null) {
           BlocProvider.of<VTTCreateBloc>(context).setDbWallet(dbWallet);
         }
         return _buildDashboardGrid(theme, state);
@@ -354,8 +354,6 @@ class DashboardScreenState extends State<DashboardScreen>
       }
     });
   }
-
-
 
   Widget _authBuilder() {
     final theme = Theme.of(context);
@@ -370,10 +368,9 @@ class DashboardScreenState extends State<DashboardScreen>
       }
       return true;
     }, builder: (BuildContext context, LoginState loginState) {
-          Widget _body;
-          print(loginState.status);
+      Widget _body;
+      print(loginState.status);
       switch (loginState.status) {
-
         case LoginStatus.LoggedOut:
           _body = Container(
             width: double.infinity,
@@ -421,9 +418,9 @@ class DashboardScreenState extends State<DashboardScreen>
               ],
             ),
           );
-        break;
-          default:
-          _body =  Container(
+          break;
+        default:
+          _body = Container(
             width: double.infinity,
             height: double.infinity,
             color: theme.primaryColor.withOpacity(.1),
@@ -439,18 +436,16 @@ class DashboardScreenState extends State<DashboardScreen>
               ],
             ),
           );
-
       }
 
       return Scaffold(
         appBar: _buildAppBar(theme),
         resizeToAvoidBottomInset: false,
         body: new GestureDetector(
-          onTap: () {
-            FocusScope.of(context).requestFocus(new FocusNode());
-          },
-          child: _body
-        ),
+            onTap: () {
+              FocusScope.of(context).requestFocus(new FocusNode());
+            },
+            child: _body),
       );
     });
   }
@@ -463,4 +458,3 @@ class DashboardScreenState extends State<DashboardScreen>
     );
   }
 }
-

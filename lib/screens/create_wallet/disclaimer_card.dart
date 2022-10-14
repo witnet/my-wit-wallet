@@ -62,10 +62,12 @@ class DisclaimerCardState extends State<DisclaimerCard>
   }
 
   void _nextCreateWalletMode() {
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
 
     print('type: ${type.name}');
-    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
+    BlocProvider.of<CreateWalletBloc>(context)
+        .add(NextCardEvent(type, data: {}));
   }
 
   Widget _buildDisclaimerTextScrollView(ThemeData theme, Size deviceSize) {

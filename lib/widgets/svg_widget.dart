@@ -8,7 +8,7 @@ const Map<String, String> _assetNames = {
   'favicon': 'assets/img/favicon.svg',
   'wit': 'assets/img/wit.svg',
   'witnet_dark': 'assets/img/witnet_dark.svg',
-  'witnet_logo':'assets/img/witnet_logo.svg',
+  'witnet_logo': 'assets/img/witnet_logo.svg',
 };
 
 class SVGWidget extends StatefulWidget {

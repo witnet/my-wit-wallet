@@ -281,7 +281,8 @@ class AccountInfoDialogState extends State<AccountInfoDialog> {
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(theme.primaryColor),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(theme.primaryColor),
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();

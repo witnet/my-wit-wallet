@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'animated_text.dart';
 import 'ring.dart';
@@ -69,8 +68,6 @@ class AnimatedDropDownState extends State<AnimatedDropDown>
   }
 
   void _updateColorAnimation() {
-
-
     _colorAnimation = ColorTween(
       begin: _color,
       end: _loadingColor,
@@ -123,8 +120,9 @@ class AnimatedDropDownState extends State<AnimatedDropDown>
       child: DropdownButton(
         items: dropDownItems,
         style: theme.textTheme.button,
-        onChanged: (dynamic newValue) {setState(() {
-        });  },
+        onChanged: (dynamic newValue) {
+          setState(() {});
+        },
       ),
     );
   }

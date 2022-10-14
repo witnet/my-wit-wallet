@@ -20,5 +20,4 @@ class _TestScreenState extends State<TestScreen> {
       child: TestCard(),
     );
   }
-
 }

@@ -10,7 +10,6 @@ import 'package:witnet_wallet/widgets/auto_size_text.dart';
 
 import 'bloc/create_wallet_bloc.dart';
 
-
 //genius merge win culture lemon remember work native omit digital canal update
 
 class EnterMnemonicCard extends StatefulWidget {
@@ -83,15 +82,17 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
   }
 
   void onBack() {
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void onNext() {
-
     Locator.instance<ApiCreateWallet>().setSeed(mnemonic, 'mnemonic');
     //WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(Locator.instance<ApiCreateWallet>().walletType, data: {}));
+    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(
+        Locator.instance<ApiCreateWallet>().walletType,
+        data: {}));
   }
 
   bool validMnemonic(String mnemonic) {

@@ -39,7 +39,7 @@ ThemeData lightTheme = ThemeData(
     bodyText1: TextStyle(fontFamily: 'NotoSans'),
     bodyText2: TextStyle(fontFamily: 'NotoSans'),
     subtitle2: TextStyle(fontFamily: 'NotoSans'),
-    overline:  TextStyle(fontFamily: 'NotoSans'),
+    overline: TextStyle(fontFamily: 'NotoSans'),
   ),
   inputDecorationTheme: InputDecorationTheme(
     fillColor: Color(0xFFFFFFFF),
@@ -47,12 +47,8 @@ ThemeData lightTheme = ThemeData(
     labelStyle: TextStyle(),
     prefixStyle: TextStyle(),
     suffixStyle: TextStyle(),
-    errorStyle: TextStyle(
-        backgroundColor: Color(0xFFFFFFFF)
-    ),
-    helperStyle: TextStyle(
-        backgroundColor: Color(0xFFFFFF00)
-    ),
+    errorStyle: TextStyle(backgroundColor: Color(0xFFFFFFFF)),
+    helperStyle: TextStyle(backgroundColor: Color(0xFFFFFF00)),
     helperMaxLines: 1,
     errorMaxLines: 1,
     hintStyle: TextStyle(),
@@ -64,42 +60,24 @@ ThemeData lightTheme = ThemeData(
     contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
     enabledBorder: OutlineInputBorder(
       borderSide: BorderSide(
-          color: const Color(0x55948C80),
-          width: 1.0,
-          style: BorderStyle.solid
-      ),
+          color: const Color(0x55948C80), width: 1.0, style: BorderStyle.solid),
       borderRadius: BorderRadius.circular(7.0),
-
     ),
     focusedBorder: OutlineInputBorder(
       borderSide: BorderSide(
-          color: const Color(0x551DA3B2),
-          width: 2.0,
-          style: BorderStyle.solid
-      ),
+          color: const Color(0x551DA3B2), width: 2.0, style: BorderStyle.solid),
       borderRadius: BorderRadius.circular(7.0),
-
     ),
     focusedErrorBorder: OutlineInputBorder(
       borderSide: BorderSide(
-          color: const Color(0xFFF7F7F8),
-          width: 2.0,
-          style: BorderStyle.solid
-      ),
+          color: const Color(0xFFF7F7F8), width: 2.0, style: BorderStyle.solid),
       borderRadius: BorderRadius.circular(7.0),
-
     ),
     border: OutlineInputBorder(
       borderSide: BorderSide(
-          color: const Color(0xFFF7F7F8),
-          width: 1.0,
-          style: BorderStyle.solid
-      ),
+          color: const Color(0xFFF7F7F8), width: 1.0, style: BorderStyle.solid),
       borderRadius: BorderRadius.circular(7.0),
-
     ),
     alignLabelWithHint: true,
   ),
-
-
 );

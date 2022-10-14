@@ -19,8 +19,6 @@ class AccountCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-
-
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -28,61 +26,64 @@ class AccountCard extends StatelessWidget {
             children: [
               Expanded(
                 flex: 5,
-                child:Column(
-                  children: [AutoSizeText(
-                  account.address,
-                  maxLines: 1,
-                  minFontSize: 12,
-                )]
-                ),
+                child: Column(children: [
+                  AutoSizeText(
+                    account.address,
+                    maxLines: 1,
+                    minFontSize: 12,
+                  )
+                ]),
               ),
-
-
               Expanded(
                 flex: 1,
-                child:
-                AutoSizeText(
+                child: AutoSizeText(
                   '${account.vttHashes.length} ',
                   textAlign: TextAlign.right,
                   maxLines: 1,
                   minFontSize: 10,
                   maxFontSize: 12,
-                ),),
-
+                ),
+              ),
               Expanded(
                 flex: 2,
-                child:
-                AutoSizeText(
+                child: AutoSizeText(
                   '${nanoWitToWit(account.balance).toString()} WIT',
                   textAlign: TextAlign.right,
                   maxLines: 1,
                   minFontSize: 10,
                   maxFontSize: 12,
-                ),),
+                ),
+              ),
               Expanded(
                 flex: 1,
-                child:
-                IconButton(icon: Icon(FontAwesomeIcons.infoCircle),color: theme.primaryColor, onPressed:() =>_showWalletSettingsDialog(context, account),),),
+                child: IconButton(
+                  icon: Icon(FontAwesomeIcons.infoCircle),
+                  color: theme.primaryColor,
+                  onPressed: () => _showWalletSettingsDialog(context, account),
+                ),
+              ),
             ],
           ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-
-          ],
-      ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [],
+          ),
         ],
       ),
     );
   }
-  Future<void> _showWalletSettingsDialog(BuildContext context, Account account) async {
+
+  Future<void> _showWalletSettingsDialog(
+      BuildContext context, Account account) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AccountInfoDialog(account: account,);
+        return AccountInfoDialog(
+          account: account,
+        );
       },
     );
   }
@@ -95,16 +96,11 @@ class WalletSettingsDialog extends StatefulWidget {
 
   final DbWallet dbWallet;
 
-
-
-
   @override
   WalletSettingsDialogState createState() => WalletSettingsDialogState();
 }
 
-class WalletSettingsDialogState extends State<WalletSettingsDialog>{
-
-
+class WalletSettingsDialogState extends State<WalletSettingsDialog> {
   int? selectedAccountIndex;
   bool showZeroBalanceAccounts = false;
   Account? selectedAccount;
@@ -114,17 +110,17 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog>{
     List<Widget> externalAddressCards = [];
     List<Widget> internalAddressCards = [];
     widget.dbWallet.externalAccounts.forEach((index, account) {
-      if(showZeroBalanceAccounts && account.balance == 0){
+      if (showZeroBalanceAccounts && account.balance == 0) {
         externalAddressCards.add(AccountCard(account: account));
       }
-      if(account.balance > 0)
+      if (account.balance > 0)
         externalAddressCards.add(AccountCard(account: account));
     });
     widget.dbWallet.internalAccounts.forEach((index, account) {
-      if(showZeroBalanceAccounts && account.balance == 0){
+      if (showZeroBalanceAccounts && account.balance == 0) {
         internalAddressCards.add(AccountCard(account: account));
       }
-      if(account.balance > 0)
+      if (account.balance > 0)
         internalAddressCards.add(AccountCard(account: account));
     });
 
@@ -137,14 +133,17 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog>{
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-
               SizedBox(
                 height: 15,
               ),
-              Row(children: [
-                AutoSizeText('External Accounts:', minFontSize: 16,),
-
-              ],),
+              Row(
+                children: [
+                  AutoSizeText(
+                    'External Accounts:',
+                    minFontSize: 16,
+                  ),
+                ],
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -152,38 +151,34 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog>{
                 children: [
                   Expanded(
                     flex: 5,
-                    child:Column(
-                        children: [
-                          AutoSizeText(
-                            'Address',
-                            maxLines: 1,
-                            minFontSize: 9,
-                          ),
-                        ]),
+                    child: Column(children: [
+                      AutoSizeText(
+                        'Address',
+                        maxLines: 1,
+                        minFontSize: 9,
+                      ),
+                    ]),
                   ),
                   Expanded(
                     flex: 1,
-                    child:Column(
-                        children: [
-                          AutoSizeText(
-                            'Transactions',
-                            maxLines: 1,
-                            minFontSize: 9,
-                          ),
-                        ]),
+                    child: Column(children: [
+                      AutoSizeText(
+                        'Transactions',
+                        maxLines: 1,
+                        minFontSize: 9,
+                      ),
+                    ]),
                   ),
                   Expanded(
                     flex: 2,
-                    child:Column(
-                        children: [
-                          AutoSizeText(
-                            'Balance',
-                            maxLines: 1,
-                            minFontSize: 9,
-                          ),
-                        ]),
+                    child: Column(children: [
+                      AutoSizeText(
+                        'Balance',
+                        maxLines: 1,
+                        minFontSize: 9,
+                      ),
+                    ]),
                   ),
-
                 ],
               ),
               Column(
@@ -191,12 +186,17 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog>{
                 mainAxisSize: MainAxisSize.max,
                 children: externalAddressCards,
               ),
-              SizedBox(height: 10,),
-              Row(children: [
-                AutoSizeText('Internal Accounts:', minFontSize: 16,),
-
-              ],),
-
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  AutoSizeText(
+                    'Internal Accounts:',
+                    minFontSize: 16,
+                  ),
+                ],
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -204,36 +204,33 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog>{
                 children: [
                   Expanded(
                     flex: 5,
-                    child:Column(
-                        children: [
-                          AutoSizeText(
-                            'Address',
-                            maxLines: 1,
-                            minFontSize: 9,
-                          ),
-                        ]),
+                    child: Column(children: [
+                      AutoSizeText(
+                        'Address',
+                        maxLines: 1,
+                        minFontSize: 9,
+                      ),
+                    ]),
                   ),
                   Expanded(
                     flex: 1,
-                    child:Column(
-                        children: [
-                          AutoSizeText(
-                            'Transactions',
-                            maxLines: 1,
-                            minFontSize: 9,
-                          ),
-                        ]),
+                    child: Column(children: [
+                      AutoSizeText(
+                        'Transactions',
+                        maxLines: 1,
+                        minFontSize: 9,
+                      ),
+                    ]),
                   ),
                   Expanded(
                     flex: 2,
-                    child:Column(
-                        children: [
-                          AutoSizeText(
-                            'Balance',
-                            maxLines: 1,
-                            minFontSize: 9,
-                          ),
-                        ]),
+                    child: Column(children: [
+                      AutoSizeText(
+                        'Balance',
+                        maxLines: 1,
+                        minFontSize: 9,
+                      ),
+                    ]),
                   ),
                 ],
               ),
@@ -279,14 +276,24 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog>{
                     FontAwesomeIcons.sync,
                     size: 15,
                   )),
-              Padding(padding: EdgeInsets.all(5),child: Row(children: [
-                AutoSizeText('Show accounts with zero balance', minFontSize: 10,),
-                Checkbox(value: showZeroBalanceAccounts, onChanged: (value){
-                  setState(() {
-                    showZeroBalanceAccounts = value!;
-                  });
-                }),],),),
-
+              Padding(
+                padding: EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    AutoSizeText(
+                      'Show accounts with zero balance',
+                      minFontSize: 10,
+                    ),
+                    Checkbox(
+                        value: showZeroBalanceAccounts,
+                        onChanged: (value) {
+                          setState(() {
+                            showZeroBalanceAccounts = value!;
+                          });
+                        }),
+                  ],
+                ),
+              ),
               _buildWalletInfoContainer(context, theme, deviceSize),
             ],
           ),
@@ -294,7 +301,6 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog>{
       ],
     );
   }
-
 
   contentBox(context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -315,9 +321,9 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog>{
             children: <Widget>[
               Row(
                 children: [
-
                   Text(
-                    'Wallet Settings', textAlign: TextAlign.left,
+                    'Wallet Settings',
+                    textAlign: TextAlign.left,
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
                   ),
                 ],
@@ -327,7 +333,8 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog>{
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(theme.primaryColor),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(theme.primaryColor),
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -353,5 +360,4 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog>{
       child: contentBox(context),
     );
   }
-
 }

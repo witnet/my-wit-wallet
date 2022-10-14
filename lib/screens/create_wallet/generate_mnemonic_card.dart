@@ -21,8 +21,6 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
   String _language = 'English';
   int _radioWordCount = 12;
 
-
-
   void _setLanguage(String language) {
     setState(() {
       _language = language;
@@ -260,14 +258,17 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
   }
 
   void onBack() {
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void onNext() {
     Locator.instance.get<ApiCreateWallet>().setSeed(mnemonic, 'mnemonic');
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context)
+        .add(NextCardEvent(type, data: {}));
   }
 
   Widget _buildButtonRow() {
@@ -310,29 +311,28 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
     final textFieldWidth = cardWidth - cardPadding * 2;
     final theme = Theme.of(context);
     return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
         Container(
-        width: cardWidth,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-        Container(
-        height: deviceSize.height * 0.25,
-          width: deviceSize.width,
-          child: witnetLogo(theme),
+          width: cardWidth,
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Container(
+                  height: deviceSize.height * 0.25,
+                  width: deviceSize.width,
+                  child: witnetLogo(theme),
+                ),
+                _buildMnemonicBox(),
+                SizedBox(
+                  height: 10,
+                ),
+                _buildInfoTextScrollBox(deviceSize),
+                _buildButtonRow(),
+              ]),
         ),
-
-                    _buildMnemonicBox(),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    _buildInfoTextScrollBox(deviceSize),
-                    _buildButtonRow(),
-                  ]),
-            ),
-          ],
-        );
+      ],
+    );
   }
 }

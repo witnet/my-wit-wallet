@@ -29,16 +29,12 @@ class CryptoInitializingWalletState extends CryptoState {
 }
 
 class CryptoLoadedWalletState extends CryptoState {
-
   final Wallet wallet;
   final String password;
   final DbWallet dbWallet;
 
-  CryptoLoadedWalletState({
-    required this.wallet,
-    required this.password,
-    required this.dbWallet
-  });
+  CryptoLoadedWalletState(
+      {required this.wallet, required this.password, required this.dbWallet});
 
   @override
   List<Object?> get props => [wallet, password];

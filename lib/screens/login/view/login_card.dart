@@ -51,7 +51,6 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
   }
 
   void handleLoadingAnimationStatus(AnimationStatus status) {
@@ -350,21 +349,13 @@ class LoginCardState extends State<LoginCard> with TickerProviderStateMixin {
   }
   */
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     //return _formLogin();
-    return Flex(direction: Axis.vertical,
-    children: [
-      Padding(
-          padding: const EdgeInsets.all(0),
-          child: LoginForm())
-    ],);
-    return Padding(
-      padding: const EdgeInsets.all(0),
-      child: LoginForm());
-    }
+    return Flex(
+      direction: Axis.vertical,
+      children: [Padding(padding: const EdgeInsets.all(0), child: LoginForm())],
+    );
+    return Padding(padding: const EdgeInsets.all(0), child: LoginForm());
+  }
 }

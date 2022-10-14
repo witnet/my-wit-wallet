@@ -15,7 +15,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   static ThemeState get initialState =>
       ThemeState(themeData: walletThemeData[WalletTheme.Light]!);
 
-  void _themeChange(ThemeChanged event, Emitter<ThemeState> emit){
+  void _themeChange(ThemeChanged event, Emitter<ThemeState> emit) {
     emit(ThemeState(themeData: walletThemeData[event.theme]!));
   }
 }

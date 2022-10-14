@@ -6,7 +6,6 @@ import 'light_theme.dart' show lightTheme;
 enum WalletTheme {
   Light,
   Dark,
-
 }
 
 final walletThemeData = {
@@ -14,11 +13,12 @@ final walletThemeData = {
   WalletTheme.Dark: darkTheme,
 };
 
-Widget witnetLogo(ThemeData theme){
-  return  (theme.brightness == Brightness.light)
-      ? Image(image:AssetImage('assets/img/witnet_logo.png'))
-      : Image(image:AssetImage('assets/img/witnet_logo_light.png'));
+Widget witnetLogo(ThemeData theme) {
+  return (theme.brightness == Brightness.light)
+      ? Image(image: AssetImage('assets/img/witnet_logo.png'))
+      : Image(image: AssetImage('assets/img/witnet_logo_light.png'));
 }
+
 class WalletButtonTheme {
   const WalletButtonTheme({
     required this.backgroundColor,
@@ -35,7 +35,3 @@ class WalletButtonTheme {
   final double highlightElevation;
   final ShapeBorder shape;
 }
-
-
-
-

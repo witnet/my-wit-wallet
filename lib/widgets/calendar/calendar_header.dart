@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CalendarHeader extends StatelessWidget {
-
   CalendarHeader({
-  required this.title,
+    required this.title,
     required this.showHeader,
     required this.onLeftBtnPressed,
     required this.onRightBtnPressed,
-});
-
+  });
 
   final String title;
   final bool showHeader;
@@ -17,25 +15,20 @@ class CalendarHeader extends StatelessWidget {
   final VoidCallback onRightBtnPressed;
 
   Widget _leftButton() => IconButton(
-      onPressed: onLeftBtnPressed,
-      icon: Icon(FontAwesomeIcons.arrowLeft)
-  );
+      onPressed: onLeftBtnPressed, icon: Icon(FontAwesomeIcons.arrowLeft));
   Widget _rightButton() => IconButton(
-      onPressed: onRightBtnPressed,
-      icon: Icon(FontAwesomeIcons.arrowRight)
-  );
+      onPressed: onRightBtnPressed, icon: Icon(FontAwesomeIcons.arrowRight));
 
   @override
-  Widget build(BuildContext context) =>
-    showHeader ? Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _leftButton(),
-          _rightButton(),
-        ],
-      ),
-    ) : Container();
-
-  
+  Widget build(BuildContext context) => showHeader
+      ? Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _leftButton(),
+              _rightButton(),
+            ],
+          ),
+        )
+      : Container();
 }

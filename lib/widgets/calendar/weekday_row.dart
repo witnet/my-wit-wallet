@@ -9,17 +9,18 @@ enum WeekdayFormat {
   narrow,
   standaloneNarrow,
 }
+
 typedef Widget WeekdayBuilder(int weekday, String weekdayName);
 
 class WeekdayRow extends StatelessWidget {
   WeekdayRow(this.firstDayOfWeek, this.customWeekdayBuilder,
       {required this.showWeekdays,
-        required this.weekdayFormat,
-        required this.weekdayMargin,
-        required this.weekdayPadding,
-        required this.weekdayBackgroundColor,
-        required this.weekdayTextStyle,
-        required this.localeDate});
+      required this.weekdayFormat,
+      required this.weekdayMargin,
+      required this.weekdayPadding,
+      required this.weekdayBackgroundColor,
+      required this.weekdayTextStyle,
+      required this.localeDate});
 
   final WeekdayBuilder? customWeekdayBuilder;
   final bool showWeekdays;
@@ -36,22 +37,22 @@ class WeekdayRow extends StatelessWidget {
     return customWeekdayBuilder != null
         ? customWeekdayBuilder(weekday, weekDayName)
         : Expanded(
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: weekdayBackgroundColor),
-            color: weekdayBackgroundColor,
-          ),
-          margin: weekdayMargin,
-          padding: weekdayPadding,
-          child: Center(
-            child: Text(
-                weekDayName,
-                semanticsLabel: weekDayName,
-                style: weekdayTextStyle,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: weekdayBackgroundColor),
+                color: weekdayBackgroundColor,
+              ),
+              margin: weekdayMargin,
+              padding: weekdayPadding,
+              child: Center(
+                child: Text(
+                  weekDayName,
+                  semanticsLabel: weekDayName,
+                  style: weekdayTextStyle,
+                ),
               ),
             ),
-          ),
-        );
+          );
   }
 
   // TODO - locale issues
@@ -60,8 +61,8 @@ class WeekdayRow extends StatelessWidget {
 
     /// because of number of days in a week is 7, so it would be easier to count it til 7.
     for (var i = firstDayOfWeek, count = 0;
-    count < 7;
-    i = (i + 1) % 7, count++) {
+        count < 7;
+        i = (i + 1) % 7, count++) {
       String weekDay;
 
       switch (weekdayFormat) {
@@ -96,8 +97,8 @@ class WeekdayRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) => showWeekdays
       ? Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: _renderWeekDays(),
-  )
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: _renderWeekDays(),
+        )
       : Container();
 }

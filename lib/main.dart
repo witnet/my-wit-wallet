@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:witnet_wallet/app.dart';
@@ -6,7 +5,7 @@ import 'package:witnet_wallet/shared/locator.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() async{
+void main() async {
   await dotenv.load(fileName: ".env");
   Locator.setup();
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,4 +13,3 @@ void main() async{
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(WitnetWalletApp());
 }
-

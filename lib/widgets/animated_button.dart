@@ -85,7 +85,6 @@ class _AnimatedButtonState extends State<AnimatedButton>
   }
 
   void _updateColorAnimation() {
-
     _color = widget.color;
     _loadingColor = widget.loadingColor;
 

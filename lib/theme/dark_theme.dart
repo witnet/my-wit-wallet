@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'app_themes.dart';
@@ -16,9 +15,10 @@ TooltipThemeData tooltipTheme = TooltipThemeData(
     margin: EdgeInsets.all(5),
     verticalOffset: 0.0,
     preferBelow: false,
-    decoration: BoxDecoration(color:  WitnetPallet.darkShade6,),
-    textStyle: TextStyle(color: WitnetPallet.darkShade6)
-);
+    decoration: BoxDecoration(
+      color: WitnetPallet.darkShade6,
+    ),
+    textStyle: TextStyle(color: WitnetPallet.darkShade6));
 TextTheme textTheme = TextTheme(
   headline3: TextStyle(
     fontFamily: 'OpenSans',
@@ -34,7 +34,7 @@ TextTheme textTheme = TextTheme(
   bodyText1: TextStyle(fontFamily: 'NotoSans'),
   bodyText2: TextStyle(fontFamily: 'NotoSans'),
   subtitle2: TextStyle(fontFamily: 'NotoSans'),
-  overline:  TextStyle(fontFamily: 'NotoSans'),
+  overline: TextStyle(fontFamily: 'NotoSans'),
 );
 
 AppBarTheme appBarTheme = AppBarTheme(
@@ -52,7 +52,6 @@ AppBarTheme appBarTheme = AppBarTheme(
   //toolbarHeight: ,
   //toolbarTextStyle: ,
   //systemOverlayStyle: ,
-
 );
 
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
@@ -61,12 +60,8 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   labelStyle: TextStyle(),
   prefixStyle: TextStyle(),
   suffixStyle: TextStyle(),
-  errorStyle: TextStyle(
-      backgroundColor: Color(0xFFFFFFFF)
-  ),
-  helperStyle: TextStyle(
-      backgroundColor: Color(0xFFFFFF00)
-  ),
+  errorStyle: TextStyle(backgroundColor: Color(0xFFFFFFFF)),
+  helperStyle: TextStyle(backgroundColor: Color(0xFFFFFF00)),
   helperMaxLines: 1,
   errorMaxLines: 1,
   hintStyle: TextStyle(),
@@ -78,73 +73,56 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: const Color(0x55948C80),
-        width: 1.0,
-        style: BorderStyle.solid
-    ),
+        color: const Color(0x55948C80), width: 1.0, style: BorderStyle.solid),
     borderRadius: BorderRadius.circular(7.0),
-
   ),
   focusedBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: const Color(0x551DA3B2),
-        width: 2.0,
-        style: BorderStyle.solid
-    ),
+        color: const Color(0x551DA3B2), width: 2.0, style: BorderStyle.solid),
     borderRadius: BorderRadius.circular(7.0),
-
   ),
   focusedErrorBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: const Color(0xFFF7F7F8),
-        width: 2.0,
-        style: BorderStyle.solid
-    ),
+        color: const Color(0xFFF7F7F8), width: 2.0, style: BorderStyle.solid),
     borderRadius: BorderRadius.circular(7.0),
-
   ),
   border: OutlineInputBorder(
     borderSide: BorderSide(
-        color: const Color(0xFFF7F7F8),
-        width: 1.0,
-        style: BorderStyle.solid
-    ),
+        color: const Color(0xFFF7F7F8), width: 1.0, style: BorderStyle.solid),
     borderRadius: BorderRadius.circular(7.0),
-
   ),
   alignLabelWithHint: true,
 );
 
 ThemeData darkTheme = ThemeData(
-  brightness: brightness,
-  colorScheme: ColorScheme.dark(),
+    brightness: brightness,
+    colorScheme: ColorScheme.dark(),
+    primaryColor: primaryColor,
+    primarySwatch: primarySwatch,
+    visualDensity: defaultDensity,
+    tooltipTheme: tooltipTheme,
+    dialogBackgroundColor: Color(0xFF17151E),
+    canvasColor: Color(0xFF17151E),
+    shadowColor: Color(0xFF17151E),
+    scaffoldBackgroundColor: Color(0xFF17151E),
+    bottomAppBarColor: Color(0xFF17151E),
+    cardColor: Color(0xFF17151E),
+    inputDecorationTheme: inputDecorationTheme,
 
-  primaryColor: primaryColor,
-  primarySwatch: primarySwatch,
-  visualDensity: defaultDensity,
+    ///
+    ///
+    textTheme: textTheme
+    //  dividerColor: ,
+    //  focusColor: ,
+    //  hoverColor: ,
+    //  highlightColor: ,
+    //  splashColor: ,
+    //  splashFactory: ,
+    //  selectedRowColor: ,
+    //  unselectedWidgetColor: ,
+    //  disabledColor: ,
 
-  tooltipTheme: tooltipTheme,
-    dialogBackgroundColor:Color(0xFF17151E),
-  canvasColor: Color(0xFF17151E),
-  shadowColor: Color(0xFF17151E),
-  scaffoldBackgroundColor: Color(0xFF17151E),
-  bottomAppBarColor: Color(0xFF17151E),
-  cardColor: Color(0xFF17151E),
-  inputDecorationTheme: inputDecorationTheme,
- ///
-  ///
-  textTheme: textTheme
- //  dividerColor: ,
- //  focusColor: ,
- //  hoverColor: ,
- //  highlightColor: ,
- //  splashColor: ,
- //  splashFactory: ,
- //  selectedRowColor: ,
- //  unselectedWidgetColor: ,
- //  disabledColor: ,
-
-);
+    );
 
 /*
 primaryColorLight
@@ -208,4 +186,3 @@ drawerTheme
 listTileTheme
 androidOverscrollIndicator
  */
-

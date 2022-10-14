@@ -85,8 +85,7 @@ class RecipientStepState extends State<RecipientStep>
 
   Widget buildValueInput(BuildContext context) {
     ApiCreateWallet apiCreateWallet = Locator.instance<ApiCreateWallet>();
-    
-    
+
     return ValueListenableBuilder(
       // Note: pass _controller to the animation argument
       valueListenable: _valueController,
@@ -249,7 +248,6 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   bool validVTO(String address) {
-    
     print(validAddress(address));
     print(valueWit);
     print(balanceNanoWit);
@@ -261,10 +259,11 @@ class RecipientStepState extends State<RecipientStep>
   bool _addVTO(BuildContext context) {
     BlocProvider.of<VTTCreateBloc>(context).add(AddValueTransferOutputEvent(
         output: ValueTransferOutput.fromJson({
-      'pkh': recipientAddress,
-      'value': witToNanoWit(valueWit),
-      'time_lock': timeLock
-    }), merge: true));
+          'pkh': recipientAddress,
+          'value': witToNanoWit(valueWit),
+          'time_lock': timeLock
+        }),
+        merge: true));
 
     setState(() {
       _addressController.text = '';

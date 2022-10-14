@@ -1,7 +1,5 @@
 part of 'create_wallet_bloc.dart';
 
-
-
 enum CreateWalletStatus {
   Disclaimer,
   GenerateMnemonic,
@@ -20,10 +18,7 @@ enum CreateWalletStatus {
   Reset,
 }
 
-
-
 class CreateWalletState extends Equatable {
-
   const CreateWalletState({
     required this.walletType,
     required this.message,
@@ -59,6 +54,6 @@ class CreateWalletState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [walletType, message, xprvString, nodeAddress, walletAddress, status];
+  List<Object?> get props =>
+      [walletType, message, xprvString, nodeAddress, walletAddress, status];
 }
-

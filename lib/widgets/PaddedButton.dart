@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 
-class PaddedButton extends StatelessWidget{
-
-  PaddedButton({
-    required this.padding,
-    required this.text,
-    required this.onPressed
-  });
+class PaddedButton extends StatelessWidget {
+  PaddedButton(
+      {required this.padding, required this.text, required this.onPressed});
 
   final EdgeInsets padding;
   final String text;

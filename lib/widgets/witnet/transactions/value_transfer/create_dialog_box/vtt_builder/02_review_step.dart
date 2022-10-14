@@ -57,7 +57,6 @@ class ReviewStepState extends State<ReviewStep>
     final theme = Theme.of(context);
     return Container(
       width: deviceSize.width,
-
       decoration: BoxDecoration(color: theme.splashColor.withOpacity(.1)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -106,7 +105,6 @@ class ReviewStepState extends State<ReviewStep>
           child: contentBox(context)),
     );
   }
-
 
   Widget buildInputCards(BuildContext context, List<Input> inputs) {
     List<InputUtxo> _inputs = [];
@@ -194,7 +192,6 @@ class ReviewStepState extends State<ReviewStep>
     });
   }
 
-
   Widget buildOutputCards(
       BuildContext context, List<ValueTransferOutput> outputs) {
     List<Widget> _cards = [];
@@ -246,9 +243,7 @@ class ReviewStepState extends State<ReviewStep>
         );
       }
       return Container(
-        child: Column(
-
-        ),
+        child: Column(),
       );
     });
   }
@@ -296,8 +291,7 @@ class ReviewStepState extends State<ReviewStep>
     });
   }
 
-  Widget buildFeeCard(
-    BuildContext context) {
+  Widget buildFeeCard(BuildContext context) {
     int fee = BlocProvider.of<VTTCreateBloc>(context).feeNanoWit;
     return FeeContainer(feeValue: fee);
   }
@@ -336,5 +330,4 @@ class ReviewStepState extends State<ReviewStep>
   Widget build(BuildContext context) {
     return contentBox(context);
   }
-
 }

@@ -15,7 +15,8 @@ class WalletDetailCard extends StatefulWidget {
 class WalletDetailCardState extends State<WalletDetailCard>
     with TickerProviderStateMixin {
   void onBack() {
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
@@ -24,8 +25,10 @@ class WalletDetailCardState extends State<WalletDetailCard>
     Locator.instance
         .get<ApiCreateWallet>()
         .setWalletDescription(_walletDescription);
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context)
+        .add(NextCardEvent(type, data: {}));
   }
 
   late TextEditingController _nameController;

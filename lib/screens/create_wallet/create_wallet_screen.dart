@@ -35,11 +35,9 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
 
   _formCards() {
     return BlocBuilder<CreateWalletBloc, CreateWalletState>(
-
         builder: (context, state) {
-          print(state.status);
+      print(state.status);
       switch (state.status) {
-
         case CreateWalletStatus.Disclaimer:
           currentFormCard = DisclaimerCard();
           break;
@@ -52,7 +50,8 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
         case CreateWalletStatus.EnterXprv:
           currentFormCard = EnterXprvCard();
           break;
-        case CreateWalletStatus.ValidXprv: break;
+        case CreateWalletStatus.ValidXprv:
+          break;
         case CreateWalletStatus.EnterEncryptedXprv:
           currentFormCard = EnterEncryptedXprvCard();
           break;
@@ -78,9 +77,12 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
                 .add(ResetEvent(WalletType.newWallet));
           }
           break;
-        case CreateWalletStatus.Loading:break;
-        case CreateWalletStatus.LoadingException:break;
-        case CreateWalletStatus.Reset:break;
+        case CreateWalletStatus.Loading:
+          break;
+        case CreateWalletStatus.LoadingException:
+          break;
+        case CreateWalletStatus.Reset:
+          break;
       }
 
       return Center(

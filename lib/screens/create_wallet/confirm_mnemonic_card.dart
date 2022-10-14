@@ -51,7 +51,6 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
             SizedBox(
               height: 10,
             ),
-
             TextField(
               keyboardType: TextInputType.multiline,
               maxLines: 4,
@@ -86,13 +85,16 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
   }
 
   void onBack() {
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void onNext() {
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context)
+        .add(NextCardEvent(type, data: {}));
   }
 
   bool validMnemonic(String mnemonic) {
@@ -145,11 +147,11 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
                   width: deviceSize.width,
                   child: witnetLogo(theme),
                 ),
-                    _buildConfirmField(),
-                    _buildButtonRow(),
-                  ]),
-            ),
-          ],
-        );
+                _buildConfirmField(),
+                _buildButtonRow(),
+              ]),
+        ),
+      ],
+    );
   }
 }

@@ -4,8 +4,7 @@ class VttBuilderTypeChip extends StatefulWidget {
   const VttBuilderTypeChip({Key? key}) : super(key: key);
 
   @override
-  State<VttBuilderTypeChip> createState() =>
-      VttBuilderTypeChipState();
+  State<VttBuilderTypeChip> createState() => VttBuilderTypeChipState();
 }
 
 class VttBuilderTypeChipState extends State<VttBuilderTypeChip> {
@@ -20,7 +19,7 @@ class VttBuilderTypeChipState extends State<VttBuilderTypeChip> {
       spacing: 5,
       children: List<Widget>.generate(
         items.length,
-            (int index) {
+        (int index) {
           return ChoiceChip(
             label: Text('${items[index]}'),
             selected: _value == index,

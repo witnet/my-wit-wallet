@@ -62,17 +62,18 @@ class EnterXprvCardState extends State<EnterXprvCard>
     CreateWalletState state = BlocProvider.of<CreateWalletBloc>(context).state;
     BlocProvider.of<CreateWalletBloc>(context)
         .add(SetWalletStateEvent(WalletType.xprv, state));
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void onNext() {
     Locator.instance<ApiCreateWallet>().setSeed(xprv, 'xprv');
-    WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-    BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(type, data: {}));
+    WalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    BlocProvider.of<CreateWalletBloc>(context)
+        .add(NextCardEvent(type, data: {}));
   }
-
-
 
   bool validXprv(String xprvString) {
     try {
@@ -120,7 +121,8 @@ class EnterXprvCardState extends State<EnterXprvCard>
   Widget _verifyButton() {
     return ElevatedButton(
       onPressed: () {
-        WalletType type = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+        WalletType type =
+            BlocProvider.of<CreateWalletBloc>(context).state.walletType;
         BlocProvider.of<CreateWalletBloc>(context)
             .add(VerifyXprvEvent(type, xprv: xprv));
         try {

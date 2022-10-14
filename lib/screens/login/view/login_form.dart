@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -19,14 +17,11 @@ import 'package:witnet_wallet/widgets/input_login.dart';
 import 'package:witnet_wallet/widgets/wallet_list.dart';
 
 class LoginForm extends StatefulWidget {
-
-
   @override
   State<StatefulWidget> createState() => LoginFormState();
 }
 
-class LoginFormState extends State<LoginForm> with TickerProviderStateMixin{
-
+class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
   late WalletName walletName;
   late Password password;
 
@@ -48,7 +43,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin{
   late AnimationController _titleController;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     password = Password.pure();
     walletName = WalletName.pure();
@@ -72,14 +67,13 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin{
       vsync: this,
       duration: loadingDuration,
     );
-    _passInertiaController = AnimationController(
-      vsync: this,
-      duration: loadingDuration
-    );
+    _passInertiaController =
+        AnimationController(vsync: this, duration: loadingDuration);
     _passTextFieldLoadingAnimationInterval = const Interval(.15, 1.0);
     _textButtonLoadingAnimationInterval =
-    const Interval(.6, 1.0, curve: Curves.easeOut);
+        const Interval(.6, 1.0, curve: Curves.easeOut);
   }
+
   void handleLoadingAnimationStatus(AnimationStatus status) {
     if (status == AnimationStatus.forward) {
       setState(() => _isLoading = true);
@@ -88,22 +82,20 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin{
       setState(() => _isLoading = false);
     }
   }
-  _login() {
-      if (password.value.isNotEmpty) {
-        print('LoginSubmittedEvent');
-        BlocProvider.of<LoginBloc>(context)
-            .add(LoginSubmittedEvent(
-            walletName: walletName,
-            password: password));
-      } else {
-        BlocProvider.of<LoginBloc>(context)
-            .add(LoginExceptionEvent(
-          walletName,
-          password,
-          code: -2,
-          message: 'Password cannot be Blank',));
-      }
 
+  _login() {
+    if (password.value.isNotEmpty) {
+      print('LoginSubmittedEvent');
+      BlocProvider.of<LoginBloc>(context)
+          .add(LoginSubmittedEvent(walletName: walletName, password: password));
+    } else {
+      BlocProvider.of<LoginBloc>(context).add(LoginExceptionEvent(
+        walletName,
+        password,
+        code: -2,
+        message: 'Password cannot be Blank',
+      ));
+    }
   }
 
   Widget _buttonLogin() {
@@ -122,11 +114,9 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin{
             )
           ]);
         } else if (state.status == LoginStatus.LoginSuccess) {
-
           return ButtonLogin(
             label: 'CONECTED!',
-            onPressed: ()  {
-            },
+            onPressed: () {},
           );
         } else if (state.status == LoginStatus.LoginInvalid) {
           return Column(
@@ -150,6 +140,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin{
       },
     );
   }
+
   Widget _buildInitialButtons(BuildContext context, ThemeData theme) {
     return Padding(
       padding: EdgeInsets.all(5),
@@ -157,33 +148,26 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin{
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           PaddedButton(
-              padding:EdgeInsets.all(5),
-              text:'Create New Wallet',
-              onPressed: () => _createNewWallet(context)
-          ),
-
+              padding: EdgeInsets.all(5),
+              text: 'Create New Wallet',
+              onPressed: () => _createNewWallet(context)),
           PaddedButton(
               padding: EdgeInsets.all(5),
               text: 'Recover Wallet from Word Phrase',
-              onPressed: () => _recoverWallet(context)
-          ),
-
+              onPressed: () => _recoverWallet(context)),
           PaddedButton(
             padding: EdgeInsets.all(5),
             text: 'Import Node from Xprv',
             onPressed: () => null, // _importNode(context)
           ),
-
           PaddedButton(
               padding: EdgeInsets.all(5),
               text: 'Import Wallet from Encrypted XPRV',
-              onPressed: () => _importEncryptedWallet(context)
-          ),
+              onPressed: () => _importEncryptedWallet(context)),
         ],
       ),
     );
   }
-
 
   Widget _buildWalletField(BuildContext context, double width) {
     final theme = Theme.of(context);
@@ -191,7 +175,6 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin{
     return Container(
       /// A [FutureBuilder] to check if any wallet files exist.
       child: FutureBuilder<bool>(
-
           future: interface.walletsExist(),
           builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
             List<Widget> children;
@@ -219,7 +202,6 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin{
                             Padding(
                               padding: EdgeInsets.only(top: 7, bottom: 7),
                               child: InputLogin(
-
                                 prefixIcon: Icons.lock,
                                 hint: 'Password',
                                 obscureText: true,
@@ -236,8 +218,6 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin{
                               padding: EdgeInsets.only(top: 7, bottom: 7),
                               child: _buttonLogin(),
                             ),
-
-
                           ];
                         } else {
                           children = <Widget>[
@@ -252,7 +232,9 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin{
                           ),
                         );
                       }),
-                  Divider(height: 20,),
+                  Divider(
+                    height: 20,
+                  ),
                   _buildInitialButtons(context, theme),
                 ];
               } else {
@@ -282,19 +264,18 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin{
   @override
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
-      listener: (BuildContext context, LoginState state){
-        String msg = 'Authentication Failure:'+state.message;
-        if(state.status == LoginStatus.LoginInvalid) {
+      listener: (BuildContext context, LoginState state) {
+        String msg = 'Authentication Failure:' + state.message;
+        if (state.status == LoginStatus.LoginInvalid) {
           print(msg);
-
-        } else if (state.status == LoginStatus.LoginSuccess){
-          Navigator.push(context,MaterialPageRoute(builder: (context) => DashboardScreen()));
+        } else if (state.status == LoginStatus.LoginSuccess) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => DashboardScreen()));
         }
-
       },
       child: Container(
-        width:300,
-        alignment: const Alignment(0, -1/3),
+        width: 300,
+        alignment: const Alignment(0, -1 / 3),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -302,46 +283,39 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin{
 
             Padding(
               padding: EdgeInsets.only(top: 7, bottom: 7),
-              child:_buildWalletField(context, 300),
+              child: _buildWalletField(context, 300),
             ),
             Padding(padding: EdgeInsets.all(7)),
-
           ],
         ),
-      ) ,
+      ),
     );
   }
 }
 
-
-
-void _createNewWallet(BuildContext context){
+void _createNewWallet(BuildContext context) {
   Locator.instance<ApiCreateWallet>().setWalletType(WalletType.newWallet);
   Navigator.pushNamed(context, CreateWalletScreen.route);
   BlocProvider.of<CreateWalletBloc>(context)
       .add(ResetEvent(WalletType.newWallet));
 }
 
-void _recoverWallet(BuildContext context){
+void _recoverWallet(BuildContext context) {
   Locator.instance<ApiCreateWallet>().setWalletType(WalletType.mnemonic);
   Navigator.pushNamed(context, CreateWalletScreen.route);
   BlocProvider.of<CreateWalletBloc>(context)
       .add(ResetEvent(WalletType.mnemonic));
 }
 
-
-void _importNode(BuildContext context){
+void _importNode(BuildContext context) {
   Locator.instance<ApiCreateWallet>().setWalletType(WalletType.xprv);
   Navigator.pushNamed(context, CreateWalletScreen.route);
   BlocProvider.of<CreateWalletBloc>(context).add(ResetEvent(WalletType.xprv));
 }
 
-void _importEncryptedWallet(BuildContext context){
-  Locator.instance<ApiCreateWallet>()
-      .setWalletType(WalletType.encryptedXprv);
+void _importEncryptedWallet(BuildContext context) {
+  Locator.instance<ApiCreateWallet>().setWalletType(WalletType.encryptedXprv);
   Navigator.pushNamed(context, CreateWalletScreen.route);
   BlocProvider.of<CreateWalletBloc>(context)
       .add(ResetEvent(WalletType.encryptedXprv));
 }
-
-
