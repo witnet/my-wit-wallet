@@ -11,21 +11,32 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.headerBackgroundColor,
     required this.headerTextColor,
     required this.headerActiveTextColor,
+    required this.walletListBackgroundColor,
+    required this.walletActiveItemBackgroundColor,
+    required this.walletActiveItemBorderColor,
+    required this.walletItemBorderColor,
   });
   final Color? selectBackgroundColor;
   final Color? selectedTextColor;
   final Color? dropdownBackgroundColor;
   final Color? dropdownTextColor;
-  final Color? headerBackgroundColor;
   final Color? headerTextColor;
   final Color? headerActiveTextColor;
+  final Color? headerBackgroundColor;
+  final Color? walletListBackgroundColor;
+  final Color? walletActiveItemBorderColor;
+  final Color? walletActiveItemBackgroundColor;
+  final Color? walletItemBorderColor;
   @override
-  ExtendedTheme copyWith({
-    Color? selectBackgroundColor,
-    Color? selectedTextColor,
-    Color? dropdownBackgroundColor,
-    Color? dropdownTextColor,
-  }) {
+  ExtendedTheme copyWith(
+      {Color? selectBackgroundColor,
+      Color? selectedTextColor,
+      Color? dropdownBackgroundColor,
+      Color? dropdownTextColor,
+      Color? walletListBackgroundColor,
+      Color? walletActiveItemBorderColor,
+      Color? walletItemBorderColor,
+      Color? walletActiveItemBackgroundColor}) {
     return ExtendedTheme(
       selectBackgroundColor:
           selectBackgroundColor ?? this.selectBackgroundColor,
@@ -38,6 +49,14 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       headerTextColor: headerTextColor ?? this.headerTextColor,
       headerActiveTextColor:
           headerActiveTextColor ?? this.headerActiveTextColor,
+      walletListBackgroundColor:
+          walletListBackgroundColor ?? this.walletListBackgroundColor,
+      walletActiveItemBackgroundColor: walletActiveItemBackgroundColor ??
+          this.walletActiveItemBackgroundColor,
+      walletActiveItemBorderColor:
+          walletActiveItemBorderColor ?? this.walletActiveItemBorderColor,
+      walletItemBorderColor:
+          walletItemBorderColor ?? this.walletItemBorderColor,
     );
   }
 
@@ -61,6 +80,16 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       headerTextColor: Color.lerp(headerTextColor, other.dropdownTextColor, t),
       headerActiveTextColor:
           Color.lerp(headerActiveTextColor, other.dropdownTextColor, t),
+      walletListBackgroundColor: Color.lerp(
+          walletListBackgroundColor, other.walletListBackgroundColor, t),
+      walletActiveItemBackgroundColor: Color.lerp(
+          walletActiveItemBackgroundColor,
+          other.walletActiveItemBackgroundColor,
+          t),
+      walletActiveItemBorderColor: Color.lerp(
+          walletActiveItemBorderColor, other.walletActiveItemBorderColor, t),
+      walletItemBorderColor: Color.lerp(
+          walletItemBorderColor, other.walletItemBorderColor, t),
     );
   }
 
@@ -73,6 +102,10 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     headerActiveTextColor: WitnetPallet.witnetGreen2,
     headerTextColor: WitnetPallet.witnetGreen2,
     headerBackgroundColor: WitnetPallet.darkBlue2,
+    walletListBackgroundColor: WitnetPallet.darkBlue2,
+    walletActiveItemBackgroundColor: WitnetPallet.opacityWitnetGreen2,
+    walletActiveItemBorderColor: WitnetPallet.witnetGreen3,
+    walletItemBorderColor: WitnetPallet.lightGrey,
   );
   // the dark theme
   static const dark = ExtendedTheme(
@@ -83,5 +116,9 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     headerActiveTextColor: WitnetPallet.white,
     headerTextColor: WitnetPallet.white,
     headerBackgroundColor: WitnetPallet.opacityWitnetGreen,
+    walletListBackgroundColor: WitnetPallet.opacityWitnetGreen,
+    walletActiveItemBackgroundColor: WitnetPallet.opacityWitnetGreen3,
+    walletActiveItemBorderColor: WitnetPallet.witnetGreen2,
+    walletItemBorderColor: WitnetPallet.opacityWhite2
   );
 }

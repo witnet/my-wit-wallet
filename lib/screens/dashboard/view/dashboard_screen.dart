@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
@@ -23,6 +24,7 @@ import '../../screen_transitions/fade_transition.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../api_dashboard.dart';
 import '../bloc/dashboard_bloc.dart';
+import 'package:witnet_wallet/theme/extended_theme.dart';
 
 const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
@@ -113,6 +115,11 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _buildDashboardGrid(ThemeData themeData, DashboardState state) {
+    BorderRadiusGeometry radius = BorderRadius.only(
+      topLeft: Radius.circular(24.0),
+      topRight: Radius.circular(24.0),
+    );
+    final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +147,7 @@ class DashboardScreenState extends State<DashboardScreen>
           loadingController: _loadingController,
         ),
         buildSyncButton(),
-        WalletList()
+        // WalletList(),
         // TransactionHistory(themeData: themeData, externalAccounts: externalAccounts, internalAccounts: internalAccounts,),
       ],
     );
@@ -364,6 +371,7 @@ class DashboardScreenState extends State<DashboardScreen>
           _body,
         ],
         actions: [],
+        slidingPanel: WalletList(),
         actionsSize: 0,
       );
     });

@@ -6,9 +6,14 @@ class WitnetPallet {
   static const white = Color.fromARGB(255, 240, 243, 245);
   static const witnetGreen1 = Color.fromARGB(255, 74, 182, 160);
   static const witnetGreen2 = Color.fromARGB(255, 56, 144, 129);
+  static const witnetGreen3 = Color.fromRGBO(74, 182, 161, 1);
+  static const darkWitnetGreen3 = Color.fromRGBO(54, 140, 125, 0.67);
   static const darkBlue1 = Color.fromARGB(255, 13, 45, 67);
   static const darkBlue2 = Color.fromARGB(255, 2, 29, 48);
   static const opacityWitnetGreen = Color.fromRGBO(23, 73, 79, 1);
+  static const opacityWitnetGreen2 = Color.fromRGBO(65, 190, 165, 0.25);
+  static const opacityWitnetGreen3 = Color.fromRGBO(54, 140, 125, 0.16);
+  static const opacityWitnetGreen4 = Color.fromRGBO(54, 140, 125, 0.24);
   static const opacityWhite = Color.fromRGBO(240, 243, 245, 80);
   static const opacityWhite2 = Color.fromRGBO(240, 243, 245, 95);
   static const darkRed = Color.fromARGB(255, 179, 0, 12);
