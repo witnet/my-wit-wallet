@@ -67,32 +67,32 @@ class _InputLoginState extends State<InputLogin> {
         Container(
           height: deviceSize.height * 0.045,
           child: TextFormField(
-                decoration: InputDecoration(
-                  hintText: 'Input your password',
-                  suffixIcon: IconButton(
-                    splashRadius: 1,
-                    padding: const EdgeInsets.all(2),
-                    color: theme.iconTheme.color,
-                    iconSize: theme.iconTheme.size,
-                    icon: showPassword
-                        ? Icon(Icons.remove_red_eye)
-                        : Icon(Icons.visibility_off),
-                    onPressed: () {
-                      setState(() => showPassword = !showPassword);
-                    },
-                  ),
-                ),
-                minLines: 1,
-                focusNode: widget.focusNode,
-                controller: widget.textEditingController,
-                obscureText: widget.obscureText ? !showPassword : false,
-                keyboardType: widget.keyboardType,
-                onChanged: widget.onChanged,
-                onEditingComplete: widget.onEditingComplete,
-                validator: _validator,
+            decoration: InputDecoration(
+              hintText: 'Input your password',
+              suffixIcon: IconButton(
+                splashRadius: 1,
+                padding: const EdgeInsets.all(2),
+                color: theme.iconTheme.color,
+                iconSize: theme.iconTheme.size,
+                icon: showPassword
+                    ? Icon(Icons.remove_red_eye)
+                    : Icon(Icons.visibility_off),
+                onPressed: () {
+                  setState(() => showPassword = !showPassword);
+                },
               ),
             ),
-          ],
+            minLines: 1,
+            focusNode: widget.focusNode,
+            controller: widget.textEditingController,
+            obscureText: widget.obscureText ? !showPassword : false,
+            keyboardType: widget.keyboardType,
+            onChanged: widget.onChanged,
+            onEditingComplete: widget.onEditingComplete,
+            validator: _validator,
+          ),
+        ),
+      ],
     );
   }
 }

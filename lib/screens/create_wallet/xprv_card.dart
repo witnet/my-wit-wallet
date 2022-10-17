@@ -35,19 +35,18 @@ class EnterXprvCardState extends State<EnterXprvCard>
               height: 10,
             ),
             TextField(
-              keyboardType: TextInputType.multiline,
-              maxLines: 4,
-              controller: textController,
-              onChanged: (String e) {
-                setState(() {
-                  xprv = textController.value.text;
-                  numLines = '\n'.allMatches(e).length + 1;
-                });
-              },
-              decoration: new InputDecoration(
+                keyboardType: TextInputType.multiline,
+                maxLines: 4,
+                controller: textController,
+                onChanged: (String e) {
+                  setState(() {
+                    xprv = textController.value.text;
+                    numLines = '\n'.allMatches(e).length + 1;
+                  });
+                },
+                decoration: new InputDecoration(
                   labelText: 'XPRV',
-              )
-            ),
+                )),
             SizedBox(
               height: 10,
             ),

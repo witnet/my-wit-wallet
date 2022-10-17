@@ -55,19 +55,18 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             TextField(
-              keyboardType: TextInputType.multiline,
-              maxLines: 4,
-              controller: textController,
-              onChanged: (String e) {
-                setState(() {
-                  xprv = textController.value.text;
-                  numLines = '\n'.allMatches(e).length + 1;
-                });
-              },
-              decoration: new InputDecoration(
-                labelText: 'Encrypted XPRV',
-              )
-            ),
+                keyboardType: TextInputType.multiline,
+                maxLines: 4,
+                controller: textController,
+                onChanged: (String e) {
+                  setState(() {
+                    xprv = textController.value.text;
+                    numLines = '\n'.allMatches(e).length + 1;
+                  });
+                },
+                decoration: new InputDecoration(
+                  labelText: 'Encrypted XPRV',
+                )),
             SizedBox(
               height: 10,
             ),

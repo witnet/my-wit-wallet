@@ -25,7 +25,8 @@ class Select extends StatelessWidget {
     final theme = Theme.of(context).extension<ExtendedTheme>()!;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.selectBackgroundColor, //background color of dropdown button
+        color:
+            theme.selectBackgroundColor, //background color of dropdown button
         borderRadius:
             BorderRadius.circular(4), //border raiuds of dropdown button
       ),
@@ -47,8 +48,8 @@ class Select extends StatelessWidget {
                   child: Text(
                     item,
                     style: TextStyle(
-                      color: theme.selectedTextColor,
-                      fontWeight: FontWeight.normal),
+                        color: theme.selectedTextColor,
+                        fontWeight: FontWeight.normal),
                   ),
                 );
               }).toList();

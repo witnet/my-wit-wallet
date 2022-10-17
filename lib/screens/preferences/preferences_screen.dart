@@ -17,16 +17,16 @@ class _PreferencePageState extends State<PreferencePage> {
   Widget themeWidget(heigh, context) {
     return Row(children: [
       CustomSwitch(
-        checked: checked,
-        primaryLabel: 'Dark Mode',
-        secondaryLabel: 'Light Mode',
-        onChanged: (value) => {
-          setState(() {
-            checked = !checked;
-            BlocProvider.of<ThemeBloc>(context).add(ThemeChanged(checked ? WalletTheme.Dark : WalletTheme.Light));
-          })
-        }
-      ),
+          checked: checked,
+          primaryLabel: 'Dark Mode',
+          secondaryLabel: 'Light Mode',
+          onChanged: (value) => {
+                setState(() {
+                  checked = !checked;
+                  BlocProvider.of<ThemeBloc>(context).add(ThemeChanged(
+                      checked ? WalletTheme.Dark : WalletTheme.Light));
+                })
+              }),
     ]);
   }
 

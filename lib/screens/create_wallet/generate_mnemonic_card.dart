@@ -53,9 +53,7 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
         'Spanish',
       ],
       selectedItem: _language,
-      onChanged: (String? value) => {
-        _setLanguage(value!)
-      },
+      onChanged: (String? value) => {_setLanguage(value!)},
     );
   }
 

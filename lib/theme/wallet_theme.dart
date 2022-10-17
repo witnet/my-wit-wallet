@@ -19,15 +19,15 @@ final walletThemeData = {
 Widget witnetLogo(ThemeData theme) {
   return (theme.primaryColor == lightTheme.primaryColor)
       ? Image.asset(
-        'assets/img/witnet_light_logo.png',
-        width: 800,
-        height: 139.68,
-        fit:BoxFit.fitWidth,
-      )
+          'assets/img/witnet_light_logo.png',
+          width: 800,
+          height: 139.68,
+          fit: BoxFit.fitWidth,
+        )
       : Image.asset(
-        'assets/img/witnet_dark_logo.png',
-        width: 800,
-        height: 139.68,
-        fit: BoxFit.fitWidth,
-      );
+          'assets/img/witnet_dark_logo.png',
+          width: 800,
+          height: 139.68,
+          fit: BoxFit.fitWidth,
+        );
 }

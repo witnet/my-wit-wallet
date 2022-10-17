@@ -106,34 +106,33 @@ class BalanceDisplayState extends State<BalanceDisplay>
 
     ///
     ///
-    return Container(child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                AnimatedNumericText(
-                  initialValue: nanoWitToWit(currentValueNanoWit),
-                  targetValue: nanoWitToWit(balanceInfo.availableNanoWit),
-                  curve: Interval(0, .5, curve: Curves.easeOut),
-                  controller: _headerController,
-                  style: theme.textTheme.bodyText1!,
-                ),
-                SizedBox(width: 5),
-                Text(
-                  'wit',
-                  style: theme.textTheme.bodyText1!,
-                ),
-              ],
-            ),
-            (balanceInfo.lockedNanoWit > 0)
-                
-            
-                ? timeLockDisplay(context)
-                : Text('Wallet Balance', style: theme.textTheme.bodyText1)
-          ],
-        ),
-      );
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              AnimatedNumericText(
+                initialValue: nanoWitToWit(currentValueNanoWit),
+                targetValue: nanoWitToWit(balanceInfo.availableNanoWit),
+                curve: Interval(0, .5, curve: Curves.easeOut),
+                controller: _headerController,
+                style: theme.textTheme.bodyText1!,
+              ),
+              SizedBox(width: 5),
+              Text(
+                'wit',
+                style: theme.textTheme.bodyText1!,
+              ),
+            ],
+          ),
+          (balanceInfo.lockedNanoWit > 0)
+              ? timeLockDisplay(context)
+              : Text('Wallet Balance', style: theme.textTheme.bodyText1)
+        ],
+      ),
+    );
   }
 
   @override

@@ -12,7 +12,8 @@ class DisclaimerCard extends StatefulWidget {
   State<StatefulWidget> createState() => DisclaimerCardState();
 }
 
-class DisclaimerCardState extends State<DisclaimerCard> with TickerProviderStateMixin {
+class DisclaimerCardState extends State<DisclaimerCard>
+    with TickerProviderStateMixin {
   bool scrolledToBottom = false;
   late ScrollController _scrollController;
   late AnimationController _loadingController;
@@ -139,15 +140,14 @@ class DisclaimerCardState extends State<DisclaimerCard> with TickerProviderState
               height: 10,
             ),
             LabeledCheckbox(
-              checked: acceptedDisclaimer, 
-              label: 'I will be carefull, I promise!', 
-              onChanged: (value) => {
-                setState(() {
-                  print(value);
-                  acceptedDisclaimer = !acceptedDisclaimer;
-                })
-              }
-            ),
+                checked: acceptedDisclaimer,
+                label: 'I will be carefull, I promise!',
+                onChanged: (value) => {
+                      setState(() {
+                        print(value);
+                        acceptedDisclaimer = !acceptedDisclaimer;
+                      })
+                    }),
           ],
         ),
       ),
