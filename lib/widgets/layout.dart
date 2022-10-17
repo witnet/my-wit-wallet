@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:witnet_wallet/widgets/headerLayout.dart';
+import 'package:witnet_wallet/theme/extended_theme.dart';
 
 class Layout extends StatelessWidget {
   final List<Widget> widgetList;
@@ -7,26 +9,51 @@ class Layout extends StatelessWidget {
   final List<Widget> actions;
   final List<Widget> headerActions;
   final double actionsSize;
+  final Widget? slidingPanel;
 
   const Layout({
     required this.widgetList,
     required this.actions,
     required this.actionsSize,
     required this.headerActions,
+    this.slidingPanel,
     this.appBar,
   });
 
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      appBar: appBar,
-      resizeToAvoidBottomInset: false,
-      backgroundColor: theme.backgroundColor,
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: ListView(
+  Widget buildListView(context) {
+    final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
+    if (slidingPanel == null) {
+      return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: ListView(
+            controller: ScrollController(),
+            children: [
+              HeaderLayout(headerActions: headerActions),
+              Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: 100,
+                    maxWidth: 600,
+                  ),
+                  child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(children: widgetList)),
+                ),
+              ),
+              SizedBox(
+                height: actionsSize,
+              )
+            ],
+          ));
+    } else {
+      return SlidingUpPanel(
+        color: extendedTheme.walletListBackgroundColor!,
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+        panel: slidingPanel,
+        body: ListView(
+          controller: ScrollController(),
           children: [
             HeaderLayout(headerActions: headerActions),
             Center(
@@ -45,7 +72,17 @@ class Layout extends StatelessWidget {
             )
           ],
         ),
-      ),
+      );
+    }
+  }
+
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Scaffold(
+      appBar: appBar,
+      resizeToAvoidBottomInset: false,
+      backgroundColor: theme.backgroundColor,
+      body: buildListView(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
         height: actionsSize,

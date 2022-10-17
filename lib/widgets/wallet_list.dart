@@ -4,9 +4,11 @@ import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/theme/colors.dart';
+import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
-import 'package:witnet_wallet/widgets/select.dart';
 import 'package:witnet_wallet/util/storage/path_provider_interface.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ListItem {
   bool isSelected = false;
@@ -16,7 +18,11 @@ class ListItem {
 }
 
 class WalletList extends StatefulWidget {
-  const WalletList({Key? key}) : super(key: key);
+  const WalletList({
+    Key? key,
+  }) : super(
+          key: key,
+        );
 
   @override
   State<StatefulWidget> createState() => WalletListState();
@@ -48,7 +54,7 @@ class WalletListState extends State<WalletList> {
         });
   }
 
-    //Go to create or import wallet view
+  //Go to create or import wallet view
   void _createImportWallet() {
     Locator.instance<ApiCreateWallet>().setWalletType(WalletType.unset);
     Navigator.pushNamed(context, CreateWalletScreen.route);
@@ -58,29 +64,95 @@ class WalletListState extends State<WalletList> {
 
   Widget _buildInitialButtons() {
     return PaddedButton(
-      padding: EdgeInsets.all(0), 
-      text: 'New wallet', 
+      padding: EdgeInsets.all(0),
+      text: 'Add new',
       onPressed: () => {
         _createImportWallet(),
       },
-      type: 'text',
+      icon: Icon(
+        FontAwesomeIcons.plusCircle,
+        size: 18,
+      ),
+      type: 'horizontal-icon',
+    );
+  }
+
+  Widget _buildWalletItem(walletName) {
+    final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+    final isSelectedWallet = walletName == selectedWallet;
+    final textStyle = TextStyle(
+        fontFamily: 'NotoSans',
+        color: WitnetPallet.white,
+        fontSize: 14,
+        fontWeight: FontWeight.normal);
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+      child: Container(
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isSelectedWallet
+              ? extendedTheme.walletActiveItemBackgroundColor
+              : extendedTheme.walletListBackgroundColor,
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+          border: Border.all(
+            color: isSelectedWallet
+                ? extendedTheme.walletActiveItemBorderColor!
+                : extendedTheme.walletItemBorderColor!,
+            width: 1,
+          ),
+        ),
+        margin: EdgeInsets.all(8),
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Container(
+            color: extendedTheme.selectedTextColor,
+            width: 30,
+            height: 30,
+          ),
+          Column(
+            children: [
+              Text(
+                walletName,
+                style: textStyle,
+              ),
+              Text(
+                'wit1...113',
+                style: textStyle,
+              ),
+            ],
+          ),
+          Text(
+            '0.00 Wit',
+            style: textStyle,
+          ),
+        ]),
+      ),
+      onTap: () {
+        setState(() {
+          selectedWallet = walletName!;
+          // Locator.instance.get<ApiAuth>().setWalletName(value);
+          walletSelected = true;
+        });
+      },
+    ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      _buildInitialButtons(),
-      Select(
-          listItems: walletList,
-          selectedItem: selectedWallet,
-          onChanged: (String? value) => {
-                setState(() {
-                  selectedWallet = value!;
-                  // Locator.instance.get<ApiAuth>().setWalletName(value);
-                  walletSelected = true;
-                })
-              }),
+    return ListView(padding: EdgeInsets.all(8), children: [
+      Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [_buildInitialButtons()]),
+      ListView.builder(
+        shrinkWrap: true,
+        itemCount: walletList.length,
+        itemBuilder: (context, index) {
+          return _buildWalletItem(walletList[index]);
+        },
+      ),
     ]);
   }
 }
