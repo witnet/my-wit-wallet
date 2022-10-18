@@ -51,8 +51,8 @@ TextTheme textTheme = TextTheme(
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.white,
   filled: true,
-  errorStyle: TextStyle(backgroundColor: WitnetPallet.darkRed),
-  helperStyle: TextStyle(backgroundColor: WitnetPallet.darkGrey),
+  errorStyle: TextStyle(color: WitnetPallet.darkRed),
+  helperStyle: TextStyle(color: WitnetPallet.darkGrey),
   helperMaxLines: 1,
   errorMaxLines: 1,
   hintStyle: TextStyle(),
@@ -87,7 +87,6 @@ CardTheme cardTheme = CardTheme(
   elevation: 5.0,
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.0)),
   color: WitnetPallet.darkBlue2,
-  // shadowColor: Color(0xFF112338),
 );
 ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(

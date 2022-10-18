@@ -6,7 +6,6 @@ import 'package:witnet/crypto.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'dart:ui';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
 
 class ConfirmMnemonicCard extends StatefulWidget {

@@ -128,7 +128,6 @@ CardTheme cardTheme = CardTheme(
   elevation: 5.0,
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.0)),
   color: WitnetPallet.opacityWitnetGreen,
-  // shadowColor: Color(0xFF112338),
 );
 IconThemeData iconTheme = IconThemeData(
   color: WitnetPallet.opacityWhite,

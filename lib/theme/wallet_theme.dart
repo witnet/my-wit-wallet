@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'extended_theme.dart';
 import 'dark_theme.dart' show darkTheme;
 import 'light_theme.dart' show lightTheme;
-import 'colors.dart';
 
 enum WalletTheme {
   Light,

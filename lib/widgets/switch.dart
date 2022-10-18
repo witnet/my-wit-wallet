@@ -25,9 +25,7 @@ class CustomSwitch extends StatelessWidget {
       Switch(
         // This bool value toggles the switch.
         value: this.checked,
-        onChanged: (bool value) {
-          onChanged(value);
-        },
+        onChanged: onChanged,
       ),
       Text(
         primaryLabel,
