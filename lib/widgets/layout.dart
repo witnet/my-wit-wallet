@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/widgets/headerLayout.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
+
+final panelController = PanelController();
 
 class Layout extends StatelessWidget {
   final List<Widget> widgetList;
@@ -19,6 +22,23 @@ class Layout extends StatelessWidget {
     this.slidingPanel,
     this.appBar,
   });
+
+  Widget showWalletList() {
+    return MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          child: Container(
+            color: WitnetPallet.white,
+            width: 30,
+            height: 30,
+          ),
+          onTap: () => {
+            panelController.isPanelOpen
+                ? panelController.close()
+                : panelController.open()
+          },
+        ));
+  }
 
   Widget buildListView(context) {
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
@@ -49,13 +69,17 @@ class Layout extends StatelessWidget {
           ));
     } else {
       return SlidingUpPanel(
+        controller: panelController,
         color: extendedTheme.walletListBackgroundColor!,
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+        minHeight: 0,
+        maxHeight: MediaQuery.of(context).size.height * 0.5,
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(8), topRight: Radius.circular(8)),
         panel: slidingPanel,
         body: ListView(
           controller: ScrollController(),
           children: [
-            HeaderLayout(headerActions: headerActions),
+            HeaderLayout(headerActions: [showWalletList(), ...headerActions]),
             Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(

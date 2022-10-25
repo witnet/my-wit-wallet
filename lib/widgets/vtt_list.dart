@@ -5,9 +5,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/util/witnet/wallet/account.dart';
+import 'package:witnet_wallet/util/storage/cache/transaction_cache.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/info_dialog_box/vtt_dialog_box.dart';
+
+import '../util/storage/database/account.dart';
+
 
 String formatDate(int ts) {
   DateTime dt = DateTime.fromMillisecondsSinceEpoch(ts * 1000);
@@ -98,8 +101,9 @@ class VttListWidgetState extends State<VttListWidget> {
     Map<String, VttListItem> trx = {};
     widget.accounts.forEach((path, account) {
       addresses.add(account.address);
-      account.valueTransfers.forEach((vttHash, vttItem) {
-        if (!trx.containsKey(vttHash)) trx[vttHash] = VttListItem(vttItem);
+      account.vttHashes.forEach((vttHash) {
+        TransactionCache cache = TransactionCache();
+        if (!trx.containsKey(vttHash)) trx[vttHash] = VttListItem(cache.getVtt(vttHash));
       });
     });
     transactions = sortTransactions(trx.values.toList());
@@ -143,7 +147,7 @@ class VttListWidgetState extends State<VttListWidget> {
     int nanoWitvalue = 0;
     vti.outputs.forEach((element) {
       if (addresses.contains(element.pkh.address)) {
-        nanoWitvalue += element.value;
+        nanoWitvalue += element.value.toInt();
       }
     });
     return nanoWitvalue;
@@ -163,7 +167,7 @@ class VttListWidgetState extends State<VttListWidget> {
     int value = 0;
     vti.outputs.forEach((element) {
       if (addresses.contains(element.pkh.address)) {
-        value += element.value;
+        value += element.value.toInt();
       }
     });
     return value;

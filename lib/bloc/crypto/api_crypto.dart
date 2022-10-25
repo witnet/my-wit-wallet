@@ -1,17 +1,22 @@
 import 'dart:isolate';
 
+import 'package:witnet/data_structures.dart';
+import 'package:witnet/schema.dart';
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
-import 'package:witnet_wallet/util/witnet/wallet/account.dart';
-import 'package:witnet_wallet/util/witnet/wallet/wallet.dart';
 
+import 'package:witnet_wallet/util/storage/database/account.dart';
+import 'package:witnet_wallet/util/storage/database/wallet.dart';
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 import 'crypto_bloc.dart';
 
 enum SeedSource { mnemonic, xprv, encryptedXprv }
 
+// used to call the isolate thread from anywhere in the main app
 class ApiCrypto {
+  late String? id;
   late String? walletName;
   late String? walletDescription;
   late String? seed;
@@ -19,8 +24,9 @@ class ApiCrypto {
   late String? password;
   ApiCrypto();
 
-  void setInitialWalletData(String walletName, String walletDescription,
+  void setInitialWalletData(String id, String walletName, String walletDescription,
       String seed, String seedSource, String password) {
+    this.id = id;
     this.walletName = walletName;
     this.walletDescription = walletDescription;
     this.seed = seed;
@@ -57,20 +63,22 @@ class ApiCrypto {
     }
   }
 
-  Future<Account> generateAccount(KeyType keyType, int index) async {
+  Future<Account> generateAccount(
+      String walletName, KeyType keyType, int index) async {
     try {
       CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
 
-      DbWallet dbWallet = Locator.instance<ApiDashboard>().dbWallet!;
-
+      WalletStorage walletStorage =
+          Locator.instance<ApiDashboard>().walletStorage!;
+      Wallet wallet = walletStorage.wallets[walletName]!;
       final receivePort = ReceivePort();
 
       cryptoIsolate.send(
         method: 'generateKey',
         params: {
           'keyType': 'internal',
-          'external_keychain': dbWallet.externalXpub,
-          'internal_keychain': dbWallet.internalXpub,
+          'external_keychain': wallet.externalXpub,
+          'internal_keychain': wallet.internalXpub,
           'index': index
         },
         port: receivePort.sendPort,
@@ -80,7 +88,8 @@ class ApiCrypto {
         var _xpub = val['xpub'];
         return _xpub;
       });
-      return Account(address: xpub.address, path: xpub.path!);
+      return Account(
+          walletName: walletName, address: xpub.address, path: xpub.path!);
     } catch (e) {
       rethrow;
     }
@@ -88,29 +97,90 @@ class ApiCrypto {
 
   Future<Wallet> initializeWallet() async {
     try {
-      CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
+      CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
+      ApiDatabase db = Locator.instance<ApiDatabase>();
+      // get master key
+      String key = await db.getKeychain();
 
       final receivePort = ReceivePort();
 
       cryptoIsolate.send(
           method: 'initializeWallet',
           params: {
+            'id': walletName,
             'seedSource': seedSource,
             'walletName': walletName,
             'walletDescription': walletDescription,
             'seed': seed,
-            'password': password,
+            'password': key,
           },
           port: receivePort.sendPort);
-
-      Wallet wallet = await receivePort.first.then((value) {
+      clearInitialWalletData();
+      Wallet dbWallet = await receivePort.first.then((value) {
         var val = value as Map<String, dynamic>;
         var _wallet = val['wallet'];
         return _wallet;
       });
-      return wallet;
+
+      return dbWallet;
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<List<KeyedSignature>> signTransaction(
+    List<Utxo> utxos,
+    WalletStorage walletStorage,
+    String transactionId,
+  ) async {
+    Map<String, List<String>> _signers = {};
+
+    // get master key
+    ApiDatabase db = Locator.instance<ApiDatabase>();
+    String key = await db.getKeychain();
+
+    /// loop through utxos
+    for (int i = 0; i < utxos.length; i++) {
+      Utxo currentUtxo = utxos.elementAt(i);
+
+      /// loop through every wallet
+      for (int k = 0; k < walletStorage.wallets.length; k++) {
+        Wallet currentWallet = walletStorage.wallets.values.elementAt(k);
+
+        /// loop though every external account
+        currentWallet.externalAccounts.forEach((index, account) {
+          if (account.utxos.contains(currentUtxo)) {
+            if (_signers.containsKey(currentWallet.xprv)) {
+              _signers[currentWallet.xprv]!.add(account.path);
+            } else {
+              _signers[currentWallet.xprv!] = [account.path];
+            }
+          }
+        });
+
+        /// loop though every internal account
+        currentWallet.internalAccounts.forEach((index, account) {
+          if (account.utxos.contains(currentUtxo)) {
+            if (_signers.containsKey(currentWallet.xprv)) {
+              _signers[currentWallet.xprv]!.add(account.path);
+            } else {
+              _signers[currentWallet.xprv!] = [account.path];
+            }
+          }
+        });
+      }
+    }
+    final receivePort = ReceivePort();
+    CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
+    cryptoIsolate.send(
+        method: 'signTransaction',
+        params: {
+          'password': key,
+          'signers': _signers,
+          'transaction_id': transactionId
+        },
+        port: receivePort.sendPort);
+    List<KeyedSignature> signatures = await receivePort.first;
+    return signatures;
   }
 }

@@ -44,13 +44,13 @@ class HeaderLayout extends StatelessWidget {
           color: extendedTheme.headerBackgroundColor,
           child: Column(children: [
             Container(
-              padding: EdgeInsets.all(16),
-              child: 
-              Row(
-                mainAxisAlignment: headerActions.length > 1 ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
-                children: headerActions,
-              )
-            ),
+                padding: EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: headerActions.length > 1
+                      ? MainAxisAlignment.spaceBetween
+                      : MainAxisAlignment.start,
+                  children: headerActions,
+                )),
             Container(
                 child:
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [

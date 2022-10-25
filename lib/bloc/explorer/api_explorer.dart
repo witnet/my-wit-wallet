@@ -1,9 +1,9 @@
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
-import 'package:witnet_wallet/util/storage/cache/file_manager_interface.dart';
+import 'package:witnet_wallet/util/storage/cache/transaction_cache.dart';
 
-import '../../constants.dart';
+import 'package:witnet_wallet/constants.dart';
 
 enum ExplorerQuery {
   hash,

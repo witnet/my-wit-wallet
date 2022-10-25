@@ -78,7 +78,7 @@ class VttDialogBoxState extends State<VTTDialogBox>
               flex: 1,
               child: Icon(
                 FontAwesomeIcons.fileInvoice,
-                color: theme.accentColor,
+                color: theme.colorScheme.secondary,
               )),
           Expanded(
               flex: 8,
@@ -157,7 +157,7 @@ class VttDialogBoxState extends State<VTTDialogBox>
               flex: 1,
               child: Icon(
                 FontAwesomeIcons.addressCard,
-                color: theme.accentColor,
+                color: theme.colorScheme.secondary,
               )),
           Expanded(
               flex: 8,
@@ -187,7 +187,7 @@ class VttDialogBoxState extends State<VTTDialogBox>
           Expanded(
               flex: 8,
               child: AutoSizeText(
-                nanoWitToWit(element.value).toStringAsFixed(9),
+                nanoWitToWit(element.value.toInt()).toStringAsFixed(9),
                 textAlign: TextAlign.right,
                 maxLines: 1,
                 minFontSize: 9,

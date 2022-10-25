@@ -1,14 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/screens/create_wallet/models/wallet_name.dart';
 import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/screens/login/models/password.dart';
-import 'package:witnet_wallet/shared/api_auth.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
+
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -16,10 +15,10 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc()
       : super(LoginState(
-            message: '',
-            status: LoginStatus.LoggedOut,
-            walletName: WalletName.pure(),
-            password: '')) {
+          message: '',
+          status: LoginStatus.LoggedOut,
+          password: '',
+        )) {
     on<LoginWalletNameChangedEvent>(_onWalletChanged);
     on<LoginPasswordChangedEvent>(_onPasswordChanged);
     on<LoginSubmittedEvent>(_onSubmitted);
@@ -46,33 +45,26 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   void _onSubmitted(LoginSubmittedEvent event, Emitter<LoginState> emit) async {
-    ApiAuth apiAuth = Locator.instance<ApiAuth>();
     ApiDatabase apiDatabase = Locator.instance<ApiDatabase>();
     ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
 
     try {
       emit(state.copyWith(status: LoginStatus.LoginInProgress));
-      Map<String, dynamic> wallet =
-          await apiAuth.unlockWallet(password: event.password);
-      DbWallet dbWallet = await apiDatabase.loadWallet();
-      try {
-        /// test decrypt sheikah compatible XPRV (aes.cbc)
-        Xprv tmp = Xprv.fromEncryptedXprv(dbWallet.xprv!, event.password);
-      } catch (e) {
-        print(e);
-        throw AuthException(code: 01, message: 'bad password');
+      bool verified = await apiDatabase.verifyPassword(event.password);
+      if (verified) {
+      WalletStorage walletStorage = await apiDatabase.loadWalletsDatabase();
+      apiDashboard.setWallets(walletStorage);
+        emit(state.copyWith(status: LoginStatus.LoginSuccess));
+      } else {
+        emit(state.copyWith(status: LoginStatus.LoginInvalid));
       }
-      apiDashboard.setDbWallet(dbWallet);
-      emit(state.copyWith(status: LoginStatus.LoginSuccess));
-    } on AuthException catch (e) {
-      print(e);
-      emit(state.copyWith(
-        status: LoginStatus.LoginInvalid,
-      ));
+    } catch (e) {
     }
   }
 
   void _onLogoutEvent(LoginLogoutEvent event, Emitter<LoginState> emit) async {
+    ApiDatabase apiDatabase = Locator.instance<ApiDatabase>();
+    await apiDatabase.lockDatabase();
     emit(state.copyWith(status: LoginStatus.LoggedOut));
   }
 }

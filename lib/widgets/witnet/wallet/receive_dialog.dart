@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/qr/qr_address_generator.dart';
 import 'package:witnet_wallet/widgets/round_button.dart';
 
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
+
 class ReceiveDialogBox extends StatefulWidget {
-  final DbWallet dbWallet;
+  final WalletStorage walletStorage;
   ReceiveDialogBox({
-    required this.dbWallet,
+    required this.walletStorage,
   });
 
   @override
@@ -29,13 +30,12 @@ class ReceiveDialogBoxState extends State<ReceiveDialogBox>
       duration: const Duration(milliseconds: 200),
     );
     bool foundAddress = false;
-
-    for (int i = 0; i < widget.dbWallet.externalAccounts.length; i++) {
+    for (int i = 0 ; i < widget.walletStorage.wallets.values.first.externalAccounts.length; i++) {
       if (nextAddress == '') {
         if (!foundAddress) {
-          if (widget.dbWallet.externalAccounts[i]!.vttHashes.isEmpty) {
+          if (widget.walletStorage.wallets.values.first.externalAccounts[i]!.vttHashes.isEmpty) {
             foundAddress = true;
-            nextAddress = widget.dbWallet.externalAccounts[i]!.address;
+            nextAddress = widget.walletStorage.wallets.values.first.externalAccounts[i]!.address;
           }
         }
       }
@@ -112,8 +112,6 @@ class ReceiveDialogBoxState extends State<ReceiveDialogBox>
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    final double cardWidth =
-        (deviceSize.width < 600.0) ? deviceSize.width : 600;
     return Dialog(
       insetPadding: EdgeInsets.all(0),
       elevation: 0,

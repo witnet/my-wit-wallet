@@ -8,9 +8,8 @@ import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_cr
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
-import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/widgets//wallet_list.dart';
 import 'package:witnet_wallet/widgets/layout.dart';
 import 'package:witnet_wallet/widgets/round_button.dart';
@@ -26,6 +25,13 @@ import '../api_dashboard.dart';
 import '../bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 
+import 'package:witnet_wallet/util/storage/database/account.dart';
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
+import 'package:witnet_wallet/screens/login/view/login_screen.dart';
+import 'package:witnet_wallet/screens/screen_transitions/fade_transition.dart';
+import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
+import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
+
 const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
 class DashboardScreen extends StatefulWidget {
@@ -38,7 +44,7 @@ class DashboardScreenState extends State<DashboardScreen>
   Map<String, Account> externalAccounts = {};
   Map<String, Account> internalAccounts = {};
 
-  late DbWallet? dbWallet;
+  late WalletStorage? walletStorage;
   late AnimationController _loadingController;
   late AnimationController _balanceController;
   List<String>? walletList;
@@ -82,7 +88,7 @@ class DashboardScreenState extends State<DashboardScreen>
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return WalletSettingsDialog(
-          dbWallet: apiDashboard.dbWallet!,
+          walletStorage: apiDashboard.walletStorage!,
         );
       },
     );
@@ -95,20 +101,21 @@ class DashboardScreenState extends State<DashboardScreen>
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return CreateVTTDialogBox(
-          dbWallet: apiDashboard.dbWallet!,
+          walletStorage: apiDashboard.walletStorage!,
         );
       },
     );
   }
 
   Future<void> _showReceiveDialog() async {
-    ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
+    ApiDatabase db = Locator.instance<ApiDatabase>();
+    WalletStorage walletStorage = await db.loadWalletsDatabase();
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return ReceiveDialogBox(
-          dbWallet: apiDashboard.dbWallet!,
+          walletStorage: walletStorage,
         );
       },
     );
@@ -153,8 +160,8 @@ class DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  void _setWallet(DbWallet dbWallet) {
-    this.dbWallet = dbWallet;
+  void _setWallet(WalletStorage dbWallet) {
+    this.walletStorage = dbWallet;
   }
 
   Widget explorerWatcher() {
@@ -165,7 +172,7 @@ class DashboardScreenState extends State<DashboardScreen>
           //this.dbWallet = apiDashboard.dbWallet;
           return Container();
         } else if (state.status == ExplorerStatus.dataloaded) {
-          dbWallet = apiDashboard.dbWallet;
+          walletStorage = apiDashboard.walletStorage;
           return Container();
         } else {
           return Container();
@@ -183,7 +190,7 @@ class DashboardScreenState extends State<DashboardScreen>
           children: <Widget>[
             RoundButton(
               size: 40,
-              icon: Icon(FontAwesomeIcons.sync),
+              icon: Icon(FontAwesomeIcons.circle),
               onPressed: () {
                 BlocProvider.of<ExplorerBloc>(context)
                     .add(SyncWalletEvent(ExplorerStatus.dataloading));
@@ -202,7 +209,7 @@ class DashboardScreenState extends State<DashboardScreen>
           children: <Widget>[
             RoundButton(
               size: 40,
-              icon: Icon(FontAwesomeIcons.sync),
+              icon: Icon(FontAwesomeIcons.circle),
               onPressed: () {
                 BlocProvider.of<ExplorerBloc>(context)
                     .add(SyncWalletEvent(ExplorerStatus.dataloading));
@@ -217,7 +224,7 @@ class DashboardScreenState extends State<DashboardScreen>
           children: <Widget>[
             RoundButton(
               size: 40,
-              icon: Icon(FontAwesomeIcons.sync),
+              icon: Icon(FontAwesomeIcons.circle),
               onPressed: () {
                 BlocProvider.of<ExplorerBloc>(context)
                     .add(SyncWalletEvent(ExplorerStatus.dataloading));
@@ -232,7 +239,7 @@ class DashboardScreenState extends State<DashboardScreen>
       if (state.status == ExplorerStatus.ready) {
         ApiDashboard apiDashboard = Locator.instance.get<ApiDashboard>();
         setState(() {
-          dbWallet = apiDashboard.dbWallet;
+          walletStorage = apiDashboard.walletStorage;
         });
       }
     });
@@ -246,8 +253,8 @@ class DashboardScreenState extends State<DashboardScreen>
         ApiDashboard apiDashboard = Locator.instance.get<ApiDashboard>();
         setState(() {
           BlocProvider.of<DashboardBloc>(context).add(DashboardLoadEvent());
-          dbWallet = state.dbWallet;
-          apiDashboard.setDbWallet(dbWallet);
+          walletStorage = state.walletStorage;
+          apiDashboard.setWallets(walletStorage);
 
           _balanceController.reset();
           _balanceController.forward();
@@ -263,16 +270,16 @@ class DashboardScreenState extends State<DashboardScreen>
       if (state.status == DashboardStatus.Loading) {
         return _buildDashboardGrid(theme, state);
       } else if (state.status == DashboardStatus.Synchronized) {
-        dbWallet = state.dbWallet;
+        walletStorage = state.walletStorage;
         return _buildDashboardGrid(theme, state);
       } else if (state.status == DashboardStatus.Synchronizing) {
         return SpinKitWave(
           color: theme.primaryColor,
         );
       } else if (state.status == DashboardStatus.Ready) {
-        dbWallet = state.dbWallet;
-        if (dbWallet != null) {
-          BlocProvider.of<VTTCreateBloc>(context).setDbWallet(dbWallet);
+        walletStorage = state.walletStorage;
+        if (walletStorage != null) {
+          BlocProvider.of<VTTCreateBloc>(context).setWallets(walletStorage);
         }
         return _buildDashboardGrid(theme, state);
       } else {

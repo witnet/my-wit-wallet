@@ -1,6 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
+import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/widgets/PaddedButton.dart';
+import 'package:witnet_wallet/screens/login/view/login_screen.dart';
+import 'package:witnet_wallet/screens/screen_transitions/fade_transition.dart';
 
 class TestCard extends StatefulWidget {
   TestCard({Key? key}) : super(key: key);
@@ -21,6 +26,7 @@ class TestCardState extends State<TestCard> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
+
   }
 
   @override
@@ -30,6 +36,7 @@ class TestCardState extends State<TestCard> with TickerProviderStateMixin {
     _loadingController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,23 +50,33 @@ class TestCardState extends State<TestCard> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              padding: EdgeInsets.only(
-                left: cardPadding,
-                right: cardPadding,
-                top: cardPadding + 10,
-              ),
-              width: cardWidth,
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(height: 10),
-                  ]),
-            ),
+                padding: EdgeInsets.only(
+                  left: cardPadding,
+                  right: cardPadding,
+                  top: cardPadding + 10,
+                ),
+                width: cardWidth,
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(height: 10),
+                      backButton(context),
+                    ])),
           ],
         ),
       ),
     );
+  }
+
+  PaddedButton backButton(BuildContext context) {
+    return PaddedButton(
+        padding: EdgeInsets.all(5),
+        text: 'Back',
+        onPressed: () => Navigator.pushReplacement(
+              context,
+              FadeRoute(page: LoginScreen()),
+            ));
   }
 }

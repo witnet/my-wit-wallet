@@ -166,16 +166,18 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
                 return null;
               }
             }
+            return null;
           },
           onChanged: (String? value) {
             setState(() {
               _password = value!;
             });
+            return value;
           },
           onEditingComplete: () {
             passwordInputFocusNode.unfocus();
           },
-          onSubmitted: (String? value) {},
+          onSubmitted: (String? value) { return value!; },
         ),
       ],
     ));

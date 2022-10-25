@@ -1,15 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet/schema.dart';
 import 'package:witnet_wallet/bloc/theme/theme_bloc.dart';
-import 'package:witnet_wallet/bloc/cache/cache_bloc.dart' as cache;
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_status/vtt_status_bloc.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 
-import '../screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 
 import 'crypto/crypto_bloc.dart';
 import 'explorer/explorer_bloc.dart';
@@ -43,11 +41,6 @@ List<BlocProvider> getProviders(BuildContext context) {
     /// BlocExplorer manages all interactions with the external witnet blockchain explorer
     BlocProvider<ExplorerBloc>(
         create: (BuildContext context) => ExplorerBloc(ExplorerState.ready())),
-
-    /// BlocCache
-    BlocProvider<cache.BlocCache>(
-        create: (BuildContext context) =>
-            cache.BlocCache(cache.CacheInitialState())),
 
     /// BlocCreateVTT is the logic behind value transfer transaction construction.
     BlocProvider<VTTCreateBloc>(

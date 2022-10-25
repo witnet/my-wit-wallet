@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/theme/colors.dart';
 
-import '../../../auto_size_text.dart';
+import 'package:witnet_wallet/widgets/auto_size_text.dart';
 
 class ValueTransferOutputContainer extends StatelessWidget {
   ValueTransferOutputContainer({required this.vto});
@@ -45,7 +44,7 @@ class ValueTransferOutputContainer extends StatelessWidget {
               Expanded(
                   flex: 8,
                   child: AutoSizeText(
-                    nanoWitToWit(vto.value).toStringAsFixed(9),
+                    nanoWitToWit(vto.value.toInt()).toStringAsFixed(9),
                     maxLines: 1,
                     minFontSize: 9,
                     textAlign: TextAlign.right,
@@ -63,19 +62,18 @@ class ValueTransferOutputContainer extends StatelessWidget {
                   )),
             ],
           ),
-          if (vto.timeLock > 0)
-            Row(
-              children: [
-                Expanded(
-                    flex: 7,
-                    child: AutoSizeText(
-                      'Time locked: ${DateTime.fromMillisecondsSinceEpoch(vto.timeLock * 1000)}',
-                      maxLines: 1,
-                      minFontSize: 9,
-                      textAlign: TextAlign.right,
-                    )),
-              ],
-            ),
+          if(vto.timeLock>0)
+            Row(children: [
+
+              Expanded(
+                  flex: 7,
+                  child: AutoSizeText(
+                    'Time locked: ${DateTime.fromMillisecondsSinceEpoch(vto.timeLock.toInt()*1000)}',
+                    maxLines: 1,
+                    minFontSize: 9,
+                    textAlign: TextAlign.right,
+                  )),
+          ],),
         ],
       ),
     );

@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 
-class StyledButton extends MaterialButton {
-  StyledButton({
+class ButtonLogin extends MaterialButton {
+  ButtonLogin({
     Key? key,
-    required this.style,
+    this.label = 'OK',
     required this.onPressed,
-    required this.minimumSize,
-    required this.child,
     this.isLoading = false,
+    this.height,
+    this.minWidth,
   }) : super(key: key, onPressed: onPressed);
-
+  final minWidth;
+  final height;
   final bool isLoading;
+  final String label;
   final VoidCallback onPressed;
-  final Size minimumSize;
-  final ButtonStyle style;
-  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +33,16 @@ class StyledButton extends MaterialButton {
             ? FittedBox(
                 fit: BoxFit.cover,
                 child: Row(
-                  children: <Widget>[child],
+                  children: <Widget>[
+                    Text(
+                      label,
+                    ),
+                  ],
                 ),
               )
-            : child,
+            : Text(
+                label,
+              ),
         onPressed: onPressed,
       ),
     );

@@ -1,12 +1,11 @@
 import 'dart:isolate';
-
 import 'package:bloc/bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
-
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/util/witnet/wallet/wallet.dart';
 import 'package:equatable/equatable.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
+import 'package:witnet_wallet/util/storage/database/wallet.dart';
 part 'create_wallet_state.dart';
 part 'create_wallet_event.dart';
 
@@ -101,10 +100,13 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         break;
 
       case CreateWalletStatus.EncryptWallet:
+        event as NextCardEvent;
+        _setMasterKey(event.data['password']);
         emit(state.copyWith(status: CreateWalletStatus.BuildWallet));
         break;
 
       case CreateWalletStatus.BuildWallet:
+
         emit(state.copyWith(status: CreateWalletStatus.Complete));
         break;
 
@@ -200,6 +202,10 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
     }
   }
 
+  void _setMasterKey(String password) async {
+    await Locator.instance<ApiDatabase>().setPassword(newPassword: password);
+  }
+
   void _generateMnemonicEvent(
       GenerateMnemonicEvent event, Emitter<CreateWalletState> emit) async {
     await Locator.instance
@@ -235,7 +241,6 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
 
       emit(state.copyWith(
           xprvString: event.xprv,
-          nodeAddress: wallet.masterXprv.address.address,
           walletAddress: wallet.externalKeys[0]!.address,
           status: CreateWalletStatus.ValidXprv));
     } catch (e) {}
@@ -263,13 +268,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         return value;
       });
 
-      print(wallet.masterXprv.toSlip32());
-      print(wallet.masterXprv.address.address);
-      print(wallet.externalKeys);
-
       emit(state.copyWith(
-        xprvString: wallet.masterXprv.toSlip32(),
-        nodeAddress: wallet.masterXprv.address.address,
         status: CreateWalletStatus.ValidXprv,
       ));
     } catch (e) {

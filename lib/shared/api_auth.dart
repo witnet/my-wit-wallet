@@ -45,10 +45,8 @@ class ApiAuth {
   Future<Map<String, dynamic>> unlockWallet({required String password}) async {
     /// get database bloc
     try {
-      final tmp = await Locator.instance
-          .get<ApiDatabase>()
-          .unlockDatabase(name: walletName, password: password);
-
+      final tmp = Locator.instance.get<ApiDatabase>();
+      print('unlock wallet $tmp');
       return {'result': tmp};
     } on DBException catch (e) {
       throw AuthException(code: e.code, message: e.message);

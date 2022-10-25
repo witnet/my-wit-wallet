@@ -8,13 +8,22 @@ version: 0.0.1-dev
 environment:
   sdk: ">=2.12.0 <3.0.0"
 
+dev_dependencies:
+  test: ^1.21.4
+
 dependencies:
   flutter:
     sdk: flutter
 
-  flutter_localizations:
+  integration_test:
     sdk: flutter
 
+  flutter_localizations:
+    sdk: flutter
+  flutter_driver:
+    sdk: flutter
+  flutter_test:
+    sdk: flutter
   bloc: ^8.0.3
   get_it: ^7.2.0
   flutter_bloc: ^8.0.1
@@ -22,10 +31,10 @@ dependencies:
   shared_preferences: ^2.0.7
   carousel_slider: ^4.1.1
   path_provider: ^2.0.1
-  flutter_svg: ^0.22.0
+  #flutter_svg: ^0.22.0
   quiver: ^3.0.1
   another_flushbar: ^1.10.23
-  font_awesome_flutter: ^9.1.0
+  font_awesome_flutter: ^10.2.1
   intl: ^0.17.0
   sembast: ^3.0.4
   encrypt: ^5.0.0
@@ -35,12 +44,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   worker_manager: ^4.0.2
-  toml: ^0.11.0
+  toml: ^0.13.1
 
-
-  witnet: 0.1.4
-  #witnet:
-  #  path: ../witnet
+  # witnet: 0.1.4
+  witnet:
+    path: ../witnet.dart
   table_calendar: ^3.0.3
   qr_flutter: ^4.0.0
   url_launcher: ^6.0.10
@@ -48,6 +56,9 @@ dependencies:
   date_format: ^2.0.5
   qr_code_scanner: ^1.0.1
   formz: ^0.4.1
+
+
+
 
 flutter_icons:
   android: "launcher_icon"
@@ -73,6 +84,12 @@ flutter:
         - asset: assets/fonts/Nunito-Sans-Bold.ttf
           weight: 700
 
-
+  plugin:
+    platforms:
+      android:
+        package: dev.flutter.plugins.integration_test
+        pluginClass: IntegrationTestPlugin
+      ios:
+        pluginClass: IntegrationTestPlugin
   # flag to generate localization files on build. file location .dart_tool/flutter_gen/
   generate: true

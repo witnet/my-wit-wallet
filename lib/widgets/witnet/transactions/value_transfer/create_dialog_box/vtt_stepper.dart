@@ -1,21 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
-import 'package:witnet_wallet/util/storage/database/db_wallet.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/recipient_address_input.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/01_recipient_step.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/02_review_step.dart';
 
-import '../../fee_type_selector_chip.dart';
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 
 class VttStepper extends StatefulWidget {
-  final DbWallet dbWallet;
+  final WalletStorage walletStorage;
 
-  VttStepper({required this.dbWallet});
+  VttStepper({required this.walletStorage});
   @override
   State<StatefulWidget> createState() => VttStepperState();
 }

@@ -71,7 +71,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
     _width = MediaQuery.of(context).size.width;
     dateTime = DateFormat.yMd().format(DateTime.now());
     final deviceSize = MediaQuery.of(context).size;
-    final theme = Theme.of(context);
+
     double cardWidth;
     if (deviceSize.width > 400) {
       cardWidth = (400 * 0.7);
