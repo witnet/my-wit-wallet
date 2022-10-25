@@ -40,7 +40,8 @@ class VttStepperState extends State<VttStepper> {
             'pkh': pkh,
             'value': witToNanoWit(witValue),
             'time_lock': timeLock,
-          }), merge: true,
+          }),
+          merge: true,
         ),
       );
     });

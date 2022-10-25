@@ -14,10 +14,10 @@ class _DBConfiguration {
   late SembastCodec codec;
   int timeout = 300;
 
-  _DBConfiguration({required this.path, required String password}){
-   if (ENCRYPT_DB == true){
-     codec = getSembastCodecSalsa20(password: password);
-   }
+  _DBConfiguration({required this.path, required String password}) {
+    if (ENCRYPT_DB == true) {
+      codec = getSembastCodecSalsa20(password: password);
+    }
   }
 
   String get name => this.path.split('/').last;
@@ -80,10 +80,10 @@ class DBService {
       }
       String dbError = '';
 
-
       try {
-        if(ENCRYPT_DB){
-          _dbService._database = await dbFactory.openDatabase(
+        if (ENCRYPT_DB) {
+          _dbService._database = await dbFactory
+              .openDatabase(
             _dbService._dbConfig!.path,
             version: 2,
             codec: _dbService._dbConfig!.codec,
@@ -100,11 +100,13 @@ class DBService {
             throw DBException(code: error.code, message: error.message);
           });
         } else {
-          _dbService._database = await dbFactory.openDatabase(
+          _dbService._database = await dbFactory
+              .openDatabase(
             _dbService._dbConfig!.path,
             version: 2,
             mode: mode,
-          ).catchError((error) {
+          )
+              .catchError((error) {
             dbError = error.toString();
 
             /// codes for Sembast Database Exception
@@ -115,11 +117,13 @@ class DBService {
             throw DBException(code: error.code, message: error.message);
           });
         }
-        _dbService._database = await dbFactory.openDatabase(
+        _dbService._database = await dbFactory
+            .openDatabase(
           _dbService._dbConfig!.path,
           version: 2,
           mode: mode,
-        ).catchError((error) {
+        )
+            .catchError((error) {
           dbError = error.toString();
           throw DBException(code: error.code, message: error.message);
         });
@@ -132,8 +136,6 @@ class DBService {
       if (dbError != '') {
         throw DBException(code: -2, message: 'Unable to unlock Wallet.');
       } else {
-
-
         // Xprv.fromEncryptedXprv('xprv', 'password');
         _dbService.unlocked = true;
       }
@@ -178,8 +180,7 @@ class DBService {
       var store = StoreRef.main();
       assert(key.runtimeType == String || key.runtimeType == int,
           'Key value Must be int or String.');
-      await store.record(key).put(_database, value,merge: false);
-
+      await store.record(key).put(_database, value, merge: false);
     } else {
       throw DBException(code: -5, message: 'unable to write $key. $value');
     }

@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -9,7 +7,6 @@ class QrAddressViewer extends StatefulWidget {
 }
 
 class QrAddressViewerState extends State<QrAddressViewer> {
-
   late Barcode result;
 
   @override

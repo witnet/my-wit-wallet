@@ -35,7 +35,6 @@ class MarkedDate implements MarkedDateInterface {
 
   @override
   int get hashCode => super.hashCode;
-
 }
 
 abstract class MarkedDateInterface {

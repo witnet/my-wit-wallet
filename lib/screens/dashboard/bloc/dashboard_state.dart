@@ -1,7 +1,6 @@
 part of 'dashboard_bloc.dart';
 
-
-enum DashboardStatus{
+enum DashboardStatus {
   Ready,
   Loading,
   Initialize,
@@ -10,7 +9,7 @@ enum DashboardStatus{
   Reset
 }
 
-class DashboardState extends Equatable{
+class DashboardState extends Equatable {
   DashboardState({required this.dbWallet, required this.status});
   final DbWallet dbWallet;
   final DashboardStatus status;
@@ -18,7 +17,7 @@ class DashboardState extends Equatable{
   DashboardState copyWith({
     DbWallet? dbWallet,
     DashboardStatus? status,
-  }){
+  }) {
     return DashboardState(
       dbWallet: dbWallet ?? this.dbWallet,
       status: status ?? this.status,

@@ -1,9 +1,9 @@
-
 part of 'database_bloc.dart';
 
-class DatabaseState extends Equatable{
-
-  DatabaseState copyWith(){ return DatabaseState();}
+class DatabaseState extends Equatable {
+  DatabaseState copyWith() {
+    return DatabaseState();
+  }
 
   @override
   List<Object> get props => [];

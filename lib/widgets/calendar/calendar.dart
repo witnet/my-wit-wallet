@@ -6,15 +6,15 @@ class Calendar extends StatefulWidget {
     // TODO: implement createState
     throw UnimplementedError();
   }
-
 }
 
 class CalendarState extends State<Calendar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: SizedBox(height: 10,),
+      child: SizedBox(
+        height: 10,
+      ),
     );
   }
-
 }

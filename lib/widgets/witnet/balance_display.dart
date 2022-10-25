@@ -1,7 +1,3 @@
-
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/data_structures.dart';
@@ -27,7 +23,9 @@ class BalanceDisplay extends StatefulWidget {
   @override
   BalanceDisplayState createState() => BalanceDisplayState();
 }
+
 const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
+
 class BalanceDisplayState extends State<BalanceDisplay>
     with TickerProviderStateMixin {
   int balanceNanoWit = 0;
@@ -50,18 +48,19 @@ class BalanceDisplayState extends State<BalanceDisplay>
     setBalance();
     _headerScaleAnimation =
         Tween<double>(begin: .6, end: 1).animate(CurvedAnimation(
-          parent: widget.loadingController,
-          curve: headerAniInterval,
-        ));
+      parent: widget.loadingController,
+      curve: headerAniInterval,
+    ));
     _headerController.forward();
     super.initState();
   }
 
   @override
-  void dispose(){
+  void dispose() {
     _headerController.dispose();
     super.dispose();
   }
+
   void setBalance() {
     List<Utxo> _utxos = [];
 
@@ -74,31 +73,22 @@ class BalanceDisplayState extends State<BalanceDisplay>
     this.balanceInfo = BalanceInfo.fromUtxoList(_utxos);
   }
 
-
-  Widget timeLockDisplay(BuildContext context){
+  Widget timeLockDisplay(BuildContext context) {
     final theme = Theme.of(context);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text(
-            'Locked:',
-            style: theme.textTheme.caption!
-        ),
+        Text('Locked:', style: theme.textTheme.caption!),
         AnimatedNumericText(
           initialValue: nanoWitToWit(lockedBalanceNanoWit),
           targetValue: nanoWitToWit(balanceInfo.lockedNanoWit),
           curve: Interval(0, .5, curve: Curves.easeOut),
           controller: _headerController,
           style: theme.textTheme.caption!,
-
         ),
         SizedBox(width: 5),
-        Text(
-          'wit',
-          style: theme.textTheme.caption!
-          ),
-
+        Text('wit', style: theme.textTheme.caption!),
       ],
     );
   }
@@ -116,56 +106,56 @@ class BalanceDisplayState extends State<BalanceDisplay>
 
     ///
     ///
-    return Container(child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                AnimatedNumericText(
-                  initialValue: nanoWitToWit(currentValueNanoWit),
-                  targetValue: nanoWitToWit(balanceInfo.availableNanoWit),
-                  curve: Interval(0, .5, curve: Curves.easeOut),
-                  controller: _headerController,
-                  style: theme.textTheme.bodyText1!,
-                ),
-                SizedBox(width: 5),
-                Text(
-                  'wit',
-                  style: theme.textTheme.bodyText1!,
-                ),
-              ],
-            ),
-            (balanceInfo.lockedNanoWit > 0)
-                
-            
-                ? timeLockDisplay(context)
-                : Text('Wallet Balance', style: theme.textTheme.bodyText1)
-          ],
-        ),
-      );
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              AnimatedNumericText(
+                initialValue: nanoWitToWit(currentValueNanoWit),
+                targetValue: nanoWitToWit(balanceInfo.availableNanoWit),
+                curve: Interval(0, .5, curve: Curves.easeOut),
+                controller: _headerController,
+                style: theme.textTheme.bodyText1!,
+              ),
+              SizedBox(width: 5),
+              Text(
+                'wit',
+                style: theme.textTheme.bodyText1!,
+              ),
+            ],
+          ),
+          (balanceInfo.lockedNanoWit > 0)
+              ? timeLockDisplay(context)
+              : Text('Wallet Balance', style: theme.textTheme.bodyText1)
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ExplorerBloc, ExplorerState>(builder: (context, state) {
-
-    return dashboardBlocWidget();
-    },
-    listener: (context, state) {
-      if(state.status == ExplorerStatus.ready){
-        setState(() {
-          setBalance();
-        });
-      }
-    if (state.status == ExplorerStatus.dataloaded ) {
-      setState(() {
-        dbWallet = state.dbWallet!;
-        setBalance();
-        _headerController.reset();
-        _headerController.forward();
-      });
-    }
-    },);
+    return BlocConsumer<ExplorerBloc, ExplorerState>(
+      builder: (context, state) {
+        return dashboardBlocWidget();
+      },
+      listener: (context, state) {
+        if (state.status == ExplorerStatus.ready) {
+          setState(() {
+            setBalance();
+          });
+        }
+        if (state.status == ExplorerStatus.dataloaded) {
+          setState(() {
+            dbWallet = state.dbWallet!;
+            setBalance();
+            _headerController.reset();
+            _headerController.forward();
+          });
+        }
+      },
+    );
   }
 }

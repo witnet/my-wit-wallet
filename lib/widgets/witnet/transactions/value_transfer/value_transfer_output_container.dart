@@ -40,7 +40,6 @@ class ValueTransferOutputContainer extends StatelessWidget {
                   ))
             ],
           ),
-
           Row(
             children: [
               Expanded(
@@ -54,8 +53,6 @@ class ValueTransferOutputContainer extends StatelessWidget {
               SizedBox(
                 width: 3,
               ),
-
-
               Expanded(
                   flex: 1,
                   child: AutoSizeText(
@@ -66,18 +63,19 @@ class ValueTransferOutputContainer extends StatelessWidget {
                   )),
             ],
           ),
-          if(vto.timeLock>0)
-            Row(children: [
-
-              Expanded(
-                  flex: 7,
-                  child: AutoSizeText(
-                    'Time locked: ${DateTime.fromMillisecondsSinceEpoch(vto.timeLock*1000)}',
-                    maxLines: 1,
-                    minFontSize: 9,
-                    textAlign: TextAlign.right,
-                  )),
-          ],),
+          if (vto.timeLock > 0)
+            Row(
+              children: [
+                Expanded(
+                    flex: 7,
+                    child: AutoSizeText(
+                      'Time locked: ${DateTime.fromMillisecondsSinceEpoch(vto.timeLock * 1000)}',
+                      maxLines: 1,
+                      minFontSize: 9,
+                      textAlign: TextAlign.right,
+                    )),
+              ],
+            ),
         ],
       ),
     );

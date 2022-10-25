@@ -21,8 +21,7 @@ class QrAddressGeneratorState extends State<QrAddressGenerator> {
     final qrFutureBuilder = FutureBuilder<ui.Image>(
       future: _loadOverlayImage(),
       builder: (ctx, snapshot) {
-        final size =
-            (deviceSize.width > 175) ? 175.0 : 175 * 0.7;
+        final size = (deviceSize.width > 175) ? 175.0 : 175 * 0.7;
         if (!snapshot.hasData) {
           return Container(width: size, height: size);
         }
@@ -54,7 +53,10 @@ class QrAddressGeneratorState extends State<QrAddressGenerator> {
         children: <Widget>[
           Container(
             color: Colors.white,
-            child: Padding(padding: EdgeInsets.all(5), child: qrFutureBuilder,),
+            child: Padding(
+              padding: EdgeInsets.all(5),
+              child: qrFutureBuilder,
+            ),
           ),
         ],
       ),

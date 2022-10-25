@@ -65,5 +65,4 @@ class ApiAuth {
     Locator.instance.get<ApiDatabase>().lockDatabase();
     await Future.delayed(Duration(seconds: 1));
   }
-
 }

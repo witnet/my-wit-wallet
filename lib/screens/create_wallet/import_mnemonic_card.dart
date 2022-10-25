@@ -117,7 +117,6 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
     super.initState();
   }
 
-
   bool validMnemonic(String mnemonic) {
     List<String> words = mnemonic.split(' ');
     int wordCount = words.length;

@@ -26,29 +26,29 @@ class AdvancedVttSettingsPanelState extends State<AdvancedVttSettingsPanel> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-      Expanded(
-      flex: 8,
-      child: Container(
-        //height: deviceSize.width/3,
-        child: TextField(
-            controller: _timeLockController,
-            textAlign: TextAlign.right,
-            decoration: new InputDecoration(
-              labelText: "Time Lock",
-              hintText: '0',
-            ),
-            onChanged: (value) {
-              setState(() {
-                timeLock = int.parse(value);
-                if (value.isEmpty) timeLock = 0;
-              });
-            },
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ]),
-      ),
-    ),
+        Expanded(
+          flex: 8,
+          child: Container(
+            //height: deviceSize.width/3,
+            child: TextField(
+                controller: _timeLockController,
+                textAlign: TextAlign.right,
+                decoration: new InputDecoration(
+                  labelText: "Time Lock",
+                  hintText: '0',
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    timeLock = int.parse(value);
+                    if (value.isEmpty) timeLock = 0;
+                  });
+                },
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ]),
+          ),
+        ),
         SizedBox(
           width: 7,
         ),
@@ -70,7 +70,7 @@ class AdvancedVttSettingsPanelState extends State<AdvancedVttSettingsPanel> {
               margin: EdgeInsets.only(left: 20, right: 20),
               preferBelow: false,
               message:
-              'Time Lock is a unix `TimeStamp`.\nNeed to implement the calendar',
+                  'Time Lock is a unix `TimeStamp`.\nNeed to implement the calendar',
               child: IconButton(
                 onPressed: () {},
                 icon: Icon(
@@ -85,6 +85,7 @@ class AdvancedVttSettingsPanelState extends State<AdvancedVttSettingsPanel> {
       ],
     );
   }
+
   Widget _body(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(5),
@@ -98,11 +99,10 @@ class AdvancedVttSettingsPanelState extends State<AdvancedVttSettingsPanel> {
                 maxLines: 1,
                 minFontSize: 9,
               ),
-
               Tooltip(
                   height: 100,
                   message:
-                  'By default, \'Weighted fee\' is selected.\n\nThe amount of the fee will be calculated, taking into account the weight of the transaction.\n\nTo set an absolute fee, you need to toggle \'Absolute fee\' in the advance options below.',
+                      'By default, \'Weighted fee\' is selected.\n\nThe amount of the fee will be calculated, taking into account the weight of the transaction.\n\nTo set an absolute fee, you need to toggle \'Absolute fee\' in the advance options below.',
                   child: IconButton(
                     onPressed: () {},
                     icon: Icon(

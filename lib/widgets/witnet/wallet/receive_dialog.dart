@@ -30,7 +30,7 @@ class ReceiveDialogBoxState extends State<ReceiveDialogBox>
     );
     bool foundAddress = false;
 
-    for (int i = 0 ; i < widget.dbWallet.externalAccounts.length; i++) {
+    for (int i = 0; i < widget.dbWallet.externalAccounts.length; i++) {
       if (nextAddress == '') {
         if (!foundAddress) {
           if (widget.dbWallet.externalAccounts[i]!.vttHashes.isEmpty) {
@@ -113,7 +113,7 @@ class ReceiveDialogBoxState extends State<ReceiveDialogBox>
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     final double cardWidth =
-    (deviceSize.width < 600.0) ? deviceSize.width : 600;
+        (deviceSize.width < 600.0) ? deviceSize.width : 600;
     return Dialog(
       insetPadding: EdgeInsets.all(0),
       elevation: 0,

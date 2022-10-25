@@ -9,28 +9,56 @@ TextSelectionThemeData textSelectionTheme =
     TextSelectionThemeData(cursorColor: WitnetPallet.opacityWitnetGreen);
 Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
-  headline1: TextStyle(fontFamily: 'Quicksand', color: WitnetPallet.opacityWhite, fontSize: 24, fontWeight: FontWeight.bold),
-  headline2: TextStyle(fontFamily: 'Quicksand', color: WitnetPallet.white, fontSize: 18, fontWeight: FontWeight.bold),
+  headline1: TextStyle(
+      fontFamily: 'Quicksand',
+      color: WitnetPallet.opacityWhite,
+      fontSize: 24,
+      fontWeight: FontWeight.bold),
+  headline2: TextStyle(
+      fontFamily: 'Quicksand',
+      color: WitnetPallet.white,
+      fontSize: 18,
+      fontWeight: FontWeight.bold),
   headline3: TextStyle(
-    fontFamily: 'NotoSans',
-    color: WitnetPallet.white,
-    fontSize: 16,
-    fontWeight: FontWeight.bold),
-  subtitle1: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 16, fontWeight: FontWeight.normal),
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.white,
+      fontSize: 16,
+      fontWeight: FontWeight.bold),
+  subtitle1: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.opacityWhite,
+      fontSize: 16,
+      fontWeight: FontWeight.normal),
   subtitle2: TextStyle(
-    fontFamily: 'NotoSans',
-    color: WitnetPallet.white,
-    fontSize: 14,
-    fontWeight: FontWeight.bold),
-  bodyText1: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 16, fontWeight: FontWeight.normal),
-  bodyText2: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 14, fontWeight: FontWeight.normal),
-  caption: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 12, fontWeight: FontWeight.normal),
-  button: TextStyle(fontFamily: 'NotoSans', color: WitnetPallet.opacityWhite, fontSize: 16, fontWeight: FontWeight.normal),
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.white,
+      fontSize: 14,
+      fontWeight: FontWeight.bold),
+  bodyText1: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.opacityWhite,
+      fontSize: 16,
+      fontWeight: FontWeight.normal),
+  bodyText2: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.opacityWhite,
+      fontSize: 14,
+      fontWeight: FontWeight.normal),
+  caption: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.opacityWhite,
+      fontSize: 12,
+      fontWeight: FontWeight.normal),
+  button: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.opacityWhite,
+      fontSize: 16,
+      fontWeight: FontWeight.normal),
   labelMedium: TextStyle(
-    fontFamily: 'NotoSans',
-    color: WitnetPallet.white,
-    fontSize: 16,
-    fontWeight: FontWeight.bold),
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.white,
+      fontSize: 16,
+      fontWeight: FontWeight.bold),
 );
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.darkBlue2,
@@ -53,7 +81,9 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   ),
   focusedBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: WitnetPallet.opacityWitnetGreen, width: 1.0, style: BorderStyle.solid),
+        color: WitnetPallet.opacityWitnetGreen,
+        width: 1.0,
+        style: BorderStyle.solid),
     borderRadius: BorderRadius.circular(4),
   ),
   focusedErrorBorder: OutlineInputBorder(
@@ -93,30 +123,28 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
 );
 ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
-    padding: const EdgeInsets.all(16),
-    onSurface: Color.fromARGB(102, 164, 212, 204),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-    primary: WitnetPallet.opacityWitnetGreen, // background color
-    textStyle: const TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.normal,
-      color: WitnetPallet.white,
-    )
-  ),
+      padding: const EdgeInsets.all(16),
+      onSurface: Color.fromARGB(102, 164, 212, 204),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      primary: WitnetPallet.opacityWitnetGreen, // background color
+      textStyle: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.normal,
+        color: WitnetPallet.white,
+      )),
 );
 OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
-  style: OutlinedButton.styleFrom(
-    primary: WitnetPallet.white,
-    onSurface: Color.fromARGB(78, 240, 243, 245),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-    side: BorderSide(width: 1, color: WitnetPallet.white),
-    padding: const EdgeInsets.all(16),
-    textStyle: const TextStyle(
-      fontSize: 16,
-      color: WitnetPallet.white,
-    ),
-  )
-);
+    style: OutlinedButton.styleFrom(
+  primary: WitnetPallet.white,
+  onSurface: Color.fromARGB(78, 240, 243, 245),
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+  side: BorderSide(width: 1, color: WitnetPallet.white),
+  padding: const EdgeInsets.all(16),
+  textStyle: const TextStyle(
+    fontSize: 16,
+    color: WitnetPallet.white,
+  ),
+));
 CardTheme cardTheme = CardTheme(
   elevation: 5.0,
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.0)),
@@ -134,7 +162,7 @@ IconThemeData primaryIconTheme = IconThemeData(
 CheckboxThemeData checkboxTheme = CheckboxThemeData(
   splashRadius: 0,
   side: MaterialStateBorderSide.resolveWith(
-    (_) => const BorderSide(width: 2, color: WitnetPallet.witnetGreen2)),
+      (_) => const BorderSide(width: 2, color: WitnetPallet.witnetGreen2)),
   fillColor: MaterialStateProperty.all(WitnetPallet.witnetGreen2),
   checkColor: MaterialStateProperty.all(WitnetPallet.white),
   overlayColor: MaterialStateProperty.all(WitnetPallet.white),

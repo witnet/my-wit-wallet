@@ -25,7 +25,8 @@ class Select extends StatelessWidget {
     final theme = Theme.of(context).extension<ExtendedTheme>()!;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.selectBackgroundColor, //background color of dropdown button
+        color:
+            theme.selectBackgroundColor, //background color of dropdown button
         borderRadius:
             BorderRadius.circular(4), //border raiuds of dropdown button
       ),
@@ -37,9 +38,9 @@ class Select extends StatelessWidget {
             focusColor: theme.dropdownBackgroundColor,
             iconEnabledColor: theme.selectedTextColor, //Icon color
             style: TextStyle(
-              color: theme.dropdownTextColor, //Font color
-              fontSize: 16 //font size on dropdown button
-            ),
+                color: theme.dropdownTextColor, //Font color
+                fontSize: 16 //font size on dropdown button
+                ),
             selectedItemBuilder: (BuildContext context) {
               return listItems.map<Widget>((String item) {
                 return Container(
@@ -47,8 +48,8 @@ class Select extends StatelessWidget {
                   child: Text(
                     item,
                     style: TextStyle(
-                      color: theme.selectedTextColor,
-                      fontWeight: FontWeight.normal),
+                        color: theme.selectedTextColor,
+                        fontWeight: FontWeight.normal),
                   ),
                 );
               }).toList();

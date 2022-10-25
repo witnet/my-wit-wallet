@@ -14,7 +14,6 @@ class Account {
     balance = _balance;
   }
 
-
   final String path;
   final String address;
   List<String> vttHashes = [];

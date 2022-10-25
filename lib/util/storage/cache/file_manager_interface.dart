@@ -36,7 +36,6 @@ class TransactionCache {
       if (!await file.exists()) {
       } else {
         final Map<String, dynamic> data = await _readFile();
-
       }
     } on io.FileSystemException catch (e) {
       if (e.osError!.errorCode == 2) {}

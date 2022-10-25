@@ -51,10 +51,10 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
       children: [
         // Remove for production
         ElevatedButton(
-            onPressed: () {
-              Clipboard.setData(ClipboardData(text: mnemonic));
-            },
-            child: Text('Copy'),
+          onPressed: () {
+            Clipboard.setData(ClipboardData(text: mnemonic));
+          },
+          child: Text('Copy'),
         ),
         SizedBox(
           height: 16,

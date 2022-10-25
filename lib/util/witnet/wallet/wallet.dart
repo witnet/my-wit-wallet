@@ -61,7 +61,6 @@ class Wallet {
     internalXprv = walletXprv / 1;
     internalXpub = internalXprv.toXpub();
     externalXpub = externalXprv.toXpub();
-
   }
 
   Future<Xpub> generateKey(

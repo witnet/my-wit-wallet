@@ -17,9 +17,7 @@ class CustomSwitch extends StatelessWidget {
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       Text(
         secondaryLabel,
         style: theme.textTheme.bodyText1,

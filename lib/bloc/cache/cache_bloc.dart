@@ -50,7 +50,7 @@ class BlocCache extends Bloc<CacheEvent, CacheState> {
           yield CacheLoadedState();
           break;
         case SaveVttCacheEvent:
-          // TODO:
+        // TODO:
         case AddBatchVttEvent:
           event as AddBatchVttEvent;
           event.transactions.forEach((vti) async {

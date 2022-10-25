@@ -172,7 +172,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                 'Confirm password',
                 style: theme.textTheme.subtitle2,
               ),
-               SizedBox(height: 8),
+              SizedBox(height: 8),
               InputLogin(
                 prefixIcon: Icons.lock,
                 hint: 'Confirm Password',

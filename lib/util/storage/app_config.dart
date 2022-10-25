@@ -1,4 +1,3 @@
-
 class AppConfig {
   void parse() {}
 }

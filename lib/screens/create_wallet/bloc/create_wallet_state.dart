@@ -55,7 +55,6 @@ class CreateWalletState extends Equatable {
     );
   }
 
-
   @override
   List<Object?> get props =>
       [walletType, message, xprvString, nodeAddress, walletAddress, status];

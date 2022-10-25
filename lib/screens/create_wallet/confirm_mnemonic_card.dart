@@ -30,7 +30,7 @@ class ConfirmMnemonicCard extends StatefulWidget {
 }
 
 class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
-  with TickerProviderStateMixin {
+    with TickerProviderStateMixin {
   String mnemonic = '';
   final TextEditingController textController = TextEditingController();
   int numLines = 0;

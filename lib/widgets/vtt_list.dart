@@ -9,7 +9,6 @@ import 'package:witnet_wallet/util/witnet/wallet/account.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/info_dialog_box/vtt_dialog_box.dart';
 
-
 String formatDate(int ts) {
   DateTime dt = DateTime.fromMillisecondsSinceEpoch(ts * 1000);
   final f = new DateFormat('yyyy-MM-dd hh:mm:ss');

@@ -1,6 +1,5 @@
 part of 'login_bloc.dart';
 
-
 enum LoginStatus {
   LoggedOut,
   LoginInProgress,
@@ -10,12 +9,11 @@ enum LoginStatus {
 }
 
 class LoginState extends Equatable {
-  const LoginState({
-    this.status = LoginStatus.LoggedOut,
-    this.walletName = const WalletName.pure(),
-    this.password = '',
-    required this.message
-  });
+  const LoginState(
+      {this.status = LoginStatus.LoggedOut,
+      this.walletName = const WalletName.pure(),
+      this.password = '',
+      required this.message});
 
   final LoginStatus status;
   final WalletName walletName;
@@ -34,10 +32,7 @@ class LoginState extends Equatable {
       message: message ?? this.message,
     );
   }
-  
 
   @override
   List<Object> get props => [status, walletName, password];
 }
-
-

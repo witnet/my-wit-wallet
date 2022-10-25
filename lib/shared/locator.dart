@@ -1,4 +1,3 @@
-
 import 'package:get_it/get_it.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
