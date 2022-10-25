@@ -100,28 +100,31 @@ class LoginScreenState extends State<LoginScreen>
   void _getWallets() async {
     PathProviderInterface interface = PathProviderInterface();
     await interface.getWalletFiles().then((value) => {
-      if (value.length > 0) {
-        setState(() {
-          bottomSize = 80;
-          currentWallets = value;
-          componentsList = [
-            ...mainComponents(),
-            LoginForm(
-              currentWallet: currentWallets![0],
-              setWallet: _setWallet,
-              loginError: loginError,
-            )
-          ];
-          Locator.instance.get<ApiAuth>().setWalletName(value[0]);
-        })
-      } else {
-        setState(() {
-          bottomSize = 138;
-          componentsList = mainComponents();
-          currentWallets = null;
-        })
-      }
-    });
+          if (value.length > 0)
+            {
+              setState(() {
+                bottomSize = 80;
+                currentWallets = value;
+                componentsList = [
+                  ...mainComponents(),
+                  LoginForm(
+                    currentWallet: currentWallets![0],
+                    setWallet: _setWallet,
+                    loginError: loginError,
+                  )
+                ];
+                Locator.instance.get<ApiAuth>().setWalletName(value[0]);
+              })
+            }
+          else
+            {
+              setState(() {
+                bottomSize = 138;
+                componentsList = mainComponents();
+                currentWallets = null;
+              })
+            }
+        });
   }
 
   List<Widget> mainComponents() {
@@ -150,8 +153,8 @@ class LoginScreenState extends State<LoginScreen>
       widgetList: componentsList,
       actions: [
         currentWallets != null
-          ? _buttonLogin()
-          : _buildInitialButtons(context, theme)
+            ? _buttonLogin()
+            : _buildInitialButtons(context, theme)
       ],
       actionsSize: bottomSize,
     );

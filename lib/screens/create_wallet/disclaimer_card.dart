@@ -45,7 +45,7 @@ class DisclaimerCardState extends State<DisclaimerCard>
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     LoginStatus status = BlocProvider.of<LoginBloc>(context).state.status;
     if (type == WalletType.newWallet && status != LoginStatus.LoginSuccess) {
-       Navigator.pushNamed(context, '/');
+      Navigator.pushNamed(context, '/');
     } else {
       BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
     }

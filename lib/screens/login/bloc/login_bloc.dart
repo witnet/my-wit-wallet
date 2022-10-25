@@ -14,13 +14,12 @@ part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(
-    LoginState(
-      message: '' ,
-      status: LoginStatus.LoggedOut,
-      walletName: WalletName.pure(),
-      password: '')
-  ) {
+  LoginBloc()
+      : super(LoginState(
+            message: '',
+            status: LoginStatus.LoggedOut,
+            walletName: WalletName.pure(),
+            password: '')) {
     on<LoginWalletNameChangedEvent>(_onWalletChanged);
     on<LoginPasswordChangedEvent>(_onPasswordChanged);
     on<LoginSubmittedEvent>(_onSubmitted);
@@ -53,16 +52,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     try {
       emit(state.copyWith(status: LoginStatus.LoginInProgress));
-    Map<String, dynamic> wallet = await apiAuth.unlockWallet(
-        password: event.password);
-    DbWallet dbWallet = await apiDatabase.loadWallet();
-    try {
-      /// test decrypt sheikah compatible XPRV (aes.cbc)
-      Xprv tmp = Xprv.fromEncryptedXprv(dbWallet.xprv!, event.password);
-    } catch(e){
-      print(e);
-      throw AuthException(code: 01, message: 'bad password');
-    }
+      Map<String, dynamic> wallet =
+          await apiAuth.unlockWallet(password: event.password);
+      DbWallet dbWallet = await apiDatabase.loadWallet();
+      try {
+        /// test decrypt sheikah compatible XPRV (aes.cbc)
+        Xprv tmp = Xprv.fromEncryptedXprv(dbWallet.xprv!, event.password);
+      } catch (e) {
+        print(e);
+        throw AuthException(code: 01, message: 'bad password');
+      }
       apiDashboard.setDbWallet(dbWallet);
       emit(state.copyWith(status: LoginStatus.LoginSuccess));
     } on AuthException catch (e) {

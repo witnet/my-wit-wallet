@@ -24,7 +24,6 @@ class SelectImportedOption extends StatefulWidget {
 }
 
 class ImportedOptionState extends State<SelectImportedOption> {
-
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(

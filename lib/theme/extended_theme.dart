@@ -88,8 +88,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
           t),
       walletActiveItemBorderColor: Color.lerp(
           walletActiveItemBorderColor, other.walletActiveItemBorderColor, t),
-      walletItemBorderColor: Color.lerp(
-          walletItemBorderColor, other.walletItemBorderColor, t),
+      walletItemBorderColor:
+          Color.lerp(walletItemBorderColor, other.walletItemBorderColor, t),
     );
   }
 
@@ -109,16 +109,15 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   );
   // the dark theme
   static const dark = ExtendedTheme(
-    selectBackgroundColor: WitnetPallet.opacityWitnetGreen,
-    selectedTextColor: WitnetPallet.white,
-    dropdownBackgroundColor: WitnetPallet.opacityWitnetGreen,
-    dropdownTextColor: WitnetPallet.white,
-    headerActiveTextColor: WitnetPallet.white,
-    headerTextColor: WitnetPallet.white,
-    headerBackgroundColor: WitnetPallet.opacityWitnetGreen,
-    walletListBackgroundColor: WitnetPallet.opacityWitnetGreen,
-    walletActiveItemBackgroundColor: WitnetPallet.opacityWitnetGreen3,
-    walletActiveItemBorderColor: WitnetPallet.witnetGreen2,
-    walletItemBorderColor: WitnetPallet.opacityWhite2
-  );
+      selectBackgroundColor: WitnetPallet.opacityWitnetGreen,
+      selectedTextColor: WitnetPallet.white,
+      dropdownBackgroundColor: WitnetPallet.opacityWitnetGreen,
+      dropdownTextColor: WitnetPallet.white,
+      headerActiveTextColor: WitnetPallet.white,
+      headerTextColor: WitnetPallet.white,
+      headerBackgroundColor: WitnetPallet.opacityWitnetGreen,
+      walletListBackgroundColor: WitnetPallet.opacityWitnetGreen,
+      walletActiveItemBackgroundColor: WitnetPallet.opacityWitnetGreen3,
+      walletActiveItemBorderColor: WitnetPallet.witnetGreen2,
+      walletItemBorderColor: WitnetPallet.opacityWhite2);
 }

@@ -12,17 +12,14 @@ class LoginLogoutEvent extends LoginEvent {
 }
 
 class LoginSubmittedEvent extends LoginEvent {
-  const LoginSubmittedEvent({
-    required this.walletName,
-    required this.password
-  }) : super();
+  const LoginSubmittedEvent({required this.walletName, required this.password})
+      : super();
 
   final WalletName walletName;
   final String password;
 
   @override
   List<Object> get props => [walletName, password];
-
 }
 
 ///

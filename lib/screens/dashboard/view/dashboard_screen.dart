@@ -285,29 +285,21 @@ class DashboardScreenState extends State<DashboardScreen>
 
   List<Widget> _headerActions() {
     return [
-      PaddedButton(
-        padding: EdgeInsets.only(bottom: 8),
-        text: 'Show wallet list',
-        type: 'text',
-        enabled: true,
-        onPressed: () => {},
-      ),
-      Row(
-        children: [
+      Row(children: [
         PaddedButton(
-        padding: EdgeInsets.only(bottom: 8),
-        text: 'Log out',
-        type: 'text',
-        enabled: true,
-        onPressed: () => _logOut()
-      ),
-      PaddedButton(
-        padding: EdgeInsets.only(bottom: 8),
-        text: 'Settings',
-        type: 'text',
-        enabled: true,
-        onPressed: () => _goToSettings(),
-      ),]),
+            padding: EdgeInsets.only(bottom: 8),
+            text: 'Log out',
+            type: 'text',
+            enabled: true,
+            onPressed: () => _logOut()),
+        PaddedButton(
+          padding: EdgeInsets.only(bottom: 8),
+          text: 'Settings',
+          type: 'text',
+          enabled: true,
+          onPressed: () => _goToSettings(),
+        ),
+      ]),
     ];
   }
 
