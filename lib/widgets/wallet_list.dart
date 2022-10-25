@@ -89,54 +89,54 @@ class WalletListState extends State<WalletList> {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-      child: Container(
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: isSelectedWallet
-              ? extendedTheme.walletActiveItemBackgroundColor
-              : extendedTheme.walletListBackgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-          border: Border.all(
+        child: Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
             color: isSelectedWallet
-                ? extendedTheme.walletActiveItemBorderColor!
-                : extendedTheme.walletItemBorderColor!,
-            width: 1,
+                ? extendedTheme.walletActiveItemBackgroundColor
+                : extendedTheme.walletListBackgroundColor,
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+            border: Border.all(
+              color: isSelectedWallet
+                  ? extendedTheme.walletActiveItemBorderColor!
+                  : extendedTheme.walletItemBorderColor!,
+              width: 1,
+            ),
           ),
+          margin: EdgeInsets.all(8),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Container(
+              color: extendedTheme.selectedTextColor,
+              width: 30,
+              height: 30,
+            ),
+            Column(
+              children: [
+                Text(
+                  walletName,
+                  style: textStyle,
+                ),
+                Text(
+                  'wit1...113',
+                  style: textStyle,
+                ),
+              ],
+            ),
+            Text(
+              '0.00 Wit',
+              style: textStyle,
+            ),
+          ]),
         ),
-        margin: EdgeInsets.all(8),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Container(
-            color: extendedTheme.selectedTextColor,
-            width: 30,
-            height: 30,
-          ),
-          Column(
-            children: [
-              Text(
-                walletName,
-                style: textStyle,
-              ),
-              Text(
-                'wit1...113',
-                style: textStyle,
-              ),
-            ],
-          ),
-          Text(
-            '0.00 Wit',
-            style: textStyle,
-          ),
-        ]),
+        onTap: () {
+          setState(() {
+            selectedWallet = walletName!;
+            // Locator.instance.get<ApiAuth>().setWalletName(value);
+            walletSelected = true;
+          });
+        },
       ),
-      onTap: () {
-        setState(() {
-          selectedWallet = walletName!;
-          // Locator.instance.get<ApiAuth>().setWalletName(value);
-          walletSelected = true;
-        });
-      },
-    ),
     );
   }
 
