@@ -33,9 +33,11 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       dropdownBackgroundColor:
           dropdownBackgroundColor ?? this.dropdownBackgroundColor,
       dropdownTextColor: dropdownTextColor ?? this.dropdownTextColor,
-      headerBackgroundColor: headerBackgroundColor ?? this.headerBackgroundColor,
-      headerTextColor: headerTextColor?? this.headerTextColor,
-      headerActiveTextColor: headerActiveTextColor ?? this.headerActiveTextColor,
+      headerBackgroundColor:
+          headerBackgroundColor ?? this.headerBackgroundColor,
+      headerTextColor: headerTextColor ?? this.headerTextColor,
+      headerActiveTextColor:
+          headerActiveTextColor ?? this.headerActiveTextColor,
     );
   }
 
@@ -56,8 +58,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
           Color.lerp(dropdownTextColor, other.dropdownTextColor, t),
       headerBackgroundColor:
           Color.lerp(headerBackgroundColor, other.dropdownTextColor, t),
-      headerTextColor:
-          Color.lerp(headerTextColor, other.dropdownTextColor, t),
+      headerTextColor: Color.lerp(headerTextColor, other.dropdownTextColor, t),
       headerActiveTextColor:
           Color.lerp(headerActiveTextColor, other.dropdownTextColor, t),
     );

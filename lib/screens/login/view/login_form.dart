@@ -227,9 +227,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
       },
       child: Container(
         child: Column(
-          children: [
-            _buildWalletField(context, 300)
-          ],
+          children: [_buildWalletField(context, 300)],
         ),
       ),
     );

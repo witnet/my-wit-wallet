@@ -100,10 +100,10 @@ class ImportedOptionState extends State<SelectImportedOption> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Image.asset(
-        'assets/img/witty.png',
+          'assets/img/witty.png',
           width: 152,
           height: 152,
-          fit:BoxFit.fitWidth,
+          fit: BoxFit.fitWidth,
         ),
         SizedBox(height: 16),
         Text(

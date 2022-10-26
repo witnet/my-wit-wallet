@@ -202,11 +202,10 @@ class EnterXprvCardState extends State<EnterXprvCard>
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        _buildConfirmField(),
-        verifyXprvButton(),
-      ]
-    );
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          _buildConfirmField(),
+          verifyXprvButton(),
+        ]);
   }
 }

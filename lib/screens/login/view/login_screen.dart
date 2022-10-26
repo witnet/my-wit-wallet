@@ -28,7 +28,7 @@ class LoginScreenState extends State<LoginScreen>
       widgetList: [
         Padding(
           padding: EdgeInsets.only(left: 24, right: 24),
-          child:  witnetLogo(theme),
+          child: witnetLogo(theme),
         ),
         Text(
           'Welcome',

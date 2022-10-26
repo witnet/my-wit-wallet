@@ -41,7 +41,7 @@ class PaddedButton extends StatelessWidget {
       onPressed: onPressed,
     );
 
-    Widget _getButtonByType () {
+    Widget _getButtonByType() {
       if (isPrimary) {
         return primaryButton;
       } else if (isText) {

@@ -42,27 +42,24 @@ class HeaderLayout extends StatelessWidget {
           color: extendedTheme.headerBackgroundColor,
           child: Column(children: [
             Container(
-              padding: EdgeInsets.all(16),
-              child: 
-              Row(
-                children: headerActions,
-              )
-            ),
+                padding: EdgeInsets.all(16),
+                child: Row(
+                  children: headerActions,
+                )),
             Container(
-              child:
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Flexible(
-                      child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        minWidth: 50,
-                        maxWidth: MediaQuery.of(context).size.width * 0.2),
-                    child: Column(
-                      children: [witnetEyeIcon(theme)],
-                    ),
-                  )),
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Flexible(
+                  child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    minWidth: 50,
+                    maxWidth: MediaQuery.of(context).size.width * 0.2),
+                child: Column(
+                  children: [witnetEyeIcon(theme)],
+                ),
+              )),
             ])),
           ]),
-           
         ));
   }
 }
