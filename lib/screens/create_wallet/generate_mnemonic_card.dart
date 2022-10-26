@@ -7,18 +7,9 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/widgets/dashed_rect.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/services.dart';
+import 'package:witnet_wallet/screens/create_wallet/action.dart';
 
-typedef void VoidCallback(Action? value);
-
-class Action {
-  String label;
-  void action;
-
-  Action({
-    required this.label,
-    required this.action,
-  });
-}
+typedef void VoidCallback(NavAction? value);
 
 class GenerateMnemonicCard extends StatefulWidget {
   final Function nextAction;
@@ -132,15 +123,15 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
         .add(NextCardEvent(type, data: {}));
   }
 
-  Action prev() {
-    return Action(
+  NavAction prev() {
+    return NavAction(
       label: 'Back',
       action: prevAction,
     );
   }
 
-  Action next() {
-    return Action(
+  NavAction next() {
+    return NavAction(
       label: 'Continue',
       action: nextAction,
     );

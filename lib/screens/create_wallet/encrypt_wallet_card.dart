@@ -4,23 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/screens/create_wallet/action.dart';
 
 final _passController = TextEditingController();
 final _passFocusNode = FocusNode();
 final _passConfirmFocusNode = FocusNode();
 final _passConfirmController = TextEditingController();
 
-typedef void VoidCallback(Action? value);
-
-class Action {
-  String label;
-  void action;
-
-  Action({
-    required this.label,
-    required this.action,
-  });
-}
+typedef void VoidCallback(NavAction? value);
 
 class EncryptWalletCard extends StatefulWidget {
   final Function nextAction;
@@ -49,15 +40,15 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
         .add(NextCardEvent(type, data: {}));
   }
 
-  Action prev() {
-    return Action(
+  NavAction prev() {
+    return NavAction(
       label: 'Back',
       action: prevAction,
     );
   }
 
-  Action next() {
-    return Action(
+  NavAction next() {
+    return NavAction(
       label: 'Continue',
       action: nextAction,
     );

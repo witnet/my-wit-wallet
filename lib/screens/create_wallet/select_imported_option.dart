@@ -4,8 +4,9 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/action.dart';
 
-typedef void VoidCallback(Action? value);
+typedef void VoidCallback(NavAction? value);
 
 class SelectImportedOption extends StatefulWidget {
   final Function nextAction;
@@ -19,16 +20,6 @@ class SelectImportedOption extends StatefulWidget {
   }) : super(key: key);
   @override
   State<StatefulWidget> createState() => ImportedOptionState();
-}
-
-class Action {
-  String label;
-  void action;
-
-  Action({
-    required this.label,
-    required this.action,
-  });
 }
 
 class ImportedOptionState extends State<SelectImportedOption> {
@@ -72,22 +63,22 @@ class ImportedOptionState extends State<SelectImportedOption> {
         data: {}));
   }
 
-  Action prev() {
-    return Action(
+  NavAction prev() {
+    return NavAction(
       label: 'Back',
       action: prevAction,
     );
   }
 
-  Action nextSeed() {
-    return Action(
+  NavAction nextSeed() {
+    return NavAction(
       label: 'Import from seed phrase',
       action: nextSeedAction,
     );
   }
 
-  Action nextXprv() {
-    return Action(
+  NavAction nextXprv() {
+    return NavAction(
       label: 'Import from xprv',
       action: nextSeedAction,
     );

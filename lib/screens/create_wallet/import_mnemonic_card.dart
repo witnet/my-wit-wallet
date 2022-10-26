@@ -4,19 +4,10 @@ import 'package:witnet/crypto.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'bloc/create_wallet_bloc.dart';
+import 'package:witnet_wallet/screens/create_wallet/action.dart';
 
 //genius merge win culture lemon remember work native omit digital canal update
-typedef void VoidCallback(Action? value);
-
-class Action {
-  String label;
-  void action;
-
-  Action({
-    required this.label,
-    required this.action,
-  });
-}
+typedef void VoidCallback(NavAction? value);
 
 class EnterMnemonicCard extends StatefulWidget {
   final Function nextAction;
@@ -96,15 +87,15 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
         data: {}));
   }
 
-  Action prev() {
-    return Action(
+  NavAction prev() {
+    return NavAction(
       label: 'Back',
       action: prevAction,
     );
   }
 
-  Action next() {
-    return Action(
+  NavAction next() {
+    return NavAction(
       label: 'Continue',
       action: nextAction,
     );

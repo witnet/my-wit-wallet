@@ -4,18 +4,9 @@ import 'package:witnet/crypto.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/screens/create_wallet/action.dart';
 
-typedef void VoidCallback(Action? value);
-
-class Action {
-  String label;
-  void action;
-
-  Action({
-    required this.label,
-    required this.action,
-  });
-}
+typedef void VoidCallback(NavAction? value);
 
 class ConfirmMnemonicCard extends StatefulWidget {
   final Function nextAction;
@@ -30,7 +21,7 @@ class ConfirmMnemonicCard extends StatefulWidget {
 }
 
 class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
-  with TickerProviderStateMixin {
+    with TickerProviderStateMixin {
   String mnemonic = '';
   final TextEditingController textController = TextEditingController();
   int numLines = 0;
@@ -49,15 +40,15 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
         .add(NextCardEvent(type, data: {}));
   }
 
-  Action prev() {
-    return Action(
+  NavAction prev() {
+    return NavAction(
       label: 'Back',
       action: prevAction,
     );
   }
 
-  Action next() {
-    return Action(
+  NavAction next() {
+    return NavAction(
       label: 'Continue',
       action: nextAction,
     );

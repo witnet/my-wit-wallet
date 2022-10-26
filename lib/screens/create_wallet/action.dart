@@ -1,8 +1,8 @@
-class Action {
+class NavAction {
   String label;
   void action;
 
-  Action({
+  NavAction({
     required this.label,
     required this.action,
   });
