@@ -90,16 +90,14 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
     return FutureBuilder(
         future: _genMnemonic(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasData) {
-              mnemonic = snapshot.data as String;
-              return DashedRect(
-                color: Colors.grey,
-                strokeWidth: 1.0,
-                gap: 3.0,
-                text: mnemonic,
-              );
-            }
+          if (snapshot.hasData) {
+            mnemonic = snapshot.data as String;
+            return DashedRect(
+              color: Colors.grey,
+              strokeWidth: 1.0,
+              gap: 3.0,
+              text: mnemonic,
+            );
           }
           return Center(
             child: SpinKitCircle(
@@ -144,6 +142,11 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.nextAction(next));
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override

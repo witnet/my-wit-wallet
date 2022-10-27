@@ -44,7 +44,6 @@ class LoginSubmittedEvent extends LoginEvent {
 
   final WalletName walletName;
   final String password;
-
   @override
   List<Object> get props => [walletName, password];
 }

@@ -69,8 +69,9 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
             _hasInputError = false;
             errorText = '';
             widget.setWallet(Wallet(
-                walletName: WalletName.dirty(widget.currentWallet),
-                password: _password));
+              walletName: WalletName.dirty(widget.currentWallet),
+              password: _password
+            ));
           });
         }
       }

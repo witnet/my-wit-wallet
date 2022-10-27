@@ -24,8 +24,13 @@ class ApiCrypto {
   late String? password;
   ApiCrypto();
 
-  void setInitialWalletData(String id, String walletName, String walletDescription,
-      String seed, String seedSource, String password) {
+  void setInitialWalletData(
+      String id,
+      String walletName,
+      String walletDescription,
+      String seed,
+      String seedSource,
+      String password) {
     this.id = id;
     this.walletName = walletName;
     this.walletDescription = walletDescription;
@@ -44,21 +49,27 @@ class ApiCrypto {
 
   Future<String> generateMnemonic(int wordCount, String language) async {
     try {
+      print('000');
       CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
+      print('111');
       var receivePort = ReceivePort();
+      print('222');
       await cryptoIsolate.init();
+      print('333');
       cryptoIsolate.send(
           method: 'generateMnemonic',
           params: {
             'wordCount': wordCount,
             'language': language,
           },
-          port: receivePort.sendPort);
-      String mnemonic = await receivePort.first.then((value) {
+          port: receivePort.sendPort
+      );
+      print('444');
+      return await receivePort.first.then((value) {
         return value;
       });
-      return mnemonic;
     } catch (e) {
+      print('Error $e');
       rethrow;
     }
   }
@@ -100,17 +111,26 @@ class ApiCrypto {
       CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
       ApiDatabase db = Locator.instance<ApiDatabase>();
       // get master key
+      print('api crypto 0');
       String key = await db.getKeychain();
+      print('api crypto 1 $key');
 
       final receivePort = ReceivePort();
-
+      print({
+        'id': walletName,
+        'seedSource': seedSource,
+        'walletName': walletName,
+        'walletDescription': walletDescription,
+        'seed': seed,
+        'password': key,
+      });
       cryptoIsolate.send(
           method: 'initializeWallet',
           params: {
             'id': walletName,
-            'seedSource': seedSource,
             'walletName': walletName,
             'walletDescription': walletDescription,
+            'seedSource': seedSource,
             'seed': seed,
             'password': key,
           },

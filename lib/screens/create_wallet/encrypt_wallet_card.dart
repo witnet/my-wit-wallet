@@ -5,6 +5,7 @@ import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
 
 final _passController = TextEditingController();
 final _passFocusNode = FocusNode();
@@ -32,8 +33,10 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
-  void nextAction() {
+  void nextAction() async {
+    // set masterKey
     Locator.instance<ApiCreateWallet>().setPassword(_password);
+    await Locator.instance<ApiDatabase>().setPassword(newPassword: _password);
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context)

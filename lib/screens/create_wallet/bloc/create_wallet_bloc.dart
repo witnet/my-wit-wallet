@@ -42,6 +42,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
   CreateWalletState get initialState => CreateWalletState(
       walletType: WalletType.imported,
       message: null,
+      masterKey: null,
       xprvString: null,
       nodeAddress: null,
       walletAddress: null,
@@ -100,18 +101,16 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         break;
 
       case CreateWalletStatus.EncryptWallet:
-        event as NextCardEvent;
-        _setMasterKey(event.data['password']);
         emit(state.copyWith(status: CreateWalletStatus.BuildWallet));
         break;
 
       case CreateWalletStatus.BuildWallet:
-
         emit(state.copyWith(status: CreateWalletStatus.Complete));
         break;
 
       case CreateWalletStatus.CreateWallet:
         break;
+
       // Decide whether to import wallet from seed phrase or import from xprv file
       case CreateWalletStatus.Imported:
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));

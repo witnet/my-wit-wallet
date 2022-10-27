@@ -7,15 +7,17 @@ class CryptoEvent extends Equatable {
 }
 
 class CryptoInitializeWalletEvent extends CryptoEvent {
+  final String id;
   final String walletName;
   final String walletDescription;
   final String keyData;
-  final String password;
   final String seedSource;
+  final String password;
 
-  CryptoInitializeWalletEvent(
-      {required this.walletDescription,
+  CryptoInitializeWalletEvent({
+      required this.id,
       required this.walletName,
+      required this.walletDescription,
       required this.keyData,
       required this.seedSource,
       required this.password,

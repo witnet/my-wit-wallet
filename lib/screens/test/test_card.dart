@@ -1,8 +1,5 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/screens/login/view/login_screen.dart';
 import 'package:witnet_wallet/screens/screen_transitions/fade_transition.dart';
@@ -74,6 +71,7 @@ class TestCardState extends State<TestCard> with TickerProviderStateMixin {
     return PaddedButton(
         padding: EdgeInsets.all(5),
         text: 'Back',
+        type: 'primary',
         onPressed: () => Navigator.pushReplacement(
               context,
               FadeRoute(page: LoginScreen()),

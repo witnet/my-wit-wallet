@@ -58,7 +58,6 @@ void _dbIsolate(SendPort sendPort) async {
       var method = data.split('?')[0];
       var params = json.decode(data.split('?')[1]);
       await methodMap[method]!(dbService, port, params);
-
     }
     receivePort.close();
   } catch (e) {}
@@ -81,14 +80,15 @@ Map<String, Function(DatabaseService, SendPort, Map<String, dynamic>)>
 };
 
 Future<void> _lock(
-    final DatabaseService dbService,
-    SendPort port,
-    Map<String, dynamic> params,
+  final DatabaseService dbService,
+  SendPort port,
+  Map<String, dynamic> params,
 ) async {
   bool locked = await dbService.lock();
 
   port.send(locked);
 }
+
 Future<void> _verifyPassword(
   final DatabaseService dbService,
   SendPort port,
@@ -210,12 +210,11 @@ Future<void> _getAllAccounts(
   port.send(value);
 }
 
-
 Future<void> _getKeychain(
-    DatabaseService dbService,
-    SendPort port,
-    Map<String, dynamic> params,
-    ) async {
+  DatabaseService dbService,
+  SendPort port,
+  Map<String, dynamic> params,
+) async {
   var value = await dbService.getKey();
   port.send(dbService.keyChain.keyHash);
 }

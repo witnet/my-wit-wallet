@@ -7,8 +7,10 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
-import 'package:witnet_wallet/util/storage/path_provider_interface.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
+import 'package:witnet_wallet/util/storage/database/wallet.dart';
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 
 class ListItem {
   bool isSelected = false;
@@ -33,25 +35,30 @@ class WalletListState extends State<WalletList> {
   late String selectedWallet = '';
   bool walletsExist = false;
   bool walletSelected = false;
+  Map<String, Wallet>? wallets;
   late Function onSelected;
 
   @override
   void initState() {
+    print('get wallets!!!');
     super.initState();
     _getWallets();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   void _getWallets() async {
-    PathProviderInterface interface = PathProviderInterface();
-    await interface.getWalletFiles().then((value) => {
-          if (value.length > 0)
-            {
-              setState(() {
-                walletList = value;
-                selectedWallet = value[0];
-              })
-            }
-        });
+    WalletStorage walletStorage =
+        await Locator.instance<ApiDatabase>().loadWalletsDatabase();
+    List<String> walletNames = List<String>.from(walletStorage.wallets.keys);
+    setState(() {
+      walletList = walletNames;
+      wallets = walletStorage.wallets;
+      selectedWallet = walletNames[0];
+    });
   }
 
   //Go to create or import wallet view
@@ -59,7 +66,7 @@ class WalletListState extends State<WalletList> {
     Locator.instance<ApiCreateWallet>().setWalletType(WalletType.unset);
     Navigator.pushNamed(context, CreateWalletScreen.route);
     BlocProvider.of<CreateWalletBloc>(context)
-        .add(ResetEvent(WalletType.unset));
+      .add(ResetEvent(WalletType.unset));
   }
 
   Widget _buildInitialButtons() {
@@ -70,7 +77,7 @@ class WalletListState extends State<WalletList> {
         _createImportWallet(),
       },
       icon: Icon(
-        FontAwesomeIcons.plusCircle,
+        FontAwesomeIcons.circlePlus,
         size: 18,
       ),
       type: 'horizontal-icon',
@@ -81,6 +88,10 @@ class WalletListState extends State<WalletList> {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     final isSelectedWallet = walletName == selectedWallet;
+    String? balance =
+        wallets?[walletName]!.balanceNanoWit().availableNanoWit.toString();
+    String? address =
+        wallets?[walletName]?.externalAccounts[0]?.address.toString();
     final textStyle = TextStyle(
         fontFamily: 'NotoSans',
         color: WitnetPallet.white,
@@ -111,20 +122,28 @@ class WalletListState extends State<WalletList> {
               width: 30,
               height: 30,
             ),
-            Column(
-              children: [
-                Text(
-                  walletName,
-                  style: textStyle,
+            Flexible(
+              child: Padding(
+                padding: EdgeInsets.only(left: 16, right: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      walletName,
+                      style: textStyle,
+                    ),
+                    Text(
+                      address != null ? address : '',
+                      overflow: TextOverflow.ellipsis,
+                      style: textStyle,
+                    ),
+                  ],
                 ),
-                Text(
-                  'wit1...113',
-                  style: textStyle,
-                ),
-              ],
+              ),
             ),
             Text(
-              '0.00 Wit',
+              balance != null ? '$balance nanoWit' : '',
+              overflow: TextOverflow.ellipsis,
               style: textStyle,
             ),
           ]),

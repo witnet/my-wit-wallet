@@ -20,7 +20,6 @@ import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 
-
 part 'crypto_event.dart';
 part 'crypto_state.dart';
 part 'crypto_isolate.dart';
@@ -44,7 +43,6 @@ Future<Map<String, dynamic>> initWalletRunner(
       port: resp.sendPort);
 
   Map<String, dynamic> data = await resp.first.then((value) {
-
     return {
       'wallet': value['wallet'] as Wallet,
     };
@@ -234,6 +232,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       {required CryptoInitializeWalletEvent event}) async {
     try {
       ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
+      print('_initializeWallet!!!');
       apiCrypto.setInitialWalletData(
         event.walletName, // id
         event.walletName,
@@ -242,18 +241,18 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
         event.seedSource,
         event.password,
       );
-
       ApiDatabase db = Locator.instance<ApiDatabase>();
-
       final Wallet _wallet = await apiCrypto.initializeWallet();
-
-
+      print('crypto block 3!!!');
       var creationStatus = await db.openDatabase();
-
+      print('crypto block 4!!!');
       assert(creationStatus, 'Unable to Create Database.');
+      print('crypto block 5!!!');
       await db.addWallet(_wallet);
+      print('crypto block 6!!!');
       return _wallet;
     } catch (e) {
+      print('Error!!! $e');
       rethrow;
     }
   }

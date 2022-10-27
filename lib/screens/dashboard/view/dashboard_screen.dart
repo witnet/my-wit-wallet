@@ -64,6 +64,13 @@ class DashboardScreenState extends State<DashboardScreen>
     _balanceController.forward();
   }
 
+  @override
+  void dispose() {
+    _loadingController.dispose();
+    _balanceController.dispose();
+    super.dispose();
+  }
+
   /// _goToSettings
   /// [BuildContext] context
   Future<bool> _goToSettings() {
@@ -324,6 +331,7 @@ class DashboardScreenState extends State<DashboardScreen>
       return true;
     }, builder: (BuildContext context, LoginState loginState) {
       Widget _body;
+      Widget? _walletList;
       switch (loginState.status) {
         case LoginStatus.LoggedOut:
           _body = Stack(
@@ -340,8 +348,7 @@ class DashboardScreenState extends State<DashboardScreen>
           );
           break;
         case LoginStatus.LoginSuccess:
-          //authState as LoggedInState;
-
+          _walletList = WalletList();
           _body = Stack(
             children: <Widget>[
               Column(
@@ -370,7 +377,7 @@ class DashboardScreenState extends State<DashboardScreen>
           _body,
         ],
         actions: [],
-        slidingPanel: WalletList(),
+        slidingPanel: _walletList,
         actionsSize: 0,
       );
     });

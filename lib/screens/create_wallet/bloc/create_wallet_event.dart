@@ -36,6 +36,14 @@ class VerifyXprvEvent extends CreateWalletEvent {
   List<Object> get props => [this.walletType, this.xprv];
 }
 
+class MasterKeyEvent extends CreateWalletEvent {
+  const MasterKeyEvent(WalletType walletType, {required this.password})
+      : super(walletType);
+  final String password;
+  @override
+  List<Object> get props => [this.walletType, this.password];
+}
+
 class VerifyEncryptedXprvEvent extends CreateWalletEvent {
   const VerifyEncryptedXprvEvent(WalletType walletType,
       {required this.xprv, required this.password})

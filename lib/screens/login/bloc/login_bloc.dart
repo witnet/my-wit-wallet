@@ -52,14 +52,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(state.copyWith(status: LoginStatus.LoginInProgress));
       bool verified = await apiDatabase.verifyPassword(event.password);
       if (verified) {
-      WalletStorage walletStorage = await apiDatabase.loadWalletsDatabase();
-      apiDashboard.setWallets(walletStorage);
+        WalletStorage walletStorage = await apiDatabase.loadWalletsDatabase();
+        apiDashboard.setWallets(walletStorage);
         emit(state.copyWith(status: LoginStatus.LoginSuccess));
       } else {
         emit(state.copyWith(status: LoginStatus.LoginInvalid));
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   void _onLogoutEvent(LoginLogoutEvent event, Emitter<LoginState> emit) async {

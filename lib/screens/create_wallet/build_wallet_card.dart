@@ -10,6 +10,7 @@ import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:witnet_wallet/screens/create_wallet/models/wallet_name.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:witnet_wallet/screens/login/models/models.dart';
+import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/widgets/animated_numeric_text.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
@@ -20,7 +21,6 @@ import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 
 typedef void VoidCallback(NavAction? value);
-
 
 class BuildWalletCard extends StatefulWidget {
   final Function nextAction;
@@ -118,7 +118,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-
           SizedBox(width: 20),
         ],
       ),
@@ -245,23 +244,25 @@ class BuildWalletCardState extends State<BuildWalletCard>
   Widget buildWallet() {
     return BlocBuilder<CryptoBloc, CryptoState>(
       buildWhen: (previousState, state) {
+        print('previous state $previousState');
+        print('state $state');
         if (previousState is CryptoLoadedWalletState) {
+          print(0);
           BlocProvider.of<CreateWalletBloc>(context)
               .add(ResetEvent(WalletType.newWallet));
         }
         if (state is CryptoLoadedWalletState) {
+          print(1);
           Locator.instance<ApiCreateWallet>().clearFormData();
-
           BlocProvider.of<LoginBloc>(context).add(LoginSubmittedEvent(
-              walletName: WalletName.dirty(state.wallet.name),
-              password: state.password));
+            walletName: WalletName.dirty(state.wallet.name),
+            password: state.password)
+          );
         } else if (state is CryptoInitializingWalletState) {
           _balanceController.reset();
           _balanceController.forward();
-          if (state.props[0].runtimeType == Wallet) {
-
-          }
           if (previousState is CryptoInitializingWalletState) {
+            print(4);
             setState(() {
               balance = previousState.availableNanoWit;
               currentAddressCount = previousState.addressCount;
@@ -274,6 +275,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
       builder: (context, state) {
         final theme = Theme.of(context);
         if (state is CryptoInitializingWalletState) {
+          print('CryptoInitializingWalletState!!');
           return Column(
             children: [
               initStatus(
@@ -294,6 +296,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
           //initStatus(theme, 0, state.addressCount, state.balanceNanoWit, state.transactionCount, state.message);
         }
         if (state is CryptoLoadedWalletState) {
+          print('CryptoLoadedWalletState!!');
           return Column(children: [
             SizedBox(
               child: SpinKitWave(
@@ -307,10 +310,12 @@ class BuildWalletCardState extends State<BuildWalletCard>
             ),
           ]);
         } else if (state is CryptoReadyState) {
+          print('CryptoReadyState!!');
           ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
           BlocProvider.of<CryptoBloc>(context).add(CryptoInitializeWalletEvent(
-              walletDescription: acw.walletDescription!,
+              id: acw.walletName,
               walletName: acw.walletName,
+              walletDescription: acw.walletDescription!,
               keyData: acw.seedData!,
               seedSource: acw.seedSource!,
               password: acw.password!));
@@ -359,26 +364,29 @@ class BuildWalletCardState extends State<BuildWalletCard>
     final deviceSize = MediaQuery.of(context).size;
 
     final cardWidth = min(deviceSize.width * 0.95, 360.0);
-    final theme = Theme.of(context);
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        _buildAppBar(theme),
-        Container(
-          width: cardWidth,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              //buildBalance(theme),
-              SizedBox(height: deviceSize.height / 4),
-              buildWallet(),
-              SizedBox(height: 10),
-            ],
-          ),
-        )
-      ],
+    return BlocListener<LoginBloc, LoginState>(
+      listener: (BuildContext context, LoginState state) {
+        if (state.status == LoginStatus.LoginSuccess) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => DashboardScreen()));
+        }
+      },
+      child:Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: cardWidth,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                buildWallet(),
+              ],
+            ),
+          )
+        ],
+      )
     );
   }
 }

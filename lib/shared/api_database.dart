@@ -56,6 +56,7 @@ class ApiDatabase {
 
   Future<bool> verifyPassword(String password) async {
     try {
+      print('Verify password $password');
       var value = await _processIsolate(
         method: 'verifyPassword',
         params: {'password': password},
@@ -76,6 +77,7 @@ class ApiDatabase {
           method: 'getKeychain',
           params: {},
         );
+        print('value $value');
         return value;
       } else {
         throw Exception('Database locked');
@@ -94,6 +96,7 @@ class ApiDatabase {
         'newPassword': newPassword,
       },
     );
+    unlocked = true;
     return true;
   }
 
@@ -172,7 +175,6 @@ class ApiDatabase {
         }
       }
       _wallets = walletMap;
-
     } catch (e) {}
     return WalletStorage(
       wallets: _wallets,

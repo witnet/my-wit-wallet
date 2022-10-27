@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/sembast.dart';
 import 'package:witnet/explorer.dart';
-
 import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/util/storage/database/account_repository.dart';
@@ -187,9 +185,10 @@ class DatabaseService {
       {required String oldPassword, required String newPassword}) async {
     try {
       bool success = await keyChain.setKey(
-          oldPassword: oldPassword,
-          newPassword: newPassword,
-          databaseClient: _database);
+        oldPassword: oldPassword,
+        newPassword: newPassword,
+        databaseClient: _database
+      );
       return success;
     } catch (e) {
       return false;

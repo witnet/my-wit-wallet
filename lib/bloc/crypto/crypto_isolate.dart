@@ -6,6 +6,7 @@ class CryptoIsolate {
   CryptoIsolate._internal();
 
   factory CryptoIsolate.instance() => _cryptoIsolate;
+
   late Isolate isolate;
   late SendPort sendPort;
   late ReceivePort receivePort;
@@ -18,8 +19,10 @@ class CryptoIsolate {
     isolate = await Isolate.spawn(_cryptIso, receivePort.sendPort);
     sendPort = await receivePort.first as SendPort;
   }
-
-  void send({required String method, required Map<String, dynamic> params, required SendPort port}) {
+  void send(
+      {required String method,
+      required Map<String, dynamic> params,
+      required SendPort port}) {
     try {
       sendPort.send(['$method?${json.encode(params)}', port]);
     } catch (e) {}
@@ -67,16 +70,17 @@ void _generateMnemonic(SendPort port, Map<String, dynamic> params) {
   port.send(mnemonic);
 }
 
-Future<void> _initializeWallet(SendPort port, Map<String, dynamic> params) async {
+Future<void> _initializeWallet(
+    SendPort port, Map<String, dynamic> params) async {
   Wallet? wallet;
   switch (params['seedSource']) {
     case 'mnemonic':
       wallet = await Wallet.fromMnemonic(
           id: params['id'],
-          name: params['name'],
-          description: params['description'],
+          name: params['walletName'],
+          description: params['walletDescription'],
           mnemonic: params['seed'],
-      password: params['password']);
+          password: params['password']);
       break;
     case 'xprv':
       wallet = await Wallet.fromXprvStr(
@@ -133,15 +137,14 @@ Future<void> _generateKeys(SendPort port, Map<String, dynamic> params) async {
 /// 'password' [String] used to decrypt the xprv
 /// 'signers' [List] List<String> contains the paths of the signers
 /// 'transaction_id' [String] the hash of the transaction.
-Future<void> _signTransaction(SendPort port, Map<String, dynamic> params) async {
+Future<void> _signTransaction(
+    SendPort port, Map<String, dynamic> params) async {
   String password = params['password'];
   Map<String, List<String>> signers = params['signers'];
   String transactionId = params['transaction_id'];
   String errorMsg = '';
 
   try {
-
-
     // storage for signatures
     List<KeyedSignature> signatures = [];
 
@@ -182,7 +185,7 @@ Future<void> _signTransaction(SendPort port, Map<String, dynamic> params) async 
           signatures.add(_sigMap[address]!);
         } else {
           KeyedSignature signature =
-          signer.address.signHash(transactionId, signer.privateKey);
+              signer.address.signHash(transactionId, signer.privateKey);
           _sigMap[address] = signature;
           signatures.add(_sigMap[address]!);
         }

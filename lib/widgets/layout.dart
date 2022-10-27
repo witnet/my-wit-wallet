@@ -72,9 +72,10 @@ class Layout extends StatelessWidget {
         controller: panelController,
         color: extendedTheme.walletListBackgroundColor!,
         minHeight: 0,
-        maxHeight: MediaQuery.of(context).size.height * 0.5,
+        maxHeight: MediaQuery.of(context).size.height * 0.3,
         borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+          topLeft: Radius.circular(8), topRight: Radius.circular(8)
+        ),
         panel: slidingPanel,
         body: ListView(
           controller: ScrollController(),

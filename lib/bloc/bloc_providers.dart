@@ -29,6 +29,7 @@ List<BlocProvider> getProviders(BuildContext context) {
       create: (BuildContext context) => CreateWalletBloc(
         CreateWalletState(
           walletType: WalletType.imported,
+          masterKey: null,
           nodeAddress: null,
           message: null,
           walletAddress: null,
