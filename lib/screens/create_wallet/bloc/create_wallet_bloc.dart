@@ -108,7 +108,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
 
       case CreateWalletStatus.CreateWallet:
         break;
-
+      // Decide whether to import wallet from seed phrase or import from xprv file
       case CreateWalletStatus.Imported:
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
         break;
@@ -131,7 +131,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       CreateWalletEvent event, Emitter<CreateWalletState> emit) {
     switch (state.status) {
       case CreateWalletStatus.Disclaimer:
-        emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
+        // unreachable
         break;
       case CreateWalletStatus.GenerateMnemonic:
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
@@ -171,7 +171,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         emit(state.copyWith(status: CreateWalletStatus.CreateWallet));
         break;
       case CreateWalletStatus.Imported:
-        emit(state.copyWith(status: CreateWalletStatus.Imported));
+        // unreachable
         break;
       case CreateWalletStatus.Loading:
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));

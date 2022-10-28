@@ -7,7 +7,7 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/widgets/dashed_rect.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/services.dart';
-import 'package:witnet_wallet/screens/create_wallet/action.dart';
+import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 
 typedef void VoidCallback(NavAction? value);
 

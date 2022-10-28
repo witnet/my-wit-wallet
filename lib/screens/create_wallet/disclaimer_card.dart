@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/widgets/labeled_checkbox.dart';
-import 'package:witnet_wallet/screens/create_wallet/action.dart';
+import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 
 typedef void VoidCallback(NavAction? value);
 

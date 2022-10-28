@@ -37,6 +37,8 @@ class HeaderLayout extends StatelessWidget {
     return ClipPath(
         clipper: Customshape(),
         child: Container(
+          // ignore: todo
+          // TODO[#10]: Implement header layout responsive depending on screen height
           height: 250,
           width: MediaQuery.of(context).size.width,
           color: extendedTheme.headerBackgroundColor,

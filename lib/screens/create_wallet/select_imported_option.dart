@@ -4,7 +4,7 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/action.dart';
+import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 
 typedef void VoidCallback(NavAction? value);
 
@@ -32,10 +32,10 @@ class ImportedOptionState extends State<SelectImportedOption> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 7, bottom: 7),
+            padding: EdgeInsets.only(top: 8, bottom: 8),
             child: _buildInitialButtons(context, theme),
           ),
-          Padding(padding: EdgeInsets.all(7)),
+          Padding(padding: EdgeInsets.all(8)),
         ],
       ),
     );

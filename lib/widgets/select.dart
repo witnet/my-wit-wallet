@@ -25,10 +25,8 @@ class Select extends StatelessWidget {
     final theme = Theme.of(context).extension<ExtendedTheme>()!;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color:
-            theme.selectBackgroundColor, //background color of dropdown button
-        borderRadius:
-            BorderRadius.circular(4), //border raiuds of dropdown button
+        color: theme.selectBackgroundColor,
+        borderRadius: BorderRadius.circular(4),
       ),
       child: Padding(
         padding: EdgeInsets.only(left: 8, right: 8),
@@ -36,11 +34,8 @@ class Select extends StatelessWidget {
             value: selectedItem,
             dropdownColor: theme.dropdownBackgroundColor,
             focusColor: theme.dropdownBackgroundColor,
-            iconEnabledColor: theme.selectedTextColor, //Icon color
-            style: TextStyle(
-                color: theme.dropdownTextColor, //Font color
-                fontSize: 16 //font size on dropdown button
-                ),
+            iconEnabledColor: theme.selectedTextColor,
+            style: TextStyle(color: theme.dropdownTextColor, fontSize: 16),
             selectedItemBuilder: (BuildContext context) {
               return listItems.map<Widget>((String item) {
                 return Container(
@@ -53,14 +48,14 @@ class Select extends StatelessWidget {
                   ),
                 );
               }).toList();
-            }, //dropdown background color
+            },
             underline: Container(),
-            borderRadius: BorderRadius.circular(4), //remove underline
+            borderRadius: BorderRadius.circular(4),
             isExpanded: true,
-            items: listItems.map<DropdownMenuItem<String>>((String value) {
-              return _buildWalletDropdownItem(value);
-            }).toList(),
-            onChanged: (String? value) => {onChanged(value)}),
+            items: listItems
+                .map<DropdownMenuItem<String>>(_buildWalletDropdownItem)
+                .toList(),
+            onChanged: onChanged),
       ),
     );
   }

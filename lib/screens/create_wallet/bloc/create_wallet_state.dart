@@ -2,6 +2,7 @@ part of 'create_wallet_bloc.dart';
 
 enum CreateWalletStatus {
   Disclaimer,
+  // Imported is the status where you should choose the imported option (seed phrase or xprv)
   Imported,
   GenerateMnemonic,
   EnterMnemonic,

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/screens/create_wallet/action.dart';
+import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 
 final _passController = TextEditingController();
 final _passFocusNode = FocusNode();
@@ -57,7 +57,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
   String _password = '';
   String _confirmPassword = '';
   bool _hasInputError = false;
-  String errorText = 'Password mismatch';
+  String errorText = '';
 
   void setPassword(String password) {
     setState(() {
@@ -74,7 +74,10 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
         .addPostFrameCallback((_) => widget.prevAction(prev));
   }
 
-  void validation() {
+  // ignore: todo
+  // TODO[#24]: Use formz model to validate password
+
+  void validate() {
     if (!_passConfirmFocusNode.hasFocus && !_passFocusNode.hasFocus) {
       if (this.mounted) {
         if (_password.isEmpty && _confirmPassword.isEmpty) {
@@ -107,8 +110,8 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    _passConfirmFocusNode.addListener(() => validation());
-    _passFocusNode.addListener(() => validation());
+    _passConfirmFocusNode.addListener(() => validate());
+    _passFocusNode.addListener(() => validate());
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

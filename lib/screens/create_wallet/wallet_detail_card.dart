@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'bloc/create_wallet_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/action.dart';
+import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 
 typedef void VoidCallback(NavAction? value);
 
@@ -76,6 +76,9 @@ class WalletDetailCardState extends State<WalletDetailCard>
   }
 
   final _formKey = GlobalKey<FormState>();
+
+  // ignore: todo
+  // TODO[#24]: Use formz model to validate name and description
 
   void setValidation() {
     if (!_nameFocusNode.hasFocus) {

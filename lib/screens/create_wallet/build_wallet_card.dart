@@ -19,7 +19,7 @@ import 'package:witnet_wallet/widgets/svg_widget.dart';
 import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/screens/create_wallet/action.dart';
+import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 
 typedef void VoidCallback(NavAction? value);
 

@@ -5,7 +5,7 @@ import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/screens/create_wallet/action.dart';
+import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 
 typedef void VoidCallback(NavAction? value);
 
@@ -132,7 +132,7 @@ class EnterXprvCardState extends State<EnterXprvCard>
     );
   }
 
-  Widget verifyXprvButton() {
+  Widget _verifyXprvButton() {
     return BlocBuilder<CreateWalletBloc, CreateWalletState>(
         builder: (context, state) {
       final theme = Theme.of(context);
@@ -205,7 +205,7 @@ class EnterXprvCardState extends State<EnterXprvCard>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           _buildConfirmField(),
-          verifyXprvButton(),
+          _verifyXprvButton(),
         ]);
   }
 }

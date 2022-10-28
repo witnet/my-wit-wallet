@@ -4,7 +4,7 @@ import 'package:witnet/crypto.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'bloc/create_wallet_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/action.dart';
+import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 
 //genius merge win culture lemon remember work native omit digital canal update
 typedef void VoidCallback(NavAction? value);
