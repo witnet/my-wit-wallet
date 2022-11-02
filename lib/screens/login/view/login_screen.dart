@@ -95,8 +95,6 @@ class LoginScreenState extends State<LoginScreen>
   }
 
   _setWallet(wallet) {
-    print('setwallet ${wallet.password}');
-    print('setwallet ${wallet.walletName}');
     setState(() {
       currentWallet = wallet;
     });
@@ -114,7 +112,7 @@ class LoginScreenState extends State<LoginScreen>
           ...mainComponents(),
           LoginForm(
             currentWallet: walletNames[0],
-            setWallet: (wallet) => {print(wallet), _setWallet(wallet)},
+            setWallet: (wallet) => _setWallet(wallet),
             loginError: loginError,
           )
         ];

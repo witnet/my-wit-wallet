@@ -40,7 +40,6 @@ class WalletListState extends State<WalletList> {
 
   @override
   void initState() {
-    print('get wallets!!!');
     super.initState();
     _getWallets();
   }

@@ -32,7 +32,7 @@ class ApiCreateWallet {
     seedSource = '';
     walletName = '';
     walletDescription = '';
-    password = null;
+    password = '';
   }
 
   Future<String> createMnemonic(

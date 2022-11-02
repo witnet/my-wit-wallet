@@ -69,9 +69,8 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
             _hasInputError = false;
             errorText = '';
             widget.setWallet(Wallet(
-              walletName: WalletName.dirty(widget.currentWallet),
-              password: _password
-            ));
+                walletName: WalletName.dirty(widget.currentWallet),
+                password: _password));
           });
         }
       }
@@ -104,7 +103,11 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    var listenStatus = true;
     return BlocListener<LoginBloc, LoginState>(
+      listenWhen: (previous, current) {
+        return listenStatus;
+      },
       listener: (BuildContext context, LoginState state) {
         if (state.status == LoginStatus.LoginInvalid) {
           if (mounted) {
@@ -114,6 +117,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
             });
           }
         } else if (state.status == LoginStatus.LoginSuccess) {
+          listenStatus = false;
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => DashboardScreen()));
         }

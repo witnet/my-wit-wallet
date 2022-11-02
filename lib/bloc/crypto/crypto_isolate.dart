@@ -15,10 +15,14 @@ class CryptoIsolate {
   CryptoIsolate();
 
   Future<void> init() async {
-    receivePort = ReceivePort();
-    isolate = await Isolate.spawn(_cryptIso, receivePort.sendPort);
-    sendPort = await receivePort.first as SendPort;
+    if (!initialized) {
+      receivePort = ReceivePort();
+      isolate = await Isolate.spawn(_cryptIso, receivePort.sendPort);
+      sendPort = await receivePort.first as SendPort;
+      initialized = true;
+    }
   }
+
   void send(
       {required String method,
       required Map<String, dynamic> params,

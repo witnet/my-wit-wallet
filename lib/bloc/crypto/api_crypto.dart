@@ -49,13 +49,9 @@ class ApiCrypto {
 
   Future<String> generateMnemonic(int wordCount, String language) async {
     try {
-      print('000');
       CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
-      print('111');
       var receivePort = ReceivePort();
-      print('222');
       await cryptoIsolate.init();
-      print('333');
       cryptoIsolate.send(
           method: 'generateMnemonic',
           params: {
@@ -64,7 +60,6 @@ class ApiCrypto {
           },
           port: receivePort.sendPort
       );
-      print('444');
       return await receivePort.first.then((value) {
         return value;
       });
@@ -111,9 +106,7 @@ class ApiCrypto {
       CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
       ApiDatabase db = Locator.instance<ApiDatabase>();
       // get master key
-      print('api crypto 0');
       String key = await db.getKeychain();
-      print('api crypto 1 $key');
 
       final receivePort = ReceivePort();
       print({

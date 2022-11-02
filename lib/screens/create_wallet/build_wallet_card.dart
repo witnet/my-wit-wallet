@@ -244,25 +244,19 @@ class BuildWalletCardState extends State<BuildWalletCard>
   Widget buildWallet() {
     return BlocBuilder<CryptoBloc, CryptoState>(
       buildWhen: (previousState, state) {
-        print('previous state $previousState');
-        print('state $state');
         if (previousState is CryptoLoadedWalletState) {
-          print(0);
           BlocProvider.of<CreateWalletBloc>(context)
               .add(ResetEvent(WalletType.newWallet));
         }
         if (state is CryptoLoadedWalletState) {
-          print(1);
           Locator.instance<ApiCreateWallet>().clearFormData();
           BlocProvider.of<LoginBloc>(context).add(LoginSubmittedEvent(
-            walletName: WalletName.dirty(state.wallet.name),
-            password: state.password)
-          );
+              walletName: WalletName.dirty(state.wallet.name),
+              password: state.password));
         } else if (state is CryptoInitializingWalletState) {
           _balanceController.reset();
           _balanceController.forward();
           if (previousState is CryptoInitializingWalletState) {
-            print(4);
             setState(() {
               balance = previousState.availableNanoWit;
               currentAddressCount = previousState.addressCount;
@@ -275,7 +269,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
       builder: (context, state) {
         final theme = Theme.of(context);
         if (state is CryptoInitializingWalletState) {
-          print('CryptoInitializingWalletState!!');
           return Column(
             children: [
               initStatus(
@@ -296,7 +289,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
           //initStatus(theme, 0, state.addressCount, state.balanceNanoWit, state.transactionCount, state.message);
         }
         if (state is CryptoLoadedWalletState) {
-          print('CryptoLoadedWalletState!!');
           return Column(children: [
             SizedBox(
               child: SpinKitWave(
@@ -310,7 +302,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
             ),
           ]);
         } else if (state is CryptoReadyState) {
-          print('CryptoReadyState!!');
           ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
           BlocProvider.of<CryptoBloc>(context).add(CryptoInitializeWalletEvent(
               id: acw.walletName,
@@ -366,27 +357,26 @@ class BuildWalletCardState extends State<BuildWalletCard>
     final cardWidth = min(deviceSize.width * 0.95, 360.0);
 
     return BlocListener<LoginBloc, LoginState>(
-      listener: (BuildContext context, LoginState state) {
-        if (state.status == LoginStatus.LoginSuccess) {
-          Navigator.push(context,
+        listener: (BuildContext context, LoginState state) {
+          if (state.status == LoginStatus.LoginSuccess) {
+            Navigator.push(context,
               MaterialPageRoute(builder: (context) => DashboardScreen()));
-        }
-      },
-      child:Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            width: cardWidth,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                buildWallet(),
-              ],
-            ),
-          )
-        ],
-      )
-    );
+          }
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: cardWidth,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  buildWallet(),
+                ],
+              ),
+            )
+          ],
+        ));
   }
 }

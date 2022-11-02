@@ -97,7 +97,11 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         break;
 
       case CreateWalletStatus.WalletDetail:
-        emit(state.copyWith(status: CreateWalletStatus.EncryptWallet));
+        if (state.masterKey != null) {
+          emit(state.copyWith(status: CreateWalletStatus.BuildWallet));
+        } else {
+          emit(state.copyWith(status: CreateWalletStatus.EncryptWallet));
+        }
         break;
 
       case CreateWalletStatus.EncryptWallet:
@@ -201,10 +205,6 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
     }
   }
 
-  void _setMasterKey(String password) async {
-    await Locator.instance<ApiDatabase>().setPassword(newPassword: password);
-  }
-
   void _generateMnemonicEvent(
       GenerateMnemonicEvent event, Emitter<CreateWalletState> emit) async {
     await Locator.instance
@@ -277,18 +277,28 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
   }
 
   void _setWalletTypeEvent(
-      SetWalletTypeEvent event, Emitter<CreateWalletState> emit) {
+      SetWalletTypeEvent event, Emitter<CreateWalletState> emit) async {
+    // set master key if a wallet has already been created
+    ApiDatabase db = Locator.instance<ApiDatabase>();
+    String key = await db.getKeychain();
+    print('set wallet type with master key $key');
     emit(state.copyWith(
-        walletType: event.walletType, status: _getStatus(event)));
+        walletType: event.walletType,
+        masterKey: key,
+        status: _getStatus(event)));
   }
 
   void _finishEvent(FinishEvent event, Emitter<CreateWalletState> emit) {
     emit(state.copyWith(status: CreateWalletStatus.Complete));
   }
 
-  void _resetEvent(ResetEvent event, Emitter<CreateWalletState> emit) {
+  void _resetEvent(ResetEvent event, Emitter<CreateWalletState> emit) async {
+    print('reset state!! $state');
+    ApiDatabase db = Locator.instance<ApiDatabase>();
+    String key = await db.getKeychain();
+    print('set wallet type with master key $key');
     emit(state.copyWith(
-        walletType: event.walletType, status: _getStatus(event)));
+        walletType: event.walletType, masterKey: key, status: _getStatus(event)));
   }
 
   _getStatus(CreateWalletEvent event) {

@@ -232,7 +232,6 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       {required CryptoInitializeWalletEvent event}) async {
     try {
       ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
-      print('_initializeWallet!!!');
       apiCrypto.setInitialWalletData(
         event.walletName, // id
         event.walletName,
@@ -243,13 +242,9 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       );
       ApiDatabase db = Locator.instance<ApiDatabase>();
       final Wallet _wallet = await apiCrypto.initializeWallet();
-      print('crypto block 3!!!');
       var creationStatus = await db.openDatabase();
-      print('crypto block 4!!!');
       assert(creationStatus, 'Unable to Create Database.');
-      print('crypto block 5!!!');
       await db.addWallet(_wallet);
-      print('crypto block 6!!!');
       return _wallet;
     } catch (e) {
       print('Error!!! $e');

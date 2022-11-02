@@ -77,6 +77,7 @@ class ApiDatabase {
           method: 'getKeychain',
           params: {},
         );
+        // master key
         print('value $value');
         return value;
       } else {
