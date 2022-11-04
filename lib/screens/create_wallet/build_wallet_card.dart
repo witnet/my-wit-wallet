@@ -245,10 +245,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
   Widget buildWallet() {
     return BlocBuilder<CryptoBloc, CryptoState>(
       buildWhen: (previousState, state) {
-        if (previousState is CryptoLoadedWalletState) {
-          BlocProvider.of<CreateWalletBloc>(context)
-              .add(ResetEvent(WalletType.newWallet));
-        }
         if (state is CryptoLoadedWalletState) {
           Locator.instance<ApiCreateWallet>().clearFormData();
           BlocProvider.of<LoginBloc>(context).add(LoginSubmittedEvent(
@@ -365,7 +361,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
           if (state.status == LoginStatus.LoginSuccess) {
             BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
             listenStatus = false;
-            Navigator.push(context,
+            Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => DashboardScreen()));
           }
         },

@@ -56,6 +56,7 @@ dependencies:
   date_format: ^2.0.5
   qr_code_scanner: ^1.0.1
   formz: ^0.4.1
+  flutter_hooks: ^0.18.5+1
 
 
 

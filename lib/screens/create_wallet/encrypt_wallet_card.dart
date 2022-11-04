@@ -77,6 +77,11 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
         .addPostFrameCallback((_) => widget.prevAction(prev));
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   // ignore: todo
   // TODO[#24]: Use formz model to validate password
 
@@ -103,11 +108,6 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     } else {
       widget.nextAction(null);
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   final _formKey = GlobalKey<FormState>();

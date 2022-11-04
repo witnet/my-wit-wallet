@@ -118,7 +118,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
           }
         } else if (state.status == LoginStatus.LoginSuccess) {
           listenStatus = false;
-          Navigator.push(context,
+          Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => DashboardScreen()));
         }
       },

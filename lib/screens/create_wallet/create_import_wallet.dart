@@ -53,20 +53,20 @@ class CreateImportWalletState extends State<CreateImportWallet> {
   }
 
   void prevAction() {
-    Navigator.push(
+    Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => DashboardScreen()));
   }
 
   void createWallet() {
     Locator.instance<ApiCreateWallet>().setWalletType(WalletType.newWallet);
-    Navigator.pushNamed(context, CreateWalletScreen.route);
+    Navigator.pushReplacementNamed(context, CreateWalletScreen.route);
     BlocProvider.of<CreateWalletBloc>(context)
         .add(ResetEvent(WalletType.newWallet));
   }
 
   void importWallet() {
     Locator.instance<ApiCreateWallet>().setWalletType(WalletType.imported);
-    Navigator.pushNamed(context, CreateWalletScreen.route);
+    Navigator.pushReplacementNamed(context, CreateWalletScreen.route);
     BlocProvider.of<CreateWalletBloc>(context)
         .add(ResetEvent(WalletType.imported));
   }

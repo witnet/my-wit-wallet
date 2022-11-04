@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/create_import_wallet.dart';
@@ -23,7 +25,6 @@ class CreateWalletScreen extends StatefulWidget {
 }
 
 class CreateWalletScreenState extends State<CreateWalletScreen> {
-  dynamic currentFormCard;
   dynamic nextAction;
   dynamic secondaryAction;
   dynamic prevAction;
@@ -124,87 +125,53 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
     });
   }
 
-  final _mnemonicCard = GlobalKey();
+  _navigationCards() {
+    return {
+      CreateWalletStatus.Disclaimer: DisclaimerCard(
+          nextAction: _setNextAction, prevAction: _setPrevAction),
+      CreateWalletStatus.GenerateMnemonic: GenerateMnemonicCard(
+          nextAction: _setNextAction, prevAction: _setPrevAction),
+      CreateWalletStatus.EnterMnemonic: EnterMnemonicCard(
+          nextAction: _setNextAction, prevAction: _setPrevAction),
+      CreateWalletStatus.EnterXprv:
+          EnterXprvCard(nextAction: _setNextAction, prevAction: _setPrevAction),
+      CreateWalletStatus.ValidXprv: null,
+      CreateWalletStatus.EnterEncryptedXprv: EnterEncryptedXprvCard(
+          nextAction: _setNextAction, prevAction: _setPrevAction),
+      CreateWalletStatus.ConfirmMnemonic: ConfirmMnemonicCard(
+          nextAction: _setNextAction, prevAction: _setPrevAction),
+      CreateWalletStatus.WalletDetail: WalletDetailCard(
+          nextAction: _setNextAction, prevAction: _setPrevAction),
+      CreateWalletStatus.EncryptWallet: EncryptWalletCard(
+          nextAction: _setNextAction, prevAction: _setPrevAction),
+      CreateWalletStatus.BuildWallet: BuildWalletCard(
+          nextAction: _setNextAction, prevAction: _setPrevAction),
+      CreateWalletStatus.Imported: SelectImportedOption(
+          nextAction: _setNextAction,
+          secondaryAction: _setSecondaryAction,
+          prevAction: _setPrevAction),
+      CreateWalletStatus.CreateImport: CreateImportWallet(
+          nextAction: _setNextAction,
+          secondaryAction: _setSecondaryAction,
+          prevAction: _setPrevAction),
+      CreateWalletStatus.CreateWallet: null,
+      CreateWalletStatus.Complete: Container(),
+      CreateWalletStatus.Loading: null,
+      CreateWalletStatus.LoadingException: null,
+      CreateWalletStatus.Reset: null,
+    };
+  }
 
   _formCards() {
     return BlocBuilder<CreateWalletBloc, CreateWalletState>(
-        buildWhen: (previousState, state) {
-      return previousState.status != state.status;
-    }, builder: (context, state) {
-      print('BUILD FORM CARD $state');
-      switch (state.status) {
-        case CreateWalletStatus.Disclaimer:
-          currentFormCard = DisclaimerCard(
-              nextAction: _setNextAction, prevAction: _setPrevAction);
-          break;
-        case CreateWalletStatus.GenerateMnemonic:
-          currentFormCard = GenerateMnemonicCard(
-              key: _mnemonicCard,
-              nextAction: _setNextAction,
-              prevAction: _setPrevAction);
-          break;
-        case CreateWalletStatus.EnterMnemonic:
-          currentFormCard = EnterMnemonicCard(
-              nextAction: _setNextAction, prevAction: _setPrevAction);
-          break;
-        case CreateWalletStatus.EnterXprv:
-          currentFormCard = EnterXprvCard(
-              nextAction: _setNextAction, prevAction: _setPrevAction);
-          break;
-        case CreateWalletStatus.ValidXprv:
-          break;
-        case CreateWalletStatus.EnterEncryptedXprv:
-          currentFormCard = EnterEncryptedXprvCard(
-              nextAction: _setNextAction, prevAction: _setPrevAction);
-          break;
-        case CreateWalletStatus.ConfirmMnemonic:
-          currentFormCard = ConfirmMnemonicCard(
-              nextAction: _setNextAction, prevAction: _setPrevAction);
-          break;
-        case CreateWalletStatus.WalletDetail:
-          currentFormCard = WalletDetailCard(
-              nextAction: _setNextAction, prevAction: _setPrevAction);
-          break;
-        case CreateWalletStatus.EncryptWallet:
-          currentFormCard = EncryptWalletCard(
-              nextAction: _setNextAction, prevAction: _setPrevAction);
-          break;
-        case CreateWalletStatus.BuildWallet:
-          currentFormCard = BuildWalletCard(
-              nextAction: _setNextAction, prevAction: _setPrevAction);
-          break;
-        case CreateWalletStatus.Imported:
-          currentFormCard = SelectImportedOption(
-              nextAction: _setNextAction,
-              secondaryAction: _setSecondaryAction,
-              prevAction: _setPrevAction);
-          break;
-        case CreateWalletStatus.CreateImport:
-          currentFormCard = CreateImportWallet(
-              nextAction: _setNextAction,
-              secondaryAction: _setSecondaryAction,
-              prevAction: _setPrevAction);
-          break;
-        case CreateWalletStatus.CreateWallet:
-          // TODO: Handle this case.
-          break;
-        case CreateWalletStatus.Complete:
-          {
-            currentFormCard = Container();
-            BlocProvider.of<CreateWalletBloc>(context)
-                .add(ResetEvent(WalletType.newWallet));
-          }
-          break;
-        case CreateWalletStatus.Loading:
-          break;
-        case CreateWalletStatus.LoadingException:
-          break;
-        case CreateWalletStatus.Reset:
-          break;
-      }
-
+        builder: (context, state) {
+      // TODO: DELETE IF UNNECESSARY
+      // if (state.status == CreateWalletStatus.Complete) {
+      //   BlocProvider.of<CreateWalletBloc>(context)
+      //       .add(ResetEvent(WalletType.unset));
+      // }
       return Center(
-        child: currentFormCard,
+        child: _navigationCards()[state.status],
       );
     });
   }
