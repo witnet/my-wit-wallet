@@ -44,7 +44,6 @@ class ApiCrypto {
     this.walletDescription = null;
     this.seed = null;
     this.seedSource = null;
-    this.password = null;
   }
 
   Future<String> generateMnemonic(int wordCount, String language) async {
@@ -58,8 +57,7 @@ class ApiCrypto {
             'wordCount': wordCount,
             'language': language,
           },
-          port: receivePort.sendPort
-      );
+          port: receivePort.sendPort);
       return await receivePort.first.then((value) {
         return value;
       });
@@ -104,9 +102,6 @@ class ApiCrypto {
   Future<Wallet> initializeWallet() async {
     try {
       CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
-      ApiDatabase db = Locator.instance<ApiDatabase>();
-      // get master key
-      String key = await db.getKeychain();
 
       final receivePort = ReceivePort();
       print({
@@ -115,7 +110,7 @@ class ApiCrypto {
         'walletName': walletName,
         'walletDescription': walletDescription,
         'seed': seed,
-        'password': key,
+        'password': password,
       });
       cryptoIsolate.send(
           method: 'initializeWallet',
@@ -125,7 +120,7 @@ class ApiCrypto {
             'walletDescription': walletDescription,
             'seedSource': seedSource,
             'seed': seed,
-            'password': key,
+            'password': password,
           },
           port: receivePort.sendPort);
       clearInitialWalletData();

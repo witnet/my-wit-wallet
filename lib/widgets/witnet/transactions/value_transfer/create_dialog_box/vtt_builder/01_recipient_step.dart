@@ -246,9 +246,6 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   bool validVTO(String address) {
-    print(validAddress(address));
-    print(valueWit);
-    print(balanceInfo);
     if (!validAddress(address) || valueWit == 0) return false;
     if (nanoWitToWit(balanceInfo.availableNanoWit) < 0) return false;
     return true;

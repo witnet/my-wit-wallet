@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -309,7 +310,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
               walletDescription: acw.walletDescription!,
               keyData: acw.seedData!,
               seedSource: acw.seedSource!,
-              password: acw.password!));
+              password: acw.password ?? ''));
 
           return Column(
             children: [
@@ -353,14 +354,19 @@ class BuildWalletCardState extends State<BuildWalletCard>
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-
+    var listenStatus = true;
     final cardWidth = min(deviceSize.width * 0.95, 360.0);
 
     return BlocListener<LoginBloc, LoginState>(
+        listenWhen: (previous, current) {
+          return listenStatus;
+        },
         listener: (BuildContext context, LoginState state) {
           if (state.status == LoginStatus.LoginSuccess) {
+            BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
+            listenStatus = false;
             Navigator.push(context,
-              MaterialPageRoute(builder: (context) => DashboardScreen()));
+                MaterialPageRoute(builder: (context) => DashboardScreen()));
           }
         },
         child: Column(

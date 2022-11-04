@@ -26,7 +26,6 @@ class CreateWalletState extends Equatable {
     required this.walletType,
     required this.message,
     required this.xprvString,
-    required this.masterKey,
     required this.nodeAddress,
     required this.walletAddress,
     required this.status,
@@ -36,7 +35,6 @@ class CreateWalletState extends Equatable {
   final WalletType walletType;
   final String? message;
   final String? xprvString;
-  final String? masterKey;
   final String? nodeAddress;
   final String? walletAddress;
 
@@ -44,7 +42,6 @@ class CreateWalletState extends Equatable {
     WalletType? walletType,
     String? message,
     String? xprvString,
-    String? masterKey,
     String? nodeAddress,
     String? walletAddress,
     CreateWalletStatus? status,
@@ -52,7 +49,6 @@ class CreateWalletState extends Equatable {
     return CreateWalletState(
       walletType: walletType ?? this.walletType,
       xprvString: xprvString ?? this.xprvString,
-      masterKey: masterKey ?? this.masterKey,
       message: message ?? this.message,
       nodeAddress: nodeAddress ?? this.nodeAddress,
       walletAddress: walletAddress ?? this.walletAddress,
@@ -68,6 +64,5 @@ class CreateWalletState extends Equatable {
     nodeAddress,
     walletAddress,
     status,
-    masterKey
   ];
 }

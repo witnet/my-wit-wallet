@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
@@ -65,7 +67,7 @@ class WalletListState extends State<WalletList> {
     Locator.instance<ApiCreateWallet>().setWalletType(WalletType.unset);
     Navigator.pushNamed(context, CreateWalletScreen.route);
     BlocProvider.of<CreateWalletBloc>(context)
-      .add(ResetEvent(WalletType.unset));
+        .add(ResetEvent(WalletType.unset));
   }
 
   Widget _buildInitialButtons() {

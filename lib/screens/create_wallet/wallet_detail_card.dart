@@ -33,6 +33,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
         .setWalletDescription(_walletDescription);
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    print('go next card');
     BlocProvider.of<CreateWalletBloc>(context)
         .add(NextCardEvent(type, data: {}));
   }

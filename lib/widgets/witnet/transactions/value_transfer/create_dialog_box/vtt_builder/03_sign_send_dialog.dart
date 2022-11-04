@@ -275,7 +275,6 @@ class SignSendDialogState extends State<SignSendDialog>
                           Icon(FontAwesomeIcons.arrowRight),
                           ElevatedButton(
                               onPressed: () {
-                                // print(state.vtTransaction.jsonMap(asHex: true));
                                 send(state.vtTransaction);
                               },
                               child: Text('Send To Explorer')),

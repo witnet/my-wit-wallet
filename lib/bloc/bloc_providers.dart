@@ -22,14 +22,13 @@ List<BlocProvider> getProviders(BuildContext context) {
 
     /// BlocCrypto manages an isolate to run intensive cryptographic methods.
     BlocProvider<CryptoBloc>(
-        create: (BuildContext context) => CryptoBloc(CryptoReadyState())),
+      create: (BuildContext context) => CryptoBloc(CryptoReadyState())),
 
     /// BlocCreateWallet manages all wallet creation options
     BlocProvider<CreateWalletBloc>(
       create: (BuildContext context) => CreateWalletBloc(
         CreateWalletState(
           walletType: WalletType.imported,
-          masterKey: null,
           nodeAddress: null,
           message: null,
           walletAddress: null,

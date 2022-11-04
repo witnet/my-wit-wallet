@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:witnet_wallet/screens/login/view/login_form.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
@@ -45,9 +47,8 @@ class LoginScreenState extends State<LoginScreen>
 
   _login() {
     BlocProvider.of<LoginBloc>(context).add(LoginSubmittedEvent(
-      walletName: currentWallet!.walletName,
-      password: currentWallet!.password)
-    );
+        walletName: currentWallet!.walletName,
+        password: currentWallet!.password));
   }
 
   Widget _buttonLogin() {

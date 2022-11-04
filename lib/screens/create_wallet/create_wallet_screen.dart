@@ -30,6 +30,11 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   double bottomSize = 80;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     super.dispose();
   }
@@ -119,9 +124,14 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
     });
   }
 
+  final _mnemonicCard = GlobalKey();
+
   _formCards() {
     return BlocBuilder<CreateWalletBloc, CreateWalletState>(
-        builder: (context, state) {
+        buildWhen: (previousState, state) {
+      return previousState.status != state.status;
+    }, builder: (context, state) {
+      print('BUILD FORM CARD $state');
       switch (state.status) {
         case CreateWalletStatus.Disclaimer:
           currentFormCard = DisclaimerCard(
@@ -129,7 +139,9 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
           break;
         case CreateWalletStatus.GenerateMnemonic:
           currentFormCard = GenerateMnemonicCard(
-              nextAction: _setNextAction, prevAction: _setPrevAction);
+              key: _mnemonicCard,
+              nextAction: _setNextAction,
+              prevAction: _setPrevAction);
           break;
         case CreateWalletStatus.EnterMnemonic:
           currentFormCard = EnterMnemonicCard(

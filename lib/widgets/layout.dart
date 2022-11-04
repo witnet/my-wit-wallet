@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:witnet_wallet/theme/colors.dart';
@@ -74,8 +76,7 @@ class Layout extends StatelessWidget {
         minHeight: 0,
         maxHeight: MediaQuery.of(context).size.height * 0.3,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(8), topRight: Radius.circular(8)
-        ),
+            topLeft: Radius.circular(8), topRight: Radius.circular(8)),
         panel: slidingPanel,
         body: ListView(
           controller: ScrollController(),

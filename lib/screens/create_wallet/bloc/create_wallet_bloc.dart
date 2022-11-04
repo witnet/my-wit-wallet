@@ -6,6 +6,7 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:equatable/equatable.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 part 'create_wallet_state.dart';
 part 'create_wallet_event.dart';
 
@@ -34,7 +35,6 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
     on<GenerateMnemonicEvent>(_generateMnemonicEvent);
     on<VerifyXprvEvent>(_verifyXprvEvent);
     on<VerifyEncryptedXprvEvent>(_verifyEncryptedXprvEvent);
-    on<SetWalletTypeEvent>(_setWalletTypeEvent);
     on<FinishEvent>(_finishEvent);
     on<ResetEvent>(_resetEvent);
   }
@@ -42,14 +42,14 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
   CreateWalletState get initialState => CreateWalletState(
       walletType: WalletType.imported,
       message: null,
-      masterKey: null,
       xprvString: null,
       nodeAddress: null,
       walletAddress: null,
       status: CreateWalletStatus.Imported);
 
   void _nextCardEvent(
-      CreateWalletEvent event, Emitter<CreateWalletState> emit) {
+      CreateWalletEvent event, Emitter<CreateWalletState> emit) async {
+    final masterKey = await _getMasterKey();
     switch (state.status) {
       case CreateWalletStatus.Disclaimer:
         switch (event.walletType) {
@@ -97,7 +97,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         break;
 
       case CreateWalletStatus.WalletDetail:
-        if (state.masterKey != null) {
+        if (masterKey != '') {
           emit(state.copyWith(status: CreateWalletStatus.BuildWallet));
         } else {
           emit(state.copyWith(status: CreateWalletStatus.EncryptWallet));
@@ -207,10 +207,8 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
 
   void _generateMnemonicEvent(
       GenerateMnemonicEvent event, Emitter<CreateWalletState> emit) async {
-    await Locator.instance
-        .get<ApiCreateWallet>()
-        .createMnemonic(wordCount: event.length, language: event.language);
-    // emit(GenerateMnemonicState(event.walletType, ));
+    emit(state.copyWith(
+        walletType: event.walletType, status: _getStatus(event)));
   }
 
   void _verifyXprvEvent(
@@ -222,7 +220,6 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
     if (!xprvStr.startsWith('xprv1')) errors.add('needs to start with "xprv1"');
     try {
       CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
-      await cryptoIsolate.init();
       ReceivePort resp = ReceivePort();
       cryptoIsolate.send(
           method: 'initializeWallet',
@@ -250,7 +247,6 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
     emit(state.copyWith(status: CreateWalletStatus.Loading));
     try {
       CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
-      await cryptoIsolate.init();
       ReceivePort resp = ReceivePort();
       cryptoIsolate.send(
           method: 'initializeWallet',
@@ -276,16 +272,10 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
     }
   }
 
-  void _setWalletTypeEvent(
-      SetWalletTypeEvent event, Emitter<CreateWalletState> emit) async {
+  Future<String> _getMasterKey() async {
     // set master key if a wallet has already been created
     ApiDatabase db = Locator.instance<ApiDatabase>();
-    String key = await db.getKeychain();
-    print('set wallet type with master key $key');
-    emit(state.copyWith(
-        walletType: event.walletType,
-        masterKey: key,
-        status: _getStatus(event)));
+    return await db.getKeychain();
   }
 
   void _finishEvent(FinishEvent event, Emitter<CreateWalletState> emit) {
@@ -293,12 +283,8 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
   }
 
   void _resetEvent(ResetEvent event, Emitter<CreateWalletState> emit) async {
-    print('reset state!! $state');
-    ApiDatabase db = Locator.instance<ApiDatabase>();
-    String key = await db.getKeychain();
-    print('set wallet type with master key $key');
     emit(state.copyWith(
-        walletType: event.walletType, masterKey: key, status: _getStatus(event)));
+        walletType: event.walletType, status: _getStatus(event)));
   }
 
   _getStatus(CreateWalletEvent event) {

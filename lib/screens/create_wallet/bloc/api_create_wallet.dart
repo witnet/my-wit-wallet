@@ -5,7 +5,7 @@ import 'package:witnet_wallet/shared/locator.dart';
 class ApiCreateWallet {
   late String walletName;
   late String? walletDescription;
-  late String? password;
+  String? password;
   late String? seedData;
   late String? seedSource;
   late WalletType walletType;
@@ -19,9 +19,7 @@ class ApiCreateWallet {
     walletType = type;
   }
 
-  void setPassword(String value) => {
-    password = value
-  };
+  void setPassword(String value) => {password = value};
 
   void setWalletName(String value) => walletName = value;
 
@@ -32,7 +30,7 @@ class ApiCreateWallet {
     seedSource = '';
     walletName = '';
     walletDescription = '';
-    password = '';
+    password = null;
   }
 
   Future<String> createMnemonic(

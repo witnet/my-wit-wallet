@@ -7,10 +7,6 @@ abstract class CreateWalletEvent extends Equatable {
   List<Object> get props => [this.walletType];
 }
 
-class SetWalletTypeEvent extends CreateWalletEvent {
-  const SetWalletTypeEvent(WalletType walletType) : super(walletType);
-}
-
 class SetWalletStateEvent extends CreateWalletEvent {
   const SetWalletStateEvent(WalletType walletType, this.walletState)
       : super(walletType);
@@ -34,14 +30,6 @@ class VerifyXprvEvent extends CreateWalletEvent {
   final String xprv;
   @override
   List<Object> get props => [this.walletType, this.xprv];
-}
-
-class MasterKeyEvent extends CreateWalletEvent {
-  const MasterKeyEvent(WalletType walletType, {required this.password})
-      : super(walletType);
-  final String password;
-  @override
-  List<Object> get props => [this.walletType, this.password];
 }
 
 class VerifyEncryptedXprvEvent extends CreateWalletEvent {

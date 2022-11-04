@@ -46,7 +46,6 @@ class ApiAuth {
     /// get database bloc
     try {
       final tmp = Locator.instance.get<ApiDatabase>();
-      print('unlock wallet $tmp');
       return {'result': tmp};
     } on DBException catch (e) {
       throw AuthException(code: e.code, message: e.message);

@@ -58,7 +58,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       } else {
         emit(state.copyWith(status: LoginStatus.LoginInvalid));
       }
-    } catch (e) {}
+    } catch (e) {
+      print('Error submitting $e');
+    }
   }
 
   void _onLogoutEvent(LoginLogoutEvent event, Emitter<LoginState> emit) async {

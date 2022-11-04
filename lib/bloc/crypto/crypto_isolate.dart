@@ -36,9 +36,9 @@ class CryptoIsolate {
 void _cryptIso(SendPort sendPort) async {
   // Stopwatch mainTimer = new Stopwatch()..start();
   ReceivePort receivePort = ReceivePort();
-
   // tell whoever created us what port they can reach us
   sendPort.send(receivePort.sendPort);
+
   // listen for messages
   await for (var msg in receivePort) {
     var data = msg[0] as String;
@@ -68,10 +68,14 @@ void _cryptIso(SendPort sendPort) async {
   receivePort.close();
 }
 
-void _generateMnemonic(SendPort port, Map<String, dynamic> params) {
-  String mnemonic = generateMnemonic(
-      wordCount: params['wordCount'], language: params['language']);
-  port.send(mnemonic);
+void _generateMnemonic(SendPort port, Map<String, dynamic> params) async {
+  try {
+    String mnemonic = generateMnemonic(
+        wordCount: params['wordCount'], language: params['language']);
+    port.send(mnemonic);
+  } catch (e) {
+    print('Error generating mnemonics $e');
+  }
 }
 
 Future<void> _initializeWallet(
