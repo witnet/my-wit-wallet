@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/utils.dart';
@@ -29,7 +31,6 @@ class BalanceDisplayState extends State<BalanceDisplay>
   int currentValueNanoWit = 0;
   late WalletStorage walletStorage;
   late AnimationController _headerController;
-  late Animation<double> _headerScaleAnimation;
   late BalanceInfo balanceInfo;
 
   @override
@@ -39,13 +40,9 @@ class BalanceDisplayState extends State<BalanceDisplay>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
+    // list of wallets
     walletStorage = Locator.instance<ApiDashboard>().walletStorage!;
     setBalance();
-    _headerScaleAnimation =
-        Tween<double>(begin: .6, end: 1).animate(CurvedAnimation(
-      parent: widget.loadingController,
-      curve: headerAniInterval,
-    ));
     _headerController.forward();
     super.initState();
   }

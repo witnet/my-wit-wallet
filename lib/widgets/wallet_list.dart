@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
+import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
+import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
@@ -54,6 +56,8 @@ class WalletListState extends State<WalletList> {
   void _getWallets() async {
     WalletStorage walletStorage =
         await Locator.instance<ApiDatabase>().loadWalletsDatabase();
+    BlocProvider.of<DashboardBloc>(context)
+        .add(DashboardUpdateWalletEvent(currentWallet: walletStorage.wallets.values.first));
     List<String> walletNames = List<String>.from(walletStorage.wallets.keys);
     setState(() {
       walletList = walletNames;
@@ -152,7 +156,10 @@ class WalletListState extends State<WalletList> {
         onTap: () {
           setState(() {
             selectedWallet = walletName!;
-            // Locator.instance.get<ApiAuth>().setWalletName(value);
+            // Set current wallet to show in dashboard;
+            BlocProvider.of<DashboardBloc>(context).add(
+                DashboardUpdateWalletEvent(
+                    currentWallet: wallets?[walletName]));
             walletSelected = true;
           });
         },

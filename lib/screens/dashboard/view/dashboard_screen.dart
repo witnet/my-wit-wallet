@@ -6,6 +6,7 @@ import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
+import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
@@ -44,7 +45,7 @@ class DashboardScreenState extends State<DashboardScreen>
   Map<String, Account> externalAccounts = {};
   Map<String, Account> internalAccounts = {};
 
-  late WalletStorage? walletStorage;
+  Wallet? walletStorage;
   late AnimationController _loadingController;
   late AnimationController _balanceController;
   List<String>? walletList;
@@ -89,40 +90,36 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   Future<void> _showWalletSettingsDialog() async {
-    ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return WalletSettingsDialog(
-          walletStorage: apiDashboard.walletStorage!,
+          walletStorage: walletStorage!,
         );
       },
     );
   }
 
   Future<void> _showCreateVTTDialog() async {
-    ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return CreateVTTDialogBox(
-          walletStorage: apiDashboard.walletStorage!,
+          walletStorage: walletStorage!,
         );
       },
     );
   }
 
   Future<void> _showReceiveDialog() async {
-    ApiDatabase db = Locator.instance<ApiDatabase>();
-    WalletStorage walletStorage = await db.loadWalletsDatabase();
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return ReceiveDialogBox(
-          walletStorage: walletStorage,
+          walletStorage: walletStorage!,
         );
       },
     );
@@ -133,57 +130,47 @@ class DashboardScreenState extends State<DashboardScreen>
       topLeft: Radius.circular(24.0),
       topRight: Radius.circular(24.0),
     );
-    final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        _buildBalanceDisplay(),
-        RoundButton(
-          size: 40,
-          icon: Icon(FontAwesomeIcons.arrowUp),
-          onPressed: _showCreateVTTDialog,
-          label: 'Send',
-          loadingController: _loadingController,
-        ),
-        RoundButton(
-          size: 40,
-          icon: Icon(FontAwesomeIcons.arrowDown),
-          onPressed: _showReceiveDialog,
-          label: 'Receive',
-          loadingController: _loadingController,
-        ),
-        RoundButton(
-          size: 40,
-          icon: Icon(FontAwesomeIcons.userCog),
-          onPressed: _showWalletSettingsDialog,
-          label: 'Settings',
-          loadingController: _loadingController,
-        ),
-        buildSyncButton(),
-        // WalletList(),
-        // TransactionHistory(themeData: themeData, externalAccounts: externalAccounts, internalAccounts: internalAccounts,),
-      ],
-    );
-  }
-
-  void _setWallet(WalletStorage dbWallet) {
-    this.walletStorage = dbWallet;
-  }
-
-  Widget explorerWatcher() {
-    return BlocBuilder<ExplorerBloc, ExplorerState>(
-      builder: (context, state) {
-        ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
-        if (state.status == ExplorerStatus.ready) {
-          //this.dbWallet = apiDashboard.dbWallet;
-          return Container();
-        } else if (state.status == ExplorerStatus.dataloaded) {
-          walletStorage = apiDashboard.walletStorage;
-          return Container();
-        } else {
-          return Container();
+    return BlocBuilder<DashboardBloc, DashboardState>(
+      buildWhen: (previous, current) {
+        if (previous.currentWallet.id != current.currentWallet.id) {
+          setState(() {
+            walletStorage = current.currentWallet;
+          });
         }
+        return true;
+      },
+      builder: (context, state) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _buildBalanceDisplay(),
+            RoundButton(
+              size: 40,
+              icon: Icon(FontAwesomeIcons.arrowUp),
+              onPressed: _showCreateVTTDialog,
+              label: 'Send',
+              loadingController: _loadingController,
+            ),
+            RoundButton(
+              size: 40,
+              icon: Icon(FontAwesomeIcons.arrowDown),
+              onPressed: _showReceiveDialog,
+              label: 'Receive',
+              loadingController: _loadingController,
+            ),
+            RoundButton(
+              size: 40,
+              icon: Icon(FontAwesomeIcons.userCog),
+              onPressed: _showWalletSettingsDialog,
+              label: 'Settings',
+              loadingController: _loadingController,
+            ),
+            buildSyncButton(),
+            // WalletList(),
+            // TransactionHistory(themeData: themeData, externalAccounts: externalAccounts, internalAccounts: internalAccounts,),
+          ],
+        );
       },
     );
   }
@@ -246,7 +233,7 @@ class DashboardScreenState extends State<DashboardScreen>
       if (state.status == ExplorerStatus.ready) {
         ApiDashboard apiDashboard = Locator.instance.get<ApiDashboard>();
         setState(() {
-          walletStorage = apiDashboard.walletStorage;
+          walletStorage = apiDashboard.currentWallet;
         });
       }
     });
@@ -257,12 +244,8 @@ class DashboardScreenState extends State<DashboardScreen>
       return BalanceDisplay(_balanceController);
     }, listener: (context, state) {
       if (state.status == ExplorerStatus.ready) {
-        ApiDashboard apiDashboard = Locator.instance.get<ApiDashboard>();
         setState(() {
           BlocProvider.of<DashboardBloc>(context).add(DashboardLoadEvent());
-          walletStorage = state.walletStorage;
-          apiDashboard.setWallets(walletStorage);
-
           _balanceController.reset();
           _balanceController.forward();
         });
@@ -277,17 +260,17 @@ class DashboardScreenState extends State<DashboardScreen>
       if (state.status == DashboardStatus.Loading) {
         return _buildDashboardGrid(theme, state);
       } else if (state.status == DashboardStatus.Synchronized) {
-        walletStorage = state.walletStorage;
+        walletStorage = state.currentWallet;
         return _buildDashboardGrid(theme, state);
       } else if (state.status == DashboardStatus.Synchronizing) {
         return SpinKitWave(
           color: theme.primaryColor,
         );
       } else if (state.status == DashboardStatus.Ready) {
-        walletStorage = state.walletStorage;
-        if (walletStorage != null) {
-          BlocProvider.of<VTTCreateBloc>(context).setWallets(walletStorage);
-        }
+        walletStorage = state.currentWallet;
+        // if (walletStorage != null) {
+        //   BlocProvider.of<VTTCreateBloc>(context).setWallets(walletStorage);
+        // }
         return _buildDashboardGrid(theme, state);
       } else {
         return SpinKitWave(

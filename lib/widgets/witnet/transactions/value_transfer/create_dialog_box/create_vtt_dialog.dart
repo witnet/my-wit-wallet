@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:witnet_wallet/util/paddings.dart';
+import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_stepper.dart';
 
@@ -14,7 +15,7 @@ class CreateVTTDialogBox extends StatefulWidget {
   CreateVTTDialogBox({
     required this.walletStorage,
   });
-  final WalletStorage walletStorage;
+  final Wallet walletStorage;
 
   @override
   CreateVTTDialogBoxState createState() => CreateVTTDialogBoxState();

@@ -92,7 +92,7 @@ class WalletSettingsDialog extends StatefulWidget {
     required this.walletStorage,
   });
 
-  final WalletStorage walletStorage;
+  final Wallet walletStorage;
 
   @override
   WalletSettingsDialogState createState() => WalletSettingsDialogState();
@@ -108,28 +108,23 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog> {
     List<Widget> externalAddressCards = [];
     List<Widget> internalAddressCards = [];
 
-    Map<String, Wallet> walletList = widget.walletStorage.wallets;
-
-    for(int i = 0; i<walletList.keys.length; i++) {
-      Wallet wallet = walletList.entries.elementAt(i).value;
-
-      wallet.externalAccounts.forEach((index, account) {
-        if (showZeroBalanceAccounts && account.balance().availableNanoWit == 0) {
-          externalAddressCards.add(AccountCard(account: account));
-        }
-        if (account.balance().availableNanoWit > 0)
-          externalAddressCards.add(AccountCard(account: account));
-      });
-      wallet.internalAccounts.forEach((index, account) {
-        if (showZeroBalanceAccounts && account.balance().availableNanoWit == 0) {
-          internalAddressCards.add(AccountCard(account: account));
-        }
-        if (account.balance().availableNanoWit > 0)
-          internalAddressCards.add(AccountCard(account: account));
-      });
-    }
+    Wallet wallet = widget.walletStorage;
 
 
+    wallet.externalAccounts.forEach((index, account) {
+      if (showZeroBalanceAccounts && account.balance().availableNanoWit == 0) {
+        externalAddressCards.add(AccountCard(account: account));
+      }
+      if (account.balance().availableNanoWit > 0)
+        externalAddressCards.add(AccountCard(account: account));
+    });
+    wallet.internalAccounts.forEach((index, account) {
+      if (showZeroBalanceAccounts && account.balance().availableNanoWit == 0) {
+        internalAddressCards.add(AccountCard(account: account));
+      }
+      if (account.balance().availableNanoWit > 0)
+        internalAddressCards.add(AccountCard(account: account));
+    });
 
     return Container(
       height: deviceSize.height * 0.5,

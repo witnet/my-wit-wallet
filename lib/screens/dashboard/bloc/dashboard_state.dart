@@ -10,20 +10,20 @@ enum DashboardStatus{
 }
 
 class DashboardState extends Equatable{
-  DashboardState({ required this.status, required this.walletStorage});
-  final WalletStorage walletStorage;
+  DashboardState({ required this.status, required this.currentWallet});
+  final Wallet currentWallet;
   final DashboardStatus status;
 
   DashboardState copyWith({
-    WalletStorage? walletStorage,
+    Wallet? currentWallet,
     DashboardStatus? status,
   }) {
     return DashboardState(
-      walletStorage: walletStorage ?? this.walletStorage,
+      currentWallet: currentWallet ?? this.currentWallet,
       status: status ?? this.status,
     );
   }
 
   @override
-  List<Object> get props => [walletStorage, status];
+  List<Object> get props => [currentWallet, status];
 }
