@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:isolate';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -23,33 +24,6 @@ import 'package:witnet_wallet/util/storage/database/wallet.dart';
 part 'crypto_event.dart';
 part 'crypto_state.dart';
 part 'crypto_isolate.dart';
-
-/// CryptoException
-
-Future<Map<String, dynamic>> initWalletRunner(
-    CryptoInitializeWalletEvent event) async {
-  ReceivePort resp = ReceivePort();
-  if (!Locator.instance<CryptoIsolate>().initialized)
-    await Locator.instance<CryptoIsolate>().init();
-  Locator.instance<CryptoIsolate>().send(
-      method: 'initializeWallet',
-      params: {
-        'walletName': event.walletName,
-        'walletDescription': event.walletDescription,
-        'seed': event.keyData,
-        'seedSource': event.seedSource,
-        'password': event.password,
-      },
-      port: resp.sendPort);
-
-  Map<String, dynamic> data = await resp.first.then((value) {
-    return {
-      'wallet': value['wallet'] as Wallet,
-    };
-  });
-  resp.close();
-  return data;
-}
 
 Future<dynamic> isolateRunner(
     String method, Map<String, dynamic> params) async {
@@ -80,7 +54,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
 
   Future<void> _cryptoInitializeWalletEvent(
       CryptoInitializeWalletEvent event, Emitter<CryptoState> emit) async {
-    /// setup default default structure for database and and unlock it
+    /// setup default default structure for database and unlock it
     Wallet? _wallet = await _initializeWallet(event: event);
 
     emit(
@@ -249,7 +223,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       await db.addWallet(_wallet);
       return _wallet;
     } catch (e) {
-      print('Error!!! $e');
+      print('Error initializing the wallet $e');
       rethrow;
     }
   }
