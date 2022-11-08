@@ -24,10 +24,12 @@ class Customshape extends CustomClipper<Path> {
 
 class HeaderLayout extends StatelessWidget {
   final AppBar? appBar;
-  final List<Widget> headerActions;
+  final List<Widget> navigationActions;
+  final Widget? dashboardActions;
 
   const HeaderLayout({
-    required this.headerActions,
+    required this.navigationActions,
+    this.dashboardActions,
     this.appBar,
   });
 
@@ -46,10 +48,11 @@ class HeaderLayout extends StatelessWidget {
             Container(
                 padding: EdgeInsets.all(16),
                 child: Row(
-                  mainAxisAlignment: headerActions.length > 1
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: navigationActions.length > 1
                       ? MainAxisAlignment.spaceBetween
                       : MainAxisAlignment.start,
-                  children: headerActions,
+                  children: navigationActions,
                 )),
             Container(
                 child:
@@ -58,9 +61,9 @@ class HeaderLayout extends StatelessWidget {
                   child: ConstrainedBox(
                 constraints: BoxConstraints(
                     minWidth: 50,
-                    maxWidth: MediaQuery.of(context).size.width * 0.2),
+                    maxWidth: MediaQuery.of(context).size.width * 0.3),
                 child: Column(
-                  children: [witnetEyeIcon(theme)],
+                  children: [dashboardActions != null ? dashboardActions! : witnetEyeIcon(theme)],
                 ),
               )),
             ])),

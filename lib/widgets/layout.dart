@@ -5,6 +5,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/widgets/headerLayout.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
+import 'package:witnet_wallet/theme/wallet_theme.dart';
 
 final panelController = PanelController();
 
@@ -12,15 +13,17 @@ class Layout extends StatelessWidget {
   final List<Widget> widgetList;
   final AppBar? appBar;
   final List<Widget> actions;
-  final List<Widget> headerActions;
+  final List<Widget> navigationActions;
   final double actionsSize;
   final Widget? slidingPanel;
+  final Widget? dashboardActions;
 
   const Layout({
     required this.widgetList,
     required this.actions,
     required this.actionsSize,
-    required this.headerActions,
+    required this.navigationActions,
+    this.dashboardActions,
     this.slidingPanel,
     this.appBar,
   });
@@ -52,7 +55,10 @@ class Layout extends StatelessWidget {
           child: ListView(
             controller: ScrollController(),
             children: [
-              HeaderLayout(headerActions: headerActions),
+              HeaderLayout(
+                navigationActions: navigationActions,
+                dashboardActions: dashboardActions,
+              ),
               Center(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
@@ -70,6 +76,7 @@ class Layout extends StatelessWidget {
             ],
           ));
     } else {
+      final theme = Theme.of(context);
       return SlidingUpPanel(
         controller: panelController,
         color: extendedTheme.walletListBackgroundColor!,
@@ -81,7 +88,22 @@ class Layout extends StatelessWidget {
         body: ListView(
           controller: ScrollController(),
           children: [
-            HeaderLayout(headerActions: [showWalletList(), ...headerActions]),
+            HeaderLayout(
+              navigationActions: [
+                showWalletList(),
+                Flexible(
+                  child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: 50,
+                  ),
+                  child: Column(
+                    children: [smallWitnetEyeIcon(theme)],
+                  ),
+                )),
+                ...navigationActions
+              ],
+              dashboardActions: dashboardActions,
+            ),
             Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(

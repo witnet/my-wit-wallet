@@ -149,7 +149,7 @@ class LoginScreenState extends State<LoginScreen>
   Widget _buildLayout() {
     final theme = Theme.of(context);
     return Layout(
-      headerActions: [],
+      navigationActions: [],
       widgetList: componentsList,
       actions: [
         walletsList != null

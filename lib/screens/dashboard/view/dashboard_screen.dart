@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/widgets//wallet_list.dart';
 import 'package:witnet_wallet/widgets/layout.dart';
@@ -18,20 +15,12 @@ import 'package:witnet_wallet/widgets/witnet/balance_display.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/create_vtt_dialog.dart';
 import 'package:witnet_wallet/widgets/witnet/wallet/receive_dialog.dart';
 import 'package:witnet_wallet/widgets/witnet/wallet/wallet_settings/wallet_settings_dialog.dart';
-import '../../../bloc/explorer/explorer_bloc.dart';
 import '../../login/view/login_screen.dart';
 import '../../screen_transitions/fade_transition.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../api_dashboard.dart';
 import '../bloc/dashboard_bloc.dart';
-import 'package:witnet_wallet/theme/extended_theme.dart';
-
 import 'package:witnet_wallet/util/storage/database/account.dart';
-import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
-import 'package:witnet_wallet/screens/login/view/login_screen.dart';
-import 'package:witnet_wallet/screens/screen_transitions/fade_transition.dart';
-import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
-import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 
 const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
@@ -82,13 +71,6 @@ class DashboardScreenState extends State<DashboardScreen>
         .then((_) => true);
   }
 
-  //Log out
-  void _logOut() {
-    BlocProvider.of<DashboardBloc>(context).add(DashboardResetEvent());
-    BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
-    BlocProvider.of<LoginBloc>(context).add(LoginLogoutEvent());
-  }
-
   Future<void> _showWalletSettingsDialog() async {
     return showDialog<void>(
       context: context,
@@ -126,10 +108,6 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _buildDashboardGrid(ThemeData themeData, DashboardState state) {
-    BorderRadiusGeometry radius = BorderRadius.only(
-      topLeft: Radius.circular(24.0),
-      topRight: Radius.circular(24.0),
-    );
     return BlocBuilder<DashboardBloc, DashboardState>(
       buildWhen: (previous, current) {
         if (previous.currentWallet.id != current.currentWallet.id) {
@@ -161,13 +139,12 @@ class DashboardScreenState extends State<DashboardScreen>
             ),
             RoundButton(
               size: 40,
-              icon: Icon(FontAwesomeIcons.userCog),
+              icon: Icon(FontAwesomeIcons.gear),
               onPressed: _showWalletSettingsDialog,
               label: 'Settings',
               loadingController: _loadingController,
             ),
             buildSyncButton(),
-            // WalletList(),
             // TransactionHistory(themeData: themeData, externalAccounts: externalAccounts, internalAccounts: internalAccounts,),
           ],
         );
@@ -280,23 +257,14 @@ class DashboardScreenState extends State<DashboardScreen>
     });
   }
 
-  List<Widget> _headerActions() {
+  List<Widget> _navigationActions() {
     return [
-      Row(children: [
-        PaddedButton(
-            padding: EdgeInsets.only(bottom: 8),
-            text: 'Log out',
-            type: 'text',
-            enabled: true,
-            onPressed: () => _logOut()),
-        PaddedButton(
-          padding: EdgeInsets.only(bottom: 8),
-          text: 'Settings',
-          type: 'text',
-          enabled: true,
-          onPressed: () => _goToSettings(),
-        ),
-      ]),
+      MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        child: Icon(FontAwesomeIcons.gear, size: 30),
+        onTap: () => _goToSettings(),
+      )),
     ];
   }
 
@@ -355,7 +323,8 @@ class DashboardScreenState extends State<DashboardScreen>
           );
       }
       return Layout(
-        headerActions: _headerActions(),
+        navigationActions: _navigationActions(),
+        dashboardActions: Text('DASHBOARD ACTIONS'),
         widgetList: [
           _body,
         ],

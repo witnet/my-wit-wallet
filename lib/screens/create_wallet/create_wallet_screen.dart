@@ -70,7 +70,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
     return actions;
   }
 
-  List<Widget> _headerActions() {
+  List<Widget> _navigationActions() {
     return [
       PaddedButton(
           padding: EdgeInsets.only(bottom: 8),
@@ -87,7 +87,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   @override
   Widget build(BuildContext context) {
     return Layout(
-      headerActions: _headerActions(),
+      navigationActions: _navigationActions(),
       widgetList: [
         _formCards(),
       ],
