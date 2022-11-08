@@ -175,6 +175,7 @@ class WalletListState extends State<WalletList> {
           children: [_buildInitialButtons()]),
       ListView.builder(
         shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
         itemCount: walletList.length,
         itemBuilder: (context, index) {
           return _buildWalletItem(walletList[index]);
