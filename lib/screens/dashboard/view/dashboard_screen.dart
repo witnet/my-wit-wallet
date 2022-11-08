@@ -107,6 +107,41 @@ class DashboardScreenState extends State<DashboardScreen>
     );
   }
 
+  Widget _buildDashboardActions() {
+    return Row(children: [
+      PaddedButton(
+        padding: EdgeInsets.all(0),
+        text: 'Send',
+        onPressed: _showCreateVTTDialog,
+        icon: Icon(
+          FontAwesomeIcons.circlePlus,
+          size: 18,
+        ),
+        type: 'vertical-icon',
+      ),
+      PaddedButton(
+        padding: EdgeInsets.all(0),
+        text: 'Home',
+        onPressed: () => Navigator.pushReplacementNamed(context, '/'),
+        icon: Icon(
+          FontAwesomeIcons.circlePlus,
+          size: 18,
+        ),
+        type: 'vertical-icon',
+      ),
+      PaddedButton(
+        padding: EdgeInsets.all(0),
+        text: 'Receive',
+        onPressed: _showReceiveDialog,
+        icon: Icon(
+          FontAwesomeIcons.circlePlus,
+          size: 18,
+        ),
+        type: 'vertical-icon',
+      ),
+    ]);
+  }
+
   Widget _buildDashboardGrid(ThemeData themeData, DashboardState state) {
     return BlocBuilder<DashboardBloc, DashboardState>(
       buildWhen: (previous, current) {
@@ -123,27 +158,7 @@ class DashboardScreenState extends State<DashboardScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             _buildBalanceDisplay(),
-            RoundButton(
-              size: 40,
-              icon: Icon(FontAwesomeIcons.arrowUp),
-              onPressed: _showCreateVTTDialog,
-              label: 'Send',
-              loadingController: _loadingController,
-            ),
-            RoundButton(
-              size: 40,
-              icon: Icon(FontAwesomeIcons.arrowDown),
-              onPressed: _showReceiveDialog,
-              label: 'Receive',
-              loadingController: _loadingController,
-            ),
-            RoundButton(
-              size: 40,
-              icon: Icon(FontAwesomeIcons.gear),
-              onPressed: _showWalletSettingsDialog,
-              label: 'Settings',
-              loadingController: _loadingController,
-            ),
+            _buildDashboardActions(),
             buildSyncButton(),
             // TransactionHistory(themeData: themeData, externalAccounts: externalAccounts, internalAccounts: internalAccounts,),
           ],
@@ -260,11 +275,11 @@ class DashboardScreenState extends State<DashboardScreen>
   List<Widget> _navigationActions() {
     return [
       MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        child: Icon(FontAwesomeIcons.gear, size: 30),
-        onTap: () => _goToSettings(),
-      )),
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            child: Icon(FontAwesomeIcons.gear, size: 30),
+            onTap: () => _goToSettings(),
+          )),
     ];
   }
 
