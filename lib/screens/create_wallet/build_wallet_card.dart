@@ -300,15 +300,15 @@ class BuildWalletCardState extends State<BuildWalletCard>
           ]);
         } else if (state is CryptoReadyState) {
           ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
-          if(acw.walletName != '') {
-            BlocProvider.of<CryptoBloc>(context).add(CryptoInitializeWalletEvent(
-              id: acw.walletName,
-              walletName: acw.walletName,
-              walletDescription: acw.walletDescription!,
-              keyData: acw.seedData!,
-              seedSource: acw.seedSource!,
-              password: acw.password ?? '')
-            );
+          if (acw.walletName != '') {
+            BlocProvider.of<CryptoBloc>(context).add(
+                CryptoInitializeWalletEvent(
+                    id: acw.walletName,
+                    walletName: acw.walletName,
+                    walletDescription: acw.walletDescription!,
+                    keyData: acw.seedData!,
+                    seedSource: acw.seedSource!,
+                    password: acw.password ?? ''));
           }
           return Column(
             children: [

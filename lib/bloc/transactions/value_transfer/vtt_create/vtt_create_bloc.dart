@@ -6,6 +6,7 @@ import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
+import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
@@ -48,11 +49,11 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         ) {
     on<AddValueTransferOutputEvent>(_addValueTransferOutputEvent);
     on<SetTimelockEvent>(_setTimeLockEvent);
-    // on<SignTransactionEvent>(_signTransactionEvent);
+    on<SignTransactionEvent>(_signTransactionEvent);
     on<SendTransactionEvent>(_sendTransactionEvent);
     on<UpdateFeeEvent>(_updateFeeEvent);
     on<UpdateUtxoSelectionStrategyEvent>(_updateUtxoSelectionStrategyEvent);
-    // on<AddSourceWalletsEvent>(_addSourceWalletsEvent);
+    on<AddSourceWalletsEvent>(_addSourceWalletsEvent);
     on<ResetTransactionEvent>(_resetTransactionEvent);
     on<ValidateTransactionEvent>(_validateTransactionEvent);
 
@@ -181,52 +182,49 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     return dbWallet;
   }
 
-  // Future<void> setWallets(Wallet? newWalletStorage) async {
-  //   if (newWalletStorage != null) {
-  //     utxos.clear();
-  //     this.walletStorage = newWalletStorage;
-  //     balanceNanoWit = 0;
+  Future<void> setWallet(Wallet? newWalletStorage) async {
+    if (newWalletStorage != null) {
+      utxos.clear();
+      this.walletStorage = newWalletStorage;
+      balanceNanoWit = 0;
 
-  //     for (int i = 0; i < walletStorage.wallets.length; i++) {
-  //       Wallet currentWallet =
-  //           await _setWalletBalance(walletStorage.wallets.values.elementAt(i));
-  //       walletStorage.wallets[currentWallet.name] = currentWallet;
-  //     }
+      Wallet currentWallet = await _setWalletBalance(walletStorage);
+      walletStorage = currentWallet;
 
-  //     /// get the internal account that will be used for any change
-  //     bool changeAccountSet = false;
-  //     Wallet firstWallet = walletStorage.wallets.values.first;
+      /// get the internal account that will be used for any change
+      bool changeAccountSet = false;
+      Wallet firstWallet = walletStorage;
 
-  //     for (int i = 0; i < firstWallet.internalAccounts.length; i++) {
-  //       if (!changeAccountSet) {
-  //         Account account = firstWallet.internalAccounts[i]!;
-  //         if (account.vttHashes.isEmpty) {
-  //           changeAccount = account;
-  //           changeAccountSet = true;
-  //         }
-  //       }
-  //     }
+      for (int i = 0; i < firstWallet.internalAccounts.length; i++) {
+        if (!changeAccountSet) {
+          Account account = firstWallet.internalAccounts[i]!;
+          if (account.vttHashes.isEmpty) {
+            changeAccount = account;
+            changeAccountSet = true;
+          }
+        }
+      }
 
-  //     /// did we run out of change addresses?
-  //     if (!changeAccountSet) {
-  //       ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
-  //       Account changeAccount = await apiCrypto.generateAccount(
-  //         firstWallet.name,
-  //         KeyType.internal,
-  //         internalAddresses.length + 1,
-  //       );
-  //     }
+      /// did we run out of change addresses?
+      if (!changeAccountSet) {
+        ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
+        Account changeAccount = await apiCrypto.generateAccount(
+          firstWallet.name,
+          KeyType.internal,
+          internalAddresses.length + 1,
+        );
+      }
 
-  //     /// update the utxo pool
-  //     utxoPool.clear();
-  //     utxos.forEach((utxo) {
-  //       utxoPool.insert(utxo);
-  //     });
+      /// update the utxo pool
+      utxoPool.clear();
+      utxos.forEach((utxo) {
+        utxoPool.insert(utxo);
+      });
 
-  //     /// presort the utxo pool
-  //     utxoPool.sortUtxos(utxoSelectionStrategy);
-  //   }
-  // }
+      /// presort the utxo pool
+      utxoPool.sortUtxos(utxoSelectionStrategy);
+    }
+  }
 
   void buildTransactionBody() {
     int valueOwedNanoWit = 0;
@@ -360,84 +358,81 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   }
 
   /// sign the [VTTransaction]
-  // Future<VTTransaction> _signTransaction(
-  //     {required VTTransactionBody transactionBody}) async {
-  //   /// Read the encrypted XPRV string stored in the database
-  //   walletStorage = await Locator.instance<ApiDatabase>().loadWalletsDatabase();
+  Future<VTTransaction> _signTransaction(
+      {required VTTransactionBody transactionBody}) async {
+    /// Read the encrypted XPRV string stored in the database
+    walletStorage = Locator.instance.get<ApiDashboard>().currentWallet;
 
-  //   ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
-  //   try {
-  //     await apiCrypto.signTransaction(
-  //         selectedUtxos, walletStorage, bytesToHex(transactionBody.hash));
+    ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
+    try {
+      await apiCrypto.signTransaction(
+          selectedUtxos, walletStorage, bytesToHex(transactionBody.hash));
 
-  //     List<KeyedSignature> signatures = await apiCrypto.signTransaction(
-  //       selectedUtxos,
-  //       walletStorage,
-  //       bytesToHex(transactionBody.hash),
-  //     );
+      List<KeyedSignature> signatures = await apiCrypto.signTransaction(
+        selectedUtxos,
+        walletStorage,
+        bytesToHex(transactionBody.hash),
+      );
 
-  //     return VTTransaction(body: transactionBody, signatures: signatures);
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }
+      return VTTransaction(body: transactionBody, signatures: signatures);
+    } catch (e) {
+      rethrow;
+    }
+  }
 
-  // Map<String, List<String>> buildSignerMap() {
-  //   Map<String, List<String>> _signers = {};
+  Map<String, List<String>> buildSignerMap() {
+    Map<String, List<String>> _signers = {};
 
-  //   /// loop through utxos
-  //   for (int i = 0; i < selectedUtxos.length; i++) {
-  //     Utxo currentUtxo = selectedUtxos.elementAt(i);
+    /// loop through utxos
+    for (int i = 0; i < selectedUtxos.length; i++) {
+      Utxo currentUtxo = selectedUtxos.elementAt(i);
 
-  //     /// loop through every wallet
-  //     for (int k = 0; k < walletStorage.wallets.length; k++) {
-  //       Wallet currentWallet = walletStorage.wallets.values.elementAt(i);
+      Wallet currentWallet = Locator.instance.get<ApiDashboard>().currentWallet;
 
-  //       /// loop though every external account
-  //       currentWallet.externalAccounts.forEach((index, account) {
-  //         if (account.utxos.contains(currentUtxo)) {
-  //           if (_signers.containsKey(currentWallet.xprv)) {
-  //             _signers[currentWallet.xprv]!.add(account.path);
-  //           } else {
-  //             _signers[currentWallet.xprv!] = [account.path];
-  //           }
-  //         }
-  //       });
+      /// loop though every external account
+      currentWallet.externalAccounts.forEach((index, account) {
+        if (account.utxos.contains(currentUtxo)) {
+          if (_signers.containsKey(currentWallet.xprv)) {
+            _signers[currentWallet.xprv]!.add(account.path);
+          } else {
+            _signers[currentWallet.xprv!] = [account.path];
+          }
+        }
+      });
 
-  //       /// loop though every internal account
-  //       currentWallet.internalAccounts.forEach((index, account) {
-  //         if (account.utxos.contains(currentUtxo)) {
-  //           if (_signers.containsKey(currentWallet.xprv)) {
-  //             _signers[currentWallet.xprv]!.add(account.path);
-  //           } else {
-  //             _signers[currentWallet.xprv!] = [account.path];
-  //           }
-  //         }
-  //       });
-  //     }
-  //   }
+      /// loop though every internal account
+      currentWallet.internalAccounts.forEach((index, account) {
+        if (account.utxos.contains(currentUtxo)) {
+          if (_signers.containsKey(currentWallet.xprv)) {
+            _signers[currentWallet.xprv]!.add(account.path);
+          } else {
+            _signers[currentWallet.xprv!] = [account.path];
+          }
+        }
+      });
+    }
 
-  //   return _signers;
-  // }
+    return _signers;
+  }
 
   /// sign the transaction
-  // Future<void> _signTransactionEvent(
-  //     SignTransactionEvent event, Emitter<VTTCreateState> emit) async {
-  //   emit(state.copyWith(status: VTTCreateStatus.signing));
+  Future<void> _signTransactionEvent(
+      SignTransactionEvent event, Emitter<VTTCreateState> emit) async {
+    emit(state.copyWith(status: VTTCreateStatus.signing));
 
-  //   try {
-  //     VTTransaction vtTransaction =
-  //         await _signTransaction(transactionBody: event.vtTransactionBody);
-  //     emit(VTTCreateState(
-  //       vtTransaction: vtTransaction,
-  //       vttCreateStatus: VTTCreateStatus.finished,
-  //       message: null,
-  //     ));
-  //   } catch (e) {
-  //     emit(state.copyWith(status: VTTCreateStatus.exception, message: '$e'));
-  //     rethrow;
-  //   }
-  // }
+    try {
+      VTTransaction vtTransaction =
+          await _signTransaction(transactionBody: event.vtTransactionBody);
+      emit(VTTCreateState(
+        vtTransaction: vtTransaction,
+        vttCreateStatus: VTTCreateStatus.finished,
+        message: null,
+      ));
+    } catch (e) {
+      emit(state.copyWith(status: VTTCreateStatus.exception, message: '$e'));
+      rethrow;
+    }
+  }
 
   /// send the transaction to the explorer
   Future<void> _sendTransactionEvent(
@@ -464,12 +459,12 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     utxoSelectionStrategy = event.strategy;
   }
 
-  // void _addSourceWalletsEvent(
-  //     AddSourceWalletsEvent event, Emitter<VTTCreateState> emit) {
-  //   setWallets(event.walletStorage);
-  //   emit(state.copyWith(
-  //       inputs: inputs, outputs: outputs, status: VTTCreateStatus.building));
-  // }
+  void _addSourceWalletsEvent(
+      AddSourceWalletsEvent event, Emitter<VTTCreateState> emit) {
+    setWallet(Locator.instance.get<ApiDashboard>().currentWallet);
+    emit(state.copyWith(
+        inputs: inputs, outputs: outputs, status: VTTCreateStatus.building));
+  }
 
   void _resetTransactionEvent(
       ResetTransactionEvent event, Emitter<VTTCreateState> emit) {

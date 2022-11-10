@@ -64,4 +64,3 @@ Widget smallWitnetEyeIcon(ThemeData theme) {
           filterQuality: FilterQuality.high,
         );
 }
-

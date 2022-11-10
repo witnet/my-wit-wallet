@@ -23,6 +23,16 @@ TextTheme textTheme = TextTheme(
       color: WitnetPallet.darkGrey,
       fontSize: 16,
       fontWeight: FontWeight.bold),
+  headline4: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.witnetGreen1,
+      fontSize: 24,
+      fontWeight: FontWeight.normal),
+  headline5: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.witnetGreen1,
+      fontSize: 16,
+      fontWeight: FontWeight.normal),
   subtitle1: TextStyle(
       fontFamily: 'NotoSans',
       color: WitnetPallet.darkGrey,
@@ -134,7 +144,7 @@ OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
   ),
 ));
 IconThemeData iconTheme = IconThemeData(
-  color: WitnetPallet.lightGrey,
+  color: WitnetPallet.witnetGreen1,
   size: 16,
 );
 IconThemeData primaryIconTheme = IconThemeData(

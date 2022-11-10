@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:witnet_wallet/theme/extended_theme.dart';
 
 class InputLogin extends StatefulWidget {
   InputLogin({
@@ -48,6 +49,7 @@ class _InputLoginState extends State<InputLogin> {
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     return Container(
       child: TextFormField(
         decoration: InputDecoration(
@@ -56,7 +58,7 @@ class _InputLoginState extends State<InputLogin> {
           suffixIcon: IconButton(
             splashRadius: 1,
             padding: const EdgeInsets.all(2),
-            color: theme.iconTheme.color,
+            color: extendedTheme.inputIconColor,
             iconSize: theme.iconTheme.size,
             icon: showPassword
                 ? Icon(Icons.remove_red_eye)

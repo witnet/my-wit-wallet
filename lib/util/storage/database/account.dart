@@ -43,7 +43,6 @@ class Account extends _Account {
   @override
   String toString() => '{"address": $address, "path": $path}';
 
-
   factory Account.fromJson(Map<String, dynamic> data) {
     List<Utxo> _utxos =
         List<Utxo>.from(data['utxos'].map((x) => Utxo.fromJson(x)));

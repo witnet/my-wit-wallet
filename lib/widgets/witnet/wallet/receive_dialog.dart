@@ -31,7 +31,7 @@ class ReceiveDialogBoxState extends State<ReceiveDialogBox>
       duration: const Duration(milliseconds: 200),
     );
     bool foundAddress = false;
-    for (int i = 0 ; i < widget.walletStorage.externalAccounts.length; i++) {
+    for (int i = 0; i < widget.walletStorage.externalAccounts.length; i++) {
       if (nextAddress == '') {
         if (!foundAddress) {
           if (widget.walletStorage.externalAccounts[i]!.vttHashes.isEmpty) {

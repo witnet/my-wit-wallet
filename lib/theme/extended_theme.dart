@@ -15,6 +15,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.walletActiveItemBackgroundColor,
     required this.walletActiveItemBorderColor,
     required this.walletItemBorderColor,
+    required this.inputIconColor,
   });
   final Color? selectBackgroundColor;
   final Color? selectedTextColor;
@@ -27,6 +28,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? walletActiveItemBorderColor;
   final Color? walletActiveItemBackgroundColor;
   final Color? walletItemBorderColor;
+  final Color? inputIconColor;
   @override
   ExtendedTheme copyWith(
       {Color? selectBackgroundColor,
@@ -36,6 +38,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       Color? walletListBackgroundColor,
       Color? walletActiveItemBorderColor,
       Color? walletItemBorderColor,
+      Color? inputIconColor,
       Color? walletActiveItemBackgroundColor}) {
     return ExtendedTheme(
       selectBackgroundColor:
@@ -57,6 +60,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
           walletActiveItemBorderColor ?? this.walletActiveItemBorderColor,
       walletItemBorderColor:
           walletItemBorderColor ?? this.walletItemBorderColor,
+      inputIconColor: inputIconColor ?? this.inputIconColor,
     );
   }
 
@@ -90,6 +94,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
           walletActiveItemBorderColor, other.walletActiveItemBorderColor, t),
       walletItemBorderColor:
           Color.lerp(walletItemBorderColor, other.walletItemBorderColor, t),
+      inputIconColor: Color.lerp(inputIconColor, other.inputIconColor, t),
     );
   }
 
@@ -106,6 +111,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     walletActiveItemBackgroundColor: WitnetPallet.opacityWitnetGreen2,
     walletActiveItemBorderColor: WitnetPallet.witnetGreen3,
     walletItemBorderColor: WitnetPallet.lightGrey,
+    inputIconColor: WitnetPallet.lightGrey,
   );
   // the dark theme
   static const dark = ExtendedTheme(
@@ -119,5 +125,6 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       walletListBackgroundColor: WitnetPallet.opacityWitnetGreen,
       walletActiveItemBackgroundColor: WitnetPallet.opacityWitnetGreen3,
       walletActiveItemBorderColor: WitnetPallet.witnetGreen2,
-      walletItemBorderColor: WitnetPallet.opacityWhite2);
+      walletItemBorderColor: WitnetPallet.opacityWhite2,
+      inputIconColor: WitnetPallet.opacityWhite2);
 }

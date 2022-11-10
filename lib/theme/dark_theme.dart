@@ -24,6 +24,16 @@ TextTheme textTheme = TextTheme(
       color: WitnetPallet.white,
       fontSize: 16,
       fontWeight: FontWeight.bold),
+  headline4: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.white,
+      fontSize: 24,
+      fontWeight: FontWeight.normal),
+  headline5: TextStyle(
+      fontFamily: 'NotoSans',
+      color: WitnetPallet.white,
+      fontSize: 16,
+      fontWeight: FontWeight.normal),
   subtitle1: TextStyle(
       fontFamily: 'NotoSans',
       color: WitnetPallet.opacityWhite,

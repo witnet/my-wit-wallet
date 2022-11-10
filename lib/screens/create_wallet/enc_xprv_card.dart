@@ -177,7 +177,9 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
           onEditingComplete: () {
             passwordInputFocusNode.unfocus();
           },
-          onSubmitted: (String? value) { return value!; },
+          onSubmitted: (String? value) {
+            return value!;
+          },
         ),
       ],
     ));

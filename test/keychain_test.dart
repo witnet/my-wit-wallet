@@ -4,7 +4,6 @@ import 'package:witnet_wallet/util/storage/database/encrypt/keychain.dart';
 
 void main() async {
   test('Password Encryption Test', () async {
-
     KeyChain keyChain = KeyChain();
     final String password = 'Witnet';
     final String incorrectPassword = 'Witnet1';

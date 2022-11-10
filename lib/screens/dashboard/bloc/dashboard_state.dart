@@ -1,6 +1,6 @@
 part of 'dashboard_bloc.dart';
 
-enum DashboardStatus{
+enum DashboardStatus {
   Ready,
   Loading,
   Initialize,
@@ -9,8 +9,8 @@ enum DashboardStatus{
   Reset
 }
 
-class DashboardState extends Equatable{
-  DashboardState({ required this.status, required this.currentWallet});
+class DashboardState extends Equatable {
+  DashboardState({required this.status, required this.currentWallet});
   final Wallet currentWallet;
   final DashboardStatus status;
 

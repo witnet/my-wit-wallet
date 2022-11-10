@@ -23,7 +23,6 @@ class TestCardState extends State<TestCard> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-
   }
 
   @override
@@ -33,7 +32,6 @@ class TestCardState extends State<TestCard> with TickerProviderStateMixin {
     _loadingController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {

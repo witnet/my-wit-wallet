@@ -3,7 +3,6 @@ import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
 
 abstract class _TransactionRepository {
-
   Future<bool> insertTransaction(
     dynamic transaction,
     DatabaseClient databaseClient,

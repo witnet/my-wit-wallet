@@ -138,7 +138,7 @@ class ApiCrypto {
 
   Future<List<KeyedSignature>> signTransaction(
     List<Utxo> utxos,
-    WalletStorage walletStorage,
+    Wallet walletStorage,
     String transactionId,
   ) async {
     Map<String, List<String>> _signers = {};
@@ -151,32 +151,29 @@ class ApiCrypto {
     for (int i = 0; i < utxos.length; i++) {
       Utxo currentUtxo = utxos.elementAt(i);
 
-      /// loop through every wallet
-      for (int k = 0; k < walletStorage.wallets.length; k++) {
-        Wallet currentWallet = walletStorage.wallets.values.elementAt(k);
+      Wallet currentWallet = walletStorage;
 
-        /// loop though every external account
-        currentWallet.externalAccounts.forEach((index, account) {
-          if (account.utxos.contains(currentUtxo)) {
-            if (_signers.containsKey(currentWallet.xprv)) {
-              _signers[currentWallet.xprv]!.add(account.path);
-            } else {
-              _signers[currentWallet.xprv!] = [account.path];
-            }
+      /// loop though every external account
+      currentWallet.externalAccounts.forEach((index, account) {
+        if (account.utxos.contains(currentUtxo)) {
+          if (_signers.containsKey(currentWallet.xprv)) {
+            _signers[currentWallet.xprv]!.add(account.path);
+          } else {
+            _signers[currentWallet.xprv!] = [account.path];
           }
-        });
+        }
+      });
 
-        /// loop though every internal account
-        currentWallet.internalAccounts.forEach((index, account) {
-          if (account.utxos.contains(currentUtxo)) {
-            if (_signers.containsKey(currentWallet.xprv)) {
-              _signers[currentWallet.xprv]!.add(account.path);
-            } else {
-              _signers[currentWallet.xprv!] = [account.path];
-            }
+      /// loop though every internal account
+      currentWallet.internalAccounts.forEach((index, account) {
+        if (account.utxos.contains(currentUtxo)) {
+          if (_signers.containsKey(currentWallet.xprv)) {
+            _signers[currentWallet.xprv]!.add(account.path);
+          } else {
+            _signers[currentWallet.xprv!] = [account.path];
           }
-        });
-      }
+        }
+      });
     }
     final receivePort = ReceivePort();
     CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();

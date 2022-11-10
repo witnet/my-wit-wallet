@@ -92,7 +92,7 @@ class Layout extends StatelessWidget {
               navigationActions: [
                 showWalletList(),
                 Flexible(
-                  child: ConstrainedBox(
+                    child: ConstrainedBox(
                   constraints: BoxConstraints(
                     maxHeight: 50,
                   ),

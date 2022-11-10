@@ -82,7 +82,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<void> _syncWalletEvent(
       SyncWalletEvent event, Emitter<ExplorerState> emit) async {
-
     /// get the current state of the wallet from the database
     WalletStorage walletStorage =
         await Locator.instance<ApiDatabase>().loadWalletsDatabase();
@@ -248,11 +247,10 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           account;
     });
 
-
-    for(int i = 0; i < _extAccntsDb.length; i ++) {
+    for (int i = 0; i < _extAccntsDb.length; i++) {
       await db.updateAccount(_extAccntsDb.values.elementAt(i));
     }
-    for(int i = 0; i < _intAccntsDb.length; i ++) {
+    for (int i = 0; i < _intAccntsDb.length; i++) {
       await db.updateAccount(_intAccntsDb.values.elementAt(i));
     }
     return emit(ExplorerState.synced(await db.loadWalletsDatabase()));

@@ -14,8 +14,8 @@ class CryptoInitializeWalletEvent extends CryptoEvent {
   final String seedSource;
   final String password;
 
-  CryptoInitializeWalletEvent({
-      required this.id,
+  CryptoInitializeWalletEvent(
+      {required this.id,
       required this.walletName,
       required this.walletDescription,
       required this.keyData,

@@ -47,8 +47,7 @@ class AccountCard extends StatelessWidget {
               ),
               Expanded(
                 flex: 2,
-                child:
-                AutoSizeText(
+                child: AutoSizeText(
                   '${nanoWitToWit(account.balance().availableNanoWit).toString()} WIT',
                   textAlign: TextAlign.right,
                   maxLines: 1,
@@ -58,8 +57,12 @@ class AccountCard extends StatelessWidget {
               ),
               Expanded(
                 flex: 1,
-                child:
-                IconButton(icon: Icon(FontAwesomeIcons.infoCircle),color: theme.primaryColor, onPressed:() =>_showWalletSettingsDialog(context, account),),),
+                child: IconButton(
+                  icon: Icon(FontAwesomeIcons.infoCircle),
+                  color: theme.primaryColor,
+                  onPressed: () => _showWalletSettingsDialog(context, account),
+                ),
+              ),
             ],
           ),
           Row(
@@ -109,7 +112,6 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog> {
     List<Widget> internalAddressCards = [];
 
     Wallet wallet = widget.walletStorage;
-
 
     wallet.externalAccounts.forEach((index, account) {
       if (showZeroBalanceAccounts && account.balance().availableNanoWit == 0) {
@@ -270,15 +272,24 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog> {
                 'Wallet Settings',
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
               ),
-
-              Padding(padding: EdgeInsets.all(5),child: Row(children: [
-                AutoSizeText('Show accounts with zero balance', minFontSize: 10,),
-                Checkbox(value: showZeroBalanceAccounts, onChanged: (value){
-                  setState(() {
-                    showZeroBalanceAccounts = value!;
-                  });
-                }),],),),
-
+              Padding(
+                padding: EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    AutoSizeText(
+                      'Show accounts with zero balance',
+                      minFontSize: 10,
+                    ),
+                    Checkbox(
+                        value: showZeroBalanceAccounts,
+                        onChanged: (value) {
+                          setState(() {
+                            showZeroBalanceAccounts = value!;
+                          });
+                        }),
+                  ],
+                ),
+              ),
               _buildWalletInfoContainer(context, theme, deviceSize),
             ],
           ),

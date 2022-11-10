@@ -22,7 +22,7 @@ List<BlocProvider> getProviders(BuildContext context) {
 
     /// BlocCrypto manages an isolate to run intensive cryptographic methods.
     BlocProvider<CryptoBloc>(
-      create: (BuildContext context) => CryptoBloc(CryptoReadyState())),
+        create: (BuildContext context) => CryptoBloc(CryptoReadyState())),
 
     /// BlocCreateWallet manages all wallet creation options
     BlocProvider<CreateWalletBloc>(

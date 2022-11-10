@@ -10,11 +10,10 @@ enum LoginStatus {
 }
 
 class LoginState extends Equatable {
-  const LoginState({
-    this.status = LoginStatus.LoggedOut,
-    required this.password,
-    required this.message
-  });
+  const LoginState(
+      {this.status = LoginStatus.LoggedOut,
+      required this.password,
+      required this.message});
 
   final LoginStatus status;
   final String password;

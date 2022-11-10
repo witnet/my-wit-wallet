@@ -22,7 +22,6 @@ class TransactionHistory extends StatelessWidget {
     TransactionCache cache = TransactionCache();
 
     externalAccounts.forEach((addr, acc) {
-
       acc.vttHashes.forEach((trxHash) {
         ValueTransferInfo vtTransaction = cache.getVtt(trxHash);
         vtts.add(VttListItem(vtTransaction));

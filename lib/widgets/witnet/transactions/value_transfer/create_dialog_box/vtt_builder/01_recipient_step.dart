@@ -116,13 +116,14 @@ class RecipientStepState extends State<RecipientStep>
                       setState(() {
                         if (value == '') {
                           valueWit = 0;
-                          balanceInfo.availableNanoWit = balanceInfo.availableNanoWit  - outputValueNanoWit;
+                          balanceInfo.availableNanoWit =
+                              balanceInfo.availableNanoWit - outputValueNanoWit;
                         } else {
                           valueWit = double.parse(value);
-                          balanceInfo.availableNanoWit = balanceInfo.availableNanoWit - outputValueNanoWit;
+                          balanceInfo.availableNanoWit =
+                              balanceInfo.availableNanoWit - outputValueNanoWit;
                         }
                       });
-
                     },
                     decoration: new InputDecoration(
                         labelText: "Amount", errorText: _errorText),

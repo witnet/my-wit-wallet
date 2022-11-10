@@ -20,6 +20,6 @@ class ApiDashboard {
     this._currentWallet = wallet;
   }
 
-  Wallet? get currentWallet => _currentWallet;
+  Wallet get currentWallet => _currentWallet;
   WalletStorage? get walletStorage => _walletStorage;
 }

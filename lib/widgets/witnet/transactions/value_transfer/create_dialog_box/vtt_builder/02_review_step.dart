@@ -136,9 +136,6 @@ class ReviewStepState extends State<ReviewStep>
           });
         });
       });
-
-
-
     });
 
     _inputs.forEach((inputUtxo) {

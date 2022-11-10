@@ -62,18 +62,19 @@ class ValueTransferOutputContainer extends StatelessWidget {
                   )),
             ],
           ),
-          if(vto.timeLock>0)
-            Row(children: [
-
-              Expanded(
-                  flex: 7,
-                  child: AutoSizeText(
-                    'Time locked: ${DateTime.fromMillisecondsSinceEpoch(vto.timeLock.toInt()*1000)}',
-                    maxLines: 1,
-                    minFontSize: 9,
-                    textAlign: TextAlign.right,
-                  )),
-          ],),
+          if (vto.timeLock > 0)
+            Row(
+              children: [
+                Expanded(
+                    flex: 7,
+                    child: AutoSizeText(
+                      'Time locked: ${DateTime.fromMillisecondsSinceEpoch(vto.timeLock.toInt() * 1000)}',
+                      maxLines: 1,
+                      minFontSize: 9,
+                      textAlign: TextAlign.right,
+                    )),
+              ],
+            ),
         ],
       ),
     );

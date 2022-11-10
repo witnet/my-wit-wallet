@@ -41,7 +41,7 @@ class HeaderLayout extends StatelessWidget {
         child: Container(
           // ignore: todo
           // TODO[#10]: Implement header layout responsive depending on screen height
-          height: 250,
+          height: dashboardActions != null ? 300 : 200,
           width: MediaQuery.of(context).size.width,
           color: extendedTheme.headerBackgroundColor,
           child: Column(children: [
@@ -61,9 +61,15 @@ class HeaderLayout extends StatelessWidget {
                   child: ConstrainedBox(
                 constraints: BoxConstraints(
                     minWidth: 50,
-                    maxWidth: MediaQuery.of(context).size.width * 0.3),
+                    maxWidth: dashboardActions != null
+                        ? MediaQuery.of(context).size.width * 0.6
+                        : MediaQuery.of(context).size.width * 0.3),
                 child: Column(
-                  children: [dashboardActions != null ? dashboardActions! : witnetEyeIcon(theme)],
+                  children: [
+                    dashboardActions != null
+                        ? dashboardActions!
+                        : witnetEyeIcon(theme)
+                  ],
                 ),
               )),
             ])),

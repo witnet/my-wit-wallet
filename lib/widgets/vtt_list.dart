@@ -11,7 +11,6 @@ import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/info_di
 
 import '../util/storage/database/account.dart';
 
-
 String formatDate(int ts) {
   DateTime dt = DateTime.fromMillisecondsSinceEpoch(ts * 1000);
   final f = new DateFormat('yyyy-MM-dd hh:mm:ss');
@@ -103,7 +102,8 @@ class VttListWidgetState extends State<VttListWidget> {
       addresses.add(account.address);
       account.vttHashes.forEach((vttHash) {
         TransactionCache cache = TransactionCache();
-        if (!trx.containsKey(vttHash)) trx[vttHash] = VttListItem(cache.getVtt(vttHash));
+        if (!trx.containsKey(vttHash))
+          trx[vttHash] = VttListItem(cache.getVtt(vttHash));
       });
     });
     transactions = sortTransactions(trx.values.toList());

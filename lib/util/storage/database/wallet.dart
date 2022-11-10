@@ -10,7 +10,6 @@ import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
-
 enum KeyType { internal, external }
 
 class Wallet {
@@ -33,9 +32,6 @@ class Wallet {
       account.setBalance();
     });
   }
-
-
-
 
   final String id;
   final String name;
@@ -172,7 +168,6 @@ class Wallet {
           'index': index,
           'keyType': keyType.toString()
         },
-
         port: response.sendPort);
     var xpub = await response.first.then((value) {
       return value['xpub'] as Xpub;
@@ -242,7 +237,7 @@ class Wallet {
   factory Wallet.fromJson(Map<String, dynamic> data) {
     Map<int, Account> _externalAccounts = {};
     Map<int, Account> _internalAccounts = {};
-    if(data.containsKey('externalAccounts')) {
+    if (data.containsKey('externalAccounts')) {
       for (int i = 0; i < data['externalAccounts'].keys.length; i++) {
         String account = data['externalAccounts'].keys.toList()[i];
 
@@ -250,7 +245,7 @@ class Wallet {
             Account.fromJson(data['externalAccounts'][account]);
       }
     }
-    if(data.containsKey('internalAccounts')) {
+    if (data.containsKey('internalAccounts')) {
       for (int i = 0; i < data['internalAccounts'].keys.length; i++) {
         String account = data['internalAccounts'].keys.toList()[i];
         _internalAccounts[i] =
@@ -270,5 +265,4 @@ class Wallet {
       internalAccounts: _internalAccounts,
     );
   }
-
 }

@@ -20,7 +20,6 @@ class WalletStorage {
 
   void addWallet({required Wallet wallet}) {}
 
-
   BalanceInfo balanceNanoWit() {
     List<Utxo> _utxos = [];
 

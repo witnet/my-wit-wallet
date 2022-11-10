@@ -50,11 +50,11 @@ class _PreferencePageState extends State<PreferencePage> {
       widgetList: [
         themeWidget(deviceSize.height * 0.25, context),
         PaddedButton(
-          padding: EdgeInsets.only(bottom: 8),
-          text: 'Log out',
-          type: 'text',
-          enabled: true,
-          onPressed: () => _logOut()),
+            padding: EdgeInsets.only(bottom: 8),
+            text: 'Log out',
+            type: 'text',
+            enabled: true,
+            onPressed: () => _logOut()),
       ],
       appBar: AppBar(
         title: Text('Preferences'),

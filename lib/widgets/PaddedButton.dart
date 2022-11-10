@@ -54,7 +54,7 @@ class PaddedButton extends StatelessWidget {
     Widget textButtonVerticalIcon = TextButton(
       child: Column(children: [
         icon,
-        Text(text),
+        Text(text, style: TextStyle(fontSize: 12)),
       ]),
       onPressed: onPressed,
     );

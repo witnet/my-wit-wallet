@@ -64,15 +64,12 @@ class DatabaseService {
   DatabaseFactory dbFactory = databaseFactoryIo;
   bool unlocked = false;
 
-
   void dispose() {
     _database.close();
     _dbConfig = null;
   }
 
-
   Future<void> configure(String path, bool fileExists) async {
-
     if (_dbConfig == null) {
       _dbConfig = _DBConfiguration(
         path: path,
@@ -158,11 +155,12 @@ class DatabaseService {
     }
     return true;
   }
-  Future<bool> masterKeySet() async {
 
+  Future<bool> masterKeySet() async {
     bool keyExists = await keyChain.keyExists(_database);
     return keyExists;
   }
+
   Future<bool> verifyPassword(String password) async {
     try {
       bool keyExists = await masterKeySet();
@@ -170,7 +168,7 @@ class DatabaseService {
         String? key = await keyChain.getKey(_database);
 
         bool valid = await keyChain.validatePassword(key, password);
-        if(valid) {
+        if (valid) {
           unlocked = true;
         }
         return valid;
@@ -185,10 +183,9 @@ class DatabaseService {
       {required String oldPassword, required String newPassword}) async {
     try {
       bool success = await keyChain.setKey(
-        oldPassword: oldPassword,
-        newPassword: newPassword,
-        databaseClient: _database
-      );
+          oldPassword: oldPassword,
+          newPassword: newPassword,
+          databaseClient: _database);
       return success;
     } catch (e) {
       return false;
@@ -234,7 +231,7 @@ class DatabaseService {
   }
 
   Future<String?> getKey() async {
-    if(unlocked) {
+    if (unlocked) {
       return keyChain.getKey(_database);
     } else {
       return null;
@@ -249,4 +246,3 @@ class DatabaseService {
     return true;
   }
 }
-

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
+import 'dart:math' as math;
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
@@ -108,13 +110,13 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _buildDashboardActions() {
-    return Row(children: [
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       PaddedButton(
         padding: EdgeInsets.all(0),
         text: 'Send',
         onPressed: _showCreateVTTDialog,
         icon: Icon(
-          FontAwesomeIcons.circlePlus,
+          FontAwesomeIcons.paperPlane,
           size: 18,
         ),
         type: 'vertical-icon',
@@ -124,7 +126,7 @@ class DashboardScreenState extends State<DashboardScreen>
         text: 'Home',
         onPressed: () => Navigator.pushReplacementNamed(context, '/'),
         icon: Icon(
-          FontAwesomeIcons.circlePlus,
+          FontAwesomeIcons.house,
           size: 18,
         ),
         type: 'vertical-icon',
@@ -133,13 +135,61 @@ class DashboardScreenState extends State<DashboardScreen>
         padding: EdgeInsets.all(0),
         text: 'Receive',
         onPressed: _showReceiveDialog,
-        icon: Icon(
-          FontAwesomeIcons.circlePlus,
-          size: 18,
-        ),
+        icon: Transform.rotate(
+            angle: 90 * math.pi / 90,
+            child: Icon(
+              FontAwesomeIcons.paperPlane,
+              size: 18,
+            )),
         type: 'vertical-icon',
       ),
     ]);
+  }
+
+  Widget _buildBalanceDisplay() {
+    final theme = Theme.of(context);
+    return BlocBuilder<DashboardBloc, DashboardState>(
+        builder: (BuildContext context, DashboardState state) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: 16),
+          Text(
+            '${state.currentWallet.balanceNanoWit().availableNanoWit} nanoWit',
+            style: theme.textTheme.headline4,
+          ),
+          SizedBox(height: 16),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Flexible(
+                child: IconButton(
+                    iconSize: 12,
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(
+                          text:
+                              '${state.currentWallet.externalAccounts[0]?.address}'));
+                    },
+                    icon: Icon(FontAwesomeIcons.copy))),
+            Flexible(
+                child: Text(
+              '${state.currentWallet.externalAccounts[0]?.address}',
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.headline5,
+            ))
+          ]),
+        ],
+      );
+    });
+  }
+
+  Widget _buildDashboardHeader() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildBalanceDisplay(),
+        SizedBox(height: 24),
+        _buildDashboardActions(),
+      ],
+    );
   }
 
   Widget _buildDashboardGrid(ThemeData themeData, DashboardState state) {
@@ -156,12 +206,7 @@ class DashboardScreenState extends State<DashboardScreen>
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _buildBalanceDisplay(),
-            _buildDashboardActions(),
-            buildSyncButton(),
-            // TransactionHistory(themeData: themeData, externalAccounts: externalAccounts, internalAccounts: internalAccounts,),
-          ],
+          children: <Widget>[],
         );
       },
     );
@@ -226,20 +271,6 @@ class DashboardScreenState extends State<DashboardScreen>
         ApiDashboard apiDashboard = Locator.instance.get<ApiDashboard>();
         setState(() {
           walletStorage = apiDashboard.currentWallet;
-        });
-      }
-    });
-  }
-
-  Widget _buildBalanceDisplay() {
-    return BlocConsumer<ExplorerBloc, ExplorerState>(builder: (context, state) {
-      return BalanceDisplay(_balanceController);
-    }, listener: (context, state) {
-      if (state.status == ExplorerStatus.ready) {
-        setState(() {
-          BlocProvider.of<DashboardBloc>(context).add(DashboardLoadEvent());
-          _balanceController.reset();
-          _balanceController.forward();
         });
       }
     });
@@ -339,7 +370,7 @@ class DashboardScreenState extends State<DashboardScreen>
       }
       return Layout(
         navigationActions: _navigationActions(),
-        dashboardActions: Text('DASHBOARD ACTIONS'),
+        dashboardActions: _buildDashboardHeader(),
         widgetList: [
           _body,
         ],

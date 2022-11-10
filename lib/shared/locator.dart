@@ -9,7 +9,6 @@ import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/api_theme.dart';
 import 'package:witnet_wallet/util/storage/cache/transaction_cache.dart';
 
-
 class Locator {
   static late GetIt _i;
   static GetIt get instance => _i;

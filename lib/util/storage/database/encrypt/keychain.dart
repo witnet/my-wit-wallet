@@ -23,10 +23,10 @@ class KeyChain {
   String? keyHash;
   bool unlocked = false;
 
-
   KeyChain();
   Uint8List encode(String password, [bool debug = false]) {
-    Uint8List data = Uint8List.fromList('{"WITNET":"${Password.hash(password)}"}'.codeUnits);
+    Uint8List data =
+        Uint8List.fromList('{"WITNET":"${Password.hash(password)}"}'.codeUnits);
     Uint8List dat = _formatData(data);
     Uint8List _iv = generateIV();
     Uint8List _salt = generateSalt();
@@ -34,9 +34,8 @@ class KeyChain {
     Uint8List encoded = hexToBytes(codec.encode(dat));
     Uint8List encodedData = concatBytes([_iv, _salt, encoded]);
     keyHash = Password.hash(password);
-    if(debug){
-
-    print('${bytesToHex(_iv)} ${bytesToHex(_salt)} ${bytesToHex(encoded)}');
+    if (debug) {
+      print('${bytesToHex(_iv)} ${bytesToHex(_salt)} ${bytesToHex(encoded)}');
     }
 
     return encodedData;
@@ -44,7 +43,6 @@ class KeyChain {
 
   String? decode(String encoded, String password) {
     Uint8List dat = Uint8List.fromList(hexToBytes(encoded));
-
 
     Uint8List iv = dat.sublist(0, 16);
     Uint8List salt = dat.sublist(16, 48);
@@ -63,6 +61,7 @@ class KeyChain {
       return null;
     }
   }
+
   Future<bool> validatePassword(String encoded, String password) async {
     unlocked = (decode(encoded, password) == null) ? false : true;
     return unlocked;
@@ -96,12 +95,9 @@ class KeyChain {
     if (exists) {
       String key = await getKey(databaseClient);
 
-
-
       bool valid = await validatePassword(key, oldPassword!);
 
-
-      if(valid) {
+      if (valid) {
         await _store.record('keychain').add(databaseClient, encodedKey);
       } else {
         return false;
@@ -111,5 +107,4 @@ class KeyChain {
     }
     return true;
   }
-
 }
