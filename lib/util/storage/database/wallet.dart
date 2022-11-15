@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:witnet/data_structures.dart';
 
 import 'account.dart';
@@ -20,6 +22,7 @@ class Wallet {
     this.xprv,
     this.externalXpub,
     this.internalXpub,
+    required this.txHashes,
     required this.externalAccounts,
     required this.internalAccounts,
     this.lastSynced = -1,
@@ -36,6 +39,7 @@ class Wallet {
   final String id;
   final String name;
   final String? description;
+  late List<String?> txHashes;
   late String? xprv;
   late String? externalXpub;
   late String? internalXpub;
@@ -61,6 +65,7 @@ class Wallet {
       id: id,
       name: name,
       description: description,
+      txHashes: [],
       externalAccounts: {},
       internalAccounts: {},
     );
@@ -80,6 +85,7 @@ class Wallet {
       name: name,
       description: description,
       xprv: xprv,
+      txHashes: [],
       externalAccounts: {},
       internalAccounts: {},
     );
@@ -100,6 +106,7 @@ class Wallet {
         name: name,
         description: description,
         xprv: xprv,
+        txHashes: [],
         externalAccounts: {},
         internalAccounts: {},
       );
@@ -261,6 +268,7 @@ class Wallet {
       xprv: data['xprv'],
       externalXpub: data['externalXpub'],
       internalXpub: data['internalXpub'],
+      txHashes: [],
       externalAccounts: _externalAccounts,
       internalAccounts: _internalAccounts,
     );

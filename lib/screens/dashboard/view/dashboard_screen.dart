@@ -1,8 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:witnet/explorer.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
+import 'package:witnet_wallet/widgets/witnet/transactions/transaction_history.dart';
 import 'dart:math' as math;
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
@@ -35,7 +40,7 @@ class DashboardScreenState extends State<DashboardScreen>
     with TickerProviderStateMixin {
   Map<String, Account> externalAccounts = {};
   Map<String, Account> internalAccounts = {};
-
+  List<ValueTransferInfo> valueTransfers = [];
   Wallet? walletStorage;
   late AnimationController _loadingController;
   late AnimationController _balanceController;
@@ -54,6 +59,7 @@ class DashboardScreenState extends State<DashboardScreen>
     );
     _loadingController.forward();
     _balanceController.forward();
+    _getVtts();
   }
 
   @override
@@ -61,6 +67,10 @@ class DashboardScreenState extends State<DashboardScreen>
     _loadingController.dispose();
     _balanceController.dispose();
     super.dispose();
+  }
+
+  void _getVtts() async {
+    valueTransfers = await Locator.instance<ApiDatabase>().getAllVtts();
   }
 
   /// _goToSettings
@@ -156,6 +166,7 @@ class DashboardScreenState extends State<DashboardScreen>
           SizedBox(height: 16),
           Text(
             '${state.currentWallet.balanceNanoWit().availableNanoWit} nanoWit',
+            textAlign: TextAlign.center,
             style: theme.textTheme.headline4,
           ),
           SizedBox(height: 16),
@@ -206,7 +217,13 @@ class DashboardScreenState extends State<DashboardScreen>
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[],
+          children: <Widget>[
+            TransactionHistory(
+              themeData: themeData,
+              valueTransfers: valueTransfers,
+              txHashes: state.currentWallet.txHashes,
+            )
+          ],
         );
       },
     );
@@ -215,7 +232,6 @@ class DashboardScreenState extends State<DashboardScreen>
   Widget buildSyncButton() {
     return BlocConsumer<ExplorerBloc, ExplorerState>(builder: (context, state) {
       final theme = Theme.of(context);
-
       if (state.status == ExplorerStatus.ready) {
         return Column(
           children: <Widget>[

@@ -117,42 +117,38 @@ class WalletListState extends State<WalletList> {
             ),
           ),
           margin: EdgeInsets.all(8),
-          child:
-              Row(children: [
-              Container(
-                color: extendedTheme.selectedTextColor,
-                width: 30,
-                height: 30,
-              ),
-              Expanded(
-              child:
-            
-               Padding(
-                  padding: EdgeInsets.only(left: 16, right: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        walletName,
-                        style: textStyle,
-                      ),
-                      Text(
-                        address != null ? address : '',
-                        overflow: TextOverflow.ellipsis,
-                        style: textStyle,
-                      ),
-                    ],
-                  ),
-                ),),
-            Expanded(
-              child:
-            
-            Text(
-              balance != null ? '$balance nanoWit' : '',
-              textAlign: TextAlign.end,
-              overflow: TextOverflow.ellipsis,
-              style: textStyle,
+          child: Row(children: [
+            Container(
+              color: extendedTheme.selectedTextColor,
+              width: 30,
+              height: 30,
             ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(left: 16, right: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      walletName,
+                      style: textStyle,
+                    ),
+                    Text(
+                      address != null ? address : '',
+                      overflow: TextOverflow.ellipsis,
+                      style: textStyle,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                balance != null ? '$balance nanoWit' : '',
+                textAlign: TextAlign.end,
+                overflow: TextOverflow.ellipsis,
+                style: textStyle,
+              ),
             ),
           ]),
         ),

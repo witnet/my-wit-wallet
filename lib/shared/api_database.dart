@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:isolate';
 
 import 'package:witnet/explorer.dart';
@@ -31,7 +32,6 @@ class ApiDatabase {
       {required String method, required Map<String, dynamic> params}) async {
     if (!databaseIsolate.initialized) await databaseIsolate.init();
     final ReceivePort response = ReceivePort();
-
     databaseIsolate.send(
         method: method, params: params, port: response.sendPort);
     return await response.first.then((value) {
@@ -149,6 +149,14 @@ class ApiDatabase {
         method: 'add', params: {'type': 'vtt', 'value': transaction.jsonMap()});
   }
 
+  Future getAllVtts() async {
+    try {
+      return await _processIsolate(method: 'getAllVtts', params: {});
+    } catch (err) {
+      print('Error getting vtts:: $err');
+    }
+  }
+
   Future<WalletStorage> loadWalletsDatabase() async {
     try {
       List<Wallet> wallets =
@@ -164,18 +172,20 @@ class ApiDatabase {
 
       for (int i = 0; i < accounts.length; i++) {
         Account account = accounts[i];
-
         int _type = int.parse(account.path.split('/')[4]);
         int _index = int.parse(account.path.split('/').last);
+        account.vttHashes.forEach((hash) {
+          walletMap[account.walletName]?.txHashes.add(hash);
+        });
         // external account
         if (_type == 0) {
           walletMap[account.walletName]?.externalAccounts[_index] = account;
-
           // internal account
         } else if (_type == 1) {
           walletMap[account.walletName]?.internalAccounts[_index] = account;
         }
       }
+
       _wallets = walletMap;
     } catch (e) {}
     return WalletStorage(

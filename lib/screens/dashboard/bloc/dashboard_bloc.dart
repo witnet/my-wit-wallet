@@ -20,6 +20,7 @@ final defaultWallet = Wallet(
     xprv: '',
     externalXpub: '',
     internalXpub: '',
+    txHashes: [],
     externalAccounts: {},
     internalAccounts: {},
     lastSynced: -1);

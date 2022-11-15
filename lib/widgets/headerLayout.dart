@@ -62,7 +62,7 @@ class HeaderLayout extends StatelessWidget {
                 constraints: BoxConstraints(
                     minWidth: 50,
                     maxWidth: dashboardActions != null
-                        ? MediaQuery.of(context).size.width * 0.6
+                        ? MediaQuery.of(context).size.width * 0.9
                         : MediaQuery.of(context).size.width * 0.3),
                 child: Column(
                   children: [

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:sembast/sembast.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
@@ -39,11 +41,9 @@ class VttRepository extends _TransactionRepository {
   Future<List<ValueTransferInfo>> getAllTransactions(
       DatabaseClient databaseClient) async {
     final snapshots = await _store.find(databaseClient);
-
     List<ValueTransferInfo> transactions = snapshots
-        .map((snapshot) => ValueTransferInfo.fromJson(snapshot.value))
+        .map((snapshot) => ValueTransferInfo.fromDbJson(snapshot.value))
         .toList(growable: false);
-
     return transactions;
   }
 
