@@ -5,9 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/explorer.dart';
-import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/widgets/witnet/transactions/transaction_history.dart';
+import 'package:witnet_wallet/widgets/transactions_list.dart';
 import 'dart:math' as math;
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
@@ -18,7 +17,6 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/widgets//wallet_list.dart';
 import 'package:witnet_wallet/widgets/layout.dart';
 import 'package:witnet_wallet/widgets/round_button.dart';
-import 'package:witnet_wallet/widgets/witnet/balance_display.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/create_vtt_dialog.dart';
 import 'package:witnet_wallet/widgets/witnet/wallet/receive_dialog.dart';
 import 'package:witnet_wallet/widgets/witnet/wallet/wallet_settings/wallet_settings_dialog.dart';
@@ -42,6 +40,7 @@ class DashboardScreenState extends State<DashboardScreen>
   Map<String, Account> internalAccounts = {};
   List<ValueTransferInfo> valueTransfers = [];
   Wallet? walletStorage;
+  ValueTransferInfo? txDetails;
   late AnimationController _loadingController;
   late AnimationController _balanceController;
   List<String>? walletList;
@@ -136,7 +135,7 @@ class DashboardScreenState extends State<DashboardScreen>
         text: 'Home',
         onPressed: () => Navigator.pushReplacementNamed(context, '/'),
         icon: Icon(
-          FontAwesomeIcons.house,
+          FontAwesomeIcons.wallet,
           size: 18,
         ),
         type: 'vertical-icon',
@@ -203,12 +202,19 @@ class DashboardScreenState extends State<DashboardScreen>
     );
   }
 
+  _setDetails(ValueTransferInfo? transaction) {
+    setState(() {
+      txDetails = transaction;
+    });
+  }
+
   Widget _buildDashboardGrid(ThemeData themeData, DashboardState state) {
     return BlocBuilder<DashboardBloc, DashboardState>(
       buildWhen: (previous, current) {
         if (previous.currentWallet.id != current.currentWallet.id) {
           setState(() {
             walletStorage = current.currentWallet;
+            txDetails = null;
           });
         }
         return true;
@@ -218,9 +224,12 @@ class DashboardScreenState extends State<DashboardScreen>
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            TransactionHistory(
+            TransactionsList(
               themeData: themeData,
+              setDetails: _setDetails,
+              details: txDetails,
               valueTransfers: valueTransfers,
+              externalAddresses: state.currentWallet.externalAccounts,
               txHashes: state.currentWallet.txHashes,
             )
           ],
@@ -332,10 +341,6 @@ class DashboardScreenState extends State<DashboardScreen>
 
   Widget _authBuilder() {
     final theme = Theme.of(context);
-    // TODO: LoggedOutState
-    // TODO: LoadingLogoutState
-    // TODO: LoggedInState
-
     return BlocBuilder<LoginBloc, LoginState>(
         buildWhen: (previousState, loginState) {
       if (loginState.status == LoginStatus.LoggedOut) {

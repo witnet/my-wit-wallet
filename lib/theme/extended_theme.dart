@@ -16,6 +16,9 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.walletActiveItemBorderColor,
     required this.walletItemBorderColor,
     required this.inputIconColor,
+    required this.txBorderColor,
+    required this.txValuePositiveColor,
+    required this.txValueNegativeColor,
   });
   final Color? selectBackgroundColor;
   final Color? selectedTextColor;
@@ -29,17 +32,24 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? walletActiveItemBackgroundColor;
   final Color? walletItemBorderColor;
   final Color? inputIconColor;
+  final Color? txBorderColor;
+  final Color? txValuePositiveColor;
+  final Color? txValueNegativeColor;
   @override
-  ExtendedTheme copyWith(
-      {Color? selectBackgroundColor,
-      Color? selectedTextColor,
-      Color? dropdownBackgroundColor,
-      Color? dropdownTextColor,
-      Color? walletListBackgroundColor,
-      Color? walletActiveItemBorderColor,
-      Color? walletItemBorderColor,
-      Color? inputIconColor,
-      Color? walletActiveItemBackgroundColor}) {
+  ExtendedTheme copyWith({
+    Color? selectBackgroundColor,
+    Color? selectedTextColor,
+    Color? dropdownBackgroundColor,
+    Color? dropdownTextColor,
+    Color? walletListBackgroundColor,
+    Color? walletActiveItemBorderColor,
+    Color? walletItemBorderColor,
+    Color? inputIconColor,
+    Color? walletActiveItemBackgroundColor,
+    Color? txBorderColor,
+    Color? txValuePositiveColor,
+    Color? txValueNegativeColor,
+  }) {
     return ExtendedTheme(
       selectBackgroundColor:
           selectBackgroundColor ?? this.selectBackgroundColor,
@@ -61,6 +71,9 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       walletItemBorderColor:
           walletItemBorderColor ?? this.walletItemBorderColor,
       inputIconColor: inputIconColor ?? this.inputIconColor,
+      txBorderColor: txBorderColor ?? this.txBorderColor,
+      txValueNegativeColor: txValueNegativeColor ?? this.txValueNegativeColor,
+      txValuePositiveColor: txValuePositiveColor ?? this.txValuePositiveColor,
     );
   }
 
@@ -71,31 +84,36 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       return this;
     }
     return ExtendedTheme(
-      selectBackgroundColor:
-          Color.lerp(selectBackgroundColor, other.selectBackgroundColor, t),
-      selectedTextColor:
-          Color.lerp(selectedTextColor, other.selectedTextColor, t),
-      dropdownBackgroundColor:
-          Color.lerp(dropdownBackgroundColor, other.dropdownBackgroundColor, t),
-      dropdownTextColor:
-          Color.lerp(dropdownTextColor, other.dropdownTextColor, t),
-      headerBackgroundColor:
-          Color.lerp(headerBackgroundColor, other.dropdownTextColor, t),
-      headerTextColor: Color.lerp(headerTextColor, other.dropdownTextColor, t),
-      headerActiveTextColor:
-          Color.lerp(headerActiveTextColor, other.dropdownTextColor, t),
-      walletListBackgroundColor: Color.lerp(
-          walletListBackgroundColor, other.walletListBackgroundColor, t),
-      walletActiveItemBackgroundColor: Color.lerp(
-          walletActiveItemBackgroundColor,
-          other.walletActiveItemBackgroundColor,
-          t),
-      walletActiveItemBorderColor: Color.lerp(
-          walletActiveItemBorderColor, other.walletActiveItemBorderColor, t),
-      walletItemBorderColor:
-          Color.lerp(walletItemBorderColor, other.walletItemBorderColor, t),
-      inputIconColor: Color.lerp(inputIconColor, other.inputIconColor, t),
-    );
+        selectBackgroundColor:
+            Color.lerp(selectBackgroundColor, other.selectBackgroundColor, t),
+        selectedTextColor:
+            Color.lerp(selectedTextColor, other.selectedTextColor, t),
+        dropdownBackgroundColor: Color.lerp(
+            dropdownBackgroundColor, other.dropdownBackgroundColor, t),
+        dropdownTextColor:
+            Color.lerp(dropdownTextColor, other.dropdownTextColor, t),
+        headerBackgroundColor:
+            Color.lerp(headerBackgroundColor, other.dropdownTextColor, t),
+        headerTextColor:
+            Color.lerp(headerTextColor, other.dropdownTextColor, t),
+        headerActiveTextColor:
+            Color.lerp(headerActiveTextColor, other.dropdownTextColor, t),
+        walletListBackgroundColor: Color.lerp(
+            walletListBackgroundColor, other.walletListBackgroundColor, t),
+        walletActiveItemBackgroundColor: Color.lerp(
+            walletActiveItemBackgroundColor,
+            other.walletActiveItemBackgroundColor,
+            t),
+        walletActiveItemBorderColor: Color.lerp(
+            walletActiveItemBorderColor, other.walletActiveItemBorderColor, t),
+        walletItemBorderColor:
+            Color.lerp(walletItemBorderColor, other.walletItemBorderColor, t),
+        inputIconColor: Color.lerp(inputIconColor, other.inputIconColor, t),
+        txBorderColor: Color.lerp(txBorderColor, other.txBorderColor, t),
+        txValueNegativeColor:
+            Color.lerp(txValueNegativeColor, other.txValueNegativeColor, t),
+        txValuePositiveColor:
+            Color.lerp(txValuePositiveColor, other.txValuePositiveColor, t));
   }
 
   // the light theme
@@ -112,19 +130,26 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     walletActiveItemBorderColor: WitnetPallet.witnetGreen3,
     walletItemBorderColor: WitnetPallet.lightGrey,
     inputIconColor: WitnetPallet.lightGrey,
+    txBorderColor: WitnetPallet.lightGrey,
+    txValueNegativeColor: WitnetPallet.darkRed,
+    txValuePositiveColor: WitnetPallet.darkGreen,
   );
   // the dark theme
   static const dark = ExtendedTheme(
-      selectBackgroundColor: WitnetPallet.opacityWitnetGreen,
-      selectedTextColor: WitnetPallet.white,
-      dropdownBackgroundColor: WitnetPallet.opacityWitnetGreen,
-      dropdownTextColor: WitnetPallet.white,
-      headerActiveTextColor: WitnetPallet.white,
-      headerTextColor: WitnetPallet.white,
-      headerBackgroundColor: WitnetPallet.opacityWitnetGreen,
-      walletListBackgroundColor: WitnetPallet.opacityWitnetGreen,
-      walletActiveItemBackgroundColor: WitnetPallet.opacityWitnetGreen3,
-      walletActiveItemBorderColor: WitnetPallet.witnetGreen2,
-      walletItemBorderColor: WitnetPallet.opacityWhite2,
-      inputIconColor: WitnetPallet.opacityWhite2);
+    selectBackgroundColor: WitnetPallet.opacityWitnetGreen,
+    selectedTextColor: WitnetPallet.white,
+    dropdownBackgroundColor: WitnetPallet.opacityWitnetGreen,
+    dropdownTextColor: WitnetPallet.white,
+    headerActiveTextColor: WitnetPallet.white,
+    headerTextColor: WitnetPallet.white,
+    headerBackgroundColor: WitnetPallet.opacityWitnetGreen,
+    walletListBackgroundColor: Color.fromRGBO(14, 41, 53, 1),
+    walletActiveItemBackgroundColor: WitnetPallet.opacityWitnetGreen3,
+    walletActiveItemBorderColor: WitnetPallet.witnetGreen2,
+    walletItemBorderColor: WitnetPallet.opacityWhite2,
+    inputIconColor: WitnetPallet.opacityWhite2,
+    txBorderColor: WitnetPallet.opacityWhite2,
+    txValueNegativeColor: WitnetPallet.brightRed,
+    txValuePositiveColor: WitnetPallet.brightGreen,
+  );
 }
