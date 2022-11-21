@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:witnet/explorer.dart';
-import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/extensions/string_extensions.dart';
 import 'package:witnet_wallet/util/extensions/timestamp_extensions.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
@@ -19,7 +18,6 @@ class TransactionDetails extends StatelessWidget {
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -37,7 +35,7 @@ class TransactionDetails extends StatelessWidget {
         InfoElement(
             label: 'Status',
             text: transaction.status.capitalize(),
-            color: extendedTheme.txValuePositiveColor),
+            color: theme.textTheme.labelMedium?.color),
         SizedBox(height: 16),
         InfoElement(label: 'Transaction ID', text: transaction.txnHash),
         SizedBox(height: 16),

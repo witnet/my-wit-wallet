@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
 
 class AddressTileList extends StatefulWidget {
   final double width;
@@ -40,7 +41,7 @@ class AddressTileListState extends State<AddressTileList> {
             child: ElevatedButton(
               child: new Text('Create Wallet'),
               onPressed: () {
-                Navigator.pushNamed(context, '/create_wallet');
+                Navigator.pushNamed(context, CreateWalletScreen.route);
               },
             ),
           ),

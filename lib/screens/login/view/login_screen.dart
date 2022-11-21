@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:witnet_wallet/screens/login/view/login_form.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
 import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
-import 'package:witnet_wallet/widgets/layout.dart';
+import 'package:witnet_wallet/widgets/layouts/layout.dart';
 import 'package:witnet_wallet/widgets/carousel.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

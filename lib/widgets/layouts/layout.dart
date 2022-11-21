@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:witnet_wallet/theme/colors.dart';
-import 'package:witnet_wallet/widgets/headerLayout.dart';
+import 'package:witnet_wallet/widgets/layouts/headerLayout.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
 

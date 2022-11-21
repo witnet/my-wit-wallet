@@ -11,7 +11,7 @@ import 'package:witnet_wallet/screens/create_wallet/disclaimer_card.dart';
 import 'package:witnet_wallet/screens/create_wallet/generate_mnemonic_card.dart';
 import 'package:witnet_wallet/screens/create_wallet/wallet_detail_card.dart';
 import 'package:witnet_wallet/screens/create_wallet/select_imported_option.dart';
-import 'package:witnet_wallet/widgets/layout.dart';
+import 'package:witnet_wallet/widgets/layouts/layout.dart';
 
 import 'build_wallet_card.dart';
 import 'enc_xprv_card.dart';
@@ -19,7 +19,7 @@ import 'encrypt_wallet_card.dart';
 import 'xprv_card.dart';
 
 class CreateWalletScreen extends StatefulWidget {
-  static final route = '/create_wallet';
+  static final route = '/create-wallet';
   @override
   CreateWalletScreenState createState() => CreateWalletScreenState();
 }

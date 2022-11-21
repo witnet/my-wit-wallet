@@ -7,24 +7,23 @@ import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
+import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/time_lock_calendar/datetime_picker.dart';
-
-import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
-import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/fee_type_selector_chip.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/value_transfer_output_container.dart';
-import '../../../../../../util/storage/database/wallet_storage.dart';
 import '../recipient_address_input.dart';
 
 class RecipientStep extends StatefulWidget {
-  final VoidCallback? onStepCancel;
-  final VoidCallback? onStepContinue;
+  final VoidCallback onStepCancel;
+  final VoidCallback onStepContinue;
+  final Wallet currentWallet;
   final Function addValueTransferOutput;
   late final RecipientAddressInput recipientAddressInput;
 
   RecipientStep({
     required this.onStepContinue,
+    required this.currentWallet,
     required this.onStepCancel,
     required this.addValueTransferOutput,
   });
@@ -38,13 +37,12 @@ class RecipientStepState extends State<RecipientStep>
   String recipientAddress = '';
   double valueWit = 0;
   int timeLock = 0;
-  late BalanceInfo balanceInfo;
+  late BalanceInfo balanceInfo = widget.currentWallet.balanceNanoWit();
   late TextEditingController _addressController;
   final TextEditingController _valueController = TextEditingController();
 
   late TextEditingController _timeLockController;
   late AnimationController _loadingController;
-  late WalletStorage _walletStorage;
   late DateTime selectedTimelock;
   bool timelockSet = false;
 
@@ -58,11 +56,6 @@ class RecipientStepState extends State<RecipientStep>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
-    _walletStorage = apiDashboard.walletStorage!;
-    balanceInfo = _walletStorage.balanceNanoWit();
-    BlocProvider.of<VTTCreateBloc>(context)
-        .add(AddSourceWalletsEvent(walletStorage: _walletStorage));
     super.initState();
   }
 
@@ -182,10 +175,9 @@ class RecipientStepState extends State<RecipientStep>
     for (int i = 0; i < outputs.length; i++) {
       String address = outputs[i].pkh.address;
       bool isChangeAccount = false;
-      _walletStorage.wallets.forEach((key, wallet) {
-        wallet.internalAccounts.forEach((key, account) {
-          if (account.address == address) isChangeAccount = true;
-        });
+
+      widget.currentWallet.internalAccounts.forEach((key, account) {
+        if (account.address == address) isChangeAccount = true;
       });
 
       /// only add a card if it is not a change account
@@ -535,7 +527,7 @@ class RecipientStepState extends State<RecipientStep>
                     _addVTO(context);
                     BlocProvider.of<VTTCreateBloc>(context)
                         .add(ValidateTransactionEvent());
-                    widget.onStepContinue!.call();
+                    widget.onStepContinue();
                   },
                   child: const Text('Continue'),
                 ),

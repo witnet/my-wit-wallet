@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/theme/extended_theme.dart';
 
 const defaultIcon = Icon(null);
 
@@ -26,7 +25,6 @@ class PaddedButton extends StatelessWidget {
     final isText = type == 'text';
     final hasHorizontalIcon = type == 'horizontal-icon';
     final hasVerticalIcon = type == 'vertical-icon';
-    final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     final theme = Theme.of(context);
 
     Widget primaryButton = ElevatedButton(
@@ -67,8 +65,7 @@ class PaddedButton extends StatelessWidget {
         child: GestureDetector(
           child: Text(
             text,
-            style: theme.textTheme.bodyText1
-                ?.copyWith(color: extendedTheme.txValuePositiveColor),
+            style: theme.textTheme.labelMedium,
           ),
           onTap: onPressed,
         ));

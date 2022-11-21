@@ -3,8 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:witnet_wallet/bloc/bloc_providers.dart';
 import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
+import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:witnet_wallet/screens/login/view/login_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:witnet_wallet/screens/receive_transaction/receive_tx_screen.dart';
+import 'package:witnet_wallet/screens/send_transaction/send_vtt_screen.dart';
 
 import 'bloc/theme/theme_bloc.dart';
 
@@ -44,6 +47,9 @@ Widget _buildWithTheme(BuildContext context, ThemeState state) {
     routes: {
       LoginScreen.route: (context) => LoginScreen(),
       CreateWalletScreen.route: (context) => CreateWalletScreen(),
+      DashboardScreen.route: (context) => DashboardScreen(),
+      CreateVttScreen.route: (context) => CreateVttScreen(),
+      ReceiveTransactionScreen.route: (context) => ReceiveTransactionScreen()
     },
   );
 }

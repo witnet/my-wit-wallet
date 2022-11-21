@@ -7,7 +7,7 @@ import 'package:witnet_wallet/widgets/switch.dart';
 import 'package:witnet_wallet/bloc/theme/theme_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
-import 'package:witnet_wallet/widgets/layout.dart';
+import 'package:witnet_wallet/widgets/layouts/layout.dart';
 
 class PreferencePage extends StatefulWidget {
   PreferencePage({Key? key}) : super(key: key);

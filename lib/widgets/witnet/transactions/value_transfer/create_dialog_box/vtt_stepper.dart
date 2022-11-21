@@ -9,8 +9,6 @@ import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/01_recipient_step.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/02_review_step.dart';
 
-import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
-
 class VttStepper extends StatefulWidget {
   final Wallet walletStorage;
 
@@ -47,14 +45,14 @@ class VttStepperState extends State<VttStepper> {
   }
 
   void onStepCancel() {
-    if (_index > 0) {
-      setState(() {
-        _index -= 1;
-      });
-    } else {
-      BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
-      Navigator.of(context).pop();
-    }
+    // if (_index > 0) {
+    //   setState(() {
+    //     _index -= 1;
+    //   });
+    // } else {
+    //   BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
+    //   Navigator.of(context).pop();
+    // }
   }
 
   void onStepContinue() {
@@ -112,6 +110,7 @@ class VttStepperState extends State<VttStepper> {
         Step(
           title: Text('Recipient'),
           content: RecipientStep(
+              currentWallet: widget.walletStorage,
               onStepCancel: onStepCancel,
               onStepContinue: onStepContinue,
               addValueTransferOutput: addValueTransferOutput),
