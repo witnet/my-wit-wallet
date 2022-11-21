@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
@@ -10,6 +12,8 @@ import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
+import 'package:witnet_wallet/util/preferences.dart';
+import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 
@@ -53,13 +57,17 @@ class WalletListState extends State<WalletList> {
   void _getWallets() async {
     WalletStorage walletStorage =
         await Locator.instance<ApiDatabase>().loadWalletsDatabase();
+    String? currentWalletName = await ApiPreferences.getCurrentWallet();
+    Wallet defaultWallet = walletStorage.wallets.values.first;
+    bool isWalletSaved = currentWalletName != '' && currentWalletName != null;
     BlocProvider.of<DashboardBloc>(context).add(DashboardUpdateWalletEvent(
-        currentWallet: walletStorage.wallets.values.first));
+        currentWallet: walletStorage
+            .wallets[isWalletSaved ? currentWalletName : defaultWallet.name]));
     List<String> walletNames = List<String>.from(walletStorage.wallets.keys);
     setState(() {
       walletList = walletNames;
       wallets = walletStorage.wallets;
-      selectedWallet = walletNames[0];
+      selectedWallet = isWalletSaved ? currentWalletName : defaultWallet.name;
     });
   }
 
@@ -155,10 +163,12 @@ class WalletListState extends State<WalletList> {
         onTap: () {
           setState(() {
             selectedWallet = walletName!;
+            ApiPreferences.setCurrentWallet(walletName);
             // Set current wallet to show in dashboard;
             BlocProvider.of<DashboardBloc>(context).add(
                 DashboardUpdateWalletEvent(
                     currentWallet: wallets?[walletName]));
+
             walletSelected = true;
           });
         },

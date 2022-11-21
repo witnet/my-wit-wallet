@@ -13,6 +13,7 @@ import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:witnet_wallet/screens/login/models/models.dart';
 import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:witnet_wallet/theme/colors.dart';
+import 'package:witnet_wallet/util/preferences.dart';
 import 'package:witnet_wallet/widgets/animated_numeric_text.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/fade_in.dart';
@@ -39,6 +40,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
   late AnimationController _loadingController;
   late AnimationController _balanceController;
   int balance = 0;
+  String walletId = '';
   int currentAddressCount = 0;
   int currentTransactionCount = 0;
   static const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
@@ -247,6 +249,9 @@ class BuildWalletCardState extends State<BuildWalletCard>
       buildWhen: (previousState, state) {
         if (state is CryptoLoadedWalletState) {
           Locator.instance<ApiCreateWallet>().clearFormData();
+          setState(() {
+            walletId = state.wallet.name;
+          });
           BlocProvider.of<LoginBloc>(context).add(LoginSubmittedEvent(
               walletName: WalletName.dirty(state.wallet.name),
               password: state.password));
@@ -362,6 +367,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
         listener: (BuildContext context, LoginState state) {
           if (state.status == LoginStatus.LoginSuccess) {
             BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
+            ApiPreferences.setCurrentWallet(walletId);
             listenStatus = false;
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => DashboardScreen()));

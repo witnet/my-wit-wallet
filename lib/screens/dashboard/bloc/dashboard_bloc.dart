@@ -4,12 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
-
-import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
-
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
 
@@ -55,7 +51,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   ) async {
     ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
     emit(DashboardState(
-        currentWallet: apiDashboard.currentWallet!,
+        currentWallet: apiDashboard.currentWallet,
         status: DashboardStatus.Ready));
   }
 
@@ -64,21 +60,21 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     await Future.delayed(Duration(seconds: 4));
     ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
     emit(DashboardState(
-        currentWallet: apiDashboard.currentWallet!,
+        currentWallet: apiDashboard.currentWallet,
         status: DashboardStatus.Loading));
   }
 
   void _dashboardUpdateWallet(
       DashboardUpdateWalletEvent event, Emitter<DashboardState> emit) {
     emit(DashboardState(
-        currentWallet: event.currentWallet!, status: DashboardStatus.Loading));
+        currentWallet: event.currentWallet!, status: DashboardStatus.Ready));
   }
 
   Future<void> _dashboardUpdateStatusEvent(
       DashboardUpdateEvent event, Emitter<DashboardState> emit) async {
     ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
     emit(DashboardState(
-        currentWallet: apiDashboard.currentWallet!,
+        currentWallet: apiDashboard.currentWallet,
         status: DashboardStatus.Loading));
   }
 

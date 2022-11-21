@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
+import 'package:witnet_wallet/screens/login/view/login_screen.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/round_button.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
@@ -38,6 +40,16 @@ class CreateVttScreenState extends State<CreateVttScreen>
   Widget _buildSendVttForm() {
     final theme = Theme.of(context);
     return BlocBuilder<DashboardBloc, DashboardState>(
+      buildWhen: (previous, current) {
+        if (current.status != DashboardStatus.Ready) {
+          Navigator.pushReplacementNamed(context, LoginScreen.route);
+          return false;
+        } else if (current.currentWallet.id != previous.currentWallet.id) {
+          Navigator.pushReplacementNamed(context, DashboardScreen.route);
+          return false;
+        }
+        return true;
+      },
       builder: (context, state) {
         return Container(
           alignment: Alignment.topCenter,
