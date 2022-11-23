@@ -11,7 +11,6 @@ import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
 import 'package:witnet_wallet/widgets//wallet_list.dart';
 import 'package:witnet_wallet/widgets/layouts/layout.dart';
-import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/create_vtt_dialog.dart';
 import 'package:witnet_wallet/widgets/witnet/wallet/receive_dialog.dart';
 import 'package:witnet_wallet/screens/login/view/login_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -21,10 +20,9 @@ const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
 class DashboardLayout extends StatefulWidget {
   final Widget dashboardChild;
+  final List<Widget> actions;
 
-  DashboardLayout({
-    required this.dashboardChild,
-  });
+  DashboardLayout({required this.dashboardChild, required this.actions});
 
   @override
   DashboardLayoutState createState() => DashboardLayoutState();
@@ -214,9 +212,9 @@ class DashboardLayoutState extends State<DashboardLayout>
         widgetList: [
           _body,
         ],
-        actions: [],
+        actions: widget.actions,
         slidingPanel: _walletList,
-        actionsSize: 0,
+        actionsSize: widget.actions.isEmpty ? 0 : 80,
       );
     });
   }

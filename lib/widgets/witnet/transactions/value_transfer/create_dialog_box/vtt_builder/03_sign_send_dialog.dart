@@ -61,6 +61,7 @@ class SignSendDialogState extends State<SignSendDialog>
     _passwordFocusNode.dispose();
   }
 
+  ///
   void sign() {
     BlocProvider.of<VTTCreateBloc>(context).add(SignTransactionEvent(
         password: _passController.text,

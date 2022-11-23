@@ -8,7 +8,6 @@ import 'package:witnet_wallet/widgets/round_button.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/widgets/layouts/dashboard_layout.dart';
-import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_stepper.dart';
 import 'package:witnet_wallet/widgets/witnet/wallet/receive_dialog.dart';
 
 class ReceiveTransactionScreen extends StatefulWidget {
@@ -61,7 +60,10 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-      child: DashboardLayout(dashboardChild: _buildReceiveTransactionScreen()),
+      child: DashboardLayout(
+        dashboardChild: _buildReceiveTransactionScreen(),
+        actions: [],
+      ),
     );
   }
 }

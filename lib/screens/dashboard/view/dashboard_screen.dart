@@ -113,7 +113,10 @@ class DashboardScreenState extends State<DashboardScreen>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-      child: DashboardLayout(dashboardChild: _dashboardBuilder()),
+      child: DashboardLayout(
+        dashboardChild: _dashboardBuilder(),
+        actions: [],
+      ),
     );
   }
 }
