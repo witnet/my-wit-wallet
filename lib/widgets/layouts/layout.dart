@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/widgets/layouts/headerLayout.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
@@ -28,7 +27,7 @@ class Layout extends StatelessWidget {
     this.appBar,
   });
 
-  Widget showWalletList() {
+  Widget showWalletList(BuildContext context) {
     return MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
@@ -38,9 +37,16 @@ class Layout extends StatelessWidget {
             height: 30,
           ),
           onTap: () => {
-            panelController.isPanelOpen
-                ? panelController.close()
-                : panelController.open()
+            if (dashboardActions != null && actions.length > 0)
+              {
+                Navigator.pushReplacementNamed(context, DashboardScreen.route),
+              }
+            else
+              {
+                panelController.isPanelOpen
+                    ? panelController.close()
+                    : panelController.open()
+              }
           },
         ));
   }
@@ -90,7 +96,7 @@ class Layout extends StatelessWidget {
           children: [
             HeaderLayout(
               navigationActions: [
-                showWalletList(),
+                showWalletList(context),
                 Flexible(
                     child: ConstrainedBox(
                   constraints: BoxConstraints(

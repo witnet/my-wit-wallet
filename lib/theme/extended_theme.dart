@@ -19,6 +19,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.txBorderColor,
     required this.txValuePositiveColor,
     required this.txValueNegativeColor,
+    required this.stepBarActiveColor,
+    required this.stepBarColor,
   });
   final Color? selectBackgroundColor;
   final Color? selectedTextColor;
@@ -35,6 +37,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? txBorderColor;
   final Color? txValuePositiveColor;
   final Color? txValueNegativeColor;
+  final Color? stepBarActiveColor;
+  final Color? stepBarColor;
   @override
   ExtendedTheme copyWith({
     Color? selectBackgroundColor,
@@ -49,6 +53,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     Color? txBorderColor,
     Color? txValuePositiveColor,
     Color? txValueNegativeColor,
+    Color? stepBarActiveColor,
+    Color? stepBarColor,
   }) {
     return ExtendedTheme(
       selectBackgroundColor:
@@ -74,6 +80,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       txBorderColor: txBorderColor ?? this.txBorderColor,
       txValueNegativeColor: txValueNegativeColor ?? this.txValueNegativeColor,
       txValuePositiveColor: txValuePositiveColor ?? this.txValuePositiveColor,
+      stepBarActiveColor: stepBarActiveColor ?? this.stepBarActiveColor,
+      stepBarColor: stepBarColor ?? this.stepBarColor,
     );
   }
 
@@ -113,7 +121,10 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         txValueNegativeColor:
             Color.lerp(txValueNegativeColor, other.txValueNegativeColor, t),
         txValuePositiveColor:
-            Color.lerp(txValuePositiveColor, other.txValuePositiveColor, t));
+            Color.lerp(txValuePositiveColor, other.txValuePositiveColor, t),
+        stepBarActiveColor:
+            Color.lerp(stepBarActiveColor, other.stepBarActiveColor, t),
+        stepBarColor: Color.lerp(stepBarColor, other.stepBarColor, t));
   }
 
   // the light theme
@@ -133,6 +144,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     txBorderColor: WitnetPallet.lightGrey,
     txValueNegativeColor: WitnetPallet.darkRed,
     txValuePositiveColor: WitnetPallet.darkGreen,
+    stepBarActiveColor: WitnetPallet.witnetGreen1,
+    stepBarColor: WitnetPallet.darkGrey,
   );
   // the dark theme
   static const dark = ExtendedTheme(
@@ -151,5 +164,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     txBorderColor: WitnetPallet.opacityWhite2,
     txValueNegativeColor: WitnetPallet.brightRed,
     txValuePositiveColor: WitnetPallet.brightGreen,
+    stepBarActiveColor: WitnetPallet.witnetGreen1,
+    stepBarColor: WitnetPallet.opacityWhite,
   );
 }

@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
-import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/03_sign_send_dialog.dart';
+import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:witnet_wallet/util/storage/database/wallet.dart';
+import 'package:witnet_wallet/widgets/info_element.dart';
 
-import '../../../../../../screens/dashboard/api_dashboard.dart';
-import '../../../../../../shared/locator.dart';
-import '../../../../../../util/storage/database/wallet_storage.dart';
-import '../../../../../auto_size_text.dart';
-import '../../fee_container.dart';
-import '../../input_container.dart';
-import '../../value_transfer_output_container.dart';
+typedef void VoidCallback(bool value);
 
 class ReviewStep extends StatefulWidget {
-  ReviewStep();
+  final Function nextAction;
+  final Wallet currentWallet;
+  ReviewStep({
+    required this.nextAction,
+    required this.currentWallet,
+  });
 
   @override
   State<StatefulWidget> createState() => ReviewStepState();
@@ -22,6 +26,7 @@ class ReviewStep extends StatefulWidget {
 class ReviewStepState extends State<ReviewStep>
     with SingleTickerProviderStateMixin {
   late AnimationController _loadingController;
+
   @override
   void initState() {
     super.initState();
@@ -29,8 +34,9 @@ class ReviewStepState extends State<ReviewStep>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-
     _loadingController.forward();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.nextAction(next));
   }
 
   @override
@@ -39,297 +45,127 @@ class ReviewStepState extends State<ReviewStep>
     super.dispose();
   }
 
-  Future<void> _showSignAndSendDialog(
-      VTTransactionBody vtTransactionBody) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return SignSendDialog(
-          vtTransactionBody: vtTransactionBody,
+  void nextAction() async {
+    // Sign transaction
+    final vtt =
+        BlocProvider.of<VTTCreateBloc>(context).state.vtTransaction.body;
+    BlocProvider.of<VTTCreateBloc>(context).add(SignTransactionEvent(
+        currentWallet: widget.currentWallet, vtTransactionBody: vtt));
+  }
+
+  NavAction next() {
+    return NavAction(
+      label: 'Continue',
+      action: nextAction,
+    );
+  }
+
+  ///
+  void send(VTTransaction vtTransaction) {
+    BlocProvider.of<VTTCreateBloc>(context)
+        .add(SendTransactionEvent(vtTransaction));
+  }
+
+  _launchExplorerSearch(String searchItem) async {
+    Uri url = Uri(path: 'https://witnet.network/search/$searchItem');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Widget _buildTransactionJsonViewer(
+      BuildContext context, VTTransaction vtTransaction) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Text(
+              'Transaction ID:',
+              textAlign: TextAlign.left,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            IconButton(
+              onPressed: () {
+                Clipboard.setData(
+                    ClipboardData(text: vtTransaction.transactionID));
+              },
+              icon: Icon(FontAwesomeIcons.copy),
+            ),
+            Row(
+              children: [
+                Text(
+                  'JSON Data:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Clipboard.setData(ClipboardData(
+                        text: vtTransaction.rawJson(asHex: true)));
+                  },
+                  icon: Icon(FontAwesomeIcons.copy),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget vtBlocContainer() {
+    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
+      builder: (context, state) {
+        if (state.vttCreateStatus == VTTCreateStatus.building) {
+        } else if (state.vttCreateStatus == VTTCreateStatus.exception) {
+        } else if (state.vttCreateStatus == VTTCreateStatus.signing) {
+          return Text('Signing Transaction');
+        } else if (state.vttCreateStatus == VTTCreateStatus.finished) {
+          // call send after sign
+          return _buildTransactionJsonViewer(context, state.vtTransaction);
+        } else if (state.vttCreateStatus == VTTCreateStatus.sending) {
+          // Sending vtt
+        } else if (state.vttCreateStatus == VTTCreateStatus.accepted) {
+          ElevatedButton(
+              onPressed: () {
+                /// Launch the Explorer in the machines default browser
+                _launchExplorerSearch(state.vtTransaction.transactionID);
+              },
+              child: Text('View on Explorer'));
+        }
+        return SizedBox(
+          height: 16,
         );
       },
     );
   }
 
-  Widget contentBox(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
-    final theme = Theme.of(context);
-    return Container(
-      width: deviceSize.width,
-      decoration: BoxDecoration(color: theme.splashColor.withOpacity(.1)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          inputCards(),
-          outputCards(),
-          changeCard(),
-          feeCard(),
-          SizedBox(
-            height: 5,
-          ),
-          BlocBuilder<VTTCreateBloc, VTTCreateState>(
-            builder: (context, state) {
-              if (state.vttCreateStatus == VTTCreateStatus.building) {
-                VTTransactionBody vttBody = state.vtTransaction.body;
-
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ElevatedButton(
-                        onPressed: () => _showSignAndSendDialog(vttBody),
-                        child: Text('Sign')),
-                  ],
-                );
-              }
-              return Container(
-                child: Column(),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget signAndSendTransaction(BuildContext context) {
-    // dialog to prompt for password
-
-    final deviceSize = MediaQuery.of(context).size;
-    return Dialog(
-      insetPadding: EdgeInsets.all(0),
-      elevation: 0,
-      child: Container(
-          decoration: BoxDecoration(),
-          height: deviceSize.height * 0.7,
-          child: contentBox(context)),
-    );
-  }
-
-  Widget buildInputCards(BuildContext context, List<Input> inputs) {
-    List<InputUtxo> _inputs = [];
-    ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
-    WalletStorage walletStorage = apiDashboard.walletStorage!;
-    List<Widget> _cards = [];
-    inputs.forEach((input) {
-      walletStorage.wallets.forEach((key, dbWallet) {
-        dbWallet.externalAccounts.forEach((index, value) {
-          value.utxos.forEach((element) {
-            if (input.toString() == element.toInput().toString()) {
-              _inputs.add(InputUtxo(
-                  address: value.address,
-                  utxo: element,
-                  value: element.value,
-                  path: value.path));
-            }
-          });
-        });
-        dbWallet.internalAccounts.forEach((index, value) {
-          value.utxos.forEach((element) {
-            if (input.toString() == element.toInput().toString()) {
-              _inputs.add(InputUtxo(
-                  address: value.address,
-                  utxo: element,
-                  value: element.value,
-                  path: value.path));
-            }
-          });
-        });
-      });
-    });
-
-    _inputs.forEach((inputUtxo) {
-      _cards.add(InputContainer(
-        inputUtxo: inputUtxo,
-      ));
-    });
-
-    return Container(
-      child: Column(
-        children: List<Widget>.from(_cards),
-      ),
-    );
-  }
-
-  Widget inputCards() {
-    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
-        builder: (context, state) {
-      final deviceSize = MediaQuery.of(context).size;
-
-      double cardWidth;
-      if (deviceSize.width > 400) {
-        cardWidth = (400 * 0.7);
-      } else
-        cardWidth = deviceSize.width * 0.7;
-      if (state.vttCreateStatus == VTTCreateStatus.building) {
-        return Container(
-          width: cardWidth,
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(3),
-                    child: AutoSizeText(
-                      'Inputs:',
-                      maxLines: 1,
-                      minFontSize: 9,
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  buildInputCards(context, state.vtTransaction.body.inputs),
-                ],
-              )
-            ],
-          ),
-        );
-      }
-      return Container(
-        child: Column(),
-      );
-    });
-  }
-
-  Widget buildOutputCards(
-      BuildContext context, List<ValueTransferOutput> outputs) {
-    List<Widget> _cards = [];
-    for (int i = 0; i < outputs.length - 1; i++) {
-      _cards.add(ValueTransferOutputContainer(vto: outputs[i]));
-    }
-    return Container(
-      child: Column(
-        children: List<Widget>.from(_cards),
-      ),
-    );
-  }
-
-  Widget outputCards() {
-    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
-        builder: (context, state) {
-      final deviceSize = MediaQuery.of(context).size;
-
-      double cardWidth;
-      if (deviceSize.width > 400) {
-        cardWidth = (400 * 0.7);
-      } else
-        cardWidth = deviceSize.width * 0.7;
-      if (state.vttCreateStatus == VTTCreateStatus.building) {
-        return Container(
-          width: cardWidth,
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(3),
-                    child: AutoSizeText(
-                      'Outputs:',
-                      maxLines: 1,
-                      minFontSize: 9,
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  buildOutputCards(context, state.vtTransaction.body.outputs),
-                ],
-              )
-            ],
-          ),
-        );
-      }
-      return Container(
-        child: Column(),
-      );
-    });
-  }
-
-  Widget buildChangeCard(
-      BuildContext context, List<ValueTransferOutput> outputs) {
-    List<Widget> _cards = [];
-    if (outputs.isNotEmpty)
-      _cards.add(ValueTransferOutputContainer(vto: outputs.last));
-
-    return Container(
-      child: Column(
-        children: List<Widget>.from(_cards),
-      ),
-    );
-  }
-
-  Widget changeCard() {
-    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
-        builder: (context, state) {
-      final deviceSize = MediaQuery.of(context).size;
-
-      double cardWidth;
-      if (deviceSize.width > 400) {
-        cardWidth = (400 * 0.7);
-      } else
-        cardWidth = deviceSize.width * 0.7;
-      if (state.vttCreateStatus == VTTCreateStatus.building) {
-        return Container(
-          width: cardWidth,
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  buildChangeCard(context, state.vtTransaction.body.outputs),
-                ],
-              )
-            ],
-          ),
-        );
-      }
-      return Container(
-        child: Column(),
-      );
-    });
-  }
-
-  Widget buildFeeCard(BuildContext context) {
-    int fee = BlocProvider.of<VTTCreateBloc>(context).feeNanoWit;
-    return FeeContainer(feeValue: fee);
-  }
-
-  Widget feeCard() {
-    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
-        builder: (context, state) {
-      final deviceSize = MediaQuery.of(context).size;
-
-      double cardWidth;
-      if (deviceSize.width > 400) {
-        cardWidth = (400 * 0.7);
-      } else
-        cardWidth = deviceSize.width * 0.7;
-      if (state.vttCreateStatus == VTTCreateStatus.building) {
-        return Container(
-          width: cardWidth,
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  buildFeeCard(context),
-                ],
-              )
-            ],
-          ),
-        );
-      }
-      return Container(
-        child: Column(),
-      );
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return contentBox(context);
+    final theme = Theme.of(context);
+    int fee = BlocProvider.of<VTTCreateBloc>(context).feeNanoWit;
+    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
+      builder: (context, state) {
+        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            'Transaction details',
+            style: theme.textTheme.headline3,
+          ),
+          SizedBox(height: 24),
+          InfoElement(
+              label: 'To',
+              text: state.vtTransaction.body.outputs.first.pkh.address),
+          SizedBox(height: 16),
+          InfoElement(
+            label: 'Amount',
+            text: state.vtTransaction.body.outputs.first.value.toString(),
+          ),
+          SizedBox(height: 16),
+          InfoElement(label: 'Fee', text: '${fee.toString()} nanoWit'),
+          SizedBox(height: 24),
+        ]);
+      },
+    );
   }
 }

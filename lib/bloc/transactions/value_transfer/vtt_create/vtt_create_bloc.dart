@@ -7,12 +7,9 @@ import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
 import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
-
 import 'package:witnet_wallet/util/storage/database/account.dart';
-import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 
 part 'vtt_create_event.dart';
 part 'vtt_create_state.dart';
@@ -64,7 +61,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   late Wallet walletStorage;
   List<String> internalAddresses = [];
   List<String> externalAddresses = [];
-  late Account changeAccount;
+  Account? changeAccount;
   List<ValueTransferOutput> outputs = [];
   List<String> receivers = [];
   List<Input> inputs = [];
@@ -74,7 +71,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   UtxoPool utxoPool = UtxoPool();
   FeeType feeType = FeeType.Weighted;
   int feeNanoWit = 0;
-  int balanceNanoWit = 0;
+  num balanceNanoWit = 0;
   DateTime? selectedTimelock;
   bool timelockSet = false;
   UtxoSelectionStrategy utxoSelectionStrategy =
@@ -134,9 +131,8 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
 
   Future<Wallet> _setWalletBalance(Wallet dbWallet) async {
     /// setup the external accounts
-
     dbWallet.externalAccounts.forEach((index, account) {
-      // balanceNanoWit += account.balance;
+      balanceNanoWit += account.balance().availableNanoWit;
 
       externalAddresses.add(account.address);
 
@@ -187,7 +183,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       utxos.clear();
       this.walletStorage = newWalletStorage;
       balanceNanoWit = 0;
-
       Wallet currentWallet = await _setWalletBalance(walletStorage);
       walletStorage = currentWallet;
 
@@ -226,19 +221,17 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     }
   }
 
-  void buildTransactionBody() {
+  void buildTransactionBody(int balanceNanoWit) {
     int valueOwedNanoWit = 0;
     int valuePaidNanoWit = 0;
     int valueChangeNanoWit = 0;
-
     try {
       /// calculate value owed
-
       bool containsChangeAddress = false;
       int changeIndex = 0;
       int outIdx = 0;
       outputs.forEach((element) {
-        if (element.pkh.address == changeAccount.address) {
+        if (element.pkh.address == changeAccount?.address) {
           /// check if a change address is already in the outputs
           containsChangeAddress = true;
           changeIndex = outIdx;
@@ -250,7 +243,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       if (containsChangeAddress) {
         outputs.removeAt(changeIndex);
       }
-
       outputs.forEach((element) {
         ///
         valueOwedNanoWit += element.value.toInt();
@@ -263,6 +255,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       /// compare to balance
       if (balanceNanoWit < valueOwedNanoWit) {
         /// TODO:: throw insufficient funds exception
+        print('Build transaction body :: Insuficient funds');
       } else {
         /// get utxos from the pool
         selectedUtxos = utxoPool.cover(
@@ -292,7 +285,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
           valueChangeNanoWit = (valuePaidNanoWit - valueOwedNanoWit);
 
           outputs.add(ValueTransferOutput.fromJson({
-            'pkh': changeAccount.address,
+            'pkh': changeAccount?.address,
             'value': valueChangeNanoWit,
             'time_lock': 0,
           }));
@@ -302,7 +295,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         valueChangeNanoWit = (valuePaidNanoWit - valueOwedNanoWit);
         if (valueChangeNanoWit > 0) {
           outputs.add(ValueTransferOutput.fromJson({
-            'pkh': changeAccount.address,
+            'pkh': changeAccount?.address,
             'value': valueChangeNanoWit,
             'time_lock': 0,
           }));
@@ -339,7 +332,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         outputs.add(event.output);
       }
     } catch (e) {}
-    buildTransactionBody();
+    buildTransactionBody(event.currentWallet.balanceNanoWit().availableNanoWit);
 
     emit(
       state.copyWith(
@@ -359,10 +352,10 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
 
   /// sign the [VTTransaction]
   Future<VTTransaction> _signTransaction(
-      {required VTTransactionBody transactionBody}) async {
+      {required VTTransactionBody transactionBody,
+      required Wallet currentWallet}) async {
     /// Read the encrypted XPRV string stored in the database
-    walletStorage = Locator.instance.get<ApiDashboard>().currentWallet;
-
+    Wallet walletStorage = currentWallet;
     ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
     try {
       await apiCrypto.signTransaction(
@@ -419,16 +412,17 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   Future<void> _signTransactionEvent(
       SignTransactionEvent event, Emitter<VTTCreateState> emit) async {
     emit(state.copyWith(status: VTTCreateStatus.signing));
-
     try {
-      VTTransaction vtTransaction =
-          await _signTransaction(transactionBody: event.vtTransactionBody);
+      VTTransaction vtTransaction = await _signTransaction(
+          transactionBody: event.vtTransactionBody,
+          currentWallet: event.currentWallet);
       emit(VTTCreateState(
         vtTransaction: vtTransaction,
         vttCreateStatus: VTTCreateStatus.finished,
         message: null,
       ));
     } catch (e) {
+      print('Error signing the transaction :: $e');
       emit(state.copyWith(status: VTTCreateStatus.exception, message: '$e'));
       rethrow;
     }
@@ -461,7 +455,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
 
   void _addSourceWalletsEvent(
       AddSourceWalletsEvent event, Emitter<VTTCreateState> emit) {
-    setWallet(Locator.instance.get<ApiDashboard>().currentWallet);
+    setWallet(event.currentWallet);
     emit(state.copyWith(
         inputs: inputs, outputs: outputs, status: VTTCreateStatus.building));
   }
@@ -479,7 +473,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   void _validateTransactionEvent(
       ValidateTransactionEvent event, Emitter<VTTCreateState> emit) {
     /// ensure that the wallet has sufficient funds
-
     int utxoValueNanoWit = selectedUtxos
         .map((Utxo utxo) => utxo.value)
         .toList()
@@ -488,9 +481,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         .map((ValueTransferOutput output) => output.value.toInt())
         .toList()
         .reduce((value, element) => value + element);
-
     int feeValueNanoWit = feeNanoWit;
-
     if (utxoValueNanoWit <= (outputValueNanoWit + feeValueNanoWit)) {
       emit(state.copyWith(
           inputs: inputs, outputs: outputs, status: VTTCreateStatus.building));

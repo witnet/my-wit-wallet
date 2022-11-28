@@ -60,6 +60,9 @@ class RecipientStepState extends State<RecipientStep>
   @override
   void dispose() {
     _loadingController.dispose();
+    _addressController.clear();
+    _amountController.clear();
+    _minerFeeController.clear();
     super.dispose();
   }
 
@@ -196,11 +199,13 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   void nextAction() {
+    BlocProvider.of<VTTCreateBloc>(context)
+        .add(AddSourceWalletsEvent(currentWallet: widget.currentWallet));
     BlocProvider.of<VTTCreateBloc>(context).add(AddValueTransferOutputEvent(
+        currentWallet: widget.currentWallet,
         output: ValueTransferOutput.fromJson(
             {'pkh': _address, 'value': int.parse(_amount), 'time_lock': 0}),
         merge: true));
-    BlocProvider.of<VTTCreateBloc>(context).add(ValidateTransactionEvent());
   }
 
   NavAction next() {

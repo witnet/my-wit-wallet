@@ -62,31 +62,15 @@ class SignSendDialogState extends State<SignSendDialog>
   }
 
   ///
-  void sign() {
-    BlocProvider.of<VTTCreateBloc>(context).add(SignTransactionEvent(
-        password: _passController.text,
-        vtTransactionBody: widget.vtTransactionBody));
-  }
+  // void sign() {
+  //   BlocProvider.of<VTTCreateBloc>(context).add(SignTransactionEvent(
+  //       vtTransactionBody: widget.vtTransactionBody));
+  // }
 
   ///
   void send(VTTransaction vtTransaction) {
     BlocProvider.of<VTTCreateBloc>(context)
         .add(SendTransactionEvent(vtTransaction));
-  }
-
-  void queryHash(String transactionHash) {
-    BlocProvider.of<BlocStatusVtt>(context)
-        .add(CheckStatusEvent(transactionHash: transactionHash));
-  }
-
-  void backToDashboard() {
-    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
-    if (sent) {
-      BlocProvider.of<ExplorerBloc>(context)
-          .add(SyncWalletEvent(ExplorerStatus.dataloading));
-    }
   }
 
   Widget buildTransactionJsonViewer(
@@ -166,18 +150,7 @@ class SignSendDialogState extends State<SignSendDialog>
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  RoundButton(
-                    onPressed: backToDashboard,
-                    icon: Text(
-                      'X',
-                      style: TextStyle(fontSize: 33),
-                    ),
-                    loadingController: _loadingController,
-                    label: '',
-                    size: 25,
-                  ),
-                ],
+                children: [],
               ),
               if (state.vttCreateStatus == VTTCreateStatus.building)
                 Container(
@@ -209,7 +182,8 @@ class SignSendDialogState extends State<SignSendDialog>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          ElevatedButton(onPressed: sign, child: Text('Sign'))
+                          ElevatedButton(
+                              onPressed: () => {}, child: Text('Sign'))
                         ],
                       )
                     ],
@@ -250,7 +224,8 @@ class SignSendDialogState extends State<SignSendDialog>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          ElevatedButton(onPressed: sign, child: Text('Sign'))
+                          ElevatedButton(
+                              onPressed: () => {}, child: Text('Sign'))
                         ],
                       )
                     ],

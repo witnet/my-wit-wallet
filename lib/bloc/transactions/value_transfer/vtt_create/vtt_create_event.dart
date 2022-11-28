@@ -7,10 +7,12 @@ class VTTCreateEvent extends Equatable {
 
 class AddValueTransferOutputEvent extends VTTCreateEvent {
   final ValueTransferOutput output;
+  final Wallet currentWallet;
   final bool merge;
-  AddValueTransferOutputEvent({required this.output, required this.merge});
+  AddValueTransferOutputEvent(
+      {required this.output, required this.currentWallet, required this.merge});
   @override
-  List<Object?> get props => [output, merge];
+  List<Object?> get props => [output, currentWallet, merge];
 }
 
 class UpdateFeeEvent extends VTTCreateEvent {
@@ -44,10 +46,10 @@ class AddUtxosEvent extends VTTCreateEvent {
 }
 
 class AddSourceWalletsEvent extends VTTCreateEvent {
-  final WalletStorage walletStorage;
-  AddSourceWalletsEvent({required this.walletStorage});
+  final Wallet currentWallet;
+  AddSourceWalletsEvent({required this.currentWallet});
   @override
-  List<Object?> get props => [walletStorage];
+  List<Object?> get props => [currentWallet];
 }
 
 class ValidRecipientAddressEvent extends VTTCreateEvent {
@@ -70,13 +72,13 @@ class BuildTransactionEvent extends VTTCreateEvent {}
 class ValidateTransactionEvent extends VTTCreateEvent {}
 
 class SignTransactionEvent extends VTTCreateEvent {
-  final String password;
   final VTTransactionBody vtTransactionBody;
+  final Wallet currentWallet;
   SignTransactionEvent(
-      {required this.password, required this.vtTransactionBody});
+      {required this.currentWallet, required this.vtTransactionBody});
 
   @override
-  List<Object?> get props => [password, vtTransactionBody];
+  List<Object?> get props => [currentWallet, vtTransactionBody];
 }
 
 class SendTransactionEvent extends VTTCreateEvent {

@@ -1,18 +1,13 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet/schema.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:witnet_wallet/screens/login/view/login_screen.dart';
-import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
-import 'package:witnet_wallet/widgets/auto_size_text.dart';
-import 'package:witnet_wallet/widgets/round_button.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/widgets/layouts/dashboard_layout.dart';
+import 'package:witnet_wallet/widgets/step_bar.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/01_recipient_step.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/02_review_step.dart';
 
@@ -22,11 +17,19 @@ class CreateVttScreen extends StatefulWidget {
   CreateVttScreenState createState() => CreateVttScreenState();
 }
 
+enum VTTsteps {
+  Transaction,
+  Review,
+}
+
 class CreateVttScreenState extends State<CreateVttScreen>
     with TickerProviderStateMixin {
   Wallet? walletStorage;
-  bool showDetails = false;
   dynamic nextAction;
+  dynamic nextStep;
+  List<VTTsteps> stepListItems = VTTsteps.values.toList();
+  VTTsteps stepSelectedItem = VTTsteps.Transaction;
+  int currentStepIndex = 0;
   late AnimationController _loadingController;
 
   @override
@@ -55,8 +58,13 @@ class CreateVttScreenState extends State<CreateVttScreen>
     });
   }
 
-  void onStepCancel() {
-    // clear vttDetails and redirect to tx list
+  void goToNextStep() {
+    if (currentStepIndex < stepListItems.length) {
+      currentStepIndex += 1;
+      stepSelectedItem = stepListItems[currentStepIndex];
+    } else {
+      return null;
+    }
   }
 
   List<Widget> _actions() {
@@ -67,8 +75,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
           type: 'primary',
           enabled: nextAction != null,
           onPressed: () => {
-                if (nextAction != null)
-                  {nextAction().action(), showDetails = true},
+                if (nextAction != null) {nextAction().action(), goToNextStep()},
                 _clearNextActions()
               }),
     ];
@@ -87,14 +94,33 @@ class CreateVttScreenState extends State<CreateVttScreen>
         return true;
       },
       builder: (context, state) {
-        if (!showDetails) {
-          return RecipientStep(
-            nextAction: _setNextAction,
-            currentWallet: state.currentWallet,
-          );
-        } else {
-          return ReviewStep();
-        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            PaddedButton(
+                padding: EdgeInsets.all(0),
+                text: 'Cancel',
+                onPressed: () =>
+                    Navigator.pushReplacementNamed(context, '/dashboard'),
+                type: 'text'),
+            SizedBox(height: 16),
+            StepBar(
+                actionable: false,
+                selectedItem: stepSelectedItem,
+                listItems: stepListItems,
+                onChanged: (item) => {}),
+            SizedBox(height: 16),
+            stepSelectedItem == VTTsteps.Transaction
+                ? RecipientStep(
+                    nextAction: _setNextAction,
+                    currentWallet: state.currentWallet,
+                  )
+                : ReviewStep(
+                    nextAction: _setNextAction,
+                    currentWallet: state.currentWallet,
+                  ),
+          ],
+        );
       },
     );
   }
