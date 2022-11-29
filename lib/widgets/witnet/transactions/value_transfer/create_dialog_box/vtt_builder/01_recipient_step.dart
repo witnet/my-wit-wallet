@@ -199,8 +199,6 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   void nextAction() {
-    BlocProvider.of<VTTCreateBloc>(context)
-        .add(AddSourceWalletsEvent(currentWallet: widget.currentWallet));
     BlocProvider.of<VTTCreateBloc>(context).add(AddValueTransferOutputEvent(
         currentWallet: widget.currentWallet,
         output: ValueTransferOutput.fromJson(

@@ -58,7 +58,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   }
 
   final Map<String, Account> utxoAccountMap = {};
-  late Wallet walletStorage;
+  late Wallet currentWallet;
   List<String> internalAddresses = [];
   List<String> externalAddresses = [];
   Account? changeAccount;
@@ -181,14 +181,14 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   Future<void> setWallet(Wallet? newWalletStorage) async {
     if (newWalletStorage != null) {
       utxos.clear();
-      this.walletStorage = newWalletStorage;
+      this.currentWallet = newWalletStorage;
       balanceNanoWit = 0;
-      Wallet currentWallet = await _setWalletBalance(walletStorage);
-      walletStorage = currentWallet;
+      Wallet currentWallet = await _setWalletBalance(this.currentWallet);
+      currentWallet = currentWallet;
 
       /// get the internal account that will be used for any change
       bool changeAccountSet = false;
-      Wallet firstWallet = walletStorage;
+      Wallet firstWallet = currentWallet;
 
       for (int i = 0; i < firstWallet.internalAccounts.length; i++) {
         if (!changeAccountSet) {
@@ -263,7 +263,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
             utxoStrategy: utxoSelectionStrategy);
 
         /// convert utxo to input
-        ///
         inputs.clear();
         for (int i = 0; i < selectedUtxos.length; i++) {
           Utxo currentUtxo = selectedUtxos[i];
@@ -360,7 +359,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     try {
       await apiCrypto.signTransaction(
           selectedUtxos, walletStorage, bytesToHex(transactionBody.hash));
-
       List<KeyedSignature> signatures = await apiCrypto.signTransaction(
         selectedUtxos,
         walletStorage,

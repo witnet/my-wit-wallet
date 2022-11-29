@@ -29,7 +29,9 @@ class CryptoIsolate {
       required SendPort port}) {
     try {
       sendPort.send(['$method?${json.encode(params)}', port]);
-    } catch (e) {}
+    } catch (e) {
+      print('Error in method :: ${method.toString()}');
+    }
   }
 }
 
@@ -38,7 +40,6 @@ void _cryptIso(SendPort sendPort) async {
   ReceivePort receivePort = ReceivePort();
   // tell whoever created us what port they can reach us
   sendPort.send(receivePort.sendPort);
-
   // listen for messages
   await for (var msg in receivePort) {
     var data = msg[0] as String;
@@ -74,7 +75,7 @@ void _generateMnemonic(SendPort port, Map<String, dynamic> params) async {
         wordCount: params['wordCount'], language: params['language']);
     port.send(mnemonic);
   } catch (e) {
-    print('Error generating mnemonics $e');
+    print('Error generating mnemonics :: $e');
   }
 }
 
@@ -148,7 +149,7 @@ Future<void> _generateKeys(SendPort port, Map<String, dynamic> params) async {
 Future<void> _signTransaction(
     SendPort port, Map<String, dynamic> params) async {
   String password = params['password'];
-  Map<String, List<String>> signers = params['signers'];
+  Map<String, dynamic> signers = params['signers'];
   String transactionId = params['transaction_id'];
   String errorMsg = '';
 
@@ -200,12 +201,13 @@ Future<void> _signTransaction(
       });
     });
 
-    List<dynamic> sigMap = [];
+    List<KeyedSignature> sigMap = [];
     signatures.forEach((element) {
-      sigMap.add(element.jsonMap());
+      sigMap.add(element);
     });
     port.send(sigMap);
   } catch (e) {
+    print('Error signing vtt :: crypto_isolate :: ${e.toString()}');
     errorMsg = e.toString();
   }
   port.send(errorMsg);

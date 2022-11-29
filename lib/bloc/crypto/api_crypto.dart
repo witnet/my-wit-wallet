@@ -1,12 +1,10 @@
 import 'dart:isolate';
-
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-
 import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
@@ -142,7 +140,6 @@ class ApiCrypto {
     String transactionId,
   ) async {
     Map<String, List<String>> _signers = {};
-
     // get master key
     ApiDatabase db = Locator.instance<ApiDatabase>();
     String key = await db.getKeychain();
@@ -185,7 +182,10 @@ class ApiCrypto {
           'transaction_id': transactionId
         },
         port: receivePort.sendPort);
-    List<KeyedSignature> signatures = await receivePort.first;
+
+    List<KeyedSignature> signatures = await receivePort.first.then((value) {
+      return value as List<KeyedSignature>;
+    });
     return signatures;
   }
 }

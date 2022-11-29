@@ -164,6 +164,7 @@ class ReviewStepState extends State<ReviewStep>
           SizedBox(height: 16),
           InfoElement(label: 'Fee', text: '${fee.toString()} nanoWit'),
           SizedBox(height: 24),
+          vtBlocContainer(),
         ]);
       },
     );

@@ -59,11 +59,9 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   void goToNextStep() {
-    if (currentStepIndex < stepListItems.length) {
+    if ((currentStepIndex + 1) < stepListItems.length) {
       currentStepIndex += 1;
       stepSelectedItem = stepListItems[currentStepIndex];
-    } else {
-      return null;
     }
   }
 
@@ -91,6 +89,8 @@ class CreateVttScreenState extends State<CreateVttScreen>
           Navigator.pushReplacementNamed(context, DashboardScreen.route);
           return false;
         }
+        BlocProvider.of<VTTCreateBloc>(context)
+            .add(AddSourceWalletsEvent(currentWallet: current.currentWallet));
         return true;
       },
       builder: (context, state) {
@@ -129,7 +129,6 @@ class CreateVttScreenState extends State<CreateVttScreen>
   Widget build(BuildContext context) {
     return BlocBuilder<VTTCreateBloc, VTTCreateState>(
         builder: (context, state) {
-      print('vtt state:: $state');
       return WillPopScope(
         onWillPop: () async => false,
         child: DashboardLayout(
