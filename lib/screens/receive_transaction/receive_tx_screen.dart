@@ -5,6 +5,8 @@ import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:witnet_wallet/screens/login/view/login_screen.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
+import 'package:witnet_wallet/widgets/address.dart';
+import 'package:witnet_wallet/widgets/address_list.dart';
 import 'package:witnet_wallet/widgets/dashed_rect.dart';
 import 'package:witnet_wallet/widgets/qr/qr_address_generator.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
@@ -21,6 +23,7 @@ class ReceiveTransactionScreen extends StatefulWidget {
 class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
     with TickerProviderStateMixin {
   String currentAddress = '';
+  List<Address> addressList = [];
   late AnimationController _loadingController;
 
   @override
@@ -48,7 +51,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
           enabled: true,
           onPressed: () =>
               {Clipboard.setData(ClipboardData(text: currentAddress))}),
-      // TODO: add button to generate new address
+      // Implement generate new address
       // PaddedButton(
       //     padding: EdgeInsets.only(bottom: 8),
       //     text: 'Generate new',
@@ -64,10 +67,15 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
     setState(() {
       currentAddress =
           currentWallet?.externalAccounts[0]?.address.toString() ?? '';
+      currentWallet?.externalAccounts.forEach((key, value) => {
+            addressList.add(Address(
+                address: value.address, balance: value.balance(), index: key))
+          });
     });
   }
 
   Widget _buildReceiveTransactionScreen() {
+    final theme = Theme.of(context);
     return BlocBuilder<DashboardBloc, DashboardState>(
       buildWhen: (previous, current) {
         if (current.status != DashboardStatus.Ready) {
@@ -93,6 +101,20 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
               gap: 3.0,
               text: currentAddress,
             ),
+            SizedBox(height: 24),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Generated addresses',
+                  style: theme.textTheme.headline3,
+                  textAlign: TextAlign.start,
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            AddressList(
+                addressList: addressList, currentAddress: currentAddress)
           ],
         );
       },

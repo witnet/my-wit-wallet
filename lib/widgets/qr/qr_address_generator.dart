@@ -16,7 +16,7 @@ class QrAddressGeneratorState extends State<QrAddressGenerator> {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
-    final size = (deviceSize.width > 175) ? 175.0 : 175 * 0.7;
+    final size = (deviceSize.width > 175) ? 154.0 : 154 * 0.7;
 
     return Container(
       child: Column(
