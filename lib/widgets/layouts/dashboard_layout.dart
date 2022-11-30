@@ -11,7 +11,6 @@ import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
 import 'package:witnet_wallet/widgets//wallet_list.dart';
 import 'package:witnet_wallet/widgets/layouts/layout.dart';
-import 'package:witnet_wallet/widgets/witnet/wallet/receive_dialog.dart';
 import 'package:witnet_wallet/screens/login/view/login_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
@@ -156,6 +155,16 @@ class DashboardLayoutState extends State<DashboardLayout>
     ];
   }
 
+  double _actionsSize() {
+    if (widget.actions.isEmpty) {
+      return 0;
+    } else if (widget.actions.length > 1) {
+      return 138;
+    } else {
+      return 80;
+    }
+  }
+
   Widget _authBuilder() {
     final theme = Theme.of(context);
     return BlocBuilder<LoginBloc, LoginState>(
@@ -214,7 +223,7 @@ class DashboardLayoutState extends State<DashboardLayout>
         ],
         actions: widget.actions,
         slidingPanel: _walletList,
-        actionsSize: widget.actions.isEmpty ? 0 : 80,
+        actionsSize: _actionsSize(),
       );
     });
   }

@@ -1,8 +1,6 @@
-import 'dart:async';
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:witnet_wallet/theme/colors.dart';
 
 class QrAddressGenerator extends StatefulWidget {
   QrAddressGenerator({
@@ -17,56 +15,35 @@ class QrAddressGeneratorState extends State<QrAddressGenerator> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-
-    final qrFutureBuilder = FutureBuilder<ui.Image>(
-      future: _loadOverlayImage(),
-      builder: (ctx, snapshot) {
-        final size = (deviceSize.width > 175) ? 175.0 : 175 * 0.7;
-        if (!snapshot.hasData) {
-          return Container(width: size, height: size);
-        }
-        return CustomPaint(
-          size: Size.square(size),
-          painter: QrPainter(
-            data: widget.data,
-            version: QrVersions.auto,
-            eyeStyle: const QrEyeStyle(
-              eyeShape: QrEyeShape.square,
-              color: Color(0xff128760),
-            ),
-            dataModuleStyle: const QrDataModuleStyle(
-              dataModuleShape: QrDataModuleShape.square,
-              color: Color(0xff1a5441),
-            ),
-            // size: 320.0,
-            embeddedImage: snapshot.data,
-            embeddedImageStyle: QrEmbeddedImageStyle(
-              size: Size.square(100),
-            ),
-          ),
-        );
-      },
-    );
+    final theme = Theme.of(context);
+    final size = (deviceSize.width > 175) ? 175.0 : 175 * 0.7;
 
     return Container(
       child: Column(
         children: <Widget>[
           Container(
-            color: Colors.white,
+            color: theme.backgroundColor,
             child: Padding(
               padding: EdgeInsets.all(5),
-              child: qrFutureBuilder,
+              child: CustomPaint(
+                size: Size.square(size),
+                painter: QrPainter(
+                  data: widget.data,
+                  version: QrVersions.auto,
+                  eyeStyle: const QrEyeStyle(
+                    eyeShape: QrEyeShape.square,
+                    color: WitnetPallet.witnetGreen1,
+                  ),
+                  dataModuleStyle: const QrDataModuleStyle(
+                    dataModuleShape: QrDataModuleShape.square,
+                    color: WitnetPallet.witnetGreen1,
+                  ),
+                ),
+              ),
             ),
           ),
         ],
       ),
     );
-  }
-
-  Future<ui.Image> _loadOverlayImage() async {
-    final completer = Completer<ui.Image>();
-    final byteData = await rootBundle.load('assets/img/favicon.ico');
-    ui.decodeImageFromList(byteData.buffer.asUint8List(), completer.complete);
-    return completer.future;
   }
 }
