@@ -21,6 +21,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.txValueNegativeColor,
     required this.stepBarActiveColor,
     required this.stepBarColor,
+    required this.dialogBackground,
   });
   final Color? selectBackgroundColor;
   final Color? selectedTextColor;
@@ -39,6 +40,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? txValueNegativeColor;
   final Color? stepBarActiveColor;
   final Color? stepBarColor;
+  final Color? dialogBackground;
   @override
   ExtendedTheme copyWith({
     Color? selectBackgroundColor,
@@ -55,34 +57,35 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     Color? txValueNegativeColor,
     Color? stepBarActiveColor,
     Color? stepBarColor,
+    Color? dialogBackground,
   }) {
     return ExtendedTheme(
-      selectBackgroundColor:
-          selectBackgroundColor ?? this.selectBackgroundColor,
-      selectedTextColor: selectedTextColor ?? this.selectedTextColor,
-      dropdownBackgroundColor:
-          dropdownBackgroundColor ?? this.dropdownBackgroundColor,
-      dropdownTextColor: dropdownTextColor ?? this.dropdownTextColor,
-      headerBackgroundColor:
-          headerBackgroundColor ?? this.headerBackgroundColor,
-      headerTextColor: headerTextColor ?? this.headerTextColor,
-      headerActiveTextColor:
-          headerActiveTextColor ?? this.headerActiveTextColor,
-      walletListBackgroundColor:
-          walletListBackgroundColor ?? this.walletListBackgroundColor,
-      walletActiveItemBackgroundColor: walletActiveItemBackgroundColor ??
-          this.walletActiveItemBackgroundColor,
-      walletActiveItemBorderColor:
-          walletActiveItemBorderColor ?? this.walletActiveItemBorderColor,
-      walletItemBorderColor:
-          walletItemBorderColor ?? this.walletItemBorderColor,
-      inputIconColor: inputIconColor ?? this.inputIconColor,
-      txBorderColor: txBorderColor ?? this.txBorderColor,
-      txValueNegativeColor: txValueNegativeColor ?? this.txValueNegativeColor,
-      txValuePositiveColor: txValuePositiveColor ?? this.txValuePositiveColor,
-      stepBarActiveColor: stepBarActiveColor ?? this.stepBarActiveColor,
-      stepBarColor: stepBarColor ?? this.stepBarColor,
-    );
+        selectBackgroundColor:
+            selectBackgroundColor ?? this.selectBackgroundColor,
+        selectedTextColor: selectedTextColor ?? this.selectedTextColor,
+        dropdownBackgroundColor:
+            dropdownBackgroundColor ?? this.dropdownBackgroundColor,
+        dropdownTextColor: dropdownTextColor ?? this.dropdownTextColor,
+        headerBackgroundColor:
+            headerBackgroundColor ?? this.headerBackgroundColor,
+        headerTextColor: headerTextColor ?? this.headerTextColor,
+        headerActiveTextColor:
+            headerActiveTextColor ?? this.headerActiveTextColor,
+        walletListBackgroundColor:
+            walletListBackgroundColor ?? this.walletListBackgroundColor,
+        walletActiveItemBackgroundColor: walletActiveItemBackgroundColor ??
+            this.walletActiveItemBackgroundColor,
+        walletActiveItemBorderColor:
+            walletActiveItemBorderColor ?? this.walletActiveItemBorderColor,
+        walletItemBorderColor:
+            walletItemBorderColor ?? this.walletItemBorderColor,
+        inputIconColor: inputIconColor ?? this.inputIconColor,
+        txBorderColor: txBorderColor ?? this.txBorderColor,
+        txValueNegativeColor: txValueNegativeColor ?? this.txValueNegativeColor,
+        txValuePositiveColor: txValuePositiveColor ?? this.txValuePositiveColor,
+        stepBarActiveColor: stepBarActiveColor ?? this.stepBarActiveColor,
+        stepBarColor: stepBarColor ?? this.stepBarColor,
+        dialogBackground: dialogBackground ?? this.dialogBackground);
   }
 
   // Controls how the properties change on theme changes
@@ -124,7 +127,9 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
             Color.lerp(txValuePositiveColor, other.txValuePositiveColor, t),
         stepBarActiveColor:
             Color.lerp(stepBarActiveColor, other.stepBarActiveColor, t),
-        stepBarColor: Color.lerp(stepBarColor, other.stepBarColor, t));
+        stepBarColor: Color.lerp(stepBarColor, other.stepBarColor, t),
+        dialogBackground:
+            Color.lerp(dialogBackground, other.dialogBackground, t));
   }
 
   // the light theme
@@ -146,6 +151,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     txValuePositiveColor: WitnetPallet.darkGreen,
     stepBarActiveColor: WitnetPallet.witnetGreen1,
     stepBarColor: WitnetPallet.darkGrey,
+    dialogBackground: WitnetPallet.white,
   );
   // the dark theme
   static const dark = ExtendedTheme(
@@ -166,5 +172,6 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     txValuePositiveColor: WitnetPallet.brightGreen,
     stepBarActiveColor: WitnetPallet.witnetGreen1,
     stepBarColor: WitnetPallet.opacityWhite,
+    dialogBackground: WitnetPallet.opacityWitnetGreen,
   );
 }

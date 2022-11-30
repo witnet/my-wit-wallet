@@ -37,7 +37,11 @@ class TransactionDetails extends StatelessWidget {
             text: transaction.status.capitalize(),
             color: theme.textTheme.labelMedium?.color),
         SizedBox(height: 16),
-        InfoElement(label: 'Transaction ID', text: transaction.txnHash),
+        InfoElement(
+          label: 'Transaction ID',
+          text: transaction.txnHash,
+          url: 'https://witnet.network/search/${transaction.txnHash}',
+        ),
         SizedBox(height: 16),
         InfoElement(label: 'Epoch', text: transaction.txnEpoch.toString()),
         SizedBox(height: 16),

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:witnet_wallet/widgets/link.dart';
 
 class InfoElement extends StatelessWidget {
   final String label;
   final String text;
+  final String? url;
   final Color? color;
 
   const InfoElement({
     required this.label,
     required this.text,
+    this.url,
     this.color,
   });
 
@@ -19,10 +22,12 @@ class InfoElement extends StatelessWidget {
         style: theme.textTheme.headline3,
       ),
       SizedBox(height: 8),
-      Text(text,
-          style: (color != null
-              ? theme.textTheme.bodyText1?.copyWith(color: color)
-              : theme.textTheme.bodyText1)),
+      url != null
+          ? CustomLink(text: text, url: url ?? '')
+          : Text(text,
+              style: (color != null
+                  ? theme.textTheme.bodyText1?.copyWith(color: color)
+                  : theme.textTheme.bodyText1))
     ]);
   }
 }
