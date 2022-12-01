@@ -1,14 +1,22 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
+import 'package:witnet_wallet/util/preferences.dart';
+import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/address.dart';
 
 class AddressList extends StatefulWidget {
   final List<Address> addressList;
   final String currentAddress;
+  final Wallet currentWallet;
 
   const AddressList({
     required this.addressList,
+    required this.currentWallet,
     required this.currentAddress,
   });
 
@@ -67,7 +75,15 @@ class AddressListState extends State<AddressList> {
                           ),
                         ]))),
             onTap: () {
+              ApiPreferences.setCurrentAddress(AddressEntry(
+                  walletId: widget.currentWallet.id,
+                  addressIdx: address.index.toString()));
               //set current account address
+              BlocProvider.of<DashboardBloc>(context)
+                  .add(DashboardUpdateWalletEvent(
+                currentWallet: widget.currentWallet,
+                currentAddress: address,
+              ));
             }));
   }
 

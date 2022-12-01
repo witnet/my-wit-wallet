@@ -2,12 +2,13 @@ part of 'dashboard_bloc.dart';
 
 class DashboardEvent extends Equatable {
   final DashboardStatus? status;
+  final Address? currentAddress;
   final Wallet? currentWallet;
 
-  DashboardEvent({this.currentWallet, this.status});
+  DashboardEvent({this.currentWallet, this.currentAddress, this.status});
 
   @override
-  List<Object?> get props => [currentWallet, status];
+  List<Object?> get props => [currentWallet, currentAddress, status];
 }
 
 class DashboardLoadEvent extends DashboardEvent {
@@ -28,7 +29,9 @@ class DashboardResetEvent extends DashboardEvent {
 
 class DashboardUpdateWalletEvent extends DashboardEvent {
   final Wallet? currentWallet;
-  DashboardUpdateWalletEvent({this.currentWallet}) : super();
+  final Address? currentAddress;
+  DashboardUpdateWalletEvent({this.currentWallet, this.currentAddress})
+      : super();
   @override
-  List<Object?> get props => [currentWallet];
+  List<Object?> get props => [currentWallet, currentAddress];
 }

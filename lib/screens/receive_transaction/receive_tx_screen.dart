@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +24,7 @@ class ReceiveTransactionScreen extends StatefulWidget {
 
 class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
     with TickerProviderStateMixin {
-  String currentAddress = '';
+  Address? selectedAddress;
   List<Address> addressList = [];
   late AnimationController _loadingController;
 
@@ -49,8 +51,10 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
           text: 'Copy',
           type: 'primary',
           enabled: true,
-          onPressed: () =>
-              {Clipboard.setData(ClipboardData(text: currentAddress))}),
+          onPressed: () => {
+                Clipboard.setData(
+                    ClipboardData(text: selectedAddress?.address ?? ''))
+              }),
       // Implement generate new address
       // PaddedButton(
       //     padding: EdgeInsets.only(bottom: 8),
@@ -63,10 +67,10 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
     ];
   }
 
-  _setCurrentWallet(Wallet? currentWallet) {
+  _setCurrentWallet(Wallet? currentWallet, Address currentAddress) {
     setState(() {
-      currentAddress =
-          currentWallet?.externalAccounts[0]?.address.toString() ?? '';
+      addressList = [];
+      selectedAddress = currentAddress;
       currentWallet?.externalAccounts.forEach((key, value) => {
             addressList.add(Address(
                 address: value.address, balance: value.balance(), index: key))
@@ -85,21 +89,21 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
           Navigator.pushReplacementNamed(context, DashboardScreen.route);
           return false;
         }
-        _setCurrentWallet(current.currentWallet);
+        _setCurrentWallet(current.currentWallet, current.currentAddress);
         return true;
       },
       builder: (context, state) {
         return Column(
           children: [
             QrAddressGenerator(
-              data: currentAddress,
+              data: state.currentAddress.address,
             ),
             SizedBox(height: 24),
             DashedRect(
               color: WitnetPallet.witnetGreen2,
               strokeWidth: 1.0,
               gap: 3.0,
-              text: currentAddress,
+              text: state.currentAddress.address,
             ),
             SizedBox(height: 24),
             Row(
@@ -114,7 +118,9 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
             ),
             SizedBox(height: 16),
             AddressList(
-                addressList: addressList, currentAddress: currentAddress)
+                currentWallet: state.currentWallet,
+                addressList: addressList,
+                currentAddress: state.currentAddress.address)
           ],
         );
       },

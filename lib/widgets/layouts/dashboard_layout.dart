@@ -117,13 +117,12 @@ class DashboardLayoutState extends State<DashboardLayout>
                     iconSize: 12,
                     onPressed: () {
                       Clipboard.setData(ClipboardData(
-                          text:
-                              '${state.currentWallet.externalAccounts[0]?.address}'));
+                          text: '${state.currentAddress.address}'));
                     },
                     icon: Icon(FontAwesomeIcons.copy))),
             Flexible(
                 child: Text(
-              '${state.currentWallet.externalAccounts[0]?.address}',
+              '${state.currentAddress.address}',
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.headline5,
             ))

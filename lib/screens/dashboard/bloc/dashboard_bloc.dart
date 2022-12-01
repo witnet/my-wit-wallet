@@ -5,7 +5,10 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
+import 'package:witnet_wallet/widgets/address.dart';
+import 'package:witnet_wallet/widgets/witnet/balance_display.dart';
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
 
@@ -20,6 +23,10 @@ final defaultWallet = Wallet(
     externalAccounts: {},
     internalAccounts: {},
     lastSynced: -1);
+final defaultAddress = Address(
+    address: '',
+    balance: BalanceInfo(availableUtxos: [], lockedUtxos: []),
+    index: 0);
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   // dbWallet: DbWallet(
@@ -34,7 +41,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   DashboardBloc()
       : super(
           DashboardState(
-              currentWallet: defaultWallet, status: DashboardStatus.Loading),
+              currentWallet: defaultWallet,
+              currentAddress: defaultAddress,
+              status: DashboardStatus.Loading),
         ) {
     on<DashboardLoadEvent>(_dashboardLoadEvent);
     on<DashboardUpdateWalletEvent>(_dashboardUpdateWallet);
@@ -43,7 +52,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboardResetEvent>(_dashboardResetEvent);
   }
   get initialState => DashboardState(
-      currentWallet: defaultWallet, status: DashboardStatus.Ready);
+      currentWallet: defaultWallet,
+      currentAddress: defaultAddress,
+      status: DashboardStatus.Ready);
 
   Future<void> _dashboardLoadEvent(
     DashboardLoadEvent event,
@@ -52,6 +63,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
     emit(DashboardState(
         currentWallet: apiDashboard.currentWallet,
+        currentAddress: apiDashboard.currentAddress,
         status: DashboardStatus.Ready));
   }
 
@@ -61,13 +73,16 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
     emit(DashboardState(
         currentWallet: apiDashboard.currentWallet,
+        currentAddress: apiDashboard.currentAddress,
         status: DashboardStatus.Loading));
   }
 
   void _dashboardUpdateWallet(
       DashboardUpdateWalletEvent event, Emitter<DashboardState> emit) {
     emit(DashboardState(
-        currentWallet: event.currentWallet!, status: DashboardStatus.Ready));
+        currentWallet: event.currentWallet!,
+        currentAddress: event.currentAddress!,
+        status: DashboardStatus.Ready));
   }
 
   Future<void> _dashboardUpdateStatusEvent(
@@ -75,6 +90,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
     emit(DashboardState(
         currentWallet: apiDashboard.currentWallet,
+        currentAddress: apiDashboard.currentAddress,
         status: DashboardStatus.Loading));
   }
 

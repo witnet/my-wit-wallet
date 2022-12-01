@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
@@ -9,13 +7,14 @@ import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
+import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/util/preferences.dart';
-import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
+import 'package:witnet_wallet/widgets/address.dart';
 
 class ListItem {
   bool isSelected = false;
@@ -36,17 +35,17 @@ class WalletList extends StatefulWidget {
 }
 
 class WalletListState extends State<WalletList> {
-  List<String> walletList = [];
-  late String selectedWallet = '';
-  bool walletsExist = false;
-  bool walletSelected = false;
+  List<String> walletNameList = [];
+  Wallet? selectedWallet;
+  Address? selectedAddress;
+  Map<String, dynamic>? selectedAddressList;
   Map<String, Wallet>? wallets;
   late Function onSelected;
 
   @override
   void initState() {
     super.initState();
-    _getWallets();
+    _getDashboardData();
   }
 
   @override
@@ -54,20 +53,64 @@ class WalletListState extends State<WalletList> {
     super.dispose();
   }
 
-  void _getWallets() async {
+  void _getDashboardData() async {
+    // Get selected addresses stored locally for each of the wallets created
+    await _getSelectedAddressList();
+    // Get data of all wallets created
+    await _getWallets();
+    // Set as currentWallet the wallet stored locally or the default value
+    await _getCurrentWallet();
+    // Set selected address for the current wallet
+    _getSelectedAddress();
+    // Set current wallet and current address
+    _setDashboardState();
+  }
+
+  Future _getCurrentWallet() async {
+    String? storedCurrentWalletName = await ApiPreferences.getCurrentWallet();
+    bool isWalletSaved =
+        storedCurrentWalletName != '' && storedCurrentWalletName != null;
+    String walletIdToSelect =
+        isWalletSaved ? storedCurrentWalletName : wallets!.values.first.name;
+    setState(() {
+      selectedWallet = wallets![walletIdToSelect];
+    });
+  }
+
+  void _getSelectedAddress() {
+    String? selectedAddressValue = selectedAddressList?[selectedWallet!.id];
+    bool isAddressSaved =
+        selectedAddressValue != '' && selectedAddressValue != null;
+    Account? currentAccount = selectedWallet?.externalAccounts[
+        isAddressSaved ? int.parse(selectedAddressValue) : 0];
+    setState(() {
+      selectedAddress = Address(
+          address: currentAccount!.address,
+          balance: currentAccount.balance(),
+          index: isAddressSaved ? int.parse(selectedAddressValue) : 0);
+    });
+  }
+
+  void _setDashboardState() {
+    BlocProvider.of<DashboardBloc>(context).add(DashboardUpdateWalletEvent(
+      currentWallet: selectedWallet,
+      currentAddress: selectedAddress,
+    ));
+  }
+
+  Future _getSelectedAddressList() async {
+    final result = await ApiPreferences.getCurrentAddressList();
+    setState(() {
+      selectedAddressList = result;
+    });
+  }
+
+  Future _getWallets() async {
     WalletStorage walletStorage =
         await Locator.instance<ApiDatabase>().loadWalletsDatabase();
-    String? currentWalletName = await ApiPreferences.getCurrentWallet();
-    Wallet defaultWallet = walletStorage.wallets.values.first;
-    bool isWalletSaved = currentWalletName != '' && currentWalletName != null;
-    BlocProvider.of<DashboardBloc>(context).add(DashboardUpdateWalletEvent(
-        currentWallet: walletStorage
-            .wallets[isWalletSaved ? currentWalletName : defaultWallet.name]));
-    List<String> walletNames = List<String>.from(walletStorage.wallets.keys);
     setState(() {
-      walletList = walletNames;
+      walletNameList = List<String>.from(walletStorage.wallets.keys);
       wallets = walletStorage.wallets;
-      selectedWallet = isWalletSaved ? currentWalletName : defaultWallet.name;
     });
   }
 
@@ -94,14 +137,18 @@ class WalletListState extends State<WalletList> {
     );
   }
 
-  Widget _buildWalletItem(walletName) {
+  Widget _buildWalletItem(String walletId) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    final isSelectedWallet = walletName == selectedWallet;
+    final isSelectedWallet = walletId == selectedWallet?.id;
     String? balance =
-        wallets?[walletName]!.balanceNanoWit().availableNanoWit.toString();
-    String? address =
-        wallets?[walletName]?.externalAccounts[0]?.address.toString();
+        wallets?[walletId]!.balanceNanoWit().availableNanoWit.toString();
+    String? address = wallets?[walletId]
+        ?.externalAccounts[selectedAddressList?[walletId] != null
+            ? int.parse(selectedAddressList?[walletId])
+            : 0]
+        ?.address
+        .toString();
     final textStyle = TextStyle(
         fontFamily: 'NotoSans',
         color: WitnetPallet.white,
@@ -138,7 +185,7 @@ class WalletListState extends State<WalletList> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      walletName,
+                      walletId,
                       style: textStyle,
                     ),
                     Text(
@@ -161,15 +208,20 @@ class WalletListState extends State<WalletList> {
           ]),
         ),
         onTap: () {
+          Account? currentAccount = wallets?[walletId]?.externalAccounts[
+              selectedAddressList?[walletId] != null
+                  ? int.parse(selectedAddressList?[walletId])
+                  : 0];
+          ApiPreferences.setCurrentWallet(walletId);
+          BlocProvider.of<DashboardBloc>(context).add(
+              DashboardUpdateWalletEvent(
+                  currentWallet: wallets?[walletId],
+                  currentAddress: Address(
+                      address: currentAccount!.address,
+                      balance: currentAccount.balance(),
+                      index: 0)));
           setState(() {
-            selectedWallet = walletName!;
-            ApiPreferences.setCurrentWallet(walletName);
-            // Set current wallet to show in dashboard;
-            BlocProvider.of<DashboardBloc>(context).add(
-                DashboardUpdateWalletEvent(
-                    currentWallet: wallets?[walletName]));
-
-            walletSelected = true;
+            selectedWallet = wallets?[walletId];
           });
         },
       ),
@@ -185,9 +237,9 @@ class WalletListState extends State<WalletList> {
       ListView.builder(
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
-        itemCount: walletList.length,
+        itemCount: walletNameList.length,
         itemBuilder: (context, index) {
-          return _buildWalletItem(walletList[index]);
+          return _buildWalletItem(walletNameList[index]);
         },
       ),
     ]);
