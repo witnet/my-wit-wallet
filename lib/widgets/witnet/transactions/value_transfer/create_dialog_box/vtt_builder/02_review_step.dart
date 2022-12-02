@@ -122,7 +122,7 @@ class ReviewStepState extends State<ReviewStep>
               actions: [
                 PaddedButton(
                     padding: EdgeInsets.all(8),
-                    text: 'Try again!',
+                    text: 'Ok!',
                     type: 'text',
                     enabled: true,
                     onPressed: () => {

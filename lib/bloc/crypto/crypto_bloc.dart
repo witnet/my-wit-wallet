@@ -56,7 +56,6 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       CryptoInitializeWalletEvent event, Emitter<CryptoState> emit) async {
     /// setup default default structure for database and unlock it
     Wallet? _wallet = await _initializeWallet(event: event);
-
     emit(
       CryptoInitializingWalletState(
         message: 'Initializing Wallet.',
@@ -263,7 +262,6 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
 
   Future<void> syncAccountValueTransfers(Account account) async {
     int bufferTime = EXPLORER_DELAY_MS;
-
     final addressValueTransfers = await apiExplorer.address(
         value: account.address,
         tab: 'value_transfers') as AddressValueTransfers;
@@ -284,6 +282,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
         } else {
           vti =
               await apiExplorer.hash(transactionID, true) as ValueTransferInfo;
+          print(vti);
         }
 
         // adjust time to not overload explorer
@@ -292,7 +291,8 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
           bufferTime = explorerResponseTime;
         } else
           bufferTime = 300;
-
+        // store in db?
+        db.addVtt(vti);
         //store in cache
         cache.addVtt(vti);
 

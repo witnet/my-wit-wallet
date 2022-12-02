@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';

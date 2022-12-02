@@ -117,14 +117,19 @@ Future<void> _initializeWallet(
 }
 
 void _generateKey(SendPort port, Map<String, dynamic> params) {
-  int index = params['index'];
-  String keytype = params['keyType'];
-  if (keytype.endsWith('external')) {
-    Xpub _xpub = Xpub.fromXpub(params['external_keychain']);
-    port.send({'xpub': _xpub / index});
-  } else if (keytype.endsWith('internal')) {
-    Xpub _xpub = Xpub.fromXpub(params['internal_keychain']);
-    port.send({'xpub': _xpub / index});
+  try {
+    print(params);
+    int index = params['index'];
+    String keytype = params['keyType'];
+    if (keytype.endsWith('external')) {
+      Xpub _xpub = Xpub.fromXpub(params['external_keychain']);
+      port.send({'xpub': _xpub / index});
+    } else if (keytype.endsWith('internal')) {
+      Xpub _xpub = Xpub.fromXpub(params['internal_keychain']);
+      port.send({'xpub': _xpub / index});
+    }
+  } catch (err) {
+    port.send('Error generating the key $err');
   }
 }
 

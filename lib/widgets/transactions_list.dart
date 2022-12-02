@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:witnet_wallet/util/extensions/timestamp_extensions.dart';
 import 'package:witnet_wallet/util/extensions/string_extensions.dart';
 import 'package:flutter/material.dart';
@@ -187,7 +189,7 @@ class TransactionsListState extends State<TransactionsList> {
         return ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
-          itemCount: widget.valueTransfers.length,
+          itemCount: vtts.length,
           itemBuilder: (context, index) {
             return _buildTransactionItem(vtts[index]);
           },

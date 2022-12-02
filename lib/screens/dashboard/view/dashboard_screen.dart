@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/explorer.dart';
+import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/widgets/transactions_list.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
@@ -47,6 +49,14 @@ class DashboardScreenState extends State<DashboardScreen>
     super.dispose();
   }
 
+  void _syncWallet(Wallet wallet) {
+    wallet.externalAccounts.forEach((key, value) {
+      BlocProvider.of<CryptoBloc>(context).syncAccountValueTransfers(value);
+    });
+    BlocProvider.of<ExplorerBloc>(context)
+        .add(SyncWalletEvent(ExplorerStatus.dataloading, wallet));
+  }
+
   void _getVtts() async {
     valueTransfers = await Locator.instance<ApiDatabase>().getAllVtts();
   }
@@ -63,6 +73,7 @@ class DashboardScreenState extends State<DashboardScreen>
         if (previous.currentWallet.id != current.currentWallet.id) {
           setState(() {
             walletStorage = current.currentWallet;
+            _syncWallet(current.currentWallet);
             txDetails = null;
           });
         }

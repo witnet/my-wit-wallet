@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:witnet/constants.dart';
@@ -18,11 +20,13 @@ part 'vtt_create_state.dart';
 /// returns true on success
 Future<bool> _sendTransaction(VTTransaction transaction) async {
   try {
+    print(transaction.jsonMap());
     var resp = await Locator.instance
         .get<ApiExplorer>()
         .sendVtTransaction(transaction);
     return resp['result'];
   } catch (e) {
+    print('Error sending transaction: $e');
     return false;
   }
 }

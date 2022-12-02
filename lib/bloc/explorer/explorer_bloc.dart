@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -83,15 +84,8 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
   Future<void> _syncWalletEvent(
       SyncWalletEvent event, Emitter<ExplorerState> emit) async {
     /// get the current state of the wallet from the database
-    WalletStorage walletStorage =
-        await Locator.instance<ApiDatabase>().loadWalletsDatabase();
     try {
-      /// for each wallet
-      for (int n = 0; n < walletStorage.wallets.length; n++) {
-        Wallet wallet = walletStorage.wallets[n]!;
-
-        await syncWalletRoutine(wallet);
-      }
+      await syncWalletRoutine(event.currentWallet);
     } catch (e) {
       rethrow;
     }
@@ -100,32 +94,31 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
   Future<void> syncWalletRoutine(Wallet dbWallet) async {
     /// verify gap limit
     /// external chain
-
     ApiDatabase db = Locator.instance<ApiDatabase>();
 
     Map<String, Account> _extAccounts = {};
     List<String> addressList = [];
     int externalGap = 0;
-    for (int i = 1; i < dbWallet.externalAccounts.length - 1; i++) {
-      addressList.add(dbWallet.externalAccounts[i]!.address);
-      if (dbWallet.externalAccounts[i]!.vttHashes.length > 0) {
+    dbWallet.externalAccounts.forEach((key, value) {
+      addressList.add(value.address);
+      if (value.vttHashes.length > 0) {
         externalGap = 0;
       } else {
         externalGap += 1;
       }
-    }
+    });
 
     /// if the gap limit is not maintained then generate additional accounts
     ///
-    int lastExternalIndex = dbWallet.externalAccounts.length;
-    while (externalGap <= EXTERNAL_GAP_LIMIT) {
-      await dbWallet.generateKey(
-        index: lastExternalIndex,
-        keyType: KeyType.external,
-      );
-      lastExternalIndex += 1;
-      externalGap += 1;
-    }
+    // int lastExternalIndex = dbWallet.externalAccounts.length;
+    // while (externalGap < EXTERNAL_GAP_LIMIT) {
+    //   await dbWallet.generateKey(
+    //     index: lastExternalIndex,
+    //     keyType: KeyType.external,
+    //   );
+    //   lastExternalIndex += 1;
+    //   externalGap += 1;
+    // }
 
     int internalGap = 0;
 
@@ -137,13 +130,13 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         internalGap += 1;
       }
     }
-    int lastInternalIndex = dbWallet.internalAccounts.length;
-    while (internalGap <= INTERNAL_GAP_LIMIT) {
-      await dbWallet.generateKey(
-          index: lastInternalIndex, keyType: KeyType.internal);
-      lastInternalIndex += 1;
-      internalGap += 1;
-    }
+    // int lastInternalIndex = dbWallet.internalAccounts.length;
+    // while (internalGap < INTERNAL_GAP_LIMIT) {
+    //   await dbWallet.generateKey(
+    //       index: lastInternalIndex, keyType: KeyType.internal);
+    //   lastInternalIndex += 1;
+    //   internalGap += 1;
+    // }
 
     dbWallet.externalAccounts.forEach((index, account) {
       addressList.add(account.address);
@@ -238,6 +231,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     _extAccounts.forEach((key, account) {
       dbWallet.externalAccounts[int.parse(account.path.split('/').last)] =
           account;
+      _extAccntsDb[int.parse(account.path.split('/').last)] = account;
     });
 
     /// restructure  the accounts map to store in the database
@@ -245,12 +239,12 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     _intAccounts.forEach((key, account) {
       dbWallet.internalAccounts[int.parse(account.path.split('/').last)] =
           account;
+      _intAccntsDb[int.parse(account.path.split('/').last)] = account;
     });
-
-    for (int i = 0; i < _extAccntsDb.length; i++) {
+    for (int i = 0; i < _extAccntsDb.keys.length; i++) {
       await db.updateAccount(_extAccntsDb.values.elementAt(i));
     }
-    for (int i = 0; i < _intAccntsDb.length; i++) {
+    for (int i = 0; i < _intAccntsDb.keys.length; i++) {
       await db.updateAccount(_intAccntsDb.values.elementAt(i));
     }
     return emit(ExplorerState.synced(await db.loadWalletsDatabase()));

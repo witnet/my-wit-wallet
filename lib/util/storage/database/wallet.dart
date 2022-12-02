@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ffi';
 
 import 'package:witnet/data_structures.dart';
@@ -166,17 +167,17 @@ class Wallet {
 
     await Locator.instance<CryptoIsolate>().init();
     // send the request
-
     Locator.instance<CryptoIsolate>().send(
         method: 'generateKey',
         params: {
           'external_keychain': externalXpub,
           'internal_keychain': internalXpub,
           'index': index,
-          'keyType': keyType.toString()
+          'keyType': keyType.name
         },
         port: response.sendPort);
     var xpub = await response.first.then((value) {
+      print(value);
       return value['xpub'] as Xpub;
     });
     switch (keyType) {

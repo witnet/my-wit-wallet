@@ -4,7 +4,7 @@ class ExplorerEvent extends Equatable {
   const ExplorerEvent(this.status);
   final ExplorerStatus status;
   @override
-  List<Object> get props => [status];
+  List<Object?> get props => [status];
 }
 
 class ExplorerStatusChangedEvent extends ExplorerEvent {
@@ -69,7 +69,14 @@ class AddressQueryEvent extends ExplorerEvent {
 }
 
 class SyncWalletEvent extends ExplorerEvent {
-  SyncWalletEvent(ExplorerStatus status) : super(status);
+  final Wallet currentWallet;
+  SyncWalletEvent(
+    ExplorerStatus status,
+    this.currentWallet,
+  ) : super(status);
+
+  @override
+  List<Object> get props => [currentWallet];
 }
 
 class BlockchainQueryEvent extends ExplorerEvent {
