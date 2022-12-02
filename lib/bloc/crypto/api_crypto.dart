@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:isolate';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';

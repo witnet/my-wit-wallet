@@ -85,7 +85,7 @@ class TransactionDetails extends StatelessWidget {
           ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: transaction.inputs.length,
+            itemCount: transaction.outputs.length,
             itemBuilder: (context, index) {
               return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

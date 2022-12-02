@@ -20,7 +20,6 @@ part 'vtt_create_state.dart';
 /// returns true on success
 Future<bool> _sendTransaction(VTTransaction transaction) async {
   try {
-    print(transaction.jsonMap());
     var resp = await Locator.instance
         .get<ApiExplorer>()
         .sendVtTransaction(transaction);
@@ -205,14 +204,14 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       }
 
       /// did we run out of change addresses?
-      if (!changeAccountSet) {
-        ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
-        Account changeAccount = await apiCrypto.generateAccount(
-          firstWallet.name,
-          KeyType.internal,
-          internalAddresses.length + 1,
-        );
-      }
+      // if (!changeAccountSet) {
+      //   ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
+      //   Account changeAccount = await apiCrypto.generateAccount(
+      //     firstWallet.name,
+      //     KeyType.internal,
+      //     internalAddresses.length + 1,
+      //   );
+      // }
 
       /// update the utxo pool
       utxoPool.clear();

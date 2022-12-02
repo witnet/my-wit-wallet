@@ -70,10 +70,10 @@ class DashboardScreenState extends State<DashboardScreen>
   Widget _buildTransactionsList(ThemeData themeData, DashboardState state) {
     return BlocBuilder<DashboardBloc, DashboardState>(
       buildWhen: (previous, current) {
+        _syncWallet(current.currentWallet);
         if (previous.currentWallet.id != current.currentWallet.id) {
           setState(() {
             walletStorage = current.currentWallet;
-            _syncWallet(current.currentWallet);
             txDetails = null;
           });
         }

@@ -132,6 +132,7 @@ class ApiExplorer {
 
   Future<dynamic> sendVtTransaction(VTTransaction transaction) async {
     try {
+      print(transaction.jsonMap(asHex: true));
       return await client.send(transaction: transaction.jsonMap(asHex: true));
     } catch (e) {
       rethrow;

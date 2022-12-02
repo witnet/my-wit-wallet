@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -73,6 +75,7 @@ class ReviewStepState extends State<ReviewStep>
     int fee = BlocProvider.of<VTTCreateBloc>(context).feeNanoWit;
     return BlocBuilder<VTTCreateBloc, VTTCreateState>(
       builder: (context, state) {
+        print('vtt transaction details ${state.vtTransaction.toString()}');
         if (state.vttCreateStatus == VTTCreateStatus.exception) {
           buildAlertDialog(
               context: context,

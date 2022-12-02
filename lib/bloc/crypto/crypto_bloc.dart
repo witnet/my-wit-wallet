@@ -291,7 +291,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
           bufferTime = explorerResponseTime;
         } else
           bufferTime = 300;
-        // store in db?
+        // store in db
         db.addVtt(vti);
         //store in cache
         cache.addVtt(vti);

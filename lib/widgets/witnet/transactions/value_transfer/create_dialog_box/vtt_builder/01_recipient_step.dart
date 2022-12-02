@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -67,7 +69,7 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   int _minerFeeToNumber() {
-    return int.parse(_amount != '' ? _amount : '0');
+    return int.parse(_minerFee != '' ? _minerFee : '0');
   }
 
   bool _isAbsoluteFee(String type) {
@@ -304,6 +306,10 @@ class RecipientStepState extends State<RecipientStep>
                   onChanged: (String value) {
                     setState(() {
                       _minerFee = value;
+                      BlocProvider.of<VTTCreateBloc>(context).add(
+                          UpdateFeeEvent(
+                              feeType: FeeType.Absolute,
+                              feeNanoWit: _minerFeeToNumber()));
                     });
                   },
                 )

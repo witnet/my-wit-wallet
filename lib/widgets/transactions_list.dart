@@ -48,10 +48,10 @@ class TransactionsListState extends State<TransactionsList> {
   }
 
   String formatBalance(int value) {
-    double wit = nanoWitToWit(value);
-    if (wit > 1.0) {
-      return '${wit.toStringAsPrecision(9)} WIT';
-    }
+    // double wit = nanoWitToWit(value);
+    // if (wit > 1.0) {
+    //   return '${wit.toStringAsPrecision(9)} Wit';
+    // }
     return '${value.toString()} nanoWit';
   }
 
@@ -87,8 +87,8 @@ class TransactionsListState extends State<TransactionsList> {
 
   int sendValue(ValueTransferInfo vti) {
     int value = 0;
-    vti.inputs.forEach((element) {
-      if (addresses.contains(element.address)) {
+    vti.outputs.forEach((element) {
+      if (!addresses.contains(element.pkh.address)) {
         value += element.value;
       }
     });
@@ -100,12 +100,22 @@ class TransactionsListState extends State<TransactionsList> {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     String label = '';
     String address = '';
+    print('received transaction item ${transaction.toRawJson()}');
     transaction.outputs.forEach((element) {
       if (addresses.contains(element.pkh.address)) {
         label = 'from';
-        address = element.pkh.address;
       }
     });
+    label = label == 'from' ? label : 'to';
+    if (label == 'from' && transaction.inputs.length > 1) {
+      address = 'Several addresses';
+    } else if (label == 'to' && transaction.outputs.length > 1) {
+      address = 'Several addresses';
+    } else {
+      address = label == 'from'
+          ? transaction.inputs[0].address
+          : transaction.outputs[0].pkh.address;
+    }
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
