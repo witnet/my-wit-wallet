@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:witnet_wallet/screens/screen_transitions/no_transitions_builder.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'colors.dart';
 
 Brightness brightness = Brightness.light;
@@ -187,7 +189,20 @@ SwitchThemeData switchTheme = SwitchThemeData(
   splashRadius: 1,
 );
 
+PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(
+  builders: kIsWeb
+      ? {
+          // No animations for every OS if the app running on the web
+          for (final platform in TargetPlatform.values)
+            platform: const NoTransitionsBuilder(),
+        }
+      : const {
+          // handel other platforms you are targeting
+        },
+);
+
 ThemeData lightTheme = ThemeData(
+  pageTransitionsTheme: pageTransitionsTheme,
   primaryColor: primaryColor,
   switchTheme: switchTheme,
   checkboxTheme: checkboxTheme,

@@ -45,7 +45,6 @@ Widget _buildWithTheme(BuildContext context, ThemeState state) {
     home: LoginScreen(),
     theme: state.themeData,
     routes: {
-      LoginScreen.route: (context) => LoginScreen(),
       CreateWalletScreen.route: (context) => CreateWalletScreen(),
       DashboardScreen.route: (context) => DashboardScreen(),
       CreateVttScreen.route: (context) => CreateVttScreen(),
