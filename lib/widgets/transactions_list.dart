@@ -100,7 +100,6 @@ class TransactionsListState extends State<TransactionsList> {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     String label = '';
     String address = '';
-    print('received transaction item ${transaction.toRawJson()}');
     transaction.outputs.forEach((element) {
       if (addresses.contains(element.pkh.address)) {
         label = 'from';
@@ -126,7 +125,7 @@ class TransactionsListState extends State<TransactionsList> {
             border: Border(
                 bottom: BorderSide(
               color: extendedTheme.txBorderColor!,
-              width: 1.5,
+              width: 1,
             )),
           ),
           child: Row(children: [

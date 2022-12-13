@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:witnet/explorer.dart';
+import 'package:witnet/schema.dart';
+import 'package:witnet_wallet/theme/colors.dart';
+import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/extensions/string_extensions.dart';
 import 'package:witnet_wallet/util/extensions/timestamp_extensions.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
@@ -15,6 +18,78 @@ class TransactionDetails extends StatelessWidget {
     required this.transaction,
     required this.goToList,
   });
+
+  Widget _buildOutput(
+      ThemeData theme, ValueTransferOutput output, bool isLastOutput) {
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+    Widget timelock = SizedBox(height: 0);
+    if (output.timeLock != 0) {
+      timelock = Expanded(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+            Text(output.timeLock.formatDate(), style: theme.textTheme.caption)
+          ]));
+    }
+    return Container(
+        padding: EdgeInsets.only(top: 16, bottom: 16),
+        decoration: BoxDecoration(
+          color: WitnetPallet.transparent,
+          border: Border(
+              bottom: BorderSide(
+            color: !isLastOutput
+                ? extendedTheme.txBorderColor!
+                : WitnetPallet.transparent,
+            width: 1,
+          )),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(output.pkh.address.toString(),
+                      style: theme.textTheme.bodyText1),
+                  SizedBox(height: 8),
+                  Text('${output.value.toString()} nanoWit',
+                      style: theme.textTheme.labelMedium),
+                ],
+              ),
+            ),
+            SizedBox(width: 8),
+            timelock,
+          ],
+        ));
+  }
+
+  Widget _buildInput(ThemeData theme, InputUtxo input, bool isLastInput) {
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+    return Container(
+        padding: EdgeInsets.only(top: 8, bottom: 8),
+        decoration: BoxDecoration(
+          color: WitnetPallet.transparent,
+          border: Border(
+              bottom: BorderSide(
+            color: !isLastInput
+                ? extendedTheme.txBorderColor!
+                : WitnetPallet.transparent,
+            width: 1,
+          )),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(input.address.toString(), style: theme.textTheme.bodyText1),
+            SizedBox(height: 8),
+            Text('${input.value.toString()} nanoWit',
+                style: theme.textTheme.labelMedium),
+          ],
+        ));
+  }
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -64,14 +139,8 @@ class TransactionDetails extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             itemCount: transaction.inputs.length,
             itemBuilder: (context, index) {
-              return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(transaction.inputs[index].address,
-                        style: theme.textTheme.bodyText1),
-                    Text(transaction.inputs[index].value.toString(),
-                        style: theme.textTheme.bodyText1),
-                  ]);
+              return _buildInput(theme, transaction.inputs[index],
+                  index + 1 == transaction.inputs.length);
             },
           ),
         ]),
@@ -87,16 +156,8 @@ class TransactionDetails extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             itemCount: transaction.outputs.length,
             itemBuilder: (context, index) {
-              return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(transaction.outputs[index].pkh.address.toString(),
-                        style: theme.textTheme.bodyText1),
-                    Text(transaction.outputs[index].value.toString(),
-                        style: theme.textTheme.bodyText1),
-                    Text(transaction.outputs[index].timeLock.toString(),
-                        style: theme.textTheme.bodyText1),
-                  ]);
+              return _buildOutput(theme, transaction.outputs[index],
+                  index + 1 == transaction.outputs.length);
             },
           ),
         ]),
