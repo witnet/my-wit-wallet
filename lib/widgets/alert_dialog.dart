@@ -5,7 +5,7 @@ buildAlertDialog({
   required List<Widget> actions,
   required IconData icon,
   required String title,
-  required String content,
+  required Widget content,
 }) {
   final theme = Theme.of(context);
   return Future.delayed(
@@ -19,7 +19,7 @@ buildAlertDialog({
               ),
               backgroundColor: theme.backgroundColor,
               icon: Icon(icon, size: 24),
-              content: Text(content, style: theme.textTheme.bodyText1),
+              content: content,
               actions: actions,
             ),
           ));

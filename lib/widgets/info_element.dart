@@ -5,11 +5,13 @@ class InfoElement extends StatelessWidget {
   final String label;
   final String text;
   final String? url;
+  final bool plainText;
   final Color? color;
 
   const InfoElement({
     required this.label,
     required this.text,
+    this.plainText = false,
     this.url,
     this.color,
   });
@@ -19,7 +21,7 @@ class InfoElement extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(
         label,
-        style: theme.textTheme.headline3,
+        style: plainText ? theme.textTheme.bodyText1 : theme.textTheme.headline3,
       ),
       SizedBox(height: 8),
       url != null

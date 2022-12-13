@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -75,7 +73,6 @@ class ReviewStepState extends State<ReviewStep>
     int fee = BlocProvider.of<VTTCreateBloc>(context).feeNanoWit;
     return BlocBuilder<VTTCreateBloc, VTTCreateState>(
       builder: (context, state) {
-        print('vtt transaction details ${state.vtTransaction.toString()}');
         if (state.vttCreateStatus == VTTCreateStatus.exception) {
           buildAlertDialog(
               context: context,
@@ -101,14 +98,14 @@ class ReviewStepState extends State<ReviewStep>
               ],
               icon: FontAwesomeIcons.circleExclamation,
               title: 'Error',
-              content: 'Error sending the transaction, try again!');
+              content: Text('Error sending the transaction, try again!', style: theme.textTheme.bodyText1));
         } else if (state.vttCreateStatus == VTTCreateStatus.signing) {
           buildAlertDialog(
               context: context,
               actions: [],
               icon: FontAwesomeIcons.fileSignature,
               title: 'Signing transaction',
-              content: 'The transaction is being signed');
+              content: Text('The transaction is being signed', style: theme.textTheme.bodyText1));
         } else if (state.vttCreateStatus == VTTCreateStatus.finished) {
           // Send transaction after signed
           _sendTransaction(state.vtTransaction);
@@ -118,7 +115,7 @@ class ReviewStepState extends State<ReviewStep>
               actions: [],
               icon: FontAwesomeIcons.paperPlane,
               title: 'Sending transaction',
-              content: 'The transaction is being send');
+              content: Text('The transaction is being send', style: theme.textTheme.bodyText1));
         } else if (state.vttCreateStatus == VTTCreateStatus.accepted) {
           buildAlertDialog(
               context: context,
@@ -135,7 +132,11 @@ class ReviewStepState extends State<ReviewStep>
               ],
               icon: FontAwesomeIcons.check,
               title: 'Transaction succesfully sent!',
-              content: '');
+              content: InfoElement(
+                label: 'Check the transaction status in the Witnet Block Explorer',
+                text: state.vtTransaction.transactionID,
+                url: 'https://witnet.network/search/${state.vtTransaction.transactionID}',
+              ),);
         }
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
