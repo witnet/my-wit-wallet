@@ -369,8 +369,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
             BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
             ApiPreferences.setCurrentWallet(walletId);
             listenStatus = false;
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => DashboardScreen()));
+            Navigator.pushReplacementNamed(context, DashboardScreen.route);
           }
         },
         child: Column(

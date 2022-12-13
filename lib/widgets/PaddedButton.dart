@@ -7,6 +7,7 @@ class PaddedButton extends StatelessWidget {
     required this.padding,
     required this.text,
     required this.onPressed,
+    this.color,
     this.icon = defaultIcon,
     this.enabled: true,
     required this.type,
@@ -15,6 +16,7 @@ class PaddedButton extends StatelessWidget {
   final EdgeInsets padding;
   final String text;
   final bool enabled;
+  final Color? color;
   final String type;
   final Widget icon;
   final VoidCallback onPressed;
@@ -53,6 +55,7 @@ class PaddedButton extends StatelessWidget {
     );
 
     Widget textButtonVerticalIcon = TextButton(
+      style: color != null ? theme.textButtonTheme.style?.copyWith(foregroundColor: MaterialStateProperty.all(color)) : theme.textButtonTheme.style,
       child: Column(children: [
         icon,
         Text(text, style: TextStyle(fontSize: 12)),

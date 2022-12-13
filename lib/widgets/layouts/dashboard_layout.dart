@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'dart:math' as math;
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:witnet_wallet/screens/receive_transaction/receive_tx_screen.dart';
 import 'package:witnet_wallet/screens/send_transaction/send_vtt_screen.dart';
+import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
@@ -60,9 +62,22 @@ class DashboardLayoutState extends State<DashboardLayout>
     Navigator.pushReplacementNamed(context, ReceiveTransactionScreen.route);
   }
 
+  String? currentRoute() {
+    return ModalRoute.of(context)?.settings.name ?? DashboardScreen.route;
+  }
+
+  Color? getButtonColorByRoute(route) {
+    final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+    return currentRoute() == route
+        ? extendedTheme.headerDashboardActiveButton
+        : null;
+  }
+
   Widget _buildDashboardActions() {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       PaddedButton(
+        color: getButtonColorByRoute(CreateVttScreen.route),
         padding: EdgeInsets.all(0),
         text: 'Send',
         onPressed: _showCreateVTTDialog,
@@ -73,9 +88,11 @@ class DashboardLayoutState extends State<DashboardLayout>
         type: 'vertical-icon',
       ),
       PaddedButton(
+        color: getButtonColorByRoute(DashboardScreen.route),
         padding: EdgeInsets.all(0),
         text: 'Home',
-        onPressed: () => Navigator.pushReplacementNamed(context, '/dashboard'),
+        onPressed: () =>
+            Navigator.pushReplacementNamed(context, DashboardScreen.route),
         icon: Icon(
           FontAwesomeIcons.wallet,
           size: 18,
@@ -83,6 +100,7 @@ class DashboardLayoutState extends State<DashboardLayout>
         type: 'vertical-icon',
       ),
       PaddedButton(
+        color: getButtonColorByRoute(ReceiveTransactionScreen.route),
         padding: EdgeInsets.all(0),
         text: 'Receive',
         onPressed: _showReceiveDialog,

@@ -8,6 +8,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.selectedTextColor,
     required this.dropdownBackgroundColor,
     required this.dropdownTextColor,
+    required this.headerDashboardActiveButton,
     required this.headerBackgroundColor,
     required this.headerTextColor,
     required this.headerActiveTextColor,
@@ -27,6 +28,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? selectedTextColor;
   final Color? dropdownBackgroundColor;
   final Color? dropdownTextColor;
+  final Color? headerDashboardActiveButton;
   final Color? headerTextColor;
   final Color? headerActiveTextColor;
   final Color? headerBackgroundColor;
@@ -47,6 +49,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     Color? selectedTextColor,
     Color? dropdownBackgroundColor,
     Color? dropdownTextColor,
+    Color? headerDashboardActiveButton,
     Color? walletListBackgroundColor,
     Color? walletActiveItemBorderColor,
     Color? walletItemBorderColor,
@@ -66,6 +69,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         dropdownBackgroundColor:
             dropdownBackgroundColor ?? this.dropdownBackgroundColor,
         dropdownTextColor: dropdownTextColor ?? this.dropdownTextColor,
+        headerDashboardActiveButton:
+            headerDashboardActiveButton ?? this.headerDashboardActiveButton,
         headerBackgroundColor:
             headerBackgroundColor ?? this.headerBackgroundColor,
         headerTextColor: headerTextColor ?? this.headerTextColor,
@@ -103,6 +108,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
             dropdownBackgroundColor, other.dropdownBackgroundColor, t),
         dropdownTextColor:
             Color.lerp(dropdownTextColor, other.dropdownTextColor, t),
+        headerDashboardActiveButton: Color.lerp(
+            headerDashboardActiveButton, other.headerDashboardActiveButton, t),
         headerBackgroundColor:
             Color.lerp(headerBackgroundColor, other.dropdownTextColor, t),
         headerTextColor:
@@ -138,6 +145,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     selectedTextColor: WitnetPallet.white,
     dropdownBackgroundColor: WitnetPallet.white,
     dropdownTextColor: WitnetPallet.darkGrey,
+    headerDashboardActiveButton: WitnetPallet.white,
     headerActiveTextColor: WitnetPallet.witnetGreen2,
     headerTextColor: WitnetPallet.witnetGreen2,
     headerBackgroundColor: WitnetPallet.darkBlue2,
@@ -159,6 +167,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     selectedTextColor: WitnetPallet.white,
     dropdownBackgroundColor: WitnetPallet.opacityWitnetGreen,
     dropdownTextColor: WitnetPallet.white,
+    headerDashboardActiveButton: WitnetPallet.opacityWhite2,
     headerActiveTextColor: WitnetPallet.white,
     headerTextColor: WitnetPallet.white,
     headerBackgroundColor: WitnetPallet.opacityWitnetGreen,
