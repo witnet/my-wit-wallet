@@ -56,8 +56,8 @@ class ReviewStepState extends State<ReviewStep>
   }
 
   void _sendTransaction(VTTransaction vtTransaction) {
-    BlocProvider.of<VTTCreateBloc>(context)
-        .add(SendTransactionEvent(vtTransaction));
+    BlocProvider.of<VTTCreateBloc>(context).add(SendTransactionEvent(
+        currentWallet: widget.currentWallet, transaction: vtTransaction));
   }
 
   NavAction next() {
@@ -98,14 +98,16 @@ class ReviewStepState extends State<ReviewStep>
               ],
               icon: FontAwesomeIcons.circleExclamation,
               title: 'Error',
-              content: Text('Error sending the transaction, try again!', style: theme.textTheme.bodyText1));
+              content: Text('Error sending the transaction, try again!',
+                  style: theme.textTheme.bodyText1));
         } else if (state.vttCreateStatus == VTTCreateStatus.signing) {
           buildAlertDialog(
               context: context,
               actions: [],
               icon: FontAwesomeIcons.fileSignature,
               title: 'Signing transaction',
-              content: Text('The transaction is being signed', style: theme.textTheme.bodyText1));
+              content: Text('The transaction is being signed',
+                  style: theme.textTheme.bodyText1));
         } else if (state.vttCreateStatus == VTTCreateStatus.finished) {
           // Send transaction after signed
           _sendTransaction(state.vtTransaction);
@@ -115,28 +117,35 @@ class ReviewStepState extends State<ReviewStep>
               actions: [],
               icon: FontAwesomeIcons.paperPlane,
               title: 'Sending transaction',
-              content: Text('The transaction is being send', style: theme.textTheme.bodyText1));
+              content: Text('The transaction is being send',
+                  style: theme.textTheme.bodyText1));
         } else if (state.vttCreateStatus == VTTCreateStatus.accepted) {
           buildAlertDialog(
-              context: context,
-              actions: [
-                PaddedButton(
-                    padding: EdgeInsets.all(8),
-                    text: 'Ok!',
-                    type: 'text',
-                    enabled: true,
-                    onPressed: () => {
-                          Navigator.pushReplacementNamed(
-                              context, DashboardScreen.route)
-                        })
-              ],
-              icon: FontAwesomeIcons.check,
-              title: 'Transaction succesfully sent!',
-              content: InfoElement(
-                label: 'Check the transaction status in the Witnet Block Explorer',
+            context: context,
+            actions: [
+              PaddedButton(
+                  padding: EdgeInsets.all(8),
+                  text: 'Ok!',
+                  type: 'text',
+                  enabled: true,
+                  onPressed: () => {
+                        Navigator.pushReplacementNamed(
+                            context, DashboardScreen.route)
+                      })
+            ],
+            icon: FontAwesomeIcons.check,
+            title: 'Transaction succesfully sent!',
+            content: Column(mainAxisSize: MainAxisSize.min, children: [
+              InfoElement(
+                plainText: true,
+                label:
+                    'Check the transaction status in the Witnet Block Explorer:',
                 text: state.vtTransaction.transactionID,
-                url: 'https://witnet.network/search/${state.vtTransaction.transactionID}',
-              ),);
+                url:
+                    'https://witnet.network/search/${state.vtTransaction.transactionID}',
+              )
+            ]),
+          );
         }
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(

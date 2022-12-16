@@ -83,9 +83,11 @@ class SignTransactionEvent extends VTTCreateEvent {
 
 class SendTransactionEvent extends VTTCreateEvent {
   final VTTransaction transaction;
-  SendTransactionEvent(this.transaction);
+  final Wallet currentWallet;
+  SendTransactionEvent(
+      {required this.currentWallet, required this.transaction});
   @override
-  List<Object?> get props => [transaction];
+  List<Object?> get props => [currentWallet, transaction];
 }
 
 class ResetTransactionEvent extends VTTCreateEvent {}

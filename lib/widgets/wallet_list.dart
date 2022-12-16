@@ -72,13 +72,14 @@ class WalletListState extends State<WalletList> {
         storedCurrentWalletName != '' && storedCurrentWalletName != null;
     String walletIdToSelect =
         isWalletSaved ? storedCurrentWalletName : wallets!.values.first.name;
+    Wallet? walletToSet = wallets![walletIdToSelect];
     setState(() {
-      selectedWallet = wallets![walletIdToSelect];
+      selectedWallet = walletToSet;
     });
   }
 
   void _getSelectedAddress() {
-    String? selectedAddressValue = selectedAddressList?[selectedWallet!.id];
+    String? selectedAddressValue = selectedAddressList?[selectedWallet?.id];
     bool isAddressSaved =
         selectedAddressValue != '' && selectedAddressValue != null;
     Account? currentAccount = selectedWallet?.externalAccounts[

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:witnet/constants.dart';
@@ -10,6 +8,7 @@ import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
 import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
 
@@ -360,8 +359,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     Wallet walletStorage = currentWallet;
     ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
     try {
-      await apiCrypto.signTransaction(
-          selectedUtxos, walletStorage, bytesToHex(transactionBody.hash));
       List<KeyedSignature> signatures = await apiCrypto.signTransaction(
         selectedUtxos,
         walletStorage,
@@ -434,8 +431,29 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       SendTransactionEvent event, Emitter<VTTCreateState> emit) async {
     emit(state.copyWith(status: VTTCreateStatus.sending));
     bool transactionAccepted = await _sendTransaction(event.transaction);
+
     if (transactionAccepted) {
       emit(state.copyWith(status: VTTCreateStatus.accepted));
+      List<Account> utxoListToUpdate = [];
+      selectedUtxos.forEach((selectedUtxo) {
+        event.currentWallet.externalAccounts.forEach((index, value) {
+          if (value.utxos.contains(selectedUtxo)) {
+            value.utxos.remove(selectedUtxo);
+            utxoListToUpdate.add(value);
+          }
+        });
+
+        event.currentWallet.internalAccounts.forEach((index, value) {
+          if (value.utxos.contains(selectedUtxo)) {
+            value.utxos.remove(selectedUtxo);
+            utxoListToUpdate.add(value);
+          }
+        });
+      });
+      for (int i = 0; i < utxoListToUpdate.length; i++) {
+        await Locator.instance<ApiDatabase>()
+            .updateAccount(utxoListToUpdate[i]);
+      }
     } else {
       emit(state.copyWith(status: VTTCreateStatus.exception));
     }

@@ -1,6 +1,3 @@
-import 'dart:developer';
-import 'dart:ffi';
-
 import 'package:witnet/data_structures.dart';
 
 import 'account.dart';
@@ -127,8 +124,8 @@ class Wallet {
     _internalXpub = internalXprv.toXpub();
     _externalXpub = externalXprv.toXpub();
 
-    internalXpub = _internalXpub.toSlip32();
-    externalXpub = _externalXpub.toSlip32();
+    this.internalXpub = _internalXpub.toSlip32();
+    this.externalXpub = _externalXpub.toSlip32();
   }
 
   void addAccount({
@@ -164,7 +161,6 @@ class Wallet {
   }) async {
     ReceivePort response = ReceivePort();
     // initialize the crypto isolate if not already done so
-
     await Locator.instance<CryptoIsolate>().init();
     // send the request
     Locator.instance<CryptoIsolate>().send(
@@ -177,7 +173,6 @@ class Wallet {
         },
         port: response.sendPort);
     var xpub = await response.first.then((value) {
-      print(value);
       return value['xpub'] as Xpub;
     });
     switch (keyType) {
@@ -267,8 +262,8 @@ class Wallet {
       name: data['name'],
       description: data['description'],
       xprv: data['xprv'],
-      externalXpub: data['externalXpub'],
-      internalXpub: data['internalXpub'],
+      externalXpub: data['external_xpub'],
+      internalXpub: data['internal_xpub'],
       txHashes: [],
       externalAccounts: _externalAccounts,
       internalAccounts: _internalAccounts,

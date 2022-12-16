@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +6,6 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/address.dart';
-import 'package:witnet_wallet/widgets/witnet/balance_display.dart';
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
 

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:witnet_wallet/screens/login/view/login_form.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
@@ -13,8 +11,6 @@ import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/util/storage/path_provider_interface.dart';
-import 'package:witnet_wallet/shared/api_auth.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 
 class LoginScreen extends StatefulWidget {

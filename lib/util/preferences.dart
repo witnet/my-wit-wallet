@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddressEntry {
@@ -45,7 +43,7 @@ class ApiPreferences {
     if (selectedAddressesList != null) {
       return json.decode(selectedAddressesList);
     } else {
-      return {};
+      return null;
     }
   }
 

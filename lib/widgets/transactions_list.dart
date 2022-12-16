@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:witnet_wallet/util/extensions/timestamp_extensions.dart';
 import 'package:witnet_wallet/util/extensions/string_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:witnet_wallet/widgets/transaction_details.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet_wallet/theme/colors.dart';
-import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
 

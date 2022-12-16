@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:isolate';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
@@ -9,6 +8,7 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
+import 'package:witnet_wallet/util/utxo_list_to_string.dart';
 import 'crypto_bloc.dart';
 
 enum SeedSource { mnemonic, xprv, encryptedXprv }
@@ -153,7 +153,7 @@ class ApiCrypto {
 
       /// loop though every external account
       currentWallet.externalAccounts.forEach((index, account) {
-        if (account.utxos.contains(currentUtxo)) {
+        if (rawJsonUtxosList(account.utxos).contains(currentUtxo.toRawJson())) {
           if (_signers.containsKey(currentWallet.xprv)) {
             _signers[currentWallet.xprv]!.add(account.path);
           } else {
@@ -164,7 +164,7 @@ class ApiCrypto {
 
       /// loop though every internal account
       currentWallet.internalAccounts.forEach((index, account) {
-        if (account.utxos.contains(currentUtxo)) {
+        if (rawJsonUtxosList(account.utxos).contains(currentUtxo.toRawJson())) {
           if (_signers.containsKey(currentWallet.xprv)) {
             _signers[currentWallet.xprv]!.add(account.path);
           } else {

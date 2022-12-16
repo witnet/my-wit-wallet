@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:isolate';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -258,47 +257,5 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   Future<List<Utxo>> _syncAccountUtxos(Account account) async {
     final List<Utxo> _utxos = await apiExplorer.utxos(address: account.address);
     return _utxos;
-  }
-
-  Future<void> syncAccountValueTransfers(Account account) async {
-    int bufferTime = EXPLORER_DELAY_MS;
-    final addressValueTransfers = await apiExplorer.address(
-        value: account.address,
-        tab: 'value_transfers') as AddressValueTransfers;
-    for (int i = 0; i < addressValueTransfers.numValueTransfers; i++) {
-      String transactionID = addressValueTransfers.transactionHashes[i];
-
-      if (cache.containsHash(transactionID)) {
-        if (account.vttHashes.contains(transactionID)) {
-        } else {
-          account.vttHashes.add(transactionID);
-        }
-      } else {
-        await Future.delayed(Duration(milliseconds: bufferTime));
-        Stopwatch stopwatch = new Stopwatch()..start();
-        ValueTransferInfo vti;
-        if (cache.containsHash(transactionID)) {
-          vti = cache.getVtt(transactionID);
-        } else {
-          vti =
-              await apiExplorer.hash(transactionID, true) as ValueTransferInfo;
-          print(vti);
-        }
-
-        // adjust time to not overload explorer
-        int explorerResponseTime = stopwatch.elapsedMilliseconds;
-        if (explorerResponseTime > bufferTime) {
-          bufferTime = explorerResponseTime;
-        } else
-          bufferTime = 300;
-        // store in db
-        db.addVtt(vti);
-        //store in cache
-        cache.addVtt(vti);
-
-        account.vttHashes.add(transactionID);
-      }
-    }
-    await cache.updateCache();
   }
 }

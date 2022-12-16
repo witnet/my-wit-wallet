@@ -1,6 +1,4 @@
-import 'dart:developer';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -10,7 +8,6 @@ import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/models/wallet_name.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
-import 'package:witnet_wallet/screens/login/models/models.dart';
 import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/util/preferences.dart';
@@ -20,7 +17,6 @@ import 'package:witnet_wallet/widgets/fade_in.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
 
 typedef void VoidCallback(NavAction? value);
 

@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:witnet/data_structures.dart';
@@ -14,6 +12,7 @@ import 'package:witnet_wallet/util/storage/database/wallet.dart';
 
 import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
+import 'package:witnet_wallet/util/utxo_list_to_string.dart';
 
 part 'explorer_event.dart';
 part 'explorer_state.dart';
@@ -110,15 +109,15 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
     /// if the gap limit is not maintained then generate additional accounts
     ///
-    // int lastExternalIndex = dbWallet.externalAccounts.length;
-    // while (externalGap < EXTERNAL_GAP_LIMIT) {
-    //   await dbWallet.generateKey(
-    //     index: lastExternalIndex,
-    //     keyType: KeyType.external,
-    //   );
-    //   lastExternalIndex += 1;
-    //   externalGap += 1;
-    // }
+    int lastExternalIndex = dbWallet.externalAccounts.length;
+    while (externalGap < EXTERNAL_GAP_LIMIT) {
+      await dbWallet.generateKey(
+        index: lastExternalIndex,
+        keyType: KeyType.external,
+      );
+      lastExternalIndex += 1;
+      externalGap += 1;
+    }
 
     int internalGap = 0;
 
@@ -130,16 +129,15 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         internalGap += 1;
       }
     }
-    // int lastInternalIndex = dbWallet.internalAccounts.length;
-    // while (internalGap < INTERNAL_GAP_LIMIT) {
-    //   await dbWallet.generateKey(
-    //       index: lastInternalIndex, keyType: KeyType.internal);
-    //   lastInternalIndex += 1;
-    //   internalGap += 1;
-    // }
+    int lastInternalIndex = dbWallet.internalAccounts.length;
+    while (internalGap < INTERNAL_GAP_LIMIT) {
+      await dbWallet.generateKey(
+          index: lastInternalIndex, keyType: KeyType.internal);
+      lastInternalIndex += 1;
+      internalGap += 1;
+    }
 
     dbWallet.externalAccounts.forEach((index, account) {
-      addressList.add(account.address);
       _extAccounts[account.address] = account;
     });
 
@@ -175,49 +173,33 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
         /// update the external xprv utxo list and balance
         if (_extAccounts.containsKey(address)) {
-          /// check if the UTXO set is different
-          int currentLength = _extAccounts[address]!.utxos.length;
-          int newLength = utxoList.length;
+          Account externalAccount = _extAccounts[address]!;
 
           /// check if the UTXO set is different
-          if (currentLength != newLength) {
+          if (!isTheSameList(externalAccount, utxoList)) {
             if (utxoList.isNotEmpty) {
-              _extAccounts[address]!.utxos.clear();
-              _extAccounts[address]!.utxos.addAll(utxoList);
+              externalAccount.utxos.clear();
+              externalAccount.utxos.addAll(utxoList);
             } else {
-              _extAccounts[address]!.utxos.clear();
+              externalAccount.utxos.clear();
             }
-            AddressValueTransfers vtts = await Locator.instance
-                .get<ApiExplorer>()
-                .address(value: address, tab: 'value_transfers');
-
-            await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
-            _extAccounts[address]!.vttHashes.clear();
-            _extAccounts[address]!.vttHashes.addAll(vtts.transactionHashes);
-            _extAccounts[address]!.setBalance();
+            await updateAccountVttsAndBalance(externalAccount);
           }
         }
 
         /// update the internal xprv utxo list and balance
         if (_intAccounts.containsKey(address)) {
-          int currentLength = _intAccounts[address]!.utxos.length;
-          int newLength = utxoList.length;
+          Account internalAccount = _intAccounts[address]!;
 
           /// check if the UTXO set is different
-          if (currentLength != newLength) {
+          if (!isTheSameList(internalAccount, utxoList)) {
             if (utxoList.isNotEmpty) {
-              _intAccounts[address]!.utxos.clear();
-              _intAccounts[address]!.utxos.addAll(utxoList);
+              internalAccount.utxos.clear();
+              internalAccount.utxos.addAll(utxoList);
             } else {
-              _intAccounts[address]!.utxos.clear();
+              internalAccount.utxos.clear();
             }
-            AddressValueTransfers vtts = await Locator.instance
-                .get<ApiExplorer>()
-                .address(value: address, tab: 'value_transfers');
-            await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
-            _intAccounts[address]!.vttHashes.clear();
-            _intAccounts[address]!.vttHashes.addAll(vtts.transactionHashes);
-            _intAccounts[address]!.setBalance();
+            await updateAccountVttsAndBalance(_intAccounts[address]!);
           }
         }
       }
@@ -241,12 +223,55 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           account;
       _intAccntsDb[int.parse(account.path.split('/').last)] = account;
     });
-    for (int i = 0; i < _extAccntsDb.keys.length; i++) {
-      await db.updateAccount(_extAccntsDb.values.elementAt(i));
-    }
-    for (int i = 0; i < _intAccntsDb.keys.length; i++) {
-      await db.updateAccount(_intAccntsDb.values.elementAt(i));
-    }
+
+    await addVtt(_extAccntsDb, db);
+    await addVtt(_intAccntsDb, db);
+
     return emit(ExplorerState.synced(await db.loadWalletsDatabase()));
+  }
+}
+
+bool isTheSameList(Account account, List<Utxo> utxoList) {
+  int currentLength = account.utxos.length;
+  int newLength = utxoList.length;
+  bool isSameList = true;
+  if (currentLength == newLength) {
+    utxoList.forEach((element) {
+      bool containsUtxo =
+          rawJsonUtxosList(account.utxos).contains(element.toRawJson());
+      if (!containsUtxo) {
+        isSameList = false;
+      }
+    });
+  } else {
+    isSameList = false;
+  }
+  return isSameList;
+}
+
+Future updateAccountVttsAndBalance(Account account) async {
+  AddressValueTransfers vtts = await Locator.instance
+      .get<ApiExplorer>()
+      .address(value: account.address, tab: 'value_transfers');
+
+  await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
+  account.vttHashes.clear();
+  account.vttHashes.addAll(vtts.transactionHashes);
+  account.setBalance();
+}
+
+Future addVtt(Map<int, Account> accountsDb, ApiDatabase db) async {
+  for (int i = 0; i < accountsDb.keys.length; i++) {
+    Account account = accountsDb.values.elementAt(i);
+
+    for (int j = 0; j < account.vttHashes.length; j++) {
+      String _hash = account.vttHashes.elementAt(j);
+      await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
+
+      var result = await Locator.instance.get<ApiExplorer>().hash(_hash);
+      ValueTransferInfo valueTransferInfo = result as ValueTransferInfo;
+      await db.addVtt(valueTransferInfo);
+    }
+    await db.updateAccount(account);
   }
 }

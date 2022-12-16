@@ -118,7 +118,6 @@ Future<void> _initializeWallet(
 
 void _generateKey(SendPort port, Map<String, dynamic> params) {
   try {
-    print(params);
     int index = params['index'];
     String keytype = params['keyType'];
     if (keytype.endsWith('external')) {
@@ -165,7 +164,6 @@ Future<void> _signTransaction(
     Map<String, KeyedSignature> _sigMap = {};
     signers.forEach((encryptedXprv, paths) {
       Xprv masterXprv = Xprv.fromEncryptedXprv(encryptedXprv, password);
-
       // get external xprv
       Xprv externalXprv = masterXprv /
           KEYPATH_PURPOSE /
@@ -194,7 +192,6 @@ Future<void> _signTransaction(
           signer = internalXprv / int.parse(indexedPath.last);
         }
         String address = signer.address.address;
-
         if (_sigMap.containsKey(address)) {
           signatures.add(_sigMap[address]!);
         } else {
@@ -212,7 +209,6 @@ Future<void> _signTransaction(
     });
     port.send(sigMap);
   } catch (e) {
-    print('Error signing vtt :: crypto_isolate :: ${e.toString()}');
     errorMsg = e.toString();
   }
   port.send(errorMsg);

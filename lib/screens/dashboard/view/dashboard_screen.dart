@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/explorer.dart';
-import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/widgets/transactions_list.dart';
@@ -50,9 +47,6 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   void _syncWallet(Wallet wallet) {
-    wallet.externalAccounts.forEach((key, value) {
-      BlocProvider.of<CryptoBloc>(context).syncAccountValueTransfers(value);
-    });
     BlocProvider.of<ExplorerBloc>(context)
         .add(SyncWalletEvent(ExplorerStatus.dataloading, wallet));
   }
@@ -124,12 +118,20 @@ class DashboardScreenState extends State<DashboardScreen>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: DashboardLayout(
+    // return DashboardLayout(
+    //   dashboardChild: _dashboardBuilder(),
+    //   actions: [],
+    // );
+    return BlocConsumer<ExplorerBloc, ExplorerState>(
+        builder: (BuildContext context, ExplorerState state) {
+      return DashboardLayout(
         dashboardChild: _dashboardBuilder(),
         actions: [],
-      ),
-    );
+      );
+    }, listener: (context, state) {
+      if (state.status == ExplorerStatus.dataloaded) {
+        _getVtts();
+      }
+    });
   }
 }

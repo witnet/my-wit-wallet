@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
@@ -132,7 +130,6 @@ class ApiExplorer {
 
   Future<dynamic> sendVtTransaction(VTTransaction transaction) async {
     try {
-      print(transaction.jsonMap(asHex: true));
       return await client.send(transaction: transaction.jsonMap(asHex: true));
     } catch (e) {
       rethrow;

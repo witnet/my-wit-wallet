@@ -1,6 +1,4 @@
-import 'dart:developer';
 import 'dart:isolate';
-
 import 'package:witnet/explorer.dart';
 import 'package:witnet_wallet/util/storage/database/database_isolate.dart';
 import 'package:witnet_wallet/util/storage/database/database_service.dart';

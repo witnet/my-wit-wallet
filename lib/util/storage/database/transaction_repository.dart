@@ -1,6 +1,3 @@
-import 'dart:developer';
-import 'dart:ffi';
-
 import 'package:sembast/sembast.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
