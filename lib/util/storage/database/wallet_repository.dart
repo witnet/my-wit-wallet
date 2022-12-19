@@ -73,7 +73,7 @@ class WalletRepository extends _WalletRepository {
         'name': wallet.name,
         'description': wallet.description ?? '',
         'xprv': wallet.xprv!,
-        'external_xpub': wallet.externalXpub!,
-        'internal_xpub': wallet.internalXpub!,
+        'externalXpub': wallet.externalXpub!,
+        'internalXpub': wallet.internalXpub!,
       };
 }

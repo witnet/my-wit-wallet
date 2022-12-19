@@ -118,10 +118,6 @@ class DashboardScreenState extends State<DashboardScreen>
 
   @override
   Widget build(BuildContext context) {
-    // return DashboardLayout(
-    //   dashboardChild: _dashboardBuilder(),
-    //   actions: [],
-    // );
     return BlocConsumer<ExplorerBloc, ExplorerState>(
         builder: (BuildContext context, ExplorerState state) {
       return DashboardLayout(

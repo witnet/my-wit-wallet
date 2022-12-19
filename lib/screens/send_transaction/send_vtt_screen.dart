@@ -53,9 +53,11 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   _setNextAction(action) {
-    setState(() {
-      nextAction = action;
-    });
+    if (mounted) {
+      setState(() {
+        nextAction = action;
+      });
+    }
   }
 
   void goToNextStep() {

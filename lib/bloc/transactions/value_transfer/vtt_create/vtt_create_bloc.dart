@@ -203,14 +203,14 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       }
 
       /// did we run out of change addresses?
-      // if (!changeAccountSet) {
-      //   ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
-      //   Account changeAccount = await apiCrypto.generateAccount(
-      //     firstWallet.name,
-      //     KeyType.internal,
-      //     internalAddresses.length + 1,
-      //   );
-      // }
+      if (!changeAccountSet) {
+        ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
+        changeAccount = await apiCrypto.generateAccount(
+          firstWallet.name,
+          KeyType.internal,
+          internalAddresses.length + 1,
+        );
+      }
 
       /// update the utxo pool
       utxoPool.clear();
@@ -257,7 +257,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       /// compare to balance
       if (balanceNanoWit < valueOwedNanoWit) {
         /// TODO:: throw insufficient funds exception
-        print('Build transaction body :: Insuficient funds');
+        print('Build transaction :: Insuficient funds');
       } else {
         /// get utxos from the pool
         selectedUtxos = utxoPool.cover(

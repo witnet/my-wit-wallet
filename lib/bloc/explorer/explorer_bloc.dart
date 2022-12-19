@@ -84,8 +84,10 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       SyncWalletEvent event, Emitter<ExplorerState> emit) async {
     /// get the current state of the wallet from the database
     try {
+      // TODO: check if the explorer is up
       await syncWalletRoutine(event.currentWallet);
     } catch (e) {
+      print('Error syncing the Wallet $e');
       rethrow;
     }
   }
@@ -250,14 +252,18 @@ bool isTheSameList(Account account, List<Utxo> utxoList) {
 }
 
 Future updateAccountVttsAndBalance(Account account) async {
-  AddressValueTransfers vtts = await Locator.instance
-      .get<ApiExplorer>()
-      .address(value: account.address, tab: 'value_transfers');
+  try {
+    AddressValueTransfers vtts = await Locator.instance
+        .get<ApiExplorer>()
+        .address(value: account.address, tab: 'value_transfers');
 
-  await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
-  account.vttHashes.clear();
-  account.vttHashes.addAll(vtts.transactionHashes);
-  account.setBalance();
+    await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
+    account.vttHashes.clear();
+    account.vttHashes.addAll(vtts.transactionHashes);
+    account.setBalance();
+  } catch (e) {
+    print('Error updating account vtts and balance $e');
+  }
 }
 
 Future addVtt(Map<int, Account> accountsDb, ApiDatabase db) async {
@@ -265,12 +271,16 @@ Future addVtt(Map<int, Account> accountsDb, ApiDatabase db) async {
     Account account = accountsDb.values.elementAt(i);
 
     for (int j = 0; j < account.vttHashes.length; j++) {
-      String _hash = account.vttHashes.elementAt(j);
-      await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
+      try {
+        String _hash = account.vttHashes.elementAt(j);
+        await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
 
-      var result = await Locator.instance.get<ApiExplorer>().hash(_hash);
-      ValueTransferInfo valueTransferInfo = result as ValueTransferInfo;
-      await db.addVtt(valueTransferInfo);
+        var result = await Locator.instance.get<ApiExplorer>().hash(_hash);
+        ValueTransferInfo valueTransferInfo = result as ValueTransferInfo;
+        await db.addVtt(valueTransferInfo);
+      } catch (e) {
+        print('Error adding vtt to database $e');
+      }
     }
     await db.updateAccount(account);
   }
