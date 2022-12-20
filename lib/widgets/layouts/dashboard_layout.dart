@@ -46,12 +46,8 @@ class DashboardLayoutState extends State<DashboardLayout>
 
   /// _goToSettings
   /// [BuildContext] context
-  Future<bool> _goToSettings() {
-    return Navigator.of(context)
-        .push(MaterialPageRoute(
-          builder: (context) => PreferencePage(),
-        ))
-        .then((_) => true);
+  Future<void> _goToSettings() async {
+    Navigator.pushReplacementNamed(context, PreferencePage.route);
   }
 
   Future<void> _showCreateVTTDialog() async {
@@ -166,7 +162,8 @@ class DashboardLayoutState extends State<DashboardLayout>
       MouseRegion(
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
-            child: Icon(FontAwesomeIcons.gear, size: 30),
+            child: Icon(FontAwesomeIcons.gear,
+                size: 30, color: getButtonColorByRoute(PreferencePage.route)),
             onTap: () => _goToSettings(),
           )),
     ];

@@ -3,15 +3,15 @@ import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
+import 'package:witnet_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:witnet_wallet/widgets/switch.dart';
 import 'package:witnet_wallet/bloc/theme/theme_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
-import 'package:witnet_wallet/widgets/layouts/layout.dart';
 
 class PreferencePage extends StatefulWidget {
   PreferencePage({Key? key}) : super(key: key);
-
+  static final route = '/configuration';
   @override
   State<StatefulWidget> createState() => _PreferencePageState();
 }
@@ -45,9 +45,8 @@ class _PreferencePageState extends State<PreferencePage> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    return Layout(
-      navigationActions: [],
-      widgetList: [
+    return DashboardLayout(
+      dashboardChild: Column(children: [
         themeWidget(deviceSize.height * 0.25, context),
         PaddedButton(
             padding: EdgeInsets.only(bottom: 8),
@@ -55,12 +54,8 @@ class _PreferencePageState extends State<PreferencePage> {
             type: 'text',
             enabled: true,
             onPressed: () => _logOut()),
-      ],
-      appBar: AppBar(
-        title: Text('Preferences'),
-      ),
+      ]),
       actions: [],
-      actionsSize: 0,
     );
   }
 }
