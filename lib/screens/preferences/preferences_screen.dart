@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
-import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
-import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
-import 'package:witnet_wallet/widgets/PaddedButton.dart';
+import 'package:witnet_wallet/screens/preferences/general_config.dart';
+import 'package:witnet_wallet/screens/preferences/wallet_config.dart';
 import 'package:witnet_wallet/widgets/layouts/dashboard_layout.dart';
-import 'package:witnet_wallet/widgets/switch.dart';
-import 'package:witnet_wallet/bloc/theme/theme_bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/theme/wallet_theme.dart';
+import 'package:witnet_wallet/widgets/step_bar.dart';
 
 class PreferencePage extends StatefulWidget {
   PreferencePage({Key? key}) : super(key: key);
@@ -16,45 +11,39 @@ class PreferencePage extends StatefulWidget {
   State<StatefulWidget> createState() => _PreferencePageState();
 }
 
+enum ConfigSteps {
+  General,
+  Wallet,
+}
+
 class _PreferencePageState extends State<PreferencePage> {
   bool checked = false;
+  List<ConfigSteps> stepListItems = ConfigSteps.values.toList();
+  Enum stepSelectedItem = ConfigSteps.General;
 
-  Widget themeWidget(heigh, context) {
-    return Row(children: [
-      CustomSwitch(
-          checked: checked,
-          primaryLabel: 'Dark Mode',
-          secondaryLabel: 'Light Mode',
-          onChanged: (value) => {
-                setState(() {
-                  checked = !checked;
-                  BlocProvider.of<ThemeBloc>(context).add(ThemeChanged(
-                      checked ? WalletTheme.Dark : WalletTheme.Light));
-                })
-              }),
-    ]);
-  }
-
-  //Log out
-  void _logOut() {
-    BlocProvider.of<DashboardBloc>(context).add(DashboardResetEvent());
-    BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
-    BlocProvider.of<LoginBloc>(context).add(LoginLogoutEvent());
+  Widget _buildConfigView() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        StepBar(
+            actionable: true,
+            selectedItem: stepSelectedItem,
+            listItems: stepListItems,
+            onChanged: (item) => {
+                  setState(() => {stepSelectedItem = item!})
+                }),
+        SizedBox(height: 16),
+        stepSelectedItem == ConfigSteps.General
+            ? GeneralConfig()
+            : WalletConfig()
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
     return DashboardLayout(
-      dashboardChild: Column(children: [
-        themeWidget(deviceSize.height * 0.25, context),
-        PaddedButton(
-            padding: EdgeInsets.only(bottom: 8),
-            text: 'Log out',
-            type: 'text',
-            enabled: true,
-            onPressed: () => _logOut()),
-      ]),
+      dashboardChild: _buildConfigView(),
       actions: [],
     );
   }

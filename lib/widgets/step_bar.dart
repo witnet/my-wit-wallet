@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 
-typedef void StringCallback(VTTsteps? value);
+typedef void StringCallback(Enum? value);
 
 class StepBar extends StatelessWidget {
-  final VTTsteps selectedItem;
+  final Enum selectedItem;
   final bool actionable;
-  final List<VTTsteps> listItems;
+  final List<Enum> listItems;
   final StringCallback onChanged;
 
   const StepBar({
@@ -17,7 +16,7 @@ class StepBar extends StatelessWidget {
     required this.onChanged,
   });
 
-  Widget _buildStepBarItem(VTTsteps item, BuildContext context) {
+  Widget _buildStepBarItem(Enum item, BuildContext context) {
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     return Container(
         alignment: Alignment.center,
