@@ -14,7 +14,7 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 
 class LoginScreen extends StatefulWidget {
-  static final route = '/login';
+  static final route = '/';
 
   LoginScreen({Key? key}) : super(key: key);
 

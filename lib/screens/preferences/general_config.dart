@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
+import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/preferences.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/widgets/switch.dart';
@@ -70,16 +71,25 @@ class _GeneralConfigState extends State<GeneralConfig> {
     BlocProvider.of<DashboardBloc>(context).add(DashboardResetEvent());
     BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
     BlocProvider.of<LoginBloc>(context).add(LoginLogoutEvent());
+    Navigator.pushReplacementNamed(context, '/');
   }
 
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    return Column(children: [
+    final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      SizedBox(height: 16),
+      Text(
+        'Theme',
+        style: theme.textTheme.subtitle2,
+      ),
       themeWidget(deviceSize.height * 0.25, context),
       PaddedButton(
-          padding: EdgeInsets.only(bottom: 8),
-          text: 'Log out',
+          padding: EdgeInsets.only(bottom: 16, top: 16),
+          text: 'Log Out',
+          color: extendedTheme.txValueNegativeColor,
           type: 'text',
           enabled: true,
           onPressed: () => _logOut()),

@@ -71,7 +71,9 @@ class PaddedButton extends StatelessWidget {
         child: GestureDetector(
           child: Text(
             text,
-            style: theme.textTheme.labelMedium,
+            style: color != null
+                ? theme.textTheme.labelMedium?.copyWith(color: color)
+                : theme.textTheme.labelMedium,
           ),
           onTap: onPressed,
         ));

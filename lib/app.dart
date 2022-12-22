@@ -57,5 +57,12 @@ Widget _buildWithTheme(BuildContext context, ThemeState state) {
       PreferencePage.route: (context) => PreferencePage(),
       ReceiveTransactionScreen.route: (context) => ReceiveTransactionScreen()
     },
+    onUnknownRoute: (RouteSettings settings) {
+      return MaterialPageRoute<void>(
+        settings: settings,
+        builder: (BuildContext context) =>
+            Scaffold(body: Center(child: Text('Not Found'))),
+      );
+    },
   );
 }
