@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:witnet_wallet/theme/wallet_theme.dart';
 
 class AddressEntry {
   String walletId;
@@ -20,6 +21,16 @@ class ApiPreferences {
   static Future<String?> getCurrentWallet() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     return pref.getString('current_wallet');
+  }
+
+  static Future<void> setTheme(WalletTheme theme) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('theme', theme.name);
+  }
+
+  static Future<String?> getTheme() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getString('theme');
   }
 
   static Future<void> setCurrentAddress(AddressEntry addressEntry) async {

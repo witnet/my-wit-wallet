@@ -9,14 +9,19 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
 import 'package:witnet_wallet/screens/receive_transaction/receive_tx_screen.dart';
 import 'package:witnet_wallet/screens/send_transaction/send_vtt_screen.dart';
+import 'package:witnet_wallet/theme/wallet_theme.dart';
 
 import 'bloc/theme/theme_bloc.dart';
 
 class WitnetWalletApp extends StatelessWidget {
+  final WalletTheme initialTheme;
+
+  WitnetWalletApp(this.initialTheme);
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: getProviders(context),
+      providers: getProviders(context, initialTheme),
       child: BlocBuilder<ThemeBloc, ThemeState>(
         buildWhen: (previousState, state) {
           return previousState != state;

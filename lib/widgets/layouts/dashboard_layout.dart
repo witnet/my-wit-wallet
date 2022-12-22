@@ -67,7 +67,7 @@ class DashboardLayoutState extends State<DashboardLayout>
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     return currentRoute() == route
         ? extendedTheme.headerDashboardActiveButton
-        : null;
+        : extendedTheme.headerTextColor;
   }
 
   Widget _buildDashboardActions() {

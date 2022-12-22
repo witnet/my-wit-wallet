@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
+import 'package:witnet_wallet/util/preferences.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/widgets/switch.dart';
 import 'package:witnet_wallet/bloc/theme/theme_bloc.dart';
@@ -20,19 +21,45 @@ enum ConfigSteps {
 }
 
 class _GeneralConfigState extends State<GeneralConfig> {
-  bool checked = false;
+  bool displayDarkMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _getTheme();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  Future<void> _getTheme() async {
+    String? theme = await ApiPreferences.getTheme();
+    if (theme != null && theme == WalletTheme.Dark.name) {
+      setState(() {
+        displayDarkMode = true;
+      });
+    } else {
+      setState(() {
+        displayDarkMode = false;
+      });
+    }
+  }
 
   Widget themeWidget(heigh, context) {
     return Row(children: [
       CustomSwitch(
-          checked: checked,
+          checked: displayDarkMode,
           primaryLabel: 'Dark Mode',
           secondaryLabel: 'Light Mode',
           onChanged: (value) => {
                 setState(() {
-                  checked = !checked;
-                  BlocProvider.of<ThemeBloc>(context).add(ThemeChanged(
-                      checked ? WalletTheme.Dark : WalletTheme.Light));
+                  displayDarkMode = !displayDarkMode;
+                  final theme =
+                      displayDarkMode ? WalletTheme.Dark : WalletTheme.Light;
+                  ApiPreferences.setTheme(theme);
+                  BlocProvider.of<ThemeBloc>(context).add(ThemeChanged(theme));
                 })
               }),
     ]);

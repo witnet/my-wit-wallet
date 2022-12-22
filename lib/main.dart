@@ -6,6 +6,8 @@ import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:witnet_wallet/theme/wallet_theme.dart';
+import 'package:witnet_wallet/util/preferences.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -20,5 +22,10 @@ void main() async {
   CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
   await cryptoIsolate.init();
 
-  runApp(WitnetWalletApp());
+  String? theme = await ApiPreferences.getTheme();
+  WalletTheme initialTheme = (theme != null && theme == WalletTheme.Dark.name)
+      ? WalletTheme.Dark
+      : WalletTheme.Light;
+
+  runApp(WitnetWalletApp(initialTheme));
 }

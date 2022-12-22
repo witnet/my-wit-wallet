@@ -8,7 +8,7 @@ enum WalletTheme {
   Dark,
 }
 
-final walletThemeData = {
+Map<WalletTheme, ThemeData> walletThemeData = {
   WalletTheme.Light: lightTheme
       .copyWith(extensions: <ThemeExtension<dynamic>>[ExtendedTheme.light]),
   WalletTheme.Dark: darkTheme

@@ -147,7 +147,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     dropdownTextColor: WitnetPallet.darkGrey,
     headerDashboardActiveButton: WitnetPallet.white,
     headerActiveTextColor: WitnetPallet.witnetGreen2,
-    headerTextColor: WitnetPallet.witnetGreen2,
+    headerTextColor: WitnetPallet.witnetGreen1,
     headerBackgroundColor: WitnetPallet.darkBlue2,
     walletListBackgroundColor: WitnetPallet.darkBlue2,
     walletActiveItemBackgroundColor: WitnetPallet.opacityWitnetGreen2,
