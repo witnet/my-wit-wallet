@@ -56,8 +56,9 @@ class PaddedButton extends StatelessWidget {
 
     Widget textButtonVerticalIcon = TextButton(
       style: color != null
-          ? theme.textButtonTheme.style
-              ?.copyWith(foregroundColor: MaterialStateProperty.all(color))
+          ? theme.textButtonTheme.style?.copyWith(
+              foregroundColor: MaterialStateProperty.all(color),
+              overlayColor: MaterialStateProperty.all(Colors.transparent))
           : theme.textButtonTheme.style,
       child: Column(children: [
         icon,
