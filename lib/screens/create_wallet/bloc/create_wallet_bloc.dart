@@ -1,6 +1,5 @@
 import 'dart:isolate';
 import 'package:bloc/bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:equatable/equatable.dart';
@@ -244,13 +243,14 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
 
   void _verifyEncryptedXprvEvent(
       VerifyEncryptedXprvEvent event, Emitter<CreateWalletState> emit) async {
-    emit(state.copyWith(status: CreateWalletStatus.Loading));
+    // emit(state.copyWith(status: CreateWalletStatus.Loading));
     try {
       CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
       ReceivePort resp = ReceivePort();
       cryptoIsolate.send(
           method: 'initializeWallet',
           params: {
+            'id': '_loading',
             'walletName': '_loading',
             'walletDescription': '_loading',
             'seed': event.xprv,
@@ -258,14 +258,18 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
             'password': event.password
           },
           port: resp.sendPort);
-      var errors = [];
-      Wallet wallet = await resp.first.then((value) {
+      await resp.first.then((value) {
+        if (value.error) {
+          emit(state.copyWith(
+              status: CreateWalletStatus.LoadingException,
+              message: 'Error initializing wallet'));
+          return;
+        }
+        emit(state.copyWith(
+          status: CreateWalletStatus.ValidXprv,
+        ));
         return value;
       });
-
-      emit(state.copyWith(
-        status: CreateWalletStatus.ValidXprv,
-      ));
     } catch (e) {
       emit(state.copyWith(
           status: CreateWalletStatus.LoadingException, message: e.toString()));

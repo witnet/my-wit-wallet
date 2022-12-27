@@ -1,10 +1,8 @@
 import 'package:witnet/data_structures.dart';
-
 import 'account.dart';
 import 'balance_info.dart';
 import 'dart:core';
 import 'dart:isolate';
-
 import 'package:witnet/constants.dart';
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
@@ -98,21 +96,17 @@ class Wallet {
     required String xprv,
     required String password,
   }) async {
-    try {
-      final _wallet = Wallet(
-        id: id,
-        name: name,
-        description: description,
-        xprv: xprv,
-        txHashes: [],
-        externalAccounts: {},
-        internalAccounts: {},
-      );
-      _wallet._setMasterXprv(Xprv.fromEncryptedXprv(xprv, password), password);
-      return _wallet;
-    } catch (e) {
-      rethrow;
-    }
+    final _wallet = Wallet(
+      id: id,
+      name: name,
+      description: description,
+      xprv: xprv,
+      txHashes: [],
+      externalAccounts: {},
+      internalAccounts: {},
+    );
+    _wallet._setMasterXprv(Xprv.fromEncryptedXprv(xprv, password), password);
+    return _wallet;
   }
 
   void _setMasterXprv(Xprv xprv, String password) {

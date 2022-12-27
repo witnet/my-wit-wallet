@@ -207,11 +207,18 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       ApiDatabase db = Locator.instance<ApiDatabase>();
       String key = await db.getKeychain();
       final masterKey = key != '' ? key : event.password;
+      String keyData = event.keyData;
+      if (key != '' && event.seedSource == 'encryptedXprv') {
+        // Decript and encrypt xprv with the master password
+        final decryptedXprv =
+            Xprv.fromEncryptedXprv(event.keyData, event.password);
+        keyData = decryptedXprv.toEncryptedXprv(password: key);
+      }
       apiCrypto.setInitialWalletData(
         event.walletName, // id
         event.walletName,
         event.walletDescription,
-        event.keyData,
+        keyData,
         event.seedSource,
         masterKey,
       );
