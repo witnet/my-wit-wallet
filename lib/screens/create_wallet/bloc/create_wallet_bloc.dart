@@ -243,7 +243,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
 
   void _verifyEncryptedXprvEvent(
       VerifyEncryptedXprvEvent event, Emitter<CreateWalletState> emit) async {
-    // emit(state.copyWith(status: CreateWalletStatus.Loading));
+    emit(state.copyWith(status: CreateWalletStatus.Loading));
     try {
       CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
       ReceivePort resp = ReceivePort();

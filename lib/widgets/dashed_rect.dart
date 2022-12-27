@@ -1,36 +1,75 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'dart:math' as math;
+
+import 'package:witnet_wallet/widgets/PaddedButton.dart';
+
+typedef void VoidCallback();
 
 class DashedRect extends StatelessWidget {
   final Color color;
   final double strokeWidth;
   final double gap;
+  final bool blur;
+  final bool showEye;
   final String text;
+  final VoidCallback? updateBlur;
   DashedRect(
       {this.color = Colors.black,
+      this.updateBlur,
       this.strokeWidth = 1.0,
+      this.blur = false,
+      this.showEye = false,
       this.gap = 5.0,
       this.text = ''});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Container(
-      child: Padding(
-        padding: EdgeInsets.all(strokeWidth / 2),
-        child: CustomPaint(
-          painter:
-              DashRectPainter(color: color, strokeWidth: strokeWidth, gap: gap),
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: Text(
-              text,
-              style: theme.textTheme.headline2,
-            ),
-          ),
-        ),
+        child: Padding(
+      padding: EdgeInsets.all(strokeWidth / 2),
+      child: CustomPaint(
+        painter:
+            DashRectPainter(color: color, strokeWidth: strokeWidth, gap: gap),
+        child: Column(children: [
+          Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                text,
+                style: blur
+                    ? TextStyle(
+                        fontSize: theme.textTheme.headline2!.fontSize,
+                        fontWeight: theme.textTheme.headline2!.fontWeight,
+                        foreground: Paint()
+                          ..style = PaintingStyle.fill
+                          ..color = theme.textTheme.headline2!.color!
+                          ..maskFilter = MaskFilter.blur(BlurStyle.normal, 6))
+                    : theme.textTheme.headline2,
+              )),
+          showEye
+              ? Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: PaddedButton(
+                      padding: EdgeInsets.all(0),
+                      color: extendedTheme.inputIconColor,
+                      text: '',
+                      onPressed: () => updateBlur!(),
+                      icon: !blur
+                          ? Icon(Icons.remove_red_eye)
+                          : Icon(Icons.visibility_off),
+                      type: 'vertical-icon',
+                    ),
+                  ))
+              : SizedBox(height: 0),
+        ]),
       ),
-    );
+    ));
   }
 }
 
