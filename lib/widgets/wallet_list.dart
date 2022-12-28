@@ -15,6 +15,7 @@ import 'package:witnet_wallet/util/preferences.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 import 'package:witnet_wallet/widgets/address.dart';
+import 'package:witnet_wallet/widgets/identicon.dart';
 
 class ListItem {
   bool isSelected = false;
@@ -178,6 +179,7 @@ class WalletListState extends State<WalletList> {
               color: extendedTheme.selectedTextColor,
               width: 30,
               height: 30,
+              child: IdenticonWidget(seed: address ?? '', size: 8),
             ),
             Expanded(
               child: Padding(
