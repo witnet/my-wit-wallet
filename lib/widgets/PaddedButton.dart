@@ -93,8 +93,8 @@ class PaddedButton extends StatelessWidget {
       }
     }
 
-    return Padding(
-      padding: padding,
+    return Container(
+      margin: padding,
       child: _getButtonByType(),
     );
   }

@@ -17,7 +17,6 @@ class _TestScreenState extends State<TestScreen> {
         _body(),
       ],
       actions: [],
-      actionsSize: 0,
     );
   }
 

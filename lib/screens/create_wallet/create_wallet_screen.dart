@@ -26,7 +26,6 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   dynamic nextAction;
   dynamic secondaryAction;
   dynamic prevAction;
-  double bottomSize = 80;
 
   @override
   void initState() {
@@ -38,10 +37,11 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
     super.dispose();
   }
 
+  //Bottom page actions
   List<Widget> _actions() {
     List<Widget> actions = [
       PaddedButton(
-          padding: EdgeInsets.only(bottom: 8),
+          padding: EdgeInsets.only(bottom: 0),
           text: nextAction != null ? nextAction().label : 'Continue',
           type: 'primary',
           enabled: nextAction != null,
@@ -54,7 +54,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
       actions = [
         ...actions,
         PaddedButton(
-            padding: EdgeInsets.only(bottom: 8),
+            padding: EdgeInsets.only(top: 8),
             text: nextAction != null ? secondaryAction().label : '',
             type: 'primary',
             enabled: nextAction != null,
@@ -63,7 +63,6 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
                   _clearNextActions()
                 }),
       ];
-      bottomSize = 120;
     }
     return actions;
   }
@@ -90,7 +89,6 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
         _formCards(),
       ],
       actions: _actions(),
-      actionsSize: bottomSize,
     );
   }
 

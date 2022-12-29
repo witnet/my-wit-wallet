@@ -13,14 +13,12 @@ class Layout extends StatelessWidget {
   final AppBar? appBar;
   final List<Widget> actions;
   final List<Widget> navigationActions;
-  final double actionsSize;
   final Widget? slidingPanel;
   final Widget? dashboardActions;
 
   const Layout({
     required this.widgetList,
     required this.actions,
-    required this.actionsSize,
     required this.navigationActions,
     this.dashboardActions,
     this.slidingPanel,
@@ -50,7 +48,7 @@ class Layout extends StatelessWidget {
           },
         ));
   }
-
+  // Content displayed between header and bottom actions
   Widget buildListView(context) {
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     if (slidingPanel == null) {
@@ -76,9 +74,6 @@ class Layout extends StatelessWidget {
                       child: Column(children: widgetList)),
                 ),
               ),
-              SizedBox(
-                height: actionsSize,
-              )
             ],
           ));
     } else {
@@ -113,7 +108,6 @@ class Layout extends StatelessWidget {
             Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  minWidth: 100,
                   maxWidth: 600,
                 ),
                 child: Padding(
@@ -121,9 +115,6 @@ class Layout extends StatelessWidget {
                     child: Column(children: widgetList)),
               ),
             ),
-            SizedBox(
-              height: actionsSize,
-            )
           ],
         ),
       );
@@ -137,18 +128,17 @@ class Layout extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       backgroundColor: theme.backgroundColor,
       body: buildListView(context),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Container(
-        height: actionsSize,
-        alignment: Alignment.bottomCenter,
-        constraints: BoxConstraints(minWidth: 100, maxWidth: 600),
-        color: theme.backgroundColor,
-        padding: EdgeInsets.only(left: 16, bottom: 8, right: 16),
-        child: Column(
+      bottomNavigationBar: BottomAppBar(
+        notchMargin: 8,
+        child: Padding(padding: EdgeInsets.only(left: 8, right: 8, bottom: 8), child: 
+        Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: actions,
         ),
+        ),
+        color: theme.backgroundColor,
       ),
     );
   }

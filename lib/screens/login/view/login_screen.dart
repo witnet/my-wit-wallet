@@ -27,7 +27,6 @@ class LoginScreenState extends State<LoginScreen>
   Wallet? currentWallet;
   String? loginError;
   List<String>? walletsList;
-  double bottomSize = 138;
   List<Widget> componentsList = [];
 
   @override
@@ -51,7 +50,7 @@ class LoginScreenState extends State<LoginScreen>
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         return PaddedButton(
-          padding: EdgeInsets.only(top: 8, bottom: 8),
+          padding: EdgeInsets.only(top: 8, bottom: 0),
           text: 'Login',
           type: 'primary',
           onPressed: () => _login(),
@@ -64,12 +63,12 @@ class LoginScreenState extends State<LoginScreen>
     return Column(
       children: <Widget>[
         PaddedButton(
-            padding: EdgeInsets.only(top: 8, bottom: 8),
+            padding: EdgeInsets.only(top: 8, bottom: 0),
             text: 'Create new wallet',
             type: 'primary',
             onPressed: () => _createNewWallet(context)),
         PaddedButton(
-            padding: EdgeInsets.only(top: 8, bottom: 8),
+            padding: EdgeInsets.only(top: 8, bottom: 0),
             text: 'Import wallet',
             type: 'secondary',
             onPressed: () => _importWallet(context)),
@@ -103,7 +102,6 @@ class LoginScreenState extends State<LoginScreen>
     List<String> walletNames = List<String>.from(walletStorage.wallets.keys);
     if (walletStorage.wallets.length > 0) {
       setState(() {
-        bottomSize = 80;
         walletsList = walletNames;
         componentsList = [
           ...mainComponents(),
@@ -116,7 +114,6 @@ class LoginScreenState extends State<LoginScreen>
       });
     } else {
       setState(() {
-        bottomSize = 138;
         componentsList = mainComponents();
         walletsList = null;
       });
@@ -135,7 +132,7 @@ class LoginScreenState extends State<LoginScreen>
         style: theme.textTheme.headline1,
       ),
       Carousel(list: [
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
         'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
       ])
     ];
@@ -151,7 +148,6 @@ class LoginScreenState extends State<LoginScreen>
             ? _buttonLogin()
             : _buildInitialButtons(context, theme)
       ],
-      actionsSize: bottomSize,
     );
   }
 

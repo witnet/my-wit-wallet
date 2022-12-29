@@ -24,7 +24,6 @@ class _CarouselState extends State<Carousel> {
         },
         options: CarouselOptions(
             enlargeCenterPage: true,
-            height: 200,
             onPageChanged: (val, _) {
               setState(() {
                 page = val;
@@ -73,7 +72,7 @@ class _CarouselState extends State<Carousel> {
       child: Align(
         alignment: Alignment.center,
         child: Padding(
-          padding: EdgeInsets.all(32),
+          padding: EdgeInsets.only(left:24, right: 24, top: 8, bottom: 8),
           child: Text(
             item,
             style: theme.textTheme.bodyText1,

@@ -169,16 +169,6 @@ class DashboardLayoutState extends State<DashboardLayout>
     ];
   }
 
-  double _actionsSize() {
-    if (widget.actions.isEmpty) {
-      return 0;
-    } else if (widget.actions.length > 1) {
-      return 138;
-    } else {
-      return 80;
-    }
-  }
-
   Widget _authBuilder() {
     final theme = Theme.of(context);
     return BlocBuilder<LoginBloc, LoginState>(
@@ -237,7 +227,6 @@ class DashboardLayoutState extends State<DashboardLayout>
         ],
         actions: widget.actions,
         slidingPanel: _walletList,
-        actionsSize: _actionsSize(),
       );
     });
   }
