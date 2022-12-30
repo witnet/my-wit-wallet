@@ -36,19 +36,15 @@ class Action {
 class CreateImportWalletState extends State<CreateImportWallet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      width: 300,
-      alignment: const Alignment(0, -1 / 3),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: 7, bottom: 7),
-            child: _buildInitialButtons(context, theme),
-          ),
-          Padding(padding: EdgeInsets.all(7)),
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 7, bottom: 7),
+          child: _buildInitialButtons(context, theme),
+        ),
+        Padding(padding: EdgeInsets.all(7)),
+      ],
     );
   }
 
@@ -121,7 +117,7 @@ class CreateImportWalletState extends State<CreateImportWallet> {
         Carousel(list: [
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.',
           'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-          'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+          'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
         ]),
       ],
     );

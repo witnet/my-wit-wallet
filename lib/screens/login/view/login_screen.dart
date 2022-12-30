@@ -105,6 +105,7 @@ class LoginScreenState extends State<LoginScreen>
         walletsList = walletNames;
         componentsList = [
           ...mainComponents(),
+          SizedBox(height: 16),
           LoginForm(
             currentWallet: walletNames[0],
             setWallet: (wallet) => _setWallet(wallet),
@@ -132,7 +133,7 @@ class LoginScreenState extends State<LoginScreen>
         style: theme.textTheme.headline1,
       ),
       Carousel(list: [
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
         'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
       ])
     ];

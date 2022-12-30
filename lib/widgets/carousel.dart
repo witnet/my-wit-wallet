@@ -23,6 +23,7 @@ class _CarouselState extends State<Carousel> {
           return buildView(context, widget.list[itemIndex]);
         },
         options: CarouselOptions(
+            height: 100,
             enlargeCenterPage: true,
             onPageChanged: (val, _) {
               setState(() {
@@ -34,7 +35,6 @@ class _CarouselState extends State<Carousel> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: _buildDotsList(),
       ),
-      Container(height: 16)
     ]);
   }
 
@@ -64,21 +64,13 @@ class _CarouselState extends State<Carousel> {
   //Widget
   Widget buildView(BuildContext context, item) {
     final theme = Theme.of(context);
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-      ),
-      color: WitnetPallet.transparent,
-      child: Align(
-        alignment: Alignment.center,
-        child: Padding(
-          padding: EdgeInsets.only(left:24, right: 24, top: 8, bottom: 8),
-          child: Text(
-            item,
-            style: theme.textTheme.bodyText1,
-            textAlign: TextAlign.center,
-          ),
-        ),
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.only(left: 24, right: 24, top: 8, bottom: 8),
+      child: Text(
+        item,
+        style: theme.textTheme.bodyText1,
+        textAlign: TextAlign.center,
       ),
     );
   }
