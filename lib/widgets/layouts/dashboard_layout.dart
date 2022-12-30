@@ -182,41 +182,29 @@ class DashboardLayoutState extends State<DashboardLayout>
       Widget? _walletList;
       switch (loginState.status) {
         case LoginStatus.LoggedOut:
-          _body = Stack(
+          _body = Column(
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SpinKitWave(
-                    color: theme.primaryColor,
-                  ),
-                ],
+              SpinKitWave(
+                color: theme.primaryColor,
               ),
             ],
           );
           break;
         case LoginStatus.LoginSuccess:
           _walletList = WalletList();
-          _body = Stack(
+          _body = Column(
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Container(
-                    child: widget.dashboardChild,
-                  ),
-                ],
+              Container(
+                child: widget.dashboardChild,
               ),
             ],
           );
           break;
         default:
-          _body = Stack(
-            children: <Widget>[
-              Column(
-                children: <Widget>[],
-              ),
-            ],
+          _body = Column(
+            children: <Widget>[],
           );
       }
       return Layout(

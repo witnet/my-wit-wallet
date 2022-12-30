@@ -41,9 +41,12 @@ class LoginScreenState extends State<LoginScreen>
   }
 
   _login() {
-    BlocProvider.of<LoginBloc>(context).add(LoginSubmittedEvent(
-        walletName: currentWallet!.walletName,
-        password: currentWallet!.password));
+    FocusScope.of(context).unfocus();
+    if (currentWallet != null) {
+      BlocProvider.of<LoginBloc>(context).add(LoginSubmittedEvent(
+          walletName: currentWallet!.walletName,
+          password: currentWallet!.password));
+    }
   }
 
   Widget _buttonLogin() {
@@ -110,7 +113,7 @@ class LoginScreenState extends State<LoginScreen>
             currentWallet: walletNames[0],
             setWallet: (wallet) => _setWallet(wallet),
             loginError: loginError,
-          )
+          ),
         ];
       });
     } else {

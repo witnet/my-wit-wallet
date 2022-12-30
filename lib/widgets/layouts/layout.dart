@@ -48,98 +48,108 @@ class Layout extends StatelessWidget {
           },
         ));
   }
+
   // Content displayed between header and bottom actions
-  Widget buildListView(context) {
+  Widget buildMainContent(BuildContext context, theme) {
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     if (slidingPanel == null) {
-      return GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: ListView(
-            controller: ScrollController(),
-            children: [
-              HeaderLayout(
-                navigationActions: navigationActions,
-                dashboardActions: dashboardActions,
-              ),
-              Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minWidth: 100,
-                    maxWidth: 600,
-                  ),
-                  child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Column(children: widgetList)),
-                ),
-              ),
-            ],
-          ));
+      return _buildMainLayout(context, theme, false);
     } else {
-      final theme = Theme.of(context);
       return SlidingUpPanel(
-        controller: panelController,
-        color: extendedTheme.walletListBackgroundColor!,
-        minHeight: 0,
-        maxHeight: MediaQuery.of(context).size.height * 0.3,
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(8), topRight: Radius.circular(8)),
-        panel: slidingPanel,
-        body: ListView(
-          controller: ScrollController(),
-          children: [
-            HeaderLayout(
-              navigationActions: [
-                showWalletList(context),
-                Flexible(
-                    child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: 50,
-                  ),
-                  child: Column(
-                    children: [smallWitnetEyeIcon(theme)],
-                  ),
-                )),
-                ...navigationActions
-              ],
-              dashboardActions: dashboardActions,
-            ),
-            Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: 600,
-                ),
-                child: Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Column(children: widgetList)),
+          controller: panelController,
+          color: extendedTheme.walletListBackgroundColor!,
+          minHeight: 0,
+          maxHeight: MediaQuery.of(context).size.height * 0.3,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+          panel: slidingPanel,
+          body: _buildMainLayout(context, theme, true));
+    }
+  }
+
+  Widget _buildMainLayout(BuildContext context, theme, bool panel) {
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+            floating: true,
+            snap: true,
+            pinned: true,
+            elevation: 0,
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.transparent,
+            expandedHeight: dashboardActions != null ? 300 : 200,
+            toolbarHeight: dashboardActions != null ? 300 : 200,
+            flexibleSpace: headerLayout(context, theme)),
+        SliverPadding(
+          padding: EdgeInsets.only(left: 16, right: 16, bottom: panel ? 70 : 0),
+          sliver: SliverToBoxAdapter(
+              child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minWidth: 100,
+                maxWidth: 600,
               ),
+              child:
+                  Column(mainAxisSize: MainAxisSize.max, children: widgetList),
             ),
-          ],
+          )),
         ),
+      ],
+    );
+  }
+
+  Widget headerLayout(context, theme) {
+    if (slidingPanel == null) {
+      return Container(
+          child: HeaderLayout(
+        navigationActions: navigationActions,
+        dashboardActions: dashboardActions,
+      ));
+    } else {
+      return HeaderLayout(
+        navigationActions: [
+          showWalletList(context),
+          Flexible(
+              child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: 50,
+            ),
+            child: Column(
+              children: [smallWitnetEyeIcon(theme)],
+            ),
+          )),
+          ...navigationActions
+        ],
+        dashboardActions: dashboardActions,
       );
     }
   }
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      appBar: appBar,
-      resizeToAvoidBottomInset: false,
-      backgroundColor: theme.backgroundColor,
-      body: buildListView(context),
-      bottomNavigationBar: BottomAppBar(
-        notchMargin: 8,
-        child: Padding(padding: EdgeInsets.only(left: 8, right: 8, bottom: 8), child: 
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: actions,
-        ),
-        ),
-        color: theme.backgroundColor,
-      ),
-    );
+    return GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: theme.backgroundColor,
+          body: buildMainContent(context, theme),
+          bottomNavigationBar: BottomAppBar(
+            notchMargin: 8,
+            elevation: 0,
+            child: Padding(
+              padding: EdgeInsets.only(
+                  left: 8, right: 8, bottom: actions.length > 0 ? 8 : 0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: actions,
+              ),
+            ),
+            color: theme.backgroundColor,
+          ),
+        ));
   }
 }
