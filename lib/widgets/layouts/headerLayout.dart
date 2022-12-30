@@ -36,7 +36,8 @@ class HeaderLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     final theme = Theme.of(context);
-    return ClipPath(
+    return SafeArea(
+      child: ClipPath(
         clipper: Customshape(),
         child: Container(
           // ignore: todo
@@ -46,7 +47,7 @@ class HeaderLayout extends StatelessWidget {
           color: extendedTheme.headerBackgroundColor,
           child: Column(children: [
             Container(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: navigationActions.length > 1
@@ -74,6 +75,6 @@ class HeaderLayout extends StatelessWidget {
               )),
             ])),
           ]),
-        ));
+        )));
   }
 }
