@@ -59,7 +59,7 @@ extension TimestampExtension on int {
             truncate == -1 ||
             result.compareTo(1) == -1) {
           // result < 1
-          return Decimal.parse(result.toString()).toString();
+          return Decimal.parse(result.toStringAsFixed(10)).toString();
         } else {
           return Decimal.parse(result.toStringAsFixed(truncate)).toString();
         }

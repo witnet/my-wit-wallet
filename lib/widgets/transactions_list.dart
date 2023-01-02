@@ -104,63 +104,72 @@ class TransactionsListState extends State<TransactionsList> {
           ? transaction.inputs[0].address
           : transaction.outputs[0].pkh.address;
     }
+    bool isScreenWide = MediaQuery.of(context).size.width >= 600;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        child: Container(
-          decoration: BoxDecoration(
-            color: WitnetPallet.transparent,
-            border: Border(
-                bottom: BorderSide(
-              color: extendedTheme.txBorderColor!,
-              width: 1,
-            )),
-          ),
-          child: Row(children: [
-            Expanded(
-                child: label == 'from'
-                    ? Text(
-                        ' + ${receiveValue(transaction).standardizeWitUnits()} Wit',
-                        style: theme.textTheme.bodyText1?.copyWith(
-                            color: extendedTheme.txValuePositiveColor),
-                        overflow: TextOverflow.ellipsis,
-                      )
-                    : Text(
-                        ' - ${sendValue(transaction).standardizeWitUnits()} Wit}',
-                        style: theme.textTheme.bodyText1?.copyWith(
-                            color: extendedTheme.txValueNegativeColor),
-                        overflow: TextOverflow.ellipsis,
-                      )),
-            Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              transaction.txnTime.formatDuration(),
+              textAlign: TextAlign.start,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.caption,
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: WitnetPallet.transparent,
+                border: Border(
+                    bottom: BorderSide(
+                  color: extendedTheme.txBorderColor!,
+                  width: 0.5,
+                )),
+              ),
               child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                padding: EdgeInsets.only(top: 16, bottom: 16),
+                child: Row(
                   children: [
-                    Text(
-                      label.capitalize(),
-                      style: theme.textTheme.bodyText2,
+                    Expanded(
+                        child: label == 'from'
+                            ? Text(
+                                ' + ${receiveValue(transaction).standardizeWitUnits()} Wit',
+                                style: theme.textTheme.bodyText1?.copyWith(
+                                    color: extendedTheme.txValuePositiveColor),
+                                overflow: TextOverflow.ellipsis,
+                              )
+                            : Text(
+                                ' - ${sendValue(transaction).standardizeWitUnits()} Wit',
+                                style: theme.textTheme.bodyText1?.copyWith(
+                                    color: extendedTheme.txValueNegativeColor),
+                                overflow: TextOverflow.ellipsis,
+                              )),
+                    SizedBox(
+                      width: 8,
                     ),
-                    SizedBox(height: 4),
-                    Text(
-                      address,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodyText1,
-                    ),
+                    Expanded(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          label.capitalize(),
+                          style: theme.textTheme.bodyText2,
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          address,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodyText1,
+                        ),
+                      ],
+                    )),
                   ],
                 ),
               ),
-            ),
-            Expanded(
-              child: Text(
-                transaction.txnTime.formatDuration(),
-                textAlign: TextAlign.end,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.caption,
-              ),
-            ),
-          ]),
+            )
+          ],
         ),
         onTap: () {
           widget.setDetails(transaction);

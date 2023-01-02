@@ -124,7 +124,8 @@ class TransactionDetails extends StatelessWidget {
             label: 'Type',
             text: transaction.type.split('_').join(' ').toTitleCase()),
         SizedBox(height: 16),
-        InfoElement(label: 'Fee', text: transaction.fee.toString()),
+        InfoElement(
+            label: 'Fee', text: '${transaction.fee.standardizeWitUnits()} Wit'),
         SizedBox(height: 16),
         InfoElement(label: 'Timestamp', text: transaction.txnTime.formatDate()),
         SizedBox(height: 16),
