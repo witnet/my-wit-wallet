@@ -16,6 +16,7 @@ import 'package:witnet_wallet/widgets/layouts/layout.dart';
 import 'package:witnet_wallet/screens/login/view/login_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
+import 'package:witnet_wallet/util/extensions/int_extensions.dart';
 
 const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
@@ -120,7 +121,7 @@ class DashboardLayoutState extends State<DashboardLayout>
         children: [
           SizedBox(height: 16),
           Text(
-            '${state.currentWallet.balanceNanoWit().availableNanoWit} nanoWit',
+            '${state.currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits()} Wit',
             textAlign: TextAlign.center,
             style: theme.textTheme.headline4,
           ),

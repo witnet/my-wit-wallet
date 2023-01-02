@@ -10,6 +10,7 @@ import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/widgets/alert_dialog.dart';
 import 'package:witnet_wallet/widgets/info_element.dart';
+import 'package:witnet_wallet/util/extensions/int_extensions.dart';
 
 typedef void VoidCallback(bool value);
 
@@ -162,7 +163,7 @@ class ReviewStepState extends State<ReviewStep>
             text: state.vtTransaction.body.outputs.first.value.toString(),
           ),
           SizedBox(height: 16),
-          InfoElement(label: 'Fee', text: '${fee.toString()} nanoWit'),
+          InfoElement(label: 'Fee', text: '${fee.standardizeWitUnits()} Wit'),
           SizedBox(height: 24),
         ]);
       },

@@ -43,6 +43,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   worker_manager: ^4.0.2
   toml: ^0.13.1
+  decimal: 2.3.2
 
   # witnet: 0.1.4
   witnet:

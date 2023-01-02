@@ -4,7 +4,7 @@ import 'package:witnet/schema.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/extensions/string_extensions.dart';
-import 'package:witnet_wallet/util/extensions/timestamp_extensions.dart';
+import 'package:witnet_wallet/util/extensions/int_extensions.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/widgets/info_element.dart';
 
@@ -54,7 +54,7 @@ class TransactionDetails extends StatelessWidget {
                   Text(output.pkh.address.toString(),
                       style: theme.textTheme.bodyText1),
                   SizedBox(height: 8),
-                  Text('${output.value.toString()} nanoWit',
+                  Text('${output.value.standardizeWitUnits()} Wit',
                       style: theme.textTheme.labelMedium),
                 ],
               ),
@@ -85,7 +85,7 @@ class TransactionDetails extends StatelessWidget {
           children: [
             Text(input.address.toString(), style: theme.textTheme.bodyText1),
             SizedBox(height: 8),
-            Text('${input.value.toString()} nanoWit',
+            Text('${input.value.standardizeWitUnits()} Wit',
                 style: theme.textTheme.labelMedium),
           ],
         ));

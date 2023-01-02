@@ -1,4 +1,4 @@
-import 'package:witnet_wallet/util/extensions/timestamp_extensions.dart';
+import 'package:witnet_wallet/util/extensions/int_extensions.dart';
 import 'package:witnet_wallet/util/extensions/string_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:witnet_wallet/widgets/transaction_details.dart';
@@ -42,14 +42,6 @@ class TransactionsListState extends State<TransactionsList> {
   @override
   void dispose() {
     super.dispose();
-  }
-
-  String formatBalance(int value) {
-    // double wit = nanoWitToWit(value);
-    // if (wit > 1.0) {
-    //   return '${wit.toStringAsPrecision(9)} Wit';
-    // }
-    return '${value.toString()} nanoWit';
   }
 
   bool receiver(ValueTransferInfo vti) {
@@ -129,13 +121,13 @@ class TransactionsListState extends State<TransactionsList> {
             Expanded(
                 child: label == 'from'
                     ? Text(
-                        ' + ${formatBalance(receiveValue(transaction))}',
+                        ' + ${receiveValue(transaction).standardizeWitUnits()} Wit',
                         style: theme.textTheme.bodyText1?.copyWith(
                             color: extendedTheme.txValuePositiveColor),
                         overflow: TextOverflow.ellipsis,
                       )
                     : Text(
-                        ' - ${formatBalance(sendValue(transaction))}',
+                        ' - ${sendValue(transaction).standardizeWitUnits()} Wit}',
                         style: theme.textTheme.bodyText1?.copyWith(
                             color: extendedTheme.txValueNegativeColor),
                         overflow: TextOverflow.ellipsis,
@@ -184,7 +176,9 @@ class TransactionsListState extends State<TransactionsList> {
         .toList();
     List<ValueTransferInfo> vtts = widget.valueTransfers
         .where((vtt) => widget.txHashes.contains(vtt.txnHash))
-        .toList();
+        .toList()
+      ..sort((t1, t2) => t2.txnTime.compareTo(t1.txnTime));
+
     if (widget.details != null) {
       return TransactionDetails(
         transaction: widget.details!,

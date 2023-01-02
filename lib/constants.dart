@@ -23,12 +23,12 @@ const kMaxLogoHeight = 125.0;
 
 /// Wallet Settings
 
-Map<String, String> WIT_UNIT = {
-  'WIT': 'Wit',
-  'MILLI': 'milliWit',
-  'MICRO': 'microWit',
-  'NANO': 'nanoWit',
-};
+enum WitUnit {
+  Wit,
+  milliWit,
+  microWit,
+  nanoWit,
+}
 
 const int EXTERNAL_GAP_LIMIT = 3;
 const int INTERNAL_GAP_LIMIT = 1;

@@ -15,6 +15,7 @@ import 'package:witnet_wallet/util/preferences.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 import 'package:witnet_wallet/widgets/address.dart';
+import 'package:witnet_wallet/util/extensions/int_extensions.dart';
 
 class ListItem {
   bool isSelected = false;
@@ -142,8 +143,10 @@ class WalletListState extends State<WalletList> {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     final isSelectedWallet = walletId == selectedWallet?.id;
-    String? balance =
-        wallets?[walletId]!.balanceNanoWit().availableNanoWit.toString();
+    String? balance = wallets?[walletId]!
+        .balanceNanoWit()
+        .availableNanoWit
+        .standardizeWitUnits();
     String? address = wallets?[walletId]
         ?.externalAccounts[selectedAddressList?[walletId] != null
             ? int.parse(selectedAddressList?[walletId])
@@ -200,7 +203,7 @@ class WalletListState extends State<WalletList> {
             ),
             Expanded(
               child: Text(
-                balance != null ? '$balance nanoWit' : '',
+                balance != null ? '$balance Wit' : '',
                 textAlign: TextAlign.end,
                 overflow: TextOverflow.ellipsis,
                 style: textStyle,

@@ -6,6 +6,7 @@ import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/preferences.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/address.dart';
+import 'package:witnet_wallet/util/extensions/int_extensions.dart';
 
 class AddressList extends StatefulWidget {
   final List<Address> addressList;
@@ -66,7 +67,7 @@ class AddressListState extends State<AddressList> {
                           ),
                           Expanded(
                             child: Text(
-                              '${address.balance.availableNanoWit.toString()} nanoWit',
+                              '${address.balance.availableNanoWit.standardizeWitUnits()} Wit',
                               textAlign: TextAlign.end,
                               style: textStyle,
                             ),
