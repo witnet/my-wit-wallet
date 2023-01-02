@@ -101,10 +101,9 @@ class TransactionsListState extends State<TransactionsList> {
       address = 'Several addresses';
     } else {
       address = label == 'from'
-          ? transaction.inputs[0].address
-          : transaction.outputs[0].pkh.address;
+          ? transaction.inputs[0].address.cropMiddle(18)
+          : transaction.outputs[0].pkh.address.cropMiddle(18);
     }
-    bool isScreenWide = MediaQuery.of(context).size.width >= 600;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -160,7 +159,7 @@ class TransactionsListState extends State<TransactionsList> {
                         SizedBox(height: 4),
                         Text(
                           address,
-                          overflow: TextOverflow.ellipsis,
+                          overflow: TextOverflow.fade,
                           style: theme.textTheme.bodyText1,
                         ),
                       ],

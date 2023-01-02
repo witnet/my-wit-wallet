@@ -17,6 +17,7 @@ import 'package:witnet_wallet/screens/login/view/login_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/util/extensions/int_extensions.dart';
+import 'package:witnet_wallet/util/extensions/string_extensions.dart';
 
 const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
@@ -131,13 +132,13 @@ class DashboardLayoutState extends State<DashboardLayout>
                 child: IconButton(
                     iconSize: 12,
                     onPressed: () {
-                      Clipboard.setData(ClipboardData(
-                          text: '${state.currentAddress.address}'));
+                      Clipboard.setData(
+                          ClipboardData(text: state.currentAddress.address));
                     },
                     icon: Icon(FontAwesomeIcons.copy))),
             Flexible(
                 child: Text(
-              '${state.currentAddress.address}',
+              state.currentAddress.address.cropMiddle(18),
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.headline5,
             ))

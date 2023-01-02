@@ -16,6 +16,7 @@ import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 import 'package:witnet_wallet/widgets/address.dart';
 import 'package:witnet_wallet/util/extensions/int_extensions.dart';
+import 'package:witnet_wallet/util/extensions/string_extensions.dart';
 
 class ListItem {
   bool isSelected = false;
@@ -152,7 +153,7 @@ class WalletListState extends State<WalletList> {
             ? int.parse(selectedAddressList?[walletId])
             : 0]
         ?.address
-        .toString();
+        .cropMiddle(16);
     final textStyle = TextStyle(
         fontFamily: 'NotoSans',
         color: WitnetPallet.white,
@@ -194,7 +195,7 @@ class WalletListState extends State<WalletList> {
                     ),
                     Text(
                       address != null ? address : '',
-                      overflow: TextOverflow.ellipsis,
+                      overflow: TextOverflow.fade,
                       style: textStyle,
                     ),
                   ],
@@ -239,6 +240,7 @@ class WalletListState extends State<WalletList> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [_buildInitialButtons()]),
       ListView.builder(
+        padding: EdgeInsets.all(0),
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         itemCount: walletNameList.length,

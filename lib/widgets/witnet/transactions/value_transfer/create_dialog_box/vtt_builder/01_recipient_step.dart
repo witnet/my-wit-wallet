@@ -74,6 +74,10 @@ class RecipientStepState extends State<RecipientStep>
     return type == 'Absolute';
   }
 
+  bool _isValidNumber(String number) {
+    return double.tryParse(number) != null;
+  }
+
   bool _notFocusForm() {
     return !_addressFocusNode.hasFocus &&
         !_amountFocusNode.hasFocus &&
@@ -148,6 +152,11 @@ class RecipientStepState extends State<RecipientStep>
             _hasAmountError = true;
             _errorAmountText = 'This field is required';
           });
+        } else if (!_isValidNumber(_amount)) {
+          setState(() {
+            _hasAmountError = true;
+            _errorAmountText = 'Invalid number';
+          });
         } else if (balanceInfo.availableNanoWit < _minerFeeToNumber()) {
           setState(() {
             _hasAmountError = true;
@@ -177,6 +186,11 @@ class RecipientStepState extends State<RecipientStep>
               _errorFeeText = 'This field is required';
             });
             widget.nextAction(null);
+          } else if (!_isValidNumber(_amount)) {
+            setState(() {
+              _hasFeeError = true;
+              _errorFeeText = 'Invalid number';
+            });
           } else if (balanceInfo.availableNanoWit < _minerFeeToNumber()) {
             setState(() {
               _hasFeeError = true;
