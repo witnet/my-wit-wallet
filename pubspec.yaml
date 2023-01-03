@@ -63,7 +63,7 @@ dependencies:
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/img/witnet.png"
+  image_path: "assets/icon/icon.png"
 
 
 flutter:
