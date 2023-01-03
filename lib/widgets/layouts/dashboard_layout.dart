@@ -130,6 +130,8 @@ class DashboardLayoutState extends State<DashboardLayout>
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Flexible(
                 child: IconButton(
+                    padding: EdgeInsets.all(4),
+                    constraints: BoxConstraints(),
                     iconSize: 12,
                     onPressed: () {
                       Clipboard.setData(
