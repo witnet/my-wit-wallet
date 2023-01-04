@@ -10,7 +10,7 @@ import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/widgets/alert_dialog.dart';
 import 'package:witnet_wallet/widgets/info_element.dart';
-import 'package:witnet_wallet/util/extensions/int_extensions.dart';
+import 'package:witnet_wallet/util/extensions/num_extensions.dart';
 
 typedef void VoidCallback(bool value);
 

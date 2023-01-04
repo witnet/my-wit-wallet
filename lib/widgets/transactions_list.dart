@@ -1,5 +1,6 @@
 import 'package:witnet_wallet/util/extensions/int_extensions.dart';
 import 'package:witnet_wallet/util/extensions/string_extensions.dart';
+import 'package:witnet_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:witnet_wallet/widgets/transaction_details.dart';
 import 'package:witnet/explorer.dart';
