@@ -1,3 +1,5 @@
+import 'package:witnet_wallet/constants.dart';
+import 'package:witnet_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -66,8 +68,12 @@ class RecipientStepState extends State<RecipientStep>
     super.dispose();
   }
 
-  int _minerFeeToNumber() {
-    return int.parse(_minerFee != '' ? _minerFee : '0');
+  num _minerFeeToNumber() {
+    return num.parse(_minerFee != '' ? _minerFee : '0');
+  }
+
+  num _amountToNumber() {
+    return num.parse(_amount != '' ? _amount : '0');
   }
 
   bool _isAbsoluteFee(String type) {
@@ -76,6 +82,16 @@ class RecipientStepState extends State<RecipientStep>
 
   bool _isValidNumber(String number) {
     return double.tryParse(number) != null;
+  }
+
+  bool _notEnoughFunds() {
+    final balance = balanceInfo.availableNanoWit;
+    int minerFee = int.parse(_minerFeeToNumber().standardizeWitUnits(
+        inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit));
+    String nanoWitAmount = _amountToNumber().standardizeWitUnits(
+        inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit);
+    int totalToSpend = minerFee + int.parse(nanoWitAmount);
+    return balance < totalToSpend;
   }
 
   bool _notFocusForm() {
@@ -102,7 +118,9 @@ class RecipientStepState extends State<RecipientStep>
           _showFeeInput = true;
         });
         BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
-            feeType: FeeType.Absolute, feeNanoWit: _minerFeeToNumber()));
+            feeType: FeeType.Absolute,
+            feeNanoWit: int.parse(_minerFeeToNumber().standardizeWitUnits(
+                inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit))));
       } else {
         setState(() {
           _feeType = type;
@@ -157,7 +175,7 @@ class RecipientStepState extends State<RecipientStep>
             _hasAmountError = true;
             _errorAmountText = 'Invalid number';
           });
-        } else if (balanceInfo.availableNanoWit < _minerFeeToNumber()) {
+        } else if (_notEnoughFunds()) {
           setState(() {
             _hasAmountError = true;
             _errorAmountText = 'Not enough funds';
@@ -191,7 +209,7 @@ class RecipientStepState extends State<RecipientStep>
               _hasFeeError = true;
               _errorFeeText = 'Invalid number';
             });
-          } else if (balanceInfo.availableNanoWit < _minerFeeToNumber()) {
+          } else if (_notEnoughFunds()) {
             setState(() {
               _hasFeeError = true;
               _errorFeeText = 'Not enough funds';
@@ -215,8 +233,12 @@ class RecipientStepState extends State<RecipientStep>
   void nextAction() {
     BlocProvider.of<VTTCreateBloc>(context).add(AddValueTransferOutputEvent(
         currentWallet: widget.currentWallet,
-        output: ValueTransferOutput.fromJson(
-            {'pkh': _address, 'value': int.parse(_amount), 'time_lock': 0}),
+        output: ValueTransferOutput.fromJson({
+          'pkh': _address,
+          'value': _amountToNumber().standardizeWitUnits(
+              inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit),
+          'time_lock': 0
+        }),
         merge: true));
   }
 
@@ -321,7 +343,10 @@ class RecipientStepState extends State<RecipientStep>
                       BlocProvider.of<VTTCreateBloc>(context).add(
                           UpdateFeeEvent(
                               feeType: FeeType.Absolute,
-                              feeNanoWit: _minerFeeToNumber()));
+                              feeNanoWit: int.parse(_minerFeeToNumber()
+                                  .standardizeWitUnits(
+                                      inputUnit: WitUnit.Wit,
+                                      outputUnit: WitUnit.nanoWit))));
                     });
                   },
                 )

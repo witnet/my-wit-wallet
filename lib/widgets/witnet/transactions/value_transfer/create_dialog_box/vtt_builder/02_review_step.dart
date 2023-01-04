@@ -160,7 +160,8 @@ class ReviewStepState extends State<ReviewStep>
           SizedBox(height: 16),
           InfoElement(
             label: 'Amount',
-            text: state.vtTransaction.body.outputs.first.value.toString(),
+            text:
+                '${state.vtTransaction.body.outputs.first.value.standardizeWitUnits()} Wit',
           ),
           SizedBox(height: 16),
           InfoElement(label: 'Fee', text: '${fee.standardizeWitUnits()} Wit'),
