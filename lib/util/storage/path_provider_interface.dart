@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io' as io;
 
-import 'package:path_provider_windows/path_provider_windows.dart';
-import 'package:path_provider_linux/path_provider_linux.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 

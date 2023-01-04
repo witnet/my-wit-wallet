@@ -225,30 +225,26 @@ class _AnimatedTextFormFieldState extends State<AnimatedTextFormField> {
       onChanged: widget.onChanged,
     );
 
-    if (widget.loadingController != null) {
-      textField = ScaleTransition(
-        scale: scaleAnimation,
-        child: AnimatedBuilder(
-          animation: sizeAnimation,
-          builder: (context, child) => ConstrainedBox(
-            constraints: BoxConstraints.tightFor(width: sizeAnimation.value),
-            child: child,
-          ),
-          child: textField,
-        ),
-      );
-    }
-
-    if (widget.inertiaController != null) {
-      textField = AnimatedBuilder(
-        animation: fieldTranslateAnimation,
-        builder: (context, child) => Transform.translate(
-          offset: Offset(fieldTranslateAnimation.value, 0),
+    textField = ScaleTransition(
+      scale: scaleAnimation,
+      child: AnimatedBuilder(
+        animation: sizeAnimation,
+        builder: (context, child) => ConstrainedBox(
+          constraints: BoxConstraints.tightFor(width: sizeAnimation.value),
           child: child,
         ),
         child: textField,
-      );
-    }
+      ),
+    );
+
+    textField = AnimatedBuilder(
+      animation: fieldTranslateAnimation,
+      builder: (context, child) => Transform.translate(
+        offset: Offset(fieldTranslateAnimation.value, 0),
+        child: child,
+      ),
+      child: textField,
+    );
 
     return textField;
   }

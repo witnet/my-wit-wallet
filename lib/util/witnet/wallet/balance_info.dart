@@ -1,5 +1,4 @@
 import 'package:witnet/data_structures.dart';
-import 'package:witnet/utils.dart';
 
 class BalanceInfo {
   final int availableNanoWit;
