@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'dart:math' as math;

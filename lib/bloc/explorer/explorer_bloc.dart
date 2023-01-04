@@ -110,7 +110,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     });
 
     /// if the gap limit is not maintained then generate additional accounts
-    ///
     int lastExternalIndex = dbWallet.externalAccounts.length;
     while (externalGap < EXTERNAL_GAP_LIMIT) {
       await dbWallet.generateKey(

@@ -28,14 +28,12 @@ Future<dynamic> isolateRunner(
     String method, Map<String, dynamic> params) async {
   ReceivePort response = ReceivePort();
 
-  /// initialize the crypto isolate if not already done so
-  // if (!Locator.instance<CryptoIsolate>().initialized)
+  /// initialize the crypto isolate
   await Locator.instance<CryptoIsolate>().init();
 
   /// send the request
   Locator.instance<CryptoIsolate>()
       .send(method: method, params: params, port: response.sendPort);
-  //
   return await response.first;
 }
 
@@ -172,9 +170,6 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     CryptoInitWalletDoneEvent event,
     Emitter<CryptoState> emit,
   ) async {
-    // var db = Locator.instance<ApiDatabase>();
-    // WalletStorage wallets = await db.loadWalletsDatabase();
-
     Wallet wallet = event.wallet;
 
     emit(CryptoLoadedWalletState(
@@ -209,7 +204,6 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       final masterKey = key != '' ? key : event.password;
       String keyData = event.keyData;
       if (key != '' && event.seedSource == 'encryptedXprv') {
-        // Decript and encrypt xprv with the master password
         final decryptedXprv =
             Xprv.fromEncryptedXprv(event.keyData, event.password);
         keyData = decryptedXprv.toEncryptedXprv(password: key);

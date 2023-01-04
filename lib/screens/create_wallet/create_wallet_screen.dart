@@ -161,11 +161,6 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   _formCards() {
     return BlocBuilder<CreateWalletBloc, CreateWalletState>(
         builder: (context, state) {
-      // TODO: DELETE IF UNNECESSARY
-      // if (state.status == CreateWalletStatus.Complete) {
-      //   BlocProvider.of<CreateWalletBloc>(context)
-      //       .add(ResetEvent(WalletType.unset));
-      // }
       return Center(
         child: _navigationCards()[state.status],
       );

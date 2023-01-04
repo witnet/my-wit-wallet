@@ -125,7 +125,8 @@ ButtonThemeData buttonTheme = ButtonThemeData(
 );
 TextButtonThemeData textButtonTheme = TextButtonThemeData(
   style: TextButton.styleFrom(
-    foregroundColor: WitnetPallet.white, textStyle: const TextStyle(
+    foregroundColor: WitnetPallet.white,
+    textStyle: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.normal,
       color: WitnetPallet.white,
@@ -134,9 +135,14 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
 );
 ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.all(16), backgroundColor: WitnetPallet.opacityWitnetGreen,
-      disabledForegroundColor: Color.fromARGB(102, 164, 212, 204).withOpacity(0.38), disabledBackgroundColor: Color.fromARGB(102, 164, 212, 204).withOpacity(0.12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)), // background color
+      padding: const EdgeInsets.all(16),
+      backgroundColor: WitnetPallet.opacityWitnetGreen,
+      disabledForegroundColor:
+          Color.fromARGB(102, 164, 212, 204).withOpacity(0.38),
+      disabledBackgroundColor:
+          Color.fromARGB(102, 164, 212, 204).withOpacity(0.12),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4)), // background color
       textStyle: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.normal,
@@ -145,7 +151,8 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
 );
 OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
-  foregroundColor: WitnetPallet.white, disabledForegroundColor: Color.fromARGB(78, 240, 243, 245).withOpacity(0.38),
+  foregroundColor: WitnetPallet.white,
+  disabledForegroundColor: Color.fromARGB(78, 240, 243, 245).withOpacity(0.38),
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
   side: BorderSide(width: 1, color: WitnetPallet.white),
   padding: const EdgeInsets.all(16),
@@ -210,7 +217,7 @@ PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(
             platform: const NoTransitionsBuilder(),
         }
       : const {
-          // handel other platforms you are targeting
+          // handle other platforms you are targeting
         },
 );
 

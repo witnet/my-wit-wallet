@@ -113,9 +113,12 @@ CardTheme cardTheme = CardTheme(
 );
 ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.all(16), backgroundColor: WitnetPallet.darkBlue2,
-      disabledForegroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.38), disabledBackgroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)), // background color
+      padding: const EdgeInsets.all(16),
+      backgroundColor: WitnetPallet.darkBlue2,
+      disabledForegroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.38),
+      disabledBackgroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.12),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4)), // background color
       textStyle: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.normal,
@@ -124,7 +127,8 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
 );
 TextButtonThemeData textButtonTheme = TextButtonThemeData(
   style: TextButton.styleFrom(
-    foregroundColor: WitnetPallet.witnetGreen1, textStyle: const TextStyle(
+    foregroundColor: WitnetPallet.witnetGreen1,
+    textStyle: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.normal,
       color: WitnetPallet.witnetGreen1,
@@ -133,7 +137,8 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
 );
 OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
-  foregroundColor: WitnetPallet.darkBlue2, disabledForegroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.38),
+  foregroundColor: WitnetPallet.darkBlue2,
+  disabledForegroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.38),
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
   side: BorderSide(width: 1, color: WitnetPallet.darkBlue2),
   padding: const EdgeInsets.all(16),
