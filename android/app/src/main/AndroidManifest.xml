@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.witnet.witnet_wallet">
    <application
-        :name="${applicationName}"
+        android:name="${applicationName}"
         android:label="witnet_wallet"
         android:icon="@mipmap/launcher_icon">
         <activity
