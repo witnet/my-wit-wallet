@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:witnet/constants.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
@@ -110,7 +111,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
           outputs[receivers.indexOf(output.pkh.address)].value += output.value;
           if (selectedTimelock != null) {
             outputs[receivers.indexOf(output.pkh.address)].timeLock =
-                (selectedTimelock!.millisecondsSinceEpoch * 100);
+                (selectedTimelock!.millisecondsSinceEpoch * 100) as Int64;
           }
         } else {
           receivers.add(output.pkh.address);
@@ -321,7 +322,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
               event.output.value;
           if (selectedTimelock != null) {
             outputs[receivers.indexOf(event.output.pkh.address)].timeLock =
-                (selectedTimelock!.millisecondsSinceEpoch * 100);
+                (selectedTimelock!.millisecondsSinceEpoch * 100) as Int64;
           }
         } else {
           receivers.add(event.output.pkh.address);

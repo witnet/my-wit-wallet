@@ -30,7 +30,7 @@ class TransactionDetails extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-            Text(output.timeLock.formatDate(), style: theme.textTheme.caption)
+            Text(output.timeLock.toInt().formatDate(), style: theme.textTheme.caption)
           ]));
     }
     return Container(
@@ -55,7 +55,7 @@ class TransactionDetails extends StatelessWidget {
                   Text(output.pkh.address.toString(),
                       style: theme.textTheme.bodyText1),
                   SizedBox(height: 8),
-                  Text('${output.value.standardizeWitUnits()} Wit',
+                  Text('${output.value.toInt().standardizeWitUnits()} Wit',
                       style: theme.textTheme.labelMedium),
                 ],
               ),

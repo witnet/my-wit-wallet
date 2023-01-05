@@ -79,7 +79,7 @@ class TransactionsListState extends State<TransactionsList> {
     int value = 0;
     vti.outputs.forEach((element) {
       if (!addresses.contains(element.pkh.address)) {
-        value += element.value;
+        value += element.value.toInt();
       }
     });
     return value;
