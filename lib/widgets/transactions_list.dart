@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:witnet_wallet/util/extensions/int_extensions.dart';
 import 'package:witnet_wallet/util/extensions/string_extensions.dart';
 import 'package:witnet_wallet/util/extensions/num_extensions.dart';
@@ -34,7 +36,7 @@ class TransactionsList extends StatefulWidget {
 class TransactionsListState extends State<TransactionsList> {
   List<String?> addresses = [];
   ValueTransferInfo? transactionDetails;
-
+  final ScrollController _scroller = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -42,6 +44,7 @@ class TransactionsListState extends State<TransactionsList> {
 
   @override
   void dispose() {
+    _scroller.dispose();
     super.dispose();
   }
 
@@ -184,8 +187,6 @@ class TransactionsListState extends State<TransactionsList> {
         .map((account) => account.address)
         .toList();
     List<ValueTransferInfo> vtts = widget.valueTransfers
-        .where((vtt) => widget.txHashes.contains(vtt.txnHash))
-        .toList()
       ..sort((t1, t2) => t2.txnTime.compareTo(t1.txnTime));
 
     if (widget.details != null) {
@@ -196,8 +197,10 @@ class TransactionsListState extends State<TransactionsList> {
     } else {
       if (vtts.length > 0) {
         return ListView.builder(
+          controller: _scroller,
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+          physics: AlwaysScrollableScrollPhysics(),
+          scrollDirection: Axis.vertical,
           itemCount: vtts.length,
           itemBuilder: (context, index) {
             return _buildTransactionItem(vtts[index]);

@@ -8,15 +8,18 @@ import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/address.dart';
 import 'package:witnet_wallet/util/extensions/num_extensions.dart';
 
+import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
+import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/util/storage/database/account.dart';
+
 class AddressList extends StatefulWidget {
-  final List<Address> addressList;
-  final String currentAddress;
+  final List<Account> accountList;
+
   final Wallet currentWallet;
 
   const AddressList({
-    required this.addressList,
+    required this.accountList,
     required this.currentWallet,
-    required this.currentAddress,
   });
 
   @override
@@ -24,6 +27,7 @@ class AddressList extends StatefulWidget {
 }
 
 class AddressListState extends State<AddressList> {
+  String? currentAddress;
   @override
   void initState() {
     super.initState();
@@ -34,10 +38,10 @@ class AddressListState extends State<AddressList> {
     super.dispose();
   }
 
-  _buildAddressItem(Address address) {
+  _buildAddressItem(Account account) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    final isAddressSelected = address.address == widget.currentAddress;
+    final isAddressSelected = account.address == currentAddress;
     final textStyle = isAddressSelected
         ? theme.textTheme.labelMedium
         : theme.textTheme.bodyText1;
@@ -60,41 +64,69 @@ class AddressListState extends State<AddressList> {
                         children: [
                           Expanded(
                             child: Text(
-                              address.address,
+                              account.address,
                               overflow: TextOverflow.ellipsis,
                               style: textStyle,
                             ),
                           ),
                           Expanded(
                             child: Text(
-                              '${address.balance.availableNanoWit.standardizeWitUnits()} Wit',
+                              '${account.balance.availableNanoWit.standardizeWitUnits()} Wit',
                               textAlign: TextAlign.end,
                               style: textStyle,
                             ),
                           ),
                         ]))),
             onTap: () {
+              ApiDashboard api = Locator.instance.get<ApiDashboard>();
               ApiPreferences.setCurrentAddress(AddressEntry(
                   walletId: widget.currentWallet.id,
-                  addressIdx: address.index.toString()));
+                  addressIdx: account.index.toString()));
               //set current account address
+
+              setState(() {
+              api.setCurrentAccount(account);
+
+              });
               BlocProvider.of<DashboardBloc>(context)
                   .add(DashboardUpdateWalletEvent(
                 currentWallet: widget.currentWallet,
-                currentAddress: address,
+                currentAddress: account.address,
               ));
             }));
   }
 
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: widget.addressList.length,
-      itemBuilder: (context, index) {
-        return _buildAddressItem(widget.addressList[index]);
+  BlocListener _dashboardBlocListener(){
+    return BlocListener<DashboardBloc, DashboardState>(
+        listener: (BuildContext context, DashboardState state) {
+          if (state.status == DashboardStatus.Ready) {
+            setState(() {
+              currentAddress = state.currentAddress;
+            });
+          }
+        },
+        child: _dashboardBlocBuilder(),
+    );
+  }
+
+  BlocBuilder _dashboardBlocBuilder(){
+    return BlocBuilder<DashboardBloc, DashboardState>(
+      builder: (BuildContext context, DashboardState state) {
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: widget.currentWallet.allAccounts().values.toList().length,
+          itemBuilder: (context, index) {
+            return _buildAddressItem(widget.currentWallet.allAccounts().values.toList()[index]);
+          },
+        );
       },
     );
+  }
+
+
+
+  Widget build(BuildContext context) {
+    return _dashboardBlocListener();
   }
 }

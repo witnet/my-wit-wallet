@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'dart:math' as math;
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:witnet_wallet/screens/receive_transaction/receive_tx_screen.dart';
 import 'package:witnet_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
+import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/screens/preferences/preferences_screen.dart';
@@ -18,6 +20,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/util/extensions/num_extensions.dart';
 import 'package:witnet_wallet/util/extensions/string_extensions.dart';
+
+import 'package:witnet_wallet/shared/locator.dart';
 
 const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
@@ -34,7 +38,6 @@ class DashboardLayout extends StatefulWidget {
 class DashboardLayoutState extends State<DashboardLayout>
     with TickerProviderStateMixin {
   Wallet? walletStorage;
-  List<String>? walletList;
 
   @override
   void initState() {
@@ -115,12 +118,14 @@ class DashboardLayoutState extends State<DashboardLayout>
     final theme = Theme.of(context);
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
+          Wallet currentWallet = Locator.instance.get<ApiDashboard>().currentWallet!;
+          Account currentAccount = Locator.instance.get<ApiDashboard>().currentAccount!;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: 16),
           Text(
-            '${state.currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits()} Wit',
+            '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits()} Wit',
             textAlign: TextAlign.center,
             style: theme.textTheme.headline4,
           ),
@@ -128,7 +133,7 @@ class DashboardLayoutState extends State<DashboardLayout>
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Flexible(
                 child: Text(
-              state.currentAddress.address.cropMiddle(18),
+              state.currentAddress.cropMiddle(18),
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.headline5,
             )),
@@ -140,7 +145,7 @@ class DashboardLayoutState extends State<DashboardLayout>
                     iconSize: 12,
                     onPressed: () {
                       Clipboard.setData(
-                          ClipboardData(text: state.currentAddress.address));
+                          ClipboardData(text: currentAccount.address));
                     },
                     icon: Icon(FontAwesomeIcons.copy))),
           ]),
@@ -174,13 +179,14 @@ class DashboardLayoutState extends State<DashboardLayout>
 
   Widget _authBuilder() {
     final theme = Theme.of(context);
-    return BlocBuilder<LoginBloc, LoginState>(
-        buildWhen: (previousState, loginState) {
-      if (loginState.status == LoginStatus.LoggedOut) {
-        Navigator.pushReplacementNamed(context, LoginScreen.route);
-      }
-      return true;
-    }, builder: (BuildContext context, LoginState loginState) {
+    return BlocListener<LoginBloc, LoginState>(
+        listener: (BuildContext context, LoginState state) {
+          if (state.status == LoginStatus.LoggedOut) {
+            Navigator.pushReplacementNamed(context, LoginScreen.route);
+          }
+        },
+        child: BlocBuilder<LoginBloc, LoginState>(
+          builder: (BuildContext context, LoginState loginState) {
       Widget _body;
       Widget? _walletList;
       switch (loginState.status) {
@@ -219,7 +225,8 @@ class DashboardLayoutState extends State<DashboardLayout>
         actions: widget.actions,
         slidingPanel: _walletList,
       );
-    });
+    }),
+    );
   }
 
   @override

@@ -56,7 +56,7 @@ class AccountCard extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: AutoSizeText(
-                  '${nanoWitToWit(account.balance().availableNanoWit).toString()} WIT',
+                  '${nanoWitToWit(account.balance.availableNanoWit).toString()} WIT',
                   textAlign: TextAlign.right,
                   maxLines: 1,
                   minFontSize: 10,
