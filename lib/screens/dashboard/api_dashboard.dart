@@ -1,14 +1,14 @@
 import 'package:witnet/data_structures.dart';
+import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 
 import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
-import 'package:witnet_wallet/widgets/address.dart';
 
 class ApiDashboard {
   WalletStorage? _walletStorage;
   //TODO: define wallet type
-  var _currentWallet;
-  var _currentAddress;
+  Wallet? _currentWallet;
+  Account? _currentAccount;
   List<Utxo> spentUtxos = [];
   ApiDashboard();
 
@@ -16,15 +16,18 @@ class ApiDashboard {
     this._walletStorage = walletStorage;
   }
 
-  void setCurrentAddress(Address address) {
-    this._currentAddress = address;
+  void setCurrentAccount(Account account) {
+    this._currentAccount = account;
   }
 
   void setCurrentWalletData(wallet) {
     this._currentWallet = wallet;
   }
+  Wallet? get currentWallet => _currentWallet;
+  set currentWallet(Wallet? wallet) {
+    _currentWallet = wallet;
+  }
 
-  Wallet get currentWallet => _currentWallet;
-  Address get currentAddress => _currentAddress;
+  Account? get currentAccount => _currentAccount;
   WalletStorage? get walletStorage => _walletStorage;
 }

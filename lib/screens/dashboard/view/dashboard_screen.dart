@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
+import 'package:witnet_wallet/util/preferences.dart';
 import 'package:witnet_wallet/widgets/transactions_list.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/shared/locator.dart';
@@ -10,6 +11,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/widgets/layouts/dashboard_layout.dart';
+
+import '../api_dashboard.dart';
 
 const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
@@ -21,13 +24,15 @@ class DashboardScreen extends StatefulWidget {
 
 class DashboardScreenState extends State<DashboardScreen>
     with TickerProviderStateMixin {
-  Map<String, Account> externalAccounts = {};
-  Map<String, Account> internalAccounts = {};
-  List<ValueTransferInfo> valueTransfers = [];
-  Wallet? walletStorage;
+  String? walletId;
+  String? currentAddress;
+  Wallet? currentWallet;
+  Account? currentAccount;
   ValueTransferInfo? txDetails;
   late AnimationController _loadingController;
-  List<String>? walletList;
+
+  ApiDatabase database = Locator.instance.get<ApiDatabase>();
+  ApiDashboard api = Locator.instance.get<ApiDashboard>();
 
   @override
   void initState() {
@@ -38,6 +43,7 @@ class DashboardScreenState extends State<DashboardScreen>
     );
     _loadingController.forward();
     _getVtts();
+    //BlocProvider.of<DashboardBloc>(context).add(DashboardUpdateWalletEvent(currentWallet: currentWallet, currentAddress: currentAccount!.address));
   }
 
   @override
@@ -46,49 +52,74 @@ class DashboardScreenState extends State<DashboardScreen>
     super.dispose();
   }
 
-  void _syncWallet(Wallet wallet) {
+  void _syncWallet(String walletId) {
     BlocProvider.of<ExplorerBloc>(context)
-        .add(SyncWalletEvent(ExplorerStatus.dataloading, wallet));
+    .add(SyncWalletEvent(ExplorerStatus.dataloading, database.walletStorage.wallets[walletId]!));
   }
 
-  void _getVtts() async {
-    valueTransfers = await Locator.instance<ApiDatabase>().getAllVtts();
+   void _getVtts() {
+
+    _setWallet();
+    _setAccount();
+
+    print(currentWallet!.allTransactions());
+    print(currentWallet!.txHashes);
+    print(currentAccount!.address);
   }
 
-  _setDetails(ValueTransferInfo? transaction) {
+  void _setWallet() {
+    setState(() {
+      currentWallet = Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
+    });
+  }
+
+  void _setAccount() {
+    setState(() {
+      currentAccount = Locator.instance.get<ApiDatabase>().walletStorage.currentAccount;
+    });
+  }
+
+  void _setDetails(ValueTransferInfo? transaction) {
     setState(() {
       txDetails = transaction;
     });
   }
 
-  Widget _buildTransactionsList(ThemeData themeData, DashboardState state) {
-    return BlocBuilder<DashboardBloc, DashboardState>(
-      buildWhen: (previous, current) {
-        _syncWallet(current.currentWallet);
-        if (previous.currentWallet.id != current.currentWallet.id) {
-          setState(() {
-            walletStorage = current.currentWallet;
-            txDetails = null;
-          });
-        }
-        return true;
-      },
-      builder: (context, state) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            TransactionsList(
-              themeData: themeData,
-              setDetails: _setDetails,
-              details: txDetails,
-              valueTransfers: valueTransfers,
-              externalAddresses: state.currentWallet.externalAccounts,
-              txHashes: state.currentWallet.txHashes,
-            )
-          ],
-        );
-      },
+  Widget _buildTransactionList(ThemeData themeData){
+    return TransactionsList(
+      themeData: themeData,
+      setDetails: _setDetails,
+      details: txDetails,
+      valueTransfers: currentWallet!.allTransactions(),
+      externalAddresses: currentWallet!.externalAccounts,
+      txHashes: currentWallet!.txHashes,
+    );
+  }
+
+
+  BlocListener _explorerListener(){
+    return BlocListener<ExplorerBloc, ExplorerState>(
+      listener: (BuildContext context, ExplorerState state){
+
+      }
+    );
+  }
+
+  BlocListener _dashboardListener(){
+    return BlocListener<DashboardBloc, DashboardState>(
+        listener: (BuildContext context, DashboardState state) {
+          print(state.props);
+          if(state.status == DashboardStatus.Ready){
+            setState(() {
+
+            currentWallet = database.walletStorage.wallets[state.currentWalletId];
+            currentAccount = currentWallet!.accountByAddress(state.currentAddress);
+            api.setCurrentAccount(currentAccount!);
+            api.setCurrentWalletData(currentWallet);
+            });
+          }
+        },
+      child: _dashboardBuilder(),
     );
   }
 
@@ -96,23 +127,7 @@ class DashboardScreenState extends State<DashboardScreen>
     final theme = Theme.of(context);
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
-      if (state.status == DashboardStatus.Loading) {
-        return _buildTransactionsList(theme, state);
-      } else if (state.status == DashboardStatus.Synchronized) {
-        walletStorage = state.currentWallet;
-        return _buildTransactionsList(theme, state);
-      } else if (state.status == DashboardStatus.Synchronizing) {
-        return SpinKitWave(
-          color: theme.primaryColor,
-        );
-      } else if (state.status == DashboardStatus.Ready) {
-        walletStorage = state.currentWallet;
-        return _buildTransactionsList(theme, state);
-      } else {
-        return SpinKitWave(
-          color: theme.primaryColor,
-        );
-      }
+        return _buildTransactionList(theme);
     });
   }
 
@@ -121,13 +136,11 @@ class DashboardScreenState extends State<DashboardScreen>
     return BlocConsumer<ExplorerBloc, ExplorerState>(
         builder: (BuildContext context, ExplorerState state) {
       return DashboardLayout(
-        dashboardChild: _dashboardBuilder(),
+        dashboardChild: _dashboardListener(),
         actions: [],
       );
     }, listener: (context, state) {
-      if (state.status == ExplorerStatus.dataloaded) {
-        _getVtts();
-      }
+
     });
   }
 }
