@@ -51,7 +51,7 @@ class WalletRepository extends _WalletRepository {
     DatabaseClient databaseClient,
   ) async {
     try {
-      await _store.add(databaseClient, _mapWallet(wallet));
+      await _store.record(wallet.id).add(databaseClient, _mapWallet(wallet));
       return true;
     } catch (e) {
       return false;
@@ -70,10 +70,11 @@ class WalletRepository extends _WalletRepository {
   }
 
   Map<String, String> _mapWallet(Wallet wallet) => {
-        'name': wallet.name,
-        'description': wallet.description ?? '',
-        'xprv': wallet.xprv!,
-        'externalXpub': wallet.externalXpub!,
-        'internalXpub': wallet.internalXpub!,
-      };
+    'id': wallet.id,
+    'name': wallet.name,
+    'description': wallet.description ?? '',
+    'xprv': wallet.xprv!,
+    'externalXpub': wallet.externalXpub!,
+    'internalXpub': wallet.internalXpub!,
+  };
 }

@@ -10,6 +10,7 @@ import 'package:witnet_wallet/util/storage/database/encrypt/salsa20/codec.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/util/storage/database/wallet_repository.dart';
 import 'package:witnet_wallet/util/storage/database/transaction_repository.dart';
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 
 class _DBConfiguration {
   String path;
@@ -193,42 +194,65 @@ class DatabaseService {
     }
   }
 
-  Future<List<Account>> getAllAccounts() async {
-    final List<Account> accounts =
-        await accountRepository.getAccounts(_database);
-    return accounts;
-  }
+  Future<WalletStorage> loadWallets() async {
+    /// Get all Wallets
+    try{
+      final List<Wallet> wallets = await walletRepository.getWallets(_database);
+      /// Get all Accounts
+      final List<Account> accounts =
+      await accountRepository.getAccounts(_database);
 
-  Future<List<Wallet>> getAllWallets() async {
-    final List<Wallet> wallets = await walletRepository.getWallets(_database);
+      /// Get all Transactions
+      final List<ValueTransferInfo> transactions =
+      await vttRepository.getAllTransactions(_database);
 
-    Map<String, Wallet> walletMap = {};
-    for (int i = 0; i < wallets.length; i++) {
-      walletMap[wallets[i].name] = wallets[i];
-    }
+      /// Create a map of the Wallets with the wallet.id as the key.
+      Map<String, Wallet> walletMap = {};
+      Map<String, Account> accountMap = {};
+      Map<String, ValueTransferInfo> vttMap = {};
 
-    List<Account> accounts = await getAllAccounts();
-
-    for (int i = 0; i < accounts.length; i++) {
-      Account account = accounts[i];
-      if (account.path.contains('M/3h/4919h/0h/0/')) {
-        walletMap[account.walletName]!
-                .externalAccounts[int.parse(account.path.split('/').last)] =
-            account;
-      } else {
-        walletMap[account.walletName]!
-                .internalAccounts[int.parse(account.path.split('/').last)] =
-            account;
+      for (int i = 0; i < wallets.length; i++) {
+        walletMap[wallets[i].id] = wallets[i];
       }
+
+      /// Process by account
+      for (int i = 0; i < accounts.length; i++) {
+        String _walletId = accounts[i].walletId;
+        int _accountIndex = accounts[i].index;
+        String _address = accounts[i].address;
+        for (int j = 0; j < transactions.length; j++) {
+          /// add the transaction if it is for this account
+          if (transactions[j].containsAddress(_address)) {
+            accounts[i].vtts.add(transactions[j]);
+          }
+        }
+
+        /// Set the account balance since the transactions are set.
+        await accounts[i].setBalance();
+
+        /// Add the account to the wallet
+        walletMap[_walletId]!.setAccount(accounts[i]);
+      }
+
+      accounts.forEach((account) {
+        accountMap[account.address] = account;
+      });
+
+      transactions.forEach((vtt) {
+        vttMap[vtt.txnHash] = vtt;
+      });
+
+      /// Load current wallet and address from preferences
+      WalletStorage _walletStorage = WalletStorage(wallets: walletMap);
+      _walletStorage.setAccounts(accountMap);
+      _walletStorage.setTransactions(vttMap);
+
+      return _walletStorage;
     }
-
-    return wallets;
-  }
-
-  Future<List<ValueTransferInfo>> getAllVtts() async {
-    final List<ValueTransferInfo> transactions =
-        await vttRepository.getAllTransactions(_database);
-    return transactions;
+    catch (e){
+      print(e);
+      return WalletStorage(wallets: {});
+    }
   }
 
   Future<String?> getKey() async {
@@ -243,7 +267,6 @@ class DatabaseService {
     keyChain.keyHash = null;
     keyChain.unlocked = false;
     unlocked = false;
-
     return true;
   }
 }
