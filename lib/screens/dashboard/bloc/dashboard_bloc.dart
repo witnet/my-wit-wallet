@@ -2,37 +2,27 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/widgets/address.dart';
+
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
 
-final defaultWallet = Wallet(
-    id: '',
-    name: '',
-    description: '',
-    xprv: '',
-    externalXpub: '',
-    internalXpub: '',
-    txHashes: [],
-    externalAccounts: {},
-    internalAccounts: {},
-    lastSynced: -1);
-final defaultAddress = Address(
-    address: '',
-    balance: BalanceInfo(availableUtxos: [], lockedUtxos: []),
-    index: 0);
-
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
+  ApiDashboard dashboard = Locator.instance.get<ApiDashboard>();
+  ApiDatabase database = Locator.instance.get<ApiDatabase>();
+
   DashboardBloc()
       : super(
-          DashboardState(
-              currentWallet: defaultWallet,
-              currentAddress: defaultAddress,
-              status: DashboardStatus.Loading),
-        ) {
+    DashboardState(
+      currentWalletId: defaultWallet.id,
+      currentAddress: defaultAccount.address,
+      currentVttId: defaulVtt.txnHash,
+      status: DashboardStatus.Ready),
+  ) {
     on<DashboardLoadEvent>(_dashboardLoadEvent);
     on<DashboardUpdateWalletEvent>(_dashboardUpdateWallet);
     on<DashboardInitEvent>(_dashboardInitEvent);
@@ -40,46 +30,50 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboardResetEvent>(_dashboardResetEvent);
   }
   get initialState => DashboardState(
-      currentWallet: defaultWallet,
-      currentAddress: defaultAddress,
+      currentWalletId: defaultWallet.id,
+      currentAddress: defaultAccount.address,
+      currentVttId: defaulVtt.txnHash,
       status: DashboardStatus.Ready);
 
   Future<void> _dashboardLoadEvent(
     DashboardLoadEvent event,
     Emitter<DashboardState> emit,
   ) async {
-    ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
+    dashboard.currentWallet = database.walletStorage.wallets[event.currentWalletId!];
     emit(DashboardState(
-        currentWallet: apiDashboard.currentWallet,
-        currentAddress: apiDashboard.currentAddress,
+        currentWalletId: event.currentWalletId!,
+        currentAddress: event.currentAddress!,
+        currentVttId: event.currentVttId!,
         status: DashboardStatus.Ready));
   }
 
   Future<void> _dashboardInitEvent(
       DashboardInitEvent event, Emitter<DashboardState> emit) async {
     await Future.delayed(Duration(seconds: 4));
-    ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
     emit(DashboardState(
-        currentWallet: apiDashboard.currentWallet,
-        currentAddress: apiDashboard.currentAddress,
-        status: DashboardStatus.Loading));
+        currentWalletId: event.currentWalletId!,
+        currentAddress: event.currentAddress!,
+        currentVttId: event.currentVttId!,
+        status: DashboardStatus.Ready));
   }
 
   void _dashboardUpdateWallet(
       DashboardUpdateWalletEvent event, Emitter<DashboardState> emit) {
     emit(DashboardState(
-        currentWallet: event.currentWallet!,
+        currentWalletId: event.currentWallet!.id,
         currentAddress: event.currentAddress!,
+        currentVttId: event.currentVttId ?? defaulVtt.txnHash,
         status: DashboardStatus.Ready));
   }
 
   Future<void> _dashboardUpdateStatusEvent(
       DashboardUpdateEvent event, Emitter<DashboardState> emit) async {
-    ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
+    dashboard.currentWallet = database.walletStorage.wallets[event.currentWalletId!];
     emit(DashboardState(
-        currentWallet: apiDashboard.currentWallet,
-        currentAddress: apiDashboard.currentAddress,
-        status: DashboardStatus.Loading));
+        currentWalletId: event.currentWalletId!,
+        currentAddress: event.currentAddress!,
+        currentVttId: event.currentVttId!,
+        status: DashboardStatus.Ready));
   }
 
   void _dashboardResetEvent(
