@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:witnet_wallet/screens/login/view/login_screen.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
+import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
@@ -24,14 +28,14 @@ enum VTTsteps {
 
 class CreateVttScreenState extends State<CreateVttScreen>
     with TickerProviderStateMixin {
-  Wallet? walletStorage;
+  Wallet? currentWallet;
   dynamic nextAction;
   dynamic nextStep;
   List<VTTsteps> stepListItems = VTTsteps.values.toList();
   VTTsteps stepSelectedItem = VTTsteps.Transaction;
   int currentStepIndex = 0;
   late AnimationController _loadingController;
-
+  ApiDatabase database = Locator.instance.get<ApiDatabase>();
   @override
   void initState() {
     super.initState();
@@ -40,6 +44,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
       duration: const Duration(milliseconds: 1200),
     );
     _loadingController.forward();
+    _getCurrentWallet();
   }
 
   @override
@@ -66,7 +71,13 @@ class CreateVttScreenState extends State<CreateVttScreen>
       stepSelectedItem = stepListItems[currentStepIndex];
     }
   }
-
+  void _getCurrentWallet() {
+    setState(() {
+      currentWallet = database.walletStorage.currentWallet;
+      BlocProvider.of<VTTCreateBloc>(context)
+          .add(AddSourceWalletsEvent(currentWallet: currentWallet!));
+    });
+  }
   List<Widget> _actions() {
     return [
       PaddedButton(
@@ -82,20 +93,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   Widget _buildSendVttForm() {
-    return BlocBuilder<DashboardBloc, DashboardState>(
-      buildWhen: (previous, current) {
-        if (current.status != DashboardStatus.Ready) {
-          Navigator.pushReplacementNamed(context, LoginScreen.route);
-          return false;
-        } else if (current.currentWallet.id != previous.currentWallet.id) {
-          Navigator.pushReplacementNamed(context, DashboardScreen.route);
-          return false;
-        }
-        BlocProvider.of<VTTCreateBloc>(context)
-            .add(AddSourceWalletsEvent(currentWallet: current.currentWallet));
-        return true;
-      },
-      builder: (context, state) {
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -115,15 +113,54 @@ class CreateVttScreenState extends State<CreateVttScreen>
             stepSelectedItem == VTTsteps.Transaction
                 ? RecipientStep(
                     nextAction: _setNextAction,
-                    currentWallet: state.currentWallet,
+                    currentWallet: currentWallet!,
                   )
                 : ReviewStep(
                     nextAction: _setNextAction,
-                    currentWallet: state.currentWallet,
+                    currentWallet: currentWallet!,
                   ),
           ],
         );
+  }
+
+  BlocListener _dashboardBlocListener(){
+    return BlocListener<DashboardBloc, DashboardState>(
+      listener: (BuildContext context, DashboardState state) {
+        if (state.status == DashboardStatus.Ready) {
+
+        }
       },
+
+      child: _dashboardBlocBuilder(),
+    );
+  }
+
+  BlocBuilder _dashboardBlocBuilder() {
+    return BlocBuilder<DashboardBloc, DashboardState>(
+      builder: (BuildContext context, DashboardState state){
+        return DashboardLayout(
+          dashboardChild: _vttCreateBlocListener(),
+          actions: _actions(),
+        );
+      }
+    );
+  }
+
+  BlocListener _vttCreateBlocListener(){
+    return BlocListener<VTTCreateBloc, VTTCreateState>(
+      listener: (BuildContext context, VTTCreateState state){
+        Wallet currentWallet = Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
+        print(state.vttCreateStatus);
+      },
+      child: _vttCreateBlocBuilder(),
+    );
+  }
+
+  BlocBuilder _vttCreateBlocBuilder() {
+    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
+        builder: (BuildContext context, VTTCreateState state){
+          return _buildSendVttForm();
+        }
     );
   }
 
@@ -133,10 +170,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
         builder: (context, state) {
       return WillPopScope(
         onWillPop: () async => false,
-        child: DashboardLayout(
-          dashboardChild: _buildSendVttForm(),
-          actions: _actions(),
-        ),
+        child: _dashboardBlocListener(),
       );
     });
   }

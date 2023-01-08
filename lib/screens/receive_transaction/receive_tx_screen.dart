@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:witnet_wallet/screens/login/view/login_screen.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/widgets/address.dart';
@@ -13,6 +15,9 @@ import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/widgets/layouts/dashboard_layout.dart';
 
+import '../../shared/locator.dart';
+import '../../util/storage/database/account.dart';
+
 class ReceiveTransactionScreen extends StatefulWidget {
   static final route = '/receive-transaction';
   @override
@@ -22,8 +27,8 @@ class ReceiveTransactionScreen extends StatefulWidget {
 
 class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
     with TickerProviderStateMixin {
-  Address? selectedAddress;
-  List<Address> addressList = [];
+  Account? selectedAccount;
+  List<Account> accountList = [];
   late AnimationController _loadingController;
 
   @override
@@ -34,6 +39,8 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
       duration: const Duration(milliseconds: 1200),
     );
     _loadingController.forward();
+    ApiDatabase db = Locator.instance.get<ApiDatabase>();
+    _setCurrentWallet(db.walletStorage.currentWallet, db.walletStorage.currentAccount);
   }
 
   @override
@@ -51,7 +58,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
           enabled: true,
           onPressed: () => {
                 Clipboard.setData(
-                    ClipboardData(text: selectedAddress?.address ?? ''))
+                    ClipboardData(text: selectedAccount?.address ?? ''))
               }),
       // Implement generate new address
       // PaddedButton(
@@ -65,43 +72,31 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
     ];
   }
 
-  _setCurrentWallet(Wallet? currentWallet, Address currentAddress) {
+  _setCurrentWallet(Wallet? currentWallet, Account currentAccount) {
     setState(() {
-      addressList = [];
-      selectedAddress = currentAddress;
+      accountList = [];
+      selectedAccount =  currentAccount;
       currentWallet?.externalAccounts.forEach((key, value) => {
-            addressList.add(Address(
-                address: value.address, balance: value.balance(), index: key))
+            accountList.add(value)
           });
     });
   }
 
   Widget _buildReceiveTransactionScreen() {
     final theme = Theme.of(context);
-    return BlocBuilder<DashboardBloc, DashboardState>(
-      buildWhen: (previous, current) {
-        if (current.status != DashboardStatus.Ready) {
-          Navigator.pushReplacementNamed(context, LoginScreen.route);
-          return false;
-        } else if (current.currentWallet.id != previous.currentWallet.id) {
-          Navigator.pushReplacementNamed(context, DashboardScreen.route);
-          return false;
-        }
-        _setCurrentWallet(current.currentWallet, current.currentAddress);
-        return true;
-      },
-      builder: (context, state) {
+    ApiDatabase db = Locator.instance.get<ApiDatabase>();
+
         return Column(
           children: [
             QrAddressGenerator(
-              data: state.currentAddress.address,
+              data: selectedAccount!.address,
             ),
             SizedBox(height: 24),
             DashedRect(
               color: WitnetPallet.witnetGreen2,
               strokeWidth: 1.0,
               gap: 3.0,
-              text: state.currentAddress.address,
+              text: selectedAccount!.address,
             ),
             SizedBox(height: 24),
             Row(
@@ -116,10 +111,34 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
             ),
             SizedBox(height: 16),
             AddressList(
-                currentWallet: state.currentWallet,
-                addressList: addressList,
-                currentAddress: state.currentAddress.address)
+                currentWallet: db.walletStorage.currentWallet,
+                accountList: accountList,
+            )
           ],
+        );
+
+  }
+
+  BlocListener _dashboardBlocListener(){
+    return BlocListener<DashboardBloc, DashboardState>(
+        listener: (BuildContext context, DashboardState state){
+            setState(() {
+              ApiDatabase database = Locator.instance.get<ApiDatabase>();
+              Wallet currentWallet = database.walletStorage.wallets[state.currentWalletId]!;
+              selectedAccount = currentWallet.accountByAddress(state.currentAddress);
+
+            });
+
+        },
+      child: _dashboardBlocBuilder(),
+    );
+  }
+  BlocBuilder _dashboardBlocBuilder(){
+    return BlocBuilder<DashboardBloc, DashboardState>(
+      builder: (BuildContext context, DashboardState state) {
+        return DashboardLayout(
+          dashboardChild: _buildReceiveTransactionScreen(),
+          actions: _actions(),
         );
       },
     );
@@ -129,10 +148,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-      child: DashboardLayout(
-        dashboardChild: _buildReceiveTransactionScreen(),
-        actions: _actions(),
-      ),
+      child: _dashboardBlocListener(),
     );
   }
 }
