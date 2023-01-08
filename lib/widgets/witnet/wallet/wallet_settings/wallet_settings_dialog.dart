@@ -47,7 +47,7 @@ class AccountCard extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: AutoSizeText(
-                  '${nanoWitToWit(account.balance().availableNanoWit).toString()} WIT',
+                  '${nanoWitToWit(account.balance.availableNanoWit).toString()} WIT',
                   textAlign: TextAlign.right,
                   maxLines: 1,
                   minFontSize: 10,
@@ -113,17 +113,17 @@ class WalletSettingsDialogState extends State<WalletSettingsDialog> {
     Wallet wallet = widget.walletStorage;
 
     wallet.externalAccounts.forEach((index, account) {
-      if (showZeroBalanceAccounts && account.balance().availableNanoWit == 0) {
+      if (showZeroBalanceAccounts && account.balance.availableNanoWit == 0) {
         externalAddressCards.add(AccountCard(account: account));
       }
-      if (account.balance().availableNanoWit > 0)
+      if (account.balance.availableNanoWit > 0)
         externalAddressCards.add(AccountCard(account: account));
     });
     wallet.internalAccounts.forEach((index, account) {
-      if (showZeroBalanceAccounts && account.balance().availableNanoWit == 0) {
+      if (showZeroBalanceAccounts && account.balance.availableNanoWit == 0) {
         internalAddressCards.add(AccountCard(account: account));
       }
-      if (account.balance().availableNanoWit > 0)
+      if (account.balance.availableNanoWit > 0)
         internalAddressCards.add(AccountCard(account: account));
     });
 

@@ -235,8 +235,8 @@ class RecipientStepState extends State<RecipientStep>
         currentWallet: widget.currentWallet,
         output: ValueTransferOutput.fromJson({
           'pkh': _address,
-          'value': _amountToNumber().standardizeWitUnits(
-              inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit),
+          'value': int.parse(_amountToNumber().standardizeWitUnits(
+              inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)),
           'time_lock': 0
         }),
         merge: true));

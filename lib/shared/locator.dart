@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:witnet_wallet/util/preferences.dart';
 import 'package:witnet_wallet/util/storage/database/database_isolate.dart';
 import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
 import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
@@ -19,7 +20,7 @@ class Locator {
     _i.registerSingleton<ApiTheme>(ApiTheme());
     _i.registerSingleton<ApiDatabase>(ApiDatabase());
     _i.registerSingleton<ApiExplorer>(ApiExplorer());
-    _i.registerSingleton<TransactionCache>(TransactionCache());
+    _i.registerSingleton<ApiPreferences>(ApiPreferences());
     _i.registerSingleton<ApiCreateWallet>(ApiCreateWallet());
     _i.registerSingleton<ApiCrypto>(ApiCrypto());
     _i.registerSingleton<ApiDashboard>(ApiDashboard());
