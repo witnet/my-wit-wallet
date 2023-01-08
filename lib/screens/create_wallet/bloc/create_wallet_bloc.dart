@@ -45,10 +45,10 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       nodeAddress: null,
       walletAddress: null,
       status: CreateWalletStatus.Imported);
-
+  ApiDatabase database = Locator.instance.get<ApiDatabase>();
   void _nextCardEvent(
       CreateWalletEvent event, Emitter<CreateWalletState> emit) async {
-    final masterKey = await _getMasterKey();
+    final masterKey = await database.getKeychain();
     switch (state.status) {
       case CreateWalletStatus.Disclaimer:
         switch (event.walletType) {
@@ -114,7 +114,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       case CreateWalletStatus.CreateWallet:
         break;
 
-      // Decide whether to import wallet from seed phrase or import from xprv file
+    // Decide whether to import wallet from seed phrase or import from xprv file
       case CreateWalletStatus.Imported:
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
         break;
@@ -250,7 +250,6 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       cryptoIsolate.send(
           method: 'initializeWallet',
           params: {
-            'id': '_loading',
             'walletName': '_loading',
             'walletDescription': '_loading',
             'seed': event.xprv,
@@ -258,28 +257,19 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
             'password': event.password
           },
           port: resp.sendPort);
-      await resp.first.then((value) {
-        if (value.error) {
-          emit(state.copyWith(
-              status: CreateWalletStatus.LoadingException,
-              message: 'Error initializing wallet'));
-          return;
-        }
-        emit(state.copyWith(
-          status: CreateWalletStatus.ValidXprv,
-        ));
+      var errors = [];
+      Wallet wallet = await resp.first.then((value) {
         return value;
       });
+
+      emit(state.copyWith(
+        status: CreateWalletStatus.ValidXprv,
+      ));
     } catch (e) {
+
       emit(state.copyWith(
           status: CreateWalletStatus.LoadingException, message: e.toString()));
     }
-  }
-
-  Future<String> _getMasterKey() async {
-    // set master key if a wallet has already been created
-    ApiDatabase db = Locator.instance<ApiDatabase>();
-    return await db.getKeychain();
   }
 
   void _finishEvent(FinishEvent event, Emitter<CreateWalletState> emit) {

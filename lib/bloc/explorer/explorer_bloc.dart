@@ -164,7 +164,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     /// get the UTXOs from the explorer
     for (int i = 0; i < addressChunks.length; i++) {
       Map<String, List<Utxo>> _utxos = await Locator.instance<ApiExplorer>()
-          .utxosMulti(addresses: addressChunks[i]);
+          .utxosMulti(addressList: addressChunks[i]);
 
       /// loop over the explorer response
       /// which is Map<String, List<Utxo>> key = address
