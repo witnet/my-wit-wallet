@@ -5,9 +5,24 @@ import 'dart:isolate';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 
 import 'account.dart';
 import 'database_service.dart';
+
+Map<String, Function(DatabaseService, SendPort, Map<String, dynamic>)>
+methodMap = {
+  'configure': _configure,
+  'add': _addRecord,
+  'delete': _deleteRecord,
+  'update': _updateRecord,
+  'setPassword': _setPassword,
+  'verifyPassword': _verifyPassword,
+  'masterKeySet': _masterKeySet,
+  'loadWallets': _getAllWallets,
+  'getKeychain': _getKeychain,
+  'lock': _lock,
+};
 
 class DatabaseIsolate {
   static final DatabaseIsolate _databaseIsolate = DatabaseIsolate._internal();
@@ -62,22 +77,6 @@ void _dbIsolate(SendPort sendPort) async {
     receivePort.close();
   } catch (e) {}
 }
-
-Map<String, Function(DatabaseService, SendPort, Map<String, dynamic>)>
-    methodMap = {
-  'configure': _configure,
-  'add': _addRecord,
-  'delete': _deleteRecord,
-  'update': _updateRecord,
-  'setPassword': _setPassword,
-  'verifyPassword': _verifyPassword,
-  'masterKeySet': _masterKeySet,
-  'getAllWallets': _getAllWallets,
-  'getAllVtts': _getAllVtts,
-  'getAllAccounts': _getAllAccounts,
-  'getKeychain': _getKeychain,
-  'lock': _lock,
-};
 
 Future<void> _lock(
   final DatabaseService dbService,
@@ -188,26 +187,8 @@ Future<void> _getAllWallets(
   SendPort port,
   Map<String, dynamic> params,
 ) async {
-  var value = await dbService.getAllWallets();
-  port.send(value);
-}
-
-Future<void> _getAllVtts(
-  DatabaseService dbService,
-  SendPort port,
-  Map<String, dynamic> params,
-) async {
-  var value = await dbService.getAllVtts();
-  port.send(value);
-}
-
-Future<void> _getAllAccounts(
-  DatabaseService dbService,
-  SendPort port,
-  Map<String, dynamic> params,
-) async {
-  var value = await dbService.getAllAccounts();
-  port.send(value);
+  WalletStorage walletStorage = await dbService.loadWallets();
+  port.send(walletStorage);
 }
 
 Future<void> _getKeychain(
@@ -215,6 +196,6 @@ Future<void> _getKeychain(
   SendPort port,
   Map<String, dynamic> params,
 ) async {
-  var value = await dbService.getKey();
+  await dbService.getKey();
   port.send(dbService.keyChain.keyHash);
 }

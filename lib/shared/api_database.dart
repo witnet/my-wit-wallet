@@ -23,15 +23,18 @@ class ApiDatabase {
   bool initialized = false;
   bool unlocked = false;
 
+  late WalletStorage walletStorage;
+  bool walletsLoaded = false;
+
   DatabaseIsolate get databaseIsolate => Locator.instance<DatabaseIsolate>();
   PathProviderInterface interface = PathProviderInterface();
 
   Future<dynamic> _processIsolate(
-      {required String method, required Map<String, dynamic> params}) async {
+      {required String method, Map<String, dynamic>? params}) async {
     if (!databaseIsolate.initialized) await databaseIsolate.init();
     final ReceivePort response = ReceivePort();
     databaseIsolate.send(
-        method: method, params: params, port: response.sendPort);
+        method: method, params: params ?? {}, port: response.sendPort);
     return await response.first.then((value) {
       if (value.runtimeType == DBException) {
         throw value;
@@ -157,51 +160,39 @@ class ApiDatabase {
 
   Future<WalletStorage> loadWalletsDatabase() async {
     try {
-      List<Wallet> wallets =
-          await _processIsolate(method: 'getAllWallets', params: {});
-      List<Account> accounts =
-          await _processIsolate(method: 'getAllAccounts', params: {});
-
-      Map<String, Wallet> walletMap = {};
-      for (int i = 0; i < wallets.length; i++) {
-        Wallet wallet = wallets[i];
-        walletMap[wallet.name] = wallet;
-      }
-
-      for (int i = 0; i < accounts.length; i++) {
-        Account account = accounts[i];
-        int _type = int.parse(account.path.split('/')[4]);
-        int _index = int.parse(account.path.split('/').last);
-        account.vttHashes.forEach((hash) {
-          walletMap[account.walletName]?.txHashes.add(hash);
-        });
-        // external account
-        if (_type == 0) {
-          walletMap[account.walletName]?.externalAccounts[_index] = account;
-          // internal account
-        } else if (_type == 1) {
-          walletMap[account.walletName]?.internalAccounts[_index] = account;
-        }
-      }
-
-      _wallets = walletMap;
-    } catch (e) {}
-    return WalletStorage(
-      wallets: _wallets,
-      lastSynced: lastSynced,
-    );
+      /// Get all Wallets
+      walletStorage = await _processIsolate(method: 'loadWallets');
+      return walletStorage;
+    } catch (e) {
+      rethrow;
+    }
   }
 
-  Future<bool> updateWallet(Wallet dbWallet) async {
-    _wallets[dbWallet.name] = dbWallet;
+  Future<bool> updateWallet(Wallet wallet) async {
+    walletStorage.wallets[wallet.id] = wallet;
     return await _processIsolate(
         method: 'update',
-        params: {'type': 'wallet', 'value': dbWallet.jsonMap()});
+        params: {'type': 'wallet', 'value': wallet.jsonMap()});
   }
 
   Future<bool> updateAccount(Account account) async {
+    walletStorage.setAccount(account);
     return await _processIsolate(
         method: 'update',
         params: {'type': 'account', 'value': account.jsonMap()});
+  }
+
+  Future<WalletStorage> getWalletStorage([bool reload = false]) async
+  {
+    if(reload) {
+      walletStorage = await loadWalletsDatabase();
+      return walletStorage;
+    }
+    if (walletsLoaded) {
+      return walletStorage;
+    } else {
+      walletStorage = await loadWalletsDatabase();
+      return walletStorage;
+    }
   }
 }
