@@ -1,3 +1,4 @@
+
 part of 'login_bloc.dart';
 
 class LoginEvent extends Equatable {
@@ -37,13 +38,11 @@ class LoginPasswordChangedEvent extends LoginEvent {
 }
 
 class LoginSubmittedEvent extends LoginEvent {
-  const LoginSubmittedEvent({required this.walletName, required this.password})
+  const LoginSubmittedEvent({required this.password})
       : super();
-
-  final WalletName walletName;
   final String password;
   @override
-  List<Object> get props => [walletName, password];
+  List<Object> get props => [password];
 }
 
 class LoginExceptionEvent extends LoginEvent {

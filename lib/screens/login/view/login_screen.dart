@@ -44,13 +44,10 @@ class LoginScreenState extends State<LoginScreen>
 
   _login() {
     FocusScope.of(context).unfocus();
-    Timer(Duration(milliseconds: 200), () {
-      if (currentWallet != null) {
-        BlocProvider.of<LoginBloc>(context).add(LoginSubmittedEvent(
-            walletName: currentWallet!.walletName,
-            password: currentWallet!.password));
-      }
-    });
+    if (currentWallet != null) {
+      BlocProvider.of<LoginBloc>(context).add(LoginSubmittedEvent(
+          password: currentWallet!.password));
+    }
   }
 
   Widget _buttonLogin() {

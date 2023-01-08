@@ -9,32 +9,24 @@ import 'package:witnet_wallet/shared/locator.dart';
 
 import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 
+import 'package:witnet_wallet/util/preferences.dart';
+
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc()
       : super(LoginState(
-          message: '',
-          status: LoginStatus.LoggedOut,
-          password: '',
-        )) {
-    on<LoginWalletNameChangedEvent>(_onWalletChanged);
+    message: '',
+    status: LoginStatus.LoggedOut,
+    password: '',
+  )) {
     on<LoginPasswordChangedEvent>(_onPasswordChanged);
     on<LoginSubmittedEvent>(_onSubmitted);
     on<LoginExceptionEvent>(_onLoginExceptionEvent);
     on<LoginLogoutEvent>(_onLogoutEvent);
   }
 
-  void _onWalletChanged(
-    LoginWalletNameChangedEvent event,
-    Emitter<LoginState> emit,
-  ) async {
-    final WalletName walletName = event.walletName;
-    emit(state.copyWith(
-      walletName: walletName,
-    ));
-  }
 
   void _onPasswordChanged(
       LoginPasswordChangedEvent event, Emitter<LoginState> emit) async {}
@@ -46,14 +38,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   void _onSubmitted(LoginSubmittedEvent event, Emitter<LoginState> emit) async {
     ApiDatabase apiDatabase = Locator.instance<ApiDatabase>();
-    ApiDashboard apiDashboard = Locator.instance<ApiDashboard>();
-
     try {
       emit(state.copyWith(status: LoginStatus.LoginInProgress));
       bool verified = await apiDatabase.verifyPassword(event.password);
       if (verified) {
-        WalletStorage walletStorage = await apiDatabase.loadWalletsDatabase();
-        apiDashboard.setWallets(walletStorage);
+        String? walletId = await ApiPreferences.getCurrentWallet();
+        String? addressIndex = await ApiPreferences.getCurrentAddress(walletId!);
+        Map<String, dynamic> addressList = await ApiPreferences.getCurrentAddressList();
+        apiDatabase.walletStorage.setCurrentWallet(walletId);
+        apiDatabase.walletStorage.setCurrentAccount(apiDatabase.walletStorage.currentWallet.externalAccounts[int.parse(addressIndex!)]!.address);
+        apiDatabase.walletStorage.setCurrentAddressList(addressList.map((key, value) => MapEntry(key, value as String)));
+        ApiDashboard dashboard = Locator.instance.get<ApiDashboard>();
+        dashboard.setWallets(apiDatabase.walletStorage);
+        dashboard.setCurrentWalletData(apiDatabase.walletStorage.wallets[walletId]);
+        dashboard.setCurrentAccount(apiDatabase.walletStorage.wallets[walletId]!.externalAccounts.values.first);
         emit(state.copyWith(status: LoginStatus.LoginSuccess));
       } else {
         emit(state.copyWith(status: LoginStatus.LoginInvalid));
