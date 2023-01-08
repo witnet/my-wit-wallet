@@ -44,7 +44,6 @@ class LoginScreenState extends State<LoginScreen>
     FocusScope.of(context).unfocus();
     if (currentWallet != null) {
       BlocProvider.of<LoginBloc>(context).add(LoginSubmittedEvent(
-          walletName: currentWallet!.walletName,
           password: currentWallet!.password));
     }
   }
