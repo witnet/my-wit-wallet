@@ -20,6 +20,7 @@ import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 
+import '../../util/preferences.dart';
 part 'crypto_event.dart';
 part 'crypto_state.dart';
 part 'crypto_isolate.dart';
@@ -27,9 +28,6 @@ part 'crypto_isolate.dart';
 Future<dynamic> isolateRunner(
     String method, Map<String, dynamic> params) async {
   ReceivePort response = ReceivePort();
-
-  /// initialize the crypto isolate
-  await Locator.instance<CryptoIsolate>().init();
 
   /// send the request
   Locator.instance<CryptoIsolate>()
@@ -40,7 +38,6 @@ Future<dynamic> isolateRunner(
 class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   ApiExplorer apiExplorer = Locator.instance.get<ApiExplorer>();
   ApiDatabase db = Locator.instance.get<ApiDatabase>();
-  TransactionCache cache = Locator.instance.get<TransactionCache>();
 
   CryptoBloc(initialState) : super(initialState) {
     on<CryptoInitializeWalletEvent>(_cryptoInitializeWalletEvent);
@@ -52,7 +49,6 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   Future<void> _cryptoInitializeWalletEvent(
       CryptoInitializeWalletEvent event, Emitter<CryptoState> emit) async {
     /// setup default default structure for database and unlock it
-    Wallet? _wallet = await _initializeWallet(event: event);
     emit(
       CryptoInitializingWalletState(
         message: 'Initializing Wallet.',
@@ -62,6 +58,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
         addressCount: 0,
       ),
     );
+    Wallet _wallet = await _initializeWallet(event: event);
 
     /// Account discovery
     /// (1)- derive the first account's node (index = 0)
@@ -72,11 +69,11 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     /// reference (https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki)
 
     int externalGapCount = 0;
-    int externalGapMax = EXTERNAL_GAP_LIMIT;
+    final int externalGapMax = EXTERNAL_GAP_LIMIT;
     int externalIndex = 0;
 
     int internalGapCount = 0;
-    int internalGapMax = INTERNAL_GAP_LIMIT;
+    final int internalGapMax = INTERNAL_GAP_LIMIT;
     int internalIndex = 0;
     Map<int, Account> externalAccounts = {};
     Map<int, Account> internalAccounts = {};
@@ -89,21 +86,18 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     /// requirement: 20 consecutive accounts without transactions
     while (externalGapCount < externalGapMax) {
       /// wait to not overload the explorer
-      await Future.delayed(Duration(milliseconds: bufferTime));
 
       try {
-        Account _account = await _generateAccount(
-          _wallet!,
+        Account _account = await _initAccount(
+          _wallet,
           externalIndex,
           KeyType.external,
         );
 
         ///
         totalTransactions += _account.vttHashes.length;
-        if (_account.vttHashes.length == 0) {
-          externalGapCount += 1;
-        }
-        balance = balance + _account.balance();
+        _wallet.externalAccounts[externalIndex] = _account;
+        balance = balance + _account.balance;
 
         /// yield a state with the current account for ui display
         /// pass the wallet but not the password since we are already logged in
@@ -120,7 +114,12 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
         /// add the account
         externalAccounts[externalIndex] = _account;
         externalIndex += 1;
-      } catch (e) {}
+        if (_account.vttHashes.length == 0) {
+          externalGapCount += 1;
+        }
+      } catch (e) {
+        print(e);
+      }
     }
 
     /// search the Internal keychain for accounts with past transactions
@@ -129,19 +128,20 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       /// wait to not overload the explorer
       await Future.delayed(Duration(milliseconds: bufferTime));
 
-      Account _intAccount = await _generateAccount(
-        _wallet!,
+      final Account _account = await _initAccount(
+        _wallet,
         internalIndex,
         KeyType.internal,
       );
 
-      totalTransactions += _intAccount.vttHashes.length;
-      balance = balance + _intAccount.balance();
+      _wallet.internalAccounts[internalIndex] = _account;
+      totalTransactions += _account.vttHashes.length;
+      balance = balance + _account.balance;
 
       /// yield a state with the current account for ui display
 
       emit(CryptoInitializingWalletState(
-        message: '${_intAccount.address}',
+        message: '${_account.address}',
         availableNanoWit: balance.availableNanoWit,
         lockedNanoWit: balance.lockedNanoWit,
         transactionCount: totalTransactions,
@@ -149,17 +149,19 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       ));
 
       /// if the account has 0 past transactions, increase the gap counter
-      if (_intAccount.vttHashes.length == 0) {
+      if (_account.vttHashes.length == 0) {
         internalGapCount += 1;
       } else {}
 
       /// add the account
-      internalAccounts[internalIndex] = _intAccount;
+      internalAccounts[internalIndex] = _account;
       internalIndex += 1;
     }
-
+    ApiDatabase database = Locator.instance.get<ApiDatabase>();
+    await ApiPreferences.setCurrentWallet(_wallet.id);
+    database.walletStorage.wallets[_wallet.id] = _wallet;
     add(CryptoInitWalletDoneEvent(
-      wallet: _wallet!,
+      wallet: _wallet,
       password: event.password,
       internalAccounts: internalAccounts,
       externalAccounts: externalAccounts,
@@ -167,11 +169,15 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   }
 
   Future<void> _cryptoInitWalletDoneEvent(
-    CryptoInitWalletDoneEvent event,
-    Emitter<CryptoState> emit,
-  ) async {
+      CryptoInitWalletDoneEvent event,
+      Emitter<CryptoState> emit,
+      ) async {
+    ApiDatabase database = Locator.instance.get<ApiDatabase>();
     Wallet wallet = event.wallet;
-
+    await ApiPreferences.setCurrentWallet(wallet.id);
+    await ApiPreferences.setCurrentAddress(AddressEntry(walletId: event.wallet.id, addressIdx: "0"));
+    database.walletStorage.setCurrentAccount(event.wallet.externalAccounts.values.first.address);
+    database.walletStorage.setCurrentWallet(event.wallet.id);
     emit(CryptoLoadedWalletState(
       wallet: wallet,
       password: event.password,
@@ -195,24 +201,17 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
 
   get initialState => CryptoReadyState();
 
-  Future<Wallet?> _initializeWallet(
+  Future<Wallet> _initializeWallet(
       {required CryptoInitializeWalletEvent event}) async {
     try {
       ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
       ApiDatabase db = Locator.instance<ApiDatabase>();
       String key = await db.getKeychain();
       final masterKey = key != '' ? key : event.password;
-      String keyData = event.keyData;
-      if (key != '' && event.seedSource == 'encryptedXprv') {
-        final decryptedXprv =
-            Xprv.fromEncryptedXprv(event.keyData, event.password);
-        keyData = decryptedXprv.toEncryptedXprv(password: key);
-      }
       apiCrypto.setInitialWalletData(
-        event.walletName, // id
         event.walletName,
         event.walletDescription,
-        keyData,
+        event.keyData,
         event.seedSource,
         masterKey,
       );
@@ -220,6 +219,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       var creationStatus = await db.openDatabase();
       assert(creationStatus, 'Unable to Create Database.');
       await db.addWallet(_wallet);
+      db.walletStorage.wallets[_wallet.id] = _wallet;
       return _wallet;
     } catch (e) {
       print('Error initializing the wallet $e');
@@ -228,35 +228,43 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   }
 
   Future<Account> _generateAccount(
-      Wallet dbWallet, int index, KeyType keyType) async {
-    final Account account =
-        await dbWallet.getAccount(index: index, keyType: keyType);
-    final addressValueTransfers = await apiExplorer.address(
-        value: account.address,
-        tab: 'value_transfers') as AddressValueTransfers;
-    List<String> transactionHashes = List<String>.from(
-        addressValueTransfers.transactionHashes.map((e) => e));
-    //addressValueTransfers.jsonMap();
-    account.vttHashes.addAll(transactionHashes);
-    account.utxos = await _syncAccountUtxos(account);
-    account.setBalance();
-    await db.updateAccount(account);
-    for (int i = 0; i < account.vttHashes.length; i++) {
-      String _hash = account.vttHashes.elementAt(i);
-
-      await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
-
-      var result = await Locator.instance.get<ApiExplorer>().hash(_hash);
-      ValueTransferInfo valueTransferInfo = result as ValueTransferInfo;
-      await db.addVtt(valueTransferInfo);
+      Wallet wallet, int index, KeyType keyType) async {
+    try{
+      ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
+      final Account account = await apiCrypto.generateAccount(wallet, keyType, index);
+      return account;
+    } catch (e){
+      print(e);
+      rethrow;
     }
-    await db.addAccount(account);
+  }
 
+  Future<Account> _initAccount(Wallet wallet, int index, KeyType keyType) async {
+    Account account = await _generateAccount(wallet, index, keyType);
+    account = await _syncAccount(account);
+    account = await _syncVtts(account);
+    await account.setBalance();
+    await db.addAccount(account);
     return account;
   }
 
-  Future<List<Utxo>> _syncAccountUtxos(Account account) async {
+  Future<Account> _syncVtts(Account account) async {
+    for (int i = 0; i < account.vttHashes.length; i++) {
+      String _hash = account.vttHashes.elementAt(i);
+      var result = await apiExplorer.hash(_hash);
+      ValueTransferInfo valueTransferInfo = result as ValueTransferInfo;
+      account.vtts.add(valueTransferInfo);
+      await db.addVtt(valueTransferInfo);
+    }
+    return account;
+   }
+
+  Future<Account> _syncAccount(Account account) async {
+    final addressValueTransfers = await apiExplorer.address(value: account.address, tab: 'value_transfers') as AddressValueTransfers;
+    account.vttHashes = List<String>.from(addressValueTransfers.transactionHashes.map((e) => e));
     final List<Utxo> _utxos = await apiExplorer.utxos(address: account.address);
-    return _utxos;
+    account.utxos.addAll(_utxos);
+    await account.setBalance();
+    return account;
   }
 }

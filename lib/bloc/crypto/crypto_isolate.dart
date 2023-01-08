@@ -85,7 +85,6 @@ Future<void> _initializeWallet(
   switch (params['seedSource']) {
     case 'mnemonic':
       wallet = await Wallet.fromMnemonic(
-          id: params['id'],
           name: params['walletName'],
           description: params['walletDescription'],
           mnemonic: params['seed'],
@@ -93,7 +92,6 @@ Future<void> _initializeWallet(
       break;
     case 'xprv':
       wallet = await Wallet.fromXprvStr(
-          id: params['id'],
           name: params['walletName'],
           description: params['walletDescription'],
           xprv: params['seed'],
@@ -102,7 +100,6 @@ Future<void> _initializeWallet(
     case 'encryptedXprv':
       try {
         wallet = await Wallet.fromEncryptedXprv(
-          id: params['id'],
           name: params['walletName'],
           description: params['walletDescription'],
           xprv: params['seed'],

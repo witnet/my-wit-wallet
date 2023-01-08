@@ -2,12 +2,10 @@ import 'dart:isolate';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/witnet.dart';
-import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 import 'package:witnet_wallet/util/utxo_list_to_string.dart';
 import 'crypto_bloc.dart';
 
@@ -15,7 +13,6 @@ enum SeedSource { mnemonic, xprv, encryptedXprv }
 
 // used to call the isolate thread from anywhere in the main app
 class ApiCrypto {
-  late String? id;
   late String? walletName;
   late String? walletDescription;
   late String? seed;
@@ -24,13 +21,11 @@ class ApiCrypto {
   ApiCrypto();
 
   void setInitialWalletData(
-      String id,
       String walletName,
       String walletDescription,
       String seed,
       String seedSource,
       String password) {
-    this.id = id;
     this.walletName = walletName;
     this.walletDescription = walletDescription;
     this.seed = seed;
@@ -47,9 +42,8 @@ class ApiCrypto {
 
   Future<String> generateMnemonic(int wordCount, String language) async {
     try {
-      CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
+      CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
       var receivePort = ReceivePort();
-      await cryptoIsolate.init();
       cryptoIsolate.send(
           method: 'generateMnemonic',
           params: {
@@ -67,19 +61,16 @@ class ApiCrypto {
   }
 
   Future<Account> generateAccount(
-      String walletName, KeyType keyType, int index) async {
+      Wallet wallet, KeyType keyType, int index) async {
     try {
-      CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
+      CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
 
-      WalletStorage walletStorage =
-          Locator.instance<ApiDashboard>().walletStorage!;
-      Wallet wallet = walletStorage.wallets[walletName]!;
       final receivePort = ReceivePort();
 
       cryptoIsolate.send(
         method: 'generateKey',
         params: {
-          'keyType': 'internal',
+          'keyType': keyType.name == 'external' ? 'external' : 'internal',
           'external_keychain': wallet.externalXpub,
           'internal_keychain': wallet.internalXpub,
           'index': index
@@ -91,8 +82,10 @@ class ApiCrypto {
         var _xpub = val['xpub'];
         return _xpub;
       });
-      return Account(
-          walletName: walletName, address: xpub.address, path: xpub.path!);
+      Account _account = Account(
+          walletName: wallet.name, address: xpub.address, path: xpub.path!);
+      _account.walletId = wallet.id;
+      return _account;
     } catch (e) {
       rethrow;
     }
@@ -104,7 +97,6 @@ class ApiCrypto {
 
       final receivePort = ReceivePort();
       print({
-        'id': walletName,
         'seedSource': seedSource,
         'walletName': walletName,
         'walletDescription': walletDescription,
@@ -114,7 +106,6 @@ class ApiCrypto {
       cryptoIsolate.send(
           method: 'initializeWallet',
           params: {
-            'id': walletName,
             'walletName': walletName,
             'walletDescription': walletDescription,
             'seedSource': seedSource,
