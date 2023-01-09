@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/widgets/layouts/headerLayout.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
+
+import '../../shared/locator.dart';
+import '../identicon.dart';
 
 final panelController = PanelController();
 
@@ -33,6 +37,7 @@ class Layout extends StatelessWidget {
             color: WitnetPallet.white,
             width: 30,
             height: 30,
+            child: IdenticonWidget(seed: Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.id, size: 8),
           ),
           onTap: () => {
             if (dashboardActions != null && actions.length > 0)
