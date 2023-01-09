@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/bloc/theme/theme_bloc.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_status/vtt_status_bloc.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 
@@ -50,9 +49,6 @@ List<BlocProvider> getProviders(
       create: (BuildContext context) => VTTCreateBloc(),
     ),
 
-    BlocProvider<BlocStatusVtt>(
-      create: (BuildContext context) => BlocStatusVtt(UnknownHashState()),
-    ),
 
     /// BlocDashboard manages the ui for the main dashboard
     BlocProvider<DashboardBloc>(
