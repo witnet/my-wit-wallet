@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/preferences.dart';
@@ -77,16 +78,17 @@ class AddressListState extends State<AddressList> {
                             ),
                           ),
                         ]))),
-            onTap: () {
+            onTap: () async {
               ApiDashboard api = Locator.instance.get<ApiDashboard>();
-              ApiPreferences.setCurrentAddress(AddressEntry(
+              ApiDatabase database = Locator.instance.get<ApiDatabase>();
+              await ApiPreferences.setCurrentAddress(AddressEntry(
                   walletId: widget.currentWallet.id,
                   addressIdx: account.index.toString()));
               //set current account address
 
               setState(() {
               api.setCurrentAccount(account);
-
+              database.walletStorage.setCurrentAccount(account.address);
               });
               BlocProvider.of<DashboardBloc>(context)
                   .add(DashboardUpdateWalletEvent(
@@ -123,8 +125,6 @@ class AddressListState extends State<AddressList> {
       },
     );
   }
-
-
 
   Widget build(BuildContext context) {
     return _dashboardBlocListener();

@@ -170,7 +170,7 @@ Future<void> _updateRecord(
       value = await dbService.update(Wallet.fromJson(params['value']));
       break;
     case 'vtt':
-      value = await dbService.update(VTTransaction.fromJson(params['value']));
+      value = await dbService.update(ValueTransferInfo.fromDbJson(params['value']));
       break;
     case 'account':
       value = await dbService.update(Account.fromJson(params['value']));

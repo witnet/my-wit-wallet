@@ -71,7 +71,6 @@ class Wallet {
         });
         break;
     }
-
     return _accounts;
   }
 
@@ -102,28 +101,32 @@ class Wallet {
   }
 
   List<ValueTransferInfo> allTransactions() {
-    List<ValueTransferInfo> _vtts = [];
+    Map<String, ValueTransferInfo> _vttMap = {};
     externalAccounts.forEach((key, account) {
-      _vtts.addAll(account.vtts);
+      account.vtts.forEach((vtt) {
+        _vttMap[vtt.txnHash] = vtt;
+      });
     });
     internalAccounts.forEach((key, account) {
-      _vtts.addAll(account.vtts);
+      account.vtts.forEach((vtt) {
+        _vttMap[vtt.txnHash] = vtt;
+      });
     });
-    return _vtts;
+    return _vttMap.values.toList();
   }
 
-  Account accountByAddress(String address) {
+  Account? accountByAddress(String address) {
     List<Account> _accounts = allAccounts().values.toList();
 
     try {
       _accounts.retainWhere((element) => element.address == address);
+      return _accounts[0];
       if (_accounts.isEmpty) {
         throw Exception('account not in wallet');
       }
     } catch (e) {
-      rethrow;
+      return null;
     }
-    return _accounts[0];
   }
 
   static Future<Wallet> fromMnemonic({
@@ -434,6 +437,30 @@ class Wallet {
       if(value.address == address) response = true;
     });
     return response;
+  }
+
+
+  void setTransaction(ValueTransferInfo vtt) {
+    List<String> _extAddressList = addressList(KeyType.external);
+    List<String> _intAddressList = addressList(KeyType.internal);
+    List<String> updatedAccounts = [];
+    print(_extAddressList);
+    for(int i = 0; i < _extAddressList.length; i ++) {
+      Account account = externalAccounts[i]!;
+      if(vtt.containsAddress(account.address)) {
+        account.addVtt(vtt);
+        externalAccounts[i] = account;
+        updatedAccounts.add(account.address);
+      }
+    }
+    for(int i = 0; i < _intAddressList.length; i ++) {
+      Account account = internalAccounts[i]!;
+      if(vtt.containsAddress(account.address)){
+        account.addVtt(vtt);
+        internalAccounts[i] = account;
+        updatedAccounts.add(account.address);
+      }
+    }
   }
 
   void printDebug(){

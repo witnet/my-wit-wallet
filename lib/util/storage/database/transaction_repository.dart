@@ -65,11 +65,12 @@ class VttRepository extends _TransactionRepository {
     try {
       assert(transaction.runtimeType == ValueTransferInfo);
       await _store
-          .record(transaction.transactionID)
+          .record(transaction.txnHash)
           .update(databaseClient, transaction.jsonMap());
 
       return true;
     } catch (e) {
+      print(e);
       return false;
     }
   }

@@ -101,6 +101,27 @@ class Account extends _Account {
     }
   }
 
+  bool addVtt(ValueTransferInfo vtt){
+    bool addedVtt = false;
+    vtt.inputs.forEach((input) {
+      if(input.address == address) {
+        if(!addedVtt) {
+          vttHashes.add(vtt.txnHash);
+          vtts.add(vtt);
+        }
+      }
+    });
+    vtt.outputs.forEach((output) {
+      if(output.pkh.address == address) {
+        if(!addedVtt) {
+          vttHashes.add(vtt.txnHash);
+          vtts.add(vtt);
+        }
+      }
+    });
+    return addedVtt;
+  }
+
   @override
   Map<String, dynamic> jsonMap() {
     List<Map<String, dynamic>> _utxos = [];

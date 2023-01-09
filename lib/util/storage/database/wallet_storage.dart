@@ -43,9 +43,9 @@ class WalletStorage {
   // <wallet_id, Wallet>
   Map<String, Wallet> wallets;
   // <address, Account>
-  late Map<String, Account> _accounts;
+  Map<String, Account> _accounts = {};
   // <transactionId, ValueTransferInfo>
-  late Map<String, ValueTransferInfo> _transactions;
+  Map<String, ValueTransferInfo> _transactions = {};
 
   String? _currentWalletId;
   String? _currentAddress;
@@ -60,17 +60,22 @@ class WalletStorage {
   void setCurrentAccount(String address){
     _currentAddress = address;
   }
+
   void setCurrentAddressList(Map<String, String> addressList){
     currentAddressList = addressList;
   }
 
   void setTransactions(Map<String, ValueTransferInfo> transactions) {
-    _transactions = transactions;
+    transactions.forEach((transactionId, vtt) {
+      _transactions[transactionId] = vtt;
+    });
   }
 
   void setAccounts(Map<String, Account> accounts) {
-    _accounts = accounts;
+    accounts.values.forEach((account) { setAccount(account);});
   }
+
+
 
   Account get currentAccount => _accounts[_currentAddress] ?? defaultAccount;
 
@@ -91,12 +96,20 @@ class WalletStorage {
 
     return _account ?? defaultAccount;
   }
-  ValueTransferInfo getVtt(String hash) => _transactions[hash] ?? defaulVtt;
+  ValueTransferInfo? getVtt(String hash) => _transactions[hash];
+
+  void setVtt(String walletId, ValueTransferInfo vtt) {
+
+
+
+    wallets[walletId]!.setTransaction(vtt);
+  }
 
   void setAccount(Account account){
     _accounts[account.address] = account;
     wallets[account.walletId]!.setAccount(account);
   }
+
   BalanceInfo balanceNanoWit() {
     BalanceInfo balance = BalanceInfo(availableUtxos: [], lockedUtxos: []);
     wallets.forEach((key, value) {

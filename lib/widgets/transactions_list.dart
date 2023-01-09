@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:witnet_wallet/util/extensions/int_extensions.dart';
 import 'package:witnet_wallet/util/extensions/string_extensions.dart';
 import 'package:witnet_wallet/util/extensions/num_extensions.dart';
@@ -116,7 +114,9 @@ class TransactionsListState extends State<TransactionsList> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              transaction.txnTime.formatDuration(),
+              transaction.status != "confirmed"
+                  ? "${transaction.status} ${transaction.txnTime.formatDuration()}"
+                  : "${transaction.txnTime.formatDuration()}",
               textAlign: TextAlign.start,
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.caption,
