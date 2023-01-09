@@ -82,76 +82,37 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<void> _syncWalletEvent(
       SyncWalletEvent event, Emitter<ExplorerState> emit) async {
-    /// get the current state of the wallet from the database
     try {
       // TODO: check if the explorer is up
-      await syncWalletRoutine(event.currentWallet);
+      await syncWalletRoutine(event, emit);
     } catch (e) {
       print('Error syncing the Wallet $e');
       rethrow;
     }
   }
 
-  Future<void> syncWalletRoutine(Wallet dbWallet) async {
-    /// verify gap limit
-    /// external chain
-    ApiDatabase db = Locator.instance<ApiDatabase>();
+  Future<void> syncWalletRoutine(
+      SyncWalletEvent event, Emitter<ExplorerState> emit) async {
 
-    Map<String, Account> _extAccounts = {};
-    List<String> addressList = [];
-    int externalGap = 0;
-    dbWallet.externalAccounts.forEach((key, value) {
-      addressList.add(value.address);
-      if (value.vttHashes.length > 0) {
-        externalGap = 0;
-      } else {
-        externalGap += 1;
+    /// get current wallet
+    ApiDatabase database = Locator.instance<ApiDatabase>();
+    Wallet wallet = database.walletStorage.currentWallet;
+
+    /// get a list of any pending transactions
+    List<ValueTransferInfo> unconfirmedVtts = [];
+    wallet.allTransactions().forEach((vtt) {
+      if (vtt.status != "confirmed") {
+        unconfirmedVtts.add(vtt);
       }
     });
 
-    /// if the gap limit is not maintained then generate additional accounts
-    int lastExternalIndex = dbWallet.externalAccounts.length;
-    while (externalGap < EXTERNAL_GAP_LIMIT) {
-      await dbWallet.generateKey(
-        index: lastExternalIndex,
-        keyType: KeyType.external,
-      );
-      lastExternalIndex += 1;
-      externalGap += 1;
-    }
+    /// maintain gap limit for BIP39
+    await wallet.ensureGapLimit();
 
-    int internalGap = 0;
-
-    for (int i = 0; i < dbWallet.internalAccounts.length; i++) {
-      final Account currentAccount = dbWallet.internalAccounts[i]!;
-      if (currentAccount.vttHashes.length > 0) {
-        internalGap = 0;
-      } else {
-        internalGap += 1;
-      }
-    }
-    int lastInternalIndex = dbWallet.internalAccounts.length;
-    while (internalGap < INTERNAL_GAP_LIMIT) {
-      await dbWallet.generateKey(
-          index: lastInternalIndex, keyType: KeyType.internal);
-      lastInternalIndex += 1;
-      internalGap += 1;
-    }
-
-    dbWallet.externalAccounts.forEach((index, account) {
-      _extAccounts[account.address] = account;
-    });
-
-    /// internal chain
-    Map<String, Account> _intAccounts = {};
-    dbWallet.internalAccounts.forEach((index, account) {
-      addressList.add(account.address);
-      _intAccounts[account.address] = account;
-    });
-
-    /// address limit is the limit of the explorer API
+    /// address limit is the limit of the explorer API for batching utxo calls
     int addressLimit = 10;
     List<List<String>> addressChunks = [];
+    List<String> addressList = wallet.allAddresses();
 
     /// break the address list into chunks of 10 addresses
     for (int i = 0; i < addressList.length; i += addressLimit) {
@@ -168,119 +129,101 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
       /// loop over the explorer response
       /// which is Map<String, List<Utxo>> key = address
+      Map<String, Account> updatedAccounts = {};
+
       for (int addressIndex = 0; addressIndex < _utxos.length; addressIndex++) {
         String address = _utxos.keys.toList()[addressIndex];
         List<Utxo> utxoList = _utxos[address]!;
 
-        /// update the external xprv utxo list and balance
-        if (_extAccounts.containsKey(address)) {
-          Account externalAccount = _extAccounts[address]!;
+        Account account = wallet.accountByAddress(address)!;
 
-          /// check if the UTXO set is different
-          if (!isTheSameList(externalAccount, utxoList)) {
-            if (utxoList.isNotEmpty) {
-              externalAccount.utxos.clear();
-              externalAccount.utxos.addAll(utxoList);
-            } else {
-              externalAccount.utxos.clear();
-            }
-            await updateAccountVttsAndBalance(externalAccount);
+        if (!isTheSameList(account, utxoList)) {
+          print(account.address);
+          if (utxoList.isNotEmpty) {
+            account.utxos = utxoList;
+            account = await updateAccountVttsAndBalance(account);
+          } else {
+            account.utxos.clear();
           }
-        }
-
-        /// update the internal xprv utxo list and balance
-        if (_intAccounts.containsKey(address)) {
-          Account internalAccount = _intAccounts[address]!;
-
-          /// check if the UTXO set is different
-          if (!isTheSameList(internalAccount, utxoList)) {
-            if (utxoList.isNotEmpty) {
-              internalAccount.utxos.clear();
-              internalAccount.utxos.addAll(utxoList);
-            } else {
-              internalAccount.utxos.clear();
-            }
-            await updateAccountVttsAndBalance(_intAccounts[address]!);
-          }
+          updatedAccounts[account.address] = account;
+          wallet.updateAccount(
+              index: account.index, keyType: account.keyType, account: account);
         }
       }
 
-      /// pause to not overload the explorer
-      await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
+
+
+      database.walletStorage.wallets[wallet.id] = wallet;
+
     }
-
-    /// restructure  the accounts map to store in the database
-    Map<int, Account> _extAccntsDb = {};
-    _extAccounts.forEach((key, account) {
-      dbWallet.externalAccounts[int.parse(account.path.split('/').last)] =
-          account;
-      _extAccntsDb[int.parse(account.path.split('/').last)] = account;
-    });
-
-    /// restructure  the accounts map to store in the database
-    Map<int, Account> _intAccntsDb = {};
-    _intAccounts.forEach((key, account) {
-      dbWallet.internalAccounts[int.parse(account.path.split('/').last)] =
-          account;
-      _intAccntsDb[int.parse(account.path.split('/').last)] = account;
-    });
-
-    await addVtt(_extAccntsDb, db);
-    await addVtt(_intAccntsDb, db);
-
-    return emit(ExplorerState.synced(await db.loadWalletsDatabase()));
-  }
-}
-
-bool isTheSameList(Account account, List<Utxo> utxoList) {
-  int currentLength = account.utxos.length;
-  int newLength = utxoList.length;
-  bool isSameList = true;
-  if (currentLength == newLength) {
-    utxoList.forEach((element) {
-      bool containsUtxo =
-          rawJsonUtxosList(account.utxos).contains(element.toRawJson());
-      if (!containsUtxo) {
-        isSameList = false;
-      }
-    });
-  } else {
-    isSameList = false;
-  }
-  return isSameList;
-}
-
-Future updateAccountVttsAndBalance(Account account) async {
-  try {
-    AddressValueTransfers vtts = await Locator.instance
-        .get<ApiExplorer>()
-        .address(value: account.address, tab: 'value_transfers');
-
-    await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
-    account.vttHashes.clear();
-    account.vttHashes.addAll(vtts.transactionHashes);
-    account.setBalance();
-  } catch (e) {
-    print('Error updating account vtts and balance $e');
-  }
-}
-
-Future addVtt(Map<int, Account> accountsDb, ApiDatabase db) async {
-  for (int i = 0; i < accountsDb.keys.length; i++) {
-    Account account = accountsDb.values.elementAt(i);
-
-    for (int j = 0; j < account.vttHashes.length; j++) {
-      try {
-        String _hash = account.vttHashes.elementAt(j);
-        await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
-
-        var result = await Locator.instance.get<ApiExplorer>().hash(_hash);
-        ValueTransferInfo valueTransferInfo = result as ValueTransferInfo;
-        await db.addVtt(valueTransferInfo);
-      } catch (e) {
-        print('Error adding vtt to database $e');
+    for(int i = 0; i < unconfirmedVtts.length; i++){
+      ValueTransferInfo _vtt = unconfirmedVtts[i];
+      print(_vtt.jsonMap());
+      ValueTransferInfo vtt = await Locator.instance
+          .get<ApiExplorer>().getVtt(_vtt.txnHash);
+      if(_vtt.status != vtt.status){
+        await database.updateVtt(wallet.id, vtt);
       }
     }
-    await db.updateAccount(account);
+      emit(ExplorerState.synced(database.walletStorage));
   }
+
+  bool isTheSameList(Account account, List<Utxo> utxoList) {
+    int currentLength = account.utxos.length;
+    int newLength = utxoList.length;
+    bool isSameList = true;
+    if (currentLength == newLength) {
+      utxoList.forEach((element) {
+        bool containsUtxo =
+        rawJsonUtxosList(account.utxos).contains(element.toRawJson());
+        if (!containsUtxo) {
+          isSameList = false;
+        }
+      });
+    } else {
+      isSameList = false;
+    }
+    return isSameList;
+  }
+
+  Future<Account> updateAccountVttsAndBalance(Account account) async {
+    try {
+      AddressValueTransfers vtts = await Locator.instance
+          .get<ApiExplorer>()
+          .address(value: account.address, tab: 'value_transfers');
+
+      /// check if the list of transaction is already in the database
+      ApiDatabase database = Locator.instance.get<ApiDatabase>();
+      for (int i = 0; i < vtts.transactionHashes.length; i++) {
+        String transactionId = vtts.transactionHashes[i];
+        ValueTransferInfo? vtt = database.walletStorage.getVtt(transactionId);
+        if (vtt != null && !account.vttHashes.contains(transactionId)) {
+          if(vtt.status != "confirmed") {
+
+            ValueTransferInfo vtt = await Locator.instance
+                .get<ApiExplorer>().getVtt(transactionId);
+            account.addVtt(vtt);
+
+
+            await database.addVtt(vtt);
+            await database.updateAccount(account);
+          }
+        } else {
+          ValueTransferInfo vtt = await Locator.instance
+              .get<ApiExplorer>().getVtt(transactionId);
+            account.addVtt(vtt);
+            await database.addVtt(vtt);
+        }
+      }
+
+      account.vttHashes.clear();
+      account.vttHashes.addAll(vtts.transactionHashes);
+      await account.setBalance();
+      database.walletStorage.wallets[account.walletId]!.setAccount(account);
+    } catch (e) {
+      print('Error updating account vtts and balance $e');
+    }
+    return account;
+  }
+
 }

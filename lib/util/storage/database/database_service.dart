@@ -143,7 +143,7 @@ class DatabaseService {
           await walletRepository.updateWallet(item.id, _database);
           break;
         case ValueTransferInfo:
-          await vttRepository.updateTransaction(item.transactionId, _database);
+          await vttRepository.updateTransaction(item, _database);
           break;
         case Account:
           await accountRepository.updateAccount(item, _database);

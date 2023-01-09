@@ -175,6 +175,22 @@ class ApiDatabase {
         params: {'type': 'wallet', 'value': wallet.jsonMap()});
   }
 
+  Future<bool> updateVtt(String walletId, ValueTransferInfo vtt) async {
+    walletStorage.setVtt(walletId, vtt);
+    print("Updating VTT: ${vtt.txnHash}");
+
+    return await _processIsolate(
+        method: 'update',
+        params: {'type': 'vtt', 'value': vtt.jsonMap()});
+  }
+
+  Future<bool> deleteVtt(String transactionId) async {
+
+    return await _processIsolate(
+        method: 'delete',
+        params: {'value': transactionId});
+  }
+
   Future<bool> updateAccount(Account account) async {
     walletStorage.setAccount(account);
     return await _processIsolate(

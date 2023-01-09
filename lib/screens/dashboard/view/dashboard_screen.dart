@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:dart_date/dart_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/explorer.dart';
@@ -14,7 +17,6 @@ import 'package:witnet_wallet/widgets/layouts/dashboard_layout.dart';
 
 import '../api_dashboard.dart';
 
-const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
 class DashboardScreen extends StatefulWidget {
   static final route = '/dashboard';
@@ -30,7 +32,7 @@ class DashboardScreenState extends State<DashboardScreen>
   Account? currentAccount;
   ValueTransferInfo? txDetails;
   late AnimationController _loadingController;
-
+  late Timer syncTimer;
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
   ApiDashboard api = Locator.instance.get<ApiDashboard>();
 
@@ -43,28 +45,29 @@ class DashboardScreenState extends State<DashboardScreen>
     );
     _loadingController.forward();
     _getVtts();
+    _syncWallet(database.walletStorage.currentWallet.id);
+    syncTimer = Timer.periodic(Duration(minutes:0, seconds: 30), (timer) {
+      _syncWallet(database.walletStorage.currentWallet.id);
+    });
     //BlocProvider.of<DashboardBloc>(context).add(DashboardUpdateWalletEvent(currentWallet: currentWallet, currentAddress: currentAccount!.address));
   }
 
   @override
   void dispose() {
     _loadingController.dispose();
+    syncTimer.cancel();
     super.dispose();
   }
 
   void _syncWallet(String walletId) {
+    print("Running Sync: ${DateTime.now().toHumanString()}");
     BlocProvider.of<ExplorerBloc>(context)
     .add(SyncWalletEvent(ExplorerStatus.dataloading, database.walletStorage.wallets[walletId]!));
   }
 
    void _getVtts() {
-
     _setWallet();
     _setAccount();
-
-    print(currentWallet!.allTransactions());
-    print(currentWallet!.txHashes);
-    print(currentAccount!.address);
   }
 
   void _setWallet() {
@@ -100,6 +103,27 @@ class DashboardScreenState extends State<DashboardScreen>
   BlocListener _explorerListener(){
     return BlocListener<ExplorerBloc, ExplorerState>(
       listener: (BuildContext context, ExplorerState state){
+        switch(state.status){
+          case ExplorerStatus.unknown:
+            // TODO: Handle this case.
+            break;
+          case ExplorerStatus.dataloading:
+            // TODO: Handle this case.
+            break;
+          case ExplorerStatus.dataloaded:
+            {
+              setState(() {
+                _getVtts();
+              });
+            }
+            break;
+          case ExplorerStatus.error:
+            // TODO: Handle this case.
+            break;
+          case ExplorerStatus.ready:
+            // TODO: Handle this case.
+            break;
+        }
 
       }
     );
@@ -140,7 +164,27 @@ class DashboardScreenState extends State<DashboardScreen>
         actions: [],
       );
     }, listener: (context, state) {
-
+      switch(state.status){
+        case ExplorerStatus.unknown:
+        // TODO: Handle this case.
+          break;
+        case ExplorerStatus.dataloading:
+        // TODO: Handle this case.
+          break;
+        case ExplorerStatus.dataloaded:
+          {
+            setState(() {
+              _getVtts();
+            });
+          }
+          break;
+        case ExplorerStatus.error:
+        // TODO: Handle this case.
+          break;
+        case ExplorerStatus.ready:
+        // TODO: Handle this case.
+          break;
+      }
     });
   }
 }

@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:witnet/constants.dart';
 import 'package:witnet/data_structures.dart';
+import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
@@ -10,6 +11,7 @@ import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
 import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
+import 'package:witnet_wallet/util/preferences.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
 
@@ -131,10 +133,10 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     utxoSelectionStrategy = strategy;
   }
 
-  Future<Wallet> _setWalletBalance(Wallet dbWallet) async {
+  Future<Wallet> _setWalletBalance(Wallet wallet) async {
     /// setup the external accounts
-    dbWallet.externalAccounts.forEach((index, account) {
-      balanceNanoWit += account.balance().availableNanoWit;
+    wallet.externalAccounts.forEach((index, account) {
+      balanceNanoWit += account.balance.availableNanoWit;
 
       externalAddresses.add(account.address);
 
@@ -160,8 +162,8 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
 
     /// setup the internal accounts
 
-    dbWallet.internalAccounts.forEach((index, account) {
-      balanceNanoWit += account.balance().availableNanoWit;
+    wallet.internalAccounts.forEach((index, account) {
+      balanceNanoWit += account.balance.availableNanoWit;
       internalAddresses.add(account.address);
 
       account.utxos.forEach((utxo) {
@@ -177,15 +179,14 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         }
       });
     });
-    return dbWallet;
+    return wallet;
   }
 
   Future<void> setWallet(Wallet? newWalletStorage) async {
     if (newWalletStorage != null) {
       utxos.clear();
-      this.currentWallet = newWalletStorage;
+      this.currentWallet = await _setWalletBalance(newWalletStorage);
       balanceNanoWit = 0;
-      Wallet currentWallet = await _setWalletBalance(this.currentWallet);
       currentWallet = currentWallet;
 
       /// get the internal account that will be used for any change
@@ -206,7 +207,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       if (!changeAccountSet) {
         ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
         changeAccount = await apiCrypto.generateAccount(
-          firstWallet.name,
+          firstWallet,
           KeyType.internal,
           internalAddresses.length + 1,
         );
@@ -378,7 +379,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     for (int i = 0; i < selectedUtxos.length; i++) {
       Utxo currentUtxo = selectedUtxos.elementAt(i);
 
-      Wallet currentWallet = Locator.instance.get<ApiDashboard>().currentWallet;
+      Wallet currentWallet = Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
 
       /// loop though every external account
       currentWallet.externalAccounts.forEach((index, account) {
@@ -406,7 +407,35 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     return _signers;
   }
 
-  /// sign the transaction
+  List<InputUtxo> buildInputUtxoList() {
+    List<InputUtxo> _inputs = [];
+
+    /// loop through utxos
+    for (int i = 0; i < selectedUtxos.length; i++) {
+      Utxo currentUtxo = selectedUtxos.elementAt(i);
+
+      /// loop though every external account
+      currentWallet.externalAccounts.forEach((index, account) {
+        if (account.utxos.contains(currentUtxo)) {
+          _inputs.add(InputUtxo(address: account.address,
+              input: currentUtxo.toInput(),
+              value: currentUtxo.value));
+        }
+      });
+
+      /// loop though every internal account
+      currentWallet.internalAccounts.forEach((index, account) {
+        if (account.utxos.contains(currentUtxo)) {
+          _inputs.add(InputUtxo(address: account.address,
+              input: currentUtxo.toInput(),
+              value: currentUtxo.value));
+        }
+      });
+    }
+    return _inputs;
+  }
+
+    /// sign the transaction
   Future<void> _signTransactionEvent(
       SignTransactionEvent event, Emitter<VTTCreateState> emit) async {
     emit(state.copyWith(status: VTTCreateStatus.signing));
@@ -430,10 +459,62 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   Future<void> _sendVttTransactionEvent(
       SendTransactionEvent event, Emitter<VTTCreateState> emit) async {
     emit(state.copyWith(status: VTTCreateStatus.sending));
-    bool transactionAccepted =
-        await _sendTransaction(Transaction(valueTransfer: event.transaction));
+    ApiDatabase database = Locator.instance.get<ApiDatabase>();
+    print(event.transaction.jsonMap(asHex: true));
+
+    bool transactionAccepted = await _sendTransaction(Transaction(valueTransfer: event.transaction));
 
     if (transactionAccepted) {
+      /// add pending transaction
+      ///
+      List<InputUtxo> _inputUtxoList = buildInputUtxoList();
+      ValueTransferInfo vti = ValueTransferInfo(
+          blockHash: '',
+          fee: feeNanoWit,
+          inputs: _inputUtxoList,
+          outputs: outputs,
+          priority: 1,
+          status: 'pending',
+          txnEpoch: -1,
+          txnHash: event.transaction.transactionID,
+          txnTime: DateTime.now().millisecondsSinceEpoch,
+          type: 'ValueTransfer',
+          weight: event.transaction.weight
+      );
+      /// add pending tx to database
+      await database.addVtt(vti);
+      /// update the accounts transaction list
+
+      /// the inputs
+      for(int i = 0; i < _inputUtxoList.length; i++){
+        InputUtxo inputUtxo = _inputUtxoList[i];
+        Account account = database.walletStorage.currentWallet
+            .accountByAddress(inputUtxo.address)!;
+        account.vttHashes.add(event.transaction.transactionID);
+        account.vtts.add(vti);
+        await database.walletStorage.currentWallet.updateAccount(
+            index: account.index,
+            keyType: account.keyType,
+            account: account,
+        );
+      }
+
+      /// check outputs for accounts and update them
+      for(int i = 0; i < outputs.length; i++) {
+        ValueTransferOutput output = outputs[i];
+        Account? account = database.walletStorage.currentWallet
+            .accountByAddress(output.pkh.address);
+        if(account != null){
+          account.vttHashes.add(event.transaction.transactionID);
+          account.vtts.add(vti);
+          await database.walletStorage.currentWallet.updateAccount(
+              index: account.index,
+              keyType: account.keyType,
+              account: account,
+          );
+        }
+      }
+
       emit(state.copyWith(status: VTTCreateStatus.accepted));
       List<Account> utxoListToUpdate = [];
       selectedUtxos.forEach((selectedUtxo) {
@@ -452,8 +533,9 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         });
       });
       for (int i = 0; i < utxoListToUpdate.length; i++) {
-        await Locator.instance<ApiDatabase>()
-            .updateAccount(utxoListToUpdate[i]);
+        Account account = utxoListToUpdate[i];
+        await Locator.instance<ApiDatabase>().walletStorage.currentWallet
+            .updateAccount(index: account.index, keyType: account.keyType, account: account);
       }
     } else {
       emit(state.copyWith(status: VTTCreateStatus.exception));
@@ -473,9 +555,9 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     utxoSelectionStrategy = event.strategy;
   }
 
-  void _addSourceWalletsEvent(
-      AddSourceWalletsEvent event, Emitter<VTTCreateState> emit) {
-    setWallet(event.currentWallet);
+  Future<void> _addSourceWalletsEvent(
+      AddSourceWalletsEvent event, Emitter<VTTCreateState> emit) async  {
+    await setWallet(event.currentWallet);
     emit(state.copyWith(
         inputs: inputs, outputs: outputs, status: VTTCreateStatus.building));
   }
@@ -510,17 +592,4 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
           status: VTTCreateStatus.exception, message: 'Insufficient Funds'));
     }
   }
-}
-
-class InputUtxo {
-  InputUtxo({
-    required this.address,
-    required this.utxo,
-    required this.value,
-    required this.path,
-  });
-  final Utxo utxo;
-  final String address;
-  final String path;
-  final int value;
 }
