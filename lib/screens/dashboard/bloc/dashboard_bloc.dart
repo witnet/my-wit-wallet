@@ -26,15 +26,6 @@ final defaultAddress = Address(
     index: 0);
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
-  // dbWallet: DbWallet(
-  //               externalXpub: null,
-  //               internalXpub: null,
-  //               xprv: null,
-  //               walletName: null,
-  //               lastSynced: -1,
-  //               walletDescription: '',
-  //               externalAccounts: {},
-  //               internalAccounts: {}),
   DashboardBloc()
       : super(
           DashboardState(

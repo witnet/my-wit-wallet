@@ -46,8 +46,6 @@ class DashboardLayoutState extends State<DashboardLayout>
     super.dispose();
   }
 
-  /// _goToSettings
-  /// [BuildContext] context
   Future<void> _goToSettings() async {
     Navigator.pushReplacementNamed(context, PreferencePage.route);
   }
@@ -129,7 +127,14 @@ class DashboardLayoutState extends State<DashboardLayout>
           SizedBox(height: 16),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Flexible(
+                child: Text(
+              state.currentAddress.address.cropMiddle(18),
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.headline5,
+            )),
+            Flexible(
                 child: IconButton(
+                  color: theme.textTheme.headline5?.color,
                     padding: EdgeInsets.all(4),
                     constraints: BoxConstraints(),
                     iconSize: 12,
@@ -138,12 +143,6 @@ class DashboardLayoutState extends State<DashboardLayout>
                           ClipboardData(text: state.currentAddress.address));
                     },
                     icon: Icon(FontAwesomeIcons.copy))),
-            Flexible(
-                child: Text(
-              state.currentAddress.address.cropMiddle(18),
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.headline5,
-            ))
           ]),
         ],
       );

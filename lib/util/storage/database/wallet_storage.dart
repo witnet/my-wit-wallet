@@ -4,7 +4,6 @@ import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'balance_info.dart';
 
 /// DbWallet formats the wallet for the database
-///
 class WalletStorage {
   WalletStorage({
     required this.wallets,
