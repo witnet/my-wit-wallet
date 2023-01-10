@@ -41,7 +41,7 @@ class ImportedOptionState extends State<SelectImportedOption> {
     WalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     LoginStatus status = BlocProvider.of<LoginBloc>(context).state.status;
-    if (type == WalletType.newWallet && status != LoginStatus.LoginSuccess) {
+    if (status != LoginStatus.LoginSuccess) {
       Navigator.pushNamed(context, '/');
     } else {
       BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
