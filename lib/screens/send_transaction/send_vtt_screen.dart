@@ -99,13 +99,6 @@ class CreateVttScreenState extends State<CreateVttScreen>
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PaddedButton(
-                padding: EdgeInsets.all(0),
-                text: 'Cancel',
-                onPressed: () =>
-                    Navigator.pushReplacementNamed(context, '/dashboard'),
-                type: 'text'),
-            SizedBox(height: 16),
             StepBar(
                 actionable: false,
                 selectedItem: stepSelectedItem,
