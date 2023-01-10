@@ -134,7 +134,7 @@ class DashboardLayoutState extends State<DashboardLayout>
             )),
             Flexible(
                 child: IconButton(
-                  color: theme.textTheme.headline5?.color,
+                    color: theme.textTheme.headline5?.color,
                     padding: EdgeInsets.all(4),
                     constraints: BoxConstraints(),
                     iconSize: 12,

@@ -145,16 +145,18 @@ class Layout extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.end,
-                children: [Center(
-                  child: ConstrainedBox(
+                children: [
+                  Center(
+                    child: ConstrainedBox(
                       constraints: BoxConstraints(
-                      minWidth: 100,
-                      maxWidth: 600,
+                        minWidth: 100,
+                        maxWidth: 600,
+                      ),
+                      child: Column(
+                          mainAxisSize: MainAxisSize.max, children: actions),
                     ),
-                    child:
-                      Column(mainAxisSize: MainAxisSize.max, children: actions),
-                  ),
-                )], 
+                  )
+                ],
               ),
             ),
             color: theme.backgroundColor,

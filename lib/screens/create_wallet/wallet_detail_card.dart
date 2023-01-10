@@ -176,9 +176,12 @@ class WalletDetailCardState extends State<WalletDetailCard>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-      _buildInfoText(theme),
-      _buildWalletDetailsForm(theme),
-    ]);
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildInfoText(theme),
+          _buildWalletDetailsForm(theme),
+        ]);
   }
 }

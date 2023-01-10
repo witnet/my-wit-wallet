@@ -268,9 +268,9 @@ class BuildWalletCardState extends State<BuildWalletCard>
         final theme = Theme.of(context);
         if (state is CryptoInitializingWalletState) {
           WidgetsBinding.instance
-            .addPostFrameCallback((_) => widget.prevAction(null));
+              .addPostFrameCallback((_) => widget.prevAction(null));
           WidgetsBinding.instance
-            .addPostFrameCallback((_) => widget.nextAction(null));
+              .addPostFrameCallback((_) => widget.nextAction(null));
           return Column(
             children: [
               initStatus(
