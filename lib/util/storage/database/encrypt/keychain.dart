@@ -94,14 +94,12 @@ class KeyChain {
     String encodedKey = bytesToHex(encode(newPassword));
     if (exists) {
       String key = await getKey(databaseClient);
-
       bool valid = await validatePassword(key, oldPassword!);
-
-      if (valid) {
-        await _store.record('keychain').add(databaseClient, encodedKey);
-      } else {
+      if (!valid) {
         return false;
       }
+
+      await _store.record('keychain').add(databaseClient, encodedKey);
     } else {
       await _store.record('keychain').add(databaseClient, encodedKey);
     }

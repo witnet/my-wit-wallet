@@ -164,19 +164,20 @@ class DatabaseService {
   Future<bool> verifyPassword(String password) async {
     try {
       bool keyExists = await masterKeySet();
-      if (keyExists) {
-        String? key = await keyChain.getKey(_database);
-
-        bool valid = await keyChain.validatePassword(key, password);
-        if (valid) {
-          unlocked = true;
-        }
-        return valid;
+      if (!keyExists) {
+        return false;
       }
+
+      String? key = await keyChain.getKey(_database);
+      bool valid = await keyChain.validatePassword(key, password);
+      if (valid) {
+        unlocked = true;
+      }
+
+      return valid;
     } catch (e) {
       return false;
     }
-    return false;
   }
 
   Future<bool> setPassword(
