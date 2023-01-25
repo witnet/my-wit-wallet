@@ -246,7 +246,6 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
 
       final Wallet _wallet = await apiCrypto.initializeWallet();
 
-
       var creationStatus = await db.openDatabase();
 
       assert(creationStatus, 'Unable to Create Database.');
