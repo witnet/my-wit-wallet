@@ -44,7 +44,6 @@ Future<Map<String, dynamic>> initWalletRunner(
       port: resp.sendPort);
 
   Map<String, dynamic> data = await resp.first.then((value) {
-
     return {
       'wallet': value['wallet'] as Wallet,
     };
