@@ -112,7 +112,6 @@ class ReceiveDialogBoxState extends State<ReceiveDialogBox>
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-
     return Dialog(
       insetPadding: EdgeInsets.all(0),
       elevation: 0,
