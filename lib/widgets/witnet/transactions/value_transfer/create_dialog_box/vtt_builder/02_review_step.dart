@@ -309,7 +309,6 @@ class ReviewStepState extends State<ReviewStep>
     return BlocBuilder<VTTCreateBloc, VTTCreateState>(
         builder: (context, state) {
       final deviceSize = MediaQuery.of(context).size;
-
       double cardWidth;
       if (deviceSize.width > 400) {
         cardWidth = (400 * 0.7);
