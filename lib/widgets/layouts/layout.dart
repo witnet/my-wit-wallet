@@ -1,3 +1,5 @@
+import 'dart:ffi';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
@@ -8,7 +10,7 @@ import 'package:witnet_wallet/theme/wallet_theme.dart';
 
 final panelController = PanelController();
 
-class Layout extends StatelessWidget {
+class Layout extends StatefulWidget {
   final List<Widget> widgetList;
   final AppBar? appBar;
   final List<Widget> actions;
@@ -25,6 +27,13 @@ class Layout extends StatelessWidget {
     this.appBar,
   });
 
+  @override
+  LayoutState createState() => LayoutState();
+}
+
+class LayoutState extends State<Layout> with TickerProviderStateMixin {
+  var isPanelClose;
+
   Widget showWalletList(BuildContext context) {
     return MouseRegion(
         cursor: SystemMouseCursors.click,
@@ -35,15 +44,21 @@ class Layout extends StatelessWidget {
             height: 30,
           ),
           onTap: () => {
-            if (dashboardActions != null && actions.length > 0)
+            if (panelController.isPanelOpen)
               {
-                Navigator.pushReplacementNamed(context, DashboardScreen.route),
+                panelController.close(),
+                Timer(Duration(milliseconds: 300), () {
+                  setState(() {
+                    isPanelClose = true;
+                  });
+                }),
               }
             else
               {
-                panelController.isPanelOpen
-                    ? panelController.close()
-                    : panelController.open()
+                panelController.open(),
+                setState(() {
+                  isPanelClose = panelController.isPanelClosed;
+                })
               }
           },
         ));
@@ -52,7 +67,7 @@ class Layout extends StatelessWidget {
   // Content displayed between header and bottom actions
   Widget buildMainContent(BuildContext context, theme) {
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
-    if (slidingPanel == null) {
+    if (widget.slidingPanel == null) {
       return _buildMainLayout(context, theme, false);
     } else {
       return SlidingUpPanel(
@@ -62,12 +77,13 @@ class Layout extends StatelessWidget {
           maxHeight: MediaQuery.of(context).size.height * 0.3,
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(8), topRight: Radius.circular(8)),
-          panel: slidingPanel,
+          panel: widget.slidingPanel,
           body: _buildMainLayout(context, theme, true));
     }
   }
 
   Widget _buildMainLayout(BuildContext context, theme, bool panel) {
+    final theme = Theme.of(context);
     return CustomScrollView(
       slivers: [
         SliverAppBar(
@@ -76,9 +92,9 @@ class Layout extends StatelessWidget {
             pinned: true,
             elevation: 0,
             automaticallyImplyLeading: false,
-            backgroundColor: Colors.transparent,
-            expandedHeight: dashboardActions != null ? 300 : 200,
-            toolbarHeight: dashboardActions != null ? 300 : 200,
+            backgroundColor: theme.backgroundColor,
+            expandedHeight: widget.dashboardActions != null ? 300 : 200,
+            toolbarHeight: widget.dashboardActions != null ? 300 : 200,
             flexibleSpace: headerLayout(context, theme)),
         SliverPadding(
           padding: EdgeInsets.only(left: 16, right: 16, bottom: panel ? 70 : 0),
@@ -89,8 +105,8 @@ class Layout extends StatelessWidget {
                 minWidth: 100,
                 maxWidth: 600,
               ),
-              child:
-                  Column(mainAxisSize: MainAxisSize.max, children: widgetList),
+              child: Column(
+                  mainAxisSize: MainAxisSize.max, children: widget.widgetList),
             ),
           )),
         ),
@@ -99,11 +115,11 @@ class Layout extends StatelessWidget {
   }
 
   Widget headerLayout(context, theme) {
-    if (slidingPanel == null) {
+    if (widget.slidingPanel == null) {
       return Container(
           child: HeaderLayout(
-        navigationActions: navigationActions,
-        dashboardActions: dashboardActions,
+        navigationActions: widget.navigationActions,
+        dashboardActions: widget.dashboardActions,
       ));
     } else {
       return HeaderLayout(
@@ -118,11 +134,40 @@ class Layout extends StatelessWidget {
               children: [smallWitnetEyeIcon(theme)],
             ),
           )),
-          ...navigationActions
+          ...widget.navigationActions
         ],
-        dashboardActions: dashboardActions,
+        dashboardActions: widget.dashboardActions,
       );
     }
+  }
+
+  Widget bottomBar() {
+    return BottomAppBar(
+      notchMargin: 8,
+      elevation: 0,
+      child: Padding(
+        padding: EdgeInsets.only(
+            left: 8, right: 8, bottom: widget.actions.length > 0 ? 8 : 0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minWidth: 100,
+                  maxWidth: 600,
+                ),
+                child: Column(
+                    mainAxisSize: MainAxisSize.max, children: widget.actions),
+              ),
+            )
+          ],
+        ),
+      ),
+      color: Colors.transparent,
+    );
   }
 
   Widget build(BuildContext context) {
@@ -132,35 +177,10 @@ class Layout extends StatelessWidget {
           FocusScope.of(context).unfocus();
         },
         child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: theme.backgroundColor,
-          body: buildMainContent(context, theme),
-          bottomNavigationBar: BottomAppBar(
-            notchMargin: 8,
-            elevation: 0,
-            child: Padding(
-              padding: EdgeInsets.only(
-                  left: 8, right: 8, bottom: actions.length > 0 ? 8 : 0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Center(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minWidth: 100,
-                        maxWidth: 600,
-                      ),
-                      child: Column(
-                          mainAxisSize: MainAxisSize.max, children: actions),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            color: theme.backgroundColor,
-          ),
-        ));
+            resizeToAvoidBottomInset: false,
+            backgroundColor: theme.backgroundColor,
+            body: buildMainContent(context, theme),
+            bottomNavigationBar:
+                isPanelClose == null || isPanelClose ? bottomBar() : null));
   }
 }

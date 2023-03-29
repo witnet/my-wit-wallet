@@ -30,7 +30,8 @@ class TransactionDetails extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-            Text(output.timeLock.toInt().formatDate(), style: theme.textTheme.caption)
+            Text(output.timeLock.toInt().formatDate(),
+                style: theme.textTheme.caption)
           ]));
     }
     return Container(
