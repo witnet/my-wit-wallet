@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:witnet_wallet/screens/login/view/login_form.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
@@ -42,11 +44,13 @@ class LoginScreenState extends State<LoginScreen>
 
   _login() {
     FocusScope.of(context).unfocus();
-    if (currentWallet != null) {
-      BlocProvider.of<LoginBloc>(context).add(LoginSubmittedEvent(
-          walletName: currentWallet!.walletName,
-          password: currentWallet!.password));
-    }
+    Timer(Duration(milliseconds: 200), () {
+      if (currentWallet != null) {
+        BlocProvider.of<LoginBloc>(context).add(LoginSubmittedEvent(
+            walletName: currentWallet!.walletName,
+            password: currentWallet!.password));
+      }
+    });
   }
 
   Widget _buttonLogin() {
@@ -111,7 +115,7 @@ class LoginScreenState extends State<LoginScreen>
           SizedBox(height: 16),
           LoginForm(
             currentWallet: walletNames[0],
-            setWallet: (wallet) => _setWallet(wallet),
+            setWallet: (wallet) => {_setWallet(wallet)},
             loginError: loginError,
           ),
         ];
