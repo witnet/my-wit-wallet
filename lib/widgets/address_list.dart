@@ -88,6 +88,7 @@ class AddressListState extends State<AddressList> {
 
   Widget build(BuildContext context) {
     return ListView.builder(
+      padding: EdgeInsets.zero,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       itemCount: widget.addressList.length,
