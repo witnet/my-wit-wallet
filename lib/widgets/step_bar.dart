@@ -16,8 +16,8 @@ class StepBar extends StatelessWidget {
     required this.onChanged,
   });
 
-  Widget _buildStepBarItem(Enum item, BuildContext context) {
-    final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
+  Widget _buildStepBarItem(
+      Enum item, BuildContext context, ExtendedTheme extendedTheme) {
     return Container(
         alignment: Alignment.center,
         child: actionable
@@ -47,13 +47,14 @@ class StepBar extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
+    final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     return SizedBox(
         height: 30,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: listItems.length,
           itemBuilder: (context, index) {
-            return _buildStepBarItem(listItems[index], context);
+            return _buildStepBarItem(listItems[index], context, extendedTheme);
           },
         ));
   }
