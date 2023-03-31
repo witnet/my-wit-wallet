@@ -18,11 +18,10 @@ part 'vtt_create_state.dart';
 
 /// send the transaction via the explorer.
 /// returns true on success
-Future<bool> _sendTransaction(VTTransaction transaction) async {
+Future<bool> _sendTransaction(Transaction transaction) async {
   try {
-    var resp = await Locator.instance
-        .get<ApiExplorer>()
-        .sendVtTransaction(transaction);
+    var resp =
+        await Locator.instance.get<ApiExplorer>().sendTransaction(transaction);
     return resp['result'];
   } catch (e) {
     print('Error sending transaction: $e');
@@ -50,7 +49,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     on<AddValueTransferOutputEvent>(_addValueTransferOutputEvent);
     on<SetTimelockEvent>(_setTimeLockEvent);
     on<SignTransactionEvent>(_signTransactionEvent);
-    on<SendTransactionEvent>(_sendTransactionEvent);
+    on<SendTransactionEvent>(_sendVttTransactionEvent);
     on<UpdateFeeEvent>(_updateFeeEvent);
     on<UpdateUtxoSelectionStrategyEvent>(_updateUtxoSelectionStrategyEvent);
     on<AddSourceWalletsEvent>(_addSourceWalletsEvent);
@@ -428,10 +427,11 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   }
 
   /// send the transaction to the explorer
-  Future<void> _sendTransactionEvent(
+  Future<void> _sendVttTransactionEvent(
       SendTransactionEvent event, Emitter<VTTCreateState> emit) async {
     emit(state.copyWith(status: VTTCreateStatus.sending));
-    bool transactionAccepted = await _sendTransaction(event.transaction);
+    bool transactionAccepted =
+        await _sendTransaction(Transaction(valueTransfer: event.transaction));
 
     if (transactionAccepted) {
       emit(state.copyWith(status: VTTCreateStatus.accepted));

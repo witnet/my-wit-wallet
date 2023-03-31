@@ -138,8 +138,7 @@ class ApiExplorer {
 
   Future<dynamic> sendTransaction(Transaction transaction) async {
     try {
-      return await client.send(
-          transaction: transaction.transaction.jsonMap(asHex: true));
+      return await client.send(transaction: transaction.jsonMap(asHex: true));
     } catch (e) {
       rethrow;
     }
