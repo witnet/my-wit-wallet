@@ -118,6 +118,7 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
       disabledForegroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.38),
       disabledBackgroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.12),
       foregroundColor: WitnetPallet.white,
+      splashFactory: NoSplash.splashFactory,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4)), // background color
       textStyle: const TextStyle(
@@ -129,6 +130,7 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
 TextButtonThemeData textButtonTheme = TextButtonThemeData(
   style: TextButton.styleFrom(
     foregroundColor: WitnetPallet.witnetGreen1,
+    splashFactory: NoSplash.splashFactory,
     textStyle: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.normal,

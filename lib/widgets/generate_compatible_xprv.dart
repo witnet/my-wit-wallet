@@ -56,8 +56,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
   _generateSheikahCompatibleXprv(password) {
     try {
       // Checks if password is the one that encrypts the current (not-Sheikah-compatible) xprv
-      Xprv.fromEncryptedXprv(
-          localEncryptedXprv ?? '', Password.hash(password));
+      Xprv.fromEncryptedXprv(localEncryptedXprv ?? '', Password.hash(password));
     } catch (e) {
       errorText = 'Wrong password';
     }

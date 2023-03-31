@@ -75,7 +75,8 @@ class WalletDetailCardState extends State<WalletDetailCard>
         .addPostFrameCallback((_) => widget.nextAction(next));
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.clearActions(false));
-    defaultWalletName = "wallet-${Locator.instance.get<ApiDatabase>().walletStorage.wallets.length+1}";
+    defaultWalletName =
+        "wallet-${Locator.instance.get<ApiDatabase>().walletStorage.wallets.length + 1}";
   }
 
   @override

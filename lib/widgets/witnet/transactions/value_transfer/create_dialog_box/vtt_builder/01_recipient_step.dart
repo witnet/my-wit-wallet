@@ -1,4 +1,5 @@
 import 'package:witnet_wallet/constants.dart';
+import 'package:witnet_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:witnet_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +13,8 @@ import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/select.dart';
 import 'package:witnet_wallet/util/extensions/text_input_formatter.dart';
+import 'dart:io' show Platform;
+import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
 
 class RecipientStep extends StatefulWidget {
   final Function nextAction;
@@ -39,12 +42,12 @@ class RecipientStepState extends State<RecipientStep>
   String? _errorFeeText;
   FeeType _feeType = FeeType.Weighted;
   bool _showFeeInput = false;
-  final _addressController = TextEditingController();
-  final _addressFocusNode = FocusNode();
   final _amountController = TextEditingController();
   final _amountFocusNode = FocusNode();
   final _minerFeeController = TextEditingController();
   final _minerFeeFocusNode = FocusNode();
+  final _addressController = TextEditingController();
+  final _addressFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -62,9 +65,9 @@ class RecipientStepState extends State<RecipientStep>
   void dispose() {
     _loadingController.dispose();
     _addressController.dispose();
+    _addressFocusNode.dispose();
     _amountController.dispose();
     _minerFeeController.dispose();
-    _addressFocusNode.dispose();
     _amountFocusNode.dispose();
     _minerFeeFocusNode.dispose();
     super.dispose();
@@ -125,9 +128,7 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   String? _validateAddress(String? input) {
-    String? errorText;
-    errorText = validateAddress(_address);
-    return errorText;
+    return validateAddress(input);
   }
 
   String? _validateAmount(String? input) {
@@ -170,8 +171,10 @@ class RecipientStepState extends State<RecipientStep>
         _errorFeeText = _validateFee(_minerFee);
       }
     });
-    if(_isAbsoluteFee()){
-      if ((_errorAddressText == null && _errorAmountText == null && _errorFeeText == null ) &&
+    if (_isAbsoluteFee()) {
+      if ((_errorAddressText == null &&
+              _errorAmountText == null &&
+              _errorFeeText == null) &&
           !(_address.isEmpty || _amount.isEmpty || _minerFee.isEmpty)) {
         return true;
       }
@@ -205,9 +208,7 @@ class RecipientStepState extends State<RecipientStep>
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  _buildForm(BuildContext context, ThemeData theme) {
     final extendedTheme = theme.extension<ExtendedTheme>();
     return Form(
       key: _formKey,
@@ -224,6 +225,31 @@ class RecipientStepState extends State<RecipientStep>
             style: theme.textTheme.bodyLarge,
             decoration: InputDecoration(
               hintText: 'Recipient address',
+              suffixIcon: !Platform.isWindows && !Platform.isLinux
+                  ? IconButton(
+                      splashRadius: 1,
+                      icon: Icon(FontAwesomeIcons.qrcode),
+                      onPressed: () => {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => QrScanner(
+                                        onChanged: (String value) => {
+                                              Navigator.popUntil(
+                                                  context,
+                                                  ModalRoute.withName(
+                                                      CreateVttScreen.route)),
+                                              _addressController.text = value,
+                                              _address = value,
+                                              setState(() {
+                                                _errorAddressText =
+                                                    _validateAddress(value);
+                                              })
+                                            })))
+                          },
+                      color: theme
+                          .inputDecorationTheme.enabledBorder?.borderSide.color)
+                  : null,
               errorText: _errorAddressText,
             ),
             controller: _addressController,
@@ -235,7 +261,7 @@ class RecipientStepState extends State<RecipientStep>
               setState(() {
                 _address = value;
                 if (_validateAddress(_address) == null) {
-                  _errorAddressText = null;
+                  _errorAddressText = _validateAddress(_address);
                 }
               });
             },
@@ -245,10 +271,9 @@ class RecipientStepState extends State<RecipientStep>
             onTap: () {
               _addressFocusNode.requestFocus();
             },
-            onTapOutside: (PointerDownEvent event){
-              if(_addressFocusNode.hasFocus){
+            onTapOutside: (PointerDownEvent event) {
+              if (_addressFocusNode.hasFocus) {
                 setState(() {
-
                   _errorAddressText = _validateAddress(_address);
                 });
               }
@@ -287,8 +312,8 @@ class RecipientStepState extends State<RecipientStep>
                 _amountFocusNode.requestFocus();
               }
             },
-            onTapOutside: (PointerDownEvent event){
-              if(_amountFocusNode.hasFocus) {
+            onTapOutside: (PointerDownEvent event) {
+              if (_amountFocusNode.hasFocus) {
                 setState(() {
                   _errorAmountText = _validateAmount(_amount);
                 });
@@ -343,13 +368,13 @@ class RecipientStepState extends State<RecipientStep>
                   onTap: () {
                     _minerFeeFocusNode.requestFocus();
                   },
-            onTapOutside: (PointerDownEvent event){
-              if(_minerFeeFocusNode.hasFocus) {
-                setState(() {
-                  _errorFeeText = _validateFee(_minerFee);
-                });
-              }
-            },
+                  onTapOutside: (PointerDownEvent event) {
+                    if (_minerFeeFocusNode.hasFocus) {
+                      setState(() {
+                        _errorFeeText = _validateFee(_minerFee);
+                      });
+                    }
+                  },
                   onEditingComplete: () {
                     BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
                         feeType: FeeType.Absolute,
@@ -364,5 +389,11 @@ class RecipientStepState extends State<RecipientStep>
         ],
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return _buildForm(context, theme);
   }
 }

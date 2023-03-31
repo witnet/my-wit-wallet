@@ -56,7 +56,7 @@ class BalanceInfo {
       return [];
     }
     int utxoValue = 0;
-    utxoValue += utxos.map((e) => e.value).toList().reduce((a, b) => a+b);
+    utxoValue += utxos.map((e) => e.value).toList().reduce((a, b) => a + b);
 
     List<Utxo> selectedUtxos = [];
 
@@ -102,10 +102,10 @@ class BalanceInfo {
     );
   }
 
-  int? weightedVttFee(int value, {
-    int outputs = 1,
-    UtxoSelectionStrategy selectionStrategy = UtxoSelectionStrategy.SmallFirst
-  }) {
+  int? weightedVttFee(int value,
+      {int outputs = 1,
+      UtxoSelectionStrategy selectionStrategy =
+          UtxoSelectionStrategy.SmallFirst}) {
     UtxoPool utxoPool = UtxoPool();
     availableUtxos.forEach((Utxo utxo) {
       utxoPool.insert(utxo);
@@ -121,7 +121,8 @@ class BalanceInfo {
         BalanceInfo.fromUtxoList(selectedUtxos).availableNanoWit;
     changeNanoWit = (valuePaidNanoWit - value);
     return changeNanoWit > 0
-        ? (selectedUtxos.length * INPUT_SIZE) + (outputs + 1 * OUTPUT_SIZE * GAMMA)
+        ? (selectedUtxos.length * INPUT_SIZE) +
+            (outputs + 1 * OUTPUT_SIZE * GAMMA)
         : (selectedUtxos.length * INPUT_SIZE) + (outputs * OUTPUT_SIZE * GAMMA);
   }
 }
