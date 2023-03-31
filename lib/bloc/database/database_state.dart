@@ -1,6 +1,6 @@
 part of 'database_bloc.dart';
 
-class DatabaseState extends Equatable {
+class DatabaseState {
   DatabaseState copyWith() {
     return DatabaseState();
   }
