@@ -1,4 +1,5 @@
 import 'package:witnet_wallet/constants.dart';
+import 'package:witnet_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:witnet_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +13,8 @@ import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/select.dart';
+import 'dart:io' show Platform;
+import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
 
 final _addressController = TextEditingController();
 final _addressFocusNode = FocusNode();
@@ -56,6 +59,10 @@ class RecipientStepState extends State<RecipientStep>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
+    if (_addressController.text != '') {
+      _address = _addressController.text;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _validateAddress());
+    }
     super.initState();
   }
 
@@ -249,13 +256,8 @@ class RecipientStepState extends State<RecipientStep>
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  _buildForm(BuildContext context, ThemeData theme) {
     final extendedTheme = theme.extension<ExtendedTheme>();
-    _addressFocusNode.addListener(() => _validateAddress());
-    _amountFocusNode.addListener(() => _validateAmount());
-    _minerFeeFocusNode.addListener(() => _validateFee());
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -271,6 +273,24 @@ class RecipientStepState extends State<RecipientStep>
             style: theme.textTheme.bodyText1,
             decoration: InputDecoration(
               hintText: 'Recipient address',
+              suffixIcon: !Platform.isWindows && !Platform.isLinux
+                  ? IconButton(
+                      icon: Icon(FontAwesomeIcons.qrcode),
+                      onPressed: () => {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => QrScanner(
+                                        onChanged: (String value) => {
+                                              Navigator.pushReplacementNamed(
+                                                  context,
+                                                  CreateVttScreen.route),
+                                              _addressController.text = value,
+                                            })))
+                          },
+                      color: theme
+                          .inputDecorationTheme.enabledBorder?.borderSide.color)
+                  : null,
               errorText: _hasAddressError ? _errorAddressText : null,
             ),
             controller: _addressController,
@@ -355,5 +375,14 @@ class RecipientStepState extends State<RecipientStep>
         ],
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    _addressFocusNode.addListener(() => _validateAddress());
+    _amountFocusNode.addListener(() => _validateAmount());
+    _minerFeeFocusNode.addListener(() => _validateFee());
+    return _buildForm(context, theme);
   }
 }

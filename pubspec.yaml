@@ -43,13 +43,16 @@ dependencies:
   worker_manager: ^4.0.2
   toml: ^0.13.1
   decimal: 2.3.2
-  witnet: 0.2.1
+  # witnet: 0.2.1
+  witnet: 
+    path: ../witnet.dart
   table_calendar: ^3.0.3
   qr_flutter: ^4.0.0
   url_launcher: ^6.0.10
   flutter_dotenv: ^5.0.2
   date_format: ^2.0.5
   qr_code_scanner: ^1.0.1
+  mobile_scanner: ^3.2.0
   formz: ^0.4.1
   flutter_hooks: ^0.18.5+1
 
