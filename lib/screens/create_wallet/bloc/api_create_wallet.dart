@@ -19,7 +19,7 @@ class ApiCreateWallet {
     walletType = type;
   }
 
-  void setPassword(String value) => {password = value};
+  void setPassword(String value) => password = value;
 
   void setWalletName(String value) => walletName = value;
 

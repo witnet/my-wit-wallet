@@ -53,13 +53,10 @@ dependencies:
   formz: ^0.4.1
   flutter_hooks: ^0.18.5+1
 
-
-
 flutter_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/icon/icon.png"
-
 
 flutter:
 

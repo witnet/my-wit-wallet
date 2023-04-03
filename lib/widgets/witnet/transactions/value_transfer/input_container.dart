@@ -12,12 +12,14 @@ class InputContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-
     double cardWidth;
+
     if (deviceSize.width > 400) {
       cardWidth = (400 * 0.7);
-    } else
+    } else {
       cardWidth = deviceSize.width * 0.7;
+    }
+
     return Container(
       width: cardWidth,
       padding: EdgeInsets.all(3),

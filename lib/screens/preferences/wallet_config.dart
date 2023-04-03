@@ -26,7 +26,6 @@ class _WalletConfigState extends State<WalletConfig> {
   @override
   void initState() {
     super.initState();
-    print(apiDashboard);
   }
 
   @override

@@ -40,16 +40,6 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Remove for production
-        ElevatedButton(
-          onPressed: () {
-            Clipboard.setData(ClipboardData(text: mnemonic));
-          },
-          child: Text('Copy'),
-        ),
-        SizedBox(
-          height: 16,
-        ),
         Text(
           'These $_radioWordCount random words are your Witnet seed phrase. They will allow you to recover your tokens if you uninstall this application or forget your password:',
           style: theme.textTheme.bodyText1,

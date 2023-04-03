@@ -53,7 +53,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
                 Clipboard.setData(
                     ClipboardData(text: selectedAddress?.address ?? ''))
               }),
-      // Implement generate new address
+      // TODO: Implement generate new address
       // PaddedButton(
       //     padding: EdgeInsets.only(bottom: 8),
       //     text: 'Generate new',
