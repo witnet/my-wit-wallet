@@ -111,9 +111,10 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
             ),
             SizedBox(height: 16),
             AddressList(
-                currentWallet: db.walletStorage.currentWallet,
-                accountList: accountList,
-            )
+              currentWallet: db.walletStorage.currentWallet,
+              accountList: accountList,
+            ),
+            SizedBox(height: 80),
           ],
         );
 

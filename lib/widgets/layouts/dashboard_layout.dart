@@ -134,6 +134,12 @@ class DashboardLayoutState extends State<DashboardLayout>
           SizedBox(height: 16),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Flexible(
+                child: Text(
+              state.currentAddress.cropMiddle(18),
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.headline5,
+            )),
+            Flexible(
                 child: IconButton(
                     padding: EdgeInsets.all(4),
                     constraints: BoxConstraints(),
@@ -143,12 +149,6 @@ class DashboardLayoutState extends State<DashboardLayout>
                           ClipboardData(text: currentAccount.address));
                     },
                     icon: Icon(FontAwesomeIcons.copy))),
-            Flexible(
-                child: Text(
-                  currentAccount.address.cropMiddle(18),
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.headline5,
-            ))
           ]),
         ],
       );

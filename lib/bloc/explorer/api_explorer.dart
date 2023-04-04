@@ -74,7 +74,7 @@ class ApiExplorer {
   Future<dynamic> pending() async {
     try {
       await delay();
-      return await client.pending();
+      return await client.mempool();
     } on ExplorerException {
       rethrow;
     }

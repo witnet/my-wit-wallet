@@ -461,7 +461,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       SendTransactionEvent event, Emitter<VTTCreateState> emit) async {
     emit(state.copyWith(status: VTTCreateStatus.sending));
     ApiDatabase database = Locator.instance.get<ApiDatabase>();
-    print(event.transaction.jsonMap(asHex: true));
 
     bool transactionAccepted = await _sendTransaction(event.transaction);
 

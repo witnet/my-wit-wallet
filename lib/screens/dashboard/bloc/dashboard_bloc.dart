@@ -14,15 +14,7 @@ part 'dashboard_state.dart';
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   ApiDashboard dashboard = Locator.instance.get<ApiDashboard>();
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
-  // dbWallet: DbWallet(
-  //               externalXpub: null,
-  //               internalXpub: null,
-  //               xprv: null,
-  //               walletName: null,
-  //               lastSynced: -1,
-  //               walletDescription: '',
-  //               externalAccounts: {},
-  //               internalAccounts: {}),
+
   DashboardBloc()
       : super(
     DashboardState(
@@ -47,6 +39,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     DashboardLoadEvent event,
     Emitter<DashboardState> emit,
   ) async {
+
     dashboard.currentWallet = database.walletStorage.wallets[event.currentWalletId!];
     emit(DashboardState(
         currentWalletId: event.currentWalletId!,

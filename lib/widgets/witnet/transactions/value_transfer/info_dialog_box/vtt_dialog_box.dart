@@ -255,7 +255,7 @@ class VttDialogBoxState extends State<VTTDialogBox>
                 flex: 1,
                 child: IconButton(
                   onPressed: () {
-                    Clipboard.setData(ClipboardData(text: vti.blockHash));
+                    Clipboard.setData(ClipboardData(text: vti.blockHash!));
                   },
                   icon: Icon(
                     FontAwesomeIcons.copy,
