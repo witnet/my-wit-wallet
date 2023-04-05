@@ -80,7 +80,7 @@ class WalletListState extends State<WalletList> {
   }
 
   void _getSelectedAccount() {
-    String? selectedAddressValue = selectedAddressList?[selectedWallet?.id];
+    String? selectedAddressValue = selectedAddressList?[selectedWallet?.id]!.split('/').last;
     bool isAddressSaved = selectedAddressValue != '' && selectedAddressValue != null;
     Account? currentAccount = selectedWallet?.externalAccounts[
     isAddressSaved ? int.parse(selectedAddressValue) : 0];
@@ -139,7 +139,7 @@ class WalletListState extends State<WalletList> {
     String? balance = database.walletStorage.wallets[walletId]!.balanceNanoWit().availableNanoWit.toString();
     String? address = database.walletStorage.wallets[walletId]
         ?.externalAccounts[selectedAddressList?[walletId] != null
-        ? int.parse(selectedAddressList?[walletId])
+        ? int.parse(selectedAddressList?[walletId]!.split('/').last)
         : 0]
         ?.address
         .toString();
@@ -208,7 +208,7 @@ class WalletListState extends State<WalletList> {
             selectedWallet = database.walletStorage.wallets[walletId]!;
             selectedAccount = database.walletStorage.wallets[walletId]!.externalAccounts[
             selectedAddressList?[walletId] != null
-                ? int.parse(selectedAddressList?[walletId])
+                ? int.parse(selectedAddressList?[walletId].split('/').last)
                 : 0];
           });
           ApiPreferences.setCurrentWallet(walletId);

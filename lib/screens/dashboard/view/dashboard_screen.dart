@@ -15,7 +15,6 @@ import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/widgets/layouts/dashboard_layout.dart';
 
-import '../api_dashboard.dart';
 
 
 class DashboardScreen extends StatefulWidget {
@@ -34,7 +33,6 @@ class DashboardScreenState extends State<DashboardScreen>
   late AnimationController _loadingController;
   late Timer syncTimer;
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
-  ApiDashboard api = Locator.instance.get<ApiDashboard>();
 
   @override
   void initState() {
@@ -136,10 +134,8 @@ class DashboardScreenState extends State<DashboardScreen>
           if(state.status == DashboardStatus.Ready){
             setState(() {
 
-            currentWallet = database.walletStorage.wallets[state.currentWalletId];
-            currentAccount = currentWallet!.accountByAddress(state.currentAddress);
-            api.setCurrentAccount(currentAccount!);
-            api.setCurrentWalletData(currentWallet);
+            currentWallet = database.walletStorage.currentWallet;
+            currentAccount = database.walletStorage.currentAccount;
             });
           }
         },

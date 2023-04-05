@@ -5,10 +5,8 @@ import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/util/preferences.dart';
 import 'package:witnet_wallet/util/storage/database/database_isolate.dart';
 import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
-import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/api_theme.dart';
-import 'package:witnet_wallet/util/storage/cache/transaction_cache.dart';
 
 class Locator {
   static late GetIt _i;
@@ -23,7 +21,6 @@ class Locator {
     _i.registerSingleton<ApiPreferences>(ApiPreferences());
     _i.registerSingleton<ApiCreateWallet>(ApiCreateWallet());
     _i.registerSingleton<ApiCrypto>(ApiCrypto());
-    _i.registerSingleton<ApiDashboard>(ApiDashboard());
     _i.registerSingleton<CryptoIsolate>(CryptoIsolate.instance());
     _i.registerSingleton<DatabaseIsolate>(DatabaseIsolate.instance());
   }

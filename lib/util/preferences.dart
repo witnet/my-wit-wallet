@@ -1,21 +1,36 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
+
+import '../shared/locator.dart';
 
 class AddressEntry {
   String walletId;
   String addressIdx;
-
+  int keyType;
   AddressEntry({
     required this.walletId,
     required this.addressIdx,
+    required this.keyType,
   });
 }
 
 class ApiPreferences {
   static Future<void> setCurrentWallet(String walletId) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('current_wallet', walletId);
+    String? addressIndex = await ApiPreferences.getCurrentAddress(walletId);
+    ApiDatabase db = Locator.instance.get<ApiDatabase>();
+    db.walletStorage.setCurrentWallet(walletId);
+    String address;
+    int index = int.parse(addressIndex!.split("/").last);
+    if(addressIndex.split('/').first == "0") {
+      address = db.walletStorage.currentWallet.externalAccounts[index]!.address;
+    } else {
+      address = db.walletStorage.currentWallet.internalAccounts[index]!.address;
+    }
+    Locator.instance.get<ApiDatabase>().walletStorage.setCurrentAccount(address);
+    await prefs.setString('current_wallet', walletId);
   }
 
   static Future<String?> getCurrentWallet() async {
@@ -25,7 +40,7 @@ class ApiPreferences {
 
   static Future<void> setTheme(WalletTheme theme) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('theme', theme.name);
+    await prefs.setString('theme', theme.name);
   }
 
   static Future<String?> getTheme() async {
@@ -40,12 +55,22 @@ class ApiPreferences {
     if (currentMap != null) {
       finalMap = {
         ...json.decode(currentMap),
-        "${addressEntry.walletId}": "${addressEntry.addressIdx}"
+        "${addressEntry.walletId}": "${addressEntry.keyType}/${addressEntry.addressIdx}"
       };
     } else {
-      finalMap = {"${addressEntry.walletId}": "${addressEntry.addressIdx}"};
+      finalMap = {"${addressEntry.walletId}": "${addressEntry.keyType}/${addressEntry.addressIdx}"};
     }
-    prefs.setString('current_address', json.encode(finalMap));
+    ApiDatabase db = Locator.instance.get<ApiDatabase>();
+    String? address;
+    int index = int.parse(addressEntry.addressIdx);
+    if(addressEntry.keyType == 0) {
+      address = db.walletStorage.currentWallet.externalAccounts[index]!.address;
+    } else {
+      address = db.walletStorage.currentWallet.internalAccounts[index]!.address;
+    }
+    print(address);
+    Locator.instance.get<ApiDatabase>().walletStorage.setCurrentAccount(address);
+    await prefs.setString('current_address', json.encode(finalMap));
   }
 
   static Future getCurrentAddressList() async {

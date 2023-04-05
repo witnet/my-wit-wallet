@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
-import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
-import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
-import 'package:witnet_wallet/screens/login/view/login_screen.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';

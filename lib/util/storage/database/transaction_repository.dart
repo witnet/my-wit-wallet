@@ -67,7 +67,6 @@ class VttRepository extends _TransactionRepository {
       await _store
           .record(transaction.txnHash)
           .update(databaseClient, transaction.jsonMap());
-
       return true;
     } catch (e) {
       print(e);

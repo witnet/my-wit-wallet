@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/models/wallet_name.dart';
-import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/screens/login/models/password.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
@@ -46,12 +45,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         String? addressIndex = await ApiPreferences.getCurrentAddress(walletId!);
         Map<String, dynamic> addressList = await ApiPreferences.getCurrentAddressList();
         apiDatabase.walletStorage.setCurrentWallet(walletId);
-        apiDatabase.walletStorage.setCurrentAccount(apiDatabase.walletStorage.currentWallet.externalAccounts[int.parse(addressIndex!)]!.address);
+        apiDatabase.walletStorage.setCurrentAccount(apiDatabase.walletStorage.currentWallet.externalAccounts[int.parse(addressIndex!.split('/').last)]!.address);
         apiDatabase.walletStorage.setCurrentAddressList(addressList.map((key, value) => MapEntry(key, value as String)));
-        ApiDashboard dashboard = Locator.instance.get<ApiDashboard>();
-        dashboard.setWallets(apiDatabase.walletStorage);
-        dashboard.setCurrentWalletData(apiDatabase.walletStorage.wallets[walletId]);
-        dashboard.setCurrentAccount(apiDatabase.walletStorage.wallets[walletId]!.externalAccounts.values.first);
         emit(state.copyWith(status: LoginStatus.LoginSuccess));
       } else {
         emit(state.copyWith(status: LoginStatus.LoginInvalid));

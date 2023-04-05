@@ -9,7 +9,6 @@ import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/address.dart';
 import 'package:witnet_wallet/util/extensions/num_extensions.dart';
 
-import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
 
@@ -32,6 +31,7 @@ class AddressListState extends State<AddressList> {
   @override
   void initState() {
     super.initState();
+    currentAddress =  Locator.instance<ApiDatabase>().walletStorage.currentAccount.address;
   }
 
   @override
@@ -79,16 +79,12 @@ class AddressListState extends State<AddressList> {
                           ),
                         ]))),
             onTap: () async {
-              ApiDashboard api = Locator.instance.get<ApiDashboard>();
-              ApiDatabase database = Locator.instance.get<ApiDatabase>();
               await ApiPreferences.setCurrentAddress(AddressEntry(
                   walletId: widget.currentWallet.id,
-                  addressIdx: account.index.toString()));
-              //set current account address
-              setState(() {
-                api.setCurrentAccount(account);
-                database.walletStorage.setCurrentAccount(account.address);
-              });
+                  addressIdx: account.index.toString(),
+                  keyType: account.keyType == KeyType.internal ? 1 : 0,
+              ));
+
               BlocProvider.of<DashboardBloc>(context)
                   .add(DashboardUpdateWalletEvent(
                 currentWallet: widget.currentWallet,
@@ -102,7 +98,7 @@ class AddressListState extends State<AddressList> {
         listener: (BuildContext context, DashboardState state) {
           if (state.status == DashboardStatus.Ready) {
             setState(() {
-              currentAddress = state.currentAddress;
+              currentAddress =  Locator.instance<ApiDatabase>().walletStorage.currentAccount.address;
             });
           }
         },

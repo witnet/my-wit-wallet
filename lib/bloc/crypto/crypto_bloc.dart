@@ -175,10 +175,8 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     ApiDatabase database = Locator.instance.get<ApiDatabase>();
     Wallet wallet = event.wallet;
     await ApiPreferences.setCurrentWallet(wallet.id);
-    await ApiPreferences.setCurrentAddress(
-        AddressEntry(walletId: event.wallet.id, addressIdx: "0"));
-    database.walletStorage
-        .setCurrentAccount(event.wallet.externalAccounts.values.first.address);
+    await ApiPreferences.setCurrentAddress(AddressEntry(walletId: event.wallet.id, addressIdx: "0", keyType: 0));
+    database.walletStorage.setCurrentAccount(event.wallet.externalAccounts.values.first.address);
     database.walletStorage.setCurrentWallet(event.wallet.id);
     emit(CryptoLoadedWalletState(
       wallet: wallet,

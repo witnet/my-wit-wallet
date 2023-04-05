@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'dart:math' as math;
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:witnet_wallet/screens/receive_transaction/receive_tx_screen.dart';
 import 'package:witnet_wallet/screens/send_transaction/send_vtt_screen.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
@@ -22,6 +22,8 @@ import 'package:witnet_wallet/util/extensions/num_extensions.dart';
 import 'package:witnet_wallet/util/extensions/string_extensions.dart';
 
 import 'package:witnet_wallet/shared/locator.dart';
+
+import '../../util/preferences.dart';
 
 const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
@@ -61,6 +63,9 @@ class DashboardLayoutState extends State<DashboardLayout>
     Navigator.pushReplacementNamed(context, ReceiveTransactionScreen.route);
   }
 
+  Future<void> _loadPrefs() async {
+
+  }
   String? currentRoute() {
     return ModalRoute.of(context)?.settings.name ?? DashboardScreen.route;
   }
@@ -118,10 +123,8 @@ class DashboardLayoutState extends State<DashboardLayout>
     final theme = Theme.of(context);
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
-      Wallet currentWallet =
-          Locator.instance.get<ApiDashboard>().currentWallet!;
-      Account currentAccount =
-          Locator.instance.get<ApiDashboard>().currentAccount!;
+          Wallet currentWallet = Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
+          Account currentAccount = Locator.instance.get<ApiDatabase>().walletStorage.currentAccount;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -135,7 +138,7 @@ class DashboardLayoutState extends State<DashboardLayout>
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Flexible(
                 child: Text(
-              state.currentAddress.cropMiddle(18),
+                  currentAccount.address.cropMiddle(18),
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.headline5,
             )),

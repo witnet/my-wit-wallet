@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
-import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
-import 'package:witnet_wallet/screens/login/view/login_screen.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
@@ -123,10 +120,9 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
   BlocListener _dashboardBlocListener(){
     return BlocListener<DashboardBloc, DashboardState>(
         listener: (BuildContext context, DashboardState state){
+            ApiDatabase database = Locator.instance.get<ApiDatabase>();
             setState(() {
-              ApiDatabase database = Locator.instance.get<ApiDatabase>();
-              Wallet currentWallet = database.walletStorage.wallets[state.currentWalletId]!;
-              selectedAccount = currentWallet.accountByAddress(state.currentAddress);
+              selectedAccount = database.walletStorage.currentAccount;
 
             });
 

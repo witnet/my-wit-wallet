@@ -8,7 +8,6 @@ import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
-import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/util/preferences.dart';

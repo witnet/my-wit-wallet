@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
@@ -12,7 +11,6 @@ part 'dashboard_event.dart';
 part 'dashboard_state.dart';
 
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
-  ApiDashboard dashboard = Locator.instance.get<ApiDashboard>();
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
 
   DashboardBloc()
@@ -39,7 +37,6 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     DashboardLoadEvent event,
     Emitter<DashboardState> emit,
   ) async {
-    dashboard.currentWallet = database.walletStorage.wallets[event.currentWalletId!];
     emit(DashboardState(
         currentWalletId: event.currentWalletId!,
         currentAddress: event.currentAddress!,
@@ -68,7 +65,6 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   Future<void> _dashboardUpdateStatusEvent(
       DashboardUpdateEvent event, Emitter<DashboardState> emit) async {
-    dashboard.currentWallet = database.walletStorage.wallets[event.currentWalletId!];
     emit(DashboardState(
         currentWalletId: event.currentWalletId!,
         currentAddress: event.currentAddress!,

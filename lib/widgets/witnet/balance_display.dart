@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
-import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
@@ -39,7 +39,7 @@ class BalanceDisplayState extends State<BalanceDisplay>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-    walletStorage = Locator.instance<ApiDashboard>().walletStorage!;
+    walletStorage = Locator.instance<ApiDatabase>().walletStorage;
     setBalance();
     _headerScaleAnimation =
         Tween<double>(begin: .6, end: 1).animate(CurvedAnimation(

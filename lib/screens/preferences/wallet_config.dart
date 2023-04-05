@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/screens/dashboard/api_dashboard.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
@@ -22,7 +21,6 @@ enum ConfigSteps {
 class _WalletConfigState extends State<WalletConfig> {
   String xprv = '';
   bool showXprv = false;
-  final apiDashboard = Locator.instance<ApiDashboard>().walletStorage!;
 
   @override
   void initState() {
