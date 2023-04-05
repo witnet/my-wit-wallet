@@ -199,7 +199,7 @@ class TransactionsListState extends State<TransactionsList> {
         return ListView.builder(
           controller: _scroller,
           shrinkWrap: true,
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: NeverScrollableScrollPhysics(),
           scrollDirection: Axis.vertical,
           itemCount: vtts.length,
           itemBuilder: (context, index) {
