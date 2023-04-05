@@ -113,6 +113,7 @@ class ImportedOptionState extends State<SelectImportedOption> {
           'Import a wallet',
           style: theme.textTheme.headline1,
         ),
+        // TODO: update copies
         Carousel(list: [
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.',
           'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',

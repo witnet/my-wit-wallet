@@ -139,6 +139,7 @@ class LoginScreenState extends State<LoginScreen>
         'Welcome',
         style: theme.textTheme.headline1,
       ),
+      // TODO: update copies
       Carousel(list: [
         'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
         'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
