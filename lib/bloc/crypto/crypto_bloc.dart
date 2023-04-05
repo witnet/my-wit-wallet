@@ -169,14 +169,16 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   }
 
   Future<void> _cryptoInitWalletDoneEvent(
-      CryptoInitWalletDoneEvent event,
-      Emitter<CryptoState> emit,
-      ) async {
+    CryptoInitWalletDoneEvent event,
+    Emitter<CryptoState> emit,
+  ) async {
     ApiDatabase database = Locator.instance.get<ApiDatabase>();
     Wallet wallet = event.wallet;
     await ApiPreferences.setCurrentWallet(wallet.id);
-    await ApiPreferences.setCurrentAddress(AddressEntry(walletId: event.wallet.id, addressIdx: "0"));
-    database.walletStorage.setCurrentAccount(event.wallet.externalAccounts.values.first.address);
+    await ApiPreferences.setCurrentAddress(
+        AddressEntry(walletId: event.wallet.id, addressIdx: "0"));
+    database.walletStorage
+        .setCurrentAccount(event.wallet.externalAccounts.values.first.address);
     database.walletStorage.setCurrentWallet(event.wallet.id);
     emit(CryptoLoadedWalletState(
       wallet: wallet,
@@ -229,17 +231,19 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
 
   Future<Account> _generateAccount(
       Wallet wallet, int index, KeyType keyType) async {
-    try{
+    try {
       ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
-      final Account account = await apiCrypto.generateAccount(wallet, keyType, index);
+      final Account account =
+          await apiCrypto.generateAccount(wallet, keyType, index);
       return account;
-    } catch (e){
+    } catch (e) {
       print(e);
       rethrow;
     }
   }
 
-  Future<Account> _initAccount(Wallet wallet, int index, KeyType keyType) async {
+  Future<Account> _initAccount(
+      Wallet wallet, int index, KeyType keyType) async {
     Account account = await _generateAccount(wallet, index, keyType);
     account = await _syncAccount(account);
     account = await _syncVtts(account);
@@ -257,11 +261,14 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       await db.addVtt(valueTransferInfo);
     }
     return account;
-   }
+  }
 
   Future<Account> _syncAccount(Account account) async {
-    final addressValueTransfers = await apiExplorer.address(value: account.address, tab: 'value_transfers') as AddressValueTransfers;
-    account.vttHashes = List<String>.from(addressValueTransfers.transactionHashes.map((e) => e));
+    final addressValueTransfers = await apiExplorer.address(
+        value: account.address,
+        tab: 'value_transfers') as AddressValueTransfers;
+    account.vttHashes = List<String>.from(
+        addressValueTransfers.transactionHashes.map((e) => e));
     final List<Utxo> _utxos = await apiExplorer.utxos(address: account.address);
     account.utxos.addAll(_utxos);
     await account.setBalance();

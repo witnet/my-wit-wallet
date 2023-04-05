@@ -85,10 +85,9 @@ class AddressListState extends State<AddressList> {
                   walletId: widget.currentWallet.id,
                   addressIdx: account.index.toString()));
               //set current account address
-
               setState(() {
-              api.setCurrentAccount(account);
-              database.walletStorage.setCurrentAccount(account.address);
+                api.setCurrentAccount(account);
+                database.walletStorage.setCurrentAccount(account.address);
               });
               BlocProvider.of<DashboardBloc>(context)
                   .add(DashboardUpdateWalletEvent(

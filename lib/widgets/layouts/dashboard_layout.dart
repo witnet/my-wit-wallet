@@ -118,8 +118,10 @@ class DashboardLayoutState extends State<DashboardLayout>
     final theme = Theme.of(context);
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
-          Wallet currentWallet = Locator.instance.get<ApiDashboard>().currentWallet!;
-          Account currentAccount = Locator.instance.get<ApiDashboard>().currentAccount!;
+      Wallet currentWallet =
+          Locator.instance.get<ApiDashboard>().currentWallet!;
+      Account currentAccount =
+          Locator.instance.get<ApiDashboard>().currentAccount!;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -180,52 +182,52 @@ class DashboardLayoutState extends State<DashboardLayout>
   Widget _authBuilder() {
     final theme = Theme.of(context);
     return BlocListener<LoginBloc, LoginState>(
-        listener: (BuildContext context, LoginState state) {
-          if (state.status == LoginStatus.LoggedOut) {
-            Navigator.pushReplacementNamed(context, LoginScreen.route);
-          }
-        },
-        child: BlocBuilder<LoginBloc, LoginState>(
+      listener: (BuildContext context, LoginState state) {
+        if (state.status == LoginStatus.LoggedOut) {
+          Navigator.pushReplacementNamed(context, LoginScreen.route);
+        }
+      },
+      child: BlocBuilder<LoginBloc, LoginState>(
           builder: (BuildContext context, LoginState loginState) {
-      Widget _body;
-      Widget? _walletList;
-      switch (loginState.status) {
-        case LoginStatus.LoggedOut:
-          _body = Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              SpinKitWave(
-                color: theme.primaryColor,
-              ),
-            ],
-          );
-          break;
-        case LoginStatus.LoginSuccess:
-          _walletList = WalletList();
-          _body = Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Container(
-                child: widget.dashboardChild,
-              ),
-            ],
-          );
-          break;
-        default:
-          _body = Column(
-            children: <Widget>[],
-          );
-      }
-      return Layout(
-        navigationActions: _navigationActions(),
-        dashboardActions: _buildDashboardHeader(),
-        widgetList: [
-          _body,
-        ],
-        actions: widget.actions,
-        slidingPanel: _walletList,
-      );
-    }),
+        Widget _body;
+        Widget? _walletList;
+        switch (loginState.status) {
+          case LoginStatus.LoggedOut:
+            _body = Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SpinKitWave(
+                  color: theme.primaryColor,
+                ),
+              ],
+            );
+            break;
+          case LoginStatus.LoginSuccess:
+            _walletList = WalletList();
+            _body = Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Container(
+                  child: widget.dashboardChild,
+                ),
+              ],
+            );
+            break;
+          default:
+            _body = Column(
+              children: <Widget>[],
+            );
+        }
+        return Layout(
+          navigationActions: _navigationActions(),
+          dashboardActions: _buildDashboardHeader(),
+          widgetList: [
+            _body,
+          ],
+          actions: widget.actions,
+          slidingPanel: _walletList,
+        );
+      }),
     );
   }
 

@@ -93,7 +93,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<void> syncWalletRoutine(
       SyncWalletEvent event, Emitter<ExplorerState> emit) async {
-
     /// get current wallet
     ApiDatabase database = Locator.instance<ApiDatabase>();
     Wallet wallet = database.walletStorage.currentWallet;
@@ -138,7 +137,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         Account account = wallet.accountByAddress(address)!;
 
         if (!isTheSameList(account, utxoList)) {
-          print(account.address);
           if (utxoList.isNotEmpty) {
             account.utxos = utxoList;
             account = await updateAccountVttsAndBalance(account);
@@ -151,21 +149,22 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         }
       }
 
-
-
       database.walletStorage.wallets[wallet.id] = wallet;
-
     }
-    for(int i = 0; i < unconfirmedVtts.length; i++){
+    for (int i = 0; i < unconfirmedVtts.length; i++) {
       ValueTransferInfo _vtt = unconfirmedVtts[i];
       print(_vtt.jsonMap());
-      ValueTransferInfo vtt = await Locator.instance
-          .get<ApiExplorer>().getVtt(_vtt.txnHash);
-      if(_vtt.status != vtt.status){
-        await database.updateVtt(wallet.id, vtt);
+      ValueTransferInfo vtt;
+      try {
+        vtt = await Locator.instance.get<ApiExplorer>().getVtt(_vtt.txnHash);
+        if (_vtt.status != vtt.status) {
+          await database.updateVtt(wallet.id, vtt);
+        }
+      } catch (err) {
+        // No value transfer info
       }
     }
-      emit(ExplorerState.synced(database.walletStorage));
+    emit(ExplorerState.synced(database.walletStorage));
   }
 
   bool isTheSameList(Account account, List<Utxo> utxoList) {
@@ -175,7 +174,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     if (currentLength == newLength) {
       utxoList.forEach((element) {
         bool containsUtxo =
-        rawJsonUtxosList(account.utxos).contains(element.toRawJson());
+            rawJsonUtxosList(account.utxos).contains(element.toRawJson());
         if (!containsUtxo) {
           isSameList = false;
         }
@@ -198,21 +197,19 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         String transactionId = vtts.transactionHashes[i];
         ValueTransferInfo? vtt = database.walletStorage.getVtt(transactionId);
         if (vtt != null && !account.vttHashes.contains(transactionId)) {
-          if(vtt.status != "confirmed") {
-
-            ValueTransferInfo vtt = await Locator.instance
-                .get<ApiExplorer>().getVtt(transactionId);
+          if (vtt.status != "confirmed") {
+            ValueTransferInfo vtt =
+                await Locator.instance.get<ApiExplorer>().getVtt(transactionId);
             account.addVtt(vtt);
-
 
             await database.addVtt(vtt);
             await database.updateAccount(account);
           }
         } else {
-          ValueTransferInfo vtt = await Locator.instance
-              .get<ApiExplorer>().getVtt(transactionId);
-            account.addVtt(vtt);
-            await database.addVtt(vtt);
+          ValueTransferInfo vtt =
+              await Locator.instance.get<ApiExplorer>().getVtt(transactionId);
+          account.addVtt(vtt);
+          await database.addVtt(vtt);
         }
       }
 
@@ -225,5 +222,4 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     }
     return account;
   }
-
 }
