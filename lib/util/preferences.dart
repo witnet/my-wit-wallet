@@ -102,7 +102,7 @@ class ApiPreferences {
       final result = json.decode(selectedAddressesList);
       return result[walletId];
     } else {
-      return '';
+      return null;
     }
   }
 }
