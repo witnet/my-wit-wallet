@@ -133,24 +133,24 @@ class WalletListState extends State<WalletList> {
   Widget _buildWalletItem(String walletId) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    final isSelectedWallet = walletId == selectedWallet?.id;
-    String? balance = database.walletStorage.wallets[walletId]!
-        .balanceNanoWit()
-        .availableNanoWit
-        .toString();
-    String? address = database
-        .walletStorage
-        .wallets[walletId]
-        ?.externalAccounts[selectedAddressList?[walletId] != null
-            ? int.parse(selectedAddressList?[walletId]!.split('/').last)
-            : 0]
-        ?.address
-        .toString();
     final textStyle = TextStyle(
         fontFamily: 'NotoSans',
         color: WitnetPallet.white,
         fontSize: 14,
         fontWeight: FontWeight.normal);
+    final isSelectedWallet = walletId == selectedWallet?.id;
+    Wallet? currentWallet = database.walletStorage.wallets[walletId];
+    String? balance =
+        currentWallet!.balanceNanoWit().availableNanoWit.toString();
+    String currentWalletAccount =
+        database.walletStorage.currentAddressList![walletId]!;
+    Map<int, Account>? accountsList =
+        currentWalletAccount.split('/').first == '0'
+            ? currentWallet.externalAccounts
+            : currentWallet.internalAccounts;
+    int currentAccountIndex = int.parse(currentWalletAccount.split('/').last);
+    String? address = accountsList[currentAccountIndex]?.address.toString();
+
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(

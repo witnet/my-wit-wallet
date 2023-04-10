@@ -88,6 +88,7 @@ class ApiPreferences {
     String? address;
     int index = int.parse(addressEntry.addressIdx);
     db.walletStorage.setCurrentWallet(addressEntry.walletId);
+    db.walletStorage.setCurrentAddressList(finalMap);
     if (addressEntry.keyType == 0) {
       address = db.walletStorage.currentWallet.externalAccounts[index]!.address;
     } else {
