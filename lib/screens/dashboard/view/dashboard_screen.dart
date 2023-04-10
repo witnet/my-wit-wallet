@@ -130,12 +130,9 @@ class DashboardScreenState extends State<DashboardScreen>
   BlocListener _dashboardListener(){
     return BlocListener<DashboardBloc, DashboardState>(
         listener: (BuildContext context, DashboardState state) {
-          print(state.props);
           if(state.status == DashboardStatus.Ready){
             setState(() {
-
-            currentWallet = database.walletStorage.currentWallet;
-            currentAccount = database.walletStorage.currentAccount;
+            _getVtts();
             });
           }
         },

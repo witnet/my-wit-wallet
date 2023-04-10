@@ -19,11 +19,11 @@ class AddressEntry {
 class ApiPreferences {
   static Future<void> setCurrentWallet(String walletId) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? addressIndex = await ApiPreferences.getCurrentAddress(walletId);
+    String addressIndex = await ApiPreferences.getCurrentAddress(walletId) ?? "0/0";
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
     db.walletStorage.setCurrentWallet(walletId);
     String address;
-    int index = int.parse(addressIndex!.split("/").last);
+    int index = int.parse(addressIndex.split("/").last);
     if(addressIndex.split('/').first == "0") {
       address = db.walletStorage.currentWallet.externalAccounts[index]!.address;
     } else {
@@ -35,7 +35,19 @@ class ApiPreferences {
 
   static Future<String?> getCurrentWallet() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
-    return pref.getString('current_wallet');
+    String? currentWallet = pref.getString('current_wallet');
+    ApiDatabase db = Locator.instance.get<ApiDatabase>();
+    db.walletStorage.setCurrentWallet(currentWallet!);
+    String address;
+    String? addressIndex = await ApiPreferences.getCurrentAddress(currentWallet);
+    int index = int.parse(addressIndex!.split("/").last);
+    if(addressIndex.split('/').first == "0") {
+      address = db.walletStorage.currentWallet.externalAccounts[index]!.address;
+    } else {
+      address = db.walletStorage.currentWallet.internalAccounts[index]!.address;
+    }
+    Locator.instance.get<ApiDatabase>().walletStorage.setCurrentAccount(address);
+    return currentWallet;
   }
 
   static Future<void> setTheme(WalletTheme theme) async {
@@ -63,17 +75,17 @@ class ApiPreferences {
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
     String? address;
     int index = int.parse(addressEntry.addressIdx);
+    db.walletStorage.setCurrentWallet(addressEntry.walletId);
     if(addressEntry.keyType == 0) {
       address = db.walletStorage.currentWallet.externalAccounts[index]!.address;
     } else {
       address = db.walletStorage.currentWallet.internalAccounts[index]!.address;
     }
-    print(address);
-    Locator.instance.get<ApiDatabase>().walletStorage.setCurrentAccount(address);
+    db.walletStorage.setCurrentAccount(address);
     await prefs.setString('current_address', json.encode(finalMap));
   }
 
-  static Future getCurrentAddressList() async {
+  static Future<Map<String, dynamic>?> getCurrentAddressList() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     String? selectedAddressesList = pref.getString('current_address');
     if (selectedAddressesList != null) {

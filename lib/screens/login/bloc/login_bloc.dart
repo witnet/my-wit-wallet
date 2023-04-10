@@ -43,10 +43,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       if (verified) {
         String? walletId = await ApiPreferences.getCurrentWallet();
         String? addressIndex = await ApiPreferences.getCurrentAddress(walletId!);
-        Map<String, dynamic> addressList = await ApiPreferences.getCurrentAddressList();
+        Map<String, dynamic>? addressList = await ApiPreferences.getCurrentAddressList();
         apiDatabase.walletStorage.setCurrentWallet(walletId);
         apiDatabase.walletStorage.setCurrentAccount(apiDatabase.walletStorage.currentWallet.externalAccounts[int.parse(addressIndex!.split('/').last)]!.address);
-        apiDatabase.walletStorage.setCurrentAddressList(addressList.map((key, value) => MapEntry(key, value as String)));
+        apiDatabase.walletStorage.setCurrentAddressList(addressList!.map((key, value) => MapEntry(key, value as String)));
         emit(state.copyWith(status: LoginStatus.LoginSuccess));
       } else {
         emit(state.copyWith(status: LoginStatus.LoginInvalid));
