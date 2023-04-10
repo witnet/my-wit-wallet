@@ -89,7 +89,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.nextAction(next));
     ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
-    acw.printDebug();
     BlocProvider.of<CryptoBloc>(context).add(
         CryptoInitializeWalletEvent(
             id: acw.walletName,

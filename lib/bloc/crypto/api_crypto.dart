@@ -96,13 +96,7 @@ class ApiCrypto {
       CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
 
       final receivePort = ReceivePort();
-      print({
-        'seedSource': seedSource,
-        'walletName': walletName,
-        'walletDescription': walletDescription,
-        'seed': seed,
-        'password': password,
-      });
+
       cryptoIsolate.send(
           method: 'initializeWallet',
           params: {

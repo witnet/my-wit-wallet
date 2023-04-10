@@ -58,7 +58,6 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   void _syncWallet(String walletId) {
-    print("Running Sync: ${DateTime.now().toHumanString()}");
     BlocProvider.of<ExplorerBloc>(context)
     .add(SyncWalletEvent(ExplorerStatus.dataloading, database.walletStorage.wallets[walletId]!));
   }

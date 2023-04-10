@@ -257,7 +257,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       /// compare to balance
       if (balanceNanoWit < valueOwedNanoWit) {
         /// TODO:: throw insufficient funds exception
-        print('Build transaction :: Insuficient funds');
       } else {
         /// get utxos from the pool
         selectedUtxos = utxoPool.cover(
@@ -459,7 +458,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       SendTransactionEvent event, Emitter<VTTCreateState> emit) async {
     emit(state.copyWith(status: VTTCreateStatus.sending));
     ApiDatabase database = Locator.instance.get<ApiDatabase>();
-    print(event.transaction.jsonMap(asHex: true));
 
     bool transactionAccepted = await _sendTransaction(Transaction(valueTransfer: event.transaction));
 

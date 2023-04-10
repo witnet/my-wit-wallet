@@ -132,7 +132,6 @@ class WalletListState extends State<WalletList> {
   }
 
   Widget _buildWalletItem(String walletId) {
-    print(walletId);
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     final isSelectedWallet = walletId == selectedWallet?.id;

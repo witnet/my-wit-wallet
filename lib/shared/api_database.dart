@@ -177,7 +177,6 @@ class ApiDatabase {
 
   Future<bool> updateVtt(String walletId, ValueTransferInfo vtt) async {
     walletStorage.setVtt(walletId, vtt);
-    print("Updating VTT: ${vtt.txnHash}");
 
     return await _processIsolate(
         method: 'update',

@@ -129,11 +129,9 @@ class ApiExplorer {
   Future<Map<String, List<Utxo>>> utxosMulti({required List<String> addressList})
   async {
     try {
-      print('ExplorerBloc._getUtxos');
       /// address limit is the limit of the explorer API
       int addressLimit = 10;
       List<List<String>> addressChunks = [];
-      print('getting utxos');
 
       /// break the address list into chunks of 10 addresses
       for (int i = 0; i < addressList.length; i += addressLimit) {
