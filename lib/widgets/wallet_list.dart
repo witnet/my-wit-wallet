@@ -8,6 +8,7 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
+import 'package:witnet_wallet/widgets/identicon.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
@@ -174,6 +175,7 @@ class WalletListState extends State<WalletList> {
               color: extendedTheme.selectedTextColor,
               width: 30,
               height: 30,
+              child: IdenticonWidget(seed: walletId ?? '', size: 8),
             ),
             Expanded(
               child: Padding(

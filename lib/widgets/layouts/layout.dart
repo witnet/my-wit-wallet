@@ -1,9 +1,10 @@
-import 'dart:ffi';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
+import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/theme/colors.dart';
+import 'package:witnet_wallet/widgets/identicon.dart';
 import 'package:witnet_wallet/widgets/layouts/headerLayout.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
@@ -35,6 +36,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   var isPanelClose;
 
   Widget showWalletList(BuildContext context) {
+    String walletId = Locator.instance.get<ApiDatabase>()
+        .walletStorage.currentWallet.id;
     return MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
@@ -42,6 +45,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             color: WitnetPallet.white,
             width: 30,
             height: 30,
+            child: IdenticonWidget(seed: walletId ?? '', size: 8),
           ),
           onTap: () => {
             if (panelController.isPanelOpen)
