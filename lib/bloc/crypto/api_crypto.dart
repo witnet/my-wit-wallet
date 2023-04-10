@@ -20,12 +20,8 @@ class ApiCrypto {
   late String? password;
   ApiCrypto();
 
-  void setInitialWalletData(
-      String walletName,
-      String walletDescription,
-      String seed,
-      String seedSource,
-      String password) {
+  void setInitialWalletData(String walletName, String walletDescription,
+      String seed, String seedSource, String password) {
     this.walletName = walletName;
     this.walletDescription = walletDescription;
     this.seed = seed;

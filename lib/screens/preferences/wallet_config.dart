@@ -32,7 +32,6 @@ class _WalletConfigState extends State<WalletConfig> {
     final theme = Theme.of(context);
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (previous, current) {
-
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
           'Export wallet from xprv',
@@ -45,7 +44,12 @@ class _WalletConfigState extends State<WalletConfig> {
             gap: 3.0,
             showEye: true,
             blur: !showXprv,
-            text: Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.xprv ?? '',
+            text: Locator.instance
+                    .get<ApiDatabase>()
+                    .walletStorage
+                    .currentWallet
+                    .xprv ??
+                '',
             updateBlur: () => {
                   setState(() {
                     showXprv = !showXprv;
@@ -57,8 +61,13 @@ class _WalletConfigState extends State<WalletConfig> {
           type: 'primary',
           padding: EdgeInsets.only(bottom: 8),
           onPressed: () => {
-            Clipboard.setData(
-                ClipboardData(text: Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.xprv ?? ''))
+            Clipboard.setData(ClipboardData(
+                text: Locator.instance
+                        .get<ApiDatabase>()
+                        .walletStorage
+                        .currentWallet
+                        .xprv ??
+                    ''))
           },
         ),
       ]);

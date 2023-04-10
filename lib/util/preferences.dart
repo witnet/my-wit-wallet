@@ -19,17 +19,21 @@ class AddressEntry {
 class ApiPreferences {
   static Future<void> setCurrentWallet(String walletId) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String addressIndex = await ApiPreferences.getCurrentAddress(walletId) ?? "0/0";
+    String addressIndex =
+        await ApiPreferences.getCurrentAddress(walletId) ?? "0/0";
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
     db.walletStorage.setCurrentWallet(walletId);
     String address;
     int index = int.parse(addressIndex.split("/").last);
-    if(addressIndex.split('/').first == "0") {
+    if (addressIndex.split('/').first == "0") {
       address = db.walletStorage.currentWallet.externalAccounts[index]!.address;
     } else {
       address = db.walletStorage.currentWallet.internalAccounts[index]!.address;
     }
-    Locator.instance.get<ApiDatabase>().walletStorage.setCurrentAccount(address);
+    Locator.instance
+        .get<ApiDatabase>()
+        .walletStorage
+        .setCurrentAccount(address);
     await prefs.setString('current_wallet', walletId);
   }
 
@@ -39,14 +43,18 @@ class ApiPreferences {
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
     db.walletStorage.setCurrentWallet(currentWallet!);
     String address;
-    String? addressIndex = await ApiPreferences.getCurrentAddress(currentWallet);
+    String? addressIndex =
+        await ApiPreferences.getCurrentAddress(currentWallet);
     int index = int.parse(addressIndex!.split("/").last);
-    if(addressIndex.split('/').first == "0") {
+    if (addressIndex.split('/').first == "0") {
       address = db.walletStorage.currentWallet.externalAccounts[index]!.address;
     } else {
       address = db.walletStorage.currentWallet.internalAccounts[index]!.address;
     }
-    Locator.instance.get<ApiDatabase>().walletStorage.setCurrentAccount(address);
+    Locator.instance
+        .get<ApiDatabase>()
+        .walletStorage
+        .setCurrentAccount(address);
     return currentWallet;
   }
 
@@ -67,16 +75,20 @@ class ApiPreferences {
     if (currentMap != null) {
       finalMap = {
         ...json.decode(currentMap),
-        "${addressEntry.walletId}": "${addressEntry.keyType}/${addressEntry.addressIdx}"
+        "${addressEntry.walletId}":
+            "${addressEntry.keyType}/${addressEntry.addressIdx}"
       };
     } else {
-      finalMap = {"${addressEntry.walletId}": "${addressEntry.keyType}/${addressEntry.addressIdx}"};
+      finalMap = {
+        "${addressEntry.walletId}":
+            "${addressEntry.keyType}/${addressEntry.addressIdx}"
+      };
     }
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
     String? address;
     int index = int.parse(addressEntry.addressIdx);
     db.walletStorage.setCurrentWallet(addressEntry.walletId);
-    if(addressEntry.keyType == 0) {
+    if (addressEntry.keyType == 0) {
       address = db.walletStorage.currentWallet.externalAccounts[index]!.address;
     } else {
       address = db.walletStorage.currentWallet.internalAccounts[index]!.address;

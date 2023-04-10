@@ -54,8 +54,6 @@ class WalletListState extends State<WalletList> {
     super.dispose();
   }
 
-
-
   void _getCurrentWallet() async {
     WalletStorage walletStorage = database.walletStorage;
     setState(() {
@@ -80,10 +78,12 @@ class WalletListState extends State<WalletList> {
   }
 
   void _getSelectedAccount() {
-    String? selectedAddressValue = selectedAddressList?[selectedWallet?.id]!.split('/').last;
-    bool isAddressSaved = selectedAddressValue != '' && selectedAddressValue != null;
+    String? selectedAddressValue =
+        selectedAddressList?[selectedWallet?.id]!.split('/').last;
+    bool isAddressSaved =
+        selectedAddressValue != '' && selectedAddressValue != null;
     Account? currentAccount = selectedWallet?.externalAccounts[
-    isAddressSaved ? int.parse(selectedAddressValue) : 0];
+        isAddressSaved ? int.parse(selectedAddressValue) : 0];
     setState(() {
       selectedAccount = currentAccount;
     });
@@ -96,8 +96,7 @@ class WalletListState extends State<WalletList> {
     ));
   }
 
-
-  void _getWallets()  {
+  void _getWallets() {
     WalletStorage walletStorage = database.walletStorage;
     setState(() {
       selectedWallet = walletStorage.currentWallet;
@@ -135,11 +134,16 @@ class WalletListState extends State<WalletList> {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     final isSelectedWallet = walletId == selectedWallet?.id;
-    String? balance = database.walletStorage.wallets[walletId]!.balanceNanoWit().availableNanoWit.toString();
-    String? address = database.walletStorage.wallets[walletId]
+    String? balance = database.walletStorage.wallets[walletId]!
+        .balanceNanoWit()
+        .availableNanoWit
+        .toString();
+    String? address = database
+        .walletStorage
+        .wallets[walletId]
         ?.externalAccounts[selectedAddressList?[walletId] != null
-        ? int.parse(selectedAddressList?[walletId]!.split('/').last)
-        : 0]
+            ? int.parse(selectedAddressList?[walletId]!.split('/').last)
+            : 0]
         ?.address
         .toString();
     final textStyle = TextStyle(
@@ -201,21 +205,19 @@ class WalletListState extends State<WalletList> {
           ]),
         ),
         onTap: () {
-
-
           setState(() {
             selectedWallet = database.walletStorage.wallets[walletId]!;
-            selectedAccount = database.walletStorage.wallets[walletId]!.externalAccounts[
-            selectedAddressList?[walletId] != null
-                ? int.parse(selectedAddressList?[walletId].split('/').last)
-                : 0];
+            selectedAccount = database
+                    .walletStorage.wallets[walletId]!.externalAccounts[
+                selectedAddressList?[walletId] != null
+                    ? int.parse(selectedAddressList?[walletId].split('/').last)
+                    : 0];
           });
           ApiPreferences.setCurrentWallet(walletId);
           BlocProvider.of<DashboardBloc>(context).add(
               DashboardUpdateWalletEvent(
                   currentWallet: selectedWallet,
                   currentAddress: selectedAccount!.address));
-
         },
       ),
     );
@@ -223,7 +225,7 @@ class WalletListState extends State<WalletList> {
 
   @override
   Widget build(BuildContext context) {
-     return ListView(padding: EdgeInsets.all(8), children: [
+    return ListView(padding: EdgeInsets.all(8), children: [
       Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [_buildInitialButtons()]),

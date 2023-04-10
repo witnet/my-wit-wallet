@@ -49,7 +49,6 @@ List<BlocProvider> getProviders(
       create: (BuildContext context) => VTTCreateBloc(),
     ),
 
-
     /// BlocDashboard manages the ui for the main dashboard
     BlocProvider<DashboardBloc>(
       create: (BuildContext context) => DashboardBloc(),

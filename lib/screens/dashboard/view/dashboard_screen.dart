@@ -15,8 +15,6 @@ import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/widgets/layouts/dashboard_layout.dart';
 
-
-
 class DashboardScreen extends StatefulWidget {
   static final route = '/dashboard';
   @override
@@ -44,7 +42,7 @@ class DashboardScreenState extends State<DashboardScreen>
     _loadingController.forward();
     _getVtts();
     _syncWallet(database.walletStorage.currentWallet.id);
-    syncTimer = Timer.periodic(Duration(minutes:0, seconds: 30), (timer) {
+    syncTimer = Timer.periodic(Duration(minutes: 0, seconds: 30), (timer) {
       _syncWallet(database.walletStorage.currentWallet.id);
     });
     //BlocProvider.of<DashboardBloc>(context).add(DashboardUpdateWalletEvent(currentWallet: currentWallet, currentAddress: currentAccount!.address));
@@ -58,24 +56,26 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   void _syncWallet(String walletId) {
-    BlocProvider.of<ExplorerBloc>(context)
-    .add(SyncWalletEvent(ExplorerStatus.dataloading, database.walletStorage.wallets[walletId]!));
+    BlocProvider.of<ExplorerBloc>(context).add(SyncWalletEvent(
+        ExplorerStatus.dataloading, database.walletStorage.wallets[walletId]!));
   }
 
-   void _getVtts() {
+  void _getVtts() {
     _setWallet();
     _setAccount();
   }
 
   void _setWallet() {
     setState(() {
-      currentWallet = Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
+      currentWallet =
+          Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
     });
   }
 
   void _setAccount() {
     setState(() {
-      currentAccount = Locator.instance.get<ApiDatabase>().walletStorage.currentAccount;
+      currentAccount =
+          Locator.instance.get<ApiDatabase>().walletStorage.currentAccount;
     });
   }
 
@@ -85,7 +85,7 @@ class DashboardScreenState extends State<DashboardScreen>
     });
   }
 
-  Widget _buildTransactionList(ThemeData themeData){
+  Widget _buildTransactionList(ThemeData themeData) {
     return TransactionsList(
       themeData: themeData,
       setDetails: _setDetails,
@@ -96,45 +96,42 @@ class DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-
-  BlocListener _explorerListener(){
+  BlocListener _explorerListener() {
     return BlocListener<ExplorerBloc, ExplorerState>(
-      listener: (BuildContext context, ExplorerState state){
-        switch(state.status){
-          case ExplorerStatus.unknown:
-            // TODO: Handle this case.
-            break;
-          case ExplorerStatus.dataloading:
-            // TODO: Handle this case.
-            break;
-          case ExplorerStatus.dataloaded:
-            {
-              setState(() {
-                _getVtts();
-              });
-            }
-            break;
-          case ExplorerStatus.error:
-            // TODO: Handle this case.
-            break;
-          case ExplorerStatus.ready:
-            // TODO: Handle this case.
-            break;
-        }
-
-      }
-    );
-  }
-
-  BlocListener _dashboardListener(){
-    return BlocListener<DashboardBloc, DashboardState>(
-        listener: (BuildContext context, DashboardState state) {
-          if(state.status == DashboardStatus.Ready){
+        listener: (BuildContext context, ExplorerState state) {
+      switch (state.status) {
+        case ExplorerStatus.unknown:
+          // TODO: Handle this case.
+          break;
+        case ExplorerStatus.dataloading:
+          // TODO: Handle this case.
+          break;
+        case ExplorerStatus.dataloaded:
+          {
             setState(() {
-            _getVtts();
+              _getVtts();
             });
           }
-        },
+          break;
+        case ExplorerStatus.error:
+          // TODO: Handle this case.
+          break;
+        case ExplorerStatus.ready:
+          // TODO: Handle this case.
+          break;
+      }
+    });
+  }
+
+  BlocListener _dashboardListener() {
+    return BlocListener<DashboardBloc, DashboardState>(
+      listener: (BuildContext context, DashboardState state) {
+        if (state.status == DashboardStatus.Ready) {
+          setState(() {
+            _getVtts();
+          });
+        }
+      },
       child: _dashboardBuilder(),
     );
   }
@@ -143,7 +140,7 @@ class DashboardScreenState extends State<DashboardScreen>
     final theme = Theme.of(context);
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
-        return _buildTransactionList(theme);
+      return _buildTransactionList(theme);
     });
   }
 
@@ -156,12 +153,12 @@ class DashboardScreenState extends State<DashboardScreen>
         actions: [],
       );
     }, listener: (context, state) {
-      switch(state.status){
+      switch (state.status) {
         case ExplorerStatus.unknown:
-        // TODO: Handle this case.
+          // TODO: Handle this case.
           break;
         case ExplorerStatus.dataloading:
-        // TODO: Handle this case.
+          // TODO: Handle this case.
           break;
         case ExplorerStatus.dataloaded:
           {
@@ -171,10 +168,10 @@ class DashboardScreenState extends State<DashboardScreen>
           }
           break;
         case ExplorerStatus.error:
-        // TODO: Handle this case.
+          // TODO: Handle this case.
           break;
         case ExplorerStatus.ready:
-        // TODO: Handle this case.
+          // TODO: Handle this case.
           break;
       }
     });

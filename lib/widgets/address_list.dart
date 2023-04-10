@@ -31,7 +31,8 @@ class AddressListState extends State<AddressList> {
   @override
   void initState() {
     super.initState();
-    currentAddress =  Locator.instance<ApiDatabase>().walletStorage.currentAccount.address;
+    currentAddress =
+        Locator.instance<ApiDatabase>().walletStorage.currentAccount.address;
   }
 
   @override
@@ -80,9 +81,9 @@ class AddressListState extends State<AddressList> {
                         ]))),
             onTap: () async {
               await ApiPreferences.setCurrentAddress(AddressEntry(
-                  walletId: widget.currentWallet.id,
-                  addressIdx: account.index.toString(),
-                  keyType: account.keyType == KeyType.internal ? 1 : 0,
+                walletId: widget.currentWallet.id,
+                addressIdx: account.index.toString(),
+                keyType: account.keyType == KeyType.internal ? 1 : 0,
               ));
 
               BlocProvider.of<DashboardBloc>(context)
@@ -93,20 +94,23 @@ class AddressListState extends State<AddressList> {
             }));
   }
 
-  BlocListener _dashboardBlocListener(){
+  BlocListener _dashboardBlocListener() {
     return BlocListener<DashboardBloc, DashboardState>(
-        listener: (BuildContext context, DashboardState state) {
-          if (state.status == DashboardStatus.Ready) {
-            setState(() {
-              currentAddress =  Locator.instance<ApiDatabase>().walletStorage.currentAccount.address;
-            });
-          }
-        },
-        child: _dashboardBlocBuilder(),
+      listener: (BuildContext context, DashboardState state) {
+        if (state.status == DashboardStatus.Ready) {
+          setState(() {
+            currentAddress = Locator.instance<ApiDatabase>()
+                .walletStorage
+                .currentAccount
+                .address;
+          });
+        }
+      },
+      child: _dashboardBlocBuilder(),
     );
   }
 
-  BlocBuilder _dashboardBlocBuilder(){
+  BlocBuilder _dashboardBlocBuilder() {
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (BuildContext context, DashboardState state) {
         return ListView.builder(
@@ -114,7 +118,8 @@ class AddressListState extends State<AddressList> {
           physics: NeverScrollableScrollPhysics(),
           itemCount: widget.currentWallet.allAccounts().values.toList().length,
           itemBuilder: (context, index) {
-            return _buildAddressItem(widget.currentWallet.allAccounts().values.toList()[index]);
+            return _buildAddressItem(
+                widget.currentWallet.allAccounts().values.toList()[index]);
           },
         );
       },

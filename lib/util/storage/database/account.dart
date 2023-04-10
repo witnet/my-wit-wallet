@@ -14,7 +14,6 @@ abstract class _Account {
 
   Map<String, dynamic> jsonMap();
 
-
   List<Utxo> utxos = [];
   List<ValueTransferInfo> vtts = [];
 
@@ -42,7 +41,8 @@ class Account extends _Account {
   final String path;
 
   int get index => pathToIndex(5, path);
-  KeyType get keyType => (pathToIndex(4, path) == 0) ? KeyType.external : KeyType.internal;
+  KeyType get keyType =>
+      (pathToIndex(4, path) == 0) ? KeyType.external : KeyType.internal;
   final String address;
   List<String> vttHashes = [];
   List<Utxo> utxos = [];
@@ -52,7 +52,7 @@ class Account extends _Account {
 
   factory Account.fromJson(Map<String, dynamic> data) {
     List<Utxo> _utxos =
-    List<Utxo>.from(data['utxos'].map((x) => Utxo.fromJson(x)));
+        List<Utxo>.from(data['utxos'].map((x) => Utxo.fromJson(x)));
 
     Account account = Account(
       walletName: data['walletName'],
@@ -74,7 +74,7 @@ class Account extends _Account {
     }
   }
 
-  bool updateUtxos(List<Utxo> newUtxos){
+  bool updateUtxos(List<Utxo> newUtxos) {
     if (!isTheSameList(utxos, newUtxos)) {
       if (newUtxos.isNotEmpty) {
         utxos.clear();
@@ -90,7 +90,7 @@ class Account extends _Account {
     vtts.clear();
     try {
       all_vtts.forEach((vtt) {
-        if(vtt.containsAddress(address)){
+        if (vtt.containsAddress(address)) {
           vtts.add(vtt);
         }
       });
@@ -101,19 +101,19 @@ class Account extends _Account {
     }
   }
 
-  bool addVtt(ValueTransferInfo vtt){
+  bool addVtt(ValueTransferInfo vtt) {
     bool addedVtt = false;
     vtt.inputs.forEach((input) {
-      if(input.address == address) {
-        if(!addedVtt) {
+      if (input.address == address) {
+        if (!addedVtt) {
           vttHashes.add(vtt.txnHash);
           vtts.add(vtt);
         }
       }
     });
     vtt.outputs.forEach((output) {
-      if(output.pkh.address == address) {
-        if(!addedVtt) {
+      if (output.pkh.address == address) {
+        if (!addedVtt) {
           vttHashes.add(vtt.txnHash);
           vtts.add(vtt);
         }
@@ -181,8 +181,7 @@ bool isTheSameList(List<Utxo> a, List<Utxo> b) {
   bool isSameList = true;
   if (currentLength == newLength) {
     b.forEach((element) {
-      bool containsUtxo =
-      rawJsonUtxosList(a).contains(element.toRawJson());
+      bool containsUtxo = rawJsonUtxosList(a).contains(element.toRawJson());
       if (!containsUtxo) {
         isSameList = false;
       }

@@ -63,9 +63,7 @@ class DashboardLayoutState extends State<DashboardLayout>
     Navigator.pushReplacementNamed(context, ReceiveTransactionScreen.route);
   }
 
-  Future<void> _loadPrefs() async {
-
-  }
+  Future<void> _loadPrefs() async {}
   String? currentRoute() {
     return ModalRoute.of(context)?.settings.name ?? DashboardScreen.route;
   }
@@ -123,8 +121,10 @@ class DashboardLayoutState extends State<DashboardLayout>
     final theme = Theme.of(context);
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
-          Wallet currentWallet = Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
-          Account currentAccount = Locator.instance.get<ApiDatabase>().walletStorage.currentAccount;
+      Wallet currentWallet =
+          Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
+      Account currentAccount =
+          Locator.instance.get<ApiDatabase>().walletStorage.currentAccount;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -138,7 +138,7 @@ class DashboardLayoutState extends State<DashboardLayout>
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Flexible(
                 child: Text(
-                  currentAccount.address.cropMiddle(18),
+              currentAccount.address.cropMiddle(18),
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.headline5,
             )),

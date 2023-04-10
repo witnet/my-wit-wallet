@@ -30,7 +30,7 @@ class ApiExplorer {
   ApiExplorer() {
     client = (USE_EXPLORER_DEV)
         ? ExplorerClient(
-        url: EXPLORER_DEV_ADDRESS, mode: ExplorerMode.development)
+            url: EXPLORER_DEV_ADDRESS, mode: ExplorerMode.development)
         : ExplorerClient(url: EXPLORER_ADDRESS, mode: ExplorerMode.production);
   }
 
@@ -126,8 +126,8 @@ class ApiExplorer {
     }
   }
 
-  Future<Map<String, List<Utxo>>> utxosMulti({required List<String> addressList})
-  async {
+  Future<Map<String, List<Utxo>>> utxosMulti(
+      {required List<String> addressList}) async {
     try {
       /// address limit is the limit of the explorer API
       int addressLimit = 10;
@@ -144,11 +144,11 @@ class ApiExplorer {
       /// get the UTXOs from the explorer
       Map<String, List<Utxo>> _utxos = {};
       for (int i = 0; i < addressChunks.length; i++) {
-        _utxos.addAll(await client.getMultiUtxoInfo(addresses: addressChunks[i]));
+        _utxos
+            .addAll(await client.getMultiUtxoInfo(addresses: addressChunks[i]));
         await delay();
       }
       return _utxos;
-
     } on ExplorerException {
       rethrow;
     }
@@ -157,9 +157,9 @@ class ApiExplorer {
   Future<Account> updateAccountVtts(Account account) async {
     try {
       ApiDatabase db = Locator.instance.get<ApiDatabase>();
+
       /// get the list of value transfer hashes from the explorer for a given address.
-      AddressValueTransfers vtts =
-      await getValueTransferHashes(account);
+      AddressValueTransfers vtts = await getValueTransferHashes(account);
 
       List<String> vttsToUpdate = [];
       vttsToUpdate.addAll(vtts.transactionHashes);
@@ -191,7 +191,9 @@ class ApiExplorer {
   Future<dynamic> sendVtTransaction(VTTransaction transaction) async {
     try {
       await delay();
-      return await client.send(transaction: {'transaction':{'ValueTransfer': transaction.jsonMap(asHex: true)}});
+      return await client.send(transaction: {
+        'transaction': {'ValueTransfer': transaction.jsonMap(asHex: true)}
+      });
     } catch (e) {
       rethrow;
     }
@@ -213,7 +215,8 @@ class ApiExplorer {
 
   /// get the list of value transfer hashes from the explorer for a given address.
   Future<AddressValueTransfers> getValueTransferHashes(Account account) async {
-    AddressValueTransfers vtts = await address(value: account.address, tab: 'value_transfers');
+    AddressValueTransfers vtts =
+        await address(value: account.address, tab: 'value_transfers');
     return vtts;
   }
 

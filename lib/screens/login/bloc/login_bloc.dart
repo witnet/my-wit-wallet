@@ -16,16 +16,15 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc()
       : super(LoginState(
-    message: '',
-    status: LoginStatus.LoggedOut,
-    password: '',
-  )) {
+          message: '',
+          status: LoginStatus.LoggedOut,
+          password: '',
+        )) {
     on<LoginPasswordChangedEvent>(_onPasswordChanged);
     on<LoginSubmittedEvent>(_onSubmitted);
     on<LoginExceptionEvent>(_onLoginExceptionEvent);
     on<LoginLogoutEvent>(_onLogoutEvent);
   }
-
 
   void _onPasswordChanged(
       LoginPasswordChangedEvent event, Emitter<LoginState> emit) async {}
@@ -42,11 +41,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       bool verified = await apiDatabase.verifyPassword(event.password);
       if (verified) {
         String? walletId = await ApiPreferences.getCurrentWallet();
-        String? addressIndex = await ApiPreferences.getCurrentAddress(walletId!);
-        Map<String, dynamic>? addressList = await ApiPreferences.getCurrentAddressList();
+        String? addressIndex =
+            await ApiPreferences.getCurrentAddress(walletId!);
+        Map<String, dynamic>? addressList =
+            await ApiPreferences.getCurrentAddressList();
         apiDatabase.walletStorage.setCurrentWallet(walletId);
-        apiDatabase.walletStorage.setCurrentAccount(apiDatabase.walletStorage.currentWallet.externalAccounts[int.parse(addressIndex!.split('/').last)]!.address);
-        apiDatabase.walletStorage.setCurrentAddressList(addressList!.map((key, value) => MapEntry(key, value as String)));
+        apiDatabase.walletStorage.setCurrentAccount(apiDatabase
+            .walletStorage
+            .currentWallet
+            .externalAccounts[int.parse(addressIndex!.split('/').last)]!
+            .address);
+        apiDatabase.walletStorage.setCurrentAddressList(
+            addressList!.map((key, value) => MapEntry(key, value as String)));
         emit(state.copyWith(status: LoginStatus.LoginSuccess));
       } else {
         emit(state.copyWith(status: LoginStatus.LoginInvalid));

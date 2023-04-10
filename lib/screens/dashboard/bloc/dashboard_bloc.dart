@@ -15,12 +15,12 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   DashboardBloc()
       : super(
-    DashboardState(
-      currentWalletId: defaultWallet.id,
-      currentAddress: defaultAccount.address,
-      currentVttId: defaulVtt.txnHash,
-      status: DashboardStatus.Ready),
-  ) {
+          DashboardState(
+              currentWalletId: defaultWallet.id,
+              currentAddress: defaultAccount.address,
+              currentVttId: defaulVtt.txnHash,
+              status: DashboardStatus.Ready),
+        ) {
     on<DashboardLoadEvent>(_dashboardLoadEvent);
     on<DashboardUpdateWalletEvent>(_dashboardUpdateWallet);
     on<DashboardInitEvent>(_dashboardInitEvent);

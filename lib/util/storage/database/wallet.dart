@@ -197,8 +197,10 @@ class Wallet {
 
     this.internalXpub = _internalXpub.toSlip32();
     this.externalXpub = _externalXpub.toSlip32();
+
     /// The Wallet ID is the first 4 bytes of the sha256 hash of the Extended Public Key.
-    this.id = bytesToHex(sha256(data: Xpub.fromXpub(externalXpub!).key)).substring(0,8);
+    this.id = bytesToHex(sha256(data: Xpub.fromXpub(externalXpub!).key))
+        .substring(0, 8);
   }
 
   void addAccount({
@@ -246,17 +248,20 @@ class Wallet {
     var xpub = await response.first.then((value) {
       return value['xpub'] as Xpub;
     });
-    Account _account  = Account(walletName: name, address: xpub.address, path: xpub.path!);
+    Account _account =
+        Account(walletName: name, address: xpub.address, path: xpub.path!);
     _account.walletId = id;
     switch (keyType) {
-      case KeyType.internal:{
-        internalAccounts[index] = _account;
-        return internalAccounts[index]!;
-      }
-      case KeyType.external:{
-        externalAccounts[index] = _account;
-        return externalAccounts[index]!;
-      }
+      case KeyType.internal:
+        {
+          internalAccounts[index] = _account;
+          return internalAccounts[index]!;
+        }
+      case KeyType.external:
+        {
+          externalAccounts[index] = _account;
+          return externalAccounts[index]!;
+        }
     }
   }
 
@@ -353,7 +358,9 @@ class Wallet {
 
     _externalAccounts.entries.toList();
 
-    String _id = bytesToHex(sha256(data: Xpub.fromXpub(data['externalXpub']).key)).substring(0,8);
+    String _id =
+        bytesToHex(sha256(data: Xpub.fromXpub(data['externalXpub']).key))
+            .substring(0, 8);
     Wallet _wallet = Wallet(
       name: data['name'],
       description: data['description'],
@@ -431,31 +438,30 @@ class Wallet {
   bool containsAccount(String address) {
     bool response = false;
     externalAccounts.forEach((key, value) {
-      if(value.address == address) response = true;
+      if (value.address == address) response = true;
     });
     internalAccounts.forEach((key, value) {
-      if(value.address == address) response = true;
+      if (value.address == address) response = true;
     });
     return response;
   }
-
 
   void setTransaction(ValueTransferInfo vtt) {
     List<String> _extAddressList = addressList(KeyType.external);
     List<String> _intAddressList = addressList(KeyType.internal);
     List<String> updatedAccounts = [];
     print(_extAddressList);
-    for(int i = 0; i < _extAddressList.length; i ++) {
+    for (int i = 0; i < _extAddressList.length; i++) {
       Account account = externalAccounts[i]!;
-      if(vtt.containsAddress(account.address)) {
+      if (vtt.containsAddress(account.address)) {
         account.addVtt(vtt);
         externalAccounts[i] = account;
         updatedAccounts.add(account.address);
       }
     }
-    for(int i = 0; i < _intAddressList.length; i ++) {
+    for (int i = 0; i < _intAddressList.length; i++) {
       Account account = internalAccounts[i]!;
-      if(vtt.containsAddress(account.address)){
+      if (vtt.containsAddress(account.address)) {
         account.addVtt(vtt);
         internalAccounts[i] = account;
         updatedAccounts.add(account.address);
@@ -463,8 +469,7 @@ class Wallet {
     }
   }
 
-  void printDebug(){
-
+  void printDebug() {
     print('Wallet');
     print(' ID: $id');
     print(' name: $name');

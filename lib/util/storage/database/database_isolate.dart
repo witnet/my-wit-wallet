@@ -11,7 +11,7 @@ import 'account.dart';
 import 'database_service.dart';
 
 Map<String, Function(DatabaseService, SendPort, Map<String, dynamic>)>
-methodMap = {
+    methodMap = {
   'configure': _configure,
   'add': _addRecord,
   'delete': _deleteRecord,
@@ -170,7 +170,8 @@ Future<void> _updateRecord(
       value = await dbService.update(Wallet.fromJson(params['value']));
       break;
     case 'vtt':
-      value = await dbService.update(ValueTransferInfo.fromDbJson(params['value']));
+      value =
+          await dbService.update(ValueTransferInfo.fromDbJson(params['value']));
       break;
     case 'account':
       value = await dbService.update(Account.fromJson(params['value']));

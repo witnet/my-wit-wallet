@@ -114,7 +114,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       case CreateWalletStatus.CreateWallet:
         break;
 
-    // Decide whether to import wallet from seed phrase or import from xprv file
+      // Decide whether to import wallet from seed phrase or import from xprv file
       case CreateWalletStatus.Imported:
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
         break;
@@ -266,7 +266,6 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         status: CreateWalletStatus.ValidXprv,
       ));
     } catch (e) {
-
       emit(state.copyWith(
           status: CreateWalletStatus.LoadingException, message: e.toString()));
     }

@@ -37,7 +37,8 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
     );
     _loadingController.forward();
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
-    _setCurrentWallet(db.walletStorage.currentWallet, db.walletStorage.currentAccount);
+    _setCurrentWallet(
+        db.walletStorage.currentWallet, db.walletStorage.currentAccount);
   }
 
   @override
@@ -72,10 +73,9 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
   _setCurrentWallet(Wallet? currentWallet, Account currentAccount) {
     setState(() {
       accountList = [];
-      selectedAccount =  currentAccount;
-      currentWallet?.externalAccounts.forEach((key, value) => {
-            accountList.add(value)
-          });
+      selectedAccount = currentAccount;
+      currentWallet?.externalAccounts
+          .forEach((key, value) => {accountList.add(value)});
     });
   }
 
@@ -83,54 +83,52 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
     final theme = Theme.of(context);
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
 
-        return Column(
+    return Column(
+      children: [
+        QrAddressGenerator(
+          data: selectedAccount!.address,
+        ),
+        SizedBox(height: 24),
+        DashedRect(
+          color: WitnetPallet.witnetGreen2,
+          strokeWidth: 1.0,
+          gap: 3.0,
+          text: selectedAccount!.address,
+        ),
+        SizedBox(height: 24),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            QrAddressGenerator(
-              data: selectedAccount!.address,
+            Text(
+              'Generated addresses',
+              style: theme.textTheme.headline3,
+              textAlign: TextAlign.start,
             ),
-            SizedBox(height: 24),
-            DashedRect(
-              color: WitnetPallet.witnetGreen2,
-              strokeWidth: 1.0,
-              gap: 3.0,
-              text: selectedAccount!.address,
-            ),
-            SizedBox(height: 24),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Generated addresses',
-                  style: theme.textTheme.headline3,
-                  textAlign: TextAlign.start,
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            AddressList(
-                currentWallet: db.walletStorage.currentWallet,
-                accountList: accountList,
-            ),
-            SizedBox(height: 80),
           ],
-        );
-
+        ),
+        SizedBox(height: 16),
+        AddressList(
+          currentWallet: db.walletStorage.currentWallet,
+          accountList: accountList,
+        ),
+        SizedBox(height: 80),
+      ],
+    );
   }
 
-  BlocListener _dashboardBlocListener(){
+  BlocListener _dashboardBlocListener() {
     return BlocListener<DashboardBloc, DashboardState>(
-        listener: (BuildContext context, DashboardState state){
-            ApiDatabase database = Locator.instance.get<ApiDatabase>();
-            setState(() {
-              selectedAccount = database.walletStorage.currentAccount;
-
-            });
-
-        },
+      listener: (BuildContext context, DashboardState state) {
+        ApiDatabase database = Locator.instance.get<ApiDatabase>();
+        setState(() {
+          selectedAccount = database.walletStorage.currentAccount;
+        });
+      },
       child: _dashboardBlocBuilder(),
     );
   }
-  BlocBuilder _dashboardBlocBuilder(){
+
+  BlocBuilder _dashboardBlocBuilder() {
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (BuildContext context, DashboardState state) {
         return DashboardLayout(

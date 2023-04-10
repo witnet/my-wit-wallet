@@ -15,13 +15,11 @@ final defaultWallet = Wallet(
     externalAccounts: {},
     internalAccounts: {},
     lastSynced: -1);
-final defaultAccount = Account(
-    address: '',
-    walletName: '',
-    path: '');
+final defaultAccount = Account(address: '', walletName: '', path: '');
 
 final defaulVtt = ValueTransferInfo(
-    blockHash: '0000000000000000000000000000000000000000000000000000000000000000',
+    blockHash:
+        '0000000000000000000000000000000000000000000000000000000000000000',
     fee: 0,
     inputs: [],
     outputs: [],
@@ -31,11 +29,10 @@ final defaulVtt = ValueTransferInfo(
     txnHash: '0000000000000000000000000000000000000000000000000000000000000000',
     txnTime: 0,
     type: 'valueTransfer',
-    weight: 0
-);
+    weight: 0);
+
 /// DbWallet formats the wallet for the database
 class WalletStorage {
-
   WalletStorage({
     required this.wallets,
   });
@@ -51,16 +48,15 @@ class WalletStorage {
   Map<String, String>? currentAddressList;
   Wallet get currentWallet => wallets[_currentWalletId]!;
 
-
-  void setCurrentWallet(String walletId){
+  void setCurrentWallet(String walletId) {
     _currentWalletId = walletId;
   }
 
-  void setCurrentAccount(String address){
+  void setCurrentAccount(String address) {
     _currentAddress = address;
   }
 
-  void setCurrentAddressList(Map<String, String> addressList){
+  void setCurrentAddressList(Map<String, String> addressList) {
     currentAddressList = addressList;
   }
 
@@ -71,10 +67,10 @@ class WalletStorage {
   }
 
   void setAccounts(Map<String, Account> accounts) {
-    accounts.values.forEach((account) { setAccount(account);});
+    accounts.values.forEach((account) {
+      setAccount(account);
+    });
   }
-
-
 
   Account get currentAccount => _accounts[_currentAddress] ?? defaultAccount;
 
@@ -82,12 +78,12 @@ class WalletStorage {
     Account? _account;
     wallets.values.forEach((wallet) {
       wallet.internalAccounts.values.forEach((account) {
-        if(account.address == address){
+        if (account.address == address) {
           _account = account;
         }
       });
       wallet.externalAccounts.values.forEach((account) {
-        if(account.address == address){
+        if (account.address == address) {
           _account = account;
         }
       });
@@ -95,16 +91,14 @@ class WalletStorage {
 
     return _account ?? defaultAccount;
   }
+
   ValueTransferInfo? getVtt(String hash) => _transactions[hash];
 
   void setVtt(String walletId, ValueTransferInfo vtt) {
-
-
-
     wallets[walletId]!.setTransaction(vtt);
   }
 
-  void setAccount(Account account){
+  void setAccount(Account account) {
     _accounts[account.address] = account;
     wallets[account.walletId]!.setAccount(account);
   }

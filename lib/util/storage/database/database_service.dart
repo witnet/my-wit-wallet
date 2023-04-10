@@ -196,15 +196,16 @@ class DatabaseService {
 
   Future<WalletStorage> loadWallets() async {
     /// Get all Wallets
-    try{
+    try {
       final List<Wallet> wallets = await walletRepository.getWallets(_database);
+
       /// Get all Accounts
       final List<Account> accounts =
-      await accountRepository.getAccounts(_database);
+          await accountRepository.getAccounts(_database);
 
       /// Get all Transactions
       final List<ValueTransferInfo> transactions =
-      await vttRepository.getAllTransactions(_database);
+          await vttRepository.getAllTransactions(_database);
 
       /// Create a map of the Wallets with the wallet.id as the key.
       Map<String, Wallet> walletMap = {};
@@ -248,8 +249,7 @@ class DatabaseService {
       _walletStorage.setTransactions(vttMap);
 
       return _walletStorage;
-    }
-    catch (e){
+    } catch (e) {
       print(e);
       return WalletStorage(wallets: {});
     }

@@ -89,14 +89,13 @@ class BuildWalletCardState extends State<BuildWalletCard>
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.nextAction(next));
     ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
-    BlocProvider.of<CryptoBloc>(context).add(
-        CryptoInitializeWalletEvent(
-            id: acw.walletName,
-            walletName: acw.walletName,
-            walletDescription: acw.walletDescription!,
-            keyData: acw.seedData!,
-            seedSource: acw.seedSource!,
-            password: acw.password ?? ''));
+    BlocProvider.of<CryptoBloc>(context).add(CryptoInitializeWalletEvent(
+        id: acw.walletName,
+        walletName: acw.walletName,
+        walletDescription: acw.walletDescription!,
+        keyData: acw.seedData!,
+        seedSource: acw.seedSource!,
+        password: acw.password ?? ''));
   }
 
   @override
@@ -248,25 +247,25 @@ class BuildWalletCardState extends State<BuildWalletCard>
     ]);
   }
 
-  BlocListener _cryptoBlocListener(){
+  BlocListener _cryptoBlocListener() {
     return BlocListener<CryptoBloc, CryptoState>(
-      listener: (BuildContext context, CryptoState state){
-      if (state is CryptoReadyState) {
-        ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
-        if (acw.walletName != '') {
-          BlocProvider.of<CryptoBloc>(context).add(
-            CryptoInitializeWalletEvent(
-              id: acw.walletName,
-              walletName: acw.walletName,
-              walletDescription: acw.walletDescription!,
-              keyData: acw.seedData!,
-              seedSource: acw.seedSource!,
-              password: acw.password ?? ''),
-          );
+      listener: (BuildContext context, CryptoState state) {
+        if (state is CryptoReadyState) {
+          ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
+          if (acw.walletName != '') {
+            BlocProvider.of<CryptoBloc>(context).add(
+              CryptoInitializeWalletEvent(
+                  id: acw.walletName,
+                  walletName: acw.walletName,
+                  walletDescription: acw.walletDescription!,
+                  keyData: acw.seedData!,
+                  seedSource: acw.seedSource!,
+                  password: acw.password ?? ''),
+            );
+          }
         }
-      }
 
-      if (state is CryptoInitializingWalletState) {
+        if (state is CryptoInitializingWalletState) {
           setState(() {
             _balanceController.reset();
             _balanceController.forward();
@@ -275,20 +274,21 @@ class BuildWalletCardState extends State<BuildWalletCard>
             currentAddressCount = state.addressCount;
             currentTransactionCount = state.transactionCount;
           });
-      } else if (state is CryptoLoadedWalletState) {
-        Locator.instance<ApiCreateWallet>().clearFormData();
-        setState(() {
-          walletId = state.wallet.id;
-        });
-        BlocProvider.of<LoginBloc>(context)
-            .add(LoginSubmittedEvent(password: state.password));
-      }
-    }, child: _cryptoBlocBuilder(),
+        } else if (state is CryptoLoadedWalletState) {
+          Locator.instance<ApiCreateWallet>().clearFormData();
+          setState(() {
+            walletId = state.wallet.id;
+          });
+          BlocProvider.of<LoginBloc>(context)
+              .add(LoginSubmittedEvent(password: state.password));
+        }
+      },
+      child: _cryptoBlocBuilder(),
     );
   }
+
   Widget _cryptoBlocBuilder() {
     return BlocBuilder<CryptoBloc, CryptoState>(
-
       builder: (context, state) {
         final theme = Theme.of(context);
         if (state is CryptoInitializingWalletState) {
@@ -350,8 +350,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
       },
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {

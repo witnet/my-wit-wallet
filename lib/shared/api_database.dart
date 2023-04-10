@@ -179,15 +179,12 @@ class ApiDatabase {
     walletStorage.setVtt(walletId, vtt);
 
     return await _processIsolate(
-        method: 'update',
-        params: {'type': 'vtt', 'value': vtt.jsonMap()});
+        method: 'update', params: {'type': 'vtt', 'value': vtt.jsonMap()});
   }
 
   Future<bool> deleteVtt(String transactionId) async {
-
     return await _processIsolate(
-        method: 'delete',
-        params: {'value': transactionId});
+        method: 'delete', params: {'value': transactionId});
   }
 
   Future<bool> updateAccount(Account account) async {
@@ -197,9 +194,8 @@ class ApiDatabase {
         params: {'type': 'account', 'value': account.jsonMap()});
   }
 
-  Future<WalletStorage> getWalletStorage([bool reload = false]) async
-  {
-    if(reload) {
+  Future<WalletStorage> getWalletStorage([bool reload = false]) async {
+    if (reload) {
       walletStorage = await loadWalletsDatabase();
       return walletStorage;
     }

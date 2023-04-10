@@ -377,7 +377,8 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     for (int i = 0; i < selectedUtxos.length; i++) {
       Utxo currentUtxo = selectedUtxos.elementAt(i);
 
-      Wallet currentWallet = Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
+      Wallet currentWallet =
+          Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
 
       /// loop though every external account
       currentWallet.externalAccounts.forEach((index, account) {
@@ -415,7 +416,8 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       /// loop though every external account
       currentWallet.externalAccounts.forEach((index, account) {
         if (account.utxos.contains(currentUtxo)) {
-          _inputs.add(InputUtxo(address: account.address,
+          _inputs.add(InputUtxo(
+              address: account.address,
               input: currentUtxo.toInput(),
               value: currentUtxo.value));
         }
@@ -424,7 +426,8 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       /// loop though every internal account
       currentWallet.internalAccounts.forEach((index, account) {
         if (account.utxos.contains(currentUtxo)) {
-          _inputs.add(InputUtxo(address: account.address,
+          _inputs.add(InputUtxo(
+              address: account.address,
               input: currentUtxo.toInput(),
               value: currentUtxo.value));
         }
@@ -433,7 +436,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     return _inputs;
   }
 
-    /// sign the transaction
+  /// sign the transaction
   Future<void> _signTransactionEvent(
       SignTransactionEvent event, Emitter<VTTCreateState> emit) async {
     emit(state.copyWith(status: VTTCreateStatus.signing));
@@ -459,7 +462,8 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     emit(state.copyWith(status: VTTCreateStatus.sending));
     ApiDatabase database = Locator.instance.get<ApiDatabase>();
 
-    bool transactionAccepted = await _sendTransaction(Transaction(valueTransfer: event.transaction));
+    bool transactionAccepted =
+        await _sendTransaction(Transaction(valueTransfer: event.transaction));
 
     if (transactionAccepted) {
       /// add pending transaction
@@ -476,38 +480,39 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
           txnHash: event.transaction.transactionID,
           txnTime: DateTime.now().millisecondsSinceEpoch,
           type: 'ValueTransfer',
-          weight: event.transaction.weight
-      );
+          weight: event.transaction.weight);
+
       /// add pending tx to database
       await database.addVtt(vti);
+
       /// update the accounts transaction list
 
       /// the inputs
-      for(int i = 0; i < _inputUtxoList.length; i++){
+      for (int i = 0; i < _inputUtxoList.length; i++) {
         InputUtxo inputUtxo = _inputUtxoList[i];
         Account account = database.walletStorage.currentWallet
             .accountByAddress(inputUtxo.address)!;
         account.vttHashes.add(event.transaction.transactionID);
         account.vtts.add(vti);
         await database.walletStorage.currentWallet.updateAccount(
-            index: account.index,
-            keyType: account.keyType,
-            account: account,
+          index: account.index,
+          keyType: account.keyType,
+          account: account,
         );
       }
 
       /// check outputs for accounts and update them
-      for(int i = 0; i < outputs.length; i++) {
+      for (int i = 0; i < outputs.length; i++) {
         ValueTransferOutput output = outputs[i];
         Account? account = database.walletStorage.currentWallet
             .accountByAddress(output.pkh.address);
-        if(account != null){
+        if (account != null) {
           account.vttHashes.add(event.transaction.transactionID);
           account.vtts.add(vti);
           await database.walletStorage.currentWallet.updateAccount(
-              index: account.index,
-              keyType: account.keyType,
-              account: account,
+            index: account.index,
+            keyType: account.keyType,
+            account: account,
           );
         }
       }
@@ -531,8 +536,13 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       });
       for (int i = 0; i < utxoListToUpdate.length; i++) {
         Account account = utxoListToUpdate[i];
-        await Locator.instance<ApiDatabase>().walletStorage.currentWallet
-            .updateAccount(index: account.index, keyType: account.keyType, account: account);
+        await Locator.instance<ApiDatabase>()
+            .walletStorage
+            .currentWallet
+            .updateAccount(
+                index: account.index,
+                keyType: account.keyType,
+                account: account);
       }
     } else {
       emit(state.copyWith(status: VTTCreateStatus.exception));
@@ -553,7 +563,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   }
 
   Future<void> _addSourceWalletsEvent(
-      AddSourceWalletsEvent event, Emitter<VTTCreateState> emit) async  {
+      AddSourceWalletsEvent event, Emitter<VTTCreateState> emit) async {
     await setWallet(event.currentWallet);
     emit(state.copyWith(
         inputs: inputs, outputs: outputs, status: VTTCreateStatus.building));

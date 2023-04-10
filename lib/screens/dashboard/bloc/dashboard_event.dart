@@ -6,14 +6,15 @@ class DashboardEvent extends Equatable {
   final String? currentWalletId;
   final String? currentVttId;
 
-  DashboardEvent({
-    this.currentWalletId,
-    this.currentAddress,
-    this.currentVttId,
-    this.status});
+  DashboardEvent(
+      {this.currentWalletId,
+      this.currentAddress,
+      this.currentVttId,
+      this.status});
 
   @override
-  List<Object?> get props => [currentWalletId, currentAddress, currentVttId,  status];
+  List<Object?> get props =>
+      [currentWalletId, currentAddress, currentVttId, status];
 }
 
 class DashboardLoadEvent extends DashboardEvent {
@@ -40,8 +41,7 @@ class DashboardUpdateWalletEvent extends DashboardEvent {
     this.currentWallet,
     this.currentAddress,
     this.currentVttId,
-  })
-      : super();
+  }) : super();
   @override
   List<Object?> get props => [currentWallet, currentAddress, currentVttId];
 }

@@ -130,10 +130,11 @@ class ReviewStepState extends State<ReviewStep>
                   type: 'text',
                   enabled: true,
                   onPressed: () => {
-                    Navigator.popUntil(context, ModalRoute.withName(CreateVttScreen.route)),
-                    Navigator.pushReplacementNamed(
-                        context, DashboardScreen.route)
-                  })
+                        Navigator.popUntil(context,
+                            ModalRoute.withName(CreateVttScreen.route)),
+                        Navigator.pushReplacementNamed(
+                            context, DashboardScreen.route)
+                      })
             ],
             icon: FontAwesomeIcons.check,
             title: 'Transaction succesfully sent!',

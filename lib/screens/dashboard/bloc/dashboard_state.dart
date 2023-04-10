@@ -37,5 +37,6 @@ class DashboardState extends Equatable {
   }
 
   @override
-  List<Object> get props => [currentWalletId, currentAddress, currentVttId, status];
+  List<Object> get props =>
+      [currentWalletId, currentAddress, currentVttId, status];
 }
