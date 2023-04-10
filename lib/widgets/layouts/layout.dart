@@ -45,7 +45,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             color: WitnetPallet.white,
             width: 30,
             height: 30,
-            child: IdenticonWidget(seed: walletId ?? '', size: 8),
+            child: Identicon(seed: walletId, size: 8),
           ),
           onTap: () => {
             if (panelController.isPanelOpen)

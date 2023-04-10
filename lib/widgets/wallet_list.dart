@@ -175,7 +175,7 @@ class WalletListState extends State<WalletList> {
               color: extendedTheme.selectedTextColor,
               width: 30,
               height: 30,
-              child: IdenticonWidget(seed: walletId ?? '', size: 8),
+              child: Identicon(seed: walletId, size: 8),
             ),
             Expanded(
               child: Padding(
