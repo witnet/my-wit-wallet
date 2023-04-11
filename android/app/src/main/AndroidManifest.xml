@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.witnet.witnet_wallet">
+   <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:name="${applicationName}"
         android:label="witnet_wallet"
