@@ -37,6 +37,7 @@ android {
         applicationId "com.witnet.witnet_wallet"
         minSdkVersion 20
         targetSdkVersion 33
+        multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
