@@ -82,7 +82,13 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(8), topRight: Radius.circular(8)),
           panel: widget.slidingPanel,
-          body: _buildMainLayout(context, theme, true));
+          body: Padding(
+              child: _buildMainLayout(context, theme, true),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom
+              )
+          )
+      );
     }
   }
 
@@ -181,7 +187,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           FocusScope.of(context).unfocus();
         },
         child: Scaffold(
-            resizeToAvoidBottomInset: false,
+            resizeToAvoidBottomInset: true,
             backgroundColor: theme.backgroundColor,
             body: buildMainContent(context, theme),
             bottomNavigationBar:
