@@ -115,6 +115,7 @@ class AddressListState extends State<AddressList> {
       builder: (BuildContext context, DashboardState state) {
         return ListView.builder(
           shrinkWrap: true,
+          padding: EdgeInsets.zero,
           physics: NeverScrollableScrollPhysics(),
           itemCount: widget.currentWallet.allAccounts().values.toList().length,
           itemBuilder: (context, index) {

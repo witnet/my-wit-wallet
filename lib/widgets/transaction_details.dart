@@ -139,6 +139,7 @@ class TransactionDetails extends StatelessWidget {
           SizedBox(height: 8),
           ListView.builder(
             shrinkWrap: true,
+            padding: EdgeInsets.zero,
             physics: NeverScrollableScrollPhysics(),
             itemCount: transaction.inputs.length,
             itemBuilder: (context, index) {
@@ -156,6 +157,7 @@ class TransactionDetails extends StatelessWidget {
           SizedBox(height: 8),
           ListView.builder(
             shrinkWrap: true,
+            padding: EdgeInsets.zero,
             physics: NeverScrollableScrollPhysics(),
             itemCount: transaction.outputs.length,
             itemBuilder: (context, index) {

@@ -62,22 +62,6 @@ class WalletListState extends State<WalletList> {
     });
   }
 
-  Widget _buildWalletList() {
-    return ListView(padding: EdgeInsets.all(8), children: [
-      Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [_buildInitialButtons()]),
-      ListView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: walletIdList.length,
-        itemBuilder: (context, index) {
-          return _buildWalletItem(walletIdList[index]);
-        },
-      ),
-    ]);
-  }
-
   void _getSelectedAccount() {
     String? selectedAddressValue =
         selectedAddressList?[selectedWallet?.id]!.split('/').last;
@@ -232,6 +216,7 @@ class WalletListState extends State<WalletList> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [_buildInitialButtons()]),
       ListView.builder(
+        padding: EdgeInsets.zero,
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         itemCount: walletIdList.length,
