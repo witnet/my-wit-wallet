@@ -18,7 +18,7 @@ class Identicon extends StatelessWidget {
     this.bgColor, // 43% probability
     this.spotColor, // 13% probability
     Key? key,
-  }): super(key: key);
+  }) : super(key: key);
 
   final String seed;
   final int size;
@@ -127,7 +127,7 @@ class WiticonPainter extends CustomPainter {
     //saturation is the whole color spectrum
     final h = (rand() * 360).floorToDouble();
     //saturation goes from 40 to 100, it avoids greyish colors
-    final s = ((rand() * 50) +50);
+    final s = ((rand() * 50) + 50);
     //lightness can be anything from 0 to 100, but probabilities are a bell curve around 50%
     final l = ((rand() + rand() + rand() + rand()) * 25);
     return HSLColor.fromAHSL(1, h, s / 100, l / 100);

@@ -15,9 +15,9 @@ buildAlertDialog({
             builder: (BuildContext context) => AlertDialog(
               title: Text(
                 title,
-                style: theme.textTheme.headline2,
+                style: theme.textTheme.displayMedium,
               ),
-              backgroundColor: theme.backgroundColor,
+              backgroundColor: theme.colorScheme.background,
               icon: Icon(icon, size: 24),
               content: content,
               actions: actions,

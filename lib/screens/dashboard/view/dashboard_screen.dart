@@ -1,16 +1,13 @@
 import 'dart:async';
 
-import 'package:dart_date/dart_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/util/preferences.dart';
 import 'package:witnet_wallet/widgets/transactions_list.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/widgets/layouts/dashboard_layout.dart';

@@ -31,7 +31,7 @@ class TransactionDetails extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
             Text(output.timeLock.toInt().formatDate(),
-                style: theme.textTheme.caption)
+                style: theme.textTheme.bodySmall)
           ]));
     }
     return Container(
@@ -54,7 +54,7 @@ class TransactionDetails extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(output.pkh.address.toString(),
-                      style: theme.textTheme.bodyText1),
+                      style: theme.textTheme.bodyLarge),
                   SizedBox(height: 8),
                   Text('${output.value.toInt().standardizeWitUnits()} Wit',
                       style: theme.textTheme.labelMedium),
@@ -85,7 +85,7 @@ class TransactionDetails extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(input.address.toString(), style: theme.textTheme.bodyText1),
+            Text(input.address.toString(), style: theme.textTheme.bodyLarge),
             SizedBox(height: 8),
             Text('${input.value.standardizeWitUnits()} Wit',
                 style: theme.textTheme.labelMedium),
@@ -106,7 +106,7 @@ class TransactionDetails extends StatelessWidget {
         SizedBox(height: 16),
         Text(
           'Transaction details',
-          style: theme.textTheme.headline3,
+          style: theme.textTheme.displaySmall,
         ),
         SizedBox(height: 24),
         InfoElement(
@@ -134,7 +134,7 @@ class TransactionDetails extends StatelessWidget {
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
             'Inputs',
-            style: theme.textTheme.headline3,
+            style: theme.textTheme.displaySmall,
           ),
           SizedBox(height: 8),
           ListView.builder(
@@ -152,7 +152,7 @@ class TransactionDetails extends StatelessWidget {
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
             'Outputs',
-            style: theme.textTheme.headline3,
+            style: theme.textTheme.displaySmall,
           ),
           SizedBox(height: 8),
           ListView.builder(

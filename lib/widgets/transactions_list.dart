@@ -119,7 +119,7 @@ class TransactionsListState extends State<TransactionsList> {
                   : "${transaction.txnTime.formatDuration()}",
               textAlign: TextAlign.start,
               overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.caption,
+              style: theme.textTheme.bodySmall,
             ),
             Container(
               margin: EdgeInsets.only(bottom: 8),
@@ -139,13 +139,13 @@ class TransactionsListState extends State<TransactionsList> {
                         child: label == 'from'
                             ? Text(
                                 ' + ${receiveValue(transaction).standardizeWitUnits()} Wit',
-                                style: theme.textTheme.bodyText1?.copyWith(
+                                style: theme.textTheme.bodyLarge?.copyWith(
                                     color: extendedTheme.txValuePositiveColor),
                                 overflow: TextOverflow.ellipsis,
                               )
                             : Text(
                                 ' - ${sendValue(transaction).standardizeWitUnits()} Wit',
-                                style: theme.textTheme.bodyText1?.copyWith(
+                                style: theme.textTheme.bodyLarge?.copyWith(
                                     color: extendedTheme.txValueNegativeColor),
                                 overflow: TextOverflow.ellipsis,
                               )),
@@ -158,13 +158,13 @@ class TransactionsListState extends State<TransactionsList> {
                       children: [
                         Text(
                           label.capitalize(),
-                          style: theme.textTheme.bodyText2,
+                          style: theme.textTheme.bodyMedium,
                         ),
                         SizedBox(height: 4),
                         Text(
                           address,
                           overflow: TextOverflow.fade,
-                          style: theme.textTheme.bodyText1,
+                          style: theme.textTheme.bodyLarge,
                         ),
                       ],
                     )),

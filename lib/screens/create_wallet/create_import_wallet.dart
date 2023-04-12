@@ -112,7 +112,7 @@ class CreateImportWalletState extends State<CreateImportWallet> {
         SizedBox(height: 16),
         Text(
           'Import a wallet',
-          style: theme.textTheme.headline1,
+          style: theme.textTheme.displayLarge,
         ),
         Carousel(list: [
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.',

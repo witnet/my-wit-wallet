@@ -40,13 +40,13 @@ class DashedRect extends StatelessWidget {
                 text,
                 style: blur
                     ? TextStyle(
-                        fontSize: theme.textTheme.headline2!.fontSize,
-                        fontWeight: theme.textTheme.headline2!.fontWeight,
+                        fontSize: theme.textTheme.displayMedium!.fontSize,
+                        fontWeight: theme.textTheme.displayMedium!.fontWeight,
                         foreground: Paint()
                           ..style = PaintingStyle.fill
-                          ..color = theme.textTheme.headline2!.color!
+                          ..color = theme.textTheme.displayMedium!.color!
                           ..maskFilter = MaskFilter.blur(BlurStyle.normal, 6))
-                    : theme.textTheme.headline2,
+                    : theme.textTheme.displayMedium,
               )),
           showEye
               ? Padding(

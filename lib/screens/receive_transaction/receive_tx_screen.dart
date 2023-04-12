@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
-import 'package:witnet_wallet/widgets/address.dart';
 import 'package:witnet_wallet/widgets/address_list.dart';
 import 'package:witnet_wallet/widgets/dashed_rect.dart';
 import 'package:witnet_wallet/widgets/qr/qr_address_generator.dart';
@@ -101,7 +100,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
           children: [
             Text(
               'Generated addresses',
-              style: theme.textTheme.headline3,
+              style: theme.textTheme.displaySmall,
               textAlign: TextAlign.start,
             ),
           ],

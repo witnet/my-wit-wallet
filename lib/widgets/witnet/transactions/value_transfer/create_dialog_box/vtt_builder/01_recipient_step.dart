@@ -264,11 +264,11 @@ class RecipientStepState extends State<RecipientStep>
         children: [
           Text(
             'Address',
-            style: theme.textTheme.subtitle2,
+            style: theme.textTheme.titleSmall,
           ),
           SizedBox(height: 8),
           TextField(
-            style: theme.textTheme.bodyText1,
+            style: theme.textTheme.bodyLarge,
             decoration: InputDecoration(
               hintText: 'Recipient address',
               errorText: _hasAddressError ? _errorAddressText : null,
@@ -285,11 +285,11 @@ class RecipientStepState extends State<RecipientStep>
           SizedBox(height: 16),
           Text(
             'Amount',
-            style: theme.textTheme.subtitle2,
+            style: theme.textTheme.titleSmall,
           ),
           SizedBox(height: 8),
           TextField(
-            style: theme.textTheme.bodyText1,
+            style: theme.textTheme.bodyLarge,
             decoration: InputDecoration(
               hintText: 'Amount',
               errorText: _hasAmountError ? _errorAmountText : null,
@@ -307,7 +307,7 @@ class RecipientStepState extends State<RecipientStep>
           Row(children: [
             Text(
               'Miner fee',
-              style: theme.textTheme.subtitle2,
+              style: theme.textTheme.titleSmall,
             ),
             Padding(
               padding: EdgeInsets.only(left: 8),
@@ -329,7 +329,7 @@ class RecipientStepState extends State<RecipientStep>
           SizedBox(height: 8),
           _showFeeInput
               ? TextField(
-                  style: theme.textTheme.bodyText1,
+                  style: theme.textTheme.bodyLarge,
                   decoration: InputDecoration(
                     hintText: 'Input the miner fee',
                     errorText: _hasFeeError ? _errorFeeText : null,

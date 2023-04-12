@@ -26,7 +26,7 @@ class CardHeader extends StatelessWidget {
         padding: EdgeInsets.only(top: 1),
         child: Text(
           title,
-          style: theme.textTheme.bodyText1,
+          style: theme.textTheme.bodyLarge,
         ),
       ),
     );

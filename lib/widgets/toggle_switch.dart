@@ -143,7 +143,7 @@ class _ToggleSwitchState extends State<ToggleSwitch>
 
     /// Assigns active foreground color to default accent text theme color if it's null/not provided.
     activeFgColor = widget.activeFgColor == null
-        ? Theme.of(context).accentTextTheme.bodyText1!.color
+        ? Theme.of(context).accentTextTheme.bodyLarge!.color
         : widget.activeFgColor;
 
     /// Assigns inactive background color to default disabled theme color if it's null/not provided.
@@ -153,7 +153,7 @@ class _ToggleSwitchState extends State<ToggleSwitch>
 
     /// Assigns inactive foreground color to default text theme color if it's null/not provided.
     inactiveFgColor = widget.inactiveFgColor == null
-        ? Theme.of(context).textTheme.bodyText1!.color
+        ? Theme.of(context).textTheme.bodyLarge!.color
         : widget.inactiveFgColor;
 
     /// Assigns transparent border color if it's null/not provided.

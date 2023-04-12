@@ -86,10 +86,10 @@ class Account extends _Account {
     return true;
   }
 
-  bool setVtts(List<ValueTransferInfo> all_vtts) {
+  bool setVtts(List<ValueTransferInfo> allVtts) {
     vtts.clear();
     try {
-      all_vtts.forEach((vtt) {
+      allVtts.forEach((vtt) {
         if (vtt.containsAddress(address)) {
           vtts.add(vtt);
         }

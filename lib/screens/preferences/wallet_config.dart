@@ -35,7 +35,7 @@ class _WalletConfigState extends State<WalletConfig> {
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
           'Export wallet from xprv',
-          style: theme.textTheme.subtitle2,
+          style: theme.textTheme.titleSmall,
         ),
         SizedBox(height: 16),
         DashedRect(

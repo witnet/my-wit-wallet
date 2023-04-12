@@ -6,8 +6,6 @@ import 'package:witnet_wallet/screens/login/models/password.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
-import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
-
 import 'package:witnet_wallet/util/preferences.dart';
 
 part 'login_event.dart';

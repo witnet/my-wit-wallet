@@ -83,7 +83,7 @@ class _GeneralConfigState extends State<GeneralConfig> {
       SizedBox(height: 16),
       Text(
         'Theme',
-        style: theme.textTheme.subtitle2,
+        style: theme.textTheme.titleSmall,
       ),
       themeWidget(deviceSize.height * 0.25, context),
       PaddedButton(

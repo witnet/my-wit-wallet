@@ -82,42 +82,42 @@ class DisclaimerCardState extends State<DisclaimerCard>
       children: [
         Text(
           'Hey, listen!',
-          style: theme.textTheme.headline3,
+          style: theme.textTheme.displaySmall,
         ),
         Text(
           'Please, read carefully before continuing.',
-          style: theme.textTheme.headline3,
+          style: theme.textTheme.displaySmall,
         ),
         SizedBox(
           height: 10,
         ),
         Text(
             'A wallet is an app that keeps your credentials safe and lets you interface with the Witnet blockchain in many ways: from transferring Wit to someone else to creating smart contracts.',
-            style: theme.textTheme.bodyText1),
+            style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
         ),
         Text(
             'You should never share your seed phrase with anyone. We at Witnet do not store your seed phrase and will never ask you to share it with us. If you lose your seed phrase, you will permanently lose access to your wallet and your funds.',
-            style: theme.textTheme.bodyText1),
+            style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
         ),
         Text(
             'If someone finds or sees your seed phrase, they will have access to your wallet and all of your funds.',
-            style: theme.textTheme.bodyText1),
+            style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
         ),
         Text(
             'We recommend storing your seed phrase on paper somewhere safe. Do not store it in a file on your computer or anywhere electronically.',
-            style: theme.textTheme.bodyText1),
+            style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
         ),
         Text(
             'By accepting these disclaimers, you commit to comply with the explained restrictions and digitally sign your conformance using your Witnet wallet.',
-            style: theme.textTheme.bodyText1),
+            style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
         ),

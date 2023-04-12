@@ -34,21 +34,21 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
       children: <Widget>[
         Text(
           'Recover with seed phrase',
-          style: theme.textTheme.headline3, //Textstyle
+          style: theme.textTheme.displaySmall, //Textstyle
         ), //Text
         SizedBox(
           height: 16,
         ),
         Text(
           'Please type your secret word phrase used for recovery. ',
-          style: theme.textTheme.bodyText1, //Textstyle
+          style: theme.textTheme.bodyLarge, //Textstyle
         ), //Text
         SizedBox(
           height: 16,
         ),
         TextField(
           keyboardType: TextInputType.multiline,
-          style: theme.textTheme.headline2,
+          style: theme.textTheme.displayMedium,
           maxLines: 4,
           controller: textController,
           onChanged: (String e) {
@@ -68,7 +68,7 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
         ),
         Text(
           'Please ensure you do not add any extra spaces between words or at the beginning or end of the phrase.',
-          style: theme.textTheme.bodyText1, //Textstyle
+          style: theme.textTheme.bodyLarge, //Textstyle
         ), //Text
       ],
     );

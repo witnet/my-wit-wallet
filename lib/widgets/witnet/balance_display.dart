@@ -66,16 +66,16 @@ class BalanceDisplayState extends State<BalanceDisplay>
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text('Locked:', style: theme.textTheme.caption!),
+        Text('Locked:', style: theme.textTheme.bodySmall!),
         AnimatedNumericText(
           initialValue: nanoWitToWit(lockedBalanceNanoWit),
           targetValue: nanoWitToWit(balanceInfo.lockedNanoWit),
           curve: Interval(0, .5, curve: Curves.easeOut),
           controller: _headerController,
-          style: theme.textTheme.caption!,
+          style: theme.textTheme.bodySmall!,
         ),
         SizedBox(width: 5),
-        Text('wit', style: theme.textTheme.caption!),
+        Text('wit', style: theme.textTheme.bodySmall!),
       ],
     );
   }
@@ -105,18 +105,18 @@ class BalanceDisplayState extends State<BalanceDisplay>
                 targetValue: nanoWitToWit(balanceInfo.availableNanoWit),
                 curve: Interval(0, .5, curve: Curves.easeOut),
                 controller: _headerController,
-                style: theme.textTheme.bodyText1!,
+                style: theme.textTheme.bodyLarge!,
               ),
               SizedBox(width: 5),
               Text(
                 'wit',
-                style: theme.textTheme.bodyText1!,
+                style: theme.textTheme.bodyLarge!,
               ),
             ],
           ),
           (balanceInfo.lockedNanoWit > 0)
               ? timeLockDisplay(context)
-              : Text('Wallet Balance', style: theme.textTheme.bodyText1)
+              : Text('Wallet Balance', style: theme.textTheme.bodyLarge)
         ],
       ),
     );

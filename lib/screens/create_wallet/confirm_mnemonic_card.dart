@@ -76,20 +76,20 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
       children: <Widget>[
         Text(
           'Recovery Phrase',
-          style: theme.textTheme.headline2,
+          style: theme.textTheme.displayMedium,
         ),
         SizedBox(
           height: 16,
         ),
         Text(
           'Please type your $_phraseLength word seed phrase exactly as shown to you on the previous screen. This will ensure that you have noted down your seed phrase correctly.',
-          style: theme.textTheme.bodyText1,
+          style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 16,
         ),
         TextField(
-          style: theme.textTheme.headline2,
+          style: theme.textTheme.displayMedium,
           keyboardType: TextInputType.multiline,
           maxLines: 4,
           controller: textController,
@@ -110,7 +110,7 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
         ),
         Text(
           'Please ensure you do not add any extra spaces between words or at the beginning or end of the phrase.',
-          style: theme.textTheme.bodyText1,
+          style: theme.textTheme.bodyLarge,
         ),
       ],
     );

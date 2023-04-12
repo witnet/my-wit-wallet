@@ -69,7 +69,7 @@ class _CarouselState extends State<Carousel> {
       padding: EdgeInsets.only(left: 24, right: 24, top: 8, bottom: 8),
       child: Text(
         item,
-        style: theme.textTheme.bodyText1,
+        style: theme.textTheme.bodyLarge,
         textAlign: TextAlign.center,
       ),
     );

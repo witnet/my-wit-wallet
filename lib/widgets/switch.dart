@@ -20,7 +20,7 @@ class CustomSwitch extends StatelessWidget {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       Text(
         secondaryLabel,
-        style: theme.textTheme.bodyText1,
+        style: theme.textTheme.bodyLarge,
       ),
       Switch(
         // This bool value toggles the switch.
@@ -29,7 +29,7 @@ class CustomSwitch extends StatelessWidget {
       ),
       Text(
         primaryLabel,
-        style: theme.textTheme.bodyText1,
+        style: theme.textTheme.bodyLarge,
       ),
     ]);
   }

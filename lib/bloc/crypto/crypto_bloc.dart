@@ -15,7 +15,6 @@ import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/util/storage/cache/transaction_cache.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
@@ -174,7 +173,6 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     CryptoInitWalletDoneEvent event,
     Emitter<CryptoState> emit,
   ) async {
-    ApiDatabase database = Locator.instance.get<ApiDatabase>();
     Wallet wallet = event.wallet;
     emit(CryptoLoadedWalletState(
       wallet: wallet,

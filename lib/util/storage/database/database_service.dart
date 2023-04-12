@@ -40,7 +40,7 @@ class DBException {
 
   @override
   String toString() =>
-      '${this}{"DBException": {"code": $code, "message": $message}}';
+      '$this{"DBException": {"code": $code, "message": $message}}';
 }
 
 class DatabaseService {

@@ -9,9 +9,9 @@ import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
 
 launchExplorerSearch(String searchItem) async {
-  String url = 'https://witnet.network/search/$searchItem';
-  if (await canLaunch(url)) {
-    await launch(url);
+  Uri url = Uri.parse('https://witnet.network/search/$searchItem');
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url);
   } else {
     throw 'Could not launch $url';
   }

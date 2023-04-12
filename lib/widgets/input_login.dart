@@ -69,7 +69,7 @@ class _InputLoginState extends State<InputLogin> {
           ),
         ),
         minLines: 1,
-        style: theme.textTheme.bodyText1,
+        style: theme.textTheme.bodyLarge,
         autocorrect: false,
         focusNode: widget.focusNode,
         controller: widget.textEditingController,

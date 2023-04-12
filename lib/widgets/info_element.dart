@@ -21,16 +21,17 @@ class InfoElement extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(
         label,
-        style:
-            plainText ? theme.textTheme.bodyText1 : theme.textTheme.headline3,
+        style: plainText
+            ? theme.textTheme.bodyLarge
+            : theme.textTheme.displaySmall,
       ),
       SizedBox(height: 8),
       url != null
           ? CustomLink(text: text, url: url ?? '')
           : Text(text,
               style: (color != null
-                  ? theme.textTheme.bodyText1?.copyWith(color: color)
-                  : theme.textTheme.bodyText1))
+                  ? theme.textTheme.bodyLarge?.copyWith(color: color)
+                  : theme.textTheme.bodyLarge))
     ]);
   }
 }

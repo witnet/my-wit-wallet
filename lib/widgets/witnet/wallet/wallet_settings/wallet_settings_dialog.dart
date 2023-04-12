@@ -57,7 +57,7 @@ class AccountCard extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: IconButton(
-                  icon: Icon(FontAwesomeIcons.infoCircle),
+                  icon: Icon(FontAwesomeIcons.circleInfo),
                   color: theme.primaryColor,
                   onPressed: () => _showWalletSettingsDialog(context, account),
                 ),

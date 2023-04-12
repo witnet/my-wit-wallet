@@ -36,8 +36,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   var isPanelClose;
 
   Widget showWalletList(BuildContext context) {
-    String walletId = Locator.instance.get<ApiDatabase>()
-        .walletStorage.currentWallet.id;
+    String walletId =
+        Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.id;
     return MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
@@ -85,10 +85,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           body: Padding(
               child: _buildMainLayout(context, theme, true),
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom
-              )
-          )
-      );
+                  bottom: MediaQuery.of(context).viewInsets.bottom)));
     }
   }
 
@@ -102,7 +99,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             pinned: true,
             elevation: 0,
             automaticallyImplyLeading: false,
-            backgroundColor: theme.backgroundColor,
+            backgroundColor: theme.colorScheme.background,
             expandedHeight: widget.dashboardActions != null ? 300 : 200,
             toolbarHeight: widget.dashboardActions != null ? 300 : 200,
             flexibleSpace: headerLayout(context, theme)),
@@ -188,7 +185,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         },
         child: Scaffold(
             resizeToAvoidBottomInset: true,
-            backgroundColor: theme.backgroundColor,
+            backgroundColor: theme.colorScheme.background,
             body: buildMainContent(context, theme),
             bottomNavigationBar:
                 isPanelClose == null || isPanelClose ? bottomBar() : null));

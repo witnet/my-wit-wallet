@@ -6,7 +6,6 @@ import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/preferences.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/widgets/address.dart';
 import 'package:witnet_wallet/util/extensions/num_extensions.dart';
 
 import 'package:witnet_wallet/shared/locator.dart';
@@ -46,7 +45,7 @@ class AddressListState extends State<AddressList> {
     final isAddressSelected = account.address == currentAddress;
     final textStyle = isAddressSelected
         ? theme.textTheme.labelMedium
-        : theme.textTheme.bodyText1;
+        : theme.textTheme.bodyLarge;
     return MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(

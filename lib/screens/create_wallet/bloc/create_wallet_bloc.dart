@@ -257,8 +257,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
             'password': event.password
           },
           port: resp.sendPort);
-      var errors = [];
-      Wallet wallet = await resp.first.then((value) {
+      await resp.first.then((value) {
         return value;
       });
 

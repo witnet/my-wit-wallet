@@ -121,22 +121,22 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
       children: [
         Text(
           'PLEASE NOTE:',
-          style: theme.textTheme.headline3,
+          style: theme.textTheme.displaySmall,
         ),
         SizedBox(height: 8),
         Text(
           'This password encrypts your Witnet wallet only on this computer',
-          style: theme.textTheme.bodyText1,
+          style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 8),
         Text(
           'This is not your backup and you cannot restore your wallet with this password.',
-          style: theme.textTheme.bodyText1,
+          style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 8),
         Text(
           'Your ${Locator.instance.get<ApiCreateWallet>().seedData!.split(' ').length} word seed phrase is still your ultimate recovery method.',
-          style: theme.textTheme.bodyText1,
+          style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 16),
         Form(
@@ -147,7 +147,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
             children: [
               Text(
                 'Password',
-                style: theme.textTheme.subtitle2,
+                style: theme.textTheme.titleSmall,
               ),
               SizedBox(height: 8),
               InputLogin(
@@ -167,7 +167,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
               SizedBox(height: 16),
               Text(
                 'Confirm password',
-                style: theme.textTheme.subtitle2,
+                style: theme.textTheme.titleSmall,
               ),
               SizedBox(height: 8),
               InputLogin(

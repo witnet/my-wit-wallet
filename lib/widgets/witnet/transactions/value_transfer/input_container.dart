@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 

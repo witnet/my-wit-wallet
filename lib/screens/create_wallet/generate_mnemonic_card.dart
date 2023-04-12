@@ -6,7 +6,6 @@ import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/widgets/dashed_rect.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter/services.dart';
 import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 
 typedef void VoidCallback(NavAction? value);
@@ -42,35 +41,35 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
       children: [
         Text(
           'These $_radioWordCount random words are your Witnet seed phrase. They will allow you to recover your tokens if you uninstall this application or forget your password:',
-          style: theme.textTheme.bodyText1,
+          style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 8,
         ),
         Text(
           'Please write down these $_radioWordCount words on a piece of paper and store them somewhere private and secure. You must write the complete words in the exact order they are presented to you.',
-          style: theme.textTheme.headline3,
+          style: theme.textTheme.displaySmall,
         ),
         SizedBox(
           height: 8,
         ),
         Text(
           'Keeping your seed phrase secret is paramount. If someone gains access to these $_radioWordCount words, they will be able to take and spend your tokens.',
-          style: theme.textTheme.bodyText1,
+          style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 8,
         ),
         Text(
           'Do not store these words on a computer or an electronic device. It is your sole responsibility to store the paper with your seed phrase in a safe place.',
-          style: theme.textTheme.bodyText1,
+          style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 8,
         ),
         Text(
           'If you exit this setup or fail to write down or keep your seed phrase safe, we cannot help you access your wallet.',
-          style: theme.textTheme.bodyText1,
+          style: theme.textTheme.bodyLarge,
         ),
       ],
     );

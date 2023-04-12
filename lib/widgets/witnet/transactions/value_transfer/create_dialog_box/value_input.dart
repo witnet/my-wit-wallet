@@ -12,14 +12,9 @@ class ValueInputState extends State<ValueInput>
     with SingleTickerProviderStateMixin {
   double witValue = 0;
   late TextEditingController _valueController;
-  late AnimationController _loadingController;
   @override
   void initState() {
     _valueController = TextEditingController();
-    _loadingController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
 
     super.initState();
   }

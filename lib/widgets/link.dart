@@ -30,7 +30,7 @@ class CustomLink extends StatelessWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       decoration: TextDecoration.underline,
-                      color: theme.textTheme.bodyText1?.color))),
+                      color: theme.textTheme.bodyLarge?.color))),
           onTap: () => {_launchUrl(url)},
         ));
   }

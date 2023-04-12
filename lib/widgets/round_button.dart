@@ -92,7 +92,7 @@ class _RoundButtonState extends State<RoundButton>
             SizedBox(height: 4),
             Text(
               widget.label,
-              style: theme.textTheme.button,
+              style: theme.textTheme.labelLarge,
               textAlign: TextAlign.center,
             ),
           ],

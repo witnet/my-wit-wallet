@@ -10,57 +10,57 @@ TextSelectionThemeData textSelectionTheme =
     TextSelectionThemeData(cursorColor: WitnetPallet.witnetGreen2);
 Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
-  headline1: TextStyle(
+  displayLarge: TextStyle(
       fontFamily: 'NotoSans',
       color: WitnetPallet.darkGrey,
       fontSize: 24,
       fontWeight: FontWeight.bold),
-  headline2: TextStyle(
+  displayMedium: TextStyle(
       fontFamily: 'NotoSans',
       color: WitnetPallet.darkGrey,
       fontSize: 18,
       fontWeight: FontWeight.bold),
-  headline3: TextStyle(
+  displaySmall: TextStyle(
       fontFamily: 'NotoSans',
       color: WitnetPallet.darkGrey,
       fontSize: 16,
       fontWeight: FontWeight.bold),
-  headline4: TextStyle(
+  headlineMedium: TextStyle(
       fontFamily: 'NotoSans',
       color: WitnetPallet.witnetGreen1,
       fontSize: 24,
       fontWeight: FontWeight.normal),
-  headline5: TextStyle(
+  headlineSmall: TextStyle(
       fontFamily: 'NotoSans',
       color: WitnetPallet.witnetGreen1,
       fontSize: 16,
       fontWeight: FontWeight.normal),
-  subtitle1: TextStyle(
+  titleMedium: TextStyle(
       fontFamily: 'NotoSans',
       color: WitnetPallet.darkGrey,
       fontSize: 16,
       fontWeight: FontWeight.normal),
-  subtitle2: TextStyle(
+  titleSmall: TextStyle(
       fontFamily: 'NotoSans',
       color: WitnetPallet.darkGrey,
       fontSize: 14,
       fontWeight: FontWeight.bold),
-  bodyText1: TextStyle(
+  bodyLarge: TextStyle(
       fontFamily: 'NotoSans',
       color: WitnetPallet.darkGrey,
       fontSize: 16,
       fontWeight: FontWeight.normal),
-  bodyText2: TextStyle(
+  bodyMedium: TextStyle(
       fontFamily: 'NotoSans',
       color: WitnetPallet.darkGrey,
       fontSize: 14,
       fontWeight: FontWeight.normal),
-  caption: TextStyle(
+  bodySmall: TextStyle(
       fontFamily: 'NotoSans',
       color: WitnetPallet.darkGrey,
       fontSize: 12,
       fontWeight: FontWeight.normal),
-  button: TextStyle(
+  labelLarge: TextStyle(
       fontFamily: 'NotoSans',
       color: WitnetPallet.white,
       fontSize: 16,
@@ -204,20 +204,19 @@ PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(
 );
 
 ThemeData lightTheme = ThemeData(
-  pageTransitionsTheme: pageTransitionsTheme,
-  primaryColor: primaryColor,
-  switchTheme: switchTheme,
-  checkboxTheme: checkboxTheme,
-  splashColor: Colors.transparent,
-  iconTheme: iconTheme,
-  primaryIconTheme: primaryIconTheme,
-  textSelectionTheme: textSelectionTheme,
-  backgroundColor: WitnetPallet.white,
-  shadowColor: Colors.transparent,
-  elevatedButtonTheme: elevatedButtonTheme,
-  textButtonTheme: textButtonTheme,
-  outlinedButtonTheme: outlinedButtonTheme,
-  cardTheme: cardTheme,
-  textTheme: textTheme,
-  inputDecorationTheme: inputDecorationTheme,
-);
+    pageTransitionsTheme: pageTransitionsTheme,
+    primaryColor: primaryColor,
+    switchTheme: switchTheme,
+    checkboxTheme: checkboxTheme,
+    splashColor: Colors.transparent,
+    iconTheme: iconTheme,
+    primaryIconTheme: primaryIconTheme,
+    textSelectionTheme: textSelectionTheme,
+    shadowColor: Colors.transparent,
+    elevatedButtonTheme: elevatedButtonTheme,
+    textButtonTheme: textButtonTheme,
+    outlinedButtonTheme: outlinedButtonTheme,
+    cardTheme: cardTheme,
+    textTheme: textTheme,
+    inputDecorationTheme: inputDecorationTheme,
+    colorScheme: ColorScheme.light().copyWith(background: WitnetPallet.white));

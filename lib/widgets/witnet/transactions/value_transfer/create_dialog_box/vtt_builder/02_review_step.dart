@@ -100,7 +100,7 @@ class ReviewStepState extends State<ReviewStep>
               icon: FontAwesomeIcons.circleExclamation,
               title: 'Error',
               content: Text('Error sending the transaction, try again!',
-                  style: theme.textTheme.bodyText1));
+                  style: theme.textTheme.bodyLarge));
         } else if (state.vttCreateStatus == VTTCreateStatus.signing) {
           buildAlertDialog(
               context: context,
@@ -108,7 +108,7 @@ class ReviewStepState extends State<ReviewStep>
               icon: FontAwesomeIcons.fileSignature,
               title: 'Signing transaction',
               content: Text('The transaction is being signed',
-                  style: theme.textTheme.bodyText1));
+                  style: theme.textTheme.bodyLarge));
         } else if (state.vttCreateStatus == VTTCreateStatus.finished) {
           // Send transaction after signed
           _sendTransaction(state.vtTransaction);
@@ -119,7 +119,7 @@ class ReviewStepState extends State<ReviewStep>
               icon: FontAwesomeIcons.paperPlane,
               title: 'Sending transaction',
               content: Text('The transaction is being send',
-                  style: theme.textTheme.bodyText1));
+                  style: theme.textTheme.bodyLarge));
         } else if (state.vttCreateStatus == VTTCreateStatus.accepted) {
           buildAlertDialog(
             context: context,
@@ -153,7 +153,7 @@ class ReviewStepState extends State<ReviewStep>
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
             'Transaction details',
-            style: theme.textTheme.headline3,
+            style: theme.textTheme.displaySmall,
           ),
           SizedBox(height: 24),
           InfoElement(

@@ -6,11 +6,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/models/wallet_name.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:witnet_wallet/theme/colors.dart';
-import 'package:witnet_wallet/util/preferences.dart';
 import 'package:witnet_wallet/widgets/animated_numeric_text.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
 import 'package:witnet_wallet/widgets/fade_in.dart';
@@ -177,12 +175,12 @@ class BuildWalletCardState extends State<BuildWalletCard>
           targetValue: nanoWitToWit(balance),
           curve: Interval(0, .5, curve: Curves.easeOut),
           controller: _balanceController,
-          style: theme.textTheme.bodyText1!,
+          style: theme.textTheme.bodyLarge!,
         ),
         SizedBox(width: 5),
         Text(
           'wit',
-          style: theme.textTheme.bodyText1!,
+          style: theme.textTheme.bodyLarge!,
         ),
       ]),
       SizedBox(
@@ -199,7 +197,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       minFontSize: 9,
-                      style: theme.textTheme.bodyText1!.copyWith(
+                      style: theme.textTheme.bodyLarge!.copyWith(
                         foreground: Paint()..shader = linearGradient,
                       )),
                   AnimatedIntegerText(
@@ -207,7 +205,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
                     targetValue: addressCount,
                     curve: Interval(0, .5, curve: Curves.easeOut),
                     controller: _balanceController,
-                    style: theme.textTheme.bodyText1!.copyWith(
+                    style: theme.textTheme.bodyLarge!.copyWith(
                       foreground: Paint()..shader = linearGradient,
                     ),
                   ),
@@ -219,7 +217,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 minFontSize: 9,
-                style: theme.textTheme.bodyText1!.copyWith(
+                style: theme.textTheme.bodyLarge!.copyWith(
                   foreground: Paint()..shader = linearGradient,
                 )),
           )
@@ -235,7 +233,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
             child: AutoSizeText('Current Address: $message',
                 maxLines: 2,
                 minFontSize: 14,
-                style: theme.textTheme.bodyText1!.copyWith(
+                style: theme.textTheme.bodyLarge!.copyWith(
                   foreground: Paint()..shader = linearGradient,
                 )),
           ),

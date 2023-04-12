@@ -22,7 +22,7 @@ class QrAddressGeneratorState extends State<QrAddressGenerator> {
       child: Column(
         children: <Widget>[
           Container(
-            color: theme.backgroundColor,
+            color: theme.colorScheme.background,
             child: Padding(
               padding: EdgeInsets.all(5),
               child: CustomPaint(

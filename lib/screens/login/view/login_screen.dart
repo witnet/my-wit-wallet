@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:witnet_wallet/screens/login/view/login_form.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
@@ -142,7 +140,7 @@ class LoginScreenState extends State<LoginScreen>
       ),
       Text(
         'Welcome',
-        style: theme.textTheme.headline1,
+        style: theme.textTheme.displayLarge,
       ),
       Carousel(list: [
         'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',

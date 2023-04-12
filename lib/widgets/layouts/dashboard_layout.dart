@@ -23,8 +23,6 @@ import 'package:witnet_wallet/util/extensions/string_extensions.dart';
 
 import 'package:witnet_wallet/shared/locator.dart';
 
-import '../../util/preferences.dart';
-
 const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
 class DashboardLayout extends StatefulWidget {
@@ -132,7 +130,7 @@ class DashboardLayoutState extends State<DashboardLayout>
           Text(
             '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits()} Wit',
             textAlign: TextAlign.center,
-            style: theme.textTheme.headline4,
+            style: theme.textTheme.headlineMedium,
           ),
           SizedBox(height: 16),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -140,11 +138,11 @@ class DashboardLayoutState extends State<DashboardLayout>
                 child: Text(
               currentAccount.address.cropMiddle(18),
               overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.headline5,
+              style: theme.textTheme.headlineSmall,
             )),
             Flexible(
                 child: IconButton(
-                    color: theme.textTheme.headline5?.color,
+                    color: theme.textTheme.headlineSmall?.color,
                     padding: EdgeInsets.all(4),
                     constraints: BoxConstraints(),
                     iconSize: 12,

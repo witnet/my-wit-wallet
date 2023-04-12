@@ -108,7 +108,7 @@ class AnimatedDropDownState extends State<AnimatedDropDown>
         DropdownMenuItem(
           child: AnimatedText(
             text: element,
-            style: theme.textTheme.bodyText1!,
+            style: theme.textTheme.bodyLarge!,
           ),
         ),
       );
@@ -119,7 +119,7 @@ class AnimatedDropDownState extends State<AnimatedDropDown>
       opacity: _textOpacityAnimation,
       child: DropdownButton(
         items: dropDownItems,
-        style: theme.textTheme.button,
+        style: theme.textTheme.labelLarge,
         onChanged: (dynamic newValue) {
           setState(() {});
         },

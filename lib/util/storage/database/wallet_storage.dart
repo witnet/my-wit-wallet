@@ -1,4 +1,3 @@
-import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 

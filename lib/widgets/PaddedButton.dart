@@ -9,7 +9,7 @@ class PaddedButton extends StatelessWidget {
     required this.onPressed,
     this.color,
     this.icon = defaultIcon,
-    this.enabled: true,
+    this.enabled = true,
     required this.type,
   });
 

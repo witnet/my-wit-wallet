@@ -65,7 +65,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     return TextField(
       keyboardType: TextInputType.multiline,
       focusNode: _textFocusNode,
-      style: theme.textTheme.headline2,
+      style: theme.textTheme.displayMedium,
       maxLines: 4,
       controller: _textController,
       onChanged: (String e) {
@@ -184,14 +184,14 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
         children: <Widget>[
           Text(
             'Recover with xprv',
-            style: theme.textTheme.headline3, //Textstyle
+            style: theme.textTheme.displaySmall, //Textstyle
           ),
           SizedBox(
             height: 16,
           ),
           Text(
             'Please paste your xprv used for recovery and type the password created for exporting the file.',
-            style: theme.textTheme.bodyText1, //Textstyle
+            style: theme.textTheme.bodyLarge, //Textstyle
           ),
           SizedBox(
             height: 16,
