@@ -32,8 +32,7 @@ class LoginForm extends StatefulWidget {
 
 class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
   String _password = '';
-  bool _hasInputError = false;
-  String? errorText = '';
+  String? errorText;
   final _loginController = TextEditingController();
   final _loginFocusNode = FocusNode();
 
@@ -41,52 +40,51 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loginController.removeListener(() => validation());
+      _loginController.removeListener(() => validate());
       _loginController.clear();
-      _loginFocusNode.addListener(() => validation());
+      _loginFocusNode.addListener(() => validate());
     });
   }
 
   void dispose() {
-    _loginFocusNode.removeListener(() => validation());
+    _loginFocusNode.removeListener(() => validate());
     _loginController.dispose();
     _loginFocusNode.dispose();
     super.dispose();
   }
 
-  void validation() {
-    if (!_loginFocusNode.hasFocus) {
-      if (_password.isEmpty) {
-        if (this.mounted) {
+  bool validate({bool force = false}) {
+    if (this.mounted) {
+      if (force || !_loginFocusNode.hasFocus) {
+        if (_password.isEmpty) {
+          if (this.mounted) {
+            setState(() {
+              errorText = 'Please input a password';
+            });
+            return false;
+          }
+        } else {
           setState(() {
-            _hasInputError = true;
-            errorText = 'Please input a password';
-          });
-        }
-      } else {
-        if (this.mounted) {
-          setState(() {
-            _hasInputError = false;
-            errorText = '';
+            errorText = null;
             widget.setWallet(Wallet(
                 walletName: WalletName.dirty(widget.currentWallet),
                 password: _password));
           });
+          return true;
         }
       }
+      return false;
     }
+    return false;
   }
-
-  final _formKey = GlobalKey<FormState>();
 
   Widget _buildWalletField() {
     return Form(
-      key: _formKey,
       autovalidateMode: AutovalidateMode.always,
       child: InputLogin(
         prefixIcon: Icons.lock,
         hint: 'Password',
-        errorText: _hasInputError ? errorText : null,
+        errorText: errorText,
         obscureText: true,
         textEditingController: _loginController,
         focusNode: _loginFocusNode,
@@ -112,7 +110,6 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
         if (state.status == LoginStatus.LoginInvalid) {
           if (mounted) {
             setState(() {
-              _hasInputError = true;
               errorText = 'Invalid password';
             });
           }

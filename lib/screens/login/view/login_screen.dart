@@ -15,6 +15,8 @@ import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 
+final GlobalKey<LoginFormState> loginState = GlobalKey<LoginFormState>();
+
 class LoginScreen extends StatefulWidget {
   static final route = '/';
 
@@ -43,10 +45,11 @@ class LoginScreenState extends State<LoginScreen>
   }
 
   _login() {
-    FocusScope.of(context).unfocus();
-    if (currentWallet != null) {
+    try {
       BlocProvider.of<LoginBloc>(context)
           .add(LoginSubmittedEvent(password: currentWallet!.password));
+    } catch (err) {
+      rethrow;
     }
   }
 
@@ -57,7 +60,11 @@ class LoginScreenState extends State<LoginScreen>
           padding: EdgeInsets.only(top: 8, bottom: 0),
           text: 'Login',
           type: 'primary',
-          onPressed: () => _login(),
+          onPressed: () => {
+            if(loginState.currentState?.validate(force: true) == true) {
+              _login()
+            },
+          },
         );
       },
     );
@@ -111,6 +118,7 @@ class LoginScreenState extends State<LoginScreen>
           ...mainComponents(),
           SizedBox(height: 16),
           LoginForm(
+            key: loginState,
             currentWallet: walletNames[0],
             setWallet: (wallet) => {_setWallet(wallet)},
             loginError: loginError,
