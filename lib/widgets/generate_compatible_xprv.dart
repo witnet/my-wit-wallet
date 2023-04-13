@@ -1,3 +1,9 @@
+import 'dart:developer';
+
+import 'package:witnet/witnet.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
+import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/util/storage/database/encrypt/password.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +29,9 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
   String _password = '';
   String _confirmPassword = '';
   String? errorText;
+  String? localEncryptedXprv =
+      Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.xprv;
+  String? compatibleXprv;
 
   void setPassword(String password) {
     setState(() {
@@ -42,6 +51,23 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
     super.dispose();
   }
 
+  _generateSheikahCompatibleXprv(password) {
+    Xprv? _xprv;
+    try {
+      // Checks if password is the one that encrypts the current (not-Sheikah-compatible) xprv
+      _xprv = Xprv.fromEncryptedXprv(
+          localEncryptedXprv ?? '', Password.hash(password));
+    } catch (e) {
+      errorText = 'Wrong password';
+    }
+    if (_xprv != null) {
+      setState(() {
+        compatibleXprv = _xprv!.toEncryptedXprv(password: password);
+      });
+      widget.onXprvGenerated(compatibleXprv);
+    }
+  }
+
   // ignore: todo
   // TODO[#24]: Use formz model to validate password
 
@@ -49,24 +75,23 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
     if (this.mounted) {
       if (force ||
           (!_passConfirmFocusNode.hasFocus && !_passFocusNode.hasFocus)) {
-          if (_password.isEmpty && _confirmPassword.isEmpty) {
-            setState(() {
-              errorText = 'Please input a password';
-            });
-            return false;
-          } else if (_password == _confirmPassword) {
-            setState(() {
-              errorText = null;
-            });
-            return true;
-          } else {
-            setState(() {
-              errorText = 'Password Mismatch';
-            });
-            return false;
-          }
+        if (_password.isEmpty && _confirmPassword.isEmpty) {
+          setState(() {
+            errorText = 'Please input your wallet password';
+          });
+          return false;
+        } else if (_password == _confirmPassword) {
+          setState(() {
+            errorText = null;
+          });
+          return true;
+        } else {
+          setState(() {
+            errorText = 'Password Mismatch';
+          });
+          return false;
         }
-       else {
+      } else {
         setState(() {
           errorText = null;
         });
@@ -87,12 +112,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'PLEASE NOTE:',
-          style: theme.textTheme.headline3,
-        ),
-        SizedBox(height: 8),
-        Text(
-          'This password encrypts your xprv file. You will be asked to type this password if you want to import this file as a backup.',
+          'Please, input your wallet\'s password. This password encrypts your xprv file. You will be asked to type this password if you want to import this xprv as a backup.',
           style: theme.textTheme.bodyText1,
         ),
         SizedBox(height: 16),
@@ -151,9 +171,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                   onPressed: () => {
                         if (validate(force: true))
                           {
-                            // TODO: generate valid xprv
-                            // TODO: add loading state
-                            widget.onXprvGenerated('XPRV example'),
+                            _generateSheikahCompatibleXprv(_password),
                           }
                       }),
             ],

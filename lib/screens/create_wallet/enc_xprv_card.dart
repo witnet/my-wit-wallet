@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/witnet.dart';
@@ -33,8 +35,8 @@ class EnterEncryptedXprvCard extends StatefulWidget {
 class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     with TickerProviderStateMixin {
   String xprv = '';
-  String decryptedXprv = '';
   String _password = '';
+  String? decryptedLocalXprv;
   bool isXprvValid = false;
   bool useStrongPassword = false;
   void setPassword(String password) {
@@ -91,8 +93,8 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   }
 
   void nextAction() {
-    if (validate(force: true)) {
-      Locator.instance<ApiCreateWallet>().setSeed(decryptedXprv, 'xprv');
+    if (validate(force: true) && decryptedLocalXprv != null) {
+      Locator.instance<ApiCreateWallet>().setSeed(decryptedLocalXprv!, 'xprv');
       WalletType type =
           BlocProvider.of<CreateWalletBloc>(context).state.walletType;
       BlocProvider.of<CreateWalletBloc>(context)
@@ -116,8 +118,14 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
 
   bool validXprv(String xprvString, String password) {
     try {
-      String passwordHash = Password.hash(password);
-      decryptedXprv = Xprv.fromEncryptedXprv(xprvString, passwordHash).toSlip32();
+      Xprv xprv = Xprv.fromEncryptedXprv(xprvString, password);
+      String localXprv =
+          xprv.toEncryptedXprv(password: Password.hash(password));
+      setState(() {
+        decryptedLocalXprv =
+            Xprv.fromEncryptedXprv(localXprv, Password.hash(password))
+                .toSlip32();
+      });
     } catch (e) {
       return false;
     }
