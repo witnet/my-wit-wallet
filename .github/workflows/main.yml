@@ -1,0 +1,207 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  Windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: create .env
+        run: Copy-Item ".\.env_example" -Destination ".\.env"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install project dependencies
+        run: flutter pub get
+
+      - name: Doctor
+        run: flutter doctor
+
+      - name: Binary
+        run: flutter build windows
+
+      - name: Archive build
+        run: |
+          Move-Item '.\build\windows\runner\Release' '.\light-wallet'
+          Compress-Archive -Path '.\light-wallet' -DestinationPath '.\light-wallet-windows.zip' -Force
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: windows
+          path: .\light-wallet-windows.zip
+
+  Linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: create .env
+        run: cp ./.env_example ./.env
+
+      - uses: subosito/flutter-action@v2
+        with:
+          architecture: x64
+          channel: 'stable'
+          cache: true
+
+      - name: Install project dependencies
+        run: flutter pub get
+
+      - name: install needed dependencies
+        run: sudo apt-get update -y && sudo apt-get install -y ninja-build libgtk-3-dev
+
+      - name: Doctor
+        run: flutter doctor
+
+      - name: Binary
+        run: flutter build linux --release
+
+      - name: LDD
+        run: ldd build/linux/x64/release/bundle/witnet_wallet
+
+      - name: Archive Build
+        run: |
+          mv ./build/linux/x64/release/bundle ./light-wallet
+          tar czvf light-wallet-linux.tar.gz ./light-wallet
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: linux
+          path: ./light-wallet-linux.tar.gz
+
+  MacOs:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: create .env
+        run: cp ./.env_example ./.env
+
+      - uses: subosito/flutter-action@v2
+        with:
+          architecture: x64
+          channel: 'stable'
+          cache: true
+
+      - name: Install project dependencies
+        run: flutter pub get
+
+      - name: Doctor
+        run: flutter doctor
+
+      - name: Binary
+        run: flutter build macos --release
+
+      - name: Archive Build
+        run: |
+          mkdir light-wallet
+          mv ./build/macos/Build/Products/Release/witnet_wallet.app ./light-wallet/
+          tar czvf light-wallet-darwin.tar.gz ./light-wallet
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: macos
+          path: ./light-wallet-darwin.tar.gz
+
+  Android:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: create .env
+        run: cp ./.env_example ./.env
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+          cache: 'gradle'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          architecture: x64
+          channel: 'stable'
+          cache: true
+
+      - name: Install project dependencies
+        run: flutter pub get
+
+      - name: Doctor
+        run: flutter doctor
+
+      - name: Binary
+        run: flutter build apk
+
+      - name: Prepare apk
+        run: mv ./build/app/outputs/flutter-apk/app-release.apk ./light-wallet.apk
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: android
+          path: ./light-wallet.apk
+
+  # IOS:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+
+  #     - name: create .env
+  #       run: cp ./.env_example ./.env
+
+  #     - uses: subosito/flutter-action@v2
+  #       with:
+  #         architecture: x64
+  #         channel: 'stable'
+  #         cache: true
+
+  #     - name: Install project dependencies
+  #       run: flutter pub get
+
+  #     - name: Doctor
+  #       run: flutter doctor
+
+  #     - name: Binary
+  #       run: flutter build ios --release --no-codesign
+
+  Release:
+    needs: [Windows, Linux, MacOs, Android]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      # Download All Artifacts
+      - uses: actions/download-artifact@v3
+        with:
+          path: release/
+
+      - name: Insert Tag
+        run: |
+          TAG=${{github.ref_name}}
+          sed -i "s/LATEST_VERSION/$TAG/g" RELEASE.md
+
+      - name: Organize Releases
+        run: |
+          cd release
+          mv android/* .
+          mv linux/* .
+          mv macos/* .
+          mv windows/* .
+          rm -rf android linux macos windows
+
+      - name: Publish Github Release
+        uses: ncipollo/release-action@v1
+        with:
+          name: "Light Wallet ${{github.ref_name}}"
+          artifacts: "./release/*"
+          bodyFile: "RELEASE.md"
+          artifactErrorsFailBuild: true
