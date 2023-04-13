@@ -169,13 +169,13 @@ class WalletListState extends State<WalletList> {
                   children: [
                     Text(
                       database.walletStorage.wallets[walletId]!.name,
-                      style: textStyle,
+                      style: textStyle.copyWith(decoration: TextDecoration.none),
                     ),
                     Text(
                       address != null ? address : '',
                       overflow: TextOverflow.ellipsis,
                       style: extendedTheme.monoSmallText!
-                          .copyWith(color: WitnetPallet.white),
+                          .copyWith(color: WitnetPallet.white, decoration: TextDecoration.none),
                     ),
                   ],
                 ),
@@ -186,7 +186,7 @@ class WalletListState extends State<WalletList> {
                 '$balance nanoWit',
                 textAlign: TextAlign.end,
                 overflow: TextOverflow.ellipsis,
-                style: textStyle,
+                style: textStyle.copyWith(decoration: TextDecoration.none),
               ),
             ),
           ]),

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
@@ -39,6 +38,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   var isPanelClose;
   ScrollController defaultScrollController =
       ScrollController(keepScrollOffset: false);
+  bool showPanel = true;
 
   Widget showWalletList(BuildContext context) {
     String walletId =
@@ -75,64 +75,70 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
 
   // Content displayed between header and bottom actions
   Widget buildMainContent(BuildContext context, theme) {
-    final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     if (widget.slidingPanel == null) {
       return _buildMainLayout(context, theme, false);
     } else {
-      return SlidingUpPanel(
-          controller: panelController,
-          color: extendedTheme.walletListBackgroundColor!,
-          minHeight: 0,
-          maxHeight: MediaQuery.of(context).size.height * 0.3,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(8), topRight: Radius.circular(8)),
-          panel: widget.slidingPanel,
-          body: Padding(
-              child: _buildMainLayout(context, theme, true),
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom)));
+      return _buildMainLayoutWithSlidingPanel(context, theme, true);
     }
+  }
+
+  Widget _buildMainLayoutWithSlidingPanel(BuildContext context, theme, bool panel) {
+    final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
+    return SlidingUpPanel(
+      controller: panelController,
+      color: extendedTheme.walletListBackgroundColor!,
+      minHeight: 0,
+      maxHeight: MediaQuery.of(context).size.height * 0.3,
+      borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+      panel: widget.slidingPanel,
+      body: _buildMainLayout(context, theme, panel),
+    );
   }
 
   Widget _buildMainLayout(BuildContext context, theme, bool panel) {
     final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
-    return CustomScrollView(
-      controller: widget.scrollController != null
+    return Scaffold(body: Scaffold(
+        backgroundColor: theme.colorScheme.background,
+        body: CustomScrollView(
+          controller: widget.scrollController != null
           ? widget.scrollController
           : defaultScrollController,
-      slivers: [
-        SliverAppBar(
-            floating: true,
-            systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarColor: extendedTheme.headerBackgroundColor,
-              statusBarIconBrightness: Brightness.dark,
-              statusBarBrightness: Brightness.dark,
+          slivers: [
+            SliverAppBar(
+                floating: true,
+                snap: true,
+                pinned: true,
+                elevation: 0,
+                automaticallyImplyLeading: false,
+                backgroundColor: theme.colorScheme.background,
+                expandedHeight: widget.dashboardActions != null ? 300 : 200,
+                toolbarHeight: widget.dashboardActions != null ? 300 : 200,
+                flexibleSpace: headerLayout(context, theme)),
+            SliverPadding(
+              padding: EdgeInsets.only(
+                  left: 16, right: 16, bottom: panel ? 70 : 100),
+              sliver: SliverToBoxAdapter(
+                  child: Center(
+                child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minWidth: 100,
+                      maxWidth: 600,
+                    ),
+                    child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: widget.widgetList)),
+              )),
             ),
-            snap: true,
-            pinned: true,
-            elevation: 0,
-            automaticallyImplyLeading: false,
-            backgroundColor: Colors.transparent,
-            expandedHeight: widget.dashboardActions != null ? 300 : 200,
-            toolbarHeight: widget.dashboardActions != null ? 300 : 200,
-            flexibleSpace: headerLayout(context, theme)),
-        SliverPadding(
-          padding: EdgeInsets.only(left: 16, right: 16, bottom: panel ? 70 : 0),
-          sliver: SliverToBoxAdapter(
-              child: Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: 100,
-                maxWidth: 600,
-              ),
-              child: Column(
-                  mainAxisSize: MainAxisSize.max, children: widget.widgetList),
-            ),
-          )),
+          ],
         ),
-      ],
-    );
+        persistentFooterButtons: [
+          isPanelClose == null || isPanelClose
+              ? bottomBar()
+              : SizedBox(
+                  height: 0,
+                )
+        ]));
   }
 
   Widget headerLayout(context, theme) {
@@ -163,6 +169,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   }
 
   Widget bottomBar() {
+    final theme = Theme.of(context);
     return BottomAppBar(
       notchMargin: 8,
       elevation: 0,
@@ -173,21 +180,10 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minWidth: 100,
-                  maxWidth: 600,
-                ),
-                child: Column(
-                    mainAxisSize: MainAxisSize.max, children: widget.actions),
-              ),
-            )
-          ],
+          children: widget.actions,
         ),
       ),
-      color: Colors.transparent,
+      color: theme.colorScheme.background,
     );
   }
 
@@ -197,11 +193,6 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: Scaffold(
-            resizeToAvoidBottomInset: true,
-            backgroundColor: theme.colorScheme.background,
-            body: buildMainContent(context, theme),
-            bottomNavigationBar:
-                isPanelClose == null || isPanelClose ? bottomBar() : null));
+        child: buildMainContent(context, theme));
   }
 }

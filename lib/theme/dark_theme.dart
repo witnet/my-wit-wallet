@@ -227,6 +227,7 @@ PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(
 
 ThemeData darkTheme = ThemeData(
     pageTransitionsTheme: pageTransitionsTheme,
+    dividerColor: Colors.transparent,
     primaryColor: primaryColor,
     switchTheme: switchTheme,
     checkboxTheme: checkboxTheme,

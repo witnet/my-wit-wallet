@@ -210,19 +210,21 @@ PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(
 );
 
 ThemeData lightTheme = ThemeData(
-    pageTransitionsTheme: pageTransitionsTheme,
-    primaryColor: primaryColor,
-    switchTheme: switchTheme,
-    checkboxTheme: checkboxTheme,
-    splashColor: Colors.transparent,
-    iconTheme: iconTheme,
-    primaryIconTheme: primaryIconTheme,
-    textSelectionTheme: textSelectionTheme,
-    shadowColor: Colors.transparent,
-    elevatedButtonTheme: elevatedButtonTheme,
-    textButtonTheme: textButtonTheme,
-    outlinedButtonTheme: outlinedButtonTheme,
-    cardTheme: cardTheme,
-    textTheme: textTheme,
-    inputDecorationTheme: inputDecorationTheme,
-    colorScheme: ColorScheme.light().copyWith(background: WitnetPallet.white));
+  pageTransitionsTheme: pageTransitionsTheme,
+  dividerColor: Colors.transparent,
+  primaryColor: primaryColor,
+  switchTheme: switchTheme,
+  checkboxTheme: checkboxTheme,
+  splashColor: Colors.transparent,
+  iconTheme: iconTheme,
+  primaryIconTheme: primaryIconTheme,
+  textSelectionTheme: textSelectionTheme,
+  shadowColor: Colors.transparent,
+  elevatedButtonTheme: elevatedButtonTheme,
+  textButtonTheme: textButtonTheme,
+  outlinedButtonTheme: outlinedButtonTheme,
+  cardTheme: cardTheme,
+  textTheme: textTheme,
+  inputDecorationTheme: inputDecorationTheme,
+  colorScheme: ColorScheme.light().copyWith(background: WitnetPallet.white)
+);
