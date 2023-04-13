@@ -136,6 +136,7 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
 ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(16),
+      foregroundColor: WitnetPallet.white,
       backgroundColor: WitnetPallet.opacityWitnetGreen,
       disabledForegroundColor:
           Color.fromARGB(102, 164, 212, 204).withOpacity(0.38),
