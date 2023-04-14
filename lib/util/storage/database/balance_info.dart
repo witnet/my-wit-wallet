@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:witnet/constants.dart';
 import 'package:witnet/data_structures.dart';
 
 class BalanceInfo {
@@ -46,6 +46,34 @@ class BalanceInfo {
     );
   }
 
+  List<Utxo> cover({
+    required int amountNanoWit,
+    required UtxoSelectionStrategy utxoStrategy,
+    required UtxoPool utxoPool,
+  }) {
+    List<Utxo> utxos = utxoPool.sortUtxos(utxoStrategy);
+    if (utxos.isEmpty) {
+      return [];
+    }
+    int utxoValue = 0;
+    utxoValue += utxos.map((e) => e.value).toList().reduce((a, b) => a+b);
+
+    List<Utxo> selectedUtxos = [];
+
+    if (amountNanoWit > utxoValue) {
+      return [];
+    }
+
+    while (amountNanoWit > 0) {
+      // since the list is sorted - take the first item
+      Utxo utxo = utxos.first;
+      utxos.removeAt(0);
+      selectedUtxos.add(utxo);
+      amountNanoWit -= utxo.value;
+    }
+    return selectedUtxos;
+  }
+
   @override
   String toString() {
     return json.encode(jsonMap());
@@ -72,5 +100,28 @@ class BalanceInfo {
       availableUtxos: _availableUtxos,
       lockedUtxos: _lockedUtxos,
     );
+  }
+
+  int? weightedVttFee(int value, {
+    int outputs = 1,
+    UtxoSelectionStrategy selectionStrategy = UtxoSelectionStrategy.SmallFirst
+  }) {
+    UtxoPool utxoPool = UtxoPool();
+    availableUtxos.forEach((Utxo utxo) {
+      utxoPool.insert(utxo);
+    });
+    List<Utxo> selectedUtxos = cover(
+      amountNanoWit: value,
+      utxoStrategy: selectionStrategy,
+      utxoPool: utxoPool,
+    );
+    if (selectedUtxos.isEmpty) return null;
+    int changeNanoWit;
+    int valuePaidNanoWit =
+        BalanceInfo.fromUtxoList(selectedUtxos).availableNanoWit;
+    changeNanoWit = (valuePaidNanoWit - value);
+    return changeNanoWit > 0
+        ? (selectedUtxos.length * INPUT_SIZE) + (outputs + 1 * OUTPUT_SIZE * GAMMA)
+        : (selectedUtxos.length * INPUT_SIZE) + (outputs * OUTPUT_SIZE * GAMMA);
   }
 }

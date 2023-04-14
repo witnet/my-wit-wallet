@@ -5,20 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
-import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/select.dart';
-
-final _addressController = TextEditingController();
-final _addressFocusNode = FocusNode();
-final _amountController = TextEditingController();
-final _amountFocusNode = FocusNode();
-final _minerFeeController = TextEditingController();
-final _minerFeeFocusNode = FocusNode();
+import 'package:witnet_wallet/util/extensions/text_input_formatter.dart';
 
 class RecipientStep extends StatefulWidget {
   final Function nextAction;
@@ -44,16 +37,23 @@ class RecipientStepState extends State<RecipientStep>
   String? _errorAddressText;
   String? _errorAmountText;
   String? _errorFeeText;
-  String _feeType = 'Weighted';
+  FeeType _feeType = FeeType.Weighted;
   bool _showFeeInput = false;
+  final _addressController = TextEditingController();
+  final _addressFocusNode = FocusNode();
+  final _amountController = TextEditingController();
+  final _amountFocusNode = FocusNode();
+  final _minerFeeController = TextEditingController();
+  final _minerFeeFocusNode = FocusNode();
 
   @override
   void initState() {
+    super.initState();
+    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
     _loadingController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    super.initState();
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.nextAction(next));
   }
@@ -61,151 +61,131 @@ class RecipientStepState extends State<RecipientStep>
   @override
   void dispose() {
     _loadingController.dispose();
-    _addressController.clear();
-    _amountController.clear();
-    _minerFeeController.clear();
+    _addressController.dispose();
+    _amountController.dispose();
+    _minerFeeController.dispose();
+    _addressFocusNode.dispose();
+    _amountFocusNode.dispose();
+    _minerFeeFocusNode.dispose();
     super.dispose();
   }
 
   num _minerFeeToNumber() {
-    return num.parse(_minerFee != '' ? _minerFee : '0');
+    try {
+      return num.parse(_minerFee != '' ? _minerFee : '0');
+    } catch (e) {
+      return 0;
+    }
   }
 
   num _amountToNumber() {
-    return num.parse(_amount != '' ? _amount : '0');
+    try {
+      return num.parse(_amount != '' ? _amount : '0');
+    } catch (e) {
+      return 0;
+    }
   }
 
-  bool _isAbsoluteFee(String type) {
-    return type == 'Absolute';
-  }
-
-  bool _isValidNumber(String number) {
-    return double.tryParse(number) != null;
+  bool _isAbsoluteFee() {
+    return _feeType == FeeType.Absolute;
   }
 
   bool _notEnoughFunds() {
     final balance = balanceInfo.availableNanoWit;
-    int minerFee = int.parse(_minerFeeToNumber().standardizeWitUnits(
+    int nanoWitAmount = int.parse(_amountToNumber().standardizeWitUnits(
         inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit));
-    String nanoWitAmount = _amountToNumber().standardizeWitUnits(
-        inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit);
-    int totalToSpend = minerFee + int.parse(nanoWitAmount);
-    return balance < totalToSpend;
-  }
-
-  bool _notFocusForm() {
-    return !_addressFocusNode.hasFocus &&
-        !_amountFocusNode.hasFocus &&
-        !_minerFeeFocusNode.hasFocus;
+    if (_feeType == FeeType.Absolute) {
+      int minerFee = int.parse(_minerFeeToNumber().standardizeWitUnits(
+          inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit));
+      int totalToSpend = minerFee + nanoWitAmount;
+      return balance < totalToSpend;
+    } else {
+      int? _weightedFee = balanceInfo.weightedVttFee(nanoWitAmount);
+      return _weightedFee != null
+          ? balance < _weightedFee + nanoWitAmount
+          : true;
+    }
   }
 
   void _setFeeType(type) {
-    if (mounted) {
-      if (_isAbsoluteFee(type)) {
-        setState(() {
-          _feeType = type;
-          _showFeeInput = true;
-        });
-        BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
-            feeType: FeeType.Absolute,
-            feeNanoWit: int.parse(_minerFeeToNumber().standardizeWitUnits(
-                inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit))));
-      } else {
-        setState(() {
-          _feeType = type;
-          _showFeeInput = false;
-        });
-        BlocProvider.of<VTTCreateBloc>(context)
-            .add(UpdateFeeEvent(feeType: FeeType.Weighted));
-      }
-      _validateFee();
+    setState(() {
+      _feeType = type == "Absolute" ? FeeType.Absolute : FeeType.Weighted;
+      _showFeeInput = _isAbsoluteFee() ? true : false;
+    });
+    if (_isAbsoluteFee()) {
+      _validateFee(_minerFee);
+      BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
+          feeType: FeeType.Absolute,
+          feeNanoWit: int.parse(_minerFeeToNumber().standardizeWitUnits(
+              inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit))));
+    } else {
+      BlocProvider.of<VTTCreateBloc>(context)
+          .add(UpdateFeeEvent(feeType: FeeType.Weighted));
     }
   }
 
-  bool _validateAddress({force = false}) {
-    if (this.mounted) {
-      if (force || _notFocusForm()) {
-        setState(() {
-          _errorAddressText = null;
-        });
-        if (_address.length == 42) {
-          try {
-            Address address = Address.fromAddress(_address);
-            assert(address.address.isNotEmpty);
-          } catch (e) {
-            setState(() {
-              _errorAddressText = 'Invalid address';
-            });
-          }
-        } else {
-          setState(() {
-            _errorAddressText = 'Invalid address';
-          });
-        }
-      }
-    }
-    return _errorAddressText != null ? false : true;
+  String? _validateAddress(String? input) {
+    String? errorText;
+    errorText = validateAddress(_address);
+    return errorText;
   }
 
-  bool _validateAmount({force = false}) {
-    if (this.mounted) {
-      if (force || _notFocusForm()) {
-        setState(() {
-          _errorAmountText = null;
-        });
-        if (_amount.isEmpty) {
-          setState(() {
-            _errorAmountText = 'This field is required';
-          });
-        } else if (!_isValidNumber(_amount)) {
-          setState(() {
-            _errorAmountText = 'Invalid number';
-          });
-        } else if (_notEnoughFunds()) {
-          setState(() {
-            _errorAmountText = 'Not enough funds';
-          });
-        }
-      }
+  String? _validateAmount(String? input) {
+    String? errorText;
+    if (_notEnoughFunds()) {
+      errorText = 'Not enough Funds';
     }
-    return _errorAmountText != null ? false : true;
+    errorText = errorText ?? validateWitValue(input);
+    try {
+      if (num.parse(input!) == 0) {
+        errorText = errorText ?? 'Amount cannot be zero';
+      }
+    } catch (e) {
+      errorText = 'Invalid Amount';
+    }
+    return errorText;
   }
 
-  bool _validateFee({force = false}) {
-    if (this.mounted && _isAbsoluteFee(_feeType)) {
-      if (force || _notFocusForm()) {
-        setState(() {
-          _errorFeeText = null;
-        });
-        if (_minerFee.isEmpty) {
-          setState(() {
-            _errorFeeText = 'This field is required';
-          });
-        } else if (!_isValidNumber(_amount)) {
-          setState(() {
-            _errorFeeText = 'Invalid number';
-          });
-        } else if (_notEnoughFunds()) {
-          setState(() {
-            _errorFeeText = 'Not enough funds';
-          });
-        }
-      }
+  String? _validateFee(String? input) {
+    String? errorText;
+    try {
+      num.parse(_minerFee != '' ? _minerFee : '0');
+    } catch (e) {
+      errorText = 'Invalid Amount';
     }
-    return _errorFeeText != null ? false : true;
+    if (_notEnoughFunds()) {
+      errorText = 'Not enough Funds';
+    }
+    if (_isAbsoluteFee()) {
+      errorText = errorText ?? validateWitValue(input);
+    }
+    return errorText;
   }
 
-  bool validateForm({force = false}) {
-    if (_validateAddress(force: true) &&
-        _validateAmount(force: true) &&
-        _validateFee(force: true)) {
-      return true;
+  bool validateForm() {
+    setState(() {
+      _errorAddressText = _validateAddress(_address);
+      _errorAmountText = _validateAmount(_amount);
+      if (_feeType == FeeType.Absolute) {
+        _errorFeeText = _validateFee(_minerFee);
+      }
+    });
+    if(_isAbsoluteFee()){
+      if ((_errorAddressText == null && _errorAmountText == null && _errorFeeText == null ) &&
+          !(_address.isEmpty || _amount.isEmpty || _minerFee.isEmpty)) {
+        return true;
+      }
+    } else {
+      if ((_errorAddressText == null && _errorAmountText == null) &&
+          !(_address.isEmpty || _amount.isEmpty)) {
+        return true;
+      }
     }
     return false;
   }
 
   void nextAction() {
-    if (validateForm(force: true)) {
+    if (validateForm() && _formKey.currentState!.validate()) {
       BlocProvider.of<VTTCreateBloc>(context).add(AddValueTransferOutputEvent(
           currentWallet: widget.currentWallet,
           output: ValueTransferOutput.fromJson({
@@ -229,12 +209,9 @@ class RecipientStepState extends State<RecipientStep>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>();
-    _addressFocusNode.addListener(() => _validateAddress());
-    _amountFocusNode.addListener(() => _validateAmount());
-    _minerFeeFocusNode.addListener(() => _validateFee());
     return Form(
       key: _formKey,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      autovalidateMode: AutovalidateMode.disabled,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -243,7 +220,7 @@ class RecipientStepState extends State<RecipientStep>
             style: theme.textTheme.titleSmall,
           ),
           SizedBox(height: 8),
-          TextField(
+          TextFormField(
             style: theme.textTheme.bodyLarge,
             decoration: InputDecoration(
               hintText: 'Recipient address',
@@ -251,11 +228,30 @@ class RecipientStepState extends State<RecipientStep>
             ),
             controller: _addressController,
             focusNode: _addressFocusNode,
-            onSubmitted: (String value) => null,
+            keyboardType: TextInputType.text,
+            validator: _validateAddress,
+            inputFormatters: [WitAddressFormatter()],
             onChanged: (String value) {
               setState(() {
                 _address = value;
+                if (_validateAddress(_address) == null) {
+                  _errorAddressText = null;
+                }
               });
+            },
+            onFieldSubmitted: (String value) {
+              _amountFocusNode.requestFocus();
+            },
+            onTap: () {
+              _addressFocusNode.requestFocus();
+            },
+            onTapOutside: (PointerDownEvent event){
+              if(_addressFocusNode.hasFocus){
+                setState(() {
+
+                  _errorAddressText = _validateAddress(_address);
+                });
+              }
             },
           ),
           SizedBox(height: 16),
@@ -264,7 +260,7 @@ class RecipientStepState extends State<RecipientStep>
             style: theme.textTheme.titleSmall,
           ),
           SizedBox(height: 8),
-          TextField(
+          TextFormField(
             style: theme.textTheme.bodyLarge,
             decoration: InputDecoration(
               hintText: 'Amount',
@@ -272,11 +268,31 @@ class RecipientStepState extends State<RecipientStep>
             ),
             controller: _amountController,
             focusNode: _amountFocusNode,
-            onSubmitted: (String value) => null,
+            keyboardType: TextInputType.number,
+            validator: _validateAmount,
+            inputFormatters: [WitValueFormatter()],
             onChanged: (String value) {
               setState(() {
                 _amount = value;
+                if (_validateAmount(_amount) == null) {
+                  _errorAmountText = null;
+                }
               });
+            },
+            onTap: () {
+              _amountFocusNode.requestFocus();
+            },
+            onFieldSubmitted: (String value) {
+              if (_feeType == FeeType.Absolute) {
+                _amountFocusNode.requestFocus();
+              }
+            },
+            onTapOutside: (PointerDownEvent event){
+              if(_amountFocusNode.hasFocus) {
+                setState(() {
+                  _errorAmountText = _validateAmount(_amount);
+                });
+              }
             },
           ),
           SizedBox(height: 16),
@@ -299,12 +315,13 @@ class RecipientStepState extends State<RecipientStep>
           ]),
           SizedBox(height: 8),
           Select(
-              selectedItem: _feeType,
-              listItems: ['Weighted', 'Absolute'],
+              selectedItem: _feeType.name,
+              listItems:
+                  FeeType.values.map((e) => e.name).toList().reversed.toList(),
               onChanged: (value) => _setFeeType(value)),
           SizedBox(height: 8),
           _showFeeInput
-              ? TextField(
+              ? TextFormField(
                   style: theme.textTheme.bodyLarge,
                   decoration: InputDecoration(
                     hintText: 'Input the miner fee',
@@ -312,18 +329,34 @@ class RecipientStepState extends State<RecipientStep>
                   ),
                   controller: _minerFeeController,
                   focusNode: _minerFeeFocusNode,
-                  onSubmitted: (String value) => null,
+                  keyboardType: TextInputType.number,
+                  validator: _validateFee,
+                  inputFormatters: [WitValueFormatter()],
                   onChanged: (String value) {
                     setState(() {
                       _minerFee = value;
-                      BlocProvider.of<VTTCreateBloc>(context).add(
-                          UpdateFeeEvent(
-                              feeType: FeeType.Absolute,
-                              feeNanoWit: int.parse(_minerFeeToNumber()
-                                  .standardizeWitUnits(
-                                      inputUnit: WitUnit.Wit,
-                                      outputUnit: WitUnit.nanoWit))));
+                      if (_validateFee(_minerFee) == null) {
+                        _errorFeeText = null;
+                      }
                     });
+                  },
+                  onTap: () {
+                    _minerFeeFocusNode.requestFocus();
+                  },
+            onTapOutside: (PointerDownEvent event){
+              if(_minerFeeFocusNode.hasFocus) {
+                setState(() {
+                  _errorFeeText = _validateFee(_minerFee);
+                });
+              }
+            },
+                  onEditingComplete: () {
+                    BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
+                        feeType: FeeType.Absolute,
+                        feeNanoWit: int.parse(_minerFeeToNumber()
+                            .standardizeWitUnits(
+                                inputUnit: WitUnit.Wit,
+                                outputUnit: WitUnit.nanoWit))));
                   },
                 )
               : SizedBox(height: 8),
