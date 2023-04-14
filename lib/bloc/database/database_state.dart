@@ -5,7 +5,6 @@ class DatabaseState {
     return DatabaseState();
   }
 
-  @override
   List<Object> get props => [];
 }
 
