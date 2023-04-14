@@ -173,10 +173,6 @@ class _AnimatedTextFormFieldState extends State<AnimatedTextFormField> {
   }
 
   Widget _buildInertiaAnimation(Widget child) {
-    if (widget.inertiaController == null) {
-      return child;
-    }
-
     return AnimatedBuilder(
       animation: iconTranslateAnimation,
       builder: (context, child) => Transform(

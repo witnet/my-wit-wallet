@@ -4,7 +4,6 @@ import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 
 import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
@@ -29,7 +28,6 @@ class BalanceDisplayState extends State<BalanceDisplay>
   int currentValueNanoWit = 0;
   late WalletStorage walletStorage;
   late AnimationController _headerController;
-  late Animation<double> _headerScaleAnimation;
   late BalanceInfo balanceInfo;
 
   @override
@@ -41,8 +39,7 @@ class BalanceDisplayState extends State<BalanceDisplay>
     );
     walletStorage = Locator.instance<ApiDatabase>().walletStorage;
     setBalance();
-    _headerScaleAnimation =
-        Tween<double>(begin: .6, end: 1).animate(CurvedAnimation(
+    Tween<double>(begin: .6, end: 1).animate(CurvedAnimation(
       parent: widget.loadingController,
       curve: headerAniInterval,
     ));
@@ -82,17 +79,7 @@ class BalanceDisplayState extends State<BalanceDisplay>
 
   Widget dashboardBlocWidget() {
     final theme = Theme.of(context);
-    final accentColor = theme.primaryColor;
-    final bgMat = createMaterialColor(accentColor);
-    final linearGradient = LinearGradient(colors: [
-      bgMat.shade700,
-      bgMat.shade600,
-      bgMat.shade500,
-      bgMat.shade400,
-    ]).createShader(Rect.fromLTWH(0.0, 0.0, 418.0, 78.0));
 
-    ///
-    ///
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,

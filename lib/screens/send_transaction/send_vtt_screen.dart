@@ -135,8 +135,6 @@ class CreateVttScreenState extends State<CreateVttScreen>
   BlocListener _vttCreateBlocListener() {
     return BlocListener<VTTCreateBloc, VTTCreateState>(
       listener: (BuildContext context, VTTCreateState state) {
-        Wallet currentWallet =
-            Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
         print(state.vttCreateStatus);
       },
       child: _vttCreateBlocBuilder(),

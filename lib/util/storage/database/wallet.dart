@@ -121,9 +121,6 @@ class Wallet {
     try {
       _accounts.retainWhere((element) => element.address == address);
       return _accounts[0];
-      if (_accounts.isEmpty) {
-        throw Exception('account not in wallet');
-      }
     } catch (e) {
       return null;
     }

@@ -61,7 +61,6 @@ class DashboardLayoutState extends State<DashboardLayout>
     Navigator.pushReplacementNamed(context, ReceiveTransactionScreen.route);
   }
 
-  Future<void> _loadPrefs() async {}
   String? currentRoute() {
     return ModalRoute.of(context)?.settings.name ?? DashboardScreen.route;
   }

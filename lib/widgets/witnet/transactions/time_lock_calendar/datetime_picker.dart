@@ -12,7 +12,6 @@ class DateTimePicker extends StatefulWidget {
 class _DateTimePickerState extends State<DateTimePicker> {
   late double _height;
   late double _width;
-  late String _setTime, _setDate;
   late String _hour, _minute, _time;
   late String dateTime;
 
@@ -108,9 +107,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
                               enabled: false,
                               keyboardType: TextInputType.text,
                               controller: _dateController,
-                              onSaved: (String? val) {
-                                if (val != null) _setDate = val;
-                              },
+                              onSaved: (String? val) {},
                             ),
                           ),
                         ),
@@ -129,9 +126,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
                             alignment: Alignment.center,
                             child: TextFormField(
                               textAlign: TextAlign.center,
-                              onSaved: (String? val) {
-                                if (val != null) _setTime = val;
-                              },
+                              onSaved: (String? val) {},
                               enabled: false,
                               keyboardType: TextInputType.text,
                               controller: _timeController,

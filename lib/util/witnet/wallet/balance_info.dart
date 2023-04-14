@@ -5,7 +5,6 @@ class BalanceInfo {
   final int lockedNanoWit;
   List<Utxo> availableUtxos;
   List<Utxo> lockedUtxos;
-  List<Utxo> _utxos = [];
   BalanceInfo({
     required this.availableNanoWit,
     required this.lockedNanoWit,

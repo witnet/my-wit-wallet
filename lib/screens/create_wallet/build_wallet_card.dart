@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
@@ -11,7 +10,6 @@ import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/widgets/animated_numeric_text.dart';
 import 'package:witnet_wallet/widgets/auto_size_text.dart';
-import 'package:witnet_wallet/widgets/fade_in.dart';
 import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
@@ -103,54 +101,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
     _balanceController.dispose();
     _loadingController.dispose();
     super.dispose();
-  }
-
-  AppBar _buildAppBar(ThemeData theme) {
-    final menuBtn = IconButton(
-      color: theme.primaryColor,
-      icon: const Icon(FontAwesomeIcons.bars),
-      onPressed: null,
-    );
-
-    final logoutButton = IconButton(
-      icon: const Icon(FontAwesomeIcons.userLock),
-      color: theme.primaryColor,
-      onPressed: null,
-    );
-
-    final title = Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          SizedBox(width: 20),
-        ],
-      ),
-    );
-
-    return AppBar(
-      leading: FadeIn(
-        controller: _loadingController,
-        offset: .3,
-        curve: headerAniInterval,
-        fadeDirection: FadeDirection.startToEnd,
-        duration: Duration(milliseconds: 300),
-        child: menuBtn,
-      ),
-      actions: <Widget>[
-        FadeIn(
-          controller: _loadingController,
-          offset: .3,
-          curve: headerAniInterval,
-          fadeDirection: FadeDirection.endToStart,
-          duration: Duration(milliseconds: 300),
-          child: logoutButton,
-        ),
-      ],
-      title: title,
-      backgroundColor: theme.cardColor,
-      elevation: 0,
-      iconTheme: theme.iconTheme,
-    );
   }
 
   Widget initStatus(

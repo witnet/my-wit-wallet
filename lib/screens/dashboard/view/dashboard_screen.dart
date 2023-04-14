@@ -93,32 +93,32 @@ class DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  BlocListener _explorerListener() {
-    return BlocListener<ExplorerBloc, ExplorerState>(
-        listener: (BuildContext context, ExplorerState state) {
-      switch (state.status) {
-        case ExplorerStatus.unknown:
-          // TODO: Handle this case.
-          break;
-        case ExplorerStatus.dataloading:
-          // TODO: Handle this case.
-          break;
-        case ExplorerStatus.dataloaded:
-          {
-            setState(() {
-              _getVtts();
-            });
-          }
-          break;
-        case ExplorerStatus.error:
-          // TODO: Handle this case.
-          break;
-        case ExplorerStatus.ready:
-          // TODO: Handle this case.
-          break;
-      }
-    });
-  }
+  // BlocListener _explorerListener() {
+  //   return BlocListener<ExplorerBloc, ExplorerState>(
+  //       listener: (BuildContext context, ExplorerState state) {
+  //     switch (state.status) {
+  //       case ExplorerStatus.unknown:
+  //         // TODO: Handle this case.
+  //         break;
+  //       case ExplorerStatus.dataloading:
+  //         // TODO: Handle this case.
+  //         break;
+  //       case ExplorerStatus.dataloaded:
+  //         {
+  //           setState(() {
+  //             _getVtts();
+  //           });
+  //         }
+  //         break;
+  //       case ExplorerStatus.error:
+  //         // TODO: Handle this case.
+  //         break;
+  //       case ExplorerStatus.ready:
+  //         // TODO: Handle this case.
+  //         break;
+  //     }
+  //   });
+  // }
 
   BlocListener _dashboardListener() {
     return BlocListener<DashboardBloc, DashboardState>(

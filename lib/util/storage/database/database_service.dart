@@ -219,7 +219,6 @@ class DatabaseService {
       /// Process by account
       for (int i = 0; i < accounts.length; i++) {
         String _walletId = accounts[i].walletId;
-        int _accountIndex = accounts[i].index;
         String _address = accounts[i].address;
         for (int j = 0; j < transactions.length; j++) {
           /// add the transaction if it is for this account

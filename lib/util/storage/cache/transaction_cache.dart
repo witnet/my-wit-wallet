@@ -30,19 +30,6 @@ class TransactionCache {
     }
   }
 
-  Future<void> init() async {
-    try {
-      final io.File file = await _localFile;
-      if (!await file.exists()) {
-      } else {
-        final Map<String, dynamic> data = await _readFile();
-      }
-    } on io.FileSystemException catch (e) {
-      if (e.osError!.errorCode == 2) {}
-      rethrow;
-    }
-  }
-
   bool containsHash(String hash) {
     return transactions.containsKey(hash);
   }
