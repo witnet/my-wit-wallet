@@ -75,8 +75,6 @@ class WalletDetailCardState extends State<WalletDetailCard>
     _descController.dispose();
   }
 
-  final _formKey = GlobalKey<FormState>();
-
   // ignore: todo
   // TODO[#24]: Use formz model to validate name and description
 
@@ -102,7 +100,6 @@ class WalletDetailCardState extends State<WalletDetailCard>
   Widget _buildWalletDetailsForm(theme) {
     _nameFocusNode.addListener(() => setValidation());
     return Form(
-      key: _formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

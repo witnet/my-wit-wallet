@@ -110,7 +110,6 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     }
   }
 
-  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     _passConfirmFocusNode.addListener(() => validate());
@@ -140,7 +139,6 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
         ),
         SizedBox(height: 16),
         Form(
-          key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -82,10 +82,9 @@ class CreateVttScreenState extends State<CreateVttScreen>
           padding: EdgeInsets.only(bottom: 8),
           text: nextAction != null ? nextAction().label : 'Continue',
           type: 'primary',
-          enabled: nextAction != null,
+          enabled: true,
           onPressed: () => {
                 if (nextAction != null) {nextAction().action(), goToNextStep()},
-                _clearNextActions()
               }),
     ];
   }

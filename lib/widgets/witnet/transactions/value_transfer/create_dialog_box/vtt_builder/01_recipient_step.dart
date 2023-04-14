@@ -41,12 +41,9 @@ class RecipientStepState extends State<RecipientStep>
   String _address = '';
   String _amount = '';
   String _minerFee = '';
-  bool _hasAddressError = false;
-  String _errorAddressText = '';
-  bool _hasAmountError = false;
-  String _errorAmountText = '';
-  bool _hasFeeError = false;
-  String _errorFeeText = '';
+  String? _errorAddressText;
+  String? _errorAmountText;
+  String? _errorFeeText;
   String _feeType = 'Weighted';
   bool _showFeeInput = false;
 
@@ -57,6 +54,8 @@ class RecipientStepState extends State<RecipientStep>
       duration: const Duration(milliseconds: 400),
     );
     super.initState();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.nextAction(next));
   }
 
   @override
@@ -100,16 +99,6 @@ class RecipientStepState extends State<RecipientStep>
         !_minerFeeFocusNode.hasFocus;
   }
 
-  bool isAnyFormError() {
-    if (_isAbsoluteFee(_feeType)) {
-      return (_hasAddressError || _hasAmountError || _hasFeeError) ||
-          (_address.isEmpty || _amount.isEmpty || _minerFee.isEmpty);
-    } else {
-      return (_hasAddressError || _hasAmountError) ||
-          (_address.isEmpty || _amount.isEmpty);
-    }
-  }
-
   void _setFeeType(type) {
     if (mounted) {
       if (_isAbsoluteFee(type)) {
@@ -133,113 +122,100 @@ class RecipientStepState extends State<RecipientStep>
     }
   }
 
-  void _validateAddress() {
-    if (_notFocusForm()) {
-      if (this.mounted) {
+  bool _validateAddress({force = false}) {
+    if (this.mounted) {
+      if (force || _notFocusForm()) {
+        setState(() {
+          _errorAddressText = null;
+        });
         if (_address.length == 42) {
           try {
             Address address = Address.fromAddress(_address);
             assert(address.address.isNotEmpty);
-            setState(() {
-              _hasAddressError = false;
-            });
           } catch (e) {
             setState(() {
-              _hasAddressError = true;
               _errorAddressText = 'Invalid address';
             });
           }
         } else {
-          isAnyFormError() ? widget.nextAction(null) : widget.nextAction(next);
           setState(() {
-            _hasAddressError = true;
             _errorAddressText = 'Invalid address';
           });
         }
       }
-    } else {
-      widget.nextAction(null);
     }
+    return _errorAddressText != null ? false : true;
   }
 
-  void _validateAmount() {
-    if (_notFocusForm()) {
-      if (this.mounted) {
+  bool _validateAmount({force = false}) {
+    if (this.mounted) {
+      if (force || _notFocusForm()) {
+        setState(() {
+          _errorAmountText = null;
+        });
         if (_amount.isEmpty) {
           setState(() {
-            _hasAmountError = true;
             _errorAmountText = 'This field is required';
           });
         } else if (!_isValidNumber(_amount)) {
           setState(() {
-            _hasAmountError = true;
             _errorAmountText = 'Invalid number';
           });
         } else if (_notEnoughFunds()) {
           setState(() {
-            _hasAmountError = true;
             _errorAmountText = 'Not enough funds';
           });
-        } else {
-          isAnyFormError() ? widget.nextAction(null) : widget.nextAction(next);
+        }
+      }
+    }
+    return _errorAmountText != null ? false : true;
+  }
+
+  bool _validateFee({force = false}) {
+    if (this.mounted && _isAbsoluteFee(_feeType)) {
+      if (force || _notFocusForm()) {
+        setState(() {
+          _errorFeeText = null;
+        });
+        if (_minerFee.isEmpty) {
           setState(() {
-            _hasAmountError = false;
+            _errorFeeText = 'This field is required';
+          });
+        } else if (!_isValidNumber(_amount)) {
+          setState(() {
+            _errorFeeText = 'Invalid number';
+          });
+        } else if (_notEnoughFunds()) {
+          setState(() {
+            _errorFeeText = 'Not enough funds';
           });
         }
       }
-    } else {
-      widget.nextAction(null);
     }
+    return _errorFeeText != null ? false : true;
   }
 
-  void _validateFee() {
-    if (!_isAbsoluteFee(_feeType)) {
-      isAnyFormError() ? widget.nextAction(null) : widget.nextAction(next);
-    } else {
-      if (_notFocusForm()) {
-        if (this.mounted) {
-          if (_minerFee.isEmpty) {
-            setState(() {
-              _hasFeeError = true;
-              _errorFeeText = 'This field is required';
-            });
-            widget.nextAction(null);
-          } else if (!_isValidNumber(_amount)) {
-            setState(() {
-              _hasFeeError = true;
-              _errorFeeText = 'Invalid number';
-            });
-          } else if (_notEnoughFunds()) {
-            setState(() {
-              _hasFeeError = true;
-              _errorFeeText = 'Not enough funds';
-            });
-            widget.nextAction(null);
-          } else {
-            isAnyFormError()
-                ? widget.nextAction(null)
-                : widget.nextAction(next);
-            setState(() {
-              _hasFeeError = false;
-            });
-          }
-        }
-      } else {
-        widget.nextAction(null);
-      }
+  bool validateForm({force = false}) {
+    if (_validateAddress(force: true) &&
+      _validateAmount(force: true) &&
+      _validateFee(force: true)) {
+      return true;
     }
+    return false;
   }
 
   void nextAction() {
-    BlocProvider.of<VTTCreateBloc>(context).add(AddValueTransferOutputEvent(
-        currentWallet: widget.currentWallet,
-        output: ValueTransferOutput.fromJson({
-          'pkh': _address,
-          'value': int.parse(_amountToNumber().standardizeWitUnits(
-              inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)),
-          'time_lock': 0
-        }),
-        merge: true));
+    if (validateForm(force: true)) {
+      BlocProvider.of<VTTCreateBloc>(context).add(AddValueTransferOutputEvent(
+          currentWallet: widget.currentWallet,
+          output: ValueTransferOutput.fromJson({
+            'pkh': _address,
+            'value': int.parse(_amountToNumber().standardizeWitUnits(
+                inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)),
+            'time_lock': 0
+          }),
+          merge: true));
+    }
   }
 
   NavAction next() {
@@ -271,7 +247,7 @@ class RecipientStepState extends State<RecipientStep>
             style: theme.textTheme.bodyLarge,
             decoration: InputDecoration(
               hintText: 'Recipient address',
-              errorText: _hasAddressError ? _errorAddressText : null,
+              errorText: _errorAddressText,
             ),
             controller: _addressController,
             focusNode: _addressFocusNode,
@@ -292,7 +268,7 @@ class RecipientStepState extends State<RecipientStep>
             style: theme.textTheme.bodyLarge,
             decoration: InputDecoration(
               hintText: 'Amount',
-              errorText: _hasAmountError ? _errorAmountText : null,
+              errorText: _errorAmountText,
             ),
             controller: _amountController,
             focusNode: _amountFocusNode,
@@ -332,7 +308,7 @@ class RecipientStepState extends State<RecipientStep>
                   style: theme.textTheme.bodyLarge,
                   decoration: InputDecoration(
                     hintText: 'Input the miner fee',
-                    errorText: _hasFeeError ? _errorFeeText : null,
+                    errorText: _errorFeeText,
                   ),
                   controller: _minerFeeController,
                   focusNode: _minerFeeFocusNode,
