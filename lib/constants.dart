@@ -3,7 +3,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Explorer Settings
 const bool USE_EXPLORER_DEV = false;
+// ignore: non_constant_identifier_names
 String EXPLORER_ADDRESS = dotenv.get('EXPLORER_ADDRESS');
+// ignore: non_constant_identifier_names
 String EXPLORER_DEV_ADDRESS = dotenv.get('EXPLORER_DEV_ADDRESS');
 const int EXPLORER_DELAY_MS = 100;
 
