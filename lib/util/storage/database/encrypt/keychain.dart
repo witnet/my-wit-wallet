@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:sembast/sembast.dart';
 import 'package:witnet/utils.dart';
 
-import 'package:witnet/src/crypto/encrypt/aes/codec.dart';
+import 'package:witnet/crypto.dart';
 import 'package:witnet_wallet/util/storage/database/encrypt/password.dart';
 
 Uint8List _formatData(Uint8List data, [int length = 128, int padByte = 11]) {
