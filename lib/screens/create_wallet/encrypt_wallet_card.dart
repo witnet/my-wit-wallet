@@ -13,14 +13,17 @@ final _passConfirmFocusNode = FocusNode();
 final _passConfirmController = TextEditingController();
 
 typedef void VoidCallback(NavAction? value);
+typedef void BoolCallback(bool value);
 
 class EncryptWalletCard extends StatefulWidget {
   final Function nextAction;
   final Function prevAction;
+  final Function clearActions;
   EncryptWalletCard({
     Key? key,
     required VoidCallback this.nextAction,
     required VoidCallback this.prevAction,
+    required BoolCallback this.clearActions,
   }) : super(key: key);
   EncryptWalletCardState createState() => EncryptWalletCardState();
 }
@@ -34,13 +37,15 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
   }
 
   void nextAction() async {
-    // set masterKey
-    Locator.instance<ApiCreateWallet>().setPassword(_password);
-    await Locator.instance<ApiDatabase>().setPassword(newPassword: _password);
-    WalletType type =
-        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-    BlocProvider.of<CreateWalletBloc>(context)
-        .add(NextCardEvent(type, data: {}));
+    if (validate(force: true)) {
+      // set masterKey
+      Locator.instance<ApiCreateWallet>().setPassword(_password);
+      await Locator.instance<ApiDatabase>().setPassword(newPassword: _password);
+      WalletType type =
+          BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+      BlocProvider.of<CreateWalletBloc>(context)
+          .add(NextCardEvent(type, data: {}));
+    }
   }
 
   NavAction prev() {
@@ -59,8 +64,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
 
   String _password = '';
   String _confirmPassword = '';
-  bool _hasInputError = false;
-  String errorText = '';
+  String? errorText;
 
   void setPassword(String password) {
     setState(() {
@@ -75,6 +79,10 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     _passConfirmController.clear();
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.nextAction(next));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.clearActions(false));
   }
 
   @override
@@ -85,29 +93,25 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
   // ignore: todo
   // TODO[#24]: Use formz model to validate password
 
-  void validate() {
-    if (!_passConfirmFocusNode.hasFocus && !_passFocusNode.hasFocus) {
-      if (this.mounted) {
+  bool validate({force = false}) {
+    if (this.mounted) {
+      if (force ||
+          (!_passConfirmFocusNode.hasFocus && !_passFocusNode.hasFocus)) {
+        setState(() {
+          errorText = null;
+        });
         if (_password.isEmpty && _confirmPassword.isEmpty) {
           setState(() {
-            _hasInputError = true;
             errorText = 'Please input a password';
           });
-        } else if (_password == _confirmPassword) {
+        } else if (_password != _confirmPassword) {
           setState(() {
-            _hasInputError = false;
-          });
-          widget.nextAction(next);
-        } else {
-          setState(() {
-            _hasInputError = true;
             errorText = 'Password Mismatch';
           });
         }
       }
-    } else {
-      widget.nextAction(null);
     }
+    return errorText != null ? false : true;
   }
 
   @override
@@ -174,7 +178,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                 obscureText: true,
                 focusNode: _passConfirmFocusNode,
                 textEditingController: _passConfirmController,
-                errorText: _hasInputError ? errorText : null,
+                errorText: errorText,
                 onChanged: (String? value) {
                   if (this.mounted) {
                     setState(() {

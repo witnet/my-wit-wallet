@@ -59,9 +59,8 @@ class LoginScreenState extends State<LoginScreen>
           text: 'Login',
           type: 'primary',
           onPressed: () => {
-            if(loginState.currentState?.validate(force: true) == true) {
-              _login()
-            },
+            if (loginState.currentState?.validate(force: true) == true)
+              {_login()},
           },
         );
       },

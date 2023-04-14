@@ -6,14 +6,17 @@ import 'bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 
 typedef void VoidCallback(NavAction? value);
+typedef void BoolCallback(bool value);
 
 class WalletDetailCard extends StatefulWidget {
   final Function nextAction;
   final Function prevAction;
+  final Function clearActions;
   WalletDetailCard({
     Key? key,
     required VoidCallback this.nextAction,
     required VoidCallback this.prevAction,
+    required BoolCallback this.clearActions,
   }) : super(key: key);
   WalletDetailCardState createState() => WalletDetailCardState();
 }
@@ -27,14 +30,16 @@ class WalletDetailCardState extends State<WalletDetailCard>
   }
 
   void nextAction() {
-    Locator.instance.get<ApiCreateWallet>().setWalletName(_walletName);
-    Locator.instance
-        .get<ApiCreateWallet>()
-        .setWalletDescription(_walletDescription);
-    WalletType type =
-        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-    BlocProvider.of<CreateWalletBloc>(context)
-        .add(NextCardEvent(type, data: {}));
+    if (validate(force: true)) {
+      Locator.instance.get<ApiCreateWallet>().setWalletName(_walletName);
+      Locator.instance
+          .get<ApiCreateWallet>()
+          .setWalletDescription(_walletDescription);
+      WalletType type =
+          BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+      BlocProvider.of<CreateWalletBloc>(context)
+          .add(NextCardEvent(type, data: {}));
+    }
   }
 
   NavAction prev() {
@@ -56,8 +61,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
   final _nameFocusNode = FocusNode();
   String _walletName = '';
   String _walletDescription = '';
-  bool _hasInputError = false;
-  String errorText = 'Password mismatch';
+  String? errorText;
 
   @override
   void initState() {
@@ -66,6 +70,10 @@ class WalletDetailCardState extends State<WalletDetailCard>
     _descController = TextEditingController();
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.nextAction(next));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.clearActions(false));
   }
 
   @override
@@ -78,27 +86,25 @@ class WalletDetailCardState extends State<WalletDetailCard>
   // ignore: todo
   // TODO[#24]: Use formz model to validate name and description
 
-  void setValidation() {
-    if (!_nameFocusNode.hasFocus) {
-      if (_walletName.isEmpty) {
-        widget.nextAction(null);
+  bool validate({force = false}) {
+    if (this.mounted) {
+      widget.nextAction(next);
+      if (force || !_nameFocusNode.hasFocus) {
         setState(() {
-          _hasInputError = true;
-          errorText = 'Please add a name for your wallet';
+          errorText = null;
         });
-      } else {
-        setState(() {
-          _hasInputError = false;
-        });
-        widget.nextAction(next);
+        if (_walletName.isEmpty) {
+          setState(() {
+            errorText = 'Please add a name for your wallet';
+          });
+        }
       }
-    } else if (_walletName.isEmpty) {
-      widget.nextAction(null);
     }
+    return errorText != null ? false : true;
   }
 
   Widget _buildWalletDetailsForm(theme) {
-    _nameFocusNode.addListener(() => setValidation());
+    _nameFocusNode.addListener(() => validate());
     return Form(
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
@@ -113,7 +119,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
             style: theme.textTheme.bodyText1,
             decoration: InputDecoration(
               hintText: 'Wallet Name',
-              errorText: _hasInputError ? errorText : null,
+              errorText: errorText,
             ),
             controller: _nameController,
             focusNode: _nameFocusNode,

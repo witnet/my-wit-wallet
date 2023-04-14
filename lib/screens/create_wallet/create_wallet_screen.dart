@@ -26,6 +26,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   dynamic nextAction;
   dynamic secondaryAction;
   dynamic prevAction;
+  bool clearActions = true;
 
   @override
   void initState() {
@@ -47,7 +48,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
           enabled: nextAction != null,
           onPressed: () => {
                 nextAction != null ? nextAction().action() : null,
-                _clearNextActions()
+                if (clearActions) _clearNextActions()
               }),
     ];
     if (secondaryAction != null) {
@@ -121,6 +122,12 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
     });
   }
 
+  _setClearActions(bool clearNextActions) {
+    setState(() {
+      clearActions = clearNextActions;
+    });
+  }
+
   _navigationCards() {
     return {
       CreateWalletStatus.Disclaimer: DisclaimerCard(
@@ -133,13 +140,19 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
           EnterXprvCard(nextAction: _setNextAction, prevAction: _setPrevAction),
       CreateWalletStatus.ValidXprv: null,
       CreateWalletStatus.EnterEncryptedXprv: EnterEncryptedXprvCard(
-          nextAction: _setNextAction, prevAction: _setPrevAction),
+          nextAction: _setNextAction,
+          prevAction: _setPrevAction,
+          clearActions: _setClearActions),
       CreateWalletStatus.ConfirmMnemonic: ConfirmMnemonicCard(
           nextAction: _setNextAction, prevAction: _setPrevAction),
       CreateWalletStatus.WalletDetail: WalletDetailCard(
-          nextAction: _setNextAction, prevAction: _setPrevAction),
+          nextAction: _setNextAction,
+          prevAction: _setPrevAction,
+          clearActions: _setClearActions),
       CreateWalletStatus.EncryptWallet: EncryptWalletCard(
-          nextAction: _setNextAction, prevAction: _setPrevAction),
+          nextAction: _setNextAction,
+          prevAction: _setPrevAction,
+          clearActions: _setClearActions),
       CreateWalletStatus.BuildWallet: BuildWalletCard(
           nextAction: _setNextAction, prevAction: _setPrevAction),
       CreateWalletStatus.Imported: SelectImportedOption(

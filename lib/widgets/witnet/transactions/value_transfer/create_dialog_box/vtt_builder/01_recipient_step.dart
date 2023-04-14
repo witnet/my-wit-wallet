@@ -197,8 +197,8 @@ class RecipientStepState extends State<RecipientStep>
 
   bool validateForm({force = false}) {
     if (_validateAddress(force: true) &&
-      _validateAmount(force: true) &&
-      _validateFee(force: true)) {
+        _validateAmount(force: true) &&
+        _validateFee(force: true)) {
       return true;
     }
     return false;

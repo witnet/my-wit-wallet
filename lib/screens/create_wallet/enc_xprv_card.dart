@@ -14,14 +14,17 @@ final _textFocusNode = FocusNode();
 final _passFocusNode = FocusNode();
 
 typedef void VoidCallback(NavAction? value);
+typedef void BoolCallback(bool value);
 
 class EnterEncryptedXprvCard extends StatefulWidget {
   final Function nextAction;
   final Function prevAction;
+  final Function clearActions;
   EnterEncryptedXprvCard({
     Key? key,
     required VoidCallback this.nextAction,
     required VoidCallback this.prevAction,
+    required BoolCallback this.clearActions,
   }) : super(key: key);
 
   EnterXprvCardState createState() => EnterXprvCardState();
@@ -42,8 +45,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   int numLines = 0;
   bool _xprvVerified = false;
   bool xprvVerified() => _xprvVerified;
-  bool _hasInputError = false;
-  String errorText = '';
+  String? errorText;
 
   @override
   void initState() {
@@ -53,6 +55,10 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     _passFocusNode.addListener(() => validate());
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.nextAction(next));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.clearActions(false));
   }
 
   @override
@@ -84,12 +90,14 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   }
 
   void nextAction() {
-    Locator.instance<ApiCreateWallet>().setSeed(xprv, 'encryptedXprv');
-    Locator.instance<ApiCreateWallet>().setPassword(Password.hash(_password));
-    WalletType type =
-        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-    BlocProvider.of<CreateWalletBloc>(context)
-        .add(NextCardEvent(type, data: {}));
+    if (validate(force: true)) {
+      Locator.instance<ApiCreateWallet>().setSeed(xprv, 'encryptedXprv');
+      Locator.instance<ApiCreateWallet>().setPassword(Password.hash(_password));
+      WalletType type =
+          BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+      BlocProvider.of<CreateWalletBloc>(context)
+          .add(NextCardEvent(type, data: {}));
+    }
   }
 
   NavAction prev() {
@@ -116,29 +124,24 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     return true;
   }
 
-  void validate() {
-    if (!_passFocusNode.hasFocus && !_textFocusNode.hasFocus) {
-      if (this.mounted) {
+  bool validate({force = false}) {
+    if (this.mounted) {
+      if (force || (!_passFocusNode.hasFocus && !_textFocusNode.hasFocus)) {
+        setState(() {
+          errorText = null;
+        });
         if (_password.isEmpty) {
           setState(() {
-            _hasInputError = true;
             errorText = 'Please input a password';
           });
         } else if (!validXprv(xprv, _password)) {
           setState(() {
-            _hasInputError = true;
             errorText = 'Invalid xprv or password';
           });
-        } else {
-          setState(() {
-            _hasInputError = false;
-          });
-          widget.nextAction(next);
         }
       }
-    } else {
-      widget.nextAction(null);
     }
+    return errorText != null ? false : true;
   }
 
   Widget _buildPasswordField() {
@@ -148,7 +151,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
       focusNode: _passFocusNode,
       textEditingController: _passController,
       obscureText: true,
-      errorText: _hasInputError ? errorText : null,
+      errorText: errorText,
       onChanged: (String? value) {
         if (this.mounted) {
           setState(() {

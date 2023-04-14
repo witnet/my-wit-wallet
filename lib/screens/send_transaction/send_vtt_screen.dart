@@ -49,10 +49,6 @@ class CreateVttScreenState extends State<CreateVttScreen>
     super.dispose();
   }
 
-  _clearNextActions() {
-    nextAction = null;
-  }
-
   _setNextAction(action) {
     if (mounted) {
       setState(() {
