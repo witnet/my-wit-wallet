@@ -190,12 +190,10 @@ class _AnimatedTextFormFieldState extends State<AnimatedTextFormField> {
     return InputDecoration(
       labelText: widget.labelText,
       prefixIcon: _buildInertiaAnimation(widget.prefixIcon),
-      suffixIcon: _buildInertiaAnimation(widget.loadingController != null
-          ? FadeTransition(
-              opacity: suffixIconOpacityAnimation,
-              child: widget.suffixIcon,
-            )
-          : widget.suffixIcon),
+      suffixIcon: _buildInertiaAnimation(FadeTransition(
+        opacity: suffixIconOpacityAnimation,
+        child: widget.suffixIcon,
+      )),
     );
   }
 

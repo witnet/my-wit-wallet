@@ -182,7 +182,7 @@ class WalletListState extends State<WalletList> {
             ),
             Expanded(
               child: Text(
-                balance != null ? '$balance nanoWit' : '',
+                '$balance nanoWit',
                 textAlign: TextAlign.end,
                 overflow: TextOverflow.ellipsis,
                 style: textStyle,
