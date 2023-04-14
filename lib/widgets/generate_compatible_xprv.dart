@@ -17,9 +17,11 @@ typedef void StringCallback(String? value);
 
 class GenerateCompatibleXprv extends StatefulWidget {
   final StringCallback onXprvGenerated;
+  final Xprv? xprv;
   GenerateCompatibleXprv({
     Key? key,
     required this.onXprvGenerated,
+    this.xprv,
   }) : super(key: key);
   GenerateCompatibleXprvState createState() => GenerateCompatibleXprvState();
 }
@@ -52,17 +54,16 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
   }
 
   _generateSheikahCompatibleXprv(password) {
-    Xprv? _xprv;
     try {
       // Checks if password is the one that encrypts the current (not-Sheikah-compatible) xprv
-      _xprv = Xprv.fromEncryptedXprv(
+      Xprv.fromEncryptedXprv(
           localEncryptedXprv ?? '', Password.hash(password));
     } catch (e) {
       errorText = 'Wrong password';
     }
-    if (_xprv != null) {
+    if (widget.xprv != null) {
       setState(() {
-        compatibleXprv = _xprv!.toEncryptedXprv(password: password);
+        compatibleXprv = widget.xprv!.toEncryptedXprv(password: password);
       });
       widget.onXprvGenerated(compatibleXprv);
     }
@@ -77,7 +78,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
           (!_passConfirmFocusNode.hasFocus && !_passFocusNode.hasFocus)) {
         if (_password.isEmpty && _confirmPassword.isEmpty) {
           setState(() {
-            errorText = 'Please input your wallet password';
+            errorText = 'Please input your xprv password';
           });
           return false;
         } else if (_password == _confirmPassword) {
@@ -112,7 +113,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Please, input your wallet\'s password. This password encrypts your xprv file. You will be asked to type this password if you want to import this xprv as a backup.',
+          'This password encrypts your xprv file. You will be asked to type this password if you want to import this xprv as a backup.',
           style: theme.textTheme.bodyText1,
         ),
         SizedBox(height: 16),

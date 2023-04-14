@@ -1,10 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/widgets/dashed_rect.dart';
 import 'package:witnet_wallet/widgets/generate_compatible_xprv.dart';
+import 'package:witnet_wallet/widgets/verify_password.dart';
 
 class WalletConfig extends StatefulWidget {
   WalletConfig({Key? key}) : super(key: key);
@@ -18,7 +22,8 @@ enum ConfigSteps {
 }
 
 class _WalletConfigState extends State<WalletConfig> {
-  String? xprv;
+  Xprv? xprv;
+  String? newXprv;
   bool showXprv = false;
 
   @override
@@ -27,9 +32,13 @@ class _WalletConfigState extends State<WalletConfig> {
   }
 
   Widget _exportWalletContent(BuildContext context) {
-    Widget encryptXprv = GenerateCompatibleXprv(onXprvGenerated: (generatedXprv) => {
-      setState(() => xprv = generatedXprv)
-    });
+    Widget verifyPassword = VerifyPassword(
+        onXprvGenerated: (generatedXprv) =>
+            {setState(() => xprv = generatedXprv)});
+    Widget encryptXprv = GenerateCompatibleXprv(
+        xprv: xprv,
+        onXprvGenerated: (generatedXprv) =>
+            {setState(() => newXprv = generatedXprv)});
     Widget xprvOutput = Column(children: [
       DashedRect(
           color: Colors.grey,
@@ -37,7 +46,7 @@ class _WalletConfigState extends State<WalletConfig> {
           gap: 3.0,
           showEye: true,
           blur: !showXprv,
-          text: xprv ?? '',
+          text: newXprv ?? '',
           updateBlur: () => {
                 setState(() {
                   showXprv = !showXprv;
@@ -48,14 +57,14 @@ class _WalletConfigState extends State<WalletConfig> {
         text: 'Copy XPRV',
         type: 'primary',
         padding: EdgeInsets.only(bottom: 8),
-        onPressed: () => {
-          Clipboard.setData(ClipboardData(
-              text: xprv ?? ''))
-        },
+        onPressed: () =>
+            {Clipboard.setData(ClipboardData(text: newXprv ?? ''))},
       ),
     ]);
-    if (xprv != null) {
+    if (newXprv != null) {
       return xprvOutput;
+    } else if (xprv == null) {
+      return verifyPassword;
     } else {
       return encryptXprv;
     }
