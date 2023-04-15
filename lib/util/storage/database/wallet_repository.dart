@@ -51,7 +51,7 @@ class WalletRepository extends _WalletRepository {
     DatabaseClient databaseClient,
   ) async {
     try {
-      await _store.record(wallet.id).add(databaseClient, _mapWallet(wallet));
+      await _store.record(wallet.id).put(databaseClient, _mapWallet(wallet));
       return true;
     } catch (e) {
       return false;
