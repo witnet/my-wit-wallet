@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
+import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
@@ -62,7 +63,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
   String _walletName = '';
   String _walletDescription = '';
   String? errorText;
-
+  String? defaultWalletName;
   @override
   void initState() {
     super.initState();
@@ -74,6 +75,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
         .addPostFrameCallback((_) => widget.nextAction(next));
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.clearActions(false));
+    defaultWalletName = "wallet-${Locator.instance.get<ApiDatabase>().walletStorage.wallets.length+1}";
   }
 
   @override
@@ -92,12 +94,10 @@ class WalletDetailCardState extends State<WalletDetailCard>
       if (force || !_nameFocusNode.hasFocus) {
         setState(() {
           errorText = null;
+          if (_walletName.isEmpty) {
+            _walletName = defaultWalletName!;
+          }
         });
-        if (_walletName.isEmpty) {
-          setState(() {
-            errorText = 'Please add a name for your wallet';
-          });
-        }
       }
     }
     return errorText != null ? false : true;
@@ -118,7 +118,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
           TextField(
             style: theme.textTheme.bodyText1,
             decoration: InputDecoration(
-              hintText: 'Wallet Name',
+              hintText: defaultWalletName,
               errorText: errorText,
             ),
             controller: _nameController,
