@@ -33,6 +33,7 @@ class EnterEncryptedXprvCard extends StatefulWidget {
 class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     with TickerProviderStateMixin {
   String xprv = '';
+  String decryptedXprv = '';
   String _password = '';
   bool isXprvValid = false;
   bool useStrongPassword = false;
@@ -91,8 +92,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
 
   void nextAction() {
     if (validate(force: true)) {
-      Locator.instance<ApiCreateWallet>().setSeed(xprv, 'encryptedXprv');
-      Locator.instance<ApiCreateWallet>().setPassword(Password.hash(_password));
+      Locator.instance<ApiCreateWallet>().setSeed(decryptedXprv, 'xprv');
       WalletType type =
           BlocProvider.of<CreateWalletBloc>(context).state.walletType;
       BlocProvider.of<CreateWalletBloc>(context)
@@ -117,7 +117,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   bool validXprv(String xprvString, String password) {
     try {
       String passwordHash = Password.hash(password);
-      Xprv.fromEncryptedXprv(xprvString, passwordHash);
+      decryptedXprv = Xprv.fromEncryptedXprv(xprvString, passwordHash).toSlip32();
     } catch (e) {
       return false;
     }
