@@ -13,7 +13,6 @@ import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 
-final GlobalKey<LoginFormState> loginState = GlobalKey<LoginFormState>();
 
 class LoginScreen extends StatefulWidget {
   static final route = '/';
@@ -30,7 +29,7 @@ class LoginScreenState extends State<LoginScreen>
   String? loginError;
   List<String>? walletsList;
   List<Widget> componentsList = [];
-
+  final _loginFormKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -54,13 +53,13 @@ class LoginScreenState extends State<LoginScreen>
   Widget _buttonLogin() {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
+
         return PaddedButton(
           padding: EdgeInsets.only(top: 8, bottom: 0),
           text: 'Login',
           type: 'primary',
           onPressed: () => {
-            if (loginState.currentState?.validate(force: true) == true)
-              {_login()},
+            _login(),
           },
         );
       },
@@ -103,6 +102,16 @@ class LoginScreenState extends State<LoginScreen>
       currentWallet = wallet;
     });
   }
+  String? _validatePassword(String? input) {
+    if(input != null){
+      if(input.isEmpty){
+        return 'Please input a password';
+      }
+      return null;
+    }
+    return 'Please input a password';
+  }
+
 
   void _getWallets() async {
     WalletStorage walletStorage =
@@ -115,9 +124,10 @@ class LoginScreenState extends State<LoginScreen>
           ...mainComponents(),
           SizedBox(height: 16),
           LoginForm(
-            key: loginState,
+            loginFormKey: _loginFormKey,
             currentWallet: walletNames[0],
             setWallet: (wallet) => {_setWallet(wallet)},
+            validatePassword: _validatePassword,
             loginError: loginError,
           ),
         ];

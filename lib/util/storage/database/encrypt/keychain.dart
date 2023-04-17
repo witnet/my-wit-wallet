@@ -58,12 +58,13 @@ class KeyChain {
       keyHash = json.decode(plainText)['WITNET'];
       return plainText;
     } catch (e) {
+
       return null;
     }
   }
 
   Future<bool> validatePassword(String encoded, String password) async {
-    unlocked = (decode(encoded, password) == null) ? false : true;
+    unlocked = (decode(encoded, Password.hash(password)) == null) ? false : true;
     return unlocked;
   }
 
@@ -82,7 +83,7 @@ class KeyChain {
   }
 
   Future<String> getKey(DatabaseClient databaseClient) async {
-    var value = await _store.record('keychain').get(databaseClient) as Future<String>;
+    var value = await _store.record('keychain').get(databaseClient) as String;
     return value;
   }
 

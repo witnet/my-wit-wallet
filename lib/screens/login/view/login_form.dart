@@ -5,7 +5,6 @@ import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:witnet_wallet/widgets/input_login.dart';
 
-typedef void VoidCallback(Wallet? value);
 
 class Wallet {
   WalletName walletName = WalletName.pure();
@@ -17,13 +16,17 @@ class Wallet {
 }
 
 class LoginForm extends StatefulWidget {
-  final VoidCallback setWallet;
+  final void Function(Wallet? value) setWallet;
+  final String? Function(String? value) validatePassword;
   final String currentWallet;
   final String? loginError;
+  final GlobalKey<FormState> loginFormKey;
   LoginForm({
     Key? key,
+    required this.loginFormKey,
     required this.currentWallet,
     required this.setWallet,
+    required this.validatePassword,
     this.loginError,
   }) : super(key: key);
   @override
@@ -80,7 +83,8 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
 
   Widget _buildWalletField() {
     return Form(
-      autovalidateMode: AutovalidateMode.always,
+      key: widget.loginFormKey,
+      autovalidateMode: AutovalidateMode.disabled,
       child: InputLogin(
         prefixIcon: Icons.lock,
         hint: 'Password',
@@ -88,6 +92,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
         obscureText: true,
         textEditingController: _loginController,
         focusNode: _loginFocusNode,
+        validator: widget.validatePassword,
         onChanged: (String? value) {
           if (mounted) {
             setState(() {
@@ -108,12 +113,11 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
       },
       listener: (BuildContext context, LoginState state) {
         if (state.status == LoginStatus.LoginInvalid) {
-          if (mounted) {
-            setState(() {
-              errorText = 'Invalid password';
-            });
-          }
+          setState(() {
+            errorText = 'Invalid password';
+          });
         } else if (state.status == LoginStatus.LoginSuccess) {
+          errorText = null;
           listenStatus = false;
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => DashboardScreen()));
