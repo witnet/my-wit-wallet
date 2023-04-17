@@ -40,7 +40,7 @@ class WalletRepository extends _WalletRepository {
         await _store.find(databaseClient);
 
     List<Wallet> wallets = snapshots
-        .map((snapshot) => Wallet.fromJson(snapshot.value as Map<String, dynamic>))
+        .map((snapshot) => Wallet.fromJson(snapshot.value))
         .toList(growable: false);
     return wallets;
   }

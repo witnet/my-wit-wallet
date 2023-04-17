@@ -72,7 +72,7 @@ class AccountRepository extends _AccountRepository {
         await _store.find(databaseClient);
 
     List<Account> accounts = snapshots
-        .map((snapshot) => Account.fromJson(snapshot.value as Map<String, dynamic>))
+        .map((snapshot) => Account.fromJson(snapshot.value))
         .toList(growable: false);
     return accounts;
   }
