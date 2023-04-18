@@ -13,8 +13,6 @@ import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 
-final GlobalKey<LoginFormState> loginState = GlobalKey<LoginFormState>();
-
 class LoginScreen extends StatefulWidget {
   static final route = '/';
 
@@ -30,6 +28,7 @@ class LoginScreenState extends State<LoginScreen>
   String? loginError;
   List<String>? walletsList;
   List<Widget> componentsList = [];
+  GlobalKey<LoginFormState> loginState = GlobalKey<LoginFormState>();
 
   @override
   void initState() {
