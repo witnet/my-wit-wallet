@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/models/wallet_name.dart';
-import 'package:witnet_wallet/screens/login/models/password.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 
@@ -15,21 +14,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc()
       : super(LoginState(
           message: '',
-          status: LoginStatus.LoggedOut,
+          status: LoginStatus.LoginLoading,
           password: '',
         )) {
-    on<LoginPasswordChangedEvent>(_onPasswordChanged);
     on<LoginSubmittedEvent>(_onSubmitted);
-    on<LoginExceptionEvent>(_onLoginExceptionEvent);
     on<LoginLogoutEvent>(_onLogoutEvent);
-  }
-
-  void _onPasswordChanged(
-      LoginPasswordChangedEvent event, Emitter<LoginState> emit) async {}
-
-  void _onLoginExceptionEvent(
-      LoginExceptionEvent event, Emitter<LoginState> emit) {
-    emit(state.copyWith(status: LoginStatus.LoggedOut));
+    on<LoginDoneLoadingEvent>(_onDoneLoadingEvent);
   }
 
   void _onSubmitted(LoginSubmittedEvent event, Emitter<LoginState> emit) async {
@@ -60,9 +50,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
+  void _onDoneLoadingEvent(LoginDoneLoadingEvent event, Emitter<LoginState> emit) async {
+    emit(state.copyWith(status: LoginStatus.LoggedOut, message: event.walletCount.toString()));
+  }
+
   void _onLogoutEvent(LoginLogoutEvent event, Emitter<LoginState> emit) async {
     ApiDatabase apiDatabase = Locator.instance<ApiDatabase>();
+    emit(state.copyWith(status: LoginStatus.LoggedOut, message: apiDatabase.walletStorage.wallets.length.toString()));
     await apiDatabase.lockDatabase();
-    emit(state.copyWith(status: LoginStatus.LoggedOut));
   }
 }
