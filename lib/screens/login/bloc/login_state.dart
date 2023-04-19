@@ -1,7 +1,7 @@
 part of 'login_bloc.dart';
 
 enum LoginStatus {
-  LoginNotSet,
+  LoginLoading,
   LoggedOut,
   LoginInProgress,
   LoginSuccess,
@@ -32,5 +32,5 @@ class LoginState extends Equatable {
   }
 
   @override
-  List<Object> get props => [status, password];
+  List<Object> get props => [status, password, message];
 }

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/screens/login/view/login_form.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
 import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 import 'package:witnet_wallet/widgets/layouts/layout.dart';
 import 'package:witnet_wallet/widgets/carousel.dart';
+import 'package:witnet_wallet/widgets/input_login.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
+import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 
@@ -24,45 +25,45 @@ class LoginScreen extends StatefulWidget {
 
 class LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
-  Wallet? currentWallet;
-  String? loginError;
-  List<String>? walletsList;
-  List<Widget> componentsList = [];
-  GlobalKey<LoginFormState> loginState = GlobalKey<LoginFormState>();
+  String? _password;
+  String? _passwordInputErrorText;
+  Future<WalletStorage>? _loadWallets;
+  String _buttonText = "Login";
+
+  GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
+  final _loginController = TextEditingController();
+  final _loginFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    _getWallets();
+    _loadWallets = Locator.instance<ApiDatabase>().loadWalletsDatabase();
   }
 
   @override
   void dispose() {
+    _loginController.dispose();
+    _loginFocusNode.dispose();
     super.dispose();
   }
 
   _login() {
     try {
-      BlocProvider.of<LoginBloc>(context)
-          .add(LoginSubmittedEvent(password: currentWallet!.password));
+      if (_loginFormKey.currentState!.validate()) {
+        BlocProvider.of<LoginBloc>(context)
+            .add(LoginSubmittedEvent(password: _password!));
+      }
     } catch (err) {
       rethrow;
     }
   }
 
   Widget _buttonLogin() {
-    return BlocBuilder<LoginBloc, LoginState>(
-      builder: (context, state) {
-        return PaddedButton(
-          padding: EdgeInsets.only(top: 8, bottom: 0),
-          text: 'Login',
-          type: 'primary',
-          onPressed: () => {
-            if (loginState.currentState?.validate(force: true) == true)
-              {_login()},
-          },
-        );
-      },
+    return PaddedButton(
+      padding: EdgeInsets.only(top: 8, bottom: 0),
+      text: _buttonText,
+      type: 'primary',
+      onPressed: _login,
     );
   }
 
@@ -97,36 +98,131 @@ class LoginScreenState extends State<LoginScreen>
         .add(ResetEvent(WalletType.imported));
   }
 
-  _setWallet(wallet) {
-    setState(() {
-      currentWallet = wallet;
+  Widget _loginBlocBuilder() {
+    List<Widget> components = [];
+    return BlocBuilder<LoginBloc, LoginState>(
+        builder: (BuildContext context, LoginState state) {
+      if (state.status == LoginStatus.LoginLoading) {
+        // TODO: UI while loading wallets
+        components = [
+          ...mainComponents(),
+        ];
+      } else if (state.status == LoginStatus.LoggedOut) {
+        if(num.parse(state.message) > 0) {
+          components = [
+            ...mainComponents(),
+            SizedBox(height: 16),
+            _loginForm(),
+          ];
+        } else {
+          components = [
+          ...mainComponents()
+          ];
+        }
+      }
+      return Column(children: components);
     });
   }
 
-  void _getWallets() async {
-    WalletStorage walletStorage =
-        await Locator.instance<ApiDatabase>().loadWalletsDatabase();
-    List<String> walletNames = List<String>.from(walletStorage.wallets.keys);
-    if (walletStorage.wallets.length > 0) {
-      setState(() {
-        walletsList = walletNames;
-        componentsList = [
-          ...mainComponents(),
-          SizedBox(height: 16),
-          LoginForm(
-            key: loginState,
-            currentWallet: walletNames[0],
-            setWallet: (wallet) => {_setWallet(wallet)},
-            loginError: loginError,
-          ),
-        ];
-      });
-    } else {
-      setState(() {
-        componentsList = mainComponents();
-        walletsList = null;
-      });
+  Widget _loginBlocListener() {
+    return BlocListener<LoginBloc, LoginState>(
+      listener: (BuildContext context, LoginState state) {
+        if (state.status == LoginStatus.LoginInvalid) {
+          setState(() {
+            _passwordInputErrorText = "Invalid Password";
+            BlocProvider.of<LoginBloc>(context).add(LoginLogoutEvent());
+          });
+        }
+        if (state.status == LoginStatus.LoginInProgress) {
+          setState(() {
+            // TODO UI
+            _buttonText = "Loading...";
+          });
+        }
+        if (state.status == LoginStatus.LoggedOut) {
+          setState(() {
+            // TODO UI
+            _buttonText = "Login";
+          });
+        }
+        if (state.status == LoginStatus.LoginSuccess) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => DashboardScreen()));
+        }
+      },
+      child: _loginBlocBuilder(),
+    );
+  }
+
+  String? _validatePassword(String? input) {
+    if (input != null) {
+      if (input.isEmpty) {
+        return 'Please input a password';
+      }
+      return null;
     }
+    return 'Please input a password';
+  }
+
+  Form _loginForm() {
+    return Form(
+      key: _loginFormKey,
+      autovalidateMode: AutovalidateMode.disabled,
+      child: InputLogin(
+        hint: 'Password',
+        errorText: _passwordInputErrorText,
+        obscureText: true,
+        textEditingController: _loginController,
+        focusNode: _loginFocusNode,
+        validator: _validatePassword,
+        onChanged: (String? value) {
+          if (mounted) {
+            setState(() {
+              _password = value!;
+              if (_loginFormKey.currentState!.validate()) {
+                _passwordInputErrorText = null;
+              }
+            });
+          }
+        },
+        onEditingComplete: () {},
+        onFieldSubmitted: (String? value) {
+          // hide keyboard
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        onTapOutside: (PointerDownEvent? event) {
+          if (_loginFocusNode.hasFocus) {
+            _loginFormKey.currentState!.validate();
+          }
+        },
+        onTap: () {
+          _loginFocusNode.requestFocus();
+        },
+      ),
+    );
+  }
+
+  FutureBuilder<WalletStorage> actionsLoader() {
+    return FutureBuilder(
+      future: _loadWallets,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData) {
+            BlocProvider.of<LoginBloc>(context).add(LoginDoneLoadingEvent(walletCount: snapshot.data!.wallets.length));
+            if (snapshot.data!.wallets.isNotEmpty) {
+              return _buttonLogin();
+            } else {
+              return _buildInitialButtons(context, Theme.of(context));
+            }
+          }
+        }
+        // TODO: UI While wallets are loading.
+        return Text(
+          'Loading...',
+          style: Theme.of(context).textTheme.displayLarge,
+        );
+      },
+    );
   }
 
   List<Widget> mainComponents() {
@@ -134,7 +230,7 @@ class LoginScreenState extends State<LoginScreen>
     return [
       Padding(
         padding: EdgeInsets.only(left: 24, right: 24),
-        child: witnetLogo(theme),
+        child: witnetLogo(Theme.of(context)),
       ),
       Text(
         'Welcome',
@@ -147,21 +243,12 @@ class LoginScreenState extends State<LoginScreen>
     ];
   }
 
-  Widget _buildLayout() {
-    final theme = Theme.of(context);
-    return Layout(
-      navigationActions: [],
-      widgetList: componentsList,
-      actions: [
-        walletsList != null
-            ? _buttonLogin()
-            : _buildInitialButtons(context, theme)
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return _buildLayout();
+    return Layout(
+      navigationActions: [],
+      widgetList: [_loginBlocListener()],
+      actions: [actionsLoader()],
+    );
   }
 }

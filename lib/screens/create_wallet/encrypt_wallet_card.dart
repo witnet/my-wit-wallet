@@ -153,7 +153,6 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
               ),
               SizedBox(height: 8),
               InputLogin(
-                prefixIcon: Icons.lock,
                 hint: 'Password',
                 focusNode: _passFocusNode,
                 textEditingController: _passController,
@@ -173,7 +172,6 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
               ),
               SizedBox(height: 8),
               InputLogin(
-                prefixIcon: Icons.lock,
                 hint: 'Confirm Password',
                 obscureText: true,
                 focusNode: _passConfirmFocusNode,
