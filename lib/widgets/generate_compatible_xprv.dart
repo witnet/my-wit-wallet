@@ -128,7 +128,6 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
               ),
               SizedBox(height: 8),
               InputLogin(
-                prefixIcon: Icons.lock,
                 hint: 'Password',
                 focusNode: _passFocusNode,
                 textEditingController: _passController,
@@ -148,7 +147,6 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
               ),
               SizedBox(height: 8),
               InputLogin(
-                prefixIcon: Icons.lock,
                 hint: 'Confirm Password',
                 obscureText: true,
                 focusNode: _passConfirmFocusNode,

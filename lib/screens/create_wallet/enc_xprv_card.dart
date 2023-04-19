@@ -154,7 +154,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
 
   Widget _buildPasswordField() {
     return InputLogin(
-      prefixIcon: Icons.lock,
       hint: 'Password',
       focusNode: _passFocusNode,
       textEditingController: _passController,

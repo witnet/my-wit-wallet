@@ -106,7 +106,6 @@ class VerifyPasswordState extends State<VerifyPassword>
               ),
               SizedBox(height: 8),
               InputLogin(
-                prefixIcon: Icons.lock,
                 hint: 'Password',
                 obscureText: true,
                 focusNode: _passFocusNode,
