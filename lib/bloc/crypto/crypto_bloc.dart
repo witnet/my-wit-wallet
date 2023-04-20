@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 import 'package:bloc/bloc.dart';
@@ -15,11 +16,12 @@ import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/util/preferences.dart';
 import 'package:witnet_wallet/util/storage/database/account.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
+import 'package:witnet_wallet/util/storage/database/encrypt/password.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 
-import '../../util/preferences.dart';
 part 'crypto_event.dart';
 part 'crypto_state.dart';
 part 'crypto_isolate.dart';

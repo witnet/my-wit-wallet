@@ -35,6 +35,19 @@ class CryptoIsolate {
   }
 }
 
+Map<String, Function(SendPort, Map<String, dynamic>)> _methodMap = {
+  'generateMnemonic': _generateMnemonic,
+  'initializeWallet': _initializeWallet,
+  'generateKey': _generateKey,
+  'generateKeys': _generateKeys,
+  'signTransaction': _signTransaction,
+  'hashPassword': _hashPassword,
+  'encryptXprv': _encryptXprv,
+  'decryptXprv': _decryptXprv,
+  'verifySheikahXprv': _verifySheikahXprv,
+  'verifyLocalXprv': _verifyLocalXprv,
+};
+
 void _cryptIso(SendPort sendPort) async {
   // Stopwatch mainTimer = new Stopwatch()..start();
   ReceivePort receivePort = ReceivePort();
@@ -46,25 +59,7 @@ void _cryptIso(SendPort sendPort) async {
     SendPort port = msg[1];
     var method = data.split('?')[0];
     var params = json.decode(data.split('?')[1]);
-    switch (method) {
-      case 'generateMnemonic':
-        _generateMnemonic(port, params);
-        break;
-      case 'initializeWallet':
-        await _initializeWallet(port, params);
-        break;
-      case 'generateKey':
-        _generateKey(port, params);
-        break;
-      case 'generateKeys':
-        await _generateKeys(port, params);
-        break;
-      case 'signTransaction':
-        await _signTransaction(port, params);
-        break;
-      case '':
-      default:
-    }
+    _methodMap[method]!(port, params);
   }
   receivePort.close();
 }
@@ -210,3 +205,41 @@ Future<void> _signTransaction(
   }
   port.send(errorMsg);
 }
+
+void _hashPassword(SendPort port, Map<String, dynamic> params) {
+  String passwordHash = Password.hash(params['password']);
+  port.send({"hash": passwordHash});
+}
+
+void _encryptXprv(SendPort port, Map<String, dynamic> params) {
+  Xprv _xprv = Xprv.fromXprv(params['xprv']);
+  port.send({"xprv": _xprv.toEncryptedXprv(password: params['password'])});
+}
+
+void _decryptXprv(SendPort port, Map<String, dynamic> params) {
+  try {
+    Xprv _xprv = Xprv.fromEncryptedXprv(params['xprv'], params['password']);
+    port.send({"xprv": _xprv.toSlip32()});
+  } catch (e) {
+    port.send({"error": e});
+  }
+}
+
+void _verifySheikahXprv(SendPort port, Map<String, dynamic> params) {
+  try {
+    Xprv.fromEncryptedXprv(params['xprv'], params['password']);
+    port.send(true);
+  } catch (e) {
+    port.send(false);
+  }
+}
+
+void _verifyLocalXprv(SendPort port, Map<String, dynamic> params) {
+  try {
+    Xprv.fromEncryptedXprv(params['xprv'], Password.hash(params['password']));
+    port.send(true);
+  } catch (e) {
+    port.send(false);
+  }
+}
+
