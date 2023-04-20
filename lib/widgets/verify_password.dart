@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
@@ -50,7 +52,8 @@ class VerifyPasswordState extends State<VerifyPassword>
     try {
       setState(() => {
             xprv = Xprv.fromEncryptedXprv(
-                localEncryptedXprv ?? '', Password.hash(_password))
+                localEncryptedXprv ?? '', Password.hash(_password)),
+            isLoading = true,
           });
       return true;
     } catch (e) {
@@ -66,17 +69,14 @@ class VerifyPasswordState extends State<VerifyPassword>
       if (force || !_passFocusNode.hasFocus) {
         setState(() {
           errorText = null;
-          isLoading = true;
         });
         if (_password.isEmpty) {
           setState(() {
             errorText = 'Please input your wallet password';
-            isLoading = false;
           });
         } else if (!validPassword()) {
           setState(() {
             errorText = 'Wrong password';
-            isLoading = false;
           });
         }
       }
@@ -127,16 +127,19 @@ class VerifyPasswordState extends State<VerifyPassword>
                   isLoading: isLoading,
                   type: 'primary',
                   enabled: true,
-                  onPressed: () => {
-                        setState(() {
-                          isLoading = true;
-                        }),
-                        validate(force: true),
-                        if (xprv != null)
-                          {
-                            widget.onXprvGenerated(xprv),
-                          }
-                      }),
+                  onPressed: () async {
+                    if (isLoading) return;
+                    setState(() => isLoading = true);
+                    await Future.delayed(
+                        Duration(milliseconds: 300),
+                        () => {
+                              if (validate(force: true))
+                                {
+                                  widget.onXprvGenerated(xprv),
+                                }
+                            });
+                    setState(() => isLoading = false);
+                  }),
             ],
           ),
         ),

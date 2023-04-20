@@ -114,11 +114,6 @@ class LoginScreenState extends State<LoginScreen>
             isLoading = true;
           });
         }
-        if (state.status == LoginStatus.LoggedOut) {
-          setState(() {
-            isLoading = false;
-          });
-        }
         if (state.status == LoginStatus.LoginSuccess) {
           Navigator.pushReplacementNamed(context, DashboardScreen.route);
         }

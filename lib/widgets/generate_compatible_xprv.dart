@@ -173,22 +173,18 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                   type: 'primary',
                   isLoading: isLoading,
                   enabled: true,
-                  onPressed: () => {
-                        setState(() {
-                          isLoading = true;
-                        }),
-                        if (validate(force: true))
-                          {
-                            _generateSheikahCompatibleXprv(_password),
-                            setState(() {
-                              isLoading = false;
-                            }),
-                          } else {
-                            setState(() {
-                              isLoading = false;
-                            })
-                          }
-                      }),
+                  onPressed: () async {
+                    setState(() => isLoading = true);
+                    await Future.delayed(
+                      Duration(milliseconds: 300),
+                      () => {
+                        if (validate(force: true)) {
+                          _generateSheikahCompatibleXprv(_password),
+                        }
+                      }
+                    );
+                    setState(() => isLoading = false);
+                  }),
             ],
           ),
         ),
