@@ -25,12 +25,15 @@ class PaddedButton extends StatelessWidget {
 
   Widget _buildCircularProgress(context) {
     final theme = Theme.of(context);
-    return SizedBox(height: 20, width: 20, child: CircularProgressIndicator(
-      color: theme.textTheme.labelMedium?.color,
-      strokeWidth: 2,
-      value: null,
-      semanticsLabel: 'Circular progress indicator',
-    ));
+    return SizedBox(
+        height: 20,
+        width: 20,
+        child: CircularProgressIndicator(
+          color: theme.textTheme.labelMedium?.color,
+          strokeWidth: 2,
+          value: null,
+          semanticsLabel: 'Circular progress indicator',
+        ));
   }
 
   @override

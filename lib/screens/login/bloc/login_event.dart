@@ -24,4 +24,3 @@ class LoginDoneLoadingEvent extends LoginEvent {
   @override
   List<Object> get props => [this.walletCount];
 }
-

@@ -222,12 +222,19 @@ class LoginScreenState extends State<LoginScreen>
         // Default screen while loading wallets
         return Layout(
           navigationActions: [],
-          widgetList: [...mainComponents(), SizedBox(height: 32), SizedBox(height: 32, width: 32, child: CircularProgressIndicator(
-            color: theme.textTheme.labelMedium?.color,
-            strokeWidth: 2,
-            value: null,
-            semanticsLabel: 'Circular progress indicator',
-          ))],
+          widgetList: [
+            ...mainComponents(),
+            SizedBox(height: 32),
+            SizedBox(
+                height: 32,
+                width: 32,
+                child: CircularProgressIndicator(
+                  color: theme.textTheme.labelMedium?.color,
+                  strokeWidth: 2,
+                  value: null,
+                  semanticsLabel: 'Circular progress indicator',
+                ))
+          ],
           actions: [],
         );
       },

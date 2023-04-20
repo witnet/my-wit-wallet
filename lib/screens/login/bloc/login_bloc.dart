@@ -50,13 +50,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  void _onDoneLoadingEvent(LoginDoneLoadingEvent event, Emitter<LoginState> emit) async {
-    emit(state.copyWith(status: LoginStatus.LoggedOut, message: event.walletCount.toString()));
+  void _onDoneLoadingEvent(
+      LoginDoneLoadingEvent event, Emitter<LoginState> emit) async {
+    emit(state.copyWith(
+        status: LoginStatus.LoggedOut, message: event.walletCount.toString()));
   }
 
   void _onLogoutEvent(LoginLogoutEvent event, Emitter<LoginState> emit) async {
     ApiDatabase apiDatabase = Locator.instance<ApiDatabase>();
-    emit(state.copyWith(status: LoginStatus.LoggedOut, message: apiDatabase.walletStorage.wallets.length.toString()));
+    emit(state.copyWith(
+        status: LoginStatus.LoggedOut,
+        message: apiDatabase.walletStorage.wallets.length.toString()));
     await apiDatabase.lockDatabase();
   }
 }

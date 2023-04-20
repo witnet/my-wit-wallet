@@ -53,7 +53,6 @@ class VerifyPasswordState extends State<VerifyPassword>
       setState(() => {
             xprv = Xprv.fromEncryptedXprv(
                 localEncryptedXprv ?? '', Password.hash(_password)),
-            isLoading = true,
           });
       return true;
     } catch (e) {

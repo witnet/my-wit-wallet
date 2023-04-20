@@ -176,13 +176,13 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                   onPressed: () async {
                     setState(() => isLoading = true);
                     await Future.delayed(
-                      Duration(milliseconds: 300),
-                      () => {
-                        if (validate(force: true)) {
-                          _generateSheikahCompatibleXprv(_password),
-                        }
-                      }
-                    );
+                        Duration(milliseconds: 300),
+                        () => {
+                              if (validate(force: true))
+                                {
+                                  _generateSheikahCompatibleXprv(_password),
+                                }
+                            });
                     setState(() => isLoading = false);
                   }),
             ],

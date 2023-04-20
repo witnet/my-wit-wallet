@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 
-
 class InputLogin extends StatefulWidget {
   InputLogin({
     Key? key,
@@ -40,7 +39,6 @@ typedef StringCallback = void Function(String?);
 typedef BlankCallback = void Function();
 typedef PointerDownCallback = void Function(PointerDownEvent?);
 
-
 class _InputLoginState extends State<InputLogin> {
   bool showPassword = false;
 
@@ -63,7 +61,8 @@ class _InputLoginState extends State<InputLogin> {
         decoration: InputDecoration(
           hintText: widget.hint ?? 'Input your password',
           errorText: widget.errorText,
-          prefixIcon: widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
+          prefixIcon:
+              widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
           suffixIcon: IconButton(
             splashRadius: 1,
             padding: const EdgeInsets.all(2),
@@ -84,11 +83,11 @@ class _InputLoginState extends State<InputLogin> {
         controller: widget.textEditingController,
         obscureText: widget.obscureText ? !showPassword : false,
         keyboardType: widget.keyboardType,
-        onChanged: widget.onChanged ?? (String? value){},
+        onChanged: widget.onChanged ?? (String? value) {},
         onEditingComplete: widget.onEditingComplete ?? () {},
         onFieldSubmitted: widget.onFieldSubmitted ?? (String? value) {},
         onTapOutside: widget.onTapOutside ?? (PointerDownEvent? event) {},
-        onTap: widget.onTap?? () {},
+        onTap: widget.onTap ?? () {},
         validator: widget.validator,
       ),
     );
