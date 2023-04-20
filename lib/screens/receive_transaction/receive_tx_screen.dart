@@ -50,7 +50,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
     return [
       PaddedButton(
           padding: EdgeInsets.only(bottom: 8),
-          text: 'Copy',
+          text: 'Copy selected address',
           type: 'primary',
           enabled: true,
           onPressed: () => {

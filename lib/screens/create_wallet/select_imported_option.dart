@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/widgets/carousel.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
@@ -75,14 +74,14 @@ class ImportedOptionState extends State<SelectImportedOption> {
 
   NavAction nextSeed() {
     return NavAction(
-      label: 'Import from seed phrase',
+      label: 'Import from secret security phrase',
       action: nextSeedAction,
     );
   }
 
   NavAction nextXprv() {
     return NavAction(
-      label: 'Import from xprv',
+      label: 'Import from Xprv key',
       action: nextXprvAction,
     );
   }
@@ -100,24 +99,30 @@ class ImportedOptionState extends State<SelectImportedOption> {
 
   Widget _buildInitialButtons(BuildContext context, ThemeData theme) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Image.asset(
+        Center(
+            child: Image.asset(
           'assets/img/witty.png',
           width: 152,
           height: 152,
           fit: BoxFit.fitWidth,
+        )),
+        SizedBox(height: 16),
+        Text(
+          'Import your wallet',
+          style: theme.textTheme.displayLarge,
         ),
         SizedBox(height: 16),
         Text(
-          'Import a wallet',
-          style: theme.textTheme.displayLarge,
+          'When you created your wallet, you probably wrote down the secret security phrase on a piece of paper. It looks like a list of 12 apparently random words.',
+          style: theme.textTheme.bodyLarge,
         ),
-        Carousel(list: [
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.',
-          'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-          'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
-        ]),
+        SizedBox(height: 16),
+        Text(
+            'If you did not keep the secret security phrase, you can still export a password-protected Xprv key from the settings of your existing wallet.',
+            style: theme.textTheme.bodyLarge),
       ],
     );
   }

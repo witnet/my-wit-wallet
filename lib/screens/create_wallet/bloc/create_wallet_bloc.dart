@@ -214,7 +214,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       VerifyXprvEvent event, Emitter<CreateWalletState> emit) async {
     String xprvStr = event.xprv;
 
-    var errors = ['Invalid XPRV:'];
+    var errors = ['Invalid Xprv:'];
     if (xprvStr.isEmpty) errors.add('Field is blank');
     if (!xprvStr.startsWith('xprv1')) errors.add('needs to start with "xprv1"');
     try {

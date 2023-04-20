@@ -51,7 +51,7 @@ class _WalletConfigState extends State<WalletConfig> {
               }),
       SizedBox(height: 16),
       PaddedButton(
-        text: 'Copy XPRV',
+        text: 'Copy Xprv',
         type: 'primary',
         padding: EdgeInsets.only(bottom: 8),
         onPressed: () =>
@@ -74,9 +74,21 @@ class _WalletConfigState extends State<WalletConfig> {
         builder: (previous, current) {
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
-          'Export wallet from xprv',
-          style: theme.textTheme.titleSmall,
+          'Export the Xprv key of my wallet',
+          style: theme.textTheme.titleLarge,
         ),
+        SizedBox(height: 16),
+        Text(
+            'Your Xprv key allows you to export and back up your wallet at any point after creating it.',
+            style: theme.textTheme.bodyLarge),
+        SizedBox(height: 8),
+        Text(
+            'Privacy-wise, your Xprv key is equivalent to a secret recovery phrase. Do not share it with anyone, and never store it in a file in your device or anywhere else electronically.',
+            style: theme.textTheme.bodyLarge),
+        SizedBox(height: 8),
+        Text(
+            'Your Xprv key will be protected with the password below. When importing the Xprv on this or other app, you will be asked to type in that same password.',
+            style: theme.textTheme.bodyLarge),
         SizedBox(height: 16),
         _exportWalletContent(context),
       ]);

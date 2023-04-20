@@ -62,7 +62,7 @@ class LoginScreenState extends State<LoginScreen>
   Widget _buttonLogin() {
     return PaddedButton(
       padding: EdgeInsets.only(top: 8, bottom: 0),
-      text: 'Login',
+      text: 'Unlock wallet',
       isLoading: isLoading,
       type: 'primary',
       onPressed: _login,
@@ -183,8 +183,9 @@ class LoginScreenState extends State<LoginScreen>
         style: theme.textTheme.displayLarge,
       ),
       Carousel(list: [
-        'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-        'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+        'Witnet.Light allows you to send and receive Wit immediately. Bye bye synchronization!',
+        'Witnet.Light uses state-of-the-art cryptography to store your Wit coins securely.',
+        'Witnet.Light is completely non-custodial. Your keys will never leave your device.',
       ])
     ];
   }

@@ -33,14 +33,14 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Recover with seed phrase',
-          style: theme.textTheme.displaySmall, //Textstyle
+          'Import wallet from secret recovery phrase',
+          style: theme.textTheme.titleLarge, //Textstyle
         ), //Text
         SizedBox(
           height: 16,
         ),
         Text(
-          'Please type your secret word phrase used for recovery. ',
+          'Type your secret recovery phrase below. It looks like a list of 12 apparently random words.',
           style: theme.textTheme.bodyLarge, //Textstyle
         ), //Text
         SizedBox(
@@ -63,13 +63,6 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
             });
           },
         ),
-        SizedBox(
-          height: 16,
-        ),
-        Text(
-          'Please ensure you do not add any extra spaces between words or at the beginning or end of the phrase.',
-          style: theme.textTheme.bodyLarge, //Textstyle
-        ), //Text
       ],
     );
   }

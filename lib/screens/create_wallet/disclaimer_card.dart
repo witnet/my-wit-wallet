@@ -80,13 +80,13 @@ class DisclaimerCardState extends State<DisclaimerCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
-        Text(
-          'Hey, listen!',
-          style: theme.textTheme.displaySmall,
+        Text('Wallet security', style: theme.textTheme.titleLarge!),
+        SizedBox(
+          height: 16,
         ),
         Text(
           'Please, read carefully before continuing.',
-          style: theme.textTheme.displaySmall,
+          style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 10,

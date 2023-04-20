@@ -137,7 +137,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                 onFieldSubmitted: (String? value) {
                   _passConfirmFocusNode.requestFocus();
                 },
-                onTap: (){
+                onTap: () {
                   _passFocusNode.requestFocus();
                 },
                 onChanged: (String? value) {
@@ -163,7 +163,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                 onFieldSubmitted: (String? value) {
                   FocusManager.instance.primaryFocus?.unfocus();
                 },
-                onTap: (){
+                onTap: () {
                   _passConfirmFocusNode.requestFocus();
                 },
                 onChanged: (String? value) {

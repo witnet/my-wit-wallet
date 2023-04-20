@@ -70,6 +70,8 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   Widget _buildConfirmField() {
     final theme = Theme.of(context);
     return TextField(
+      decoration:
+          InputDecoration(hintText: 'Your Xprv key (starts with xprv...)'),
       keyboardType: TextInputType.multiline,
       focusNode: _textFocusNode,
       style: theme.textTheme.displayMedium,
@@ -140,7 +142,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
           });
         } else if (!isXprvValid) {
           setState(() {
-            errorText = 'Invalid xprv or password';
+            errorText = 'Invalid Xprv or password';
           });
         }
       }
@@ -189,14 +191,18 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            'Recover with xprv',
-            style: theme.textTheme.displaySmall, //Textstyle
+            'Import wallet from Xprv key and password',
+            style: theme.textTheme.titleLarge, //Textstyle
           ),
           SizedBox(
             height: 16,
           ),
           Text(
-            'Please paste your xprv used for recovery and type the password created for exporting the file.',
+            'Xprv is a key exchange format that encodes and protects your wallet with a password. Xprv keys look like an long sequence of apparently random letters and numbers, preceded by "xprv".',
+            style: theme.textTheme.bodyLarge, //Textstyle
+          ),
+          Text(
+            'To import your wallet from an Xprv key, you need to type the key itself and its password below:',
             style: theme.textTheme.bodyLarge, //Textstyle
           ),
           SizedBox(

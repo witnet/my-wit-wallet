@@ -101,24 +101,31 @@ class CreateImportWalletState extends State<CreateImportWallet> {
 
   Widget _buildInitialButtons(BuildContext context, ThemeData theme) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Image.asset(
-          'assets/img/witty.png',
-          width: 152,
-          height: 152,
-          fit: BoxFit.fitWidth,
+        Center(
+          child: Image.asset(
+            'assets/img/witty.png',
+            width: 152,
+            height: 152,
+            fit: BoxFit.fitWidth,
+          ),
         ),
         SizedBox(height: 16),
         Text(
-          'Import a wallet',
-          style: theme.textTheme.displayLarge,
+          'Create or import your wallet',
+          style: theme.textTheme.titleLarge,
         ),
-        Carousel(list: [
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.',
-          'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-          'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'
-        ]),
+        SizedBox(height: 16),
+        Text(
+          'When you created your wallet, you probably wrote down the secret security phrase on a piece of paper. It looks like a list of 12 apparently random words.',
+          style: theme.textTheme.bodyLarge,
+        ),
+        SizedBox(height: 16),
+        Text(
+            'If you did not keep the secret security phrase, you can still export a password-protected Xprv key from the settings of your existing wallet.',
+            style: theme.textTheme.bodyLarge)
       ],
     );
   }

@@ -40,35 +40,21 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'These $_radioWordCount random words are your Witnet seed phrase. They will allow you to recover your tokens if you uninstall this application or forget your password:',
+          'These $_radioWordCount apparently random words are your secret recovery phrase. They will allow you to recover your Wit coins if you uninstall this app or forget your wallet lock password.',
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 8,
         ),
         Text(
-          'Please write down these $_radioWordCount words on a piece of paper and store them somewhere private and secure. You must write the complete words in the exact order they are presented to you.',
-          style: theme.textTheme.displaySmall,
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        Text(
-          'Keeping your seed phrase secret is paramount. If someone gains access to these $_radioWordCount words, they will be able to take and spend your tokens.',
+          'You must write down your secret recovery phrase on a piece of paper and store it somewhere safe. Do not store it in a file in your device or anywhere else electronically. If you lose your secret recovery phrase, you may permanently lose access to your wallet and your Wit coins.',
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 8,
         ),
         Text(
-          'Do not store these words on a computer or an electronic device. It is your sole responsibility to store the paper with your seed phrase in a safe place.',
-          style: theme.textTheme.bodyLarge,
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        Text(
-          'If you exit this setup or fail to write down or keep your seed phrase safe, we cannot help you access your wallet.',
+          'You should never share your secret recovery phrase with anyone. If someone finds or sees your secret recovery phrase, they will have full access to your wallet and your Wit coins.',
           style: theme.textTheme.bodyLarge,
         ),
       ],
@@ -142,7 +128,14 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final deviceSize = MediaQuery.of(context).size;
-    return Column(children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(
+        'Write down your secret recovery phrase',
+        style: theme.textTheme.titleLarge,
+      ),
+      SizedBox(
+        height: 16,
+      ),
       _buildMnemonicBox(theme),
       SizedBox(
         height: 16,

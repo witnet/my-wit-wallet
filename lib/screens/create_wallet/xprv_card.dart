@@ -52,7 +52,7 @@ class EnterXprvCardState extends State<EnterXprvCard>
                   });
                 },
                 decoration: new InputDecoration(
-                  labelText: 'XPRV',
+                  labelText: 'Xprv',
                 )),
             SizedBox(
               height: 10,

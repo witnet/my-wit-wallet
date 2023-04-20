@@ -88,7 +88,7 @@ class _GeneralConfigState extends State<GeneralConfig> {
       themeWidget(deviceSize.height * 0.25, context),
       PaddedButton(
           padding: EdgeInsets.only(bottom: 16, top: 16),
-          text: 'Log Out',
+          text: 'Lcok wallet',
           color: extendedTheme.txValueNegativeColor,
           type: 'text',
           enabled: true,

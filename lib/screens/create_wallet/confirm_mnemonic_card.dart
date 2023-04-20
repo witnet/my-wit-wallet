@@ -75,14 +75,14 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Recovery Phrase',
+          'Secret Recovery Phrase Confirmation',
           style: theme.textTheme.displayMedium,
         ),
         SizedBox(
           height: 16,
         ),
         Text(
-          'Please type your $_phraseLength word seed phrase exactly as shown to you on the previous screen. This will ensure that you have noted down your seed phrase correctly.',
+          'Type in your secret recovery phrase below exactly as shown before. This will ensure that you have written down your secret recovery phrase correctly.',
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
@@ -104,13 +104,6 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
               numLines = '\n'.allMatches(e).length + 1;
             });
           },
-        ),
-        SizedBox(
-          height: 16,
-        ),
-        Text(
-          'Please ensure you do not add any extra spaces between words or at the beginning or end of the phrase.',
-          style: theme.textTheme.bodyLarge,
         ),
       ],
     );

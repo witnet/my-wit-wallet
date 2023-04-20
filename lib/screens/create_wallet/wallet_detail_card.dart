@@ -119,7 +119,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
           TextField(
             style: theme.textTheme.bodyText1,
             decoration: InputDecoration(
-              hintText: defaultWalletName,
+              hintText: 'My first million Wits',
               errorText: errorText,
             ),
             controller: _nameController,
@@ -140,7 +140,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
           TextField(
             style: theme.textTheme.bodyText1,
             decoration: InputDecoration(
-              hintText: 'Wallet Description',
+              hintText: 'I will keep these with me forever',
             ),
             controller: _descController,
             onSubmitted: (String value) => null,
@@ -161,15 +161,22 @@ class WalletDetailCardState extends State<WalletDetailCard>
       children: [
         Text(
           'Identify your Wallet',
-          style: theme.textTheme.headline3, //Textstyle
+          style: theme.textTheme.titleLarge, //Textstyle
         ), //Text
         SizedBox(
           height: 16,
         ),
         Text(
-          'Keep track of and describe your Witnet wallet by filling in the boxes below.',
-          style: theme.textTheme.bodyText1, //Textstyle
+          'You can better keep track of your different wallets by giving each its own name and description.',
+          style: theme.textTheme.bodyLarge, //Textstyle
         ), //Text
+        SizedBox(
+          height: 8,
+        ), //SizedBox
+        Text(
+          'Wallet names make it easy to quickly change from one wallet to another. Wallet descriptions can be more elaborate and rather describe the purpose of a wallet or any other metadata.',
+          style: theme.textTheme.bodyLarge, //Textstyle
+        ),
         SizedBox(
           height: 16,
         ), //SizedBox
