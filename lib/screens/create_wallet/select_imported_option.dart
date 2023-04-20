@@ -112,7 +112,7 @@ class ImportedOptionState extends State<SelectImportedOption> {
         SizedBox(height: 16),
         Text(
           'Import your wallet',
-          style: theme.textTheme.displayLarge,
+          style: theme.textTheme.titleLarge,
         ),
         SizedBox(height: 16),
         Text(

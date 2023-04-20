@@ -110,87 +110,27 @@ class BuildWalletCardState extends State<BuildWalletCard>
       required int balanceNanoWit,
       required int transactionCount,
       required String message}) {
-    final accentColor = theme.primaryColor;
-    final bgMat = createMaterialColor(accentColor);
-    final linearGradient = LinearGradient(colors: [
-      bgMat.shade700,
-      bgMat.shade600,
-      bgMat.shade500,
-      bgMat.shade400,
-    ]).createShader(Rect.fromLTWH(0.0, 0.0, 100.0, 78.0));
     return Column(children: [
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-        AnimatedNumericText(
-          initialValue: nanoWitToWit(previousBalance),
-          targetValue: nanoWitToWit(balance),
-          curve: Interval(0, .5, curve: Curves.easeOut),
-          controller: _balanceController,
-          style: theme.textTheme.bodyLarge!,
-        ),
-        SizedBox(width: 5),
-        Text(
-          'wit',
-          style: theme.textTheme.bodyLarge!,
-        ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Address discovery", style: theme.textTheme.titleLarge),
+        ],
+      ),
+      SizedBox(
+        height: 20,
+      ),
+      Row(children: [
+        Expanded(
+            flex: 1,
+            child: Text(
+              "The different addresses in your wallet are being scanned for existing transactions and balance. This will normally take less than 1 minute.",
+              style: theme.textTheme.bodyLarge,
+            ))
       ]),
       SizedBox(
         height: 20,
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-              flex: 1,
-              child: Row(
-                children: [
-                  AutoSizeText('Total addresses:  ',
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      minFontSize: 9,
-                      style: theme.textTheme.bodyLarge!.copyWith(
-                        foreground: Paint()..shader = linearGradient,
-                      )),
-                  AnimatedIntegerText(
-                    initialValue: currentAddressCount,
-                    targetValue: addressCount,
-                    curve: Interval(0, .5, curve: Curves.easeOut),
-                    controller: _balanceController,
-                    style: theme.textTheme.bodyLarge!.copyWith(
-                      foreground: Paint()..shader = linearGradient,
-                    ),
-                  ),
-                ],
-              )),
-          Expanded(
-            flex: 1,
-            child: AutoSizeText('Transactions: $transactionCount',
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                minFontSize: 9,
-                style: theme.textTheme.bodyLarge!.copyWith(
-                  foreground: Paint()..shader = linearGradient,
-                )),
-          )
-        ],
-      ),
-      SizedBox(
-        height: 20,
-      ),
-      Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: AutoSizeText('Current Address: $message',
-                maxLines: 2,
-                minFontSize: 14,
-                style: theme.textTheme.bodyLarge!.copyWith(
-                  foreground: Paint()..shader = linearGradient,
-                )),
-          ),
-        ],
-      ),
-      SizedBox(
-        height: 40,
       ),
     ]);
   }
@@ -236,9 +176,17 @@ class BuildWalletCardState extends State<BuildWalletCard>
   }
 
   Widget _cryptoBlocBuilder() {
+    final theme = Theme.of(context);
+    final accentColor = theme.primaryColor;
+    final bgMat = createMaterialColor(accentColor);
+    final linearGradient = LinearGradient(colors: [
+      bgMat.shade700,
+      bgMat.shade600,
+      bgMat.shade500,
+      bgMat.shade400,
+    ]).createShader(Rect.fromLTWH(0.0, 0.0, 100.0, 78.0));
     return BlocBuilder<CryptoBloc, CryptoState>(
       builder: (context, state) {
-        final theme = Theme.of(context);
         if (state is CryptoInitializingWalletState) {
           WidgetsBinding.instance
               .addPostFrameCallback((_) => widget.prevAction(null));
@@ -254,9 +202,104 @@ class BuildWalletCardState extends State<BuildWalletCard>
                   transactionCount: state.transactionCount,
                   message: state.message),
               SizedBox(
+                height: 20,
+              ),
+              SizedBox(
                 child: SpinKitWave(
                   color: theme.primaryColor,
                 ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Text("Balance:",
+                                  style: theme.textTheme.bodyLarge),
+                              SizedBox(
+                                height: 8,
+                              ),
+                            ],
+                          ),
+                          Row(children: [
+                            AnimatedNumericText(
+                              initialValue: nanoWitToWit(previousBalance),
+                              targetValue: nanoWitToWit(balance),
+                              curve: Interval(0, .5, curve: Curves.easeOut),
+                              controller: _balanceController,
+                              style: theme.textTheme.bodyLarge!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                foreground: Paint()..shader = linearGradient,
+                              ),
+                            ),
+                            SizedBox(width: 4),
+                            Text('wit',
+                                style: theme.textTheme.bodyLarge!.copyWith(
+                                  foreground: Paint()..shader = linearGradient,
+                                )),
+                          ]),
+                        ],
+                      ))
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  Text('Transactions found: ',
+                      style: theme.textTheme.bodyLarge!),
+                  AutoSizeText(
+                    '$currentTransactionCount',
+                    maxLines: 2,
+                    minFontSize: 16,
+                    style: theme.textTheme.bodyLarge!.copyWith(
+                      foreground: Paint()..shader = linearGradient,
+                    ),
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  AutoSizeText(
+                    'Explored addresses: ',
+                    maxLines: 2,
+                    minFontSize: 16,
+                  ),
+                  AnimatedIntegerText(
+                    initialValue: currentAddressCount,
+                    // TODO:targetValue: addressCount,
+                    targetValue: currentAddressCount,
+                    curve: Interval(0, .5, curve: Curves.easeOut),
+                    controller: _balanceController,
+                    style: theme.textTheme.bodyLarge!.copyWith(
+                      foreground: Paint()..shader = linearGradient,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  Text('Exploring Address: ',
+                      style: theme.textTheme.bodyLarge!),
+                  Expanded(
+                    flex: 1,
+                    child: Text(state.message,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodyLarge!.copyWith(
+                          foreground: Paint()..shader = linearGradient,
+                        )),
+                  ),
+                ],
               ),
             ],
           );
