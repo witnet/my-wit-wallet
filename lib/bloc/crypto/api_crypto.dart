@@ -170,4 +170,86 @@ class ApiCrypto {
     });
     return signatures;
   }
+
+  Future<String> hashPassword({required String password}) async {
+    final receivePort = ReceivePort();
+    CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
+    cryptoIsolate.send(
+        method: 'hashPassword',
+        params: {
+          'password': password,
+        },
+        port: receivePort.sendPort);
+    Map<String, String> response =
+        await receivePort.first.then((value) => value as Map<String, String>);
+    return response['hash']!;
+  }
+
+  Future<String> encryptXprv(
+      {required String xprv, required String password}) async {
+    final receivePort = ReceivePort();
+    CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
+    cryptoIsolate.send(
+        method: 'encryptXprv',
+        params: {
+          'xprv': xprv,
+          'password': password,
+        },
+        port: receivePort.sendPort);
+    Map<String, String> passwordHash =
+        await receivePort.first.then((value) => value as Map<String, String>);
+    return passwordHash['xprv']!;
+  }
+
+  Future<String> decryptXprv(
+      {required String xprv, required String password}) async {
+    final receivePort = ReceivePort();
+    CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
+    cryptoIsolate.send(
+        method: 'decryptXprv',
+        params: {
+          'xprv': xprv,
+          'password': password,
+        },
+        port: receivePort.sendPort);
+
+    Map<String, String> response =
+        await receivePort.first.then((value) => value as Map<String, String>);
+
+    if (response.containsKey('xprv')) {
+      return response['xprv']!;
+    } else {
+      return response['error']!;
+    }
+  }
+
+  Future<bool> verifySheikahXprv(
+      {required String xprv, required String password}) async {
+    final receivePort = ReceivePort();
+    CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
+    cryptoIsolate.send(
+        method: 'decryptXprv',
+        params: {
+          'xprv': xprv,
+          'password': password,
+        },
+        port: receivePort.sendPort);
+    bool valid = await receivePort.first.then((value) => value as bool);
+    return valid;
+  }
+
+  Future<bool> verifyLocalXprv(
+      {required String xprv, required String password}) async {
+    final receivePort = ReceivePort();
+    CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
+    cryptoIsolate.send(
+        method: 'decryptXprv',
+        params: {
+          'xprv': xprv,
+          'password': password,
+        },
+        port: receivePort.sendPort);
+    bool valid = await receivePort.first.then((value) => value as bool);
+    return valid;
+  }
 }
