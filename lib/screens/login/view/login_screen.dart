@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
 import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
@@ -26,9 +27,9 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
   String? _password;
+  bool isLoading = false;
   String? _passwordInputErrorText;
   Future<WalletStorage>? _loadWallets;
-  String _buttonText = "Login";
 
   GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   final _loginController = TextEditingController();
@@ -61,7 +62,8 @@ class LoginScreenState extends State<LoginScreen>
   Widget _buttonLogin() {
     return PaddedButton(
       padding: EdgeInsets.only(top: 8, bottom: 0),
-      text: _buttonText,
+      text: 'Login',
+      isLoading: isLoading,
       type: 'primary',
       onPressed: _login,
     );
@@ -98,33 +100,7 @@ class LoginScreenState extends State<LoginScreen>
         .add(ResetEvent(WalletType.imported));
   }
 
-  Widget _loginBlocBuilder() {
-    List<Widget> components = [];
-    return BlocBuilder<LoginBloc, LoginState>(
-        builder: (BuildContext context, LoginState state) {
-      if (state.status == LoginStatus.LoginLoading) {
-        // TODO: UI while loading wallets
-        components = [
-          ...mainComponents(),
-        ];
-      } else if (state.status == LoginStatus.LoggedOut) {
-        if(num.parse(state.message) > 0) {
-          components = [
-            ...mainComponents(),
-            SizedBox(height: 16),
-            _loginForm(),
-          ];
-        } else {
-          components = [
-          ...mainComponents()
-          ];
-        }
-      }
-      return Column(children: components);
-    });
-  }
-
-  Widget _loginBlocListener() {
+  Widget _loginListener() {
     return BlocListener<LoginBloc, LoginState>(
       listener: (BuildContext context, LoginState state) {
         if (state.status == LoginStatus.LoginInvalid) {
@@ -135,22 +111,19 @@ class LoginScreenState extends State<LoginScreen>
         }
         if (state.status == LoginStatus.LoginInProgress) {
           setState(() {
-            // TODO UI
-            _buttonText = "Loading...";
+            isLoading = true;
           });
         }
         if (state.status == LoginStatus.LoggedOut) {
           setState(() {
-            // TODO UI
-            _buttonText = "Login";
+            isLoading = false;
           });
         }
         if (state.status == LoginStatus.LoginSuccess) {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => DashboardScreen()));
+          Navigator.pushReplacementNamed(context, DashboardScreen.route);
         }
       },
-      child: _loginBlocBuilder(),
+      child: _buttonLogin(),
     );
   }
 
@@ -202,29 +175,6 @@ class LoginScreenState extends State<LoginScreen>
     );
   }
 
-  FutureBuilder<WalletStorage> actionsLoader() {
-    return FutureBuilder(
-      future: _loadWallets,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasData) {
-            BlocProvider.of<LoginBloc>(context).add(LoginDoneLoadingEvent(walletCount: snapshot.data!.wallets.length));
-            if (snapshot.data!.wallets.isNotEmpty) {
-              return _buttonLogin();
-            } else {
-              return _buildInitialButtons(context, Theme.of(context));
-            }
-          }
-        }
-        // TODO: UI While wallets are loading.
-        return Text(
-          'Loading...',
-          style: Theme.of(context).textTheme.displayLarge,
-        );
-      },
-    );
-  }
-
   List<Widget> mainComponents() {
     final theme = Theme.of(context);
     return [
@@ -244,11 +194,48 @@ class LoginScreenState extends State<LoginScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Layout(
-      navigationActions: [],
-      widgetList: [_loginBlocListener()],
-      actions: [actionsLoader()],
+  FutureBuilder<WalletStorage> build(BuildContext context) {
+    final theme = Theme.of(context);
+    return FutureBuilder(
+      future: _loadWallets,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData) {
+            BlocProvider.of<LoginBloc>(context).add(LoginDoneLoadingEvent(
+                walletCount: snapshot.data!.wallets.length));
+            // There are wallets stored
+            if (snapshot.data!.wallets.isNotEmpty) {
+              return Layout(
+                navigationActions: [],
+                widgetList: [
+                  ...mainComponents(),
+                  SizedBox(height: 16),
+                  _loginForm(),
+                ],
+                actions: [_loginListener()],
+              );
+            } else {
+              // No wallets stored yet
+              return Layout(
+                navigationActions: [],
+                widgetList: mainComponents(),
+                actions: [_buildInitialButtons(context, theme)],
+              );
+            }
+          }
+        }
+        // Default screen while loading wallets
+        return Layout(
+          navigationActions: [],
+          widgetList: [...mainComponents(), SizedBox(height: 32), SizedBox(height: 32, width: 32, child: CircularProgressIndicator(
+            color: theme.textTheme.labelMedium?.color,
+            strokeWidth: 2,
+            value: null,
+            semanticsLabel: 'Circular progress indicator',
+          ))],
+          actions: [],
+        );
+      },
     );
   }
 }

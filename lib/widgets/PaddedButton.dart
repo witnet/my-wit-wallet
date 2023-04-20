@@ -8,6 +8,7 @@ class PaddedButton extends StatelessWidget {
     required this.text,
     required this.onPressed,
     this.color,
+    this.isLoading = false,
     this.icon = defaultIcon,
     this.enabled = true,
     required this.type,
@@ -15,11 +16,22 @@ class PaddedButton extends StatelessWidget {
 
   final EdgeInsets padding;
   final String text;
+  final bool isLoading;
   final bool enabled;
   final Color? color;
   final String type;
   final Widget icon;
   final VoidCallback onPressed;
+
+  Widget _buildCircularProgress(context) {
+    final theme = Theme.of(context);
+    return SizedBox(height: 20, width: 20, child: CircularProgressIndicator(
+      color: theme.textTheme.labelMedium?.color,
+      strokeWidth: 2,
+      value: null,
+      semanticsLabel: 'Circular progress indicator',
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +45,7 @@ class PaddedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         minimumSize: Size(double.infinity, 54),
       ),
-      child: Text(text),
+      child: isLoading ? _buildCircularProgress(context) : Text(text),
       onPressed: enabled ? onPressed : null,
     );
 
@@ -41,7 +53,7 @@ class PaddedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         minimumSize: Size(double.infinity, 54),
       ),
-      child: Text(text),
+      child: isLoading ? _buildCircularProgress(context) : Text(text),
       onPressed: onPressed,
     );
 

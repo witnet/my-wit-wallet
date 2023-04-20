@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:witnet/witnet.dart';
@@ -30,6 +31,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
     with TickerProviderStateMixin {
   String _password = '';
   String _confirmPassword = '';
+  bool isLoading = false;
   String? errorText;
   String? localEncryptedXprv =
       Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.xprv;
@@ -63,6 +65,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
     if (widget.xprv != null) {
       setState(() {
         compatibleXprv = widget.xprv!.toEncryptedXprv(password: password);
+        isLoading = false;
       });
       widget.onXprvGenerated(compatibleXprv);
     }
@@ -73,6 +76,9 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
 
   bool validate({bool force = false}) {
     if (this.mounted) {
+      setState(() {
+        errorText = null;
+      });
       if (force ||
           (!_passConfirmFocusNode.hasFocus && !_passFocusNode.hasFocus)) {
         if (_password.isEmpty && _confirmPassword.isEmpty) {
@@ -165,11 +171,22 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                   padding: EdgeInsets.only(bottom: 8),
                   text: 'Generate xprv',
                   type: 'primary',
+                  isLoading: isLoading,
                   enabled: true,
                   onPressed: () => {
+                        setState(() {
+                          isLoading = true;
+                        }),
                         if (validate(force: true))
                           {
                             _generateSheikahCompatibleXprv(_password),
+                            setState(() {
+                              isLoading = false;
+                            }),
+                          } else {
+                            setState(() {
+                              isLoading = false;
+                            })
                           }
                       }),
             ],

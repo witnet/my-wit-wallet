@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
@@ -25,6 +23,7 @@ class VerifyPassword extends StatefulWidget {
 class VerifyPasswordState extends State<VerifyPassword>
     with TickerProviderStateMixin {
   String _password = '';
+  bool isLoading = false;
   Xprv? xprv;
   String? errorText;
   String? localEncryptedXprv =
@@ -67,14 +66,17 @@ class VerifyPasswordState extends State<VerifyPassword>
       if (force || !_passFocusNode.hasFocus) {
         setState(() {
           errorText = null;
+          isLoading = true;
         });
         if (_password.isEmpty) {
           setState(() {
             errorText = 'Please input your wallet password';
+            isLoading = false;
           });
         } else if (!validPassword()) {
           setState(() {
             errorText = 'Wrong password';
+            isLoading = false;
           });
         }
       }
@@ -85,7 +87,6 @@ class VerifyPasswordState extends State<VerifyPassword>
   @override
   Widget build(BuildContext context) {
     _passFocusNode.addListener(() => validate());
-
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,9 +124,13 @@ class VerifyPasswordState extends State<VerifyPassword>
               PaddedButton(
                   padding: EdgeInsets.only(bottom: 8),
                   text: 'Verify',
+                  isLoading: isLoading,
                   type: 'primary',
                   enabled: true,
                   onPressed: () => {
+                        setState(() {
+                          isLoading = true;
+                        }),
                         validate(force: true),
                         if (xprv != null)
                           {
