@@ -59,7 +59,6 @@ class VerifyPasswordState extends State<VerifyPassword>
           xprv: localEncryptedXprv ?? '', password: hashPassword);
       setState(() => {xprv = xprvDecripted, isValidPassword = true});
     } catch (e) {
-      print(e);
       setState(() => isValidPassword = false);
     }
   }

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/witnet.dart';
+import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
@@ -36,7 +37,9 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     with TickerProviderStateMixin {
   String xprv = '';
   String _password = '';
+  bool isLoading = false;
   String? decryptedLocalXprv;
+  bool isValidPassword = false;
   bool isXprvValid = false;
   bool useStrongPassword = false;
   void setPassword(String password) {
@@ -92,8 +95,11 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
-  void nextAction() {
-    if (validate(force: true) && decryptedLocalXprv != null) {
+  void nextAction() async {
+    if (isLoading) return;
+    setState(() => isLoading = true);
+    await validateXprv(xprv, _password);
+    if (validate(force: true)) {
       Locator.instance<ApiCreateWallet>().setSeed(decryptedLocalXprv!, 'xprv');
       WalletType type =
           BlocProvider.of<CreateWalletBloc>(context).state.walletType;
@@ -116,20 +122,23 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     );
   }
 
-  bool validXprv(String xprvString, String password) {
+  Future validateXprv(String xprvString, String password) async {
+    ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
+    String? xprvDecripted;
     try {
-      Xprv xprv = Xprv.fromEncryptedXprv(xprvString, password);
-      String localXprv =
-          xprv.toEncryptedXprv(password: Password.hash(password));
-      setState(() {
-        decryptedLocalXprv =
-            Xprv.fromEncryptedXprv(localXprv, Password.hash(password))
-                .toSlip32();
-      });
+      String hashPassword = await apiCrypto.hashPassword(password: password);
+      // Create localXprv
+      String sheikahCompatibleXprvDecripted =
+          await apiCrypto.decryptXprv(xprv: xprvString, password: hashPassword);
+      String localXprv = await apiCrypto.encryptXprv(
+          xprv: sheikahCompatibleXprvDecripted, password: password);
+      // Decript localXprv
+      xprvDecripted =
+          await apiCrypto.decryptXprv(xprv: localXprv, password: hashPassword);
+      setState(() => {decryptedLocalXprv = xprvDecripted, isXprvValid = true});
     } catch (e) {
-      return false;
+      setState(() => isXprvValid = false);
     }
-    return true;
   }
 
   bool validate({force = false}) {
@@ -141,10 +150,12 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
         if (_password.isEmpty) {
           setState(() {
             errorText = 'Please input a password';
+            if (force) isLoading = false;
           });
-        } else if (!validXprv(xprv, _password)) {
+        } else if (!isXprvValid) {
           setState(() {
             errorText = 'Invalid xprv or password';
+            if (force) isLoading = false;
           });
         }
       }
