@@ -107,6 +107,7 @@ class LoginScreenState extends State<LoginScreen>
           setState(() {
             _passwordInputErrorText = "Invalid Password";
             BlocProvider.of<LoginBloc>(context).add(LoginLogoutEvent());
+            isLoading = false;
           });
         }
         if (state.status == LoginStatus.LoginInProgress) {
