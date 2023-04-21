@@ -82,7 +82,12 @@ class KeyChain {
   }
 
   Future<String> getKey(DatabaseClient databaseClient) async {
-    return await _store.record('keychain').get(databaseClient) as String;
+    Object? result = await _store.record('keychain').get(databaseClient);
+    try{
+      return result as String;
+    } catch(e){
+      return '';
+    }
   }
 
   Future<bool> setKey(
