@@ -77,10 +77,10 @@ class VerifyPasswordState extends State<VerifyPassword>
             errorText = 'Please input your wallet password';
             if (force) isLoading = false;
           });
-        } else if (!isValidPassword) {
+        } else if (force && !isValidPassword) {
           setState(() {
             errorText = 'Wrong password';
-            if (force) isLoading = false;
+            isLoading = false;
           });
         }
       }

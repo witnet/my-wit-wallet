@@ -121,15 +121,9 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
     String? xprvDecripted;
     try {
-      String hashPassword = await apiCrypto.hashPassword(password: password);
-      // Create localXprv
-      String sheikahCompatibleXprvDecripted =
-          await apiCrypto.decryptXprv(xprv: xprvString, password: hashPassword);
-      String localXprv = await apiCrypto.encryptXprv(
-          xprv: sheikahCompatibleXprvDecripted, password: password);
       // Decript localXprv
       xprvDecripted =
-          await apiCrypto.decryptXprv(xprv: localXprv, password: hashPassword);
+          await apiCrypto.decryptXprv(xprv: xprvString, password: password);
       setState(() => {decryptedLocalXprv = xprvDecripted, isXprvValid = true});
     } catch (e) {
       setState(() => isXprvValid = false);
