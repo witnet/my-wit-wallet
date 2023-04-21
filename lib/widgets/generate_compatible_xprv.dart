@@ -1,11 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
-
-import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/util/storage/database/encrypt/password.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
