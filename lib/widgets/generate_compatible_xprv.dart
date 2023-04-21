@@ -134,6 +134,12 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                 focusNode: _passFocusNode,
                 textEditingController: _passController,
                 obscureText: true,
+                onFieldSubmitted: (String? value) {
+                  _passConfirmFocusNode.requestFocus();
+                },
+                onTap: (){
+                  _passFocusNode.requestFocus();
+                },
                 onChanged: (String? value) {
                   if (this.mounted) {
                     setState(() {
@@ -154,6 +160,12 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                 focusNode: _passConfirmFocusNode,
                 textEditingController: _passConfirmController,
                 errorText: errorText,
+                onFieldSubmitted: (String? value) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+                onTap: (){
+                  _passConfirmFocusNode.requestFocus();
+                },
                 onChanged: (String? value) {
                   if (this.mounted) {
                     setState(() {
