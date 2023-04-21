@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/create_import_wallet.dart';
@@ -27,6 +29,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   dynamic secondaryAction;
   dynamic prevAction;
   bool clearActions = true;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -45,11 +48,14 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
           padding: EdgeInsets.only(bottom: 0),
           text: nextAction != null ? nextAction().label : 'Continue',
           type: 'primary',
+          isLoading: isLoading,
           enabled: nextAction != null,
-          onPressed: () => {
-                nextAction != null ? nextAction().action() : null,
-                if (clearActions) _clearNextActions()
-              }),
+          onPressed: () async {
+            setState(() => isLoading = true);
+            if (nextAction != null) await nextAction().action();
+            if (clearActions) _clearNextActions();
+            setState(() => isLoading = false);
+          }),
     ];
     if (secondaryAction != null) {
       actions = [
@@ -140,9 +146,10 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
           EnterXprvCard(nextAction: _setNextAction, prevAction: _setPrevAction),
       CreateWalletStatus.ValidXprv: null,
       CreateWalletStatus.EnterEncryptedXprv: EnterEncryptedXprvCard(
-          nextAction: _setNextAction,
-          prevAction: _setPrevAction,
-          clearActions: _setClearActions),
+        nextAction: _setNextAction,
+        prevAction: _setPrevAction,
+        clearActions: _setClearActions,
+      ),
       CreateWalletStatus.ConfirmMnemonic: ConfirmMnemonicCard(
           nextAction: _setNextAction, prevAction: _setPrevAction),
       CreateWalletStatus.WalletDetail: WalletDetailCard(
@@ -150,9 +157,10 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
           prevAction: _setPrevAction,
           clearActions: _setClearActions),
       CreateWalletStatus.EncryptWallet: EncryptWalletCard(
-          nextAction: _setNextAction,
-          prevAction: _setPrevAction,
-          clearActions: _setClearActions),
+        nextAction: _setNextAction,
+        prevAction: _setPrevAction,
+        clearActions: _setClearActions,
+      ),
       CreateWalletStatus.BuildWallet: BuildWalletCard(
           nextAction: _setNextAction, prevAction: _setPrevAction),
       CreateWalletStatus.Imported: SelectImportedOption(

@@ -2,12 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet/witnet.dart';
 import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/util/storage/database/encrypt/password.dart';
 import 'package:witnet_wallet/widgets/input_login.dart';
 import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 
@@ -37,7 +35,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     with TickerProviderStateMixin {
   String xprv = '';
   String _password = '';
-  bool isLoading = false;
   String? decryptedLocalXprv;
   bool isValidPassword = false;
   bool isXprvValid = false;
@@ -96,8 +93,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   }
 
   void nextAction() async {
-    if (isLoading) return;
-    setState(() => isLoading = true);
     await validateXprv(xprv, _password);
     if (validate(force: true)) {
       Locator.instance<ApiCreateWallet>().setSeed(decryptedLocalXprv!, 'xprv');
@@ -150,12 +145,10 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
         if (_password.isEmpty) {
           setState(() {
             errorText = 'Please input a password';
-            if (force) isLoading = false;
           });
         } else if (!isXprvValid) {
           setState(() {
             errorText = 'Invalid xprv or password';
-            if (force) isLoading = false;
           });
         }
       }
