@@ -22,7 +22,7 @@ enum ConfigSteps {
 }
 
 class _WalletConfigState extends State<WalletConfig> {
-  Xprv? xprv;
+  String? xprv;
   String? newXprv;
   bool showXprv = false;
 

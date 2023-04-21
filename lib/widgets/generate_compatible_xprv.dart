@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:witnet/witnet.dart';
+import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/database/encrypt/password.dart';
@@ -18,7 +19,7 @@ typedef void StringCallback(String? value);
 
 class GenerateCompatibleXprv extends StatefulWidget {
   final StringCallback onXprvGenerated;
-  final Xprv? xprv;
+  final String? xprv;
   GenerateCompatibleXprv({
     Key? key,
     required this.onXprvGenerated,
@@ -55,19 +56,18 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
     super.dispose();
   }
 
-  _generateSheikahCompatibleXprv(password) {
-    try {
-      // Checks if password is the one that encrypts the current (not-Sheikah-compatible) xprv
-      Xprv.fromEncryptedXprv(localEncryptedXprv ?? '', Password.hash(password));
-    } catch (e) {
-      errorText = 'Wrong password';
-    }
+  Future _generateSheikahCompatibleXprv(password) async {
+    ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
+    String xprvGenerated;
     if (widget.xprv != null) {
-      setState(() {
-        compatibleXprv = widget.xprv!.toEncryptedXprv(password: password);
-        isLoading = false;
-      });
-      widget.onXprvGenerated(compatibleXprv);
+      try {
+        xprvGenerated =
+            await apiCrypto.encryptXprv(xprv: widget.xprv!, password: password);
+        setState(() => compatibleXprv = xprvGenerated);
+        widget.onXprvGenerated(compatibleXprv);
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -174,15 +174,11 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                   isLoading: isLoading,
                   enabled: true,
                   onPressed: () async {
+                    if (isLoading) return;
                     setState(() => isLoading = true);
-                    await Future.delayed(
-                        Duration(milliseconds: 300),
-                        () => {
-                              if (validate(force: true))
-                                {
-                                  _generateSheikahCompatibleXprv(_password),
-                                }
-                            });
+                    if (validate(force: true)) {
+                      await _generateSheikahCompatibleXprv(_password);
+                    }
                     setState(() => isLoading = false);
                   }),
             ],

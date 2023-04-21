@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:witnet/witnet.dart';
+import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/util/storage/database/encrypt/password.dart';
@@ -11,7 +12,7 @@ import 'package:flutter/material.dart';
 final _passController = TextEditingController();
 final _passFocusNode = FocusNode();
 
-typedef void VoidCallback(Xprv? value);
+typedef void VoidCallback(String? value);
 
 class VerifyPassword extends StatefulWidget {
   final VoidCallback onXprvGenerated;
@@ -26,7 +27,8 @@ class VerifyPasswordState extends State<VerifyPassword>
     with TickerProviderStateMixin {
   String _password = '';
   bool isLoading = false;
-  Xprv? xprv;
+  bool isValidPassword = false;
+  String? xprv;
   String? errorText;
   String? localEncryptedXprv =
       Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.xprv;
@@ -48,15 +50,17 @@ class VerifyPasswordState extends State<VerifyPassword>
     super.dispose();
   }
 
-  bool validPassword() {
+  Future validatePassword() async {
+    ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
+    String? xprvDecripted;
     try {
-      setState(() => {
-            xprv = Xprv.fromEncryptedXprv(
-                localEncryptedXprv ?? '', Password.hash(_password)),
-          });
-      return true;
+      String hashPassword = await apiCrypto.hashPassword(password: _password);
+      xprvDecripted = await apiCrypto.decryptXprv(
+          xprv: localEncryptedXprv ?? '', password: hashPassword);
+      setState(() => {xprv = xprvDecripted, isValidPassword = true});
     } catch (e) {
-      return false;
+      print(e);
+      setState(() => isValidPassword = false);
     }
   }
 
@@ -72,10 +76,12 @@ class VerifyPasswordState extends State<VerifyPassword>
         if (_password.isEmpty) {
           setState(() {
             errorText = 'Please input your wallet password';
+            if (force) isLoading = false;
           });
-        } else if (!validPassword()) {
+        } else if (!isValidPassword) {
           setState(() {
             errorText = 'Wrong password';
+            if (force) isLoading = false;
           });
         }
       }
@@ -129,15 +135,10 @@ class VerifyPasswordState extends State<VerifyPassword>
                   onPressed: () async {
                     if (isLoading) return;
                     setState(() => isLoading = true);
-                    await Future.delayed(
-                        Duration(milliseconds: 300),
-                        () => {
-                              if (validate(force: true))
-                                {
-                                  widget.onXprvGenerated(xprv),
-                                }
-                            });
-                    setState(() => isLoading = false);
+                    await validatePassword();
+                    if (validate(force: true)) {
+                      widget.onXprvGenerated(xprv);
+                    }
                   }),
             ],
           ),
