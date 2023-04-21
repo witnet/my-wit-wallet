@@ -97,16 +97,12 @@ class TransactionsListState extends State<TransactionsList> {
       }
     });
     label = label == 'from' ? label : 'to';
+    address = label == 'from'
+        ? transaction.inputs[0].address.cropMiddle(18)
+        : transaction.outputs[0].pkh.address.cropMiddle(18);
     if (label == 'from' && transaction.inputs.length > 1) {
       address = 'Several addresses';
-    } else if (label == 'to' && transaction.outputs.length > 1) {
-      address = 'Several addresses';
-    } else {
-      address = label == 'from'
-          ? transaction.inputs[0].address.cropMiddle(18)
-          : transaction.outputs[0].pkh.address.cropMiddle(18);
     }
-
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
