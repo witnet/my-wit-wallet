@@ -140,7 +140,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
           setState(() {
             errorText = 'Please input a password';
           });
-        } else if (!isXprvValid) {
+        } else if (force && !isXprvValid) {
           setState(() {
             errorText = 'Invalid Xprv or password';
           });
