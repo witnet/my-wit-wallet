@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/theme/colors.dart';
@@ -72,7 +73,7 @@ class AddressListState extends State<AddressList> {
                           ),
                           Expanded(
                             child: Text(
-                              '${account.balance.availableNanoWit.standardizeWitUnits()} Wit',
+                              '${account.balance.availableNanoWit.standardizeWitUnits()} ${WitUnit.Wit.name}',
                               textAlign: TextAlign.end,
                               style: textStyle!.copyWith(fontFamily: 'Almarai'),
                             ),

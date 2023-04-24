@@ -11,6 +11,7 @@ import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
+import 'package:witnet_wallet/widgets/input_amount.dart';
 import 'package:witnet_wallet/widgets/select.dart';
 import 'package:witnet_wallet/util/extensions/text_input_formatter.dart';
 import 'dart:io' show Platform;
@@ -285,17 +286,13 @@ class RecipientStepState extends State<RecipientStep>
             style: theme.textTheme.titleSmall,
           ),
           SizedBox(height: 8),
-          TextFormField(
-            style: theme.textTheme.bodyLarge,
-            decoration: InputDecoration(
-              hintText: 'Amount',
-              errorText: _errorAmountText,
-            ),
+          InputAmount(
+            hint: 'Amount',
+            errorText: _errorAmountText,
             controller: _amountController,
             focusNode: _amountFocusNode,
             keyboardType: TextInputType.number,
             validator: _validateAmount,
-            inputFormatters: [WitValueFormatter()],
             onChanged: (String value) {
               setState(() {
                 _amount = value;
@@ -345,47 +342,40 @@ class RecipientStepState extends State<RecipientStep>
                   FeeType.values.map((e) => e.name).toList().reversed.toList(),
               onChanged: (value) => _setFeeType(value)),
           SizedBox(height: 8),
-          _showFeeInput
-              ? TextFormField(
-                  style: theme.textTheme.bodyLarge,
-                  decoration: InputDecoration(
-                    hintText: 'Input the miner fee',
-                    errorText: _errorFeeText,
-                  ),
-                  controller: _minerFeeController,
-                  focusNode: _minerFeeFocusNode,
-                  keyboardType: TextInputType.number,
-                  validator: _validateFee,
-                  inputFormatters: [WitValueFormatter()],
-                  onChanged: (String value) {
-                    setState(() {
-                      _minerFee = value;
-                      if (_validateFee(_minerFee) == null) {
-                        _errorFeeText = null;
-                      }
-                    });
-                  },
-                  onTap: () {
-                    _minerFeeFocusNode.requestFocus();
-                  },
-                  onTapOutside: (PointerDownEvent event) {
-                    if (_minerFeeFocusNode.hasFocus) {
-                      setState(() {
-                        _errorFeeText = _validateFee(_minerFee);
-                      });
-                    }
-                  },
-                  onEditingComplete: () {
-                    BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
-                        feeType: FeeType.Absolute,
-                        feeNanoWit: int.parse(_minerFeeToNumber()
-                            .standardizeWitUnits(
-                                inputUnit: WitUnit.Wit,
-                                outputUnit: WitUnit.nanoWit))));
-                  },
-                )
-              : SizedBox(height: 8),
-          SizedBox(height: 8),
+          _showFeeInput ? InputAmount(
+            hint: 'Input the miner fee',
+            errorText: _errorFeeText,
+            controller: _minerFeeController,
+            focusNode: _minerFeeFocusNode,
+            keyboardType: TextInputType.number,
+            validator: _validateFee,
+            onChanged: (String value) {
+              setState(() {
+                _minerFee = value;
+                if (_validateFee(_minerFee) == null) {
+                  _errorFeeText = null;
+                }
+              });
+            },
+            onTap: () {
+              _minerFeeFocusNode.requestFocus();
+            },
+            onTapOutside: (PointerDownEvent event) {
+              if (_minerFeeFocusNode.hasFocus) {
+                setState(() {
+                  _errorFeeText = _validateFee(_minerFee);
+                });
+              }
+            },
+            onEditingComplete: () {
+              BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
+                  feeType: FeeType.Absolute,
+                  feeNanoWit: int.parse(_minerFeeToNumber()
+                      .standardizeWitUnits(
+                          inputUnit: WitUnit.Wit,
+                          outputUnit: WitUnit.nanoWit))));
+            },
+          ) : SizedBox(height: 8),
         ],
       ),
     );

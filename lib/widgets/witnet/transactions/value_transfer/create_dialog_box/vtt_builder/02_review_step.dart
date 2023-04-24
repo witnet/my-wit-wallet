@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:witnet_wallet/screens/send_transaction/send_vtt_screen.dart';
@@ -163,10 +164,10 @@ class ReviewStepState extends State<ReviewStep>
           InfoElement(
             label: 'Amount',
             text:
-                '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits()} Wit',
+                '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits()} ${WitUnit.Wit.name}',
           ),
           SizedBox(height: 16),
-          InfoElement(label: 'Fee', text: '${fee.standardizeWitUnits()} Wit'),
+          InfoElement(label: 'Fee', text: '${fee.standardizeWitUnits()} ${WitUnit.Wit.name}'),
           SizedBox(height: 24),
         ]);
       },

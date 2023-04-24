@@ -1,3 +1,4 @@
+import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/util/extensions/int_extensions.dart';
 import 'package:witnet_wallet/util/extensions/string_extensions.dart';
 import 'package:witnet_wallet/util/extensions/num_extensions.dart';
@@ -134,13 +135,13 @@ class TransactionsListState extends State<TransactionsList> {
                     Expanded(
                         child: label == 'from'
                             ? Text(
-                                ' + ${receiveValue(transaction).standardizeWitUnits()} Wit',
+                                ' + ${receiveValue(transaction).standardizeWitUnits()} ${WitUnit.Wit.name}',
                                 style: theme.textTheme.bodyLarge?.copyWith(
                                     color: extendedTheme.txValuePositiveColor),
                                 overflow: TextOverflow.ellipsis,
                               )
                             : Text(
-                                ' - ${sendValue(transaction).standardizeWitUnits()} Wit',
+                                ' - ${sendValue(transaction).standardizeWitUnits()} ${WitUnit.Wit.name}',
                                 style: theme.textTheme.bodyLarge?.copyWith(
                                     color: extendedTheme.txValueNegativeColor),
                                 overflow: TextOverflow.ellipsis,

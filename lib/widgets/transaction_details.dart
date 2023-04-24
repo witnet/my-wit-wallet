@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
+import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/extensions/string_extensions.dart';
@@ -56,7 +57,7 @@ class TransactionDetails extends StatelessWidget {
                   Text(output.pkh.address.toString(),
                       style: extendedTheme.monoSmallText),
                   SizedBox(height: 8),
-                  Text('${output.value.toInt().standardizeWitUnits()} Wit',
+                  Text('${output.value.toInt().standardizeWitUnits()} ${WitUnit.Wit.name}',
                       style: theme.textTheme.labelMedium),
                 ],
               ),
@@ -87,7 +88,7 @@ class TransactionDetails extends StatelessWidget {
           children: [
             Text(input.address.toString(), style: extendedTheme.monoSmallText),
             SizedBox(height: 8),
-            Text('${input.value.standardizeWitUnits()} Wit',
+            Text('${input.value.standardizeWitUnits()} ${WitUnit.Wit.name}',
                 style: theme.textTheme.labelMedium),
           ],
         ));
@@ -128,7 +129,7 @@ class TransactionDetails extends StatelessWidget {
             text: transaction.type.split('_').join(' ').toTitleCase()),
         SizedBox(height: 16),
         InfoElement(
-            label: 'Fee', text: '${transaction.fee.standardizeWitUnits()} Wit'),
+            label: 'Fee', text: '${transaction.fee.standardizeWitUnits()} ${WitUnit.Wit.name}'),
         SizedBox(height: 16),
         InfoElement(label: 'Timestamp', text: transaction.txnTime.formatDate()),
         SizedBox(height: 16),

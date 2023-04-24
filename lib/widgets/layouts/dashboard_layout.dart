@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'dart:math' as math;
 import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
@@ -128,7 +129,7 @@ class DashboardLayoutState extends State<DashboardLayout>
         children: [
           SizedBox(height: 16),
           Text(
-            '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits()} Wit',
+            '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits()} ${WitUnit.Wit.name}',
             textAlign: TextAlign.center,
             style: theme.textTheme.headlineMedium,
           ),
