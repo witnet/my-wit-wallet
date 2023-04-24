@@ -78,7 +78,6 @@ class _GeneralConfigState extends State<GeneralConfig> {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       SizedBox(height: 16),
       Text(
@@ -89,8 +88,7 @@ class _GeneralConfigState extends State<GeneralConfig> {
       PaddedButton(
           padding: EdgeInsets.only(bottom: 16, top: 16),
           text: 'Lock wallet',
-          color: extendedTheme.txValueNegativeColor,
-          type: 'text',
+          type: 'secondary',
           enabled: true,
           onPressed: () => _logOut()),
     ]);
