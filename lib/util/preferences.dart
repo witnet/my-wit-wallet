@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/theme/wallet_theme.dart';
+import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
 
 import '../shared/locator.dart';
 
@@ -22,13 +23,14 @@ class ApiPreferences {
     String addressIndex =
         await ApiPreferences.getCurrentAddress(walletId) ?? "0/0";
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
-    db.walletStorage.setCurrentWallet(walletId);
+    WalletStorage walletStorage = db.walletStorage;
+    walletStorage.setCurrentWallet(walletId);
     String address;
     int index = int.parse(addressIndex.split("/").last);
     if (addressIndex.split('/').first == "0") {
-      address = db.walletStorage.currentWallet.externalAccounts[index]!.address;
+      address = walletStorage.currentWallet.externalAccounts[index]!.address;
     } else {
-      address = db.walletStorage.currentWallet.internalAccounts[index]!.address;
+      address = walletStorage.currentWallet.internalAccounts[index]!.address;
     }
     Locator.instance
         .get<ApiDatabase>()
@@ -41,15 +43,16 @@ class ApiPreferences {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     String? currentWallet = pref.getString('current_wallet');
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
-    db.walletStorage.setCurrentWallet(currentWallet!);
+    WalletStorage walletStorage = db.walletStorage;
+    walletStorage.setCurrentWallet(currentWallet!);
     String address;
     String? addressIndex =
         await ApiPreferences.getCurrentAddress(currentWallet);
     int index = int.parse(addressIndex!.split("/").last);
     if (addressIndex.split('/').first == "0") {
-      address = db.walletStorage.currentWallet.externalAccounts[index]!.address;
+      address = walletStorage.currentWallet.externalAccounts[index]!.address;
     } else {
-      address = db.walletStorage.currentWallet.internalAccounts[index]!.address;
+      address = walletStorage.currentWallet.internalAccounts[index]!.address;
     }
     Locator.instance
         .get<ApiDatabase>()
@@ -87,14 +90,15 @@ class ApiPreferences {
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
     String? address;
     int index = int.parse(addressEntry.addressIdx);
-    db.walletStorage.setCurrentWallet(addressEntry.walletId);
-    db.walletStorage.setCurrentAddressList(finalMap);
+    WalletStorage walletStorage = db.walletStorage;
+    walletStorage.setCurrentWallet(addressEntry.walletId);
+    walletStorage.setCurrentAddressList(finalMap);
     if (addressEntry.keyType == 0) {
-      address = db.walletStorage.currentWallet.externalAccounts[index]!.address;
+      address = walletStorage.currentWallet.externalAccounts[index]!.address;
     } else {
-      address = db.walletStorage.currentWallet.internalAccounts[index]!.address;
+      address = walletStorage.currentWallet.internalAccounts[index]!.address;
     }
-    db.walletStorage.setCurrentAccount(address);
+    walletStorage.setCurrentAccount(address);
     await prefs.setString('current_address', json.encode(finalMap));
   }
 

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:witnet_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

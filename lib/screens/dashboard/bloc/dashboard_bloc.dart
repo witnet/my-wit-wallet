@@ -37,9 +37,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     Emitter<DashboardState> emit,
   ) async {
     emit(DashboardState(
-        currentWalletId: event.currentWalletId!,
-        currentAddress: event.currentAddress!,
-        currentVttId: event.currentVttId!,
+        currentWalletId: event.currentWalletId ?? defaultWallet.id,
+        currentAddress: event.currentAddress ?? defaultAccount.address,
+        currentVttId: event.currentVttId ?? defaulVtt.txnHash,
         status: DashboardStatus.Ready));
   }
 
@@ -47,17 +47,17 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       DashboardInitEvent event, Emitter<DashboardState> emit) async {
     await Future.delayed(Duration(seconds: 4));
     emit(DashboardState(
-        currentWalletId: event.currentWalletId!,
-        currentAddress: event.currentAddress!,
-        currentVttId: event.currentVttId!,
+        currentWalletId: event.currentWalletId ?? defaultWallet.id,
+        currentAddress: event.currentAddress ?? defaultAccount.address,
+        currentVttId: event.currentVttId ?? defaulVtt.txnHash,
         status: DashboardStatus.Ready));
   }
 
   void _dashboardUpdateWallet(
       DashboardUpdateWalletEvent event, Emitter<DashboardState> emit) {
     emit(DashboardState(
-        currentWalletId: event.currentWallet!.id,
-        currentAddress: event.currentAddress!,
+        currentWalletId: event.currentWallet?.id ?? defaultWallet.id,
+        currentAddress: event.currentAddress ?? defaultAccount.address,
         currentVttId: event.currentVttId ?? defaulVtt.txnHash,
         status: DashboardStatus.Ready));
   }
@@ -65,9 +65,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   Future<void> _dashboardUpdateStatusEvent(
       DashboardUpdateEvent event, Emitter<DashboardState> emit) async {
     emit(DashboardState(
-        currentWalletId: event.currentWalletId!,
-        currentAddress: event.currentAddress!,
-        currentVttId: event.currentVttId!,
+        currentWalletId: event.currentWalletId ?? defaultWallet.id,
+        currentAddress: event.currentAddress ?? defaultAccount.address,
+        currentVttId: event.currentVttId ?? defaulVtt.txnHash,
         status: DashboardStatus.Ready));
   }
 
