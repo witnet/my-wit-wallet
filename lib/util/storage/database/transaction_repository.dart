@@ -39,13 +39,13 @@ class VttRepository extends _TransactionRepository {
   Future<List<ValueTransferInfo>> getAllTransactions(
       DatabaseClient databaseClient) async {
     final snapshots = await _store.find(databaseClient);
-    try{
+    try {
       List<ValueTransferInfo> transactions = snapshots
           .map((snapshot) => ValueTransferInfo.fromDbJson(
-          snapshot.value as Map<String, dynamic>))
+              snapshot.value as Map<String, dynamic>))
           .toList(growable: false);
-    return transactions;
-    } catch(e) {
+      return transactions;
+    } catch (e) {
       return [];
     }
   }

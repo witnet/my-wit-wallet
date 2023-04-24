@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:witnet_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -128,7 +130,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
         ),
         SizedBox(height: 8),
         Text(
-          'This password encrypts your Witnet wallet only on this computer',
+          'This password encrypts your Witnet wallet only on this computer.',
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 8),

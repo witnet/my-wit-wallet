@@ -162,9 +162,11 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
       CreateWalletStatus.BuildWallet: BuildWalletCard(
           nextAction: _setNextAction, prevAction: _setPrevAction),
       CreateWalletStatus.Imported: SelectImportedOption(
-          nextAction: _setNextAction,
-          secondaryAction: _setSecondaryAction,
-          prevAction: _setPrevAction),
+        nextAction: _setNextAction,
+        secondaryAction: _setSecondaryAction,
+        prevAction: _setPrevAction,
+        clearActions: _setClearActions,
+      ),
       CreateWalletStatus.CreateImport: CreateImportWallet(
           nextAction: _setNextAction,
           secondaryAction: _setSecondaryAction,

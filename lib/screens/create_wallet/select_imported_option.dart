@@ -7,16 +7,20 @@ import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 
 typedef void VoidCallback(NavAction? value);
+typedef void BoolCallback(bool value);
 
 class SelectImportedOption extends StatefulWidget {
   final Function nextAction;
   final Function secondaryAction;
   final Function prevAction;
+  final Function clearActions;
+
   SelectImportedOption({
     Key? key,
     required VoidCallback this.nextAction,
     required VoidCallback this.secondaryAction,
     required VoidCallback this.prevAction,
+    required BoolCallback this.clearActions,
   }) : super(key: key);
   @override
   State<StatefulWidget> createState() => ImportedOptionState();
@@ -48,6 +52,7 @@ class ImportedOptionState extends State<SelectImportedOption> {
   }
 
   void nextSeedAction() {
+    widget.clearActions(true);
     Locator.instance<ApiCreateWallet>().setWalletType(WalletType.mnemonic);
     BlocProvider.of<CreateWalletBloc>(context)
         .add(ResetEvent(WalletType.mnemonic));
@@ -57,6 +62,7 @@ class ImportedOptionState extends State<SelectImportedOption> {
   }
 
   void nextXprvAction() {
+    widget.clearActions(true);
     Locator.instance<ApiCreateWallet>().setWalletType(WalletType.encryptedXprv);
     BlocProvider.of<CreateWalletBloc>(context)
         .add(ResetEvent(WalletType.encryptedXprv));
