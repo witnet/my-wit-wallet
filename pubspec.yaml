@@ -3,7 +3,7 @@ description: Witnet Wallet
 
 publish_to: 'none'
 
-version: 0.0.1-dev
+version: 0.0.2-dev
 
 environment:
   sdk: ">=2.15.0 <3.0.0"
