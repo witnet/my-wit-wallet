@@ -57,7 +57,8 @@ class TransactionDetails extends StatelessWidget {
                   Text(output.pkh.address.toString(),
                       style: extendedTheme.monoSmallText),
                   SizedBox(height: 8),
-                  Text('${output.value.toInt().standardizeWitUnits()} ${WitUnit.Wit.name}',
+                  Text(
+                      '${output.value.toInt().standardizeWitUnits()} ${WitUnit.Wit.name}',
                       style: theme.textTheme.labelMedium),
                 ],
               ),
@@ -129,7 +130,9 @@ class TransactionDetails extends StatelessWidget {
             text: transaction.type.split('_').join(' ').toTitleCase()),
         SizedBox(height: 16),
         InfoElement(
-            label: 'Fee', text: '${transaction.fee.standardizeWitUnits()} ${WitUnit.Wit.name}'),
+            label: 'Fee',
+            text:
+                '${transaction.fee.standardizeWitUnits()} ${WitUnit.Wit.name}'),
         SizedBox(height: 16),
         InfoElement(label: 'Timestamp', text: transaction.txnTime.formatDate()),
         SizedBox(height: 16),

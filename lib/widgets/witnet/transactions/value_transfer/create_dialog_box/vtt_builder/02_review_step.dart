@@ -167,7 +167,9 @@ class ReviewStepState extends State<ReviewStep>
                 '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits()} ${WitUnit.Wit.name}',
           ),
           SizedBox(height: 16),
-          InfoElement(label: 'Fee', text: '${fee.standardizeWitUnits()} ${WitUnit.Wit.name}'),
+          InfoElement(
+              label: 'Fee',
+              text: '${fee.standardizeWitUnits()} ${WitUnit.Wit.name}'),
           SizedBox(height: 24),
         ]);
       },

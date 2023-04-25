@@ -51,7 +51,7 @@ class _InputAmountState extends State<InputAmount> {
           hintText: widget.hint ?? 'Input an amount',
           errorText: widget.errorText,
           prefixIcon:
-            widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
+              widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
           suffixText: WitUnit.Wit.name,
         ),
         minLines: 1,

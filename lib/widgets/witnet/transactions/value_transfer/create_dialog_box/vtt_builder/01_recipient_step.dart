@@ -342,40 +342,42 @@ class RecipientStepState extends State<RecipientStep>
                   FeeType.values.map((e) => e.name).toList().reversed.toList(),
               onChanged: (value) => _setFeeType(value)),
           SizedBox(height: 8),
-          _showFeeInput ? InputAmount(
-            hint: 'Input the miner fee',
-            errorText: _errorFeeText,
-            controller: _minerFeeController,
-            focusNode: _minerFeeFocusNode,
-            keyboardType: TextInputType.number,
-            validator: _validateFee,
-            onChanged: (String value) {
-              setState(() {
-                _minerFee = value;
-                if (_validateFee(_minerFee) == null) {
-                  _errorFeeText = null;
-                }
-              });
-            },
-            onTap: () {
-              _minerFeeFocusNode.requestFocus();
-            },
-            onTapOutside: (PointerDownEvent event) {
-              if (_minerFeeFocusNode.hasFocus) {
-                setState(() {
-                  _errorFeeText = _validateFee(_minerFee);
-                });
-              }
-            },
-            onEditingComplete: () {
-              BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
-                  feeType: FeeType.Absolute,
-                  feeNanoWit: int.parse(_minerFeeToNumber()
-                      .standardizeWitUnits(
-                          inputUnit: WitUnit.Wit,
-                          outputUnit: WitUnit.nanoWit))));
-            },
-          ) : SizedBox(height: 8),
+          _showFeeInput
+              ? InputAmount(
+                  hint: 'Input the miner fee',
+                  errorText: _errorFeeText,
+                  controller: _minerFeeController,
+                  focusNode: _minerFeeFocusNode,
+                  keyboardType: TextInputType.number,
+                  validator: _validateFee,
+                  onChanged: (String value) {
+                    setState(() {
+                      _minerFee = value;
+                      if (_validateFee(_minerFee) == null) {
+                        _errorFeeText = null;
+                      }
+                    });
+                  },
+                  onTap: () {
+                    _minerFeeFocusNode.requestFocus();
+                  },
+                  onTapOutside: (PointerDownEvent event) {
+                    if (_minerFeeFocusNode.hasFocus) {
+                      setState(() {
+                        _errorFeeText = _validateFee(_minerFee);
+                      });
+                    }
+                  },
+                  onEditingComplete: () {
+                    BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
+                        feeType: FeeType.Absolute,
+                        feeNanoWit: int.parse(_minerFeeToNumber()
+                            .standardizeWitUnits(
+                                inputUnit: WitUnit.Wit,
+                                outputUnit: WitUnit.nanoWit))));
+                  },
+                )
+              : SizedBox(height: 8),
         ],
       ),
     );

@@ -127,6 +127,7 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
   style: TextButton.styleFrom(
     foregroundColor: WitnetPallet.white,
     textStyle: const TextStyle(
+      fontFamily: 'Almarai',
       fontSize: 16,
       fontWeight: FontWeight.normal,
       color: WitnetPallet.white,
@@ -145,6 +146,7 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4)), // background color
       textStyle: const TextStyle(
+        fontFamily: 'Almarai',
         fontSize: 16,
         fontWeight: FontWeight.normal,
         color: WitnetPallet.white,
@@ -159,6 +161,7 @@ OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
   padding: const EdgeInsets.all(16),
   textStyle: const TextStyle(
     fontSize: 16,
+    fontFamily: 'Almarai',
     color: WitnetPallet.white,
   ),
 ));

@@ -62,7 +62,10 @@ class PaddedButton extends StatelessWidget {
 
     Widget textButtonHorizontalIcon = TextButton(
       child: Row(children: [
-        Text(text),
+        Text(
+          text,
+          style: TextStyle(fontFamily: 'Almarai', fontSize: 14),
+        ),
         Padding(padding: EdgeInsets.only(left: 8)),
         icon,
       ]),
@@ -77,7 +80,11 @@ class PaddedButton extends StatelessWidget {
           : theme.textButtonTheme.style,
       child: Column(children: [
         icon,
-        Text(text, style: TextStyle(fontSize: 12)),
+        SizedBox(height: 8),
+        Text(
+          text,
+          style: TextStyle(fontFamily: 'Almarai', fontSize: 14),
+        ),
       ]),
       onPressed: onPressed,
     );
