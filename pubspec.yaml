@@ -84,10 +84,23 @@ flutter:
     - .env
 
   fonts:
-    - family: Nunito
+    - family: Almarai
       fonts:
-        - asset: assets/fonts/Nunito-Sans-Regular.ttf
-        - asset: assets/fonts/Nunito-Sans-Italic.ttf
-          style: italic
-        - asset: assets/fonts/Nunito-Sans-Bold.ttf
+        - asset: assets/fonts/Almarai/Almarai-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Almarai/Almarai-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Almarai/Almarai-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Almarai/Almarai-ExtraBold.ttf
+          weight: 800
+    - family: RobotoMono
+      fonts:
+        - asset: assets/fonts/Roboto_Mono/RobotoMono-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Roboto_Mono/RobotoMono-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Roboto_Mono/RobotoMono-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Roboto_Mono/RobotoMono-Bold.ttf
           weight: 700

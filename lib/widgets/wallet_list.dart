@@ -119,7 +119,7 @@ class WalletListState extends State<WalletList> {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     final textStyle = TextStyle(
-        fontFamily: 'NotoSans',
+        fontFamily: 'Almarai',
         color: WitnetPallet.white,
         fontSize: 14,
         fontWeight: FontWeight.normal);
@@ -174,7 +174,8 @@ class WalletListState extends State<WalletList> {
                     Text(
                       address != null ? address : '',
                       overflow: TextOverflow.ellipsis,
-                      style: textStyle,
+                      style: extendedTheme.monoSmallText!
+                          .copyWith(color: WitnetPallet.white),
                     ),
                   ],
                 ),

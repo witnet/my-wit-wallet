@@ -12,65 +12,65 @@ TextSelectionThemeData textSelectionTheme =
 Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
   displayLarge: TextStyle(
-      fontFamily: 'Quicksand',
+      fontFamily: 'Almarai',
       color: WitnetPallet.opacityWhite,
       fontSize: 24,
       fontWeight: FontWeight.bold),
   displayMedium: TextStyle(
-      fontFamily: 'Quicksand',
+      fontFamily: 'Almarai',
       color: WitnetPallet.white,
       fontSize: 18,
       fontWeight: FontWeight.bold),
   displaySmall: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.white,
       fontSize: 16,
       fontWeight: FontWeight.bold),
   headlineMedium: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.white,
       fontSize: 24,
       fontWeight: FontWeight.normal),
   headlineSmall: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.white,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   titleMedium: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.opacityWhite,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   titleSmall: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.white,
       fontSize: 14,
       fontWeight: FontWeight.bold),
   bodyLarge: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.opacityWhite,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   bodyMedium: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.opacityWhite,
       fontSize: 14,
       fontWeight: FontWeight.normal),
   bodySmall: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.opacityWhite,
       fontSize: 12,
       fontWeight: FontWeight.normal),
   labelLarge: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.opacityWhite,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   labelMedium: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.white,
       fontSize: 16,
-      fontWeight: FontWeight.bold),
+      fontWeight: FontWeight.normal),
 );
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.darkBlue2,

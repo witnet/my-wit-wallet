@@ -5,6 +5,7 @@ import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
+import 'package:witnet_wallet/theme/extended_theme.dart';
 
 typedef void VoidCallback(NavAction? value);
 
@@ -71,6 +72,7 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -89,7 +91,7 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
           height: 16,
         ),
         TextField(
-          style: theme.textTheme.displayMedium,
+          style: extendedTheme.monoLargeText,
           keyboardType: TextInputType.multiline,
           maxLines: 4,
           controller: textController,

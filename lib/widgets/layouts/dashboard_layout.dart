@@ -116,6 +116,7 @@ class DashboardLayoutState extends State<DashboardLayout>
 
   Widget _buildBalanceDisplay() {
     final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
       Wallet currentWallet =
@@ -137,7 +138,8 @@ class DashboardLayoutState extends State<DashboardLayout>
                 child: Text(
               currentAccount.address.cropMiddle(18),
               overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.headlineSmall,
+              style: extendedTheme.monoRegularText!
+                  .copyWith(color: theme.textTheme.headlineMedium!.color),
             )),
             Flexible(
                 child: IconButton(

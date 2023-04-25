@@ -44,8 +44,8 @@ class AddressListState extends State<AddressList> {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     final isAddressSelected = account.address == currentAddress;
     final textStyle = isAddressSelected
-        ? theme.textTheme.labelMedium
-        : theme.textTheme.bodyLarge;
+        ? extendedTheme.monoMediumText
+        : extendedTheme.monoRegularText;
     return MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
@@ -74,7 +74,7 @@ class AddressListState extends State<AddressList> {
                             child: Text(
                               '${account.balance.availableNanoWit.standardizeWitUnits()} Wit',
                               textAlign: TextAlign.end,
-                              style: textStyle,
+                              style: textStyle!.copyWith(fontFamily: 'Almarai'),
                             ),
                           ),
                         ]))),

@@ -11,62 +11,62 @@ TextSelectionThemeData textSelectionTheme =
 Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
   displayLarge: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.darkGrey,
       fontSize: 24,
       fontWeight: FontWeight.bold),
   displayMedium: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.darkGrey,
       fontSize: 18,
       fontWeight: FontWeight.bold),
   displaySmall: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.darkGrey,
       fontSize: 16,
       fontWeight: FontWeight.bold),
   headlineMedium: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.witnetGreen1,
       fontSize: 24,
       fontWeight: FontWeight.normal),
   headlineSmall: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.witnetGreen1,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   titleMedium: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.darkGrey,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   titleSmall: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.darkGrey,
       fontSize: 14,
       fontWeight: FontWeight.bold),
   bodyLarge: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.darkGrey,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   bodyMedium: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.darkGrey,
       fontSize: 14,
       fontWeight: FontWeight.normal),
   bodySmall: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.darkGrey,
       fontSize: 12,
       fontWeight: FontWeight.normal),
   labelLarge: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.white,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   labelMedium: TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Almarai',
       color: WitnetPallet.witnetGreen1,
       fontSize: 16,
       fontWeight: FontWeight.normal),
@@ -122,8 +122,9 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4)), // background color
       textStyle: const TextStyle(
+        fontFamily: 'Almarai',
         fontSize: 16,
-        fontWeight: FontWeight.normal,
+        fontWeight: FontWeight.w400,
         color: WitnetPallet.white,
       )),
 );
@@ -132,8 +133,9 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
     foregroundColor: WitnetPallet.witnetGreen1,
     splashFactory: NoSplash.splashFactory,
     textStyle: const TextStyle(
+      fontFamily: 'Almarai',
       fontSize: 16,
-      fontWeight: FontWeight.normal,
+      fontWeight: FontWeight.w400,
       color: WitnetPallet.witnetGreen1,
     ),
   ),
@@ -146,6 +148,7 @@ OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
   side: BorderSide(width: 1, color: WitnetPallet.darkBlue2),
   padding: const EdgeInsets.all(16),
   textStyle: const TextStyle(
+    fontFamily: 'Almarai',
     fontSize: 16,
     color: WitnetPallet.darkBlue2,
   ),

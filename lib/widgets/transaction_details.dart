@@ -54,7 +54,7 @@ class TransactionDetails extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(output.pkh.address.toString(),
-                      style: theme.textTheme.bodyLarge),
+                      style: extendedTheme.monoSmallText),
                   SizedBox(height: 8),
                   Text('${output.value.toInt().standardizeWitUnits()} Wit',
                       style: theme.textTheme.labelMedium),
@@ -85,7 +85,7 @@ class TransactionDetails extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(input.address.toString(), style: theme.textTheme.bodyLarge),
+            Text(input.address.toString(), style: extendedTheme.monoSmallText),
             SizedBox(height: 8),
             Text('${input.value.standardizeWitUnits()} Wit',
                 style: theme.textTheme.labelMedium),
@@ -95,6 +95,7 @@ class TransactionDetails extends StatelessWidget {
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

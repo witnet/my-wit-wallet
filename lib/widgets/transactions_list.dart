@@ -160,7 +160,8 @@ class TransactionsListState extends State<TransactionsList> {
                         Text(
                           address,
                           overflow: TextOverflow.fade,
-                          style: theme.textTheme.bodyLarge,
+                          style: extendedTheme.monoSmallText!.copyWith(
+                              color: theme.textTheme.bodyMedium!.color),
                         ),
                       ],
                     )),
