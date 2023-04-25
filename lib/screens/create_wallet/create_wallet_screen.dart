@@ -28,6 +28,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   dynamic prevAction;
   bool clearActions = true;
   bool isLoading = false;
+  bool hideButton = false;
 
   @override
   void initState() {
@@ -41,20 +42,24 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
 
   //Bottom page actions
   List<Widget> _actions() {
-    List<Widget> actions = [
-      PaddedButton(
-          padding: EdgeInsets.only(bottom: 0),
-          text: nextAction != null ? nextAction().label : 'Continue',
-          type: 'primary',
-          isLoading: isLoading,
-          enabled: nextAction != null,
-          onPressed: () async {
-            setState(() => isLoading = true);
-            if (nextAction != null) await nextAction().action();
-            if (clearActions) _clearNextActions();
-            setState(() => isLoading = false);
-          }),
-    ];
+    List<Widget> actions = [];
+
+    if (!hideButton) {
+      actions = [
+        PaddedButton(
+            padding: EdgeInsets.only(bottom: 0),
+            text: nextAction != null ? nextAction().label : 'Continue',
+            type: 'primary',
+            isLoading: isLoading,
+            enabled: nextAction != null,
+            onPressed: () async {
+              setState(() => isLoading = true);
+              if (nextAction != null) await nextAction().action();
+              if (clearActions) _clearNextActions();
+              setState(() => isLoading = false);
+            }),
+      ];
+    }
     if (secondaryAction != null) {
       actions = [
         ...actions,
@@ -132,6 +137,12 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
     });
   }
 
+  _hideButton(bool hide) {
+    setState(() {
+      hideButton = hide;
+    });
+  }
+
   _navigationCards() {
     return {
       CreateWalletStatus.Disclaimer: DisclaimerCard(
@@ -160,7 +171,9 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
         clearActions: _setClearActions,
       ),
       CreateWalletStatus.BuildWallet: BuildWalletCard(
-          nextAction: _setNextAction, prevAction: _setPrevAction),
+          nextAction: _setNextAction,
+          prevAction: _setPrevAction,
+          hideButton: _hideButton),
       CreateWalletStatus.Imported: SelectImportedOption(
         nextAction: _setNextAction,
         secondaryAction: _setSecondaryAction,

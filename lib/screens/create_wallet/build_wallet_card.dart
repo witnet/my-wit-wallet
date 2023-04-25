@@ -15,15 +15,19 @@ import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 
 typedef void VoidCallback(NavAction? value);
+typedef void BooleanCallback(bool value);
 
 class BuildWalletCard extends StatefulWidget {
   final Function nextAction;
   final Function prevAction;
-  BuildWalletCard({
-    Key? key,
-    required VoidCallback this.nextAction,
-    required VoidCallback this.prevAction,
-  }) : super(key: key);
+  final Function hideButton;
+
+  BuildWalletCard(
+      {Key? key,
+      required VoidCallback this.nextAction,
+      required VoidCallback this.prevAction,
+      required BooleanCallback this.hideButton})
+      : super(key: key);
   BuildWalletCardState createState() => BuildWalletCardState();
 }
 
@@ -84,6 +88,9 @@ class BuildWalletCardState extends State<BuildWalletCard>
         .addPostFrameCallback((_) => widget.prevAction(prev));
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.nextAction(next));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.hideButton(true));
+
     ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
     BlocProvider.of<CryptoBloc>(context).add(CryptoInitializeWalletEvent(
         id: acw.walletName,
