@@ -85,12 +85,21 @@ class _GeneralConfigState extends State<GeneralConfig> {
         style: theme.textTheme.titleSmall,
       ),
       themeWidget(deviceSize.height * 0.25, context),
-      PaddedButton(
-          padding: EdgeInsets.only(bottom: 16, top: 16),
-          text: 'Lock wallet',
-          type: 'secondary',
-          enabled: true,
-          onPressed: () => _logOut()),
+      SizedBox(height: 16),
+      Text(
+        'Lock your wallet',
+        style: theme.textTheme.titleSmall,
+      ),
+      Container(
+        width: 150,
+        height: 80,
+        child: PaddedButton(
+            padding: EdgeInsets.only(bottom: 16, top: 16),
+            text: 'Lock wallet',
+            type: 'primary',
+            enabled: true,
+            onPressed: () => _logOut()),
+      )
     ]);
   }
 }
