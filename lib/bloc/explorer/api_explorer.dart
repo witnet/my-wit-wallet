@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
 
 import 'package:witnet_wallet/constants.dart';
+import 'package:witnet_wallet/util/storage/cache/transaction_cache.dart';
 
 import '../../shared/api_database.dart';
 import '../../shared/locator.dart';
@@ -27,6 +30,7 @@ enum ExplorerQuery {
 class ApiExplorer {
   late ExplorerClient client;
   late Status status;
+  TransactionCache cache = TransactionCache();
   ApiExplorer() {
     client = (USE_EXPLORER_DEV)
         ? ExplorerClient(
@@ -224,5 +228,94 @@ class ApiExplorer {
   Future<ValueTransferInfo> getVtt(String transactionId) async {
     var result = await hash(transactionId);
     return result as ValueTransferInfo;
+  }
+
+  Future<dynamic> priority() async {
+    return Future.delayed(const Duration(milliseconds: 500), () {
+      try {
+        // return await client.priority();
+        // TODO: Remove when implemented
+        var random = Random();
+
+        return {
+          "drtStinky": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "drtLow": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "drtMedium": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "drtHigh": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "drtOpulent": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "vttStinky": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "vttLow": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "vttMedium": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "vttHigh": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+          "vttOpulent": {
+            "priority": {
+              "nanoWit": random.nextInt(100).toString(),
+              "subNanoWit": random.nextInt(100).toString()
+            },
+            "timeToBlock": random.nextInt(100).toString(),
+          },
+        };
+      } catch (e) {
+        rethrow;
+      }
+    });
+  }
+
+  bool isCached(String hash) {
+    return cache.containsHash(hash);
   }
 }
