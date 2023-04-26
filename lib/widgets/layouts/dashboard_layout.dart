@@ -75,12 +75,15 @@ class DashboardLayoutState extends State<DashboardLayout>
   }
 
   Widget _buildDashboardActions() {
+    String currentRoute = ModalRoute.of(context)!.settings.name!;
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       PaddedButton(
         color: getButtonColorByRoute(CreateVttScreen.route),
         padding: EdgeInsets.all(0),
         text: 'Send',
-        onPressed: _showCreateVTTDialog,
+        onPressed: currentRoute != CreateVttScreen.route
+            ? _showCreateVTTDialog
+            : () {},
         icon: Icon(
           FontAwesomeIcons.paperPlane,
           size: 18,
@@ -91,8 +94,10 @@ class DashboardLayoutState extends State<DashboardLayout>
         color: getButtonColorByRoute(DashboardScreen.route),
         padding: EdgeInsets.all(0),
         text: 'Home',
-        onPressed: () =>
-            Navigator.pushReplacementNamed(context, DashboardScreen.route),
+        onPressed: currentRoute != DashboardScreen.route
+            ? () =>
+                Navigator.pushReplacementNamed(context, DashboardScreen.route)
+            : () {},
         icon: Icon(
           FontAwesomeIcons.wallet,
           size: 18,
@@ -103,7 +108,9 @@ class DashboardLayoutState extends State<DashboardLayout>
         color: getButtonColorByRoute(ReceiveTransactionScreen.route),
         padding: EdgeInsets.all(0),
         text: 'Receive',
-        onPressed: _showReceiveDialog,
+        onPressed: currentRoute != ReceiveTransactionScreen.route
+            ? _showReceiveDialog
+            : () {},
         icon: Transform.rotate(
             angle: 90 * math.pi / 90,
             child: Icon(
