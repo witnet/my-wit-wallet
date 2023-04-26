@@ -31,19 +31,19 @@ Widget witnetLogo(ThemeData theme) {
         );
 }
 
-Widget witnetEyeIcon(ThemeData theme) {
+Widget witnetEyeIcon(ThemeData theme, {height = 100}) {
   return (theme.primaryColor == lightTheme.primaryColor)
       ? Image.asset(
           'assets/img/witnet_light_icon.png',
           width: 100,
-          height: 118.52,
+          height: height,
           fit: BoxFit.fitWidth,
           filterQuality: FilterQuality.high,
         )
       : Image.asset(
           'assets/img/witnet_dark_icon.png',
           width: 100,
-          height: 118.52,
+          height: height,
           fit: BoxFit.fitWidth,
           filterQuality: FilterQuality.high,
         );

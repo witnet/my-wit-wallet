@@ -33,6 +33,14 @@ class HeaderLayout extends StatelessWidget {
     this.appBar,
   });
 
+  bool isCreateWalletFlow() =>
+      dashboardActions == null && navigationActions.length == 1;
+
+  EdgeInsets navigationBarPadding() =>
+      EdgeInsets.fromLTRB(16, 16, 16, isCreateWalletFlow() ? 0 : 16);
+
+  double witnetLogoHeight() => isCreateWalletFlow() ? 100 : 118;
+
   Widget build(BuildContext context) {
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     final theme = Theme.of(context);
@@ -45,7 +53,7 @@ class HeaderLayout extends StatelessWidget {
               color: extendedTheme.headerBackgroundColor,
               child: Column(children: [
                 Container(
-                    padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+                    padding: navigationBarPadding(),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: navigationActions.length > 1
@@ -68,7 +76,8 @@ class HeaderLayout extends StatelessWidget {
                           children: [
                             dashboardActions != null
                                 ? dashboardActions!
-                                : witnetEyeIcon(theme)
+                                : witnetEyeIcon(theme,
+                                    height: witnetLogoHeight())
                           ],
                         ),
                       )),
