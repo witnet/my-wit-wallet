@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
@@ -9,7 +11,8 @@ import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:witnet_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:witnet_wallet/widgets/step_bar.dart';
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/01_recipient_step.dart';
-import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/02_review_step.dart';
+import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/02_select_miner_fee.dart';
+import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/03_review_step.dart';
 
 class CreateVttScreen extends StatefulWidget {
   static final route = '/create-vtt';
@@ -19,6 +22,7 @@ class CreateVttScreen extends StatefulWidget {
 
 enum VTTsteps {
   Transaction,
+  SelectMinerFee,
   Review,
 }
 
@@ -58,6 +62,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   void goToNextStep() {
+    print('go next step');
     if ((currentStepIndex + 1) < stepListItems.length) {
       currentStepIndex += 1;
       stepSelectedItem = stepListItems[currentStepIndex];
@@ -85,6 +90,26 @@ class CreateVttScreenState extends State<CreateVttScreen>
     ];
   }
 
+  Widget stepToBuild() {
+    debugger();
+    if (stepSelectedItem == VTTsteps.Transaction) {
+      return RecipientStep(
+        nextAction: _setNextAction,
+        currentWallet: currentWallet!,
+      );
+    } else if (stepSelectedItem == VTTsteps.SelectMinerFee) {
+      return SelectMinerFeeStep(
+        nextAction: _setNextAction,
+        currentWallet: currentWallet!,
+      );
+    } else {
+      return ReviewStep(
+        nextAction: _setNextAction,
+        currentWallet: currentWallet!,
+      );
+    }
+  }
+
   Widget _buildSendVttForm() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,15 +120,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
             listItems: stepListItems,
             onChanged: (item) => {}),
         SizedBox(height: 16),
-        stepSelectedItem == VTTsteps.Transaction
-            ? RecipientStep(
-                nextAction: _setNextAction,
-                currentWallet: currentWallet!,
-              )
-            : ReviewStep(
-                nextAction: _setNextAction,
-                currentWallet: currentWallet!,
-              ),
+        stepToBuild(),
       ],
     );
   }
