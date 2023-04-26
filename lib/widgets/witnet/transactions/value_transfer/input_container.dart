@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/utils.dart';
 
-import 'package:witnet_wallet/widgets/auto_size_text.dart';
+import 'package:my_wit_wallet/widgets/auto_size_text.dart';
 
 class InputContainer extends StatelessWidget {
   InputContainer({

@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/theme/colors.dart';
+import 'package:my_wit_wallet/theme/colors.dart';
 
 class Carousel extends StatefulWidget {
   final List<String> list;

@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:witnet_wallet/util/math.dart';
-import 'package:witnet_wallet/widgets/widget_helper.dart';
+import 'package:my_wit_wallet/util/math.dart';
+import 'package:my_wit_wallet/widgets/widget_helper.dart';
 
 enum AnimatedTextRotation { up, down }
 

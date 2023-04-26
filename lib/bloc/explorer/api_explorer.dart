@@ -1,7 +1,9 @@
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
-import 'package:witnet_wallet/constants.dart';
+
+import 'package:my_wit_wallet/constants.dart';
+
 import '../../shared/api_database.dart';
 import '../../shared/locator.dart';
 import '../../util/storage/database/account.dart';

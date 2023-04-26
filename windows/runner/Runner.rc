@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.witnet" "\0"
-            VALUE "FileDescription", "Witnet Wallet" "\0"
+            VALUE "FileDescription", "myWitWallet" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "witnet_wallet" "\0"
+            VALUE "InternalName", "myWitWallet" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2021 com.witnet. All rights reserved." "\0"
-            VALUE "OriginalFilename", "witnet_wallet.exe" "\0"
-            VALUE "ProductName", "witnet_wallet" "\0"
+            VALUE "OriginalFilename", "myWitWallet.exe" "\0"
+            VALUE "ProductName", "myWitWallet" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

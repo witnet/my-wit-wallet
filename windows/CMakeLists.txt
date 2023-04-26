@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
-project(witnet_wallet LANGUAGES CXX)
+project(myWitWallet LANGUAGES CXX)
 
-set(BINARY_NAME "witnet_wallet")
+set(BINARY_NAME "myWitWallet")
 
 cmake_policy(SET CMP0063 NEW)
 

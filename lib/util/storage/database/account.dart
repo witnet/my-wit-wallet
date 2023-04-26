@@ -1,8 +1,8 @@
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 
-import 'package:witnet_wallet/util/utxo_list_to_string.dart';
+import 'package:my_wit_wallet/util/utxo_list_to_string.dart';
 import 'balance_info.dart';
 import 'dart:core';
 import 'package:quiver/core.dart';

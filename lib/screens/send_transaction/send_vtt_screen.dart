@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
+import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
+import 'package:my_wit_wallet/widgets/step_bar.dart';
+import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/01_recipient_step.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/02_select_miner_fee.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/03_review_step.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
-import 'package:witnet_wallet/constants.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/util/extensions/num_extensions.dart';
-import 'package:witnet_wallet/widgets/PaddedButton.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
-import 'package:witnet_wallet/widgets/layouts/dashboard_layout.dart';
-import 'package:witnet_wallet/widgets/step_bar.dart';
-import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/01_recipient_step.dart';
-import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/02_select_miner_fee.dart';
-import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/03_review_step.dart';
 
 class CreateVttScreen extends StatefulWidget {
   static final route = '/create-vtt';

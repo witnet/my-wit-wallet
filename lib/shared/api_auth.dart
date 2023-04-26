@@ -1,6 +1,6 @@
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/util/storage/database/database_service.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/storage/database/database_service.dart';
 import 'package:witnet/witnet.dart' show Xprv;
 import 'package:quiver/core.dart' show hash2;
 

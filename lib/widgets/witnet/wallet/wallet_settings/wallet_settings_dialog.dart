@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/util/paddings.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/widgets/auto_size_text.dart';
+import 'package:my_wit_wallet/util/paddings.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/widgets/auto_size_text.dart';
 
-import 'package:witnet_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'account_info_dialog.dart';
 
 class AccountCard extends StatelessWidget {

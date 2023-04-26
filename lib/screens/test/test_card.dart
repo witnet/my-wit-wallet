@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/widgets/PaddedButton.dart';
-import 'package:witnet_wallet/screens/login/view/login_screen.dart';
-import 'package:witnet_wallet/screens/screen_transitions/fade_transition.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/screens/login/view/login_screen.dart';
+import 'package:my_wit_wallet/screens/screen_transitions/fade_transition.dart';
 
 class TestCard extends StatefulWidget {
   TestCard({Key? key}) : super(key: key);

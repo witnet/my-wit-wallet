@@ -1,17 +1,17 @@
-import 'package:witnet_wallet/constants.dart';
-import 'package:witnet_wallet/util/extensions/num_extensions.dart';
+import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/data_structures.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
-import 'package:witnet_wallet/theme/extended_theme.dart';
-import 'package:witnet_wallet/util/storage/database/balance_info.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/widgets/clickable_box.dart';
-import 'package:witnet_wallet/widgets/input_amount.dart';
-import 'package:witnet_wallet/util/extensions/text_input_formatter.dart';
-import 'package:witnet_wallet/widgets/toggle_switch.dart';
+import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/util/storage/database/balance_info.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/widgets/clickable_box.dart';
+import 'package:my_wit_wallet/widgets/input_amount.dart';
+import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
+import 'package:my_wit_wallet/widgets/toggle_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 EstimatedFeeOptions _selectedFeeOption = EstimatedFeeOptions.Medium;
@@ -82,7 +82,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         outputUnit: WitUnit.Wit, inputUnit: WitUnit.nanoWit);
   }
 
-    String _witFeeTonanoWit(String fee) {
+  String _witFeeTonanoWit(String fee) {
     return num.parse(fee).standardizeWitUnits(
         outputUnit: WitUnit.nanoWit, inputUnit: WitUnit.Wit);
   }

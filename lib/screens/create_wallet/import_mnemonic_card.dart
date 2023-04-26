@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/crypto.dart';
-import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
-import 'package:witnet_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
 import 'bloc/create_wallet_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
+import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 
 //genius merge win culture lemon remember work native omit digital canal update
 typedef void VoidCallback(NavAction? value);

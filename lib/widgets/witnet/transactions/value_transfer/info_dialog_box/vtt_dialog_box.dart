@@ -4,8 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/util/paddings.dart';
-import 'package:witnet_wallet/widgets/auto_size_text.dart';
+import 'package:my_wit_wallet/util/paddings.dart';
+import 'package:my_wit_wallet/widgets/auto_size_text.dart';
 
 import '../../../../round_button.dart';
 

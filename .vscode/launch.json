@@ -12,18 +12,18 @@
       "webRoot": "${workspaceFolder}"
     },
     {
-      "name": "witnet_wallet",
+      "name": "my_wit_wallet",
       "request": "launch",
       "type": "dart"
     },
     {
-      "name": "witnet_wallet (profile mode)",
+      "name": "my_wit_wallet (profile mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "witnet_wallet (release mode)",
+      "name": "my_wit_wallet (release mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"

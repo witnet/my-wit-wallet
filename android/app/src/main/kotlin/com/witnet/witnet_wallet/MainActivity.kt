@@ -1,4 +1,4 @@
-package com.witnet.witnet_wallet
+package com.witnet.myWitWallet
 import android.os.Build
 import android.os.Bundle
 import androidx.core.view.WindowCompat

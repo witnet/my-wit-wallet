@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/util/paddings.dart';
-import 'package:witnet_wallet/widgets/auto_size_text.dart';
+import 'package:my_wit_wallet/util/paddings.dart';
+import 'package:my_wit_wallet/widgets/auto_size_text.dart';
 
-import 'package:witnet_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/util/storage/database/account.dart';
 
 launchExplorerSearch(String searchItem) async {
   Uri url = Uri.parse('https://witnet.network/search/$searchItem');

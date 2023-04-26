@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:witnet_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 
 class CustomLink extends StatelessWidget {
   final String text;

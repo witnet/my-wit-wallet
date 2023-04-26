@@ -2,11 +2,11 @@ import 'dart:isolate';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/witnet.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/util/storage/database/account.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/util/utxo_list_to_string.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/util/utxo_list_to_string.dart';
 import 'crypto_bloc.dart';
 
 enum SeedSource { mnemonic, xprv, encryptedXprv }

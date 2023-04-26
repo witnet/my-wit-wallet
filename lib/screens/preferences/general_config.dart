@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
-import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
-import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
-import 'package:witnet_wallet/theme/extended_theme.dart';
-import 'package:witnet_wallet/util/preferences.dart';
-import 'package:witnet_wallet/widgets/PaddedButton.dart';
-import 'package:witnet_wallet/widgets/switch.dart';
-import 'package:witnet_wallet/bloc/theme/theme_bloc.dart';
+import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
+import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/util/preferences.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/switch.dart';
+import 'package:my_wit_wallet/bloc/theme/theme_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/theme/wallet_theme.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
 class GeneralConfig extends StatefulWidget {
   GeneralConfig({Key? key}) : super(key: key);

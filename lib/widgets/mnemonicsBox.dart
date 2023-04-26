@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
-import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/widgets/dashed_rect.dart';
+import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/widgets/dashed_rect.dart';
 
 String _language = 'English';
 int _radioWordCount = 12;

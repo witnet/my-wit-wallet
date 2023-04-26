@@ -1,18 +1,18 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:witnet/constants.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
-import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
-import 'package:witnet_wallet/constants.dart';
-import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
+import 'package:my_wit_wallet/bloc/explorer/api_explorer.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/util/storage/database/account.dart';
 
 part 'vtt_create_event.dart';
 part 'vtt_create_state.dart';

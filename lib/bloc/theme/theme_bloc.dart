@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:witnet_wallet/theme/wallet_theme.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 part 'theme_event.dart';

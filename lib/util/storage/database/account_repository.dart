@@ -1,5 +1,5 @@
 import 'package:sembast/sembast.dart';
-import 'package:witnet_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/util/storage/database/account.dart';
 
 abstract class _AccountRepository {
   Future<bool> insertAccount(

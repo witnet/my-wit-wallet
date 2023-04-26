@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:witnet_wallet/theme/colors.dart';
+import 'package:my_wit_wallet/theme/colors.dart';
 
 class QrAddressGenerator extends StatefulWidget {
   QrAddressGenerator({

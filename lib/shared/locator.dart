@@ -1,12 +1,12 @@
 import 'package:get_it/get_it.dart';
-import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
-import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
-import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
-import 'package:witnet_wallet/util/preferences.dart';
-import 'package:witnet_wallet/util/storage/database/database_isolate.dart';
-import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/shared/api_theme.dart';
+import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
+import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
+import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:my_wit_wallet/util/preferences.dart';
+import 'package:my_wit_wallet/util/storage/database/database_isolate.dart';
+import 'package:my_wit_wallet/bloc/explorer/api_explorer.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/api_theme.dart';
 
 class Locator {
   static late GetIt _i;

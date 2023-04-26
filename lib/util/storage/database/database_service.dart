@@ -2,15 +2,15 @@ import 'dart:async';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/sembast.dart';
 import 'package:witnet/explorer.dart';
-import 'package:witnet_wallet/constants.dart';
-import 'package:witnet_wallet/util/storage/database/account.dart';
-import 'package:witnet_wallet/util/storage/database/account_repository.dart';
-import 'package:witnet_wallet/util/storage/database/encrypt/keychain.dart';
-import 'package:witnet_wallet/util/storage/database/encrypt/salsa20/codec.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/util/storage/database/wallet_repository.dart';
-import 'package:witnet_wallet/util/storage/database/transaction_repository.dart';
-import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
+import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/util/storage/database/account_repository.dart';
+import 'package:my_wit_wallet/util/storage/database/encrypt/keychain.dart';
+import 'package:my_wit_wallet/util/storage/database/encrypt/salsa20/codec.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_repository.dart';
+import 'package:my_wit_wallet/util/storage/database/transaction_repository.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 
 class _DBConfiguration {
   String path;

@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/explorer.dart';
-import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/widgets/transactions_list.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
-import 'package:witnet_wallet/util/storage/database/account.dart';
-import 'package:witnet_wallet/widgets/layouts/dashboard_layout.dart';
+import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/widgets/transactions_list.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
+import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 
 class DashboardScreen extends StatefulWidget {
   static final route = '/dashboard';

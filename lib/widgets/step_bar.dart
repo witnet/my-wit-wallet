@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/theme/extended_theme.dart';
-import 'package:witnet_wallet/util/extensions/string_extensions.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 
 typedef void StringCallback(Enum? value);
 

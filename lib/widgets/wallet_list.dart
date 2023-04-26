@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
-import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
-import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
-import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/theme/colors.dart';
-import 'package:witnet_wallet/theme/extended_theme.dart';
-import 'package:witnet_wallet/util/storage/database/account.dart';
-import 'package:witnet_wallet/widgets/identicon.dart';
-import 'package:witnet_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
+import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
+import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/theme/colors.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/widgets/identicon.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/util/preferences.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/util/preferences.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 
 class ListItem {
   bool isSelected = false;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/screens/screen_transitions/no_transitions_builder.dart';
+import 'package:my_wit_wallet/screens/screen_transitions/no_transitions_builder.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'colors.dart';
 

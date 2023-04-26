@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 
 DropdownMenuItem<String> _buildWalletDropdownItem(String value) {
   return DropdownMenuItem<String>(

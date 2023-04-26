@@ -1,19 +1,19 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/theme/wallet_theme.dart';
-import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
-import 'package:witnet_wallet/widgets/layouts/layout.dart';
-import 'package:witnet_wallet/widgets/carousel.dart';
-import 'package:witnet_wallet/widgets/input_login.dart';
-import 'package:witnet_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
+import 'package:my_wit_wallet/widgets/layouts/layout.dart';
+import 'package:my_wit_wallet/widgets/carousel.dart';
+import 'package:my_wit_wallet/widgets/input_login.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
-import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
-import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
-import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
+import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
+import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
+import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
 
 class LoginScreen extends StatefulWidget {
   static final route = '/';
@@ -183,9 +183,9 @@ class LoginScreenState extends State<LoginScreen>
         style: theme.textTheme.displayLarge,
       ),
       Carousel(list: [
-        'Witnet.Light allows you to send and receive Wit immediately. Bye bye synchronization!',
-        'Witnet.Light uses state-of-the-art cryptography to store your Wit coins securely.',
-        'Witnet.Light is completely non-custodial. Your keys will never leave your device.',
+        'myWitWallet allows you to send and receive Wit immediately. Bye bye synchronization!',
+        'myWitWallet uses state-of-the-art cryptography to store your Wit coins securely.',
+        'myWitWallet is completely non-custodial. Your keys will never leave your device.',
       ])
     ];
   }

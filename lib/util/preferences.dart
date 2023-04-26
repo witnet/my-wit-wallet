@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/theme/wallet_theme.dart';
-import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 
 import '../shared/locator.dart';
 

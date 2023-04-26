@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/theme/extended_theme.dart';
-import 'package:witnet_wallet/theme/wallet_theme.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
 class Customshape extends CustomClipper<Path> {
   @override

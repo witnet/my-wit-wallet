@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/theme/colors.dart';
-import 'package:witnet_wallet/widgets/PaddedButton.dart';
-import 'package:witnet_wallet/widgets/address_list.dart';
-import 'package:witnet_wallet/widgets/dashed_rect.dart';
-import 'package:witnet_wallet/widgets/qr/qr_address_generator.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
-import 'package:witnet_wallet/widgets/layouts/dashboard_layout.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/theme/colors.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/address_list.dart';
+import 'package:my_wit_wallet/widgets/dashed_rect.dart';
+import 'package:my_wit_wallet/widgets/qr/qr_address_generator.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
+import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 
 import '../../shared/locator.dart';
 import '../../util/storage/database/account.dart';

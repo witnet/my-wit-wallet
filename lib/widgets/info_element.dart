@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/widgets/link.dart';
+import 'package:my_wit_wallet/widgets/link.dart';
 
 class InfoElement extends StatelessWidget {
   final String label;

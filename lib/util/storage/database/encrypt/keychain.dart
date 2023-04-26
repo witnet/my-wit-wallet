@@ -4,7 +4,7 @@ import 'package:sembast/sembast.dart';
 import 'package:witnet/utils.dart';
 
 import 'package:witnet/crypto.dart';
-import 'package:witnet_wallet/util/storage/database/encrypt/password.dart';
+import 'package:my_wit_wallet/util/storage/database/encrypt/password.dart';
 
 Uint8List _formatData(Uint8List data, [int length = 128, int padByte = 11]) {
   Uint8List _data = Uint8List(length);

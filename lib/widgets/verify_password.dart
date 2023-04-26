@@ -1,8 +1,8 @@
-import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/widgets/PaddedButton.dart';
-import 'package:witnet_wallet/widgets/input_login.dart';
+import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
 
 final _passController = TextEditingController();

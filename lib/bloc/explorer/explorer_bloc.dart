@@ -4,14 +4,14 @@ import 'package:equatable/equatable.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
-import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/bloc/explorer/api_explorer.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 
-import 'package:witnet_wallet/util/storage/database/account.dart';
-import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
-import 'package:witnet_wallet/util/utxo_list_to_string.dart';
+import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
+import 'package:my_wit_wallet/util/utxo_list_to_string.dart';
 
 part 'explorer_event.dart';
 part 'explorer_state.dart';

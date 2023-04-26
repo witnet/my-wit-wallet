@@ -65,7 +65,7 @@ jobs:
         run: flutter build linux --release
 
       - name: LDD
-        run: ldd build/linux/x64/release/bundle/witnet_wallet
+        run: ldd build/linux/x64/release/bundle/my_wit_wallet
 
       - name: Archive Build
         run: |
@@ -103,7 +103,7 @@ jobs:
       - name: Archive Build
         run: |
           mkdir light-wallet
-          mv ./build/macos/Build/Products/Release/witnet_wallet.app ./light-wallet/
+          mv ./build/macos/Build/Products/Release/my_wit_wallet.app ./light-wallet/
           tar czvf witnet-light-wallet-darwin.tar.gz ./light-wallet
 
       - uses: actions/upload-artifact@v3

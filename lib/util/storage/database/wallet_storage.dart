@@ -1,5 +1,5 @@
 import 'package:witnet/explorer.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 
 import 'account.dart';
 import 'balance_info.dart';

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/widgets/carousel.dart';
-import 'package:witnet_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/widgets/carousel.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
-import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/create_wallet_screen.dart';
-import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
+import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
+import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
+import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 
 typedef void VoidCallback(Action? value);
 

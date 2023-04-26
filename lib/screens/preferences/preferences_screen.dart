@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/screens/preferences/general_config.dart';
-import 'package:witnet_wallet/screens/preferences/wallet_config.dart';
-import 'package:witnet_wallet/widgets/layouts/dashboard_layout.dart';
-import 'package:witnet_wallet/widgets/step_bar.dart';
+import 'package:my_wit_wallet/screens/preferences/general_config.dart';
+import 'package:my_wit_wallet/screens/preferences/wallet_config.dart';
+import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
+import 'package:my_wit_wallet/widgets/step_bar.dart';
 
 class PreferencePage extends StatefulWidget {
   PreferencePage({Key? key}) : super(key: key);

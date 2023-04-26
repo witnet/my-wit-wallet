@@ -5,9 +5,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/util/storage/cache/transaction_cache.dart';
-import 'package:witnet_wallet/widgets/auto_size_text.dart';
-import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/info_dialog_box/vtt_dialog_box.dart';
+import 'package:my_wit_wallet/util/storage/cache/transaction_cache.dart';
+import 'package:my_wit_wallet/widgets/auto_size_text.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/info_dialog_box/vtt_dialog_box.dart';
 
 import '../util/storage/database/account.dart';
 

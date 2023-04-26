@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/constants.dart';
-import 'package:witnet_wallet/util/extensions/text_input_formatter.dart';
+import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
 
 class InputAmount extends StatefulWidget {
   InputAmount({

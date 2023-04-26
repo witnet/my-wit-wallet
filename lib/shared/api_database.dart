@@ -1,12 +1,12 @@
 import 'dart:isolate';
 import 'package:witnet/explorer.dart';
-import 'package:witnet_wallet/util/storage/database/database_isolate.dart';
-import 'package:witnet_wallet/util/storage/database/database_service.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/util/storage/path_provider_interface.dart';
+import 'package:my_wit_wallet/util/storage/database/database_isolate.dart';
+import 'package:my_wit_wallet/util/storage/database/database_service.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/util/storage/path_provider_interface.dart';
 
-import 'package:witnet_wallet/util/storage/database/account.dart';
-import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
+import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'locator.dart';
 
 class DatabaseException {

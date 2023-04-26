@@ -1,19 +1,19 @@
-import 'package:witnet_wallet/constants.dart';
-import 'package:witnet_wallet/screens/send_transaction/send_vtt_screen.dart';
-import 'package:witnet_wallet/util/extensions/num_extensions.dart';
+import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
+import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
-import 'package:witnet_wallet/util/storage/database/balance_info.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/widgets/input_amount.dart';
-import 'package:witnet_wallet/util/extensions/text_input_formatter.dart';
+import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
+import 'package:my_wit_wallet/util/storage/database/balance_info.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/widgets/input_amount.dart';
+import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
 import 'dart:io' show Platform;
-import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
 
 class RecipientStep extends StatefulWidget {
   final Function nextAction;

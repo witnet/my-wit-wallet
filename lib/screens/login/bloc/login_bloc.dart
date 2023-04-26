@@ -1,11 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/models/wallet_name.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/screens/create_wallet/models/wallet_name.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
 
-import 'package:witnet_wallet/util/preferences.dart';
+import 'package:my_wit_wallet/util/preferences.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';

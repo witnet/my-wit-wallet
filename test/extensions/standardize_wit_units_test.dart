@@ -1,5 +1,5 @@
-import 'package:witnet_wallet/constants.dart';
-import 'package:witnet_wallet/util/extensions/num_extensions.dart';
+import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:test/test.dart';
 
 void main() {

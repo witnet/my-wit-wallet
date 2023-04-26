@@ -1,5 +1,5 @@
 import 'package:decimal/decimal.dart';
-import 'package:witnet_wallet/constants.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'dart:math';
 
 extension TimestampExtension on num {

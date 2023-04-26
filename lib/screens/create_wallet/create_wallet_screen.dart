@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/create_import_wallet.dart';
-import 'package:witnet_wallet/widgets/PaddedButton.dart';
-import 'package:witnet_wallet/screens/create_wallet/import_mnemonic_card.dart';
-import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/confirm_mnemonic_card.dart';
-import 'package:witnet_wallet/screens/create_wallet/disclaimer_card.dart';
-import 'package:witnet_wallet/screens/create_wallet/generate_mnemonic_card.dart';
-import 'package:witnet_wallet/screens/create_wallet/wallet_detail_card.dart';
-import 'package:witnet_wallet/screens/create_wallet/select_imported_option.dart';
-import 'package:witnet_wallet/widgets/layouts/layout.dart';
+import 'package:my_wit_wallet/screens/create_wallet/create_import_wallet.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/screens/create_wallet/import_mnemonic_card.dart';
+import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:my_wit_wallet/screens/create_wallet/confirm_mnemonic_card.dart';
+import 'package:my_wit_wallet/screens/create_wallet/disclaimer_card.dart';
+import 'package:my_wit_wallet/screens/create_wallet/generate_mnemonic_card.dart';
+import 'package:my_wit_wallet/screens/create_wallet/wallet_detail_card.dart';
+import 'package:my_wit_wallet/screens/create_wallet/select_imported_option.dart';
+import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 
 import 'build_wallet_card.dart';
 import 'enc_xprv_card.dart';

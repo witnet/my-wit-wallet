@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
-import 'package:witnet_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
-import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
-import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/widgets/input_login.dart';
-import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
+import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
+import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
+import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/widgets/input_login.dart';
+import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 
 final _passController = TextEditingController();
 final _textController = TextEditingController();

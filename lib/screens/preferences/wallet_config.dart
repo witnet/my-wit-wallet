@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
-import 'package:witnet_wallet/widgets/PaddedButton.dart';
-import 'package:witnet_wallet/widgets/dashed_rect.dart';
-import 'package:witnet_wallet/widgets/generate_compatible_xprv.dart';
-import 'package:witnet_wallet/widgets/verify_password.dart';
+import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/dashed_rect.dart';
+import 'package:my_wit_wallet/widgets/generate_compatible_xprv.dart';
+import 'package:my_wit_wallet/widgets/verify_password.dart';
 
 class WalletConfig extends StatefulWidget {
   WalletConfig({Key? key}) : super(key: key);

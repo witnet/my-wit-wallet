@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:witnet_wallet/screens/send_transaction/send_vtt_screen.dart';
+import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 
 typedef void StringCallback(String value);
 

@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/schema.dart';
-import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
-import 'package:witnet_wallet/constants.dart';
-import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
-import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
-import 'package:witnet_wallet/screens/send_transaction/send_vtt_screen.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/widgets/PaddedButton.dart';
-import 'package:witnet_wallet/widgets/alert_dialog.dart';
-import 'package:witnet_wallet/widgets/info_element.dart';
-import 'package:witnet_wallet/util/extensions/num_extensions.dart';
+import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
+import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
+import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/alert_dialog.dart';
+import 'package:my_wit_wallet/widgets/info_element.dart';
+import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 
 typedef void VoidCallback(bool value);
 

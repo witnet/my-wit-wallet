@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/screens/test/test_card.dart';
-import 'package:witnet_wallet/widgets/layouts/layout.dart';
+import 'package:my_wit_wallet/screens/test/test_card.dart';
+import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 
 class TestScreen extends StatefulWidget {
   static final route = '/test';

@@ -2,13 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/theme/colors.dart';
-import 'package:witnet_wallet/widgets/identicon.dart';
-import 'package:witnet_wallet/widgets/layouts/headerLayout.dart';
-import 'package:witnet_wallet/theme/extended_theme.dart';
-import 'package:witnet_wallet/theme/wallet_theme.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/theme/colors.dart';
+import 'package:my_wit_wallet/widgets/identicon.dart';
+import 'package:my_wit_wallet/widgets/layouts/headerLayout.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
 final panelController = PanelController();
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
-import 'package:witnet_wallet/screens/login/bloc/login_bloc.dart';
-import 'package:witnet_wallet/widgets/labeled_checkbox.dart';
-import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
+import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
+import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
+import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 
 typedef void VoidCallback(NavAction? value);
 

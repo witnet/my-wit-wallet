@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.witnet.witnet_wallet">
+    package="com.witnet.myWitWallet">
    <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:name="${applicationName}"
-        android:label="witnet_wallet"
-        android:icon="@mipmap/ic_launcher">
+        android:name="myWitWallet"
+        android:label="myWitWallet"
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:witnet_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'dart:math' as math;
 
-import 'package:witnet_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 
 typedef void VoidCallback();
 

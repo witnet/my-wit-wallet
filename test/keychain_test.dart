@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/util/storage/database/encrypt/keychain.dart';
+import 'package:my_wit_wallet/util/storage/database/encrypt/keychain.dart';
 
 void main() async {
   test('Password Encryption Test', () async {

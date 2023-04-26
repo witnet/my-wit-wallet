@@ -1,4 +1,4 @@
-import 'package:witnet_wallet/util/storage/database/balance_info.dart';
+import 'package:my_wit_wallet/util/storage/database/balance_info.dart';
 
 class Address {
   String address;

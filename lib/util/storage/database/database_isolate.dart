@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'dart:isolate';
 
 import 'package:witnet/explorer.dart';
-import 'package:witnet_wallet/util/storage/database/wallet.dart';
-import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 
 import 'account.dart';
 import 'database_service.dart';

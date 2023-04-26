@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:witnet_wallet/app.dart';
-import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/app.dart';
+import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:witnet_wallet/theme/wallet_theme.dart';
-import 'package:witnet_wallet/util/preferences.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
+import 'package:my_wit_wallet/util/preferences.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");

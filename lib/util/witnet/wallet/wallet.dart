@@ -2,8 +2,8 @@ import 'dart:isolate';
 
 import 'package:witnet/constants.dart';
 import 'package:witnet/witnet.dart';
-import 'package:witnet_wallet/bloc/crypto/crypto_bloc.dart';
-import 'package:witnet_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
 
 enum KeyType { internal, external }
 

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet/utils.dart';
-import 'package:witnet_wallet/bloc/explorer/explorer_bloc.dart';
-import 'package:witnet_wallet/shared/api_database.dart';
-import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/util/storage/database/balance_info.dart';
+import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/storage/database/balance_info.dart';
 
-import 'package:witnet_wallet/util/storage/database/wallet_storage.dart';
-import 'package:witnet_wallet/widgets/animated_numeric_text.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
+import 'package:my_wit_wallet/widgets/animated_numeric_text.dart';
 
 class BalanceDisplay extends StatefulWidget {
   final AnimationController loadingController;

@@ -1,5 +1,5 @@
-name: witnet_wallet
-description: Witnet Wallet
+name: my_wit_wallet
+description: myWitWallet allows you to send and receive Wit immediately. Bye bye synchronization!
 
 publish_to: 'none'
 
