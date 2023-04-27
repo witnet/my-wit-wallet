@@ -18,9 +18,10 @@ class SelectMinerFeeStep extends StatefulWidget {
   final Wallet currentWallet;
 
   SelectMinerFeeStep({
+    required Key? key,
     required this.currentWallet,
     required this.nextAction,
-  });
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => SelectMinerFeeStepState();
@@ -41,7 +42,6 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
     _loadingController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
@@ -72,20 +72,22 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
 
   bool _notEnoughFunds() {
     final balance = balanceInfo.availableNanoWit;
-    // TODO: get amount from prev step
-    final amount = 0;
-    int nanoWitAmount = int.parse(amount.standardizeWitUnits(
-        inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit));
+    final amount = BlocProvider.of<VTTCreateBloc>(context)
+        .state
+        .vtTransaction
+        .body
+        .outputs
+        .first
+        .value
+        .toInt();
     if (_feeType == FeeType.Absolute) {
       int minerFee = int.parse(_minerFeeToNumber().standardizeWitUnits(
           inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit));
-      int totalToSpend = minerFee + nanoWitAmount;
+      int totalToSpend = minerFee + amount;
       return balance < totalToSpend;
     } else {
-      int? _weightedFee = balanceInfo.weightedVttFee(nanoWitAmount);
-      return _weightedFee != null
-          ? balance < _weightedFee + nanoWitAmount
-          : true;
+      int? _weightedFee = balanceInfo.weightedVttFee(amount);
+      return _weightedFee != null ? balance < _weightedFee + amount : true;
     }
   }
 
@@ -94,16 +96,26 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
       _feeType = type == "Absolute" ? FeeType.Absolute : FeeType.Weighted;
       _showFeeInput = _isAbsoluteFee() ? true : false;
     });
+  }
+
+  void _updateTxFee() {
     if (_isAbsoluteFee()) {
-      _validateFee(_minerFee);
-      BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
-          feeType: FeeType.Absolute,
-          feeNanoWit: int.parse(_minerFeeToNumber().standardizeWitUnits(
-              inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit))));
+      _setAbsoluteFee();
     } else {
-      BlocProvider.of<VTTCreateBloc>(context)
-          .add(UpdateFeeEvent(feeType: FeeType.Weighted));
+      _setWeightedFee();
     }
+  }
+
+  void _setAbsoluteFee() {
+    BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
+        feeType: FeeType.Absolute,
+        feeNanoWit: int.parse(_minerFeeToNumber().standardizeWitUnits(
+            inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit))));
+  }
+
+  void _setWeightedFee() {
+    BlocProvider.of<VTTCreateBloc>(context)
+        .add(UpdateFeeEvent(feeType: FeeType.Weighted));
   }
 
   String? _validateFee(String? input) {
@@ -124,22 +136,14 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
 
   bool validateForm() {
     setState(() {
-      if (_feeType == FeeType.Absolute) {
-        _errorFeeText = _validateFee(_minerFee);
-      }
+      _errorFeeText = _validateFee(_minerFee);
     });
-    if (_isAbsoluteFee()) {
-      if (_errorFeeText == null && _minerFee.isEmpty) {
-        return true;
-      }
-    }
-    return false;
+    return _errorFeeText == null;
   }
 
   void nextAction() {
     if (validateForm() && _formKey.currentState!.validate()) {
-      // TODO: go to review step
-      print('next 02 action');
+      _updateTxFee();
     }
   }
 
@@ -180,7 +184,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
               selectedItem: _feeType.name,
               listItems:
                   FeeType.values.map((e) => e.name).toList().reversed.toList(),
-              onChanged: (value) => _setFeeType(value)),
+              onChanged: (value) => {_setFeeType(value), _updateTxFee()}),
           SizedBox(height: 8),
           _showFeeInput
               ? InputAmount(
@@ -209,12 +213,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                     }
                   },
                   onEditingComplete: () {
-                    BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
-                        feeType: FeeType.Absolute,
-                        feeNanoWit: int.parse(_minerFeeToNumber()
-                            .standardizeWitUnits(
-                                inputUnit: WitUnit.Wit,
-                                outputUnit: WitUnit.nanoWit))));
+                    _setAbsoluteFee();
                   },
                 )
               : SizedBox(height: 8),

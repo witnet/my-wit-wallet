@@ -21,9 +21,10 @@ class RecipientStep extends StatefulWidget {
   final Wallet currentWallet;
 
   RecipientStep({
+    required Key? key,
     required this.currentWallet,
     required this.nextAction,
-  });
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => RecipientStepState();

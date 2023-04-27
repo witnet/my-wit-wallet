@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
@@ -36,6 +34,11 @@ class CreateVttScreenState extends State<CreateVttScreen>
   int currentStepIndex = 0;
   late AnimationController _loadingController;
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
+  GlobalKey<RecipientStepState> transactionFormState =
+      GlobalKey<RecipientStepState>();
+  GlobalKey<SelectMinerFeeStepState> minerFeeState =
+      GlobalKey<SelectMinerFeeStepState>();
+
   @override
   void initState() {
     super.initState();
@@ -78,6 +81,18 @@ class CreateVttScreenState extends State<CreateVttScreen>
     });
   }
 
+  bool _isNextStepAllow() {
+    bool isTransactionFormValid = stepSelectedItem == VTTsteps.Transaction &&
+        (transactionFormState.currentState != null &&
+            transactionFormState.currentState!.validateForm());
+    bool isMinerFeeFormValid = stepSelectedItem == VTTsteps.MinerFee &&
+        (minerFeeState.currentState != null &&
+            minerFeeState.currentState!.validateForm());
+    return (isTransactionFormValid |
+        isMinerFeeFormValid |
+        (stepSelectedItem == VTTsteps.Review));
+  }
+
   List<Widget> _actions() {
     return [
       PaddedButton(
@@ -86,7 +101,11 @@ class CreateVttScreenState extends State<CreateVttScreen>
           type: 'primary',
           enabled: true,
           onPressed: () => {
-                if (nextAction != null) {nextAction().action(), goToNextStep()},
+                if (nextAction != null)
+                  {
+                    nextAction().action(),
+                    if (_isNextStepAllow()) goToNextStep(),
+                  },
               }),
     ];
   }
@@ -94,11 +113,13 @@ class CreateVttScreenState extends State<CreateVttScreen>
   Widget stepToBuild() {
     if (stepSelectedItem == VTTsteps.Transaction) {
       return RecipientStep(
+        key: transactionFormState,
         nextAction: _setNextAction,
         currentWallet: currentWallet!,
       );
     } else if (stepSelectedItem == VTTsteps.MinerFee) {
       return SelectMinerFeeStep(
+        key: minerFeeState,
         nextAction: _setNextAction,
         currentWallet: currentWallet!,
       );
