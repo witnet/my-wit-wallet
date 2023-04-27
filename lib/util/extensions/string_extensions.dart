@@ -13,6 +13,11 @@ extension StringExtension on String {
     }
   }
 
+  String fromPascalCaseToTitle() {
+    final result = this.split(RegExp('(?=[A-Z])'));
+    return result.join(' ').toLowerCase().capitalize();
+  }
+
   String toTitleCase() => replaceAll(RegExp(' +'), ' ')
       .split(' ')
       .map((str) => str.capitalize())

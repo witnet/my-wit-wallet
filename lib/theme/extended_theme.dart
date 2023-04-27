@@ -21,6 +21,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.txValuePositiveColor,
     required this.txValueNegativeColor,
     required this.stepBarActiveColor,
+    required this.stepBarActionableColor,
     required this.stepBarColor,
     required this.dialogBackground,
     required this.monoSmallText,
@@ -45,6 +46,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? txValuePositiveColor;
   final Color? txValueNegativeColor;
   final Color? stepBarActiveColor;
+  final Color? stepBarActionableColor;
   final Color? stepBarColor;
   final Color? dialogBackground;
   final TextStyle? monoSmallText;
@@ -67,6 +69,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     Color? txValuePositiveColor,
     Color? txValueNegativeColor,
     Color? stepBarActiveColor,
+    Color? stepBarActionableColor,
     Color? stepBarColor,
     Color? dialogBackground,
     TextStyle? monoSmallText,
@@ -101,6 +104,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       txValueNegativeColor: txValueNegativeColor ?? this.txValueNegativeColor,
       txValuePositiveColor: txValuePositiveColor ?? this.txValuePositiveColor,
       stepBarActiveColor: stepBarActiveColor ?? this.stepBarActiveColor,
+      stepBarActionableColor:
+          stepBarActionableColor ?? this.stepBarActionableColor,
       stepBarColor: stepBarColor ?? this.stepBarColor,
       dialogBackground: dialogBackground ?? this.dialogBackground,
       monoSmallText: monoSmallText ?? this.monoSmallText,
@@ -150,6 +155,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
           Color.lerp(txValuePositiveColor, other.txValuePositiveColor, t),
       stepBarActiveColor:
           Color.lerp(stepBarActiveColor, other.stepBarActiveColor, t),
+      stepBarActionableColor:
+          Color.lerp(stepBarActiveColor, other.stepBarActionableColor, t),
       stepBarColor: Color.lerp(stepBarColor, other.stepBarColor, t),
       dialogBackground: Color.lerp(dialogBackground, other.dialogBackground, t),
       monoSmallText: TextStyle.lerp(monoSmallText, other.monoSmallText, t),
@@ -179,7 +186,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     txValueNegativeColor: WitnetPallet.darkRed,
     txValuePositiveColor: WitnetPallet.darkGreen,
     stepBarActiveColor: WitnetPallet.witnetGreen1,
-    stepBarColor: WitnetPallet.darkGrey,
+    stepBarActionableColor: WitnetPallet.darkGrey,
+    stepBarColor: WitnetPallet.lightGrey,
     dialogBackground: WitnetPallet.white,
     monoSmallText: TextStyle(
         fontFamily: 'RobotoMono',
@@ -221,6 +229,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     txValueNegativeColor: WitnetPallet.brightRed,
     txValuePositiveColor: WitnetPallet.brightGreen,
     stepBarActiveColor: WitnetPallet.witnetGreen1,
+    stepBarActionableColor: WitnetPallet.white,
     stepBarColor: WitnetPallet.opacityWhite,
     dialogBackground: WitnetPallet.opacityWitnetGreen,
     monoSmallText: TextStyle(

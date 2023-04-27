@@ -22,7 +22,7 @@ class CreateVttScreen extends StatefulWidget {
 
 enum VTTsteps {
   Transaction,
-  SelectMinerFee,
+  MinerFee,
   Review,
 }
 
@@ -32,7 +32,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
   dynamic nextAction;
   dynamic nextStep;
   List<VTTsteps> stepListItems = VTTsteps.values.toList();
-  VTTsteps stepSelectedItem = VTTsteps.Transaction;
+  Enum stepSelectedItem = VTTsteps.Transaction;
   int currentStepIndex = 0;
   late AnimationController _loadingController;
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
@@ -62,10 +62,11 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   void goToNextStep() {
-    print('go next step');
     if ((currentStepIndex + 1) < stepListItems.length) {
-      currentStepIndex += 1;
-      stepSelectedItem = stepListItems[currentStepIndex];
+      setState(() {
+        currentStepIndex += 1;
+        stepSelectedItem = stepListItems[currentStepIndex];
+      });
     }
   }
 
@@ -91,13 +92,12 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   Widget stepToBuild() {
-    debugger();
     if (stepSelectedItem == VTTsteps.Transaction) {
       return RecipientStep(
         nextAction: _setNextAction,
         currentWallet: currentWallet!,
       );
-    } else if (stepSelectedItem == VTTsteps.SelectMinerFee) {
+    } else if (stepSelectedItem == VTTsteps.MinerFee) {
       return SelectMinerFeeStep(
         nextAction: _setNextAction,
         currentWallet: currentWallet!,
@@ -118,7 +118,10 @@ class CreateVttScreenState extends State<CreateVttScreen>
             actionable: false,
             selectedItem: stepSelectedItem,
             listItems: stepListItems,
-            onChanged: (item) => {}),
+            onChanged: (item) => {
+                  setState(() =>
+                      {stepSelectedItem = item!, currentStepIndex = item.index})
+                }),
         SizedBox(height: 16),
         stepToBuild(),
       ],

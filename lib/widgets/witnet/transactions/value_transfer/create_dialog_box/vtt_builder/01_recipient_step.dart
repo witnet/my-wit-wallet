@@ -12,7 +12,6 @@ import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/input_amount.dart';
-import 'package:witnet_wallet/widgets/select.dart';
 import 'package:witnet_wallet/util/extensions/text_input_formatter.dart';
 import 'dart:io' show Platform;
 import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
@@ -37,16 +36,11 @@ class RecipientStepState extends State<RecipientStep>
   final _formKey = GlobalKey<FormState>();
   String _address = '';
   String _amount = '';
-  String _minerFee = '';
   String? _errorAddressText;
   String? _errorAmountText;
-  String? _errorFeeText;
   FeeType _feeType = FeeType.Weighted;
-  bool _showFeeInput = false;
   final _amountController = TextEditingController();
   final _amountFocusNode = FocusNode();
-  final _minerFeeController = TextEditingController();
-  final _minerFeeFocusNode = FocusNode();
   final _addressController = TextEditingController();
   final _addressFocusNode = FocusNode();
 
@@ -68,18 +62,8 @@ class RecipientStepState extends State<RecipientStep>
     _addressController.dispose();
     _addressFocusNode.dispose();
     _amountController.dispose();
-    _minerFeeController.dispose();
     _amountFocusNode.dispose();
-    _minerFeeFocusNode.dispose();
     super.dispose();
-  }
-
-  num _minerFeeToNumber() {
-    try {
-      return num.parse(_minerFee != '' ? _minerFee : '0');
-    } catch (e) {
-      return 0;
-    }
   }
 
   num _amountToNumber() {
@@ -90,42 +74,11 @@ class RecipientStepState extends State<RecipientStep>
     }
   }
 
-  bool _isAbsoluteFee() {
-    return _feeType == FeeType.Absolute;
-  }
-
   bool _notEnoughFunds() {
     final balance = balanceInfo.availableNanoWit;
     int nanoWitAmount = int.parse(_amountToNumber().standardizeWitUnits(
         inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit));
-    if (_feeType == FeeType.Absolute) {
-      int minerFee = int.parse(_minerFeeToNumber().standardizeWitUnits(
-          inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit));
-      int totalToSpend = minerFee + nanoWitAmount;
-      return balance < totalToSpend;
-    } else {
-      int? _weightedFee = balanceInfo.weightedVttFee(nanoWitAmount);
-      return _weightedFee != null
-          ? balance < _weightedFee + nanoWitAmount
-          : true;
-    }
-  }
-
-  void _setFeeType(type) {
-    setState(() {
-      _feeType = type == "Absolute" ? FeeType.Absolute : FeeType.Weighted;
-      _showFeeInput = _isAbsoluteFee() ? true : false;
-    });
-    if (_isAbsoluteFee()) {
-      _validateFee(_minerFee);
-      BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
-          feeType: FeeType.Absolute,
-          feeNanoWit: int.parse(_minerFeeToNumber().standardizeWitUnits(
-              inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit))));
-    } else {
-      BlocProvider.of<VTTCreateBloc>(context)
-          .add(UpdateFeeEvent(feeType: FeeType.Weighted));
-    }
+    return balance < nanoWitAmount;
   }
 
   String? _validateAddress(String? input) {
@@ -148,44 +101,13 @@ class RecipientStepState extends State<RecipientStep>
     return errorText;
   }
 
-  String? _validateFee(String? input) {
-    String? errorText;
-    try {
-      num.parse(_minerFee != '' ? _minerFee : '0');
-    } catch (e) {
-      errorText = 'Invalid Amount';
-    }
-    if (_notEnoughFunds()) {
-      errorText = 'Not enough Funds';
-    }
-    if (_isAbsoluteFee()) {
-      errorText = errorText ?? validateWitValue(input);
-    }
-    return errorText;
-  }
-
   bool validateForm() {
     setState(() {
       _errorAddressText = _validateAddress(_address);
       _errorAmountText = _validateAmount(_amount);
-      if (_feeType == FeeType.Absolute) {
-        _errorFeeText = _validateFee(_minerFee);
-      }
     });
-    if (_isAbsoluteFee()) {
-      if ((_errorAddressText == null &&
-              _errorAmountText == null &&
-              _errorFeeText == null) &&
-          !(_address.isEmpty || _amount.isEmpty || _minerFee.isEmpty)) {
-        return true;
-      }
-    } else {
-      if ((_errorAddressText == null && _errorAmountText == null) &&
-          !(_address.isEmpty || _amount.isEmpty)) {
-        return true;
-      }
-    }
-    return false;
+    return ((_errorAddressText == null && _errorAmountText == null) &&
+        !(_address.isEmpty || _amount.isEmpty));
   }
 
   void nextAction() {
@@ -210,7 +132,6 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   _buildForm(BuildContext context, ThemeData theme) {
-    final extendedTheme = theme.extension<ExtendedTheme>();
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.disabled,
@@ -318,66 +239,6 @@ class RecipientStepState extends State<RecipientStep>
             },
           ),
           SizedBox(height: 16),
-          Row(children: [
-            Text(
-              'Miner fee',
-              style: theme.textTheme.titleSmall,
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 8),
-              child: Tooltip(
-                  height: 100,
-                  message:
-                      'By default, \'Weighted fee\' is selected.\n\nThe amount of the fee will be calculated, taking into account the weight of the transaction.\n\nTo set an absolute fee, you need to select \'Absolute\' and input a value.',
-                  child: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: Icon(FontAwesomeIcons.circleQuestion,
-                          size: 12, color: extendedTheme?.inputIconColor))),
-            )
-          ]),
-          SizedBox(height: 8),
-          Select(
-              selectedItem: _feeType.name,
-              listItems:
-                  FeeType.values.map((e) => e.name).toList().reversed.toList(),
-              onChanged: (value) => _setFeeType(value)),
-          SizedBox(height: 8),
-          _showFeeInput
-              ? InputAmount(
-                  hint: 'Input the miner fee',
-                  errorText: _errorFeeText,
-                  controller: _minerFeeController,
-                  focusNode: _minerFeeFocusNode,
-                  keyboardType: TextInputType.number,
-                  validator: _validateFee,
-                  onChanged: (String value) {
-                    setState(() {
-                      _minerFee = value;
-                      if (_validateFee(_minerFee) == null) {
-                        _errorFeeText = null;
-                      }
-                    });
-                  },
-                  onTap: () {
-                    _minerFeeFocusNode.requestFocus();
-                  },
-                  onTapOutside: (PointerDownEvent event) {
-                    if (_minerFeeFocusNode.hasFocus) {
-                      setState(() {
-                        _errorFeeText = _validateFee(_minerFee);
-                      });
-                    }
-                  },
-                  onEditingComplete: () {
-                    BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
-                        feeType: FeeType.Absolute,
-                        feeNanoWit: int.parse(_minerFeeToNumber()
-                            .standardizeWitUnits(
-                                inputUnit: WitUnit.Wit,
-                                outputUnit: WitUnit.nanoWit))));
-                  },
-                )
-              : SizedBox(height: 8),
         ],
       ),
     );

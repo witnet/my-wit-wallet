@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
+import 'package:witnet_wallet/util/extensions/string_extensions.dart';
 
 typedef void StringCallback(Enum? value);
 
@@ -16,28 +19,37 @@ class StepBar extends StatelessWidget {
     required this.onChanged,
   });
 
-  Widget _buildStepBarItem(
-      Enum item, BuildContext context, ExtendedTheme extendedTheme) {
+  Color _itemColor(
+      Enum item, bool isItemActionable, ExtendedTheme extendedTheme) {
+    if (item == selectedItem) {
+      return extendedTheme.stepBarActiveColor!;
+    } else if (isItemActionable) {
+      return extendedTheme.stepBarActionableColor!;
+    }
+    return extendedTheme.stepBarColor!;
+  }
+
+  Widget _buildStepBarItem(Enum item, BuildContext context,
+      ExtendedTheme extendedTheme, bool isItemActionable) {
     return Container(
         alignment: Alignment.center,
-        child: actionable
+        child: isItemActionable
             ? MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
                   child: Padding(
-                      padding: EdgeInsets.only(right: 8),
-                      child: Text(item.name,
+                      padding: EdgeInsets.only(right: 16),
+                      child: Text(item.name.fromPascalCaseToTitle(),
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: item == selectedItem
-                                  ? extendedTheme.stepBarActiveColor
-                                  : extendedTheme.stepBarColor))),
+                              color: _itemColor(
+                                  item, isItemActionable, extendedTheme)))),
                   onTap: () => {onChanged(item)},
                 ))
             : Padding(
-                padding: EdgeInsets.only(right: 8),
-                child: Text(item.name,
+                padding: EdgeInsets.only(right: 16),
+                child: Text(item.name.fromPascalCaseToTitle(),
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -54,7 +66,10 @@ class StepBar extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           itemCount: listItems.length,
           itemBuilder: (context, index) {
-            return _buildStepBarItem(listItems[index], context, extendedTheme);
+            bool isItemActionable =
+                (actionable || (index < selectedItem.index)) ? true : false;
+            return _buildStepBarItem(
+                listItems[index], context, extendedTheme, isItemActionable);
           },
         ));
   }
