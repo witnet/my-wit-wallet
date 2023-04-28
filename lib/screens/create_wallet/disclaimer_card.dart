@@ -92,7 +92,7 @@ class DisclaimerCardState extends State<DisclaimerCard>
           height: 10,
         ),
         Text(
-            'A wallet is an app that keeps your credentials safe and lets you interface with the Witnet blockchain in many ways: from transferring Wit to someone else to creating smart contracts.',
+            'A wallet is an app that keeps your credentials safe and lets you interface with the Witnet blockchain. It allows you to easily transfer and receive Wit.',
             style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
