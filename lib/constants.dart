@@ -32,6 +32,8 @@ enum WitUnit {
   nanoWit,
 }
 
+enum EstimatedFeeOptions { Stinky, Low, Medium, High, Opulent, Custom }
+
 const int EXTERNAL_GAP_LIMIT = 3;
 const int INTERNAL_GAP_LIMIT = 1;
 const bool ENCRYPT_DB = false;

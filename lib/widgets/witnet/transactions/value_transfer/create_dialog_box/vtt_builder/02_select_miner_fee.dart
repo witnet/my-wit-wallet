@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'package:witnet_wallet/constants.dart';
+import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +15,10 @@ import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/input_amount.dart';
 import 'package:witnet_wallet/widgets/select.dart';
 import 'package:witnet_wallet/util/extensions/text_input_formatter.dart';
+import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
+import 'package:witnet_wallet/widgets/toggle_switch.dart';
+
+EstimatedFeeOptions _selectedFeeOption = EstimatedFeeOptions.Medium;
 
 class SelectMinerFeeStep extends StatefulWidget {
   final Function nextAction;
@@ -36,10 +43,18 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   late BalanceInfo balanceInfo = widget.currentWallet.balanceNanoWit();
   late AnimationController _loadingController;
   final _formKey = GlobalKey<FormState>();
+  Map<EstimatedFeeOptions, String?> _minerFeeOptions = {
+    EstimatedFeeOptions.Stinky: '0',
+    EstimatedFeeOptions.Low: '0',
+    EstimatedFeeOptions.Medium: '0',
+    EstimatedFeeOptions.High: '0',
+    EstimatedFeeOptions.Opulent: '0',
+    EstimatedFeeOptions.Custom: null,
+  };
   String _minerFee = '';
   String? _errorFeeText;
-  FeeType _feeType = FeeType.Weighted;
-  bool _showFeeInput = false;
+  int selectedIndex = 0;
+  FeeType _feeType = FeeType.Absolute;
   final _minerFeeController = TextEditingController();
   final _minerFeeFocusNode = FocusNode();
 
@@ -50,6 +65,10 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
+    priority();
+    Timer.periodic(Duration(seconds: 5), (timer) async {
+      priority();
+    });
     WidgetsBinding.instance.addPostFrameCallback(
         (_) => {widget.nextAction(next), _setSavedFeeData()});
   }
@@ -60,6 +79,34 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     _minerFeeController.dispose();
     _minerFeeFocusNode.dispose();
     super.dispose();
+  }
+
+  Future<bool> priority() async {
+    try {
+      var resp = await Locator.instance.get<ApiExplorer>().priority();
+
+      this._setPriorities(
+        resp["vttStinky"]["priority"]["nanoWit"],
+        resp["vttLow"]["priority"]["nanoWit"],
+        resp["vttMedium"]["priority"]["nanoWit"],
+        resp["vttHigh"]["priority"]["nanoWit"],
+        resp["vttOpulent"]["priority"]["nanoWit"],
+      );
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  void _setPriorities(
+      String stinky, String low, String medium, String high, String opulent) {
+    setState(() {
+      _minerFeeOptions[EstimatedFeeOptions.Stinky] = stinky;
+      _minerFeeOptions[EstimatedFeeOptions.Low] = low;
+      _minerFeeOptions[EstimatedFeeOptions.Medium] = medium;
+      _minerFeeOptions[EstimatedFeeOptions.High] = high;
+      _minerFeeOptions[EstimatedFeeOptions.Opulent] = opulent;
+    });
   }
 
   num _minerFeeToNumber() {
@@ -101,6 +148,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     if (_isAbsoluteFee() && widget.savedFeeAmount != null) {
       _minerFeeController.text = widget.savedFeeAmount!;
       _minerFee = widget.savedFeeAmount!;
+      _minerFeeController.text = widget.savedFeeAmount!;
     }
     ;
   }
@@ -108,7 +156,6 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   void _setFeeType(type) {
     setState(() {
       _feeType = type == "Absolute" ? FeeType.Absolute : FeeType.Weighted;
-      _showFeeInput = _isAbsoluteFee() ? true : false;
     });
   }
 
@@ -117,8 +164,8 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
       _setAbsoluteFee();
     } else {
       _setWeightedFee();
-      validateForm();
     }
+    validateForm();
   }
 
   void _setAbsoluteFee() {
@@ -169,8 +216,121 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     );
   }
 
-  _buildForm(BuildContext context, ThemeData theme) {
+  Widget _buildFeeOptionButton(EstimatedFeeOptions label, String value) {
+    final theme = Theme.of(context);
+    return Padding(
+        padding: EdgeInsets.only(top: 4, bottom: 4),
+        child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(
+                  width: 1.0,
+                  color: _selectedFeeOption == label
+                      ? theme.primaryColor
+                      : theme.inputDecorationTheme.enabledBorder!.borderSide
+                          .color),
+            ),
+            onPressed: () {
+              setState(() {
+                _minerFee = value;
+                _minerFeeController.text = value;
+                _selectedFeeOption = label;
+              });
+              _updateTxFee();
+            },
+            child: Padding(
+                padding: EdgeInsets.only(top: 4, bottom: 4),
+                child: Row(children: [
+                  Expanded(flex: 1, child: Text(label.name)),
+                  Expanded(
+                      flex: 0,
+                      child: Text(label != EstimatedFeeOptions.Custom
+                          ? '${value} ${WitUnit.Wit.name}'
+                          : '')),
+                ]))));
+  }
+
+  Widget _buildFeeOptionsButtonGroup(BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: _minerFeeOptions.length,
+      itemBuilder: (context, index) {
+        String? fee = _minerFeeOptions.values.toList()[index];
+        EstimatedFeeOptions label = _minerFeeOptions.keys.toList()[index];
+        return _buildFeeOptionButton(label, fee ?? '0.000000001');
+      },
+    );
+  }
+
+  Widget _buildCustomInput(BuildContext context) {
+    final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>();
+    Color activeColor = extendedTheme!.selectBackgroundColor!;
+    Color inactiveColor = extendedTheme.dropdownBackgroundColor!;
+    if (_selectedFeeOption == EstimatedFeeOptions.Custom) {
+      return Column(children: [
+        SizedBox(height: 8),
+        InputAmount(
+          hint: 'Input the miner fee',
+          errorText: _errorFeeText,
+          textEditingController: _minerFeeController,
+          focusNode: _minerFeeFocusNode,
+          keyboardType: TextInputType.number,
+          validator: _validateFee,
+          onChanged: (String value) {
+            setState(() {
+              _minerFee = value;
+              if (_validateFee(_minerFee) == null) {
+                _errorFeeText = null;
+              }
+            });
+          },
+          onTap: () {
+            _minerFeeFocusNode.requestFocus();
+          },
+          onTapOutside: (PointerDownEvent event) {
+            if (_minerFeeFocusNode.hasFocus) {
+              setState(() {
+                _errorFeeText = _validateFee(_minerFee);
+              });
+            }
+          },
+          onEditingComplete: () {
+            _setAbsoluteFee();
+          },
+        ),
+        SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ToggleSwitch(
+              minWidth: 90.0,
+              inactiveBgColor: inactiveColor,
+              initialLabelIndex: selectedIndex,
+              activeFgColor: WitnetPallet.white,
+              inactiveFgColor: extendedTheme.dropdownTextColor,
+              activeBgColor: [activeColor],
+              cornerRadius: 4,
+              totalSwitches: 2,
+              labels: FeeType.values.map((e) => e.name).toList(),
+              onToggle: (index) {
+                setState(() {
+                  selectedIndex = index;
+                });
+                _setFeeType(FeeType.values.map((e) => e.name).toList()[index]);
+                _updateTxFee();
+              },
+            ),
+          ],
+        )
+      ]);
+    } else {
+      return SizedBox(height: 8);
+    }
+  }
+
+  _buildForm(BuildContext context, ThemeData theme) {
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.disabled,
@@ -179,60 +339,15 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         children: [
           Row(children: [
             Text(
-              'Miner fee',
+              'Choose your desired miner fee',
               style: theme.textTheme.titleSmall,
             ),
-            Padding(
-              padding: EdgeInsets.only(left: 8),
-              child: Tooltip(
-                  height: 100,
-                  message:
-                      'By default, \'Weighted fee\' is selected.\n\nThe amount of the fee will be calculated, taking into account the weight of the transaction.\n\nTo set an absolute fee, you need to select \'Absolute\' and input a value.',
-                  child: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: Icon(FontAwesomeIcons.circleQuestion,
-                          size: 12, color: extendedTheme?.inputIconColor))),
-            )
           ]),
           SizedBox(height: 8),
-          Select(
-              selectedItem: _feeType.name,
-              listItems:
-                  FeeType.values.map((e) => e.name).toList().reversed.toList(),
-              onChanged: (value) => {_setFeeType(value), _updateTxFee()}),
-          SizedBox(height: 8),
-          _showFeeInput
-              ? InputAmount(
-                  hint: 'Input the miner fee',
-                  errorText: _errorFeeText,
-                  textEditingController: _minerFeeController,
-                  focusNode: _minerFeeFocusNode,
-                  keyboardType: TextInputType.number,
-                  validator: _validateFee,
-                  onChanged: (String value) {
-                    setState(() {
-                      _minerFee = value;
-                      if (_validateFee(_minerFee) == null) {
-                        _errorFeeText = null;
-                      }
-                    });
-                  },
-                  onTap: () {
-                    _minerFeeFocusNode.requestFocus();
-                  },
-                  onTapOutside: (PointerDownEvent event) {
-                    if (_minerFeeFocusNode.hasFocus) {
-                      setState(() {
-                        _errorFeeText = _validateFee(_minerFee);
-                      });
-                    }
-                  },
-                  onEditingComplete: () {
-                    _setAbsoluteFee();
-                  },
-                )
-              : SizedBox(height: 8),
-          if (!_showFeeInput && _errorFeeText != null)
+          _buildFeeOptionsButtonGroup(context),
+          _buildCustomInput(context),
+          if (_selectedFeeOption != EstimatedFeeOptions.Custom &&
+              _errorFeeText != null)
             Text(
               _errorFeeText!,
               style: theme.inputDecorationTheme.errorStyle,
