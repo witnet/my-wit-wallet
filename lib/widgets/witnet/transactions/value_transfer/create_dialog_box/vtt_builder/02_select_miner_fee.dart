@@ -117,6 +117,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
       _setAbsoluteFee();
     } else {
       _setWeightedFee();
+      validateForm();
     }
   }
 
@@ -231,6 +232,11 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                   },
                 )
               : SizedBox(height: 8),
+          if (!_showFeeInput && _errorFeeText != null)
+            Text(
+              _errorFeeText!,
+              style: theme.inputDecorationTheme.errorStyle,
+            ),
         ],
       ),
     );
