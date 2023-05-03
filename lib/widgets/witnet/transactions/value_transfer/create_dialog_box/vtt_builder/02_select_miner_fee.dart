@@ -16,9 +16,13 @@ import 'package:witnet_wallet/util/extensions/text_input_formatter.dart';
 class SelectMinerFeeStep extends StatefulWidget {
   final Function nextAction;
   final Wallet currentWallet;
+  final String? savedFeeAmount;
+  final FeeType? savedFeeType;
 
   SelectMinerFeeStep({
     required Key? key,
+    required this.savedFeeAmount,
+    required this.savedFeeType,
     required this.currentWallet,
     required this.nextAction,
   }) : super(key: key);
@@ -46,8 +50,8 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => widget.nextAction(next));
+    WidgetsBinding.instance.addPostFrameCallback(
+        (_) => {widget.nextAction(next), _setSavedFeeData()});
   }
 
   @override
@@ -89,6 +93,16 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
       int? _weightedFee = balanceInfo.weightedVttFee(amount);
       return _weightedFee != null ? balance < _weightedFee + amount : true;
     }
+  }
+
+  void _setSavedFeeData() {
+    if (widget.savedFeeType != null) _setFeeType(widget.savedFeeType?.name);
+
+    if (_isAbsoluteFee() && widget.savedFeeAmount != null) {
+      _minerFeeController.text = widget.savedFeeAmount!;
+      _minerFee = widget.savedFeeAmount!;
+    }
+    ;
   }
 
   void _setFeeType(type) {
@@ -190,7 +204,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
               ? InputAmount(
                   hint: 'Input the miner fee',
                   errorText: _errorFeeText,
-                  controller: _minerFeeController,
+                  textEditingController: _minerFeeController,
                   focusNode: _minerFeeFocusNode,
                   keyboardType: TextInputType.number,
                   validator: _validateFee,

@@ -12,7 +12,6 @@ class InputAmount extends StatefulWidget {
     this.textEditingController,
     this.validator,
     this.errorText,
-    this.controller,
     this.focusNode,
     this.onChanged,
     this.onEditingComplete,
@@ -22,7 +21,6 @@ class InputAmount extends StatefulWidget {
   });
   final IconData? prefixIcon;
   final FocusNode? focusNode;
-  final TextEditingController? controller;
   final String? errorText;
   final String? Function(String?)? validator;
   final String? hint;

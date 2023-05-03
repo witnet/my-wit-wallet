@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:witnet/data_structures.dart';
+import 'package:witnet/schema.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
+import 'package:witnet_wallet/util/extensions/num_extensions.dart';
 import 'package:witnet_wallet/widgets/PaddedButton.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
@@ -26,18 +30,21 @@ enum VTTsteps {
 
 class CreateVttScreenState extends State<CreateVttScreen>
     with TickerProviderStateMixin {
+  GlobalKey<RecipientStepState> transactionFormState =
+      GlobalKey<RecipientStepState>();
+  GlobalKey<SelectMinerFeeStepState> minerFeeState =
+      GlobalKey<SelectMinerFeeStepState>();
+  late AnimationController _loadingController;
+  ApiDatabase database = Locator.instance.get<ApiDatabase>();
   Wallet? currentWallet;
   dynamic nextAction;
   dynamic nextStep;
   List<VTTsteps> stepListItems = VTTsteps.values.toList();
   Enum stepSelectedItem = VTTsteps.Transaction;
+  ValueTransferOutput? currentTxOutput;
+  String? savedFeeAmount;
+  FeeType? savedFeeType;
   int currentStepIndex = 0;
-  late AnimationController _loadingController;
-  ApiDatabase database = Locator.instance.get<ApiDatabase>();
-  GlobalKey<RecipientStepState> transactionFormState =
-      GlobalKey<RecipientStepState>();
-  GlobalKey<SelectMinerFeeStepState> minerFeeState =
-      GlobalKey<SelectMinerFeeStepState>();
 
   @override
   void initState() {
@@ -74,11 +81,13 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   void _getCurrentWallet() {
-    setState(() {
-      currentWallet = database.walletStorage.currentWallet;
-      BlocProvider.of<VTTCreateBloc>(context)
-          .add(AddSourceWalletsEvent(currentWallet: currentWallet!));
-    });
+    if (currentWallet == null) {
+      setState(() {
+        currentWallet = database.walletStorage.currentWallet;
+        BlocProvider.of<VTTCreateBloc>(context)
+            .add(AddSourceWalletsEvent(currentWallet: currentWallet!));
+      });
+    }
   }
 
   bool _isNextStepAllow() {
@@ -110,16 +119,40 @@ class CreateVttScreenState extends State<CreateVttScreen>
     ];
   }
 
+  void setOngoingTransaction() {
+    VTTCreateBloc vttBloc = BlocProvider.of<VTTCreateBloc>(context);
+    try {
+      setState(() => {
+            currentTxOutput = vttBloc.state.vtTransaction.body.outputs.first,
+            savedFeeAmount = vttBloc.feeNanoWit.standardizeWitUnits(
+                outputUnit: WitUnit.Wit, inputUnit: WitUnit.nanoWit),
+            savedFeeType = vttBloc.feeType,
+          });
+    } catch (err) {
+      // There is no saved transaction details
+      if (currentTxOutput != null) {
+        setState(() => {
+              currentTxOutput = null,
+              savedFeeType = null,
+              savedFeeAmount = null,
+            });
+      }
+    }
+  }
+
   Widget stepToBuild() {
     if (stepSelectedItem == VTTsteps.Transaction) {
       return RecipientStep(
         key: transactionFormState,
+        ongoingOutput: currentTxOutput,
         nextAction: _setNextAction,
         currentWallet: currentWallet!,
       );
     } else if (stepSelectedItem == VTTsteps.MinerFee) {
       return SelectMinerFeeStep(
         key: minerFeeState,
+        savedFeeAmount: savedFeeAmount,
+        savedFeeType: savedFeeType,
         nextAction: _setNextAction,
         currentWallet: currentWallet!,
       );
@@ -140,8 +173,11 @@ class CreateVttScreenState extends State<CreateVttScreen>
             selectedItem: stepSelectedItem,
             listItems: stepListItems,
             onChanged: (item) => {
-                  setState(() =>
-                      {stepSelectedItem = item!, currentStepIndex = item.index})
+                  setState(() => {
+                        stepSelectedItem = item!,
+                        currentStepIndex = item.index,
+                        setOngoingTransaction(),
+                      })
                 }),
         SizedBox(height: 16),
         stepToBuild(),
@@ -170,9 +206,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
 
   BlocListener _vttCreateBlocListener() {
     return BlocListener<VTTCreateBloc, VTTCreateState>(
-      listener: (BuildContext context, VTTCreateState state) {
-        print(state.vttCreateStatus);
-      },
+      listener: (BuildContext context, VTTCreateState state) {},
       child: _vttCreateBlocBuilder(),
     );
   }
@@ -188,10 +222,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
   Widget build(BuildContext context) {
     return BlocBuilder<VTTCreateBloc, VTTCreateState>(
         builder: (context, state) {
-      return WillPopScope(
-        onWillPop: () async => false,
-        child: _dashboardBlocListener(),
-      );
+      return _dashboardBlocListener();
     });
   }
 }

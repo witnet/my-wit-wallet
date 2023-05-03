@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'dart:math' as math;
@@ -51,6 +52,7 @@ class DashboardLayoutState extends State<DashboardLayout>
   }
 
   Future<void> _goToSettings() async {
+    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
     Navigator.pushReplacementNamed(context, PreferencePage.route);
   }
 
@@ -59,6 +61,7 @@ class DashboardLayoutState extends State<DashboardLayout>
   }
 
   Future<void> _showReceiveDialog() async {
+    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
     Navigator.pushReplacementNamed(context, ReceiveTransactionScreen.route);
   }
 
@@ -94,10 +97,10 @@ class DashboardLayoutState extends State<DashboardLayout>
         color: getButtonColorByRoute(DashboardScreen.route),
         padding: EdgeInsets.all(0),
         text: 'Home',
-        onPressed: currentRoute != DashboardScreen.route
-            ? () =>
-                Navigator.pushReplacementNamed(context, DashboardScreen.route)
-            : () {},
+        onPressed: currentRoute != DashboardScreen.route ? () => {
+            BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent()),
+            Navigator.pushReplacementNamed(context, DashboardScreen.route),
+          } : () {},
         icon: Icon(
           FontAwesomeIcons.wallet,
           size: 18,

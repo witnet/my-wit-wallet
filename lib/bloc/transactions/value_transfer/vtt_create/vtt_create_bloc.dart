@@ -332,7 +332,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       }
     } catch (e) {}
     buildTransactionBody(event.currentWallet.balanceNanoWit().availableNanoWit);
-
     emit(
       state.copyWith(
           inputs: inputs, outputs: outputs, status: VTTCreateStatus.building),
@@ -576,6 +575,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     receivers.clear();
     selectedTimelock = null;
     timelockSet = false;
+    emit(state.copyWith(status: VTTCreateStatus.initial));
   }
 
   void _validateTransactionEvent(

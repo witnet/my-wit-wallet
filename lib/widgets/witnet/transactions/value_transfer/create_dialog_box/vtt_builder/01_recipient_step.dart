@@ -8,7 +8,6 @@ import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
-import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
 import 'package:witnet_wallet/widgets/input_amount.dart';
@@ -19,9 +18,11 @@ import 'package:witnet_wallet/widgets/witnet/transactions/value_transfer/create_
 class RecipientStep extends StatefulWidget {
   final Function nextAction;
   final Wallet currentWallet;
+  final ValueTransferOutput? ongoingOutput;
 
   RecipientStep({
     required Key? key,
+    required this.ongoingOutput,
     required this.currentWallet,
     required this.nextAction,
   }) : super(key: key);
@@ -48,13 +49,14 @@ class RecipientStepState extends State<RecipientStep>
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
     _loadingController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => widget.nextAction(next));
+    WidgetsBinding.instance.addPostFrameCallback((_) => {
+          widget.nextAction(next),
+          _setSavedTxData(),
+        });
   }
 
   @override
@@ -109,6 +111,24 @@ class RecipientStepState extends State<RecipientStep>
     });
     return ((_errorAddressText == null && _errorAmountText == null) &&
         !(_address.isEmpty || _amount.isEmpty));
+  }
+
+  void _setSavedTxData() {
+    String? savedAddress = widget.ongoingOutput?.pkh.address;
+    String? savedAmount =
+        widget.ongoingOutput?.value.toInt().standardizeWitUnits();
+
+    if (savedAddress != null) {
+      _addressController.text = savedAddress;
+      _address = savedAddress;
+    }
+    ;
+    if (savedAmount != null) {
+      _amountController.text = savedAmount;
+      _amount = savedAmount;
+    }
+    ;
+    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
   }
 
   void nextAction() {
@@ -211,7 +231,7 @@ class RecipientStepState extends State<RecipientStep>
           InputAmount(
             hint: 'Amount',
             errorText: _errorAmountText,
-            controller: _amountController,
+            textEditingController: _amountController,
             focusNode: _amountFocusNode,
             keyboardType: TextInputType.number,
             validator: _validateAmount,
