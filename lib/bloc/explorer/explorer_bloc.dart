@@ -152,10 +152,13 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     }
     for (int i = 0; i < unconfirmedVtts.length; i++) {
       ValueTransferInfo _vtt = unconfirmedVtts[i];
-      ValueTransferInfo vtt =
-          await Locator.instance.get<ApiExplorer>().getVtt(_vtt.txnHash);
-      if (_vtt.status != vtt.status) {
-        await database.updateVtt(wallet.id, vtt);
+      try{
+        ValueTransferInfo vtt =
+        await Locator.instance.get<ApiExplorer>().getVtt(_vtt.txnHash);
+        if (_vtt.status != vtt.status) {
+          await database.updateVtt(wallet.id, vtt);
+        }
+      } catch(e){
       }
     }
     emit(ExplorerState.synced(database.walletStorage));
