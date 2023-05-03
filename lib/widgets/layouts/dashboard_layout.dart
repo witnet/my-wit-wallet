@@ -178,13 +178,16 @@ class DashboardLayoutState extends State<DashboardLayout>
   }
 
   List<Widget> _navigationActions() {
+    String currentRoute = ModalRoute.of(context)!.settings.name!;
     return [
       MouseRegion(
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
             child: Icon(FontAwesomeIcons.gear,
                 size: 30, color: getButtonColorByRoute(PreferencePage.route)),
-            onTap: () => _goToSettings(),
+            onTap: currentRoute != PreferencePage.route
+                ? () => _goToSettings()
+                : () {},
           )),
     ];
   }
