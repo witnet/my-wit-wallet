@@ -23,11 +23,21 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.stepBarActiveColor,
     required this.stepBarActionableColor,
     required this.stepBarColor,
+    required this.switchActiveBg,
+    required this.switchActiveFg,
+    required this.switchInactiveBg,
+    required this.switchInactiveFg,
+    required this.switchBorderColor,
     required this.dialogBackground,
     required this.monoSmallText,
     required this.monoRegularText,
     required this.monoMediumText,
     required this.monoLargeText,
+    required this.errorColor,
+    required this.activeClickableBoxBgColor,
+    required this.activeClickableBoxBorderColor,
+    required this.inactiveClickableBoxBgColor,
+    required this.inactiveClickableBoxBorderColor,
   });
   final Color? selectBackgroundColor;
   final Color? selectedTextColor;
@@ -48,35 +58,55 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? stepBarActiveColor;
   final Color? stepBarActionableColor;
   final Color? stepBarColor;
+  final Color? switchActiveBg;
+  final Color? switchActiveFg;
+  final Color? switchInactiveBg;
+  final Color? switchInactiveFg;
+  final Color? switchBorderColor;
   final Color? dialogBackground;
   final TextStyle? monoSmallText;
   final TextStyle? monoRegularText;
   final TextStyle? monoMediumText;
   final TextStyle? monoLargeText;
+  final Color? errorColor;
+  final Color? activeClickableBoxBgColor;
+  final Color? activeClickableBoxBorderColor;
+  final Color? inactiveClickableBoxBgColor;
+  final Color? inactiveClickableBoxBorderColor;
   @override
-  ExtendedTheme copyWith({
-    Color? selectBackgroundColor,
-    Color? selectedTextColor,
-    Color? dropdownBackgroundColor,
-    Color? dropdownTextColor,
-    Color? headerDashboardActiveButton,
-    Color? walletListBackgroundColor,
-    Color? walletActiveItemBorderColor,
-    Color? walletItemBorderColor,
-    Color? inputIconColor,
-    Color? walletActiveItemBackgroundColor,
-    Color? txBorderColor,
-    Color? txValuePositiveColor,
-    Color? txValueNegativeColor,
-    Color? stepBarActiveColor,
-    Color? stepBarActionableColor,
-    Color? stepBarColor,
-    Color? dialogBackground,
-    TextStyle? monoSmallText,
-    TextStyle? monoRegularText,
-    TextStyle? monoMediumText,
-    TextStyle? monoLargeText,
-  }) {
+  ExtendedTheme copyWith(
+      {Color? selectBackgroundColor,
+      Color? selectedTextColor,
+      Color? dropdownBackgroundColor,
+      Color? dropdownTextColor,
+      Color? headerDashboardActiveButton,
+      Color? walletListBackgroundColor,
+      Color? walletActiveItemBorderColor,
+      Color? walletItemBorderColor,
+      Color? inputIconColor,
+      Color? walletActiveItemBackgroundColor,
+      Color? txBorderColor,
+      Color? txValuePositiveColor,
+      Color? txValueNegativeColor,
+      Color? stepBarActiveColor,
+      Color? stepBarActionableColor,
+      Color? stepBarColor,
+      Color? switchActiveBg,
+      Color? switchActiveFg,
+      Color? switchInactiveBg,
+      Color? switchInactiveFg,
+      Color? switchBorderColor,
+      Color? dialogBackground,
+      TextStyle? monoSmallText,
+      TextStyle? monoRegularText,
+      TextStyle? monoMediumText,
+      TextStyle? monoLargeText,
+      Color? errorColor,
+      Color? activeClickableBoxBgColor,
+      Color? activeClickableBoxBorderColor,
+      Color? inactiveClickableBoxBgColor,
+      Color? inactiveClickableBoxBorderColo,
+      r}) {
     return ExtendedTheme(
       selectBackgroundColor:
           selectBackgroundColor ?? this.selectBackgroundColor,
@@ -107,6 +137,20 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       stepBarActionableColor:
           stepBarActionableColor ?? this.stepBarActionableColor,
       stepBarColor: stepBarColor ?? this.stepBarColor,
+      switchActiveBg: switchActiveBg ?? this.switchActiveBg,
+      switchActiveFg: switchActiveFg ?? this.switchActiveFg,
+      switchInactiveBg: switchInactiveBg ?? this.switchInactiveBg,
+      switchInactiveFg: switchInactiveFg ?? this.switchInactiveFg,
+      switchBorderColor: switchBorderColor ?? this.switchBorderColor,
+      errorColor: errorColor ?? this.errorColor,
+      activeClickableBoxBgColor:
+          activeClickableBoxBgColor ?? this.activeClickableBoxBgColor,
+      activeClickableBoxBorderColor:
+          activeClickableBoxBorderColor ?? this.activeClickableBoxBorderColor,
+      inactiveClickableBoxBgColor:
+          inactiveClickableBoxBgColor ?? this.inactiveClickableBoxBgColor,
+      inactiveClickableBoxBorderColor: inactiveClickableBoxBorderColor ??
+          this.inactiveClickableBoxBorderColor,
       dialogBackground: dialogBackground ?? this.dialogBackground,
       monoSmallText: monoSmallText ?? this.monoSmallText,
       monoRegularText: monoRegularText ?? this.monoRegularText,
@@ -159,6 +203,23 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
           Color.lerp(stepBarActiveColor, other.stepBarActionableColor, t),
       stepBarColor: Color.lerp(stepBarColor, other.stepBarColor, t),
       dialogBackground: Color.lerp(dialogBackground, other.dialogBackground, t),
+      switchActiveBg: Color.lerp(switchActiveBg, other.switchActiveBg, t),
+      switchActiveFg: Color.lerp(switchActiveFg, other.switchActiveFg, t),
+      switchInactiveBg: Color.lerp(switchInactiveBg, other.switchInactiveBg, t),
+      switchInactiveFg: Color.lerp(switchInactiveFg, other.switchInactiveFg, t),
+      switchBorderColor:
+          Color.lerp(switchBorderColor, other.switchBorderColor, t),
+      errorColor: Color.lerp(errorColor, other.errorColor, t),
+      activeClickableBoxBgColor: Color.lerp(
+          activeClickableBoxBgColor, other.activeClickableBoxBgColor, t),
+      activeClickableBoxBorderColor: Color.lerp(activeClickableBoxBorderColor,
+          other.activeClickableBoxBorderColor, t),
+      inactiveClickableBoxBgColor: Color.lerp(
+          inactiveClickableBoxBgColor, other.inactiveClickableBoxBgColor, t),
+      inactiveClickableBoxBorderColor: Color.lerp(
+          inactiveClickableBoxBorderColor,
+          other.inactiveClickableBoxBorderColor,
+          t),
       monoSmallText: TextStyle.lerp(monoSmallText, other.monoSmallText, t),
       monoRegularText:
           TextStyle.lerp(monoRegularText, other.monoRegularText, t),
@@ -188,6 +249,16 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     stepBarActiveColor: WitnetPallet.witnetGreen1,
     stepBarActionableColor: WitnetPallet.darkGrey,
     stepBarColor: WitnetPallet.lightGrey,
+    switchActiveBg: WitnetPallet.darkBlue2,
+    switchActiveFg: WitnetPallet.white,
+    switchInactiveBg: WitnetPallet.white,
+    switchInactiveFg: WitnetPallet.darkGrey,
+    switchBorderColor: WitnetPallet.darkBlue2,
+    errorColor: WitnetPallet.darkRed,
+    activeClickableBoxBgColor: Color.fromARGB(34, 65, 190, 165),
+    activeClickableBoxBorderColor: WitnetPallet.witnetGreen3,
+    inactiveClickableBoxBgColor: WitnetPallet.white,
+    inactiveClickableBoxBorderColor: WitnetPallet.lightGrey,
     dialogBackground: WitnetPallet.white,
     monoSmallText: TextStyle(
         fontFamily: 'RobotoMono',
@@ -231,6 +302,16 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     stepBarActiveColor: WitnetPallet.witnetGreen1,
     stepBarActionableColor: WitnetPallet.white,
     stepBarColor: WitnetPallet.opacityWhite,
+    switchActiveBg: WitnetPallet.witnetGreen2,
+    switchActiveFg: WitnetPallet.darkBlue2,
+    switchInactiveBg: WitnetPallet.darkBlue2,
+    switchInactiveFg: WitnetPallet.white,
+    switchBorderColor: WitnetPallet.witnetGreen2,
+    errorColor: WitnetPallet.brightRed,
+    activeClickableBoxBgColor: WitnetPallet.opacityWitnetGreen3,
+    activeClickableBoxBorderColor: WitnetPallet.witnetGreen2,
+    inactiveClickableBoxBgColor: WitnetPallet.darkBlue2,
+    inactiveClickableBoxBorderColor: WitnetPallet.opacityWhite2,
     dialogBackground: WitnetPallet.opacityWitnetGreen,
     monoSmallText: TextStyle(
         fontFamily: 'RobotoMono',

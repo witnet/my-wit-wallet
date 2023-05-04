@@ -1,19 +1,17 @@
 import 'dart:async';
 import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/shared/locator.dart';
-import 'package:witnet_wallet/theme/colors.dart';
 import 'package:witnet_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:witnet_wallet/screens/create_wallet/nav_action.dart';
 import 'package:witnet_wallet/theme/extended_theme.dart';
 import 'package:witnet_wallet/util/storage/database/balance_info.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
+import 'package:witnet_wallet/widgets/clickable_box.dart';
 import 'package:witnet_wallet/widgets/input_amount.dart';
-import 'package:witnet_wallet/widgets/select.dart';
 import 'package:witnet_wallet/util/extensions/text_input_formatter.dart';
 import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
 import 'package:witnet_wallet/widgets/toggle_switch.dart';
@@ -121,7 +119,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     return _feeType == FeeType.Absolute;
   }
 
-  bool _notEnoughFunds() {
+  bool _notEnoughFunds({int? customFee = null}) {
     final balance = balanceInfo.availableNanoWit;
     final amount = BlocProvider.of<VTTCreateBloc>(context)
         .state
@@ -132,8 +130,9 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         .value
         .toInt();
     if (_feeType == FeeType.Absolute) {
-      int minerFee = int.parse(_minerFeeToNumber().standardizeWitUnits(
-          inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit));
+      int minerFee = customFee ??
+          int.parse(_minerFeeToNumber().standardizeWitUnits(
+              inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit));
       int totalToSpend = minerFee + amount;
       return balance < totalToSpend;
     } else {
@@ -217,36 +216,32 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   }
 
   Widget _buildFeeOptionButton(EstimatedFeeOptions label, String value) {
-    final theme = Theme.of(context);
-    return Padding(
-        padding: EdgeInsets.only(top: 4, bottom: 4),
-        child: OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(
-                  width: 1.0,
-                  color: _selectedFeeOption == label
-                      ? theme.primaryColor
-                      : theme.inputDecorationTheme.enabledBorder!.borderSide
-                          .color),
-            ),
-            onPressed: () {
-              setState(() {
-                _minerFee = value;
-                _minerFeeController.text = value;
-                _selectedFeeOption = label;
-              });
-              _updateTxFee();
-            },
-            child: Padding(
-                padding: EdgeInsets.only(top: 4, bottom: 4),
-                child: Row(children: [
-                  Expanded(flex: 1, child: Text(label.name)),
-                  Expanded(
-                      flex: 0,
-                      child: Text(label != EstimatedFeeOptions.Custom
-                          ? '${value} ${WitUnit.Wit.name}'
-                          : '')),
-                ]))));
+    return ClickableBox(
+      isSelected: _selectedFeeOption == label,
+      error: label != EstimatedFeeOptions.Custom &&
+              _notEnoughFunds(
+                  customFee: int.parse(num.parse(value).standardizeWitUnits(
+                      inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)))
+          ? 'Not enough Funds'
+          : null,
+      value: value,
+      content: [
+        Expanded(flex: 1, child: Text(label.name)),
+        Expanded(
+            flex: 0,
+            child: Text(label != EstimatedFeeOptions.Custom
+                ? '${value} ${WitUnit.Wit.name}'
+                : '')),
+      ],
+      onClick: (value) => {
+        setState(() {
+          _minerFee = value;
+          _minerFeeController.text = value;
+          _selectedFeeOption = label;
+        }),
+        _updateTxFee(),
+      },
+    );
   }
 
   Widget _buildFeeOptionsButtonGroup(BuildContext context) {
@@ -266,8 +261,6 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   Widget _buildCustomInput(BuildContext context) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>();
-    Color activeColor = extendedTheme!.selectBackgroundColor!;
-    Color inactiveColor = extendedTheme.dropdownBackgroundColor!;
     if (_selectedFeeOption == EstimatedFeeOptions.Custom) {
       return Column(children: [
         SizedBox(height: 8),
@@ -306,12 +299,14 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
           children: [
             ToggleSwitch(
               minWidth: 90.0,
-              inactiveBgColor: inactiveColor,
+              inactiveBgColor: extendedTheme?.switchInactiveBg,
               initialLabelIndex: selectedIndex,
-              activeFgColor: WitnetPallet.white,
-              inactiveFgColor: extendedTheme.dropdownTextColor,
-              activeBgColor: [activeColor],
+              activeFgColor: extendedTheme?.switchActiveFg,
+              inactiveFgColor: extendedTheme?.switchInactiveFg,
+              activeBgColor: [extendedTheme!.switchActiveBg!],
               cornerRadius: 4,
+              borderWidth: 1.0,
+              borderColor: [extendedTheme.switchBorderColor!],
               totalSwitches: 2,
               labels: FeeType.values.map((e) => e.name).toList(),
               onToggle: (index) {
@@ -330,7 +325,9 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     }
   }
 
-  _buildForm(BuildContext context, ThemeData theme) {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.disabled,
@@ -355,11 +352,5 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         ],
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return _buildForm(context, theme);
   }
 }

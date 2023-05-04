@@ -5,6 +5,7 @@ import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
 
 import 'package:witnet_wallet/constants.dart';
+import 'package:witnet_wallet/util/extensions/num_extensions.dart';
 import 'package:witnet_wallet/util/storage/cache/transaction_cache.dart';
 
 import '../../shared/api_database.dart';
@@ -240,21 +241,33 @@ class ApiExplorer {
         return {
           "drtStinky": {
             "priority": {
-              "nanoWit": random.nextInt(100).toString(),
+              "nanoWit": random
+                  .nextInt(100)
+                  .standardizeWitUnits(
+                      inputUnit: WitUnit.nanoWit, outputUnit: WitUnit.Wit)
+                  .toString(),
               "subNanoWit": random.nextInt(100).toString()
             },
             "timeToBlock": random.nextInt(100).toString(),
           },
           "drtLow": {
             "priority": {
-              "nanoWit": random.nextInt(100).toString(),
+              "nanoWit": random
+                  .nextInt(100)
+                  .standardizeWitUnits(
+                      inputUnit: WitUnit.nanoWit, outputUnit: WitUnit.Wit)
+                  .toString(),
               "subNanoWit": random.nextInt(100).toString()
             },
             "timeToBlock": random.nextInt(100).toString(),
           },
           "drtMedium": {
             "priority": {
-              "nanoWit": random.nextInt(100).toString(),
+              "nanoWit": random
+                  .nextInt(100)
+                  .standardizeWitUnits(
+                      inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)
+                  .toString(),
               "subNanoWit": random.nextInt(100).toString()
             },
             "timeToBlock": random.nextInt(100).toString(),
@@ -275,14 +288,22 @@ class ApiExplorer {
           },
           "vttStinky": {
             "priority": {
-              "nanoWit": random.nextInt(100).toString(),
+              "nanoWit": random
+                  .nextInt(10)
+                  .standardizeWitUnits(
+                      inputUnit: WitUnit.nanoWit, outputUnit: WitUnit.Wit)
+                  .toString(),
               "subNanoWit": random.nextInt(100).toString()
             },
             "timeToBlock": random.nextInt(100).toString(),
           },
           "vttLow": {
             "priority": {
-              "nanoWit": random.nextInt(100).toString(),
+              "nanoWit": random
+                  .nextInt(10)
+                  .standardizeWitUnits(
+                      inputUnit: WitUnit.nanoWit, outputUnit: WitUnit.Wit)
+                  .toString(),
               "subNanoWit": random.nextInt(100).toString()
             },
             "timeToBlock": random.nextInt(100).toString(),
