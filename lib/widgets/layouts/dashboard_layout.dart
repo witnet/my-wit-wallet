@@ -97,10 +97,14 @@ class DashboardLayoutState extends State<DashboardLayout>
         color: getButtonColorByRoute(DashboardScreen.route),
         padding: EdgeInsets.all(0),
         text: 'Home',
-        onPressed: currentRoute != DashboardScreen.route ? () => {
-            BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent()),
-            Navigator.pushReplacementNamed(context, DashboardScreen.route),
-          } : () {},
+        onPressed: currentRoute != DashboardScreen.route
+            ? () => {
+                  BlocProvider.of<VTTCreateBloc>(context)
+                      .add(ResetTransactionEvent()),
+                  Navigator.pushReplacementNamed(
+                      context, DashboardScreen.route),
+                }
+            : () {},
         icon: Icon(
           FontAwesomeIcons.wallet,
           size: 18,
