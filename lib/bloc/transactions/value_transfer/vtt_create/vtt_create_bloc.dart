@@ -85,9 +85,13 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         return feeNanoWit;
       case FeeType.Weighted:
         return (inputs.length * INPUT_SIZE) +
-            (outputs.length + additionalOutputs * OUTPUT_SIZE * GAMMA);
+            (outputs.length + additionalOutputs * OUTPUT_SIZE * GAMMA) * feeNanoWit;
     }
   }
+
+  // TODO: get estimated fees + vtt weight
+  // ((inputs.length * INPUT_SIZE) + (outputs.length * OUTPUT_SIZE * GAMMA)) * priority = vtt fee
+
 
   void updateFee(FeeType newFeeType, [int feeNanoWit = 0]) {
     feeType = newFeeType;

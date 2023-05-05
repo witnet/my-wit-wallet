@@ -64,9 +64,6 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
       duration: const Duration(milliseconds: 400),
     );
     priority();
-    Timer.periodic(Duration(seconds: 5), (timer) async {
-      priority();
-    });
     WidgetsBinding.instance.addPostFrameCallback(
         (_) => {widget.nextAction(next), _setSavedFeeData()});
   }
@@ -81,14 +78,15 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
 
   Future<bool> priority() async {
     try {
+      //TODO: call create_vtt_bloc to get estimated fees instead of priority
       var resp = await Locator.instance.get<ApiExplorer>().priority();
 
       this._setPriorities(
-        resp["vttStinky"]["priority"]["nanoWit"],
-        resp["vttLow"]["priority"]["nanoWit"],
-        resp["vttMedium"]["priority"]["nanoWit"],
-        resp["vttHigh"]["priority"]["nanoWit"],
-        resp["vttOpulent"]["priority"]["nanoWit"],
+        resp.vttStinky.priority.toString(),
+        resp.vttLow.priority.toString(),
+        resp.vttMedium.priority.toString(),
+        resp.vttHigh.priority.toString(),
+        resp.vttOpulent.priority.toString(),
       );
       return true;
     } catch (e) {
