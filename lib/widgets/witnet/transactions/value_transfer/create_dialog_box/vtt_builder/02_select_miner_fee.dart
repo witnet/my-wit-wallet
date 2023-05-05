@@ -12,6 +12,7 @@ import 'package:witnet_wallet/widgets/clickable_box.dart';
 import 'package:witnet_wallet/widgets/input_amount.dart';
 import 'package:witnet_wallet/util/extensions/text_input_formatter.dart';
 import 'package:witnet_wallet/widgets/toggle_switch.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 EstimatedFeeOptions _selectedFeeOption = EstimatedFeeOptions.Medium;
 
@@ -253,10 +254,27 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
             _setAbsoluteFee();
           },
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Padding(
+              padding: EdgeInsets.only(right: 8),
+              child: Tooltip(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: theme.colorScheme.background,
+                  ),
+                  textStyle: theme.textTheme.bodyMedium,
+                  height: 100,
+                  message:
+                      'By default, \'Absolute fee\' is selected.\nTo set a custom weighted fee, you need to select \'Weighted\'. \nThe Weighted fee is automatically calculated by the wallet considering the network congestion and transaction weight multiplied by the value selected as custom.',
+                  child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: Icon(FontAwesomeIcons.circleQuestion,
+                          size: 12, color: extendedTheme?.inputIconColor))),
+            ),
             ToggleSwitch(
               minWidth: 90.0,
               inactiveBgColor: extendedTheme?.switchInactiveBg,
@@ -278,7 +296,8 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
               },
             ),
           ],
-        )
+        ),
+        SizedBox(height: 24),
       ]);
     } else {
       return SizedBox(height: 8);
