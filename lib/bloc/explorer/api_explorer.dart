@@ -1,13 +1,7 @@
-import 'dart:math';
-
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
-
 import 'package:witnet_wallet/constants.dart';
-import 'package:witnet_wallet/util/extensions/num_extensions.dart';
-import 'package:witnet_wallet/util/storage/cache/transaction_cache.dart';
-
 import '../../shared/api_database.dart';
 import '../../shared/locator.dart';
 import '../../util/storage/database/account.dart';
@@ -31,7 +25,6 @@ enum ExplorerQuery {
 class ApiExplorer {
   late ExplorerClient client;
   late Status status;
-  TransactionCache cache = TransactionCache();
   ApiExplorer() {
     client = (USE_EXPLORER_DEV)
         ? ExplorerClient(
@@ -233,9 +226,5 @@ class ApiExplorer {
 
   Future<PrioritiesEstimate> priority() async {
     return await client.valueTransferPriority();
-  }
-
-  bool isCached(String hash) {
-    return cache.containsHash(hash);
   }
 }
