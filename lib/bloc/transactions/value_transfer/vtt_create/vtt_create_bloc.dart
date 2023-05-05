@@ -8,6 +8,7 @@ import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet_wallet/bloc/crypto/api_crypto.dart';
 import 'package:witnet_wallet/bloc/explorer/api_explorer.dart';
+import 'package:witnet_wallet/constants.dart';
 import 'package:witnet_wallet/shared/locator.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/util/storage/database/wallet.dart';
@@ -78,20 +79,50 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   bool timelockSet = false;
   UtxoSelectionStrategy utxoSelectionStrategy =
       UtxoSelectionStrategy.SmallFirst;
+  PrioritiesEstimate? prioritiesEstimate;
+  Map<EstimatedFeeOptions, String?> minerFeeOptions = DEFAULT_MINER_FEE_OPTIONS;
 
   int getFee([int additionalOutputs = 0]) {
     switch (feeType) {
       case FeeType.Absolute:
         return feeNanoWit;
       case FeeType.Weighted:
-        return (inputs.length * INPUT_SIZE) +
-            (outputs.length + additionalOutputs * OUTPUT_SIZE * GAMMA) * feeNanoWit;
+        return calculatedWeightedFee(feeNanoWit);
     }
   }
 
-  // TODO: get estimated fees + vtt weight
-  // ((inputs.length * INPUT_SIZE) + (outputs.length * OUTPUT_SIZE * GAMMA)) * priority = vtt fee
+  int calculatedWeightedFee(num multiplier, {int additionalOutputs = 0}) {
+    num txWeight = (inputs.length * INPUT_SIZE) +
+        (outputs.length + additionalOutputs * OUTPUT_SIZE * GAMMA);
+    return (txWeight * multiplier).round();
+  }
 
+  Future setEstimatedPriorities() async {
+    try {
+      prioritiesEstimate = await Locator.instance.get<ApiExplorer>().priority();
+    } catch (e) {
+      print('Error getting priority estimations $e');
+    }
+  }
+
+  void setEstimatedWeightedFees() {
+    if (prioritiesEstimate != null) {
+      minerFeeOptions[EstimatedFeeOptions.Stinky] =
+          calculatedWeightedFee(prioritiesEstimate!.vttStinky.priority)
+              .toString();
+      minerFeeOptions[EstimatedFeeOptions.Low] =
+          calculatedWeightedFee(prioritiesEstimate!.vttLow.priority).toString();
+      minerFeeOptions[EstimatedFeeOptions.Medium] =
+          calculatedWeightedFee(prioritiesEstimate!.vttMedium.priority)
+              .toString();
+      minerFeeOptions[EstimatedFeeOptions.High] =
+          calculatedWeightedFee(prioritiesEstimate!.vttHigh.priority)
+              .toString();
+      minerFeeOptions[EstimatedFeeOptions.Opulent] =
+          calculatedWeightedFee(prioritiesEstimate!.vttOpulent.priority)
+              .toString();
+    }
+  }
 
   void updateFee(FeeType newFeeType, [int feeNanoWit = 0]) {
     feeType = newFeeType;
@@ -311,7 +342,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
 
   /// add a [ValueTransferOutput] to the [VTTransaction].
   void _addValueTransferOutputEvent(
-      AddValueTransferOutputEvent event, Emitter<VTTCreateState> emit) {
+      AddValueTransferOutputEvent event, Emitter<VTTCreateState> emit) async {
     emit(state.copyWith(status: VTTCreateStatus.busy));
     try {
       if (event.merge) {
@@ -336,6 +367,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       }
     } catch (e) {}
     buildTransactionBody(event.currentWallet.balanceNanoWit().availableNanoWit);
+    setEstimatedWeightedFees();
     emit(
       state.copyWith(
           inputs: inputs, outputs: outputs, status: VTTCreateStatus.building),
@@ -567,6 +599,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   Future<void> _addSourceWalletsEvent(
       AddSourceWalletsEvent event, Emitter<VTTCreateState> emit) async {
     await setWallet(event.currentWallet);
+    await setEstimatedPriorities();
     emit(state.copyWith(
         inputs: inputs, outputs: outputs, status: VTTCreateStatus.building));
   }

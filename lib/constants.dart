@@ -34,6 +34,14 @@ enum WitUnit {
 
 enum EstimatedFeeOptions { Stinky, Low, Medium, High, Opulent, Custom }
 
+Map<EstimatedFeeOptions, String?> DEFAULT_MINER_FEE_OPTIONS = {
+  EstimatedFeeOptions.Stinky: '0',
+  EstimatedFeeOptions.Low: '0',
+  EstimatedFeeOptions.Medium: '0',
+  EstimatedFeeOptions.High: '0',
+  EstimatedFeeOptions.Opulent: '0',
+  EstimatedFeeOptions.Custom: null,
+};
 const int EXTERNAL_GAP_LIMIT = 3;
 const int INTERNAL_GAP_LIMIT = 1;
 const bool ENCRYPT_DB = false;
