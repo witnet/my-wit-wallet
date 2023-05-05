@@ -96,7 +96,7 @@ class DashboardLayoutState extends State<DashboardLayout>
       PaddedButton(
         color: getButtonColorByRoute(DashboardScreen.route),
         padding: EdgeInsets.all(0),
-        text: 'Home',
+        text: 'History',
         onPressed: currentRoute != DashboardScreen.route
             ? () => {
                   BlocProvider.of<VTTCreateBloc>(context)
