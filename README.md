@@ -1,58 +1,87 @@
-# witnet_wallet
+# myWitWallet
 
 
-# Build Instructions
+<div align="center">
+    <a href="https://travis-ci.com/witnet/my-wit-wallet"><img src="https://img.shields.io/github/actions/workflow/status/witnet/my-wit-wallet/main.yml" alt="Build Status" /></a>
+    <a href="https://github.com/witnet/my-wit-wallet/blob/master/LICENSE"><img src="https://img.shields.io/github/license/witnet/my-wit-wallet" alt="GPLv3 Licensed" /></a>
+    <a href="https://github.com/witnet/my-wit-wallet/graphs/contributors"><img src="https://img.shields.io/github/contributors/witnet/my-wit-wallet" alt="GitHub contributors" /></a>
+    <a href="https://github.com/witnet/my-wit-wallet/commits/main"><img src="https://img.shields.io/github/last-commit/witnet/my-wit-wallet" alt="Github last commit" /></a>
+    <br /><br />
+    <p><strong>myWitWallet</strong> is a non-custodial <a href="https://witnet.io/">Witnet</a> compatible wallet that allows you to send and receive Wit immediately.</p>
+</div>
 
-## Windows
+## Installation
 
-- ##### Install [Flutter SDK](https://flutter.dev/docs/get-started/install)
+### From Github Releases
 
-  - Update your path
-    - From the Start search bar, enter ‘env’ and select **Edit environment variables for your account**.
-    - Under **User variables** check if there is an entry called **Path**:
-      - If the entry exists, append the full path to `flutter\bin` using `;` as a separator from existing values.
-      - If the entry doesn’t exist, create a new user variable named `Path` with the full path to `flutter\bin` as its value.
-    - close / open a new PowerShell console window
-      
-  - If you use an IDE you need to setup the editor to use the flutter SDK
+Go to the [releases](https://github.com/witnet/my-wit-wallet/releases) section and download the binary suitable for your system.
 
-- ##### Install Visual Studio 2019
+## myWitWallet Development
 
-  - The (free) Community Version of [Visual Studio 2019](https://visualstudio.microsoft.com/downloads/)- not to be confused with Visual Studio Code
+This application is built using the [Flutter](https://docs.flutter.dev/get-started/install) framework.
 
-    - Once Visual Studio 2019 is installed - open **Visual Studio Installer** 
+### Dependencies
 
-  - modify the Visual Studio 2019 installation
+You need to install [Flutter](https://docs.flutter.dev/get-started/install) to run the app in development mode. Depending on your operating system, you will be requested to comply with some [requirements](https://docs.flutter.dev/get-started/install).
 
-    ![](https://github.com/parodyBit/witnet_wallet/blob/main/assets/readme/visual_studio_installer.PNG)
 
-  - Under **Mobile & Desktop** select **Desktop development with C++** 	
+### Running myWitWallet
 
-    ![](https://github.com/parodyBit/witnet_wallet/blob/main/assets/readme/desktop_dev_cpp.PNG)
+``` bash
+# clone the repository
+git clone git@github.com:witnet/my-wit-wallet.git
 
-  - Ensure these options are selected for the **Desktop development with C++** workload
+# cd into the cloned repository
+cd my-wit-wallet
 
-    ![](https://github.com/parodyBit/witnet_wallet/blob/main/assets/readme/desktop_dev_cpp_options.PNG)
+# install application dependencies
+flutter pub get
 
-- Download the **witnet_wallet** repository 
+# launch development application
+flutter run
+```
 
-  - navigate to the directory in **PowerShell** (run as administrator)
+### Formatter
 
-  - get the required flutter packages
+Repair lint errors with (**this operation modifies your files!**) `dart format .`
 
-    - `PS> flutter pub get`
-    - `PS> flutter pub upgrade`
+### Test
 
-  - run the doctor on flutter to check the pre-build
+We use [Flutter](https://docs.flutter.dev/testing#unit-tests) for testing.
 
-    - `PS> flutter doctor`
+``` bash
+# run unit tests
+flutter test
+```
 
-    - should look something like this
+### Build
 
-      ![](https://github.com/parodyBit/witnet_wallet/blob/main/assets/readme/flutter_doctor.PNG)
+#### Production
 
-  - build the application for windows
+``` bash
+flutter pub get
+```
 
-    - `PS> flutter build windows`
+| System |Build commands | Destination path |
+| -------- | -------- | -------- |
+| **iOS**   | `flutter build ios --release --no-codesign`    | `./build/ios/ipa/myWitWallet.ipa`    |
+| **android**   | `flutter build apk`    | `./build/app/outputs/flutter-apk/myWitWallet.apk`|
+| **macOS**   | `flutter build macos --release`    |`./build/macos/Build/Products/Release/myWitWallet.app`|
+| **windows**   | `flutter build windows`    | `.\build\windows\runner\Release`    |
+| **linux**   | ``` bash sudo apt-get update -y && sudo apt-get install -y ninja-build libgtk-3-dev flutter build linux --release ```    | `./build/linux/x64/release/bundle`     |
 
-  - The application `witnet_wallet.exe` will be in `\witnet_wallet-main\build\windows\runner\Release
+### Github Actions (continuous integration)
+
+#### Release
+
+Creating a tag in my-wit-wallet repo triggers a [Github Actions](https://github.com/witnet/my-wit-wallet/actions) workflow and generates a new release for `linux`, `windows`, `macOS`, `android` and `iOs`.
+
+### Troubleshooting
+
+* Use `flutter doctor` to check if you miss any dependencies to complete the Flutter configuration.
+* Use `flutter clean` to clean the generated build and the Flutter cache.
+* Use `dart pub cache repair` to reinstall all packages in the system cache.
+
+## License
+
+[GPL-3](https://github.com/witnet/my-wit-wallet/blob/main/LICENSE)
