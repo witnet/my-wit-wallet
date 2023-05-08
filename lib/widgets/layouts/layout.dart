@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:witnet_wallet/shared/api_database.dart';
 import 'package:witnet_wallet/shared/locator.dart';
@@ -91,15 +92,21 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
 
   Widget _buildMainLayout(BuildContext context, theme, bool panel) {
     final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return CustomScrollView(
       slivers: [
         SliverAppBar(
             floating: true,
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: extendedTheme.headerBackgroundColor,
+              statusBarIconBrightness: Brightness.dark,
+              statusBarBrightness: Brightness.dark,
+            ),
             snap: true,
             pinned: true,
             elevation: 0,
             automaticallyImplyLeading: false,
-            backgroundColor: theme.colorScheme.background,
+            backgroundColor: Colors.transparent,
             expandedHeight: widget.dashboardActions != null ? 300 : 200,
             toolbarHeight: widget.dashboardActions != null ? 300 : 200,
             flexibleSpace: headerLayout(context, theme)),

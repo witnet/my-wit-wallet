@@ -44,10 +44,12 @@ class HeaderLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     final theme = Theme.of(context);
-    return SafeArea(
-        child: ClipPath(
-            clipper: Customshape(),
-            child: Container(
+    return ClipPath(
+        clipper: Customshape(),
+        child: Container(
+            color: extendedTheme.headerBackgroundColor,
+            child: SafeArea(
+                child: Container(
               height: dashboardActions != null ? 300 : 200,
               width: MediaQuery.of(context).size.width,
               color: extendedTheme.headerBackgroundColor,
@@ -83,6 +85,6 @@ class HeaderLayout extends StatelessWidget {
                       )),
                     ])),
               ]),
-            )));
+            ))));
   }
 }
