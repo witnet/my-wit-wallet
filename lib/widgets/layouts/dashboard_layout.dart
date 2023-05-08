@@ -92,7 +92,7 @@ class DashboardLayoutState extends State<DashboardLayout>
             ? _showCreateVTTDialog
             : () {},
         icon: Icon(
-          FontAwesomeIcons.paperPlane,
+          FontAwesomeIcons.locationArrow,
           size: 18,
         ),
         type: 'vertical-icon',
@@ -125,7 +125,7 @@ class DashboardLayoutState extends State<DashboardLayout>
         icon: Transform.rotate(
             angle: 90 * math.pi / 90,
             child: Icon(
-              FontAwesomeIcons.paperPlane,
+              FontAwesomeIcons.locationArrow,
               size: 18,
             )),
         type: 'vertical-icon',
