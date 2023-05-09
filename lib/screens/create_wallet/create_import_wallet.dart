@@ -49,8 +49,7 @@ class CreateImportWalletState extends State<CreateImportWallet> {
   }
 
   void prevAction() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+    Navigator.pop(context);
   }
 
   void createWallet() {
