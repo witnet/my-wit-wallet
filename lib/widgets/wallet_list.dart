@@ -212,19 +212,21 @@ class WalletListState extends State<WalletList> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(padding: EdgeInsets.all(8), children: [
-      Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [_buildInitialButtons()]),
-      ListView.builder(
-        padding: EdgeInsets.zero,
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: walletIdList.length,
-        itemBuilder: (context, index) {
-          return _buildWalletItem(walletIdList[index]);
-        },
-      ),
-    ]);
+    return SafeArea(
+        top: false,
+        child: ListView(padding: EdgeInsets.all(8), children: [
+          Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [_buildInitialButtons()]),
+          ListView.builder(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: walletIdList.length,
+            itemBuilder: (context, index) {
+              return _buildWalletItem(walletIdList[index]);
+            },
+          ),
+        ]));
   }
 }
