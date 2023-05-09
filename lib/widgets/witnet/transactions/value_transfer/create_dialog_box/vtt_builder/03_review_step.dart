@@ -170,7 +170,6 @@ class ReviewStepState extends State<ReviewStep>
           InfoElement(
               label: 'Fee',
               text: '${fee.standardizeWitUnits()} ${WitUnit.Wit.name}'),
-          SizedBox(height: 24),
         ]);
       },
     );

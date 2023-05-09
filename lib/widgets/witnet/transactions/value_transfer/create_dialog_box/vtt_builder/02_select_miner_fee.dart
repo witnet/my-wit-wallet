@@ -297,7 +297,6 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
             ),
           ],
         ),
-        SizedBox(height: 24),
       ]);
     } else {
       return SizedBox(height: 8);

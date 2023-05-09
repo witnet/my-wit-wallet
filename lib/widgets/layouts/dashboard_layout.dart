@@ -243,6 +243,10 @@ class DashboardLayoutState extends State<DashboardLayout>
           dashboardActions: _buildDashboardHeader(),
           widgetList: [
             _body,
+            if (widget.actions.length > 0)
+              SizedBox(
+                height: 80,
+              ),
           ],
           actions: widget.actions,
           slidingPanel: _walletList,
