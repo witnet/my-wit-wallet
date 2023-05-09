@@ -82,6 +82,11 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         outputUnit: WitUnit.Wit, inputUnit: WitUnit.nanoWit);
   }
 
+    String _witFeeTonanoWit(String fee) {
+    return num.parse(fee).standardizeWitUnits(
+        outputUnit: WitUnit.nanoWit, inputUnit: WitUnit.Wit);
+  }
+
   bool _isAbsoluteFee() {
     return _feeType == FeeType.Absolute;
   }
@@ -234,7 +239,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
           validator: _validateFee,
           onChanged: (String value) {
             setState(() {
-              _minerFeeNanoWit = _nanoWitFeeToWit(value);
+              _minerFeeNanoWit = _witFeeTonanoWit(value);
               if (_validateFee(_minerFeeNanoWit) == null) {
                 _errorFeeText = null;
               }
