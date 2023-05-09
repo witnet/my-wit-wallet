@@ -45,6 +45,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
   String? savedFeeAmount;
   FeeType? savedFeeType;
   int currentStepIndex = 0;
+  ScrollController scrollController = ScrollController(keepScrollOffset: false);
 
   @override
   void initState() {
@@ -73,6 +74,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
 
   void goToNextStep() {
     if ((currentStepIndex + 1) < stepListItems.length) {
+      scrollController.jumpTo(0.0);
       setState(() {
         currentStepIndex += 1;
         stepSelectedItem = stepListItems[currentStepIndex];
@@ -198,6 +200,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
       return DashboardLayout(
+        scrollController: scrollController,
         dashboardChild: _vttCreateBlocListener(),
         actions: _actions(),
       );

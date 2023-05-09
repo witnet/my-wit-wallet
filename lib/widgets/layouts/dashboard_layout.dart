@@ -28,10 +28,14 @@ import 'package:witnet_wallet/shared/locator.dart';
 const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
 class DashboardLayout extends StatefulWidget {
+  final ScrollController? scrollController;
   final Widget dashboardChild;
   final List<Widget> actions;
 
-  DashboardLayout({required this.dashboardChild, required this.actions});
+  DashboardLayout(
+      {required this.dashboardChild,
+      required this.actions,
+      this.scrollController});
 
   @override
   DashboardLayoutState createState() => DashboardLayoutState();
@@ -239,6 +243,7 @@ class DashboardLayoutState extends State<DashboardLayout>
             );
         }
         return Layout(
+          scrollController: widget.scrollController,
           navigationActions: _navigationActions(),
           dashboardActions: _buildDashboardHeader(),
           widgetList: [

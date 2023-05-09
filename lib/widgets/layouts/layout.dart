@@ -13,6 +13,7 @@ import 'package:witnet_wallet/theme/wallet_theme.dart';
 final panelController = PanelController();
 
 class Layout extends StatefulWidget {
+  final ScrollController? scrollController;
   final List<Widget> widgetList;
   final AppBar? appBar;
   final List<Widget> actions;
@@ -27,6 +28,7 @@ class Layout extends StatefulWidget {
     this.dashboardActions,
     this.slidingPanel,
     this.appBar,
+    this.scrollController,
   });
 
   @override
@@ -35,6 +37,8 @@ class Layout extends StatefulWidget {
 
 class LayoutState extends State<Layout> with TickerProviderStateMixin {
   var isPanelClose;
+  ScrollController defaultScrollController =
+      ScrollController(keepScrollOffset: false);
 
   Widget showWalletList(BuildContext context) {
     String walletId =
@@ -94,6 +98,9 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     return CustomScrollView(
+      controller: widget.scrollController != null
+          ? widget.scrollController
+          : defaultScrollController,
       slivers: [
         SliverAppBar(
             floating: true,
