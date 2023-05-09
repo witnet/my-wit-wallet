@@ -342,7 +342,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
 
   /// add a [ValueTransferOutput] to the [VTTransaction].
   void _addValueTransferOutputEvent(
-      AddValueTransferOutputEvent event, Emitter<VTTCreateState> emit) async {
+      AddValueTransferOutputEvent event, Emitter<VTTCreateState> emit) {
     emit(state.copyWith(status: VTTCreateStatus.busy));
     try {
       if (event.merge) {
