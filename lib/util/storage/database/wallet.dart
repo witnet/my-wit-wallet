@@ -89,7 +89,7 @@ class Wallet {
   List<String> allAddresses() {
     List<String> _addresses = [];
     _addresses.addAll(addressList(KeyType.external));
-    // _addresses.addAll(addressList(KeyType.internal));
+    _addresses.addAll(addressList(KeyType.internal));
     return _addresses;
   }
 
@@ -382,7 +382,6 @@ class Wallet {
 
       /// check the current external gap between used accounts and the last empty account
       externalAccounts.forEach((key, value) {
-        // addressList.add(value.address);
         if (value.vttHashes.length > 0) {
           externalGap = 0;
         } else {
