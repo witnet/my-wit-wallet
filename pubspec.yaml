@@ -54,10 +54,11 @@ dependencies:
   flutter_hooks: ^0.18.5+1
 
 flutter_icons:
-  android: "launcher_icon"
-  image_path_android: "assets/icon/icon.png"
+  android: true
+  adaptive_icon_foreground: "assets/icon/adaptive-foreground.png"
+  adaptive_icon_background: "assets/icon/adaptive-background.png"
   ios: true
-  image_path_ios: "assets/icon/icon.png"
+  image_path: "assets/icon/icon.png"
   remove_alpha_ios: true
   web:
     generate: true

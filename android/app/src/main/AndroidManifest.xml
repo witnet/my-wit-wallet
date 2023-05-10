@@ -4,7 +4,7 @@
    <application
         android:name="${applicationName}"
         android:label="witnet_wallet"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"
