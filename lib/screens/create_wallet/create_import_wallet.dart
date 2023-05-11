@@ -49,7 +49,7 @@ class CreateImportWalletState extends State<CreateImportWallet> {
   }
 
   void prevAction() {
-    Navigator.pop(context);
+    Navigator.pushReplacementNamed(context, DashboardScreen.route);
   }
 
   void createWallet() {
