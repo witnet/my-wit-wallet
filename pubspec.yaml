@@ -45,6 +45,7 @@ dependencies:
   witnet: 0.2.3
   table_calendar: ^3.0.3
   qr_flutter: ^4.0.0
+  window_manager: ^0.3.2
   url_launcher: ^6.0.10
   flutter_dotenv: ^5.0.2
   date_format: ^2.0.5
