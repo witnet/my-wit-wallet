@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
@@ -15,6 +16,7 @@ import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
+import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 
 class ListItem {
   bool isSelected = false;
@@ -183,7 +185,7 @@ class WalletListState extends State<WalletList> {
             ),
             Expanded(
               child: Text(
-                '$balance nanoWit',
+                '${num.parse(balance).standardizeWitUnits(inputUnit: WitUnit.nanoWit, outputUnit: WitUnit.Wit)} ${WitUnit.Wit.name}',
                 textAlign: TextAlign.end,
                 overflow: TextOverflow.ellipsis,
                 style: textStyle,
