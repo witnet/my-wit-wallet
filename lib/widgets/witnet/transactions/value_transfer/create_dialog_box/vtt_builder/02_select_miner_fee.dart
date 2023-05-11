@@ -78,20 +78,28 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   }
 
   String _nanoWitFeeToWit(String fee) {
-    return num.parse(fee).standardizeWitUnits(
-        outputUnit: WitUnit.Wit, inputUnit: WitUnit.nanoWit);
+    try {
+      return num.parse(fee).standardizeWitUnits(
+          outputUnit: WitUnit.Wit, inputUnit: WitUnit.nanoWit);
+    } catch (e) {
+      return '0';
+    }
   }
 
   String _witFeeTonanoWit(String fee) {
-    return num.parse(fee).standardizeWitUnits(
-        outputUnit: WitUnit.nanoWit, inputUnit: WitUnit.Wit);
+    try {
+      return num.parse(fee).standardizeWitUnits(
+          outputUnit: WitUnit.nanoWit, inputUnit: WitUnit.Wit);
+    } catch (e) {
+      return '0';
+    }
   }
 
   bool _isAbsoluteFee() {
     return _feeType == FeeType.Absolute;
   }
 
-  bool _notEnoughFunds({int? customFee = null}) {
+  bool _notEnoughFunds({int? customFee}) {
     final balance = balanceInfo.availableNanoWit;
     final amount = BlocProvider.of<VTTCreateBloc>(context)
         .state
@@ -113,12 +121,10 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
 
   void _setSavedFeeData() {
     if (widget.savedFeeType != null) _setFeeType(widget.savedFeeType?.name);
-
     if (_isAbsoluteFee() && widget.savedFeeAmount != null) {
-      _minerFeeController.text = _nanoWitFeeToWit(widget.savedFeeAmount!);
+      _minerFeeController.text = widget.savedFeeAmount!;
       _minerFeeNanoWit = widget.savedFeeAmount!;
     }
-    ;
   }
 
   void _setFeeType(type) {
