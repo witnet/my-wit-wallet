@@ -15,7 +15,6 @@ class TransactionsList extends StatefulWidget {
   final ThemeData themeData;
   final VoidCallback setDetails;
   final ValueTransferInfo? details;
-  final List<String?> txHashes;
   final Map<int, Account> externalAddresses;
   final List<ValueTransferInfo> valueTransfers;
   TransactionsList(
@@ -23,7 +22,6 @@ class TransactionsList extends StatefulWidget {
       required this.themeData,
       required this.details,
       required this.setDetails,
-      required this.txHashes,
       required this.externalAddresses,
       required this.valueTransfers})
       : super(key: key);
@@ -98,9 +96,11 @@ class TransactionsListState extends State<TransactionsList> {
       }
     });
     label = label == 'from' ? label : 'to';
-    address = label == 'from'
-        ? transaction.inputs[0].address.cropMiddle(18)
-        : transaction.outputs[0].pkh.address.cropMiddle(18);
+    if (label == 'from' && transaction.inputs.length > 0) {
+      address = transaction.inputs[0].address.cropMiddle(18);
+    } else if (transaction.outputs.length > 0) {
+      address = transaction.outputs[0].pkh.address.cropMiddle(18);
+    }
     if (label == 'from' && transaction.inputs.length > 1) {
       address = 'Several addresses';
     }
