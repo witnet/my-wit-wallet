@@ -12,10 +12,10 @@ class CustomLink extends StatelessWidget {
   });
 
   _launchUrl(String searchItem) async {
-    if (await canLaunchUrlString(url)) {
+    try {
       await launchUrlString(url);
-    } else {
-      throw 'Could not launch $url';
+    } catch (err) {
+      throw 'Could not launch $err';
     }
   }
 
