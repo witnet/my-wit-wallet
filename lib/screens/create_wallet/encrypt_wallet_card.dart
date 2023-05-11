@@ -177,6 +177,10 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                 focusNode: _passConfirmFocusNode,
                 textEditingController: _passConfirmController,
                 errorText: errorText,
+                onFieldSubmitted: (String? value) {
+                  // hide keyboard
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
                 onChanged: (String? value) {
                   if (this.mounted) {
                     setState(() {

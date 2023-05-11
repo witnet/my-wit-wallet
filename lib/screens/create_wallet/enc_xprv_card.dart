@@ -157,6 +157,10 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
       textEditingController: _passController,
       obscureText: true,
       errorText: errorText,
+      onFieldSubmitted: (String? value) {
+        // hide keyboard
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       onChanged: (String? value) {
         if (this.mounted) {
           setState(() {

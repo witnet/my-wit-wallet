@@ -250,6 +250,7 @@ class RecipientStepState extends State<RecipientStep>
               if (_feeType == FeeType.Absolute) {
                 _amountFocusNode.requestFocus();
               }
+              FocusManager.instance.primaryFocus?.unfocus();
             },
             onTapOutside: (PointerDownEvent event) {
               if (_amountFocusNode.hasFocus) {

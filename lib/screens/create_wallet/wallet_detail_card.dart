@@ -124,7 +124,10 @@ class WalletDetailCardState extends State<WalletDetailCard>
             ),
             controller: _nameController,
             focusNode: _nameFocusNode,
-            onSubmitted: (String value) => null,
+            onSubmitted: (String value) => {
+              // hide keyboard
+              FocusManager.instance.primaryFocus?.unfocus()
+            },
             onChanged: (String value) {
               setState(() {
                 _walletName = value;

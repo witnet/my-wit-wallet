@@ -112,6 +112,9 @@ class VerifyPasswordState extends State<VerifyPassword>
                 focusNode: _passFocusNode,
                 textEditingController: _passController,
                 errorText: errorText,
+                onFieldSubmitted: (String? value) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
                 onChanged: (String? value) {
                   if (this.mounted) {
                     setState(() {
