@@ -83,13 +83,11 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   void _getCurrentWallet() {
-    if (currentWallet == null) {
-      setState(() {
-        currentWallet = database.walletStorage.currentWallet;
-        BlocProvider.of<VTTCreateBloc>(context)
-            .add(AddSourceWalletsEvent(currentWallet: currentWallet!));
-      });
-    }
+    setState(() {
+      currentWallet = database.walletStorage.currentWallet;
+      BlocProvider.of<VTTCreateBloc>(context)
+          .add(AddSourceWalletsEvent(currentWallet: currentWallet!));
+    });
   }
 
   bool _isNextStepAllow() {
@@ -190,7 +188,8 @@ class CreateVttScreenState extends State<CreateVttScreen>
   BlocListener _dashboardBlocListener() {
     return BlocListener<DashboardBloc, DashboardState>(
       listener: (BuildContext context, DashboardState state) {
-        if (state.status == DashboardStatus.Ready) {}
+        _getCurrentWallet();
+        Navigator.pushReplacementNamed(context, CreateVttScreen.route);
       },
       child: _dashboardBlocBuilder(),
     );
