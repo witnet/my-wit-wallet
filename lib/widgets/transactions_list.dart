@@ -16,12 +16,14 @@ class TransactionsList extends StatefulWidget {
   final VoidCallback setDetails;
   final ValueTransferInfo? details;
   final Map<int, Account> externalAddresses;
+  final Map<int, Account> internalAddresses;
   final List<ValueTransferInfo> valueTransfers;
   TransactionsList(
       {Key? key,
       required this.themeData,
       required this.details,
       required this.setDetails,
+      required this.internalAddresses,
       required this.externalAddresses,
       required this.valueTransfers})
       : super(key: key);
@@ -31,7 +33,8 @@ class TransactionsList extends StatefulWidget {
 }
 
 class TransactionsListState extends State<TransactionsList> {
-  List<String?> addresses = [];
+  List<String?> externalAddresses = [];
+  List<String?> internalAddresses = [];
   ValueTransferInfo? transactionDetails;
   final ScrollController _scroller = ScrollController();
   @override
@@ -45,30 +48,11 @@ class TransactionsListState extends State<TransactionsList> {
     super.dispose();
   }
 
-  bool receiver(ValueTransferInfo vti) {
-    bool _receiver = false;
-    vti.outputs.forEach((element) {
-      if (addresses.contains(element.pkh.address)) {
-        _receiver = true;
-      }
-    });
-    return _receiver;
-  }
-
-  bool sender(ValueTransferInfo vti) {
-    bool _sender = false;
-    vti.inputs.forEach((element) {
-      if (addresses.contains(element.address)) {
-        _sender = true;
-      }
-    });
-    return _sender;
-  }
-
   int receiveValue(ValueTransferInfo vti) {
     int nanoWitvalue = 0;
     vti.outputs.forEach((element) {
-      if (addresses.contains(element.pkh.address)) {
+      if (externalAddresses.contains(element.pkh.address) ||
+          internalAddresses.contains(element.pkh.address)) {
         nanoWitvalue += element.value.toInt();
       }
     });
@@ -78,7 +62,8 @@ class TransactionsListState extends State<TransactionsList> {
   int sendValue(ValueTransferInfo vti) {
     int value = 0;
     vti.outputs.forEach((element) {
-      if (!addresses.contains(element.pkh.address)) {
+      if (!externalAddresses.contains(element.pkh.address) &&
+          !internalAddresses.contains(element.pkh.address)) {
         value += element.value.toInt();
       }
     });
@@ -91,7 +76,8 @@ class TransactionsListState extends State<TransactionsList> {
     String label = '';
     String address = '';
     transaction.outputs.forEach((element) {
-      if (addresses.contains(element.pkh.address)) {
+      if (externalAddresses.contains(element.pkh.address) ||
+          internalAddresses.contains(element.pkh.address)) {
         label = 'from';
       }
     });
@@ -181,7 +167,10 @@ class TransactionsListState extends State<TransactionsList> {
 
   @override
   Widget build(BuildContext context) {
-    addresses = widget.externalAddresses.values
+    externalAddresses = widget.externalAddresses.values
+        .map((account) => account.address)
+        .toList();
+    internalAddresses = widget.internalAddresses.values
         .map((account) => account.address)
         .toList();
     List<ValueTransferInfo> vtts = widget.valueTransfers

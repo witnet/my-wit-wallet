@@ -89,6 +89,7 @@ class DashboardScreenState extends State<DashboardScreen>
       details: txDetails,
       valueTransfers: currentWallet!.allTransactions(),
       externalAddresses: currentWallet!.externalAccounts,
+      internalAddresses: currentWallet!.internalAccounts,
     );
   }
 
