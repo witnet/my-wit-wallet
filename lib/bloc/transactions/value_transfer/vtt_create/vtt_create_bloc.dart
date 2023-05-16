@@ -13,6 +13,7 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/util/preferences.dart';
 
 part 'vtt_create_event.dart';
 part 'vtt_create_state.dart';
@@ -578,6 +579,22 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
                 keyType: account.keyType,
                 account: account);
       }
+      await Locator.instance<ApiDatabase>().getWalletStorage(true);
+      Locator.instance<ApiDatabase>()
+          .walletStorage
+          .setCurrentWallet(event.currentWallet.id);
+      String? addressIndex =
+          await ApiPreferences.getCurrentAddress(event.currentWallet.id);
+      Locator.instance<ApiDatabase>().walletStorage.setCurrentAccount(
+          Locator.instance<ApiDatabase>()
+              .walletStorage
+              .currentWallet
+              .externalAccounts[int.parse(addressIndex!.split('/').last)]!
+              .address);
+      Map<String, dynamic>? addressList =
+          await ApiPreferences.getCurrentAddressList();
+      Locator.instance<ApiDatabase>().walletStorage.setCurrentAddressList(
+          addressList!.map((key, value) => MapEntry(key, value as String)));
     } else {
       emit(state.copyWith(status: VTTCreateStatus.exception));
     }
