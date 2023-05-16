@@ -2,7 +2,7 @@
     package="com.witnet.myWitWallet">
    <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:name="myWitWallet"
+        android:name="${applicationName}"
         android:label="myWitWallet"
         android:icon="@mipmap/launcher_icon">
         <activity
