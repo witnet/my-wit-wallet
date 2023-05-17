@@ -123,7 +123,7 @@ class DisclaimerCardState extends State<DisclaimerCard>
         ),
         LabeledCheckbox(
             checked: isNextAllow,
-            label: 'I will be carefull, I promise!',
+            label: 'I will be careful, I promise!',
             onChanged: (value) => {
                   setState(() {
                     isNextAllow = !isNextAllow;
