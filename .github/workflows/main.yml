@@ -30,13 +30,13 @@ jobs:
 
       - name: Archive build
         run: |
-          Move-Item '.\build\windows\runner\Release' '.\light-wallet'
-          Compress-Archive -Path '.\light-wallet' -DestinationPath '.\witnet-light-wallet-windows.zip' -Force
+          Move-Item '.\build\windows\runner\Release' '.\my-wit-wallet'
+          Compress-Archive -Path '.\my-wit-wallet' -DestinationPath '.\my-wit-wallet-windows.zip' -Force
 
       - uses: actions/upload-artifact@v3
         with:
           name: windows
-          path: .\witnet-light-wallet-windows.zip
+          path: .\my-wit-wallet-wallet-windows.zip
 
   Linux:
     runs-on: ubuntu-22.04
@@ -65,17 +65,17 @@ jobs:
         run: flutter build linux --release
 
       - name: LDD
-        run: ldd build/linux/x64/release/bundle/my_wit_wallet
+        run: ldd build/linux/x64/release/bundle/myWitWallet
 
       - name: Archive Build
         run: |
-          mv ./build/linux/x64/release/bundle ./light-wallet
-          tar czvf witnet-light-wallet-linux.tar.gz ./light-wallet
+          mv ./build/linux/x64/release/bundle ./my-wit-wallet
+          tar czvf my-wit-wallet-linux.tar.gz ./my-wit-wallet
 
       - uses: actions/upload-artifact@v3
         with:
           name: linux
-          path: ./witnet-light-wallet-linux.tar.gz
+          path: ./my-wit-wallet-linux.tar.gz
 
   MacOs:
     runs-on: macos-latest
@@ -102,14 +102,14 @@ jobs:
 
       - name: Archive Build
         run: |
-          mkdir light-wallet
-          mv ./build/macos/Build/Products/Release/my_wit_wallet.app ./light-wallet/
-          tar czvf witnet-light-wallet-darwin.tar.gz ./light-wallet
+          mkdir my-wit-wallet
+          mv ./build/macos/Build/Products/Release/my_wit_wallet.app ./my-wit-wallet/
+          tar czvf my-wit-wallet-darwin.tar.gz ./my-wit-wallet
 
       - uses: actions/upload-artifact@v3
         with:
           name: macos
-          path: ./witnet-light-wallet-darwin.tar.gz
+          path: ./my-wit-wallet-darwin.tar.gz
 
   Android:
     runs-on: ubuntu-22.04
@@ -141,12 +141,12 @@ jobs:
         run: flutter build apk
 
       - name: Prepare apk
-        run: mv ./build/app/outputs/flutter-apk/app-release.apk ./witnet-light-wallet.apk
+        run: mv ./build/app/outputs/flutter-apk/app-release.apk ./my-wit-wallet.apk
 
       - uses: actions/upload-artifact@v3
         with:
           name: android
-          path: ./witnet-light-wallet.apk
+          path: ./my-wit-wallet.apk
 
   # IOS:
   #   runs-on: macos-latest
@@ -201,7 +201,7 @@ jobs:
       - name: Publish Github Release
         uses: ncipollo/release-action@v1
         with:
-          name: "Light Wallet ${{github.ref_name}}"
+          name: "wyWitWallet ${{github.ref_name}}"
           artifacts: "./release/*"
           bodyFile: "RELEASE.md"
           artifactErrorsFailBuild: true
