@@ -105,7 +105,7 @@ class WalletListState extends State<WalletList> {
   Widget _buildInitialButtons() {
     return PaddedButton(
       padding: EdgeInsets.all(0),
-      text: 'Add new',
+      text: 'Create or import',
       onPressed: () => {
         _createImportWallet(),
       },
