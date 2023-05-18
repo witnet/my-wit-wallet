@@ -160,6 +160,12 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         }
       } catch (e) {}
     }
+    String currentAddress = database.walletStorage.currentAccount.address;
+    Map<String, String>? _addressList = database.walletStorage.currentAddressList;
+    await database.loadWalletsDatabase();
+    database.walletStorage.setCurrentWallet(wallet.id);
+    database.walletStorage.setCurrentAccount(currentAddress);
+    database.walletStorage.setCurrentAddressList(_addressList!);
     emit(ExplorerState.synced(database.walletStorage));
   }
 

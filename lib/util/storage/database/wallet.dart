@@ -381,20 +381,22 @@ class Wallet {
       int internalGap = 0;
 
       /// check the current external gap between used accounts and the last empty account
-      externalAccounts.forEach((key, value) {
-        if (value.vttHashes.length > 0) {
+      for (int i = 0; i < externalAccounts.length; i++) {
+        final Account currentAccount = externalAccounts[i]!;
+        if (currentAccount.vttHashes.length > 0) {
           externalGap = 0;
         } else {
           externalGap += 1;
         }
-      });
+      }
 
       /// generate new external keys until the EXTERNAL_GAP_LIMIT is reached
       while (externalGap < EXTERNAL_GAP_LIMIT) {
-        await generateKey(
+        Account _account = await generateKey(
           index: lastExternalIndex,
           keyType: KeyType.external,
         );
+        await Locator.instance<ApiDatabase>().addAccount(_account);
         lastExternalIndex += 1;
         externalGap += 1;
       }
@@ -413,7 +415,11 @@ class Wallet {
 
       /// generate new internal keys until the INTERNAL_GAP_LIMIT is reached
       while (internalGap < INTERNAL_GAP_LIMIT) {
-        await generateKey(index: lastInternalIndex, keyType: KeyType.internal);
+        Account _account = await generateKey(
+          index: lastInternalIndex,
+          keyType: KeyType.internal,
+        );
+        await Locator.instance<ApiDatabase>().addAccount(_account);
         lastInternalIndex += 1;
         internalGap += 1;
       }
