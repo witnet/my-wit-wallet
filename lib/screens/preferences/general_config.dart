@@ -4,6 +4,7 @@ import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/switch.dart';
 import 'package:my_wit_wallet/bloc/theme/theme_bloc.dart';
@@ -23,16 +24,22 @@ enum ConfigSteps {
 
 class _GeneralConfigState extends State<GeneralConfig> {
   bool displayDarkMode = false;
+  PackageInfo? packageInfo;
 
   @override
   void initState() {
     super.initState();
     _getTheme();
+    _getPackageInfo();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Future<void> _getPackageInfo() async {
+    packageInfo = await PackageInfo.fromPlatform();
   }
 
   Future<void> _getTheme() async {
@@ -99,6 +106,11 @@ class _GeneralConfigState extends State<GeneralConfig> {
             type: 'primary',
             enabled: true,
             onPressed: () => _logOut()),
+      ),
+      SizedBox(height: 16),
+      Text(
+        packageInfo != null ? 'Version ${packageInfo!.version}' : '',
+        style: theme.textTheme.titleSmall,
       )
     ]);
   }
