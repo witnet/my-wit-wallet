@@ -33,7 +33,7 @@ class WitnetWalletApp extends StatelessWidget {
 Widget _buildWithTheme(BuildContext context, ThemeState state) {
   return MaterialApp(
     debugShowCheckedModeBanner: false,
-    title: 'Material App',
+    title: 'myWitWallet',
     home: LoginScreen(),
     theme: state.themeData,
     routes: {
