@@ -61,17 +61,22 @@ class Wallet {
     Map<String, Account> _accounts = {};
     switch (keyType) {
       case KeyType.internal:
-        internalAccounts.forEach((index, account) {
+        orderAccountsByIndex(internalAccounts).forEach((index, account) {
           _accounts[account.address] = account;
         });
         break;
       case KeyType.external:
-        externalAccounts.forEach((index, account) {
+        orderAccountsByIndex(externalAccounts).forEach((index, account) {
           _accounts[account.address] = account;
         });
         break;
     }
     return _accounts;
+  }
+
+  Map<int, Account> orderAccountsByIndex(Map<int, Account> accountMap) {
+    return Map.fromEntries(accountMap.entries.toList()
+      ..sort((e1, e2) => e1.key.compareTo(e2.key)));
   }
 
   List<String> addressList(KeyType keyType) {
