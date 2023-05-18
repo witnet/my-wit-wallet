@@ -51,8 +51,8 @@ class TransactionsListState extends State<TransactionsList> {
   int receiveValue(ValueTransferInfo vti) {
     int nanoWitvalue = 0;
     vti.outputs.forEach((element) {
-      if (externalAddresses.contains(element.pkh.address) ||
-          internalAddresses.contains(element.pkh.address)) {
+      if ((externalAddresses.contains(element.pkh.address) ||
+          internalAddresses.contains(element.pkh.address))) {
         nanoWitvalue += element.value.toInt();
       }
     });
@@ -60,14 +60,37 @@ class TransactionsListState extends State<TransactionsList> {
   }
 
   int sendValue(ValueTransferInfo vti) {
-    int value = 0;
-    vti.outputs.forEach((element) {
-      if (!externalAddresses.contains(element.pkh.address) &&
-          !internalAddresses.contains(element.pkh.address)) {
-        value += element.value.toInt();
-      }
-    });
-    return value;
+    bool isInternalTx =
+        externalAddresses.contains(vti.outputs[0].pkh.address) ||
+            internalAddresses.contains(vti.outputs[0].pkh.address);
+    return isInternalTx ? vti.fee : vti.outputs[0].value.toInt();
+  }
+
+  Widget buildTransactionValue(label, transaction) {
+    final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+
+    if (label == 'from') {
+      return Text(
+        ' + ${receiveValue(transaction).standardizeWitUnits()} ${WitUnit.Wit.name}',
+        style: theme.textTheme.bodyLarge
+            ?.copyWith(color: extendedTheme.txValuePositiveColor),
+        overflow: TextOverflow.ellipsis,
+      );
+    } else if (sendValue(transaction).standardizeWitUnits() != '0') {
+      return Text(
+        ' - ${sendValue(transaction).standardizeWitUnits()} ${WitUnit.Wit.name}',
+        style: theme.textTheme.bodyLarge
+            ?.copyWith(color: extendedTheme.txValueNegativeColor),
+        overflow: TextOverflow.ellipsis,
+      );
+    } else {
+      return Text(
+        '${sendValue(transaction).standardizeWitUnits()} ${WitUnit.Wit.name}',
+        style: theme.textTheme.bodyLarge,
+        overflow: TextOverflow.ellipsis,
+      );
+    }
   }
 
   Widget _buildTransactionItem(ValueTransferInfo transaction) {
@@ -75,9 +98,9 @@ class TransactionsListState extends State<TransactionsList> {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     String label = '';
     String address = '';
-    transaction.outputs.forEach((element) {
-      if (externalAddresses.contains(element.pkh.address) ||
-          internalAddresses.contains(element.pkh.address)) {
+    transaction.inputs.forEach((element) {
+      if (!externalAddresses.contains(element.address) &&
+          !internalAddresses.contains(element.address)) {
         label = 'from';
       }
     });
@@ -118,20 +141,7 @@ class TransactionsListState extends State<TransactionsList> {
                 padding: EdgeInsets.only(top: 16, bottom: 16),
                 child: Row(
                   children: [
-                    Expanded(
-                        child: label == 'from'
-                            ? Text(
-                                ' + ${receiveValue(transaction).standardizeWitUnits()} ${WitUnit.Wit.name}',
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                    color: extendedTheme.txValuePositiveColor),
-                                overflow: TextOverflow.ellipsis,
-                              )
-                            : Text(
-                                ' - ${sendValue(transaction).standardizeWitUnits()} ${WitUnit.Wit.name}',
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                    color: extendedTheme.txValueNegativeColor),
-                                overflow: TextOverflow.ellipsis,
-                              )),
+                    Expanded(child: buildTransactionValue(label, transaction)),
                     SizedBox(
                       width: 8,
                     ),
