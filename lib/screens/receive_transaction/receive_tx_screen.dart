@@ -74,7 +74,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
       accountList = [];
       selectedAccount = currentAccount;
       currentWallet?.externalAccounts
-          .forEach((key, value) => {accountList.add(value)});
+          .forEach((key, value) => accountList.add(value));
     });
   }
 

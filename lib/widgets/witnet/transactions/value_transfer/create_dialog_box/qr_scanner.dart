@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -22,7 +21,6 @@ class QrScanner extends StatelessWidget {
             MobileScanner(
               onDetect: (capture) {
                 final List<Barcode> barcodes = capture.barcodes;
-                final Uint8List? image = capture.image;
                 for (final barcode in barcodes) {
                   onChanged(barcode.rawValue ?? '');
                 }

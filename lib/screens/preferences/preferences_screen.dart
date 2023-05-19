@@ -29,9 +29,7 @@ class _PreferencePageState extends State<PreferencePage> {
             actionable: true,
             selectedItem: stepSelectedItem,
             listItems: stepListItems,
-            onChanged: (item) => {
-                  setState(() => {stepSelectedItem = item!})
-                }),
+            onChanged: (item) => {setState(() => stepSelectedItem = item!)}),
         SizedBox(height: 16),
         stepSelectedItem == ConfigSteps.General
             ? GeneralConfig()

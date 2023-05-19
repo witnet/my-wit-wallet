@@ -122,12 +122,12 @@ class RecipientStepState extends State<RecipientStep>
       _addressController.text = savedAddress;
       _address = savedAddress;
     }
-    ;
+    
     if (savedAmount != null) {
       _amountController.text = savedAmount;
       _amount = savedAmount;
     }
-    ;
+    
     BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
   }
 

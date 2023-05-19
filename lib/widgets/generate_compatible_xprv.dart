@@ -115,7 +115,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
       children: [
         Text(
           'This password encrypts your xprv file. You will be asked to type this password if you want to import this xprv as a backup.',
-          style: theme.textTheme.bodyText1,
+          style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 16),
         Form(
@@ -126,7 +126,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
             children: [
               Text(
                 'Password',
-                style: theme.textTheme.subtitle2,
+                style: theme.textTheme.titleSmall,
               ),
               SizedBox(height: 8),
               InputLogin(
@@ -151,7 +151,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
               SizedBox(height: 16),
               Text(
                 'Confirm password',
-                style: theme.textTheme.subtitle2,
+                style: theme.textTheme.titleSmall,
               ),
               SizedBox(height: 8),
               InputLogin(

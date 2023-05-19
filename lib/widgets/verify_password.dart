@@ -93,7 +93,7 @@ class VerifyPasswordState extends State<VerifyPassword>
       children: [
         Text(
           'Please, input your wallet\'s password.',
-          style: theme.textTheme.bodyText1,
+          style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 16),
         Form(
@@ -103,7 +103,7 @@ class VerifyPasswordState extends State<VerifyPassword>
             children: [
               Text(
                 'Password',
-                style: theme.textTheme.subtitle2,
+                style: theme.textTheme.titleSmall,
               ),
               SizedBox(height: 8),
               InputLogin(

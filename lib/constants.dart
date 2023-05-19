@@ -34,6 +34,7 @@ enum WitUnit {
 
 enum EstimatedFeeOptions { Stinky, Low, Medium, High, Opulent, Custom }
 
+// ignore: non_constant_identifier_names
 Map<EstimatedFeeOptions, String?> DEFAULT_MINER_FEE_OPTIONS = {
   EstimatedFeeOptions.Stinky: '0',
   EstimatedFeeOptions.Low: '0',

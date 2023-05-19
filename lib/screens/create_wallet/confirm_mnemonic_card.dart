@@ -26,7 +26,6 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
   String mnemonic = '';
   final TextEditingController textController = TextEditingController();
   int numLines = 0;
-  int _phraseLength = 12;
 
   void prevAction() {
     WalletType type =
