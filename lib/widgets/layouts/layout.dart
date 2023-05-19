@@ -87,10 +87,21 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(8), topRight: Radius.circular(8)),
           panel: widget.slidingPanel,
-          body: Padding(
-              child: _buildMainLayout(context, theme, true),
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom)));
+          body: GestureDetector(
+              onTap: () {
+                if (panelController.isPanelOpen) {
+                  panelController.close();
+                  Timer(Duration(milliseconds: 300), () {
+                    setState(() {
+                      isPanelClose = true;
+                    });
+                  });
+                }
+              },
+              child: Padding(
+                  child: _buildMainLayout(context, theme, true),
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom))));
     }
   }
 
