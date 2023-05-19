@@ -49,7 +49,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
   List<Widget> _actions() {
     return [
       PaddedButton(
-          padding: EdgeInsets.only(bottom: 8),
+          padding: EdgeInsets.zero,
           text: 'Copy selected address',
           type: 'primary',
           enabled: true,

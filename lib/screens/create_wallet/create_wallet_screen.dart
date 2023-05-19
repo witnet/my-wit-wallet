@@ -97,6 +97,10 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
       navigationActions: _navigationActions(),
       widgetList: [
         _formCards(),
+        if (_actions().length > 0)
+          SizedBox(
+            height: 32,
+          ),
       ],
       actions: _actions(),
     );

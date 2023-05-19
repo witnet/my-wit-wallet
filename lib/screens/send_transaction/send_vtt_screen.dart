@@ -105,7 +105,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
   List<Widget> _actions() {
     return [
       PaddedButton(
-          padding: EdgeInsets.only(bottom: 8),
+          padding: EdgeInsets.zero,
           text: nextAction != null ? nextAction().label : 'Continue',
           type: 'primary',
           enabled: true,

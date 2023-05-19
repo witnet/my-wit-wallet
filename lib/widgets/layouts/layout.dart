@@ -168,7 +168,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
       elevation: 0,
       child: Padding(
         padding: EdgeInsets.only(
-            left: 8, right: 8, bottom: widget.actions.length > 0 ? 8 : 0),
+            left: 16, right: 16, bottom: widget.actions.length > 0 ? 16 : 0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
