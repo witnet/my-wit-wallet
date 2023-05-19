@@ -49,7 +49,7 @@ class ReviewStepState extends State<ReviewStep>
     super.dispose();
   }
 
-  void nextAction() async {
+  void nextAction() {
     // Sign transaction
     final vtt =
         BlocProvider.of<VTTCreateBloc>(context).state.vtTransaction.body;
@@ -85,6 +85,8 @@ class ReviewStepState extends State<ReviewStep>
                     type: 'text',
                     enabled: true,
                     onPressed: () => {
+                          Navigator.popUntil(context,
+                              ModalRoute.withName(CreateVttScreen.route)),
                           Navigator.pushReplacementNamed(
                               context, DashboardScreen.route)
                         }),
@@ -94,15 +96,19 @@ class ReviewStepState extends State<ReviewStep>
                     type: 'text',
                     enabled: true,
                     onPressed: () => {
-                          Navigator.pushReplacementNamed(
-                              context, CreateVttScreen.route)
+                          Navigator.popUntil(context,
+                              ModalRoute.withName(CreateVttScreen.route)),
+                          _sendTransaction(state.vtTransaction),
                         })
               ],
               icon: FontAwesomeIcons.circleExclamation,
               title: 'Error',
-              content: Text('Error sending the transaction, try again!',
+              content: Text(
+                  'Error sending the transaction, ${state.message} try again!',
                   style: theme.textTheme.bodyLarge));
         } else if (state.vttCreateStatus == VTTCreateStatus.signing) {
+          Navigator.popUntil(
+              context, ModalRoute.withName(CreateVttScreen.route));
           buildAlertDialog(
               context: context,
               actions: [],
@@ -114,6 +120,8 @@ class ReviewStepState extends State<ReviewStep>
           // Send transaction after signed
           _sendTransaction(state.vtTransaction);
         } else if (state.vttCreateStatus == VTTCreateStatus.sending) {
+          Navigator.popUntil(
+              context, ModalRoute.withName(CreateVttScreen.route));
           buildAlertDialog(
               context: context,
               actions: [],
