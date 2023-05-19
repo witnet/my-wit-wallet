@@ -14,7 +14,7 @@ import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
 import 'package:my_wit_wallet/widgets/toggle_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-EstimatedFeeOptions _selectedFeeOption = EstimatedFeeOptions.Medium;
+EstimatedFeeOptions? _selectedFeeOption = EstimatedFeeOptions.Medium;
 
 class SelectMinerFeeStep extends StatefulWidget {
   final Function nextAction;
@@ -99,8 +99,9 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     return _feeType == FeeType.Absolute;
   }
 
-  bool _notEnoughFunds({int? customFee}) {
+  bool _notEnoughFunds({int? customFee, FeeType? feeType}) {
     final balance = balanceInfo.availableNanoWit;
+    final localFeeType = feeType != null ? feeType : _feeType;
     final amount = BlocProvider.of<VTTCreateBloc>(context)
         .state
         .vtTransaction
@@ -109,7 +110,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         .first
         .value
         .toInt();
-    if (_feeType == FeeType.Absolute) {
+    if (localFeeType == FeeType.Absolute) {
       int minerFee = customFee ?? _minerFeeNanoWitToNumber();
       int totalToSpend = minerFee + amount;
       return balance < totalToSpend;
@@ -189,10 +190,19 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   }
 
   Widget _buildFeeOptionButton(EstimatedFeeOptions label, String value) {
+    if (_selectedFeeOption != EstimatedFeeOptions.Custom) {
+      if (_selectedFeeOption == label &&
+          _notEnoughFunds(customFee: int.parse(value))) {
+        _selectedFeeOption = null;
+      } else if (_selectedFeeOption == label) {
+        _minerFeeNanoWit = value;
+      }
+    }
     return ClickableBox(
       isSelected: _selectedFeeOption == label,
       error: label != EstimatedFeeOptions.Custom &&
-              _notEnoughFunds(customFee: int.parse(value))
+              _notEnoughFunds(
+                  customFee: int.parse(value), feeType: FeeType.Absolute)
           ? 'Not enough Funds'
           : null,
       value: value,
@@ -245,7 +255,11 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
           validator: _validateFee,
           onChanged: (String value) {
             setState(() {
-              _minerFeeNanoWit = _witFeeTonanoWit(value);
+              if (value == '') {
+                _minerFeeNanoWit = '';
+              } else {
+                _minerFeeNanoWit = _witFeeTonanoWit(value);
+              }
               if (_validateFee(_minerFeeNanoWit) == null) {
                 _errorFeeText = null;
               }
