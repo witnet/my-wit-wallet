@@ -24,7 +24,6 @@ class ReceiveTransactionScreen extends StatefulWidget {
 class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
     with TickerProviderStateMixin {
   Account? selectedAccount;
-  List<Account> accountList = [];
   late AnimationController _loadingController;
 
   @override
@@ -71,10 +70,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
 
   _setCurrentWallet(Wallet? currentWallet, Account currentAccount) {
     setState(() {
-      accountList = [];
       selectedAccount = currentAccount;
-      currentWallet?.externalAccounts
-          .forEach((key, value) => accountList.add(value));
     });
   }
 
@@ -108,7 +104,6 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
         SizedBox(height: 16),
         AddressList(
           currentWallet: db.walletStorage.currentWallet,
-          accountList: accountList,
         ),
       ],
     );

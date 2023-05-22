@@ -1,3 +1,4 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
@@ -13,12 +14,9 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 
 class AddressList extends StatefulWidget {
-  final List<Account> accountList;
-
   final Wallet currentWallet;
 
   const AddressList({
-    required this.accountList,
     required this.currentWallet,
   });
 
@@ -40,9 +38,8 @@ class AddressListState extends State<AddressList> {
     super.dispose();
   }
 
-  _buildAddressItem(Account account) {
-    final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
+  _buildAddressItem(Account account, ThemeData theme) {
+    ExtendedTheme extendedTheme = theme.extension<ExtendedTheme>()!;
     final isAddressSelected = account.address == currentAddress;
     final textStyle = isAddressSelected
         ? extendedTheme.monoMediumText
@@ -94,6 +91,57 @@ class AddressListState extends State<AddressList> {
             }));
   }
 
+  Widget _internalAccountsBalance(ThemeData theme) {
+    ExtendedTheme extendedTheme = theme.extension<ExtendedTheme>()!;
+    int internalBalance = 0;
+    List<Account> internalAccounts =
+        widget.currentWallet.internalAccounts.values.toList();
+    internalAccounts.forEach(
+        (account) => internalBalance += account.balance.availableNanoWit);
+    return Container(
+        child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Internal balance',
+                          style: theme.textTheme.displaySmall,
+                          textAlign: TextAlign.start,
+                        ),
+                        SizedBox(
+                          width: 4,
+                        ),
+                        Tooltip(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: theme.colorScheme.background,
+                            ),
+                            textStyle: theme.textTheme.bodyMedium,
+                            height: 60,
+                            message:
+                                'The internal balance corresponds to the sum of all the change accounts available balance',
+                            child: MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                child: Icon(FontAwesomeIcons.circleQuestion,
+                                    size: 12,
+                                    color: extendedTheme.inputIconColor))),
+                      ]),
+                  Expanded(
+                    child: Text(
+                      '${internalBalance.standardizeWitUnits()} ${WitUnit.Wit.name}',
+                      textAlign: TextAlign.end,
+                      style: extendedTheme.monoRegularText!
+                          .copyWith(fontFamily: 'Almarai'),
+                    ),
+                  ),
+                ])));
+  }
+
   BlocListener _dashboardBlocListener() {
     return BlocListener<DashboardBloc, DashboardState>(
       listener: (BuildContext context, DashboardState state) {
@@ -111,17 +159,27 @@ class AddressListState extends State<AddressList> {
   }
 
   BlocBuilder _dashboardBlocBuilder() {
+    final theme = Theme.of(context);
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (BuildContext context, DashboardState state) {
-        return ListView.builder(
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: widget.currentWallet.allAccounts().values.toList().length,
-          itemBuilder: (context, index) {
-            return _buildAddressItem(
-                widget.currentWallet.allAccounts().values.toList()[index]);
-          },
+        return Column(
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount:
+                  widget.currentWallet.externalAccounts.values.toList().length,
+              itemBuilder: (context, index) {
+                return _buildAddressItem(
+                    widget.currentWallet.externalAccounts.values
+                        .toList()[index],
+                    theme);
+              },
+            ),
+            SizedBox(height: 24),
+            _internalAccountsBalance(theme)
+          ],
         );
       },
     );
