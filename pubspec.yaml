@@ -56,6 +56,7 @@ dependencies:
   flutter_hooks: ^0.18.5+1
   flutter_svg: ^2.0.5
   number_paginator: ^0.2.3
+  msix: ^3.13.1
 
 flutter_icons:
   android: true
@@ -109,3 +110,18 @@ flutter:
           weight: 500
         - asset: assets/fonts/Roboto_Mono/RobotoMono-Bold.ttf
           weight: 700
+
+msix_config:
+  app_installer:
+    hours_between_update_checks: 0
+    automatic_background_task: true
+    update_blocks_activation: true
+    show_prompt: true
+    force_update_from_any_version: false
+  display_name: myWitWallet
+  publisher_display_name: Witnet Foundation
+  identity_name: WitnetFoundation.myWitWallet
+  logo_path: assets/icon/icon.png
+  store: true
+  publisher: CN=Witnet Foundation, O=Witnet Foundation, C=US
+  msix_version: 1.0.0.0
