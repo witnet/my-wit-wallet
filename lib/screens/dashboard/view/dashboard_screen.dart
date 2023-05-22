@@ -123,26 +123,10 @@ class DashboardScreenState extends State<DashboardScreen>
         actions: [],
       );
     }, listener: (context, state) {
-      switch (state.status) {
-        case ExplorerStatus.unknown:
-          // TODO: Handle this case.
-          break;
-        case ExplorerStatus.dataloading:
-          // TODO: Handle this case.
-          break;
-        case ExplorerStatus.dataloaded:
-          {
-            setState(() {
-              _getVtts();
-            });
-          }
-          break;
-        case ExplorerStatus.error:
-          // TODO: Handle this case.
-          break;
-        case ExplorerStatus.ready:
-          // TODO: Handle this case.
-          break;
+      if (state.status == ExplorerStatus.dataloaded) {
+        setState(() {
+          _getVtts();
+        });
       }
     });
   }

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:witnet/constants.dart';
 import 'package:witnet/data_structures.dart';
@@ -103,6 +104,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       prioritiesEstimate = await Locator.instance.get<ApiExplorer>().priority();
     } catch (e) {
       print('Error getting priority estimations $e');
+      rethrow;
     }
   }
 
@@ -616,9 +618,15 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   Future<void> _addSourceWalletsEvent(
       AddSourceWalletsEvent event, Emitter<VTTCreateState> emit) async {
     await setWallet(event.currentWallet);
-    await setEstimatedPriorities();
     emit(state.copyWith(
         inputs: inputs, outputs: outputs, status: VTTCreateStatus.building));
+    try {
+      await setEstimatedPriorities();
+    } catch (err) {
+      print('Error setting estimated priorities $err');
+      emit(state.copyWith(status: VTTCreateStatus.exception));
+      rethrow;
+    }
   }
 
   void _resetTransactionEvent(

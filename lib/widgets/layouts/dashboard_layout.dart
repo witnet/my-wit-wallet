@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
@@ -44,6 +47,9 @@ class DashboardLayout extends StatefulWidget {
 class DashboardLayoutState extends State<DashboardLayout>
     with TickerProviderStateMixin {
   Wallet? walletStorage;
+  late Timer explorerTimer;
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
@@ -203,6 +209,82 @@ class DashboardLayoutState extends State<DashboardLayout>
     ];
   }
 
+  SnackBar buildSnackbar(String text, Color? color, [Function? action]) {
+    final theme = Theme.of(context);
+    return SnackBar(
+      clipBehavior: Clip.none,
+      action: action != null
+          ? SnackBarAction(
+              label: 'Dismiss',
+              onPressed: () => action(),
+              textColor: Colors.white,
+            )
+          : null,
+      content: Text(text,
+          textAlign: TextAlign.left,
+          style: theme.textTheme.bodyMedium!.copyWith(color: Colors.white)),
+      duration: Duration(hours: 1),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: color,
+      elevation: 0,
+    );
+  }
+
+  BlocListener<VTTCreateBloc, VTTCreateState> _vttListener(Widget child) {
+    final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+    return BlocListener<VTTCreateBloc, VTTCreateState>(
+      listenWhen: (previousState, currentState) {
+        if (previousState.vttCreateStatus == VTTCreateStatus.exception &&
+            currentState.vttCreateStatus != VTTCreateStatus.exception) {
+          scaffoldMessengerKey.currentState!.showSnackBar(buildSnackbar(
+            'Connection reestablished!',
+            extendedTheme.txValuePositiveColor,
+            () =>
+                scaffoldMessengerKey.currentState!.hideCurrentMaterialBanner(),
+          ));
+        }
+        return true;
+      },
+      listener: (context, state) {
+        if (state.vttCreateStatus == VTTCreateStatus.exception) {
+          scaffoldMessengerKey.currentState!.showSnackBar(buildSnackbar(
+              'myWitWallet is experiencing connection problems',
+              theme.colorScheme.error));
+        }
+      },
+      child: child,
+    );
+  }
+
+  BlocListener<ExplorerBloc, ExplorerState> _explorerListerner(Widget child) {
+    final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+    return BlocListener<ExplorerBloc, ExplorerState>(
+      listenWhen: (previousState, currentState) {
+        if (previousState.status == ExplorerStatus.error &&
+            currentState.status != ExplorerStatus.error &&
+            currentState.status != ExplorerStatus.unknown) {
+          scaffoldMessengerKey.currentState!.showSnackBar(buildSnackbar(
+            'Connection reestablished!',
+            extendedTheme.txValuePositiveColor,
+            () =>
+                scaffoldMessengerKey.currentState!.hideCurrentMaterialBanner(),
+          ));
+        }
+        return true;
+      },
+      listener: (context, state) {
+        if (state.status == ExplorerStatus.error) {
+          scaffoldMessengerKey.currentState!.showSnackBar(buildSnackbar(
+              'myWitWallet is experiencing connection problems',
+              theme.colorScheme.error));
+        }
+      },
+      child: child,
+    );
+  }
+
   Widget _authBuilder() {
     final theme = Theme.of(context);
     return BlocListener<LoginBloc, LoginState>(
@@ -228,14 +310,14 @@ class DashboardLayoutState extends State<DashboardLayout>
             break;
           case LoginStatus.LoginSuccess:
             _walletList = WalletList();
-            _body = Column(
+            _body = _vttListener(_explorerListerner(Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Container(
                   child: widget.dashboardChild,
                 ),
               ],
-            );
+            )));
             break;
           default:
             _body = Column(
@@ -264,7 +346,8 @@ class DashboardLayoutState extends State<DashboardLayout>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-      child: _authBuilder(),
+      child:
+          ScaffoldMessenger(key: scaffoldMessengerKey, child: _authBuilder()),
     );
   }
 }

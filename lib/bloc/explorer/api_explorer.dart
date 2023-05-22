@@ -209,6 +209,14 @@ class ApiExplorer {
     }
   }
 
+  Future<PrioritiesEstimate> priority() async {
+    try {
+      return await client.valueTransferPriority();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> delay() async {
     await Future.delayed(Duration(milliseconds: EXPLORER_DELAY_MS));
   }
@@ -224,9 +232,5 @@ class ApiExplorer {
   Future<ValueTransferInfo> getVtt(String transactionId) async {
     var result = await hash(transactionId);
     return result as ValueTransferInfo;
-  }
-
-  Future<PrioritiesEstimate> priority() async {
-    return await client.valueTransferPriority();
   }
 }

@@ -32,60 +32,95 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<void> _hashQueryEvent(
       HashQueryEvent event, Emitter<ExplorerState> emit) async {
-    var resp = await Locator.instance
-        .get<ApiExplorer>()
-        .hash(event.value, event.utxos);
-    return emit(
-        ExplorerState.dataLoaded(data: resp, query: ExplorerQuery.hash));
+    emit(ExplorerState.unknown());
+    try {
+      var resp = await Locator.instance
+          .get<ApiExplorer>()
+          .hash(event.value, event.utxos);
+      emit(ExplorerState.dataLoaded(data: resp, query: ExplorerQuery.hash));
+    } catch (err) {
+      emit(ExplorerState.error());
+      rethrow;
+    }
   }
 
   Future<void> _statusQueryEvent(
       StatusQueryEvent event, Emitter<ExplorerState> emit) async {
-    var resp = await Locator.instance.get<ApiExplorer>().getStatus();
-    return emit(ExplorerState.dataLoaded(
-        data: resp.jsonMap(), query: ExplorerQuery.status));
+    Status resp = await Locator.instance.get<ApiExplorer>().getStatus();
+    emit(ExplorerState.unknown());
+    try {
+      // TODO: fix type error in witnet.dart to get status
+      if (resp.databaseMessage == 'Explorer backend seems healthy') {
+        emit(ExplorerState.dataLoaded(
+            data: resp.jsonMap(), query: ExplorerQuery.status));
+      } else {
+        emit(ExplorerState.error());
+      }
+    } catch (err) {
+      emit(ExplorerState.error());
+      rethrow;
+    }
   }
 
   Future<void> _addressQueryEvent(
       AddressQueryEvent event, Emitter<ExplorerState> emit) async {
-    var resp = await Locator.instance
-        .get<ApiExplorer>()
-        .address(value: event.address, tab: event.tab);
-    return emit(ExplorerState.dataLoaded(
-        data: resp.jsonMap(), query: ExplorerQuery.address));
+    emit(ExplorerState.unknown());
+    try {
+      var resp = await Locator.instance
+          .get<ApiExplorer>()
+          .address(value: event.address, tab: event.tab);
+      emit(ExplorerState.dataLoaded(
+          data: resp.jsonMap(), query: ExplorerQuery.address));
+    } catch (err) {
+      emit(ExplorerState.error());
+      rethrow;
+    }
   }
 
   Future<void> _vtTransactionPostEvent(
       VTTransactionPostEvent event, Emitter<ExplorerState> emit) async {
-    var resp = await Locator.instance
-        .get<ApiExplorer>()
-        .sendVtTransaction(event.vtTransaction);
+    emit(ExplorerState.unknown());
+    try {
+      var resp = await Locator.instance
+          .get<ApiExplorer>()
+          .sendVtTransaction(event.vtTransaction);
 
-    return emit(
-        ExplorerState.dataLoaded(query: ExplorerQuery.sendVtt, data: resp));
+      emit(ExplorerState.dataLoaded(query: ExplorerQuery.sendVtt, data: resp));
+    } catch (err) {
+      emit(ExplorerState.error());
+      rethrow;
+    }
   }
 
   Future<void> _utxoQueryEvent(
       UtxoQueryEvent event, Emitter<ExplorerState> emit) async {
-    var resp = await Locator.instance
-        .get<ApiExplorer>()
-        .utxos(address: event.account.address);
-    var utxoList = {};
-    resp.forEach((element) {
-      utxoList[element.outputPointer.transactionId] = element;
-    });
+    emit(ExplorerState.unknown());
+    try {
+      var resp = await Locator.instance
+          .get<ApiExplorer>()
+          .utxos(address: event.account.address);
+      var utxoList = {};
+      resp.forEach((element) {
+        utxoList[element.outputPointer.transactionId] = element;
+      });
 
-    return emit(ExplorerState.dataLoaded(
-        query: ExplorerQuery.utxos, data: {'utxos': utxoList}));
+      emit(ExplorerState.dataLoaded(
+          query: ExplorerQuery.utxos, data: {'utxos': utxoList}));
+    } catch (e) {
+      print('Error loading utxos $e');
+      emit(ExplorerState.error());
+      rethrow;
+    }
   }
 
   Future<void> _syncWalletEvent(
       SyncWalletEvent event, Emitter<ExplorerState> emit) async {
+    emit(ExplorerState.unknown());
     try {
-      // TODO: check if the explorer is up
       await syncWalletRoutine(event, emit);
     } catch (e) {
-      print('Error syncing the Wallet $e');
+      print('Error syncing wallet $e');
+      emit(ExplorerState.error());
       rethrow;
     }
   }
@@ -138,7 +173,13 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         if (!isTheSameList(account, utxoList)) {
           if (utxoList.isNotEmpty) {
             account.utxos = utxoList;
-            account = await updateAccountVttsAndBalance(account);
+            try {
+              account = await updateAccountVttsAndBalance(account);
+            } catch (e) {
+              print('Error updateAccountVttsAndBalance $e');
+              emit(ExplorerState.error());
+              rethrow;
+            }
           } else {
             account.utxos.clear();
           }
@@ -158,7 +199,10 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         if (_vtt.status != vtt.status) {
           await database.updateVtt(wallet.id, vtt);
         }
-      } catch (e) {}
+      } catch (e) {
+        print('Error getting vtt: ${_vtt.txnHash} :: $e');
+        emit(ExplorerState.error());
+      }
     }
     String currentAddress = database.walletStorage.currentAccount.address;
     Map<String, String>? _addressList =
@@ -222,6 +266,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       database.walletStorage.wallets[account.walletId]!.setAccount(account);
     } catch (e) {
       print('Error updating account vtts and balance $e');
+      rethrow;
     }
     return account;
   }
