@@ -199,10 +199,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         if (_vtt.status != vtt.status) {
           await database.updateVtt(wallet.id, vtt);
         }
-      } catch (e) {
-        print('Error getting vtt: ${_vtt.txnHash} :: $e');
-        emit(ExplorerState.error());
-      }
+      } catch (e) {}
     }
     String currentAddress = database.walletStorage.currentAccount.address;
     Map<String, String>? _addressList =
