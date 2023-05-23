@@ -181,8 +181,8 @@ IconThemeData primaryIconTheme = IconThemeData(
 CheckboxThemeData checkboxTheme = CheckboxThemeData(
   splashRadius: 0,
   side: MaterialStateBorderSide.resolveWith(
-      (_) => const BorderSide(width: 2, color: WitnetPallet.witnetGreen2)),
-  fillColor: MaterialStateProperty.all(WitnetPallet.witnetGreen2),
+      (_) => const BorderSide(width: 2, color: WitnetPallet.witnetGreen1)),
+  fillColor: MaterialStateProperty.all(WitnetPallet.witnetGreen1),
   checkColor: MaterialStateProperty.all(WitnetPallet.white),
   overlayColor: MaterialStateProperty.all(WitnetPallet.white),
 );
