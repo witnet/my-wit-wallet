@@ -8,7 +8,7 @@ MaterialColor primarySwatch =
     createMaterialColor(WitnetPallet.opacityWitnetGreen);
 Color primaryColor = WitnetPallet.opacityWitnetGreen;
 TextSelectionThemeData textSelectionTheme =
-    TextSelectionThemeData(cursorColor: WitnetPallet.opacityWitnetGreen);
+    TextSelectionThemeData(cursorColor: WitnetPallet.witnetGreen1);
 Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
   displayLarge: TextStyle(

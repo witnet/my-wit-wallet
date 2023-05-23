@@ -147,6 +147,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   }
 
   Widget headerLayout(context, theme) {
+    final double iconHeight = 50;
     if (widget.slidingPanel == null) {
       return Container(
           child: HeaderLayout(
@@ -160,10 +161,10 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           Flexible(
               child: ConstrainedBox(
             constraints: BoxConstraints(
-              maxHeight: 50,
+              maxHeight: iconHeight,
             ),
             child: Column(
-              children: [smallWitnetEyeIcon(theme)],
+              children: [witnetEyeIcon(theme, height: iconHeight)],
             ),
           )),
           ...widget.navigationActions

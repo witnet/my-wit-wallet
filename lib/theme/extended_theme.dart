@@ -240,7 +240,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     headerBackgroundColor: WitnetPallet.darkBlue2,
     walletListBackgroundColor: WitnetPallet.darkBlue2,
     walletActiveItemBackgroundColor: WitnetPallet.opacityWitnetGreen2,
-    walletActiveItemBorderColor: WitnetPallet.witnetGreen3,
+    walletActiveItemBorderColor: WitnetPallet.witnetGreen4,
     walletItemBorderColor: WitnetPallet.lightGrey,
     inputIconColor: WitnetPallet.lightGrey,
     txBorderColor: WitnetPallet.lightGrey,

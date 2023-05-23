@@ -35,31 +35,13 @@ Widget witnetEyeIcon(ThemeData theme, {height = 100}) {
   return (theme.primaryColor == lightTheme.primaryColor)
       ? Image.asset(
           'assets/img/witnet_light_icon.png',
-          width: 100,
           height: height,
           fit: BoxFit.fitWidth,
           filterQuality: FilterQuality.high,
         )
       : Image.asset(
           'assets/img/witnet_dark_icon.png',
-          width: 100,
           height: height,
-          fit: BoxFit.fitWidth,
-          filterQuality: FilterQuality.high,
-        );
-}
-
-Widget smallWitnetEyeIcon(ThemeData theme) {
-  return (theme.primaryColor == lightTheme.primaryColor)
-      ? Image.asset(
-          'assets/img/witnet_light_icon.png',
-          height: 50,
-          fit: BoxFit.fitWidth,
-          filterQuality: FilterQuality.high,
-        )
-      : Image.asset(
-          'assets/img/witnet_dark_icon.png',
-          height: 50,
           fit: BoxFit.fitWidth,
           filterQuality: FilterQuality.high,
         );

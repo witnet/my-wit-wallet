@@ -4,10 +4,10 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'colors.dart';
 
 Brightness brightness = Brightness.light;
-MaterialColor primarySwatch = createMaterialColor(WitnetPallet.witnetGreen2);
-Color primaryColor = WitnetPallet.witnetGreen2;
+MaterialColor primarySwatch = createMaterialColor(WitnetPallet.witnetGreen4);
+Color primaryColor = WitnetPallet.witnetGreen4;
 TextSelectionThemeData textSelectionTheme =
-    TextSelectionThemeData(cursorColor: WitnetPallet.witnetGreen2);
+    TextSelectionThemeData(cursorColor: WitnetPallet.witnetGreen4);
 Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
   displayLarge: TextStyle(
@@ -80,7 +80,7 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   errorMaxLines: 1,
   hintStyle: TextStyle(),
   hoverColor: WitnetPallet.white,
-  focusColor: WitnetPallet.witnetGreen2,
+  focusColor: WitnetPallet.witnetGreen4,
   isDense: false,
   isCollapsed: false,
   contentPadding: EdgeInsets.all(16),
@@ -91,7 +91,7 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   ),
   focusedBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: WitnetPallet.witnetGreen2, width: 1.0, style: BorderStyle.solid),
+        color: WitnetPallet.witnetGreen4, width: 1.0, style: BorderStyle.solid),
     borderRadius: BorderRadius.circular(4),
   ),
   focusedErrorBorder: OutlineInputBorder(
@@ -158,14 +158,14 @@ IconThemeData iconTheme = IconThemeData(
   size: 16,
 );
 IconThemeData primaryIconTheme = IconThemeData(
-  color: WitnetPallet.witnetGreen2,
+  color: WitnetPallet.witnetGreen4,
   size: 24,
 );
 CheckboxThemeData checkboxTheme = CheckboxThemeData(
   splashRadius: 0,
   side: MaterialStateBorderSide.resolveWith(
-      (_) => const BorderSide(width: 2, color: WitnetPallet.witnetGreen2)),
-  fillColor: MaterialStateProperty.all(WitnetPallet.witnetGreen2),
+      (_) => const BorderSide(width: 2, color: WitnetPallet.witnetGreen4)),
+  fillColor: MaterialStateProperty.all(WitnetPallet.witnetGreen4),
   checkColor: MaterialStateProperty.all(WitnetPallet.white),
   overlayColor: MaterialStateProperty.all(WitnetPallet.white),
 );
