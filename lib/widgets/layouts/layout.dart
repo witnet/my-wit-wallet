@@ -117,7 +117,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             floating: true,
             systemOverlayStyle: SystemUiOverlayStyle(
               statusBarColor: extendedTheme.headerBackgroundColor,
-              statusBarIconBrightness: Brightness.dark,
+              statusBarIconBrightness: Brightness.light,
               statusBarBrightness: Brightness.dark,
             ),
             snap: true,
