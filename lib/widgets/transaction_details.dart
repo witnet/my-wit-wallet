@@ -95,6 +95,10 @@ class TransactionDetails extends StatelessWidget {
         ));
   }
 
+  bool _isPendingTransaction(String status) {
+    return status.toLowerCase() == "pending";
+  }
+
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
@@ -133,7 +137,11 @@ class TransactionDetails extends StatelessWidget {
             text:
                 '${transaction.fee.standardizeWitUnits()} ${WitUnit.Wit.name}'),
         SizedBox(height: 16),
-        InfoElement(label: 'Timestamp', text: transaction.txnTime.formatDate()),
+        InfoElement(
+            label: 'Timestamp',
+            text: _isPendingTransaction(transaction.status)
+                ? '_'
+                : transaction.txnTime.formatDate()),
         SizedBox(height: 16),
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
