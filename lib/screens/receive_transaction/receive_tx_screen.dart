@@ -64,12 +64,10 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
                 ClipboardData(text: selectedAccount?.address ?? ''));
             if (await Clipboard.hasStrings()) {
               setState(() {
-                enableButton = false;
                 isLoading = true;
               });
-              Timer(Duration(milliseconds: 400), () {
+              Timer(Duration(milliseconds: 500), () {
                 setState(() {
-                  enableButton = true;
                   isLoading = false;
                 });
               });
