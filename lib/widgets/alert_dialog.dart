@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 buildAlertDialog({
   required BuildContext context,
   required List<Widget> actions,
-  required IconData icon,
+  IconData? icon,
   required String title,
   required Widget content,
 }) {

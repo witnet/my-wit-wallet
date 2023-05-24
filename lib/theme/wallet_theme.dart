@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'extended_theme.dart';
 import 'dark_theme.dart' show darkTheme;
 import 'light_theme.dart' show lightTheme;
@@ -44,5 +45,19 @@ Widget witnetEyeIcon(ThemeData theme, {height = 100}) {
           height: height,
           fit: BoxFit.fitWidth,
           filterQuality: FilterQuality.high,
+        );
+}
+
+Widget svgThemeImage(ThemeData theme, {name, double height = 100}) {
+  return (theme.primaryColor == lightTheme.primaryColor)
+      ? SvgPicture.asset(
+          'assets/svg/$name.svg',
+          height: height,
+          fit: BoxFit.fitWidth,
+        )
+      : SvgPicture.asset(
+          'assets/svg/$name-dark.svg',
+          height: height,
+          fit: BoxFit.fitWidth,
         );
 }

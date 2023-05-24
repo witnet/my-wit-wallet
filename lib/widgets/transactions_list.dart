@@ -8,6 +8,7 @@ import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
 typedef void VoidCallback(ValueTransferInfo? value);
 
@@ -177,6 +178,7 @@ class TransactionsListState extends State<TransactionsList> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     externalAddresses = widget.externalAddresses.values
         .map((account) => account.address)
         .toList();
@@ -204,7 +206,15 @@ class TransactionsListState extends State<TransactionsList> {
           },
         );
       } else {
-        return Text('You don\'t have transactions yet');
+        return Column(
+          children: [
+            Text('You don\'t have transactions yet!'),
+            SizedBox(
+              height: 24,
+            ),
+            svgThemeImage(theme, name: 'no-transactions', height: 152),
+          ],
+        );
       }
     }
   }

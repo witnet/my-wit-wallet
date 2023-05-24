@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
@@ -12,6 +13,7 @@ import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
 import 'package:my_wit_wallet/widgets/info_element.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
 typedef void VoidCallback(bool value);
 
@@ -103,18 +105,26 @@ class ReviewStepState extends State<ReviewStep>
               ],
               icon: FontAwesomeIcons.circleExclamation,
               title: 'Error',
-              content: Text('Error sending the transaction, try again!',
-                  style: theme.textTheme.bodyLarge));
+              content: Column(mainAxisSize: MainAxisSize.min, children: [
+                svgThemeImage(theme, name: 'transaction-error', height: 100),
+                SizedBox(height: 16),
+                Text(
+                    'Error sending the transaction, try again!',
+                    style: theme.textTheme.bodyLarge)
+              ]));
         } else if (state.vttCreateStatus == VTTCreateStatus.signing) {
           Navigator.popUntil(
               context, ModalRoute.withName(CreateVttScreen.route));
           buildAlertDialog(
               context: context,
               actions: [],
-              icon: FontAwesomeIcons.fileSignature,
               title: 'Signing transaction',
-              content: Text('The transaction is being signed',
-                  style: theme.textTheme.bodyLarge));
+              content: Column(mainAxisSize: MainAxisSize.min, children: [
+                svgThemeImage(theme, name: 'signing-transaction', height: 100),
+                SizedBox(height: 16),
+                Text('The transaction is being signed',
+                    style: theme.textTheme.bodyLarge)
+              ]));
         } else if (state.vttCreateStatus == VTTCreateStatus.finished) {
           // Send transaction after signed
           _sendTransaction(state.vtTransaction);
@@ -124,10 +134,13 @@ class ReviewStepState extends State<ReviewStep>
           buildAlertDialog(
               context: context,
               actions: [],
-              icon: FontAwesomeIcons.paperPlane,
               title: 'Sending transaction',
-              content: Text('The transaction is being send',
-                  style: theme.textTheme.bodyLarge));
+              content: Column(mainAxisSize: MainAxisSize.min, children: [
+                svgThemeImage(theme, name: 'sending-transaction', height: 100),
+                SizedBox(height: 16),
+                Text('The transaction is being send',
+                    style: theme.textTheme.bodyLarge)
+              ]));
         } else if (state.vttCreateStatus == VTTCreateStatus.accepted) {
           buildAlertDialog(
             context: context,
@@ -144,9 +157,10 @@ class ReviewStepState extends State<ReviewStep>
                             context, DashboardScreen.route)
                       })
             ],
-            icon: FontAwesomeIcons.check,
             title: 'Transaction succesfully sent!',
             content: Column(mainAxisSize: MainAxisSize.min, children: [
+              svgThemeImage(theme, name: 'transaction-success', height: 100),
+              SizedBox(height: 16),
               InfoElement(
                 plainText: true,
                 label:

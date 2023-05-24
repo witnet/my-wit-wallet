@@ -5,6 +5,7 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
 typedef void VoidCallback(Action? value);
 
@@ -103,13 +104,8 @@ class CreateImportWalletState extends State<CreateImportWallet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Center(
-          child: Image.asset(
-            'assets/img/witty.png',
-            width: 152,
-            height: 152,
-            fit: BoxFit.fitWidth,
-          ),
-        ),
+            child: svgThemeImage(theme,
+                name: 'create-or-import-wallet', height: 152)),
         SizedBox(height: 16),
         Text(
           'Create or import your wallet',

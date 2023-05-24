@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
 typedef void VoidCallback(NavAction? value);
 typedef void BoolCallback(bool value);
@@ -108,13 +110,7 @@ class ImportedOptionState extends State<SelectImportedOption> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Center(
-            child: Image.asset(
-          'assets/img/witty.png',
-          width: 152,
-          height: 152,
-          fit: BoxFit.fitWidth,
-        )),
+        Center(child: svgThemeImage(theme, name: 'import-wallet', height: 152)),
         SizedBox(height: 16),
         Text(
           'Import your wallet',
