@@ -3,7 +3,7 @@ description: myWitWallet allows you to send and receive Wit immediately. Bye bye
 
 publish_to: 'none'
 
-version: 0.0.8-dev
+version: 0.0.9-dev
 
 environment:
   sdk: ">=2.15.0 <3.0.0"
