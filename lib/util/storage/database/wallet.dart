@@ -109,12 +109,12 @@ class Wallet {
     Map<String, ValueTransferInfo> _vttMap = {};
     externalAccounts.forEach((key, account) {
       account.vtts.forEach((vtt) {
-        if(vtt.status != 'unknown hash') _vttMap[vtt.txnHash] = vtt;
+        if (vtt.status != 'unknown hash') _vttMap[vtt.txnHash] = vtt;
       });
     });
     internalAccounts.forEach((key, account) {
       account.vtts.forEach((vtt) {
-        if(vtt.status != 'unknown hash') _vttMap[vtt.txnHash] = vtt;
+        if (vtt.status != 'unknown hash') _vttMap[vtt.txnHash] = vtt;
       });
     });
     return _vttMap.values.toList();

@@ -389,8 +389,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
 
   /// sign the [VTTransaction]
   Future<VTTransaction> _signTransaction(
-      {
-      required Wallet currentWallet}) async {
+      {required Wallet currentWallet}) async {
     /// Read the encrypted XPRV string stored in the database
     Wallet walletStorage = currentWallet;
     ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
@@ -402,7 +401,9 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         bytesToHex(VTTransactionBody(inputs: inputs, outputs: outputs).hash),
       );
 
-      return VTTransaction(body: VTTransactionBody(inputs: inputs, outputs: outputs), signatures: signatures);
+      return VTTransaction(
+          body: VTTransactionBody(inputs: inputs, outputs: outputs),
+          signatures: signatures);
     } catch (e) {
       rethrow;
     }
@@ -479,9 +480,8 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       SignTransactionEvent event, Emitter<VTTCreateState> emit) async {
     emit(state.copyWith(status: VTTCreateStatus.signing));
     try {
-
-      VTTransaction vtTransaction = await _signTransaction(
-          currentWallet: event.currentWallet);
+      VTTransaction vtTransaction =
+          await _signTransaction(currentWallet: event.currentWallet);
       emit(VTTCreateState(
         vtTransaction: vtTransaction,
         vttCreateStatus: VTTCreateStatus.finished,

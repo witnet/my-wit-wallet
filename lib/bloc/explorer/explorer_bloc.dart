@@ -201,7 +201,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         }
       } catch (e) {
         var vtt = await Locator.instance.get<ApiExplorer>().hash(_vtt.txnHash);
-        if(vtt.jsonMap()['status'] == 'unknown hash'){
+        if (vtt.jsonMap()['status'] == 'unknown hash') {
           vtt = _vtt;
           ValueTransferInfo _unknown_transaction = _vtt;
           _unknown_transaction.status = 'unknown hash';
