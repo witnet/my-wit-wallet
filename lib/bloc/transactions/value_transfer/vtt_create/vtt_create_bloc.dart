@@ -389,19 +389,20 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
 
   /// sign the [VTTransaction]
   Future<VTTransaction> _signTransaction(
-      {required VTTransactionBody transactionBody,
+      {
       required Wallet currentWallet}) async {
     /// Read the encrypted XPRV string stored in the database
     Wallet walletStorage = currentWallet;
     ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
     try {
+      buildTransactionBody(currentWallet.balanceNanoWit().availableNanoWit);
       List<KeyedSignature> signatures = await apiCrypto.signTransaction(
         selectedUtxos,
         walletStorage,
-        bytesToHex(transactionBody.hash),
+        bytesToHex(VTTransactionBody(inputs: inputs, outputs: outputs).hash),
       );
 
-      return VTTransaction(body: transactionBody, signatures: signatures);
+      return VTTransaction(body: VTTransactionBody(inputs: inputs, outputs: outputs), signatures: signatures);
     } catch (e) {
       rethrow;
     }
@@ -478,8 +479,8 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       SignTransactionEvent event, Emitter<VTTCreateState> emit) async {
     emit(state.copyWith(status: VTTCreateStatus.signing));
     try {
+
       VTTransaction vtTransaction = await _signTransaction(
-          transactionBody: event.vtTransactionBody,
           currentWallet: event.currentWallet);
       emit(VTTCreateState(
         vtTransaction: vtTransaction,
@@ -637,6 +638,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     receivers.clear();
     selectedTimelock = null;
     timelockSet = false;
+    feeNanoWit = 0;
     emit(state.copyWith(status: VTTCreateStatus.initial));
   }
 
