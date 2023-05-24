@@ -103,8 +103,7 @@ class ReviewStepState extends State<ReviewStep>
               ],
               icon: FontAwesomeIcons.circleExclamation,
               title: 'Error',
-              content: Text(
-                  'Error sending the transaction, ${state.message} try again!',
+              content: Text('Error sending the transaction, try again!',
                   style: theme.textTheme.bodyLarge));
         } else if (state.vttCreateStatus == VTTCreateStatus.signing) {
           Navigator.popUntil(

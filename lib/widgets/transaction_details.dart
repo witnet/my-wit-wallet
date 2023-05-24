@@ -126,7 +126,11 @@ class TransactionDetails extends StatelessWidget {
           url: 'https://witnet.network/search/${transaction.txnHash}',
         ),
         SizedBox(height: 16),
-        InfoElement(label: 'Epoch', text: transaction.txnEpoch.toString()),
+        InfoElement(
+            label: 'Epoch',
+            text: _isPendingTransaction(transaction.status)
+                ? '_'
+                : transaction.txnEpoch.toString()),
         SizedBox(height: 16),
         InfoElement(
             label: 'Type',
