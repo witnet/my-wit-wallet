@@ -199,7 +199,15 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         if (_vtt.status != vtt.status) {
           await database.updateVtt(wallet.id, vtt);
         }
-      } catch (e) {}
+      } catch (e) {
+        var vtt = await Locator.instance.get<ApiExplorer>().hash(_vtt.txnHash);
+        if(vtt.jsonMap()['status'] == 'unknown hash'){
+          vtt = _vtt;
+          ValueTransferInfo _unknown_transaction = _vtt;
+          _unknown_transaction.status = 'unknown hash';
+          await database.updateVtt(wallet.id, _unknown_transaction);
+        }
+      }
     }
     String currentAddress = database.walletStorage.currentAccount.address;
     Map<String, String>? _addressList =
