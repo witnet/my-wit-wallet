@@ -608,6 +608,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     } else {
       updateFee(event.feeType);
     }
+    buildTransactionBody(currentWallet.balanceNanoWit().availableNanoWit);
   }
 
   void _updateUtxoSelectionStrategyEvent(
