@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +28,9 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
     with TickerProviderStateMixin {
   Account? selectedAccount;
   late AnimationController _loadingController;
+  bool isLoading = false;
+  String copyText = 'Copy selected address';
+  bool enableButton = true;
 
   @override
   void initState() {
@@ -49,13 +55,26 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
     return [
       PaddedButton(
           padding: EdgeInsets.zero,
-          text: 'Copy selected address',
+          text: copyText,
           type: 'primary',
-          enabled: true,
-          onPressed: () => {
-                Clipboard.setData(
-                    ClipboardData(text: selectedAccount?.address ?? ''))
-              }),
+          enabled: enableButton,
+          isLoading: isLoading,
+          onPressed: () async {
+            await Clipboard.setData(
+                ClipboardData(text: selectedAccount?.address ?? ''));
+            if (await Clipboard.hasStrings()) {
+              setState(() {
+                enableButton = false;
+                isLoading = true;
+              });
+              Timer(Duration(milliseconds: 400), () {
+                setState(() {
+                  enableButton = true;
+                  isLoading = false;
+                });
+              });
+            }
+          }),
       // TODO: Implement generate new address
       // PaddedButton(
       //     padding: EdgeInsets.only(bottom: 8),
