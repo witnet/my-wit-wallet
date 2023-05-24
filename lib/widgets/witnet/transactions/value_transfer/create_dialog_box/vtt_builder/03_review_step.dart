@@ -108,8 +108,7 @@ class ReviewStepState extends State<ReviewStep>
               content: Column(mainAxisSize: MainAxisSize.min, children: [
                 svgThemeImage(theme, name: 'transaction-error', height: 100),
                 SizedBox(height: 16),
-                Text(
-                    'Error sending the transaction, try again!',
+                Text('Error sending the transaction, try again!',
                     style: theme.textTheme.bodyLarge)
               ]));
         } else if (state.vttCreateStatus == VTTCreateStatus.signing) {
