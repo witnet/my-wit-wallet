@@ -20,6 +20,7 @@ class _PreferencePageState extends State<PreferencePage> {
   bool checked = false;
   List<ConfigSteps> stepListItems = ConfigSteps.values.toList();
   Enum stepSelectedItem = ConfigSteps.General;
+  ScrollController scrollController = ScrollController(keepScrollOffset: false);
 
   Widget _buildConfigView() {
     return Column(
@@ -29,11 +30,14 @@ class _PreferencePageState extends State<PreferencePage> {
             actionable: true,
             selectedItem: stepSelectedItem,
             listItems: stepListItems,
-            onChanged: (item) => {setState(() => stepSelectedItem = item!)}),
+            onChanged: (item) => {
+                  scrollController.jumpTo(0.0),
+                  setState(() => {stepSelectedItem = item!})
+                }),
         SizedBox(height: 16),
         stepSelectedItem == ConfigSteps.General
             ? GeneralConfig()
-            : WalletConfig()
+            : WalletConfig(scrollController: scrollController)
       ],
     );
   }
@@ -41,6 +45,7 @@ class _PreferencePageState extends State<PreferencePage> {
   @override
   Widget build(BuildContext context) {
     return DashboardLayout(
+      scrollController: scrollController,
       dashboardChild: _buildConfigView(),
       actions: [],
     );

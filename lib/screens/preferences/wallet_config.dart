@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +10,12 @@ import 'package:my_wit_wallet/widgets/generate_compatible_xprv.dart';
 import 'package:my_wit_wallet/widgets/verify_password.dart';
 
 class WalletConfig extends StatefulWidget {
-  WalletConfig({Key? key}) : super(key: key);
+  final ScrollController scrollController;
+
+  WalletConfig({
+    Key? key,
+    required this.scrollController,
+  }) : super(key: key);
   @override
   State<StatefulWidget> createState() => _WalletConfigState();
 }
@@ -22,6 +29,7 @@ class _WalletConfigState extends State<WalletConfig> {
   String? xprv;
   String? newXprv;
   bool showXprv = false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -30,12 +38,16 @@ class _WalletConfigState extends State<WalletConfig> {
 
   Widget _exportWalletContent(BuildContext context) {
     Widget verifyPassword = VerifyPassword(
-        onXprvGenerated: (generatedXprv) =>
-            {setState(() => xprv = generatedXprv)});
+        onXprvGenerated: (generatedXprv) => {
+              widget.scrollController.jumpTo(0.0),
+              setState(() => xprv = generatedXprv)
+            });
     Widget encryptXprv = GenerateCompatibleXprv(
         xprv: xprv,
-        onXprvGenerated: (generatedXprv) =>
-            {setState(() => newXprv = generatedXprv)});
+        onXprvGenerated: (generatedXprv) => {
+              widget.scrollController.jumpTo(0.0),
+              setState(() => newXprv = generatedXprv)
+            });
     Widget xprvOutput = Column(children: [
       DashedRect(
           color: Colors.grey,
@@ -53,9 +65,21 @@ class _WalletConfigState extends State<WalletConfig> {
       PaddedButton(
         text: 'Copy Xprv',
         type: 'primary',
+        isLoading: isLoading,
         padding: EdgeInsets.only(bottom: 8),
-        onPressed: () =>
-            {Clipboard.setData(ClipboardData(text: newXprv ?? ''))},
+        onPressed: () async {
+          Clipboard.setData(ClipboardData(text: newXprv ?? ''));
+          if (await Clipboard.hasStrings()) {
+            setState(() {
+              isLoading = true;
+            });
+            Timer(Duration(milliseconds: 500), () {
+              setState(() {
+                isLoading = false;
+              });
+            });
+          }
+        },
       ),
     ]);
     if (newXprv != null) {

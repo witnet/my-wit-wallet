@@ -23,6 +23,7 @@ class CreateWalletScreen extends StatefulWidget {
 }
 
 class CreateWalletScreenState extends State<CreateWalletScreen> {
+  ScrollController scrollController = ScrollController(keepScrollOffset: false);
   dynamic nextAction;
   dynamic secondaryAction;
   dynamic prevAction;
@@ -94,6 +95,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   @override
   Widget build(BuildContext context) {
     return Layout(
+      scrollController: scrollController,
       navigationActions: _navigationActions(),
       widgetList: [
         _formCards(),
@@ -198,7 +200,13 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
 
   _formCards() {
     return BlocListener<CreateWalletBloc, CreateWalletState>(
-      listener: (BuildContext context, CreateWalletState state) {},
+      listenWhen: (CreateWalletState prevState, CreateWalletState nextState) {
+        if (prevState != nextState) {
+          scrollController.jumpTo(0.0);
+        }
+        return true;
+      },
+      listener: (context, state) {},
       child: BlocBuilder<CreateWalletBloc, CreateWalletState>(
           builder: (context, state) {
         return Center(

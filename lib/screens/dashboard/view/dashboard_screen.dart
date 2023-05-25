@@ -28,6 +28,7 @@ class DashboardScreenState extends State<DashboardScreen>
   late AnimationController _loadingController;
   late Timer syncTimer;
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
+  ScrollController scrollController = ScrollController(keepScrollOffset: true);
 
   @override
   void initState() {
@@ -77,6 +78,7 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   void _setDetails(ValueTransferInfo? transaction) {
+    scrollController.jumpTo(0.0);
     setState(() {
       txDetails = transaction;
     });
@@ -119,6 +121,7 @@ class DashboardScreenState extends State<DashboardScreen>
     return BlocConsumer<ExplorerBloc, ExplorerState>(
         builder: (BuildContext context, ExplorerState state) {
       return DashboardLayout(
+        scrollController: scrollController,
         dashboardChild: _dashboardListener(),
         actions: [],
       );

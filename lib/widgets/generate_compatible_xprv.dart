@@ -103,6 +103,15 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
     return false;
   }
 
+  Future<void> _loadAndgenerateSheikahXprv() async {
+    if (isLoading) return;
+    setState(() => isLoading = true);
+    if (validate(force: true)) {
+      await _generateSheikahCompatibleXprv(_password);
+    }
+    setState(() => isLoading = false);
+  }
+
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -162,7 +171,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                 errorText: errorText,
                 onFieldSubmitted: (String? value) async {
                   FocusManager.instance.primaryFocus?.unfocus();
-                  await _generateSheikahCompatibleXprv(_password);
+                  await _loadAndgenerateSheikahXprv();
                 },
                 onTap: () {
                   _passConfirmFocusNode.requestFocus();
@@ -183,12 +192,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                   isLoading: isLoading,
                   enabled: true,
                   onPressed: () async {
-                    if (isLoading) return;
-                    setState(() => isLoading = true);
-                    if (validate(force: true)) {
-                      await _generateSheikahCompatibleXprv(_password);
-                    }
-                    setState(() => isLoading = false);
+                    await _loadAndgenerateSheikahXprv();
                   }),
             ],
           ),
