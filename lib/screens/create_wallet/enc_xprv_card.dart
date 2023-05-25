@@ -3,9 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'dart:io' show Platform;
 
 final _passController = TextEditingController();
 final _textController = TextEditingController();
@@ -47,6 +51,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   bool _xprvVerified = false;
   bool xprvVerified() => _xprvVerified;
   String? errorText;
+  String? _errorXprvText;
 
   @override
   void initState() {
@@ -67,11 +72,49 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     super.dispose();
   }
 
+  String? _validateXprv(String? input) {
+    String? errorText;
+
+    const xprvLen = 293;
+
+    if (input == null || input.length != xprvLen) {
+      errorText = "Invalid xprv";
+    }
+
+    return errorText;
+  }
+
   Widget _buildConfirmField() {
     final theme = Theme.of(context);
     return TextField(
-      decoration:
-          InputDecoration(hintText: 'Your Xprv key (starts with xprv...)'),
+      decoration: InputDecoration(
+        hintText: 'Your Xprv key (starts with xprv...)',
+        suffixIcon: !Platform.isWindows && !Platform.isLinux
+            ? IconButton(
+                splashRadius: 1,
+                icon: Icon(FontAwesomeIcons.qrcode),
+                onPressed: () => {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => QrScanner(
+                                  onChanged: (String value) => {
+                                        Navigator.popUntil(
+                                            context,
+                                            ModalRoute.withName(
+                                                CreateWalletScreen.route)),
+                                        _textController.text = value,
+                                        xprv = value,
+                                        setState(() {
+                                          _errorXprvText = _validateXprv(xprv);
+                                        })
+                                      })))
+                    },
+                color:
+                    theme.inputDecorationTheme.enabledBorder?.borderSide.color)
+            : null,
+        errorText: _errorXprvText,
+      ),
       keyboardType: TextInputType.multiline,
       focusNode: _textFocusNode,
       style: theme.textTheme.displayMedium,
@@ -81,7 +124,20 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
         setState(() {
           xprv = _textController.value.text;
           numLines = '\n'.allMatches(e).length + 1;
+          if (_validateXprv(xprv) == null) {
+            _errorXprvText = _validateXprv(xprv);
+          }
         });
+      },
+      onTap: () {
+        _textFocusNode.requestFocus();
+      },
+      onTapOutside: (PointerDownEvent event) {
+        if (_textFocusNode.hasFocus) {
+          setState(() {
+            _errorXprvText = _validateXprv(xprv);
+          });
+        }
       },
     );
   }
