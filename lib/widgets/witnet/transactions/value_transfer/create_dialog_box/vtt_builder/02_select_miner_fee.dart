@@ -270,6 +270,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
           },
           onFieldSubmitted: (String value) {
             FocusManager.instance.primaryFocus?.unfocus();
+            nextAction();
           },
           onTapOutside: (PointerDownEvent event) {
             if (_minerFeeFocusNode.hasFocus) {

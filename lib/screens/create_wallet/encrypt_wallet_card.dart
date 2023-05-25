@@ -180,6 +180,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                 onFieldSubmitted: (String? value) {
                   // hide keyboard
                   FocusManager.instance.primaryFocus?.unfocus();
+                  nextAction();
                 },
                 onChanged: (String? value) {
                   if (this.mounted) {

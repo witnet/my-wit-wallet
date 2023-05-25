@@ -158,6 +158,7 @@ class LoginScreenState extends State<LoginScreen>
         onFieldSubmitted: (String? value) {
           // hide keyboard
           FocusManager.instance.primaryFocus?.unfocus();
+          _login();
         },
         onTapOutside: (PointerDownEvent? event) {
           if (_loginFocusNode.hasFocus) {

@@ -160,8 +160,9 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                 focusNode: _passConfirmFocusNode,
                 textEditingController: _passConfirmController,
                 errorText: errorText,
-                onFieldSubmitted: (String? value) {
+                onFieldSubmitted: (String? value) async {
                   FocusManager.instance.primaryFocus?.unfocus();
+                  await _generateSheikahCompatibleXprv(_password);
                 },
                 onTap: () {
                   _passConfirmFocusNode.requestFocus();

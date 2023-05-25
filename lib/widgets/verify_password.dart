@@ -84,6 +84,15 @@ class VerifyPasswordState extends State<VerifyPassword>
     return errorText != null ? false : true;
   }
 
+  Future<void> _verify() async {
+    if (isLoading) return;
+    setState(() => isLoading = true);
+    await validatePassword();
+    if (validate(force: true)) {
+      widget.onXprvGenerated(xprv);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     _passFocusNode.addListener(() => validate());
@@ -112,8 +121,9 @@ class VerifyPasswordState extends State<VerifyPassword>
                 focusNode: _passFocusNode,
                 textEditingController: _passController,
                 errorText: errorText,
-                onFieldSubmitted: (String? value) {
+                onFieldSubmitted: (String? value) async {
                   FocusManager.instance.primaryFocus?.unfocus();
+                  await _verify();
                 },
                 onChanged: (String? value) {
                   if (this.mounted) {
@@ -131,12 +141,7 @@ class VerifyPasswordState extends State<VerifyPassword>
                   type: 'primary',
                   enabled: true,
                   onPressed: () async {
-                    if (isLoading) return;
-                    setState(() => isLoading = true);
-                    await validatePassword();
-                    if (validate(force: true)) {
-                      widget.onXprvGenerated(xprv);
-                    }
+                    await _verify();
                   }),
             ],
           ),

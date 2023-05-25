@@ -216,6 +216,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
       onFieldSubmitted: (String? value) {
         // hide keyboard
         FocusManager.instance.primaryFocus?.unfocus();
+        nextAction();
       },
       onChanged: (String? value) {
         if (this.mounted) {
