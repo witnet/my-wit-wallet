@@ -58,7 +58,6 @@ jobs:
         run: ldd build/linux/x64/release/bundle/myWitWallet
 
   MacOs:
-    environment: Release
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
