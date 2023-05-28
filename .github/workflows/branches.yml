@@ -3,7 +3,7 @@ name: Validate
 on:
   push:
     branches:
-      - "main"
+      - "test"
 
 jobs:
   Windows:
