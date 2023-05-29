@@ -9,20 +9,22 @@ jobs:
   Windows:
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v3
+      - name: Clone
+        uses: actions/checkout@v3
 
-      - name: create .env
+      - name: Create .env
         run: Copy-Item ".\.env_example" -Destination ".\.env"
 
-      - uses: subosito/flutter-action@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           cache: true
 
-      - name: Install project dependencies
+      - name: Install Project Dependencies
         run: flutter pub get
 
-      - name: Doctor
+      - name: Flutter Doctor
         run: flutter doctor
 
       - name: Binary
@@ -33,7 +35,8 @@ jobs:
           Move-Item '.\build\windows\runner\Release' '.\myWitWallet'
           Compress-Archive -Path '.\myWitWallet' -DestinationPath '.\myWitWallet-windows.zip' -Force
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
         with:
           name: windows
           path: .\myWitWallet-windows.zip
@@ -41,24 +44,26 @@ jobs:
   Linux:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - name: Clone
+        uses: actions/checkout@v3
 
-      - name: create .env
+      - name: Create .env
         run: cp ./.env_example ./.env
 
-      - uses: subosito/flutter-action@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           architecture: x64
           channel: 'stable'
           cache: true
 
-      - name: Install project dependencies
+      - name: Install Project Dependencies
         run: flutter pub get
 
-      - name: install needed dependencies
+      - name: Install Linux Dependencies
         run: sudo apt-get update -y && sudo apt-get install -y ninja-build libgtk-3-dev
 
-      - name: Doctor
+      - name: Flutter Doctor
         run: flutter doctor
 
       - name: Binary
@@ -72,30 +77,33 @@ jobs:
           mv ./build/linux/x64/release/bundle ./myWitWallet
           tar czvf myWitWallet-linux.tar.gz ./myWitWallet
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
         with:
           name: linux
           path: ./myWitWallet-linux.tar.gz
 
   MacOs:
-    environment: Release
+    environment: Macos
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Clone
+        uses: actions/checkout@v3
 
-      - name: create .env
+      - name: Create .env
         run: cp ./.env_example ./.env
 
-      - uses: subosito/flutter-action@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           architecture: x64
           channel: 'stable'
           cache: true
 
-      - name: Install project dependencies
+      - name: Install Project Dependencies
         run: flutter pub get
 
-      - name: Doctor
+      - name: Flutter Doctor
         run: flutter doctor
 
       - name: Binary
@@ -165,44 +173,96 @@ jobs:
           spctl --assess -vvv --type install ./myWitWallet.dmg
           xcrun stapler validate ./myWitWallet.dmg
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
         with:
           name: macos
           path: ./myWitWallet.dmg
 
   Android:
     runs-on: ubuntu-22.04
+    environment: Android
     steps:
-      - uses: actions/checkout@v3
+      - name: Clone
+        uses: actions/checkout@v3
 
-      - name: create .env
+      - name: Create .env
         run: cp ./.env_example ./.env
 
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '11'
-          cache: 'gradle'
-
-      - uses: subosito/flutter-action@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           architecture: x64
           channel: 'stable'
           cache: true
 
-      - name: Install project dependencies
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+          cache: 'gradle'
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2.2'
+          bundler-cache: true
+          working-directory: 'android'
+
+      - name: Install Project Dependencies
         run: flutter pub get
 
-      - name: Doctor
+      - name: Flutter Doctor
         run: flutter doctor
 
-      - name: Binary
-        run: flutter build apk
+      - name: Add Credentials / Keys
+        working-directory: android
+        env:
+          PGP: ${{ secrets.ANDROID_PGP_KEY }}
+          PHRASE: ${{ secrets.ANDROID_PGP_KEY_PASSPHRASE }}
+          GPSA: ${{ secrets.ANDROID_GOOGLE_PLAY_KEY }}
+          KPROP: ${{ secrets.ANDROID_KEY_PROPERTIES }}
+        run: |
+          echo "$PGP" > upload-keystore.jks.asc
+          cat upload-keystore.jks.asc
+          gpg -d --passphrase "$PHRASE" --batch upload-keystore.jks.asc > upload-keystore.jks
+          echo "$GPSA" > gpsa.json
+          echo "$KPROP" > key.properties
 
-      - name: Prepare apk
+      - name: Add Beta Badge for Dev Releases
+        run: |
+          if [[ "${{github.ref_name}}" == *"dev"* ]]; then export DEV=true; else export DEV=false; fi;
+          if [[ "$DEV" == "true" ]]; then (cd android && ./beta_badge.sh); fi;
+
+      - name: Set Version
+        run: |
+          cd android && export VCODE=$(bundle exec fastlane vcode | grep -o 'VersionCode: [0-9]*$' | grep -o '[0-9]*$')
+          cd .. && sed -i "s/0.0.0+0/${{github.ref_name}}+$VCODE/g" pubspec.yaml
+          cat pubspec.yaml
+
+      - name: Binary (appbundle)
+        run: flutter build appbundle --release
+
+      - name: Binary (apk)
+        run: flutter build apk --release
+
+      - name: Run Tests
+        uses: maierj/fastlane-action@v3.0.0
+        with:
+          lane: 'test'
+          subdirectory: 'android'
+
+      - name: Release on Playstore
+        run: |
+          if [[ "${{github.ref_name}}" == *"dev"* ]]; then export DEV=true; else export DEV=false; fi;
+          if [[ "$DEV" == "true" ]]; then (cd android && bundle exec fastlane Team); else (cd android && bundle exec fastlane production) fi;
+
+      - name: Archive Build
         run: mv ./build/app/outputs/flutter-apk/app-release.apk ./myWitWallet.apk
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
         with:
           name: android
           path: ./myWitWallet.apk
@@ -210,21 +270,23 @@ jobs:
   # IOS:
   #   runs-on: macos-latest
   #   steps:
-  #     - uses: actions/checkout@v3
+  #     - name: Clone
+  #       uses: actions/checkout@v3
 
-  #     - name: create .env
+  #     - name: Create .env
   #       run: cp ./.env_example ./.env
 
-  #     - uses: subosito/flutter-action@v2
+  #     - name: Setup Flutter
+  #       uses: subosito/flutter-action@v2
   #       with:
   #         architecture: x64
   #         channel: 'stable'
   #         cache: true
 
-  #     - name: Install project dependencies
+  #     - name: Install Project Dependencies
   #       run: flutter pub get
 
-  #     - name: Doctor
+  #     - name: Flutter Doctor
   #       run: flutter doctor
 
   #     - name: Binary
