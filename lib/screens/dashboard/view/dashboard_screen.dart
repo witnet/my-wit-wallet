@@ -18,6 +18,12 @@ class DashboardScreen extends StatefulWidget {
   DashboardScreenState createState() => DashboardScreenState();
 }
 
+class PaginatedDataArgs {
+  final int currentPage;
+  final bool refresh;
+  PaginatedDataArgs({this.currentPage = 1, this.refresh = false});
+}
+
 class DashboardScreenState extends State<DashboardScreen>
     with TickerProviderStateMixin {
   String? walletId;
@@ -38,7 +44,8 @@ class DashboardScreenState extends State<DashboardScreen>
       duration: const Duration(milliseconds: 1200),
     );
     _loadingController.forward();
-    _getVtts();
+    _setWallet();
+    _setAccount();
     _syncWallet(database.walletStorage.currentWallet.id);
     syncTimer = Timer.periodic(Duration(minutes: 0, seconds: 30), (timer) {
       _syncWallet(database.walletStorage.currentWallet.id);
@@ -56,11 +63,6 @@ class DashboardScreenState extends State<DashboardScreen>
   void _syncWallet(String walletId) {
     BlocProvider.of<ExplorerBloc>(context).add(SyncWalletEvent(
         ExplorerStatus.dataloading, database.walletStorage.wallets[walletId]!));
-  }
-
-  void _getVtts() {
-    _setWallet();
-    _setAccount();
   }
 
   void _setWallet() {
@@ -100,7 +102,8 @@ class DashboardScreenState extends State<DashboardScreen>
       listener: (BuildContext context, DashboardState state) {
         if (state.status == DashboardStatus.Ready) {
           setState(() {
-            _getVtts();
+            _setWallet();
+            _setAccount();
           });
         }
       },
@@ -116,19 +119,31 @@ class DashboardScreenState extends State<DashboardScreen>
     });
   }
 
+  Future getPaginatedData(PaginatedDataArgs args) async {
+    if (args.refresh) {
+      // TODO: add first page data
+      return currentWallet!.paginatedTransactions(args.currentPage);
+    } else {
+      // TODO: add new page data
+      return currentWallet!.paginatedTransactions(args.currentPage);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ExplorerBloc, ExplorerState>(
         builder: (BuildContext context, ExplorerState state) {
       return DashboardLayout(
         scrollController: scrollController,
+        getPaginatedData: getPaginatedData,
         dashboardChild: _dashboardListener(),
         actions: [],
       );
     }, listener: (context, state) {
       if (state.status == ExplorerStatus.dataloaded) {
         setState(() {
-          _getVtts();
+          _setWallet();
+          _setAccount();
         });
       }
     });

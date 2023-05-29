@@ -140,6 +140,8 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
     ),
   ),
 );
+ProgressIndicatorThemeData progressIndicatorTheme = ProgressIndicatorThemeData(
+    refreshBackgroundColor: WitnetPallet.opacityWitnetGreen);
 OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
   foregroundColor: WitnetPallet.darkBlue2,
@@ -211,6 +213,7 @@ PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(
 
 ThemeData lightTheme = ThemeData(
     pageTransitionsTheme: pageTransitionsTheme,
+    progressIndicatorTheme: progressIndicatorTheme,
     primaryColor: primaryColor,
     switchTheme: switchTheme,
     checkboxTheme: checkboxTheme,

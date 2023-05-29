@@ -1,3 +1,4 @@
+import 'package:my_wit_wallet/widgets/pagination.dart';
 import 'package:witnet/crypto.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
@@ -122,6 +123,22 @@ class Wallet {
       });
     });
     return _vttMap.values.toList();
+  }
+
+  PaginatedData? paginatedTransactions(int pageNumber) {
+    Map<String, ValueTransferInfo> _vttMap = {};
+    externalAccounts.forEach((key, account) {
+      account.vtts.forEach((vtt) {
+        if (vtt.status != 'unknown hash') _vttMap[vtt.txnHash] = vtt;
+      });
+    });
+    internalAccounts.forEach((key, account) {
+      account.vtts.forEach((vtt) {
+        if (vtt.status != 'unknown hash') _vttMap[vtt.txnHash] = vtt;
+      });
+    });
+
+    return PaginatedData(totalPages: 2, data: _vttMap.values.toList());
   }
 
   Account? accountByAddress(String address) {

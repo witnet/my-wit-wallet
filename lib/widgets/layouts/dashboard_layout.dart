@@ -34,10 +34,12 @@ class DashboardLayout extends StatefulWidget {
   final ScrollController? scrollController;
   final Widget dashboardChild;
   final List<Widget> actions;
+  final Function(PaginatedDataArgs)? getPaginatedData;
 
   DashboardLayout(
       {required this.dashboardChild,
       required this.actions,
+      this.getPaginatedData,
       this.scrollController});
 
   @override
@@ -310,14 +312,7 @@ class DashboardLayoutState extends State<DashboardLayout>
             break;
           case LoginStatus.LoginSuccess:
             _walletList = WalletList();
-            _body = _vttListener(_explorerListerner(Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  child: widget.dashboardChild,
-                ),
-              ],
-            )));
+            _body = _vttListener(_explorerListerner(widget.dashboardChild));
             break;
           default:
             _body = Column(
@@ -326,6 +321,7 @@ class DashboardLayoutState extends State<DashboardLayout>
         }
         return Layout(
           scrollController: widget.scrollController,
+          getPaginatedData: widget.getPaginatedData,
           navigationActions: _navigationActions(),
           dashboardActions: _buildDashboardHeader(),
           widgetList: [

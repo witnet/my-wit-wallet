@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
+import 'package:my_wit_wallet/widgets/pagination.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
@@ -20,6 +22,7 @@ class Layout extends StatefulWidget {
   final List<Widget> navigationActions;
   final Widget? slidingPanel;
   final Widget? dashboardActions;
+  final Function(PaginatedDataArgs)? getPaginatedData;
 
   const Layout({
     required this.widgetList,
@@ -29,6 +32,7 @@ class Layout extends StatefulWidget {
     this.slidingPanel,
     this.appBar,
     this.scrollController,
+    this.getPaginatedData,
   });
 
   @override
@@ -73,11 +77,19 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         ));
   }
 
+  Widget _buildScrollLayout({showPanel, theme}) {
+    return widget.getPaginatedData != null
+        ? Pagination(
+            child: _buildMainLayout(context, theme, false),
+            getPaginatedData: widget.getPaginatedData)
+        : _buildMainLayout(context, theme, false);
+  }
+
   // Content displayed between header and bottom actions
   Widget buildMainContent(BuildContext context, theme) {
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     if (widget.slidingPanel == null) {
-      return _buildMainLayout(context, theme, false);
+      return _buildScrollLayout(showPanel: false, theme: theme);
     } else {
       return SlidingUpPanel(
           controller: panelController,
@@ -99,7 +111,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                 }
               },
               child: Padding(
-                  child: _buildMainLayout(context, theme, true),
+                  child: _buildScrollLayout(showPanel: true, theme: theme),
                   padding: EdgeInsets.only(
                       bottom: MediaQuery.of(context).viewInsets.bottom))));
     }
