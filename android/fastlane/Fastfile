@@ -1,0 +1,87 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  ############ ? Test Lane ############
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  ############ ? Version Code Lane ############
+  desc "Get latest version code"
+  lane :vcode do
+    # ! Function will be used to supress exceptions
+    def ignore_exception
+      begin
+        yield
+      rescue Exception
+      end
+    end
+
+    internalVersionCodes = ignore_exception { google_play_track_version_codes(track: 'internal') }
+    teamVersionCodes = ignore_exception { google_play_track_version_codes(track: 'Team') }
+    productionVersionCodes = ignore_exception { google_play_track_version_codes(track: 'production') }
+    versionCodes = [
+      internalVersionCodes || [0],
+      teamVersionCodes || [0],
+      productionVersionCodes || [0],
+    ].reduce([], :concat)
+    UI.message "Please use VersionCode: #{versionCodes.max+1}"
+  end
+
+  ############ ? Internal Lane ############
+  desc "Deploy a new version to the Google Play internal testers track"
+  lane :internal do
+    upload_to_play_store(
+      track: 'internal',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  ############ ? Closed Team Lane ############
+  desc "Deploy a new version to the Google Play Closed Team track"
+  lane :team do
+    upload_to_play_store(
+      track: 'Team',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  ############ ? Production Lane ############
+  desc "Deploy a new version to the Google Play Production track"
+  lane :production do
+    upload_to_play_store(
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+end
