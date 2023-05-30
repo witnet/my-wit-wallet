@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/widgets/pagination.dart';
 import 'package:witnet/crypto.dart';
 import 'package:witnet/data_structures.dart';
@@ -57,6 +60,7 @@ class Wallet {
 
   Map<int, Account> externalAccounts = {};
   Map<int, Account> internalAccounts = {};
+  List<ValueTransferInfo> paginatedVttsData = [];
 
   Map<String, Account> accountMap(KeyType keyType) {
     Map<String, Account> _accounts = {};
@@ -122,23 +126,30 @@ class Wallet {
         if (vtt.status != 'unknown hash') _vttMap[vtt.txnHash] = vtt;
       });
     });
-    return _vttMap.values.toList();
+    return _vttMap.values.toList()
+      ..sort((t1, t2) => t2.txnTime.compareTo(t1.txnTime));
   }
 
-  PaginatedData? paginatedTransactions(int pageNumber) {
-    Map<String, ValueTransferInfo> _vttMap = {};
-    externalAccounts.forEach((key, account) {
-      account.vtts.forEach((vtt) {
-        if (vtt.status != 'unknown hash') _vttMap[vtt.txnHash] = vtt;
-      });
-    });
-    internalAccounts.forEach((key, account) {
-      account.vtts.forEach((vtt) {
-        if (vtt.status != 'unknown hash') _vttMap[vtt.txnHash] = vtt;
-      });
-    });
+  PaginatedData paginatedTransactions(PaginatedDataArgs args) {
+    List<ValueTransferInfo> sortedTransactions = allTransactions();
 
-    return PaginatedData(totalPages: 2, data: _vttMap.values.toList());
+    final totalPages = (sortedTransactions.length / args.limit).ceil();
+    int offset = (args.currentPage - 1) * args.limit;
+    int pageEndPosition = args.currentPage >= totalPages
+        ? sortedTransactions.length - 1
+        : (offset + args.limit);
+    List<ValueTransferInfo> pageData =
+        sortedTransactions.sublist(offset, pageEndPosition);
+
+    if (args.currentPage == 1) {
+      // Adds first page data
+      paginatedVttsData = pageData;
+    } else {
+      // Adds new page data
+      paginatedVttsData.addAll(pageData);
+    }
+
+    return PaginatedData(totalPages: totalPages, data: paginatedVttsData);
   }
 
   Account? accountByAddress(String address) {

@@ -185,8 +185,6 @@ class TransactionsListState extends State<TransactionsList> {
     internalAddresses = widget.internalAddresses.values
         .map((account) => account.address)
         .toList();
-    List<ValueTransferInfo> vtts = widget.valueTransfers
-      ..sort((t1, t2) => t2.txnTime.compareTo(t1.txnTime));
 
     if (widget.details != null) {
       return TransactionDetails(
@@ -194,15 +192,15 @@ class TransactionsListState extends State<TransactionsList> {
         goToList: () => widget.setDetails(null),
       );
     } else {
-      if (vtts.length > 0) {
+      if (widget.valueTransfers.length > 0) {
         return ListView.builder(
           controller: _scroller,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           scrollDirection: Axis.vertical,
-          itemCount: vtts.length,
+          itemCount: widget.valueTransfers.length,
           itemBuilder: (context, index) {
-            return _buildTransactionItem(vtts[index]);
+            return _buildTransactionItem(widget.valueTransfers[index]);
           },
         );
       } else {

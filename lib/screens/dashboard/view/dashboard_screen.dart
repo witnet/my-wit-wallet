@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/widgets/pagination.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -20,8 +21,8 @@ class DashboardScreen extends StatefulWidget {
 
 class PaginatedDataArgs {
   final int currentPage;
-  final bool refresh;
-  PaginatedDataArgs({this.currentPage = 1, this.refresh = false});
+  final int limit;
+  PaginatedDataArgs({this.currentPage = 1, this.limit = 10});
 }
 
 class DashboardScreenState extends State<DashboardScreen>
@@ -35,6 +36,7 @@ class DashboardScreenState extends State<DashboardScreen>
   late Timer syncTimer;
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
   ScrollController scrollController = ScrollController(keepScrollOffset: true);
+  List<ValueTransferInfo> vtts = [];
 
   @override
   void initState() {
@@ -91,7 +93,7 @@ class DashboardScreenState extends State<DashboardScreen>
       themeData: themeData,
       setDetails: _setDetails,
       details: txDetails,
-      valueTransfers: currentWallet!.allTransactions(),
+      valueTransfers: vtts,
       externalAddresses: currentWallet!.externalAccounts,
       internalAddresses: currentWallet!.internalAccounts,
     );
@@ -119,14 +121,12 @@ class DashboardScreenState extends State<DashboardScreen>
     });
   }
 
-  Future getPaginatedData(PaginatedDataArgs args) async {
-    if (args.refresh) {
-      // TODO: add first page data
-      return currentWallet!.paginatedTransactions(args.currentPage);
-    } else {
-      // TODO: add new page data
-      return currentWallet!.paginatedTransactions(args.currentPage);
-    }
+  PaginatedData getPaginatedData(PaginatedDataArgs args) {
+    PaginatedData paginatedData = currentWallet!.paginatedTransactions(args);
+    setState(() {
+      vtts = paginatedData.data as List<ValueTransferInfo>;
+    });
+    return paginatedData;
   }
 
   @override

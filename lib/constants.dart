@@ -46,3 +46,4 @@ Map<EstimatedFeeOptions, String?> DEFAULT_MINER_FEE_OPTIONS = {
 const int EXTERNAL_GAP_LIMIT = 3;
 const int INTERNAL_GAP_LIMIT = 1;
 const bool ENCRYPT_DB = false;
+const int PAGINATION_LIMIT = 10;
