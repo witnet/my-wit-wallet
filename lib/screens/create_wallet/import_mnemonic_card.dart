@@ -47,10 +47,14 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
           height: 16,
         ),
         TextField(
-          keyboardType: TextInputType.multiline,
+          keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.go,
           style: theme.textTheme.displayMedium,
-          maxLines: 4,
+          maxLines: 3,
           controller: textController,
+          onSubmitted: (value) => {
+            if (validMnemonic(textController.value.text)) {nextAction()}
+          },
           onChanged: (String e) {
             if (validMnemonic(textController.value.text)) {
               widget.nextAction(next);

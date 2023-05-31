@@ -40,7 +40,6 @@ class RecipientStepState extends State<RecipientStep>
   String _amount = '';
   String? _errorAddressText;
   String? _errorAmountText;
-  FeeType _feeType = FeeType.Weighted;
   final _amountController = TextEditingController();
   final _amountFocusNode = FocusNode();
   final _addressController = TextEditingController();
@@ -132,7 +131,9 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   void nextAction() {
+    print(0);
     if (validateForm() && _formKey.currentState!.validate()) {
+      print(1);
       BlocProvider.of<VTTCreateBloc>(context).add(AddValueTransferOutputEvent(
           currentWallet: widget.currentWallet,
           output: ValueTransferOutput.fromJson({
@@ -247,7 +248,7 @@ class RecipientStepState extends State<RecipientStep>
               _amountFocusNode.requestFocus();
             },
             onFieldSubmitted: (String value) {
-              FocusManager.instance.primaryFocus?.unfocus();
+              print('submit');
               nextAction();
             },
             onTapOutside: (PointerDownEvent event) {

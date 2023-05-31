@@ -43,8 +43,10 @@ class EnterXprvCardState extends State<EnterXprvCard>
             ),
             TextField(
                 keyboardType: TextInputType.multiline,
-                maxLines: 4,
+                textInputAction: TextInputAction.go,
+                maxLines: 3,
                 controller: textController,
+                onSubmitted: (_value) => nextAction(),
                 onChanged: (String e) {
                   setState(() {
                     xprv = textController.value.text;

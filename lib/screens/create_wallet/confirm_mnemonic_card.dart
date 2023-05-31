@@ -91,9 +91,13 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
         ),
         TextField(
           style: extendedTheme.monoLargeText,
-          keyboardType: TextInputType.multiline,
-          maxLines: 4,
+          keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.go,
+          maxLines: 3,
           controller: textController,
+          onSubmitted: (value) => {
+            if (validMnemonic(textController.value.text)) {nextAction()}
+          },
           onChanged: (String e) {
             if (validMnemonic(textController.value.text)) {
               widget.nextAction(next);

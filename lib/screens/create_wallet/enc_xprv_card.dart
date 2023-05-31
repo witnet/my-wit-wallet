@@ -115,11 +115,13 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
             : null,
         errorText: _errorXprvText,
       ),
-      keyboardType: TextInputType.multiline,
+      keyboardType: TextInputType.text,
+      textInputAction: TextInputAction.go,
       focusNode: _textFocusNode,
       style: theme.textTheme.displayMedium,
-      maxLines: 4,
+      maxLines: 3,
       controller: _textController,
+      onSubmitted: (value) => {_passFocusNode.requestFocus()},
       onChanged: (String e) {
         setState(() {
           xprv = _textController.value.text;
