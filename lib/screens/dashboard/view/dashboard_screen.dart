@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/widgets/pagination.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
@@ -22,7 +23,7 @@ class DashboardScreen extends StatefulWidget {
 class PaginationParams {
   final int currentPage;
   final int limit;
-  PaginationParams({this.currentPage = 1, this.limit = 10});
+  PaginationParams({this.currentPage = 1, this.limit = PAGINATION_LIMIT});
 }
 
 class DashboardScreenState extends State<DashboardScreen>
@@ -52,6 +53,7 @@ class DashboardScreenState extends State<DashboardScreen>
     syncTimer = Timer.periodic(Duration(minutes: 0, seconds: 30), (timer) {
       _syncWallet(database.walletStorage.currentWallet.id);
     });
+    getPaginatedTransactions(PaginationParams(currentPage: 1));
     //BlocProvider.of<DashboardBloc>(context).add(DashboardUpdateWalletEvent(currentWallet: currentWallet, currentAddress: currentAccount!.address));
   }
 
