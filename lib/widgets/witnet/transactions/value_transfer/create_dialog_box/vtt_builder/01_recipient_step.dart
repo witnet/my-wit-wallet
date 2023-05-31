@@ -19,12 +19,14 @@ class RecipientStep extends StatefulWidget {
   final Function nextAction;
   final Wallet currentWallet;
   final ValueTransferOutput? ongoingOutput;
+  final VoidCallback goNext;
 
   RecipientStep({
     required Key? key,
     required this.ongoingOutput,
     required this.currentWallet,
     required this.nextAction,
+    required this.goNext,
   }) : super(key: key);
 
   @override
@@ -249,7 +251,7 @@ class RecipientStepState extends State<RecipientStep>
             },
             onFieldSubmitted: (String value) {
               print('submit');
-              nextAction();
+              widget.goNext();
             },
             onTapOutside: (PointerDownEvent event) {
               if (_amountFocusNode.hasFocus) {

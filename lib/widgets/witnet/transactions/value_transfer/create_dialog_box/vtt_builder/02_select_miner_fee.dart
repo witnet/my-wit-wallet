@@ -21,6 +21,7 @@ class SelectMinerFeeStep extends StatefulWidget {
   final Wallet currentWallet;
   final String? savedFeeAmount;
   final FeeType? savedFeeType;
+  final VoidCallback goNext;
 
   SelectMinerFeeStep({
     required Key? key,
@@ -28,6 +29,7 @@ class SelectMinerFeeStep extends StatefulWidget {
     required this.savedFeeType,
     required this.currentWallet,
     required this.nextAction,
+    required this.goNext,
   }) : super(key: key);
 
   @override
@@ -269,8 +271,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
             _minerFeeFocusNode.requestFocus();
           },
           onFieldSubmitted: (String value) {
-            FocusManager.instance.primaryFocus?.unfocus();
-            nextAction();
+            widget.goNext();
           },
           onTapOutside: (PointerDownEvent event) {
             if (_minerFeeFocusNode.hasFocus) {

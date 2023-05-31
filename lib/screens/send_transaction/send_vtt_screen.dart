@@ -146,6 +146,10 @@ class CreateVttScreenState extends State<CreateVttScreen>
         key: transactionFormState,
         ongoingOutput: currentTxOutput,
         nextAction: _setNextAction,
+        goNext: () {
+          nextAction().action();
+          if (_isNextStepAllow()) goToNextStep();
+        },
         currentWallet: currentWallet!,
       );
     } else if (stepSelectedItem == VTTsteps.MinerFee) {
@@ -154,6 +158,10 @@ class CreateVttScreenState extends State<CreateVttScreen>
         savedFeeAmount: savedFeeAmount,
         savedFeeType: savedFeeType,
         nextAction: _setNextAction,
+        goNext: () {
+          nextAction().action();
+          if (_isNextStepAllow()) goToNextStep();
+        },
         currentWallet: currentWallet!,
       );
     } else {
