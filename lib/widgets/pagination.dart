@@ -15,7 +15,7 @@ class PaginatedData {
 
 class Pagination extends StatefulWidget {
   final Widget child;
-  final Function(PaginatedDataArgs)? getPaginatedData;
+  final Function(PaginationParams)? getPaginatedData;
 
   Pagination({
     required this.child,
@@ -54,7 +54,7 @@ class PaginationState extends State<Pagination> {
       // Retrieve first page data
       try {
         PaginatedData result = widget.getPaginatedData!(
-            PaginatedDataArgs(currentPage: 1, limit: PAGINATION_LIMIT));
+            PaginationParams(currentPage: 1, limit: PAGINATION_LIMIT));
         return setLoadedStatus(result, 1);
       } catch (err) {
         return LoadingDataStatus.error;
@@ -66,7 +66,7 @@ class PaginationState extends State<Pagination> {
       // Retrieve new page data
       try {
         PaginatedData result = widget.getPaginatedData!(
-            PaginatedDataArgs(currentPage: newPage, limit: PAGINATION_LIMIT));
+            PaginationParams(currentPage: newPage, limit: PAGINATION_LIMIT));
         return setLoadedStatus(result, newPage);
       } catch (err) {
         return LoadingDataStatus.error;

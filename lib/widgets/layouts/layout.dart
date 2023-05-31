@@ -22,7 +22,7 @@ class Layout extends StatefulWidget {
   final List<Widget> navigationActions;
   final Widget? slidingPanel;
   final Widget? dashboardActions;
-  final Function(PaginatedDataArgs)? getPaginatedData;
+  final Function(PaginationParams)? getPaginatedData;
 
   const Layout({
     required this.widgetList,

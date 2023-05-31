@@ -34,7 +34,7 @@ class DashboardLayout extends StatefulWidget {
   final ScrollController? scrollController;
   final Widget dashboardChild;
   final List<Widget> actions;
-  final Function(PaginatedDataArgs)? getPaginatedData;
+  final Function(PaginationParams)? getPaginatedData;
 
   DashboardLayout(
       {required this.dashboardChild,

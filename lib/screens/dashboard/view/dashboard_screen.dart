@@ -19,10 +19,10 @@ class DashboardScreen extends StatefulWidget {
   DashboardScreenState createState() => DashboardScreenState();
 }
 
-class PaginatedDataArgs {
+class PaginationParams {
   final int currentPage;
   final int limit;
-  PaginatedDataArgs({this.currentPage = 1, this.limit = 10});
+  PaginationParams({this.currentPage = 1, this.limit = 10});
 }
 
 class DashboardScreenState extends State<DashboardScreen>
@@ -121,8 +121,8 @@ class DashboardScreenState extends State<DashboardScreen>
     });
   }
 
-  PaginatedData getPaginatedData(PaginatedDataArgs args) {
-    PaginatedData paginatedData = currentWallet!.paginatedTransactions(args);
+  PaginatedData getPaginatedTransactions(PaginationParams args) {
+    PaginatedData paginatedData = currentWallet!.getPaginatedTransactions(args);
     setState(() {
       vtts = paginatedData.data as List<ValueTransferInfo>;
     });
@@ -135,7 +135,7 @@ class DashboardScreenState extends State<DashboardScreen>
         builder: (BuildContext context, ExplorerState state) {
       return DashboardLayout(
         scrollController: scrollController,
-        getPaginatedData: getPaginatedData,
+        getPaginatedData: getPaginatedTransactions,
         dashboardChild: _dashboardListener(),
         actions: [],
       );
