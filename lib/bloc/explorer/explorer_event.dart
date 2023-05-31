@@ -78,7 +78,16 @@ class SyncWalletEvent extends ExplorerEvent {
   @override
   List<Object> get props => [currentWallet];
 }
+class SyncSingleAccountEvent extends ExplorerEvent {
+  final Account account;
+  SyncSingleAccountEvent(
+      ExplorerStatus status,
+      this.account,
+      ) : super(status);
 
+  @override
+  List<Object> get props => [account];
+}
 class BlockchainQueryEvent extends ExplorerEvent {
   BlockchainQueryEvent(ExplorerStatus status) : super(status);
 }

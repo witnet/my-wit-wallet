@@ -16,7 +16,14 @@ import 'package:my_wit_wallet/util/utxo_list_to_string.dart';
 part 'explorer_event.dart';
 part 'explorer_state.dart';
 
-enum ExplorerStatus { unknown, dataloading, dataloaded, error, ready }
+enum ExplorerStatus {
+  unknown,
+  dataloading,
+  dataloaded,
+  singleSync,
+  error,
+  ready,
+}
 
 class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
   ExplorerBloc(initialState) : super(initialState) {
@@ -26,6 +33,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     on<VTTransactionPostEvent>(_vtTransactionPostEvent);
     on<UtxoQueryEvent>(_utxoQueryEvent);
     on<SyncWalletEvent>(_syncWalletEvent);
+    on<SyncSingleAccountEvent>(_syncSingleAccount);
   }
 
   static ExplorerState get initialState => ExplorerState.ready();
@@ -123,6 +131,31 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       emit(ExplorerState.error());
       rethrow;
     }
+  }
+
+  Future<void> _syncSingleAccount(
+      SyncSingleAccountEvent event, Emitter<ExplorerState> emit) async {
+    emit(ExplorerState.singleAccountSyncing(
+        data: {"address": event.account.address}));
+
+    ApiDatabase database = Locator.instance<ApiDatabase>();
+    Wallet wallet = database.walletStorage.currentWallet;
+
+    Account account = await updateAccountVttsAndBalance(event.account);
+    wallet.updateAccount(
+      index: account.index,
+      keyType: account.keyType,
+      account: account,
+    );
+
+    database.walletStorage.wallets[wallet.id] = wallet;
+    Map<String, String>? _addressList =
+        database.walletStorage.currentAddressList;
+    await database.loadWalletsDatabase();
+    database.walletStorage.setCurrentWallet(wallet.id);
+    database.walletStorage.setCurrentAccount(account.address);
+    database.walletStorage.setCurrentAddressList(_addressList!);
+    emit(ExplorerState.synced(database.walletStorage));
   }
 
   Future<void> syncWalletRoutine(

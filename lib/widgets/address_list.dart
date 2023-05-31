@@ -1,6 +1,9 @@
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
+import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -12,6 +15,7 @@ import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 
 class AddressList extends StatefulWidget {
   final Wallet currentWallet;
@@ -38,7 +42,37 @@ class AddressListState extends State<AddressList> {
     super.dispose();
   }
 
-  _buildAddressItem(Account account, ThemeData theme) {
+  _syncSpinnerOrBalanceDisplay(Account account, ThemeData theme) {
+    ExtendedTheme extendedTheme = theme.extension<ExtendedTheme>()!;
+    final isAddressSelected = account.address == currentAddress;
+    final textStyle = isAddressSelected
+        ? extendedTheme.monoMediumText
+        : extendedTheme.monoRegularText;
+    return BlocBuilder<ExplorerBloc, ExplorerState>(
+        builder: (BuildContext context, ExplorerState state) {
+      if (state.status == ExplorerStatus.singleSync &&
+          state.data['address'] == account.address) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [SizedBox(
+              height: 16,
+              width: 16,
+            child: CircularProgressIndicator(
+              color: theme.textTheme.labelMedium?.color,
+              strokeWidth: 2,
+              value: null,
+              semanticsLabel: 'Circular progress indicator',
+            ))],);
+      } else {
+        return Text(
+            '${account.balance.availableNanoWit.standardizeWitUnits()} ${WitUnit.Wit.name}',
+            textAlign: TextAlign.end,
+            style: textStyle!.copyWith(fontFamily: 'Almarai'));
+      }
+    });
+  }
+
+  Widget _buildAddressItem(Account account, ThemeData theme) {
     ExtendedTheme extendedTheme = theme.extension<ExtendedTheme>()!;
     final isAddressSelected = account.address == currentAddress;
     final textStyle = isAddressSelected
@@ -48,34 +82,33 @@ class AddressListState extends State<AddressList> {
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
             child: Container(
-                decoration: BoxDecoration(
-                  color: WitnetPallet.transparent,
-                  border: Border(
-                      bottom: BorderSide(
-                    color: extendedTheme.txBorderColor!,
-                    width: 1,
-                  )),
+              decoration: BoxDecoration(
+                color: WitnetPallet.transparent,
+                border: Border(
+                    bottom: BorderSide(
+                  color: extendedTheme.txBorderColor!,
+                  width: 1,
+                )),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        account.address,
+                        overflow: TextOverflow.ellipsis,
+                        style: textStyle,
+                      ),
+                    ),
+                    Expanded(
+                      child: _syncSpinnerOrBalanceDisplay(account, theme),
+                    ),
+                  ],
                 ),
-                child: Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              account.address,
-                              overflow: TextOverflow.ellipsis,
-                              style: textStyle,
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              '${account.balance.availableNanoWit.standardizeWitUnits()} ${WitUnit.Wit.name}',
-                              textAlign: TextAlign.end,
-                              style: textStyle!.copyWith(fontFamily: 'Almarai'),
-                            ),
-                          ),
-                        ]))),
+              ),
+            ),
             onTap: () async {
               await ApiPreferences.setCurrentAddress(AddressEntry(
                 walletId: widget.currentWallet.id,
