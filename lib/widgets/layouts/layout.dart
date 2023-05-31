@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
@@ -120,6 +121,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   Widget _buildMainLayout(BuildContext context, theme, bool panel) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
+
     return CustomScrollView(
       controller: widget.scrollController != null
           ? widget.scrollController
