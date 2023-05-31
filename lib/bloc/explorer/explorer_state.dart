@@ -18,6 +18,9 @@ class ExplorerState extends Equatable {
   const ExplorerState.dataLoading()
       : this._(status: ExplorerStatus.dataloading);
 
+  const ExplorerState.singleAccountSyncing({required Map<String, dynamic> data})
+      : this._(status: ExplorerStatus.singleSync, data: data);
+
   const ExplorerState.dataLoaded(
       {required ExplorerQuery query, required Map<String, dynamic> data})
       : this._(status: ExplorerStatus.dataloaded, data: data);

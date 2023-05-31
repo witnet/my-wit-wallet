@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
@@ -14,8 +15,10 @@ import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 
-import '../../shared/locator.dart';
-import '../../util/storage/database/account.dart';
+import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/preferences.dart';
+import 'package:my_wit_wallet/util/storage/database/account.dart';
 
 class ReceiveTransactionScreen extends StatefulWidget {
   static final route = '/receive-transaction';
@@ -73,15 +76,50 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
               });
             }
           }),
-      // TODO: Implement generate new address
-      // PaddedButton(
-      //     padding: EdgeInsets.only(bottom: 8),
-      //     text: 'Generate new',
-      //     type: 'secondary',
-      //     enabled: true,
-      //     onPressed: () => {
-      //           // generate new address change address index
-      //         }),
+      BlocListener<ExplorerBloc, ExplorerState>(
+        listener: (BuildContext context, ExplorerState state) {},
+        child:
+            BlocBuilder<ExplorerBloc, ExplorerState>(builder: (context, state) {
+          return PaddedButton(
+            onPressed: () async {
+              ApiDatabase db = Locator.instance.get<ApiDatabase>();
+
+              Wallet currentWallet = db.walletStorage.currentWallet;
+
+              int extAccountsLength = currentWallet.externalAccounts.length;
+              Account ac =
+                  await Locator.instance.get<ApiCrypto>().generateAccount(
+                        currentWallet,
+                        KeyType.external,
+                        extAccountsLength,
+                      );
+              setState(() {
+                currentWallet.externalAccounts[extAccountsLength] = ac;
+              });
+              await db.addAccount(ac);
+              await db.loadWalletsDatabase();
+              db.walletStorage.wallets[currentWallet.id] = currentWallet;
+              await ApiPreferences.setCurrentAddress(AddressEntry(
+                walletId: currentWallet.id,
+                addressIdx: ac.index.toString(),
+                keyType: ac.keyType == KeyType.internal ? 1 : 0,
+              ));
+
+              BlocProvider.of<DashboardBloc>(context)
+                  .add(DashboardUpdateWalletEvent(
+                currentWallet: currentWallet,
+                currentAddress: ac.address,
+              ));
+              BlocProvider.of<ExplorerBloc>(context)
+                  .add(SyncSingleAccountEvent(ExplorerStatus.singleSync, ac));
+            },
+            padding: EdgeInsets.only(top: 8),
+            text: "Generate new Address",
+            type: 'secondary',
+            enabled: state.status != ExplorerStatus.singleSync,
+          );
+        }),
+      ),
     ];
   }
 

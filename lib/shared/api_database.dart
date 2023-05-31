@@ -37,7 +37,6 @@ class ApiDatabase {
       do {
         await Future.delayed(Duration(milliseconds: 1));
       } while (databaseIsolate.loading);
-      print("databaseIsolate.loading ${databaseIsolate.loading}");
     }
     final ReceivePort response = ReceivePort();
     databaseIsolate.send(
