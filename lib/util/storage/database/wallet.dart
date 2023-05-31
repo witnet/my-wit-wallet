@@ -60,7 +60,6 @@ class Wallet {
 
   Map<int, Account> externalAccounts = {};
   Map<int, Account> internalAccounts = {};
-  List<ValueTransferInfo> paginatedVtts = [];
 
   Map<String, Account> accountMap(KeyType keyType) {
     Map<String, Account> _accounts = {};
@@ -141,15 +140,7 @@ class Wallet {
     List<ValueTransferInfo> pageData =
         sortedTransactions.sublist(offset, pageEndPosition);
 
-    if (args.currentPage == 1) {
-      // Adds first page data
-      paginatedVtts = pageData;
-    } else {
-      // Adds new page data
-      paginatedVtts.addAll(pageData);
-    }
-
-    return PaginatedData(totalPages: totalPages, data: paginatedVtts);
+    return PaginatedData(totalPages: totalPages, data: pageData);
   }
 
   Account? accountByAddress(String address) {
@@ -489,7 +480,6 @@ class Wallet {
     List<String> _extAddressList = addressList(KeyType.external);
     List<String> _intAddressList = addressList(KeyType.internal);
     List<String> updatedAccounts = [];
-    print(_extAddressList);
     for (int i = 0; i < _extAddressList.length; i++) {
       Account account = externalAccounts[i]!;
       if (vtt.containsAddress(account.address)) {

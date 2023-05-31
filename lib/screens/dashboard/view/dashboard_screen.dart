@@ -125,9 +125,17 @@ class DashboardScreenState extends State<DashboardScreen>
 
   PaginatedData getPaginatedTransactions(PaginationParams args) {
     PaginatedData paginatedData = currentWallet!.getPaginatedTransactions(args);
-    setState(() {
-      vtts = paginatedData.data as List<ValueTransferInfo>;
-    });
+    if (args.currentPage == 1) {
+      // Adds first page data
+      setState(() {
+        vtts = paginatedData.data as List<ValueTransferInfo>;
+      });
+    } else {
+      // Adds new page data
+      setState(() {
+        vtts.addAll(paginatedData.data as List<ValueTransferInfo>);
+      });
+    }
     return paginatedData;
   }
 
