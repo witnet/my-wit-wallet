@@ -160,6 +160,8 @@ class AddressListState extends State<AddressList> {
 
   BlocBuilder _dashboardBlocBuilder() {
     final theme = Theme.of(context);
+    List<Account> externalAccounts =
+        widget.currentWallet.orderedExternalAccounts().values.toList();
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (BuildContext context, DashboardState state) {
         return Column(
@@ -168,13 +170,9 @@ class AddressListState extends State<AddressList> {
               shrinkWrap: true,
               padding: EdgeInsets.zero,
               physics: NeverScrollableScrollPhysics(),
-              itemCount:
-                  widget.currentWallet.externalAccounts.values.toList().length,
+              itemCount: externalAccounts.length,
               itemBuilder: (context, index) {
-                return _buildAddressItem(
-                    widget.currentWallet.externalAccounts.values
-                        .toList()[index],
-                    theme);
+                return _buildAddressItem(externalAccounts[index], theme);
               },
             ),
             SizedBox(height: 24),

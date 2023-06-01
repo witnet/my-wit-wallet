@@ -98,6 +98,10 @@ class Wallet {
     return _addresses;
   }
 
+  Map<String, Account> orderedExternalAccounts() {
+    return accountMap(KeyType.external);
+  }
+
   Map<String, Account> allAccounts() {
     Map<String, Account> _accounts = {};
     _accounts.addAll(accountMap(KeyType.external));
