@@ -245,7 +245,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         changeAccount = await apiCrypto.generateAccount(
           firstWallet,
           KeyType.internal,
-          internalAddresses.length + 1,
+          internalAddresses.length,
         );
       }
 
