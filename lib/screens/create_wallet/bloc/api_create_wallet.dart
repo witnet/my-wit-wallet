@@ -3,8 +3,8 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:my_wit_wallet/shared/locator.dart';
 
 class ApiCreateWallet {
-  late String walletName;
-  late String? walletDescription;
+  String walletName = "";
+  String walletDescription = "";
   String? password;
   late String? seedData;
   late String? seedSource;
@@ -23,7 +23,7 @@ class ApiCreateWallet {
 
   void setWalletName(String value) => walletName = value;
 
-  void setWalletDescription(String? value) => walletDescription = value;
+  void setWalletDescription(String value) => walletDescription = value;
 
   void clearFormData() {
     seedData = '';
