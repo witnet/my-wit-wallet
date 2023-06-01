@@ -190,10 +190,10 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
 
   bool validate({force = false}) {
     if (this.mounted) {
+      setState(() {
+        errorText = null;
+      });
       if (force || (!_passFocusNode.hasFocus && !_textFocusNode.hasFocus)) {
-        setState(() {
-          errorText = null;
-        });
         if (_password.isEmpty) {
           setState(() {
             errorText = 'Please input a password';
