@@ -132,9 +132,7 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   void nextAction() {
-    print(0);
     if (validateForm() && _formKey.currentState!.validate()) {
-      print(1);
       BlocProvider.of<VTTCreateBloc>(context).add(AddValueTransferOutputEvent(
           currentWallet: widget.currentWallet,
           output: ValueTransferOutput.fromJson({
@@ -249,7 +247,6 @@ class RecipientStepState extends State<RecipientStep>
               _amountFocusNode.requestFocus();
             },
             onFieldSubmitted: (String value) {
-              print('submit');
               widget.goNext();
             },
             onTapOutside: (PointerDownEvent event) {

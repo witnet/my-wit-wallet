@@ -49,11 +49,12 @@ class DashboardScreenState extends State<DashboardScreen>
       duration: const Duration(milliseconds: 1200),
     );
     _loadingController.forward();
+    String walletId = database.walletStorage.currentWallet.id;
     _setWallet();
     _setAccount();
-    _syncWallet(database.walletStorage.currentWallet.id);
+    _syncWallet(walletId);
     syncTimer = Timer.periodic(Duration(minutes: 0, seconds: 30), (timer) {
-      _syncWallet(database.walletStorage.currentWallet.id);
+      _syncWallet(walletId);
     });
     getPaginatedTransactions(PaginationParams(currentPage: 1));
     //BlocProvider.of<DashboardBloc>(context).add(DashboardUpdateWalletEvent(currentWallet: currentWallet, currentAddress: currentAccount!.address));
@@ -73,15 +74,13 @@ class DashboardScreenState extends State<DashboardScreen>
 
   void _setWallet() {
     setState(() {
-      currentWallet =
-          Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
+      currentWallet = database.walletStorage.currentWallet;
     });
   }
 
   void _setAccount() {
     setState(() {
-      currentAccount =
-          Locator.instance.get<ApiDatabase>().walletStorage.currentAccount;
+      currentAccount = database.walletStorage.currentAccount;
     });
   }
 

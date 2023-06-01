@@ -92,13 +92,11 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
               });
               await db.addAccount(ac);
               await db.loadWalletsDatabase();
-              db.walletStorage.wallets[currentWallet.id] = currentWallet;
               await ApiPreferences.setCurrentAddress(AddressEntry(
-                walletId: currentWallet.id,
-                addressIdx: ac.index.toString(),
-                keyType: ac.keyType == KeyType.internal ? 1 : 0,
+                walletId: ac.walletId,
+                addressIdx: ac.path.split('/').last,
+                keyType: 0,
               ));
-
               BlocProvider.of<DashboardBloc>(context)
                   .add(DashboardUpdateWalletEvent(
                 currentWallet: currentWallet,

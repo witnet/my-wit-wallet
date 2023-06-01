@@ -13,7 +13,6 @@ import 'package:my_wit_wallet/widgets/identicon.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
-import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
@@ -65,14 +64,9 @@ class WalletListState extends State<WalletList> {
   }
 
   void _getSelectedAccount() {
-    String? selectedAddressValue =
-        selectedAddressList?[selectedWallet?.id]!.split('/').last;
-    bool isAddressSaved =
-        selectedAddressValue != '' && selectedAddressValue != null;
-    Account? currentAccount = selectedWallet?.externalAccounts[
-        isAddressSaved ? int.parse(selectedAddressValue) : 0];
+    WalletStorage walletStorage = database.walletStorage;
     setState(() {
-      selectedAccount = currentAccount;
+      selectedAccount = walletStorage.currentAccount;
     });
   }
 
@@ -131,10 +125,7 @@ class WalletListState extends State<WalletList> {
         currentWallet!.balanceNanoWit().availableNanoWit.toString();
     String currentWalletAccount =
         database.walletStorage.currentAddressList![walletId]!;
-    Map<int, Account>? accountsList =
-        currentWalletAccount.split('/').first == '0'
-            ? currentWallet.externalAccounts
-            : currentWallet.internalAccounts;
+    Map<int, Account>? accountsList = currentWallet.externalAccounts;
     int currentAccountIndex = int.parse(currentWalletAccount.split('/').last);
     String? address = accountsList[currentAccountIndex]?.address.toString();
 
@@ -196,13 +187,7 @@ class WalletListState extends State<WalletList> {
         onTap: () {
           setState(() {
             selectedWallet = database.walletStorage.wallets[walletId]!;
-            selectedAccount = database
-                    .walletStorage.wallets[walletId]!.externalAccounts[
-                selectedAddressList?[walletId] != null
-                    ? int.parse(selectedAddressList?[walletId].split('/').last)
-                    : 0];
           });
-          ApiPreferences.setCurrentWallet(walletId);
           BlocProvider.of<DashboardBloc>(context).add(
               DashboardUpdateWalletEvent(
                   currentWallet: selectedWallet,

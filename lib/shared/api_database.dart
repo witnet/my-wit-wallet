@@ -1,4 +1,6 @@
 import 'dart:isolate';
+import 'package:my_wit_wallet/util/account_preferences.dart';
+import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/util/storage/database/database_isolate.dart';
 import 'package:my_wit_wallet/util/storage/database/database_service.dart';
@@ -14,6 +16,8 @@ class DatabaseException {
   final int code;
   final String message;
 }
+
+enum WalletPreferences { walletId, addressIndex, addressList }
 
 /// [ApiDatabase] is used to communicate between the database isolate and the
 /// rest of the application.
@@ -59,6 +63,77 @@ class ApiDatabase {
     } catch (e) {
       return false;
     }
+  }
+
+  Future<void> updateCurrentWallet([String? currentWalletId]) async {
+    String walletId = currentWalletId ?? '';
+    String addressId = "0/0";
+    Map<String, dynamic> addressList = {'$currentWalletId': '0/0'};
+
+    Map<WalletPreferences, dynamic>? preferences =
+        await getCurrentWalletPreferences();
+
+    if (preferences != null) {
+      addressList = preferences[WalletPreferences.addressList];
+      addressId = currentWalletId != null
+          ? addressList[currentWalletId]
+          : preferences[WalletPreferences.addressIndex];
+      walletId = currentWalletId ?? preferences[WalletPreferences.walletId];
+    }
+
+    ApiDatabase db = Locator.instance<ApiDatabase>();
+    WalletStorage walletStorage = db.walletStorage;
+    int addressIndex = int.parse(addressId.split('/').last);
+    int addressKeyType = int.parse(addressId.split('/').first);
+
+    walletStorage.setCurrentWallet(walletId);
+
+    Map<AccountPreferences, dynamic> accountPreferences = getUpdatedAccountInfo(
+        AccountPreferencesParams(walletId, addressIndex, addressList,
+            walletStorage.currentWallet.externalAccounts));
+
+    setCurrentAddressInStorage(
+        walletId,
+        accountPreferences[AccountPreferences.address],
+        accountPreferences[AccountPreferences.addressList]);
+
+    // if currentWalletId exists, preferences should be re-written in local storage
+    if (currentWalletId != null) {
+      setWalletAndAccountInLocalStorage(
+          currentWalletId,
+          AddressEntry(
+              walletId: currentWalletId,
+              addressIdx: accountPreferences[AccountPreferences.addressIndex],
+              keyType: addressKeyType));
+    }
+  }
+
+  Future<Map<WalletPreferences, dynamic>?> getCurrentWalletPreferences() async {
+    String? walletId = await ApiPreferences.getCurrentWallet();
+    String? addressIndex =
+        await ApiPreferences.getCurrentAddress(walletId ?? '');
+    Map<String, dynamic>? addressList =
+        await ApiPreferences.getCurrentAddressList();
+    bool hasSavedPrefs =
+        walletId != null && addressIndex != null && addressList != null;
+    final prefs = {
+      WalletPreferences.walletId: walletId,
+      WalletPreferences.addressIndex: addressIndex,
+      WalletPreferences.addressList: addressList
+    };
+    return hasSavedPrefs ? prefs : null;
+  }
+
+  Future<void> setWalletAndAccountInLocalStorage(
+      walletId, AddressEntry address) async {
+    await ApiPreferences.setCurrentWallet(walletId);
+    await ApiPreferences.setCurrentAddress(address);
+  }
+
+  void setCurrentAddressInStorage(
+      walletId, address, Map<String, dynamic> addressList) async {
+    walletStorage.setCurrentAccount(address);
+    walletStorage.setCurrentAddressList(addressList);
   }
 
   Future<bool> verifyPassword(String password) async {

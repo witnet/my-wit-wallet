@@ -27,11 +27,11 @@ class AddressList extends StatefulWidget {
 
 class AddressListState extends State<AddressList> {
   String? currentAddress;
+  ApiDatabase database = Locator.instance.get<ApiDatabase>();
   @override
   void initState() {
     super.initState();
-    currentAddress =
-        Locator.instance<ApiDatabase>().walletStorage.currentAccount.address;
+    currentAddress = database.walletStorage.currentAccount.address;
   }
 
   @override
@@ -115,7 +115,6 @@ class AddressListState extends State<AddressList> {
                 addressIdx: account.index.toString(),
                 keyType: account.keyType == KeyType.internal ? 1 : 0,
               ));
-
               BlocProvider.of<DashboardBloc>(context)
                   .add(DashboardUpdateWalletEvent(
                 currentWallet: widget.currentWallet,

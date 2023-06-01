@@ -5,8 +5,6 @@ import 'package:my_wit_wallet/screens/create_wallet/models/wallet_name.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 
-import 'package:my_wit_wallet/util/preferences.dart';
-
 part 'login_event.dart';
 part 'login_state.dart';
 
@@ -28,19 +26,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(state.copyWith(status: LoginStatus.LoginInProgress));
       bool verified = await apiDatabase.verifyPassword(event.password);
       if (verified) {
-        String? walletId = await ApiPreferences.getCurrentWallet();
-        String? addressIndex =
-            await ApiPreferences.getCurrentAddress(walletId!);
-        Map<String, dynamic>? addressList =
-            await ApiPreferences.getCurrentAddressList();
-        apiDatabase.walletStorage.setCurrentWallet(walletId);
-        apiDatabase.walletStorage.setCurrentAccount(apiDatabase
-            .walletStorage
-            .currentWallet
-            .externalAccounts[int.parse(addressIndex!.split('/').last)]!
-            .address);
-        apiDatabase.walletStorage.setCurrentAddressList(
-            addressList!.map((key, value) => MapEntry(key, value as String)));
+        await apiDatabase.updateCurrentWallet();
         emit(state.copyWith(status: LoginStatus.LoginSuccess));
       } else {
         emit(state.copyWith(status: LoginStatus.LoginInvalid));

@@ -149,12 +149,8 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     );
 
     database.walletStorage.wallets[wallet.id] = wallet;
-    Map<String, String>? _addressList =
-        database.walletStorage.currentAddressList;
     await database.loadWalletsDatabase();
-    database.walletStorage.setCurrentWallet(wallet.id);
-    database.walletStorage.setCurrentAccount(account.address);
-    database.walletStorage.setCurrentAddressList(_addressList!);
+    await database.updateCurrentWallet(wallet.id);
     emit(ExplorerState.synced(database.walletStorage));
   }
 
@@ -246,13 +242,8 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         }
       }
     }
-    String currentAddress = database.walletStorage.currentAccount.address;
-    Map<String, String>? _addressList =
-        database.walletStorage.currentAddressList;
     await database.loadWalletsDatabase();
-    database.walletStorage.setCurrentWallet(wallet.id);
-    database.walletStorage.setCurrentAccount(currentAddress);
-    database.walletStorage.setCurrentAddressList(_addressList!);
+    await database.updateCurrentWallet(wallet.id);
     emit(ExplorerState.synced(database.walletStorage));
   }
 
