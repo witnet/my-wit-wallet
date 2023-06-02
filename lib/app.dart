@@ -45,7 +45,7 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
 Widget _buildWithTheme(BuildContext context, ThemeState state) {
   return MaterialApp(
     debugShowCheckedModeBanner: false,
-    scrollBehavior: MyCustomScrollBehavior(),
+    scrollBehavior: MyCustomScrollBehavior().copyWith(overscroll: true, physics: const ClampingScrollPhysics(parent: RangeMaintainingScrollPhysics())),
     title: 'myWitWallet',
     home: LoginScreen(),
     theme: state.themeData,

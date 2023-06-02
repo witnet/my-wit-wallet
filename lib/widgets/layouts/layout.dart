@@ -13,6 +13,7 @@ import 'package:my_wit_wallet/widgets/layouts/headerLayout.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
+
 final panelController = PanelController();
 
 class Layout extends StatefulWidget {
@@ -81,6 +82,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   Widget _buildScrollLayout({showPanel, theme}) {
     return widget.getPaginatedData != null
         ? Pagination(
+            scrollController: widget.scrollController ?? defaultScrollController,
             child: _buildMainLayout(context, theme, false),
             getPaginatedData: widget.getPaginatedData)
         : _buildMainLayout(context, theme, false);
@@ -121,7 +123,9 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   Widget _buildMainLayout(BuildContext context, theme, bool panel) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-
+    final double _topOverscroll = 200;
+    final double _bottomOverscroll = 200;
+  
     return CustomScrollView(
       controller: widget.scrollController != null
           ? widget.scrollController

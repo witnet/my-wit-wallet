@@ -16,11 +16,13 @@ class PaginatedData {
 
 class Pagination extends StatefulWidget {
   final Widget child;
+  final ScrollController scrollController;
   final Function(PaginationParams)? getPaginatedData;
 
   Pagination({
     required this.child,
     required this.getPaginatedData,
+    required this.scrollController
   });
 
   PaginationState createState() => PaginationState();
@@ -100,7 +102,12 @@ class PaginationState extends State<Pagination> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return SmartRefresher(
+        physics: const ClampingScrollPhysics(
+            parent: RangeMaintainingScrollPhysics()),
         controller: refreshController,
+        scrollController: widget.scrollController,
+        enableTwoLevel: true,
+        enablePullDown: true,
         enablePullUp: true,
         header: MaterialClassicHeader(
           backgroundColor: WitnetPallet.opacityWhite,

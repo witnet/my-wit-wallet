@@ -55,7 +55,9 @@ dependencies:
   formz: ^0.4.1
   flutter_hooks: ^0.18.5+1
   flutter_svg: ^2.0.5
-  pull_to_refresh: ^2.0.0
+  pull_to_refresh: 
+    path:
+      ../flutter_pulltorefresh
 
 flutter_icons:
   android: true
