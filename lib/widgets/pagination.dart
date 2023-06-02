@@ -5,10 +5,11 @@ import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:witnet/explorer.dart';
 
 class PaginatedData {
   final int totalPages;
-  final List<dynamic> data;
+  final List<ValueTransferInfo> data;
 
   PaginatedData({required this.totalPages, required this.data});
 }

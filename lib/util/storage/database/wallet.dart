@@ -131,16 +131,19 @@ class Wallet {
 
   PaginatedData getPaginatedTransactions(PaginationParams args) {
     List<ValueTransferInfo> sortedTransactions = allTransactions();
+    if(sortedTransactions.length > 0) {
+      final totalPages = (sortedTransactions.length / args.limit).ceil();
+      int offset = (args.currentPage - 1) * args.limit;
+      int pageEndPosition = args.currentPage >= totalPages
+          ? sortedTransactions.length - 1
+          : (offset + args.limit);
+      List<ValueTransferInfo> pageData =
+          sortedTransactions.sublist(offset, pageEndPosition);
+      return PaginatedData(totalPages: totalPages, data: pageData);
+    } else {
+      return PaginatedData(totalPages: 0, data: []);
+    }
 
-    final totalPages = (sortedTransactions.length / args.limit).ceil();
-    int offset = (args.currentPage - 1) * args.limit;
-    int pageEndPosition = args.currentPage >= totalPages
-        ? sortedTransactions.length - 1
-        : (offset + args.limit);
-    List<ValueTransferInfo> pageData =
-        sortedTransactions.sublist(offset, pageEndPosition);
-
-    return PaginatedData(totalPages: totalPages, data: pageData);
   }
 
   Account? accountByAddress(String address) {
