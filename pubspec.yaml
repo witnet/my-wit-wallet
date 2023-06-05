@@ -55,6 +55,7 @@ dependencies:
   formz: ^0.4.1
   flutter_hooks: ^0.18.5+1
   flutter_svg: ^2.0.5
+  number_paginator: ^0.2.3
 
 flutter_icons:
   android: true

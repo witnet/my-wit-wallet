@@ -1,3 +1,4 @@
+import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:witnet/crypto.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
@@ -16,6 +17,13 @@ import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 
 enum KeyType { internal, external }
+
+class PaginatedData {
+  final int totalPages;
+  final List<ValueTransferInfo> data;
+
+  PaginatedData({required this.totalPages, required this.data});
+}
 
 class Wallet {
   Wallet({
@@ -121,7 +129,24 @@ class Wallet {
         if (vtt.status != 'unknown hash') _vttMap[vtt.txnHash] = vtt;
       });
     });
-    return _vttMap.values.toList();
+    return _vttMap.values.toList()
+      ..sort((t1, t2) => t2.txnTime.compareTo(t1.txnTime));
+  }
+
+  PaginatedData getPaginatedTransactions(PaginationParams args) {
+    List<ValueTransferInfo> sortedTransactions = allTransactions();
+    if (sortedTransactions.length > 0) {
+      final totalPages = (sortedTransactions.length / args.limit).ceil();
+      int offset = (args.currentPage - 1) * args.limit;
+      int pageEndPosition = args.currentPage >= totalPages
+          ? sortedTransactions.length - 1
+          : (offset + args.limit);
+      List<ValueTransferInfo> pageData =
+          sortedTransactions.sublist(offset, pageEndPosition);
+      return PaginatedData(totalPages: totalPages, data: pageData);
+    } else {
+      return PaginatedData(totalPages: 0, data: []);
+    }
   }
 
   Account? accountByAddress(String address) {
@@ -461,7 +486,6 @@ class Wallet {
     List<String> _extAddressList = addressList(KeyType.external);
     List<String> _intAddressList = addressList(KeyType.internal);
     List<String> updatedAccounts = [];
-    print(_extAddressList);
     for (int i = 0; i < _extAddressList.length; i++) {
       Account account = externalAccounts[i]!;
       if (vtt.containsAddress(account.address)) {

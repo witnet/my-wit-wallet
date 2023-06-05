@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -18,6 +21,12 @@ class DashboardScreen extends StatefulWidget {
   DashboardScreenState createState() => DashboardScreenState();
 }
 
+class PaginationParams {
+  final int currentPage;
+  final int limit;
+  PaginationParams({this.currentPage = 1, this.limit = PAGINATION_LIMIT});
+}
+
 class DashboardScreenState extends State<DashboardScreen>
     with TickerProviderStateMixin {
   String? walletId;
@@ -29,6 +38,8 @@ class DashboardScreenState extends State<DashboardScreen>
   late Timer syncTimer;
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
   ScrollController scrollController = ScrollController(keepScrollOffset: true);
+  List<ValueTransferInfo> vtts = [];
+  int numberOfPages = 0;
 
   @override
   void initState() {
@@ -38,11 +49,13 @@ class DashboardScreenState extends State<DashboardScreen>
       duration: const Duration(milliseconds: 1200),
     );
     _loadingController.forward();
-    _getVtts();
+    _setWallet();
+    _setAccount();
     _syncWallet(database.walletStorage.currentWallet.id);
     syncTimer = Timer.periodic(Duration(minutes: 0, seconds: 30), (timer) {
       _syncWallet(database.walletStorage.currentWallet.id);
     });
+    getPaginatedTransactions(PaginationParams(currentPage: 1));
     //BlocProvider.of<DashboardBloc>(context).add(DashboardUpdateWalletEvent(currentWallet: currentWallet, currentAddress: currentAccount!.address));
   }
 
@@ -56,11 +69,6 @@ class DashboardScreenState extends State<DashboardScreen>
   void _syncWallet(String walletId) {
     BlocProvider.of<ExplorerBloc>(context).add(SyncWalletEvent(
         ExplorerStatus.dataloading, database.walletStorage.wallets[walletId]!));
-  }
-
-  void _getVtts() {
-    _setWallet();
-    _setAccount();
   }
 
   void _setWallet() {
@@ -77,6 +85,12 @@ class DashboardScreenState extends State<DashboardScreen>
     });
   }
 
+  void _setNewWalletData() {
+    _setWallet();
+    _setAccount();
+    getPaginatedTransactions(PaginationParams(currentPage: 1));
+  }
+
   void _setDetails(ValueTransferInfo? transaction) {
     scrollController.jumpTo(0.0);
     setState(() {
@@ -85,23 +99,41 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _buildTransactionList(ThemeData themeData) {
-    return TransactionsList(
-      themeData: themeData,
-      setDetails: _setDetails,
-      details: txDetails,
-      valueTransfers: currentWallet!.allTransactions(),
-      externalAddresses: currentWallet!.externalAccounts,
-      internalAddresses: currentWallet!.internalAccounts,
-    );
+    final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+    return Column(children: [
+      TransactionsList(
+        themeData: themeData,
+        setDetails: _setDetails,
+        details: txDetails,
+        valueTransfers: vtts,
+        externalAddresses: currentWallet!.externalAccounts,
+        internalAddresses: currentWallet!.internalAccounts,
+      ),
+      vtts.length > 0
+          ? NumberPaginator(
+              config: NumberPaginatorUIConfig(
+                buttonSelectedBackgroundColor:
+                    extendedTheme.numberPaginatiorSelectedBg,
+                buttonUnselectedForegroundColor:
+                    extendedTheme.numberPaginatiorUnselectedFg,
+              ),
+              numberPages: numberOfPages,
+              onPageChange: (int index) {
+                getPaginatedTransactions(
+                    PaginationParams(currentPage: index + 1, limit: 10));
+              },
+            )
+          : SizedBox(height: 8),
+      vtts.length > 0 ? SizedBox(height: 16) : SizedBox(height: 8),
+    ]);
   }
 
   BlocListener _dashboardListener() {
     return BlocListener<DashboardBloc, DashboardState>(
       listener: (BuildContext context, DashboardState state) {
         if (state.status == DashboardStatus.Ready) {
-          setState(() {
-            _getVtts();
-          });
+          _setNewWalletData();
         }
       },
       child: _dashboardBuilder(),
@@ -116,6 +148,18 @@ class DashboardScreenState extends State<DashboardScreen>
     });
   }
 
+  PaginatedData getPaginatedTransactions(PaginationParams args) {
+    PaginatedData paginatedData = currentWallet!.getPaginatedTransactions(args);
+    setState(() {
+      numberOfPages = paginatedData.totalPages;
+      vtts = paginatedData.data;
+    });
+    if (scrollController.hasClients) {
+      scrollController.jumpTo(0.0);
+    }
+    return paginatedData;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ExplorerBloc, ExplorerState>(
@@ -127,9 +171,7 @@ class DashboardScreenState extends State<DashboardScreen>
       );
     }, listener: (context, state) {
       if (state.status == ExplorerStatus.dataloaded) {
-        setState(() {
-          _getVtts();
-        });
+        _setNewWalletData();
       }
     });
   }

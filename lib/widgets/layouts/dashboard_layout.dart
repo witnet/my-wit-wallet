@@ -310,14 +310,7 @@ class DashboardLayoutState extends State<DashboardLayout>
             break;
           case LoginStatus.LoginSuccess:
             _walletList = WalletList();
-            _body = _vttListener(_explorerListerner(Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  child: widget.dashboardChild,
-                ),
-              ],
-            )));
+            _body = _vttListener(_explorerListerner(widget.dashboardChild));
             break;
           default:
             _body = Column(

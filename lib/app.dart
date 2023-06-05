@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/bloc_providers.dart';
@@ -30,9 +32,23 @@ class WitnetWalletApp extends StatelessWidget {
   }
 }
 
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
+}
+
 Widget _buildWithTheme(BuildContext context, ThemeState state) {
   return MaterialApp(
     debugShowCheckedModeBanner: false,
+    scrollBehavior: MyCustomScrollBehavior().copyWith(
+        overscroll: true,
+        physics: const ClampingScrollPhysics(
+            parent: RangeMaintainingScrollPhysics())),
     title: 'myWitWallet',
     home: LoginScreen(),
     theme: state.themeData,

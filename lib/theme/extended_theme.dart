@@ -38,6 +38,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.activeClickableBoxBorderColor,
     required this.inactiveClickableBoxBgColor,
     required this.inactiveClickableBoxBorderColor,
+    required this.numberPaginatiorSelectedBg,
+    required this.numberPaginatiorUnselectedFg,
   });
   final Color? selectBackgroundColor;
   final Color? selectedTextColor;
@@ -73,6 +75,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? activeClickableBoxBorderColor;
   final Color? inactiveClickableBoxBgColor;
   final Color? inactiveClickableBoxBorderColor;
+  final Color? numberPaginatiorSelectedBg;
+  final Color? numberPaginatiorUnselectedFg;
   @override
   ExtendedTheme copyWith(
       {Color? selectBackgroundColor,
@@ -106,6 +110,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       Color? activeClickableBoxBorderColor,
       Color? inactiveClickableBoxBgColor,
       Color? inactiveClickableBoxBorderColo,
+      Color? numberPaginatiorSelectedBg,
+      Color? numberPaginatiorUnselectedFg,
       r}) {
     return ExtendedTheme(
       selectBackgroundColor:
@@ -156,6 +162,10 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       monoRegularText: monoRegularText ?? this.monoRegularText,
       monoMediumText: monoMediumText ?? this.monoMediumText,
       monoLargeText: monoLargeText ?? this.monoLargeText,
+      numberPaginatiorSelectedBg:
+          numberPaginatiorSelectedBg ?? this.numberPaginatiorSelectedBg,
+      numberPaginatiorUnselectedFg:
+          numberPaginatiorUnselectedFg ?? this.numberPaginatiorUnselectedFg,
     );
   }
 
@@ -220,6 +230,10 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
           inactiveClickableBoxBorderColor,
           other.inactiveClickableBoxBorderColor,
           t),
+      numberPaginatiorSelectedBg: Color.lerp(
+          numberPaginatiorSelectedBg, other.numberPaginatiorSelectedBg, t),
+      numberPaginatiorUnselectedFg: Color.lerp(
+          numberPaginatiorUnselectedFg, other.numberPaginatiorUnselectedFg, t),
       monoSmallText: TextStyle.lerp(monoSmallText, other.monoSmallText, t),
       monoRegularText:
           TextStyle.lerp(monoRegularText, other.monoRegularText, t),
@@ -260,6 +274,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     inactiveClickableBoxBgColor: WitnetPallet.white,
     inactiveClickableBoxBorderColor: WitnetPallet.lightGrey,
     dialogBackground: WitnetPallet.white,
+    numberPaginatiorSelectedBg: WitnetPallet.darkBlue2,
+    numberPaginatiorUnselectedFg: WitnetPallet.darkGrey,
     monoSmallText: TextStyle(
         fontFamily: 'RobotoMono',
         fontWeight: FontWeight.w400,
@@ -313,6 +329,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     inactiveClickableBoxBgColor: WitnetPallet.darkBlue2,
     inactiveClickableBoxBorderColor: WitnetPallet.opacityWhite2,
     dialogBackground: WitnetPallet.opacityWitnetGreen,
+    numberPaginatiorSelectedBg: WitnetPallet.witnetGreen1,
+    numberPaginatiorUnselectedFg: WitnetPallet.white,
     monoSmallText: TextStyle(
         fontFamily: 'RobotoMono',
         fontWeight: FontWeight.w400,
