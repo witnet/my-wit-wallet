@@ -185,7 +185,7 @@ class WalletListState extends State<WalletList> {
             ),
             Expanded(
               child: Text(
-                '${num.parse(balance).standardizeWitUnits(inputUnit: WitUnit.nanoWit, outputUnit: WitUnit.Wit)} ${WitUnit.Wit.name}',
+                '${num.parse(balance).standardizeWitUnits(inputUnit: WitUnit.nanoWit, outputUnit: WitUnit.Wit)} ${WIT_UNIT[WitUnit.Wit]}',
                 textAlign: TextAlign.end,
                 overflow: TextOverflow.ellipsis,
                 style: textStyle,

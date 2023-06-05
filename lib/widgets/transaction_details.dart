@@ -58,7 +58,7 @@ class TransactionDetails extends StatelessWidget {
                       style: extendedTheme.monoSmallText),
                   SizedBox(height: 8),
                   Text(
-                      '${output.value.toInt().standardizeWitUnits()} ${WitUnit.Wit.name}',
+                      '${output.value.toInt().standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
                       style: theme.textTheme.labelMedium),
                 ],
               ),
@@ -89,7 +89,8 @@ class TransactionDetails extends StatelessWidget {
           children: [
             Text(input.address.toString(), style: extendedTheme.monoSmallText),
             SizedBox(height: 8),
-            Text('${input.value.standardizeWitUnits()} ${WitUnit.Wit.name}',
+            Text(
+                '${input.value.standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
                 style: theme.textTheme.labelMedium),
           ],
         ));
@@ -139,7 +140,7 @@ class TransactionDetails extends StatelessWidget {
         InfoElement(
             label: 'Fee',
             text:
-                '${transaction.fee.standardizeWitUnits()} ${WitUnit.Wit.name}'),
+                '${transaction.fee.standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}'),
         SizedBox(height: 16),
         InfoElement(
             label: 'Timestamp',

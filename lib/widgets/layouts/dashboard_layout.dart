@@ -153,7 +153,7 @@ class DashboardLayoutState extends State<DashboardLayout>
         children: [
           SizedBox(height: 16),
           Text(
-            '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits()} ${WitUnit.Wit.name}',
+            '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
             textAlign: TextAlign.center,
             style: theme.textTheme.headlineMedium,
           ),

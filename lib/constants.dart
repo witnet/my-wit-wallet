@@ -32,6 +32,14 @@ enum WitUnit {
   nanoWit,
 }
 
+// ignore: non_constant_identifier_names
+Map<WitUnit, String> WIT_UNIT = {
+  WitUnit.Wit: 'WIT',
+  WitUnit.milliWit: 'milliWIT',
+  WitUnit.microWit: 'microWIT',
+  WitUnit.nanoWit: 'nanoWIT',
+};
+
 enum EstimatedFeeOptions { Stinky, Low, Medium, High, Opulent, Custom }
 
 // ignore: non_constant_identifier_names

@@ -50,7 +50,7 @@ class _InputAmountState extends State<InputAmount> {
           errorText: widget.errorText,
           prefixIcon:
               widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
-          suffixText: WitUnit.Wit.name,
+          suffixText: WIT_UNIT[WitUnit.Wit],
         ),
         minLines: 1,
         inputFormatters: [WitValueFormatter()],

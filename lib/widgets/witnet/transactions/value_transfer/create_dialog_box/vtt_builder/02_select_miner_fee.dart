@@ -213,7 +213,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         Expanded(
             flex: 0,
             child: Text(label != EstimatedFeeOptions.Custom
-                ? '${_nanoWitFeeToWit(value)} ${WitUnit.Wit.name}'
+                ? '${_nanoWitFeeToWit(value)} ${WIT_UNIT[WitUnit.Wit]}'
                 : '')),
       ],
       onClick: (value) => {

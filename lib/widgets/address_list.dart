@@ -68,7 +68,7 @@ class AddressListState extends State<AddressList> {
         );
       } else {
         return Text(
-            '${account.balance.availableNanoWit.standardizeWitUnits()} ${WitUnit.Wit.name}',
+            '${account.balance.availableNanoWit.standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
             textAlign: TextAlign.end,
             style: textStyle!.copyWith(fontFamily: 'Almarai'));
       }
@@ -169,7 +169,7 @@ class AddressListState extends State<AddressList> {
                       ]),
                   Expanded(
                     child: Text(
-                      '${internalBalance.standardizeWitUnits()} ${WitUnit.Wit.name}',
+                      '${internalBalance.standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
                       textAlign: TextAlign.end,
                       style: extendedTheme.monoRegularText!
                           .copyWith(fontFamily: 'Almarai'),
