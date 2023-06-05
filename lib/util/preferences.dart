@@ -20,6 +20,9 @@ class AddressEntry {
 class ApiPreferences {
   static Future<void> setCurrentWallet(String walletId) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    /// The address index is a segment of the full BIP32 keychain path
+    /// e.g. if the path is "m/3.0/4919.0/0.0/0/1" the addressIndex is "0/1"
     String addressIndex =
         await ApiPreferences.getCurrentAddress(walletId) ?? "0/0";
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
@@ -27,10 +30,18 @@ class ApiPreferences {
     walletStorage.setCurrentWallet(walletId);
     String address;
     int index = int.parse(addressIndex.split("/").last);
-    if (addressIndex.split('/').first == "0") {
+
+    /// Checking the if the wallet chain portion is equal to zero
+    /// ensures it is an external keychain
+    /// Also check if the index is in the database
+    if (addressIndex.split('/').first == "0" &&
+        walletStorage.currentWallet.externalAccounts.containsKey(index)) {
       address = walletStorage.currentWallet.externalAccounts[index]!.address;
     } else {
-      address = walletStorage.currentWallet.internalAccounts[index]!.address;
+      /// if the addressIndex is an internal / change account or
+      /// if it is not in the database,
+      /// return the first external address as default
+      address = walletStorage.currentWallet.externalAccounts[0]!.address;
     }
     Locator.instance
         .get<ApiDatabase>()
@@ -49,10 +60,11 @@ class ApiPreferences {
     String? addressIndex =
         await ApiPreferences.getCurrentAddress(currentWallet);
     int index = int.parse(addressIndex!.split("/").last);
-    if (addressIndex.split('/').first == "0") {
+    if (addressIndex.split('/').first == "0" &&
+        walletStorage.currentWallet.externalAccounts.containsKey(index)) {
       address = walletStorage.currentWallet.externalAccounts[index]!.address;
     } else {
-      address = walletStorage.currentWallet.internalAccounts[index]!.address;
+      address = walletStorage.currentWallet.externalAccounts[0]!.address;
     }
     Locator.instance
         .get<ApiDatabase>()
@@ -93,10 +105,11 @@ class ApiPreferences {
     WalletStorage walletStorage = db.walletStorage;
     walletStorage.setCurrentWallet(addressEntry.walletId);
     walletStorage.setCurrentAddressList(finalMap);
-    if (addressEntry.keyType == 0) {
+    if (addressEntry.keyType == 0 &&
+        walletStorage.currentWallet.externalAccounts.containsKey(index)) {
       address = walletStorage.currentWallet.externalAccounts[index]!.address;
     } else {
-      address = walletStorage.currentWallet.internalAccounts[index]!.address;
+      address = walletStorage.currentWallet.externalAccounts[0]!.address;
     }
     walletStorage.setCurrentAccount(address);
     await prefs.setString('current_address', json.encode(finalMap));
