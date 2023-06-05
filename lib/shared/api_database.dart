@@ -199,17 +199,4 @@ class ApiDatabase {
         method: 'update',
         params: {'type': 'account', 'value': account.jsonMap()});
   }
-
-  Future<WalletStorage> getWalletStorage([bool reload = false]) async {
-    if (reload) {
-      walletStorage = await loadWalletsDatabase();
-      return walletStorage;
-    }
-    if (walletsLoaded) {
-      return walletStorage;
-    } else {
-      walletStorage = await loadWalletsDatabase();
-      return walletStorage;
-    }
-  }
 }
