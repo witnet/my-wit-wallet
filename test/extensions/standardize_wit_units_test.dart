@@ -14,6 +14,10 @@ void main() {
                           () =>
                               {expect(1.standardizeWitUnits(), '0.000000001')}),
                       test(
+                          'to Wit with decimals',
+                          () =>
+                              {expect(13999999872.standardizeWitUnits(), '13.99')}),
+                      test(
                           'to milliWit',
                           () => {
                                 expect(
