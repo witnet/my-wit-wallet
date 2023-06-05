@@ -100,7 +100,7 @@ class RecipientStepState extends State<RecipientStep>
         errorText = errorText ?? 'Amount cannot be zero';
       }
     } catch (e) {
-      errorText = 'Invalid Amount';
+      errorText = 'Invalid amount';
     }
     return errorText;
   }

@@ -166,7 +166,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Identify your Wallet',
+          'Identify your wallet',
           style: theme.textTheme.titleLarge, //Textstyle
         ), //Text
         SizedBox(

@@ -160,7 +160,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     try {
       num.parse(_minerFeeNanoWit != '' ? _minerFeeNanoWit : '0');
     } catch (e) {
-      errorText = 'Invalid Amount';
+      errorText = 'Invalid amount';
     }
     if (_notEnoughFunds()) {
       errorText = 'Not enough Funds';

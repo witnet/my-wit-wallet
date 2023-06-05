@@ -66,7 +66,7 @@ class ReviewStepState extends State<ReviewStep>
 
   NavAction next() {
     return NavAction(
-      label: 'Sign and Send',
+      label: 'Sign and send',
       action: nextAction,
     );
   }

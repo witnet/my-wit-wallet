@@ -296,7 +296,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
               ),
               Row(
                 children: [
-                  Text('Exploring Address: ',
+                  Text('Exploring address: ',
                       style: theme.textTheme.bodyLarge!),
                   Expanded(
                     flex: 1,
