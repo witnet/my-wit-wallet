@@ -54,15 +54,18 @@ class AddressListState extends State<AddressList> {
           state.data['address'] == account.address) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.end,
-          children: [SizedBox(
-              height: 16,
-              width: 16,
-            child: CircularProgressIndicator(
-              color: theme.textTheme.labelMedium?.color,
-              strokeWidth: 2,
-              value: null,
-              semanticsLabel: 'Circular progress indicator',
-            ))],);
+          children: [
+            SizedBox(
+                height: 16,
+                width: 16,
+                child: CircularProgressIndicator(
+                  color: theme.textTheme.labelMedium?.color,
+                  strokeWidth: 2,
+                  value: null,
+                  semanticsLabel: 'Circular progress indicator',
+                ))
+          ],
+        );
       } else {
         return Text(
             '${account.balance.availableNanoWit.standardizeWitUnits()} ${WitUnit.Wit.name}',

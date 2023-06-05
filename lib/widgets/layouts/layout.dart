@@ -108,6 +108,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   Widget _buildMainLayout(BuildContext context, theme, bool panel) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
+
     return CustomScrollView(
       controller: widget.scrollController != null
           ? widget.scrollController
@@ -129,7 +130,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             toolbarHeight: widget.dashboardActions != null ? 300 : 200,
             flexibleSpace: headerLayout(context, theme)),
         SliverPadding(
-          padding: EdgeInsets.only(left: 16, right: 16, bottom: panel ? 70 : 0),
+          padding: EdgeInsets.only(left: 16, right: 16),
           sliver: SliverToBoxAdapter(
               child: Center(
             child: ConstrainedBox(
