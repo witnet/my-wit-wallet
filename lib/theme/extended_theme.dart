@@ -29,6 +29,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.switchInactiveFg,
     required this.switchBorderColor,
     required this.dialogBackground,
+    required this.copiedSnackbarBg,
+    required this.copiedSnackbarText,
     required this.monoSmallText,
     required this.monoRegularText,
     required this.monoMediumText,
@@ -66,6 +68,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? switchInactiveFg;
   final Color? switchBorderColor;
   final Color? dialogBackground;
+  final Color? copiedSnackbarBg;
+  final Color? copiedSnackbarText;
   final TextStyle? monoSmallText;
   final TextStyle? monoRegularText;
   final TextStyle? monoMediumText;
@@ -101,6 +105,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       Color? switchInactiveFg,
       Color? switchBorderColor,
       Color? dialogBackground,
+      Color? copiedSnackbarBg,
+      Color? copiedSnackbarText,
       TextStyle? monoSmallText,
       TextStyle? monoRegularText,
       TextStyle? monoMediumText,
@@ -158,6 +164,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       inactiveClickableBoxBorderColor: inactiveClickableBoxBorderColor ??
           this.inactiveClickableBoxBorderColor,
       dialogBackground: dialogBackground ?? this.dialogBackground,
+      copiedSnackbarBg: copiedSnackbarBg ?? copiedSnackbarBg,
+      copiedSnackbarText: copiedSnackbarText ?? copiedSnackbarText,
       monoSmallText: monoSmallText ?? this.monoSmallText,
       monoRegularText: monoRegularText ?? this.monoRegularText,
       monoMediumText: monoMediumText ?? this.monoMediumText,
@@ -234,6 +242,9 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
           numberPaginatiorSelectedBg, other.numberPaginatiorSelectedBg, t),
       numberPaginatiorUnselectedFg: Color.lerp(
           numberPaginatiorUnselectedFg, other.numberPaginatiorUnselectedFg, t),
+      copiedSnackbarBg: Color.lerp(copiedSnackbarBg, other.copiedSnackbarBg, t),
+      copiedSnackbarText:
+          Color.lerp(copiedSnackbarText, other.copiedSnackbarText, t),
       monoSmallText: TextStyle.lerp(monoSmallText, other.monoSmallText, t),
       monoRegularText:
           TextStyle.lerp(monoRegularText, other.monoRegularText, t),
@@ -276,6 +287,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     dialogBackground: WitnetPallet.white,
     numberPaginatiorSelectedBg: WitnetPallet.darkBlue2,
     numberPaginatiorUnselectedFg: WitnetPallet.darkGrey,
+    copiedSnackbarBg: Colors.black,
+    copiedSnackbarText: WitnetPallet.white,
     monoSmallText: TextStyle(
         fontFamily: 'RobotoMono',
         fontWeight: FontWeight.w400,
@@ -331,6 +344,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     dialogBackground: WitnetPallet.opacityWitnetGreen,
     numberPaginatiorSelectedBg: WitnetPallet.witnetGreen1,
     numberPaginatiorUnselectedFg: WitnetPallet.white,
+    copiedSnackbarBg: WitnetPallet.white,
+    copiedSnackbarText: Colors.black,
     monoSmallText: TextStyle(
         fontFamily: 'RobotoMono',
         fontWeight: FontWeight.w400,

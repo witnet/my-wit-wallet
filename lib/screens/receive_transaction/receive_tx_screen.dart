@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/address_list.dart';
 import 'package:my_wit_wallet/widgets/dashed_rect.dart';
@@ -18,6 +19,7 @@ import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/widgets/snack_bars.dart';
 
 class ReceiveTransactionScreen extends StatefulWidget {
   static final route = '/receive-transaction';
@@ -54,6 +56,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
   }
 
   List<Widget> _actions() {
+    final theme = Theme.of(context);
     return [
       PaddedButton(
           padding: EdgeInsets.zero,
@@ -65,14 +68,9 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
             await Clipboard.setData(
                 ClipboardData(text: selectedAccount?.address ?? ''));
             if (await Clipboard.hasStrings()) {
-              setState(() {
-                isLoading = true;
-              });
-              Timer(Duration(milliseconds: 500), () {
-                setState(() {
-                  isLoading = false;
-                });
-              });
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(buildCopiedSnackbar(theme, 'Address copied!'));
             }
           }),
       BlocListener<ExplorerBloc, ExplorerState>(
