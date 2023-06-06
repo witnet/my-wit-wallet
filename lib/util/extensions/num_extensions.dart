@@ -3,9 +3,10 @@ import 'package:my_wit_wallet/constants.dart';
 import 'dart:math';
 
 extension TruncateDoubles on double {
-   double truncateToDecimals(int decimals) => (this * pow(10, 
-     decimals)).truncate() / pow(10, decimals);
+  double truncateToDecimals(int decimals) =>
+      (this * pow(10, decimals)).truncate() / pow(10, decimals);
 }
+
 extension TimestampExtension on num {
   String standardizeWitUnits(
       {WitUnit outputUnit = WitUnit.Wit,
@@ -49,7 +50,10 @@ extension TimestampExtension on num {
           // result < 1
           return Decimal.parse(result.toStringAsFixed(10)).toString();
         } else {
-          return Decimal.parse(double.parse(result.toString()).truncateToDecimals(2).toString()).toString();
+          return Decimal.parse(double.parse(result.toString())
+                  .truncateToDecimals(2)
+                  .toString())
+              .toString();
         }
       } else {
         return '0';
