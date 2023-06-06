@@ -189,40 +189,44 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     }
 
     /// get the UTXOs from the explorer
-    for (int i = 0; i < addressChunks.length; i++) {
-      Map<String, List<Utxo>> _utxos = await Locator.instance<ApiExplorer>()
-          .utxosMulti(addressList: addressChunks[i]);
+    try {
+      for (int i = 0; i < addressChunks.length; i++) {
+        Map<String, List<Utxo>> _utxos = await Locator.instance<ApiExplorer>()
+            .utxosMulti(addressList: addressChunks[i]);
 
-      /// loop over the explorer response
-      /// which is Map<String, List<Utxo>> key = address
-      Map<String, Account> updatedAccounts = {};
+        /// loop over the explorer response
+        /// which is Map<String, List<Utxo>> key = address
+        Map<String, Account> updatedAccounts = {};
 
-      for (int addressIndex = 0; addressIndex < _utxos.length; addressIndex++) {
-        String address = _utxos.keys.toList()[addressIndex];
-        List<Utxo> utxoList = _utxos[address]!;
+        for (int addressIndex = 0;
+            addressIndex < _utxos.length;
+            addressIndex++) {
+          String address = _utxos.keys.toList()[addressIndex];
+          List<Utxo> utxoList = _utxos[address]!;
 
-        Account account = wallet.accountByAddress(address)!;
+          Account account = wallet.accountByAddress(address)!;
 
-        if (!isTheSameList(account, utxoList)) {
-          if (utxoList.isNotEmpty) {
-            account.utxos = utxoList;
-            try {
+          if (!isTheSameList(account, utxoList)) {
+            if (utxoList.isNotEmpty) {
+              account.utxos = utxoList;
               account = await updateAccountVttsAndBalance(account);
-            } catch (e) {
-              print('Error updateAccountVttsAndBalance $e');
-              emit(ExplorerState.error());
-              rethrow;
+            } else {
+              account.utxos.clear();
             }
-          } else {
-            account.utxos.clear();
+            updatedAccounts[account.address] = account;
+            wallet.updateAccount(
+                index: account.index,
+                keyType: account.keyType,
+                account: account);
           }
-          updatedAccounts[account.address] = account;
-          wallet.updateAccount(
-              index: account.index, keyType: account.keyType, account: account);
         }
-      }
 
-      database.walletStorage.wallets[wallet.id] = wallet;
+        database.walletStorage.wallets[wallet.id] = wallet;
+      }
+    } catch (err) {
+      print('Error getting UTXOs from the explorer $err');
+      emit(ExplorerState.error());
+      rethrow;
     }
     for (int i = 0; i < unconfirmedVtts.length; i++) {
       ValueTransferInfo _vtt = unconfirmedVtts[i];
