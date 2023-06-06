@@ -345,7 +345,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     numberPaginatiorSelectedBg: WitnetPallet.witnetGreen1,
     numberPaginatiorUnselectedFg: WitnetPallet.white,
     copiedSnackbarBg: WitnetPallet.white,
-    copiedSnackbarText: Colors.black,
+    copiedSnackbarText: WitnetPallet.black,
     monoSmallText: TextStyle(
         fontFamily: 'RobotoMono',
         fontWeight: FontWeight.w400,

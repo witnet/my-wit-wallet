@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' show Color, MaterialColor;
 
 class WitnetPallet {
+  static const black = Color.fromARGB(255, 40, 40, 40);
   static const lightGrey = Color.fromARGB(255, 193, 196, 198);
   static const darkGrey = Color.fromARGB(255, 50, 50, 50);
   static const white = Color.fromARGB(255, 240, 243, 245);
