@@ -76,9 +76,9 @@ class WalletDetailCardState extends State<WalletDetailCard>
         .addPostFrameCallback((_) => widget.nextAction(next));
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.clearActions(false));
-    _nameController.value = TextEditingValue(text: Locator.instance.get<ApiCreateWallet>().walletName ?? '');
+    _nameController.value = TextEditingValue(text: Locator.instance.get<ApiCreateWallet>().walletName);
     _walletName =  _nameController.value.text;
-    _descController.value = TextEditingValue(text: Locator.instance.get<ApiCreateWallet>().walletDescription ?? '');
+    _descController.value = TextEditingValue(text: Locator.instance.get<ApiCreateWallet>().walletDescription);
     _walletDescription = _descController.value.text;
     defaultWalletName =
         "wallet-${Locator.instance.get<ApiDatabase>().walletStorage.wallets.length + 1}";

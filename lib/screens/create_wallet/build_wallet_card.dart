@@ -95,7 +95,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
     BlocProvider.of<CryptoBloc>(context).add(CryptoInitializeWalletEvent(
         id: acw.walletName,
         walletName: acw.walletName,
-        walletDescription: acw.walletDescription!,
+        walletDescription: acw.walletDescription,
         keyData: acw.seedData!,
         seedSource: acw.seedSource!,
         password: acw.password ?? ''));
@@ -152,7 +152,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
               CryptoInitializeWalletEvent(
                   id: acw.walletName,
                   walletName: acw.walletName,
-                  walletDescription: acw.walletDescription!,
+                  walletDescription: acw.walletDescription,
                   keyData: acw.seedData!,
                   seedSource: acw.seedSource!,
                   password: acw.password ?? ''),

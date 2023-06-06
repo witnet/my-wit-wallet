@@ -1,8 +1,6 @@
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
@@ -15,7 +13,6 @@ import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 
 class AddressList extends StatefulWidget {
   final Wallet currentWallet;
