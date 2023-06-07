@@ -256,7 +256,7 @@ jobs:
       - name: Release on Playstore
         run: |
           if [[ "${{github.ref_name}}" == *"dev"* ]]; then export DEV=true; else export DEV=false; fi;
-          if [[ "$DEV" == "true" ]]; then (cd android && bundle exec fastlane Team); else (cd android && bundle exec fastlane production) fi;
+          if [[ "$DEV" == "true" ]]; then (cd android && bundle exec fastlane team); else (cd android && bundle exec fastlane production) fi;
 
       - name: Archive Build
         run: mv ./build/app/outputs/flutter-apk/app-release.apk ./myWitWallet.apk
