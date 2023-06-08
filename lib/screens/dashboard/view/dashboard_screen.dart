@@ -110,7 +110,7 @@ class DashboardScreenState extends State<DashboardScreen>
         externalAddresses: currentWallet!.externalAccounts,
         internalAddresses: currentWallet!.internalAccounts,
       ),
-      vtts.length > 0
+      (vtts.length > 0 && txDetails == null)
           ? NumberPaginator(
               config: NumberPaginatorUIConfig(
                 buttonSelectedBackgroundColor:
