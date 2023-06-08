@@ -8,8 +8,8 @@
     <string>app-store</string>
     <key>provisioningProfiles</key>
     <dict>
-        <key>APP_IDENTIFIER</key>
-        <string>PROFILE_NAME</string>
+        <key>io.witnet.myWitWallet</key>
+        <string>match AppStore io.witnet.myWitWallet</string>
     </dict>
     <key>signingCertificate</key>
     <string>iOS Distribution</string>
