@@ -3,12 +3,12 @@ import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/switch.dart';
 import 'package:my_wit_wallet/bloc/theme/theme_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
+import 'package:my_wit_wallet/constants.dart';
 
 class GeneralConfig extends StatefulWidget {
   GeneralConfig({Key? key}) : super(key: key);
@@ -23,22 +23,16 @@ enum ConfigSteps {
 
 class _GeneralConfigState extends State<GeneralConfig> {
   bool displayDarkMode = false;
-  PackageInfo? packageInfo;
 
   @override
   void initState() {
     super.initState();
     _getTheme();
-    _getPackageInfo();
   }
 
   @override
   void dispose() {
     super.dispose();
-  }
-
-  Future<void> _getPackageInfo() async {
-    packageInfo = await PackageInfo.fromPlatform();
   }
 
   Future<void> _getTheme() async {
@@ -108,7 +102,7 @@ class _GeneralConfigState extends State<GeneralConfig> {
       ),
       SizedBox(height: 16),
       Text(
-        packageInfo != null ? 'Version ${packageInfo!.version}' : '',
+        'Version $VERSION_NUMBER',
         style: theme.textTheme.titleSmall,
       )
     ]);
