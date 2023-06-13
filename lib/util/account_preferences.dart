@@ -13,20 +13,22 @@ class AccountPreferencesParams {
 
 Map<AccountPreferences, dynamic> getUpdatedAccountInfo(
     AccountPreferencesParams params) {
-  bool isAddressIdxInStorage =
-      params.addressIndex <= params.externalAccounts.length;
-
+  bool isAddressIdxInStorage = params.externalAccounts.length > 0 &&
+      (params.addressIndex <= params.externalAccounts.length);
+  Map<String, dynamic> defaultAccountSettings = {
+    ...params.addressList,
+    '${params.walletId}': '0/0',
+  };
+  String? defaultAddress = params.externalAccounts[0] != null
+      ? params.externalAccounts[0]!.address
+      : null;
   return {
     AccountPreferences.address: isAddressIdxInStorage
         ? params.externalAccounts[params.addressIndex]!.address
-        : params.externalAccounts[0]!.address,
+        : defaultAddress,
     AccountPreferences.addressIndex:
         isAddressIdxInStorage ? params.addressIndex.toString() : "0",
-    AccountPreferences.addressList: isAddressIdxInStorage
-        ? params.addressList
-        : {
-            ...params.addressList,
-            '${params.walletId}': '0/0',
-          },
+    AccountPreferences.addressList:
+        isAddressIdxInStorage ? params.addressList : defaultAccountSettings,
   };
 }

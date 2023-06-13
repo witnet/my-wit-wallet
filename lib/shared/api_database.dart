@@ -92,19 +92,21 @@ class ApiDatabase {
         AccountPreferencesParams(walletId, addressIndex, addressList,
             walletStorage.currentWallet.externalAccounts));
 
-    setCurrentAddressInStorage(
-        walletId,
-        accountPreferences[AccountPreferences.address],
-        accountPreferences[AccountPreferences.addressList]);
+    if (accountPreferences[AccountPreferences.address] != null) {
+      setCurrentAddressInStorage(
+          walletId,
+          accountPreferences[AccountPreferences.address],
+          accountPreferences[AccountPreferences.addressList]);
 
-    // if currentWalletId exists, preferences should be re-written in local storage
-    if (currentWalletId != null) {
-      setWalletAndAccountInLocalStorage(
-          currentWalletId,
-          AddressEntry(
-              walletId: currentWalletId,
-              addressIdx: accountPreferences[AccountPreferences.addressIndex],
-              keyType: addressKeyType));
+      // if currentWalletId exists, preferences should be re-written in local storage
+      if (currentWalletId != null) {
+        setWalletAndAccountInLocalStorage(
+            currentWalletId,
+            AddressEntry(
+                walletId: currentWalletId,
+                addressIdx: accountPreferences[AccountPreferences.addressIndex],
+                keyType: addressKeyType));
+      }
     }
   }
 
@@ -114,8 +116,10 @@ class ApiDatabase {
         await ApiPreferences.getCurrentAddress(walletId ?? '');
     Map<String, dynamic>? addressList =
         await ApiPreferences.getCurrentAddressList();
-    bool hasSavedPrefs =
-        walletId != null && addressIndex != null && addressList != null;
+    bool hasSavedPrefs = walletId != null &&
+        addressIndex != null &&
+        addressList != null &&
+        addressList.length > 0;
     final prefs = {
       WalletPreferences.walletId: walletId,
       WalletPreferences.addressIndex: addressIndex,
