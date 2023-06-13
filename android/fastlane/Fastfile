@@ -33,34 +33,21 @@ platform :android do
       end
     end
 
-    internalVersionCodes = ignore_exception { google_play_track_version_codes(track: 'internal') }
+    # ! Get all VersionCodes
     teamVersionCodes = ignore_exception { google_play_track_version_codes(track: 'Team') }
     productionVersionCodes = ignore_exception { google_play_track_version_codes(track: 'production') }
     versionCodes = [
-      internalVersionCodes || [0],
       teamVersionCodes || [0],
       productionVersionCodes || [0],
     ].reduce([], :concat)
-    UI.message "Please use VersionCode: #{versionCodes.max+1}"
-  end
 
-  ############ ? Internal Lane ############
-  desc "Deploy a new version to the Google Play internal testers track"
-  lane :internal do
-    upload_to_play_store(
-      track: 'internal',
-      aab: '../build/app/outputs/bundle/release/app-release.aab',
-      skip_upload_apk: true,
-      skip_upload_metadata: true,
-      skip_upload_changelogs: true,
-      skip_upload_images: true,
-      skip_upload_screenshots: true
-    )
+    # ! Output Next Version
+    UI.message "Please use VersionCode: #{versionCodes.max+1}"
   end
 
   ############ ? Closed Team Lane ############
   desc "Deploy a new version to the Google Play Closed Team track"
-  lane :team do
+  lane :beta do
     upload_to_play_store(
       track: 'Team',
       aab: '../build/app/outputs/bundle/release/app-release.aab',
