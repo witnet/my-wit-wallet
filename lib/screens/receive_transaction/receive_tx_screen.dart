@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +16,7 @@ import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/widgets/snack_bars.dart';
 
 class ReceiveTransactionScreen extends StatefulWidget {
   static final route = '/receive-transaction';
@@ -54,6 +53,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
   }
 
   List<Widget> _actions() {
+    final theme = Theme.of(context);
     return [
       PaddedButton(
           padding: EdgeInsets.zero,
@@ -65,14 +65,9 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
             await Clipboard.setData(
                 ClipboardData(text: selectedAccount?.address ?? ''));
             if (await Clipboard.hasStrings()) {
-              setState(() {
-                isLoading = true;
-              });
-              Timer(Duration(milliseconds: 500), () {
-                setState(() {
-                  isLoading = false;
-                });
-              });
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(buildCopiedSnackbar(theme, 'Address copied!'));
             }
           }),
       BlocListener<ExplorerBloc, ExplorerState>(
@@ -97,13 +92,11 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
               });
               await db.addAccount(ac);
               await db.loadWalletsDatabase();
-              db.walletStorage.wallets[currentWallet.id] = currentWallet;
               await ApiPreferences.setCurrentAddress(AddressEntry(
-                walletId: currentWallet.id,
-                addressIdx: ac.index.toString(),
-                keyType: ac.keyType == KeyType.internal ? 1 : 0,
+                walletId: ac.walletId,
+                addressIdx: ac.path.split('/').last,
+                keyType: 0,
               ));
-
               BlocProvider.of<DashboardBloc>(context)
                   .add(DashboardUpdateWalletEvent(
                 currentWallet: currentWallet,

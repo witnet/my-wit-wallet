@@ -1,8 +1,6 @@
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
@@ -15,7 +13,6 @@ import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 
 class AddressList extends StatefulWidget {
   final Wallet currentWallet;
@@ -30,11 +27,11 @@ class AddressList extends StatefulWidget {
 
 class AddressListState extends State<AddressList> {
   String? currentAddress;
+  ApiDatabase database = Locator.instance.get<ApiDatabase>();
   @override
   void initState() {
     super.initState();
-    currentAddress =
-        Locator.instance<ApiDatabase>().walletStorage.currentAccount.address;
+    currentAddress = database.walletStorage.currentAccount.address;
   }
 
   @override
@@ -118,7 +115,6 @@ class AddressListState extends State<AddressList> {
                 addressIdx: account.index.toString(),
                 keyType: account.keyType == KeyType.internal ? 1 : 0,
               ));
-
               BlocProvider.of<DashboardBloc>(context)
                   .add(DashboardUpdateWalletEvent(
                 currentWallet: widget.currentWallet,

@@ -44,7 +44,7 @@ class WalletStorage {
 
   String? _currentWalletId;
   String? _currentAddress;
-  Map<String, String>? currentAddressList;
+  Map<String, dynamic>? currentAddressList;
   Wallet get currentWallet => wallets[_currentWalletId]!;
 
   void setCurrentWallet(String walletId) {
@@ -55,7 +55,7 @@ class WalletStorage {
     _currentAddress = address;
   }
 
-  void setCurrentAddressList(Map<String, String> addressList) {
+  void setCurrentAddressList(Map<String, dynamic> addressList) {
     currentAddressList = addressList;
   }
 

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
@@ -27,6 +26,7 @@ import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/widgets/snack_bars.dart';
 
 const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
@@ -48,8 +48,7 @@ class DashboardLayoutState extends State<DashboardLayout>
     with TickerProviderStateMixin {
   Wallet? walletStorage;
   late Timer explorerTimer;
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
+  bool isAddressCopied = false;
 
   @override
   void initState() {
@@ -172,11 +171,28 @@ class DashboardLayoutState extends State<DashboardLayout>
                     padding: EdgeInsets.all(4),
                     constraints: BoxConstraints(),
                     iconSize: 12,
-                    onPressed: () {
-                      Clipboard.setData(
-                          ClipboardData(text: currentAccount.address));
+                    onPressed: () async {
+                      if (!isAddressCopied) {
+                        await Clipboard.setData(
+                            ClipboardData(text: currentAccount.address));
+                        if (await Clipboard.hasStrings()) {
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              buildCopiedSnackbar(theme, 'Address copied!'));
+                          setState(() {
+                            isAddressCopied = true;
+                          });
+                          Timer(Duration(milliseconds: 500), () {
+                            setState(() {
+                              isAddressCopied = false;
+                            });
+                          });
+                        }
+                      }
                     },
-                    icon: Icon(FontAwesomeIcons.copy))),
+                    icon: Icon(isAddressCopied
+                        ? FontAwesomeIcons.check
+                        : FontAwesomeIcons.copy))),
           ]),
         ],
       );
@@ -209,82 +225,6 @@ class DashboardLayoutState extends State<DashboardLayout>
     ];
   }
 
-  SnackBar buildSnackbar(String text, Color? color, [Function? action]) {
-    final theme = Theme.of(context);
-    return SnackBar(
-      clipBehavior: Clip.none,
-      action: action != null
-          ? SnackBarAction(
-              label: 'Dismiss',
-              onPressed: () => action(),
-              textColor: Colors.white,
-            )
-          : null,
-      content: Text(text,
-          textAlign: TextAlign.left,
-          style: theme.textTheme.bodyMedium!.copyWith(color: Colors.white)),
-      duration: Duration(hours: 1),
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: color,
-      elevation: 0,
-    );
-  }
-
-  BlocListener<VTTCreateBloc, VTTCreateState> _vttListener(Widget child) {
-    final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
-    return BlocListener<VTTCreateBloc, VTTCreateState>(
-      listenWhen: (previousState, currentState) {
-        if (previousState.vttCreateStatus == VTTCreateStatus.exception &&
-            currentState.vttCreateStatus != VTTCreateStatus.exception) {
-          scaffoldMessengerKey.currentState!.showSnackBar(buildSnackbar(
-            'Connection reestablished!',
-            extendedTheme.txValuePositiveColor,
-            () =>
-                scaffoldMessengerKey.currentState!.hideCurrentMaterialBanner(),
-          ));
-        }
-        return true;
-      },
-      listener: (context, state) {
-        if (state.vttCreateStatus == VTTCreateStatus.exception) {
-          scaffoldMessengerKey.currentState!.showSnackBar(buildSnackbar(
-              'myWitWallet is experiencing connection problems',
-              theme.colorScheme.error));
-        }
-      },
-      child: child,
-    );
-  }
-
-  BlocListener<ExplorerBloc, ExplorerState> _explorerListerner(Widget child) {
-    final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
-    return BlocListener<ExplorerBloc, ExplorerState>(
-      listenWhen: (previousState, currentState) {
-        if (previousState.status == ExplorerStatus.error &&
-            currentState.status != ExplorerStatus.error &&
-            currentState.status != ExplorerStatus.unknown) {
-          scaffoldMessengerKey.currentState!.showSnackBar(buildSnackbar(
-            'Connection reestablished!',
-            extendedTheme.txValuePositiveColor,
-            () =>
-                scaffoldMessengerKey.currentState!.hideCurrentMaterialBanner(),
-          ));
-        }
-        return true;
-      },
-      listener: (context, state) {
-        if (state.status == ExplorerStatus.error) {
-          scaffoldMessengerKey.currentState!.showSnackBar(buildSnackbar(
-              'myWitWallet is experiencing connection problems',
-              theme.colorScheme.error));
-        }
-      },
-      child: child,
-    );
-  }
-
   Widget _authBuilder() {
     final theme = Theme.of(context);
     return BlocListener<LoginBloc, LoginState>(
@@ -310,7 +250,14 @@ class DashboardLayoutState extends State<DashboardLayout>
             break;
           case LoginStatus.LoginSuccess:
             _walletList = WalletList();
-            _body = _vttListener(_explorerListerner(widget.dashboardChild));
+            _body = Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Container(
+                  child: widget.dashboardChild,
+                ),
+              ],
+            );
             break;
           default:
             _body = Column(
@@ -339,8 +286,7 @@ class DashboardLayoutState extends State<DashboardLayout>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-      child:
-          ScaffoldMessenger(key: scaffoldMessengerKey, child: _authBuilder()),
+      child: _authBuilder(),
     );
   }
 }

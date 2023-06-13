@@ -16,7 +16,6 @@ import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/bloc/explorer/api_explorer.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
-import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/balance_info.dart';
 import 'package:my_wit_wallet/util/storage/database/encrypt/password.dart';
@@ -159,10 +158,8 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       internalIndex += 1;
     }
     ApiDatabase database = Locator.instance.get<ApiDatabase>();
-    await ApiPreferences.setCurrentWallet(_wallet.id);
-    await ApiPreferences.setCurrentAddress(
-        AddressEntry(walletId: _wallet.id, addressIdx: "0", keyType: 0));
     await database.loadWalletsDatabase();
+    await database.updateCurrentWallet(_wallet.id);
     add(CryptoInitWalletDoneEvent(
       wallet: _wallet,
       password: event.password,

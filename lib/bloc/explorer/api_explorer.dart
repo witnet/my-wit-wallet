@@ -144,12 +144,13 @@ class ApiExplorer {
       /// get the UTXOs from the explorer
       Map<String, List<Utxo>> _utxos = {};
       for (int i = 0; i < addressChunks.length; i++) {
-        _utxos
-            .addAll(await client.getMultiUtxoInfo(addresses: addressChunks[i]));
+        Map<String, List<Utxo>> multiUtxo =
+            await client.getMultiUtxoInfo(addresses: addressChunks[i]);
+        _utxos.addAll(multiUtxo);
         await delay();
       }
       return _utxos;
-    } on ExplorerException {
+    } catch (e) {
       rethrow;
     }
   }

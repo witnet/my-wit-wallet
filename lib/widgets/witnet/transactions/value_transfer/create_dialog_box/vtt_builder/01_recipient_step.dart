@@ -4,7 +4,6 @@ import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
@@ -133,9 +132,7 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   void nextAction() {
-    print(0);
     if (validateForm() && _formKey.currentState!.validate()) {
-      print(1);
       BlocProvider.of<VTTCreateBloc>(context).add(AddValueTransferOutputEvent(
           currentWallet: widget.currentWallet,
           output: ValueTransferOutput.fromJson({
@@ -250,7 +247,6 @@ class RecipientStepState extends State<RecipientStep>
               _amountFocusNode.requestFocus();
             },
             onFieldSubmitted: (String value) {
-              print('submit');
               widget.goNext();
             },
             onTapOutside: (PointerDownEvent event) {

@@ -32,7 +32,7 @@ class _PreferencePageState extends State<PreferencePage> {
             listItems: stepListItems,
             onChanged: (item) => {
                   scrollController.jumpTo(0.0),
-                  setState(() => {stepSelectedItem = item!})
+                  setState(() => stepSelectedItem = item!)
                 }),
         SizedBox(height: 16),
         stepSelectedItem == ConfigSteps.General

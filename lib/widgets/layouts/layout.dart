@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
+import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
@@ -39,6 +43,79 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   var isPanelClose;
   ScrollController defaultScrollController =
       ScrollController(keepScrollOffset: false);
+
+  BlocListener<VTTCreateBloc, VTTCreateState> _vttListener(Widget child) {
+    final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+    return BlocListener<VTTCreateBloc, VTTCreateState>(
+      listenWhen: (previousState, currentState) {
+        if (previousState.vttCreateStatus == VTTCreateStatus.exception &&
+            currentState.vttCreateStatus != VTTCreateStatus.exception) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          if (currentState.vttCreateStatus != VTTCreateStatus.initial) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(buildExplorerConnectionSnackbar(
+              theme,
+              'Connection reestablished!',
+              extendedTheme.txValuePositiveColor,
+              () => {
+                if (mounted)
+                  {ScaffoldMessenger.of(context).hideCurrentMaterialBanner()}
+              },
+            ));
+          }
+        }
+        return true;
+      },
+      listener: (context, state) {
+        if (state.vttCreateStatus == VTTCreateStatus.exception) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+              buildExplorerConnectionSnackbar(
+                  theme,
+                  'myWitWallet is experiencing connection problems',
+                  theme.colorScheme.error));
+        }
+      },
+      child: child,
+    );
+  }
+
+  BlocListener<ExplorerBloc, ExplorerState> _explorerListerner(Widget child) {
+    final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+    return BlocListener<ExplorerBloc, ExplorerState>(
+      listenWhen: (previousState, currentState) {
+        if (previousState.status == ExplorerStatus.error &&
+            currentState.status != ExplorerStatus.error &&
+            currentState.status != ExplorerStatus.unknown) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context)
+              .showSnackBar(buildExplorerConnectionSnackbar(
+            theme,
+            'Connection reestablished!',
+            extendedTheme.txValuePositiveColor,
+            () => {
+              if (mounted)
+                {ScaffoldMessenger.of(context).hideCurrentMaterialBanner()}
+            },
+          ));
+        }
+        return true;
+      },
+      listener: (context, state) {
+        if (state.status == ExplorerStatus.error) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+              buildExplorerConnectionSnackbar(
+                  theme,
+                  'myWitWallet is experiencing connection problems',
+                  theme.colorScheme.error));
+        }
+      },
+      child: child,
+    );
+  }
 
   Widget showWalletList(BuildContext context) {
     String walletId =
@@ -138,8 +215,9 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                 minWidth: 100,
                 maxWidth: 600,
               ),
-              child: Column(
-                  mainAxisSize: MainAxisSize.max, children: widget.widgetList),
+              child: _vttListener(_explorerListerner(Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: widget.widgetList))),
             ),
           )),
         ),

@@ -4,6 +4,48 @@ on:
   pull_request:
 
 jobs:
+  CodeStyle:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Clone
+        uses: actions/checkout@v3
+
+      - name: Create .env
+        run: cp ./.env.example ./.env
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          architecture: x64
+          channel: 'stable'
+          cache: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+          cache: 'gradle'
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2.2'
+          bundler-cache: true
+          working-directory: 'android'
+
+      - name: Install Project Dependencies
+        run: flutter pub get
+
+      - name: Flutter Doctor
+        run: flutter doctor
+
+      - name: Check dart format
+        run: dart format .
+      
+      - name: Check Dart 
+        run: dart analyze .
+        
   Windows:
     runs-on: windows-2022
     steps:

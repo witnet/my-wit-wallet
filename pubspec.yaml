@@ -42,7 +42,7 @@ dependencies:
   worker_manager: ^4.0.2
   toml: ^0.13.1
   decimal: 2.3.2
-  witnet: 0.2.3
+  witnet: 0.2.4
   table_calendar: ^3.0.3
   qr_flutter: ^4.0.0
   window_manager: ^0.3.2
