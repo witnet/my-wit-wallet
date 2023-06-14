@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:my_wit_wallet/screens/login/view/login_screen.dart';
+import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:witnet/utils.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
@@ -142,40 +145,68 @@ class BuildWalletCardState extends State<BuildWalletCard>
     ]);
   }
 
+  void initializeWalletEvent(CryptoReadyState state) {
+    ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
+    if (acw.walletName != '') {
+      BlocProvider.of<CryptoBloc>(context).add(
+        CryptoInitializeWalletEvent(
+            id: acw.walletName,
+            walletName: acw.walletName,
+            walletDescription: acw.walletDescription,
+            keyData: acw.seedData!,
+            seedSource: acw.seedSource!,
+            password: acw.password ?? ''),
+      );
+    }
+  }
+
+  void initializingWallet(CryptoInitializingWalletState state) {
+    setState(() {
+      _balanceController.reset();
+      _balanceController.forward();
+      previousBalance = balance;
+      balance = state.availableNanoWit;
+      currentAddressCount = state.addressCount;
+      currentTransactionCount = state.transactionCount;
+    });
+  }
+
+  void cryptoLoadedWalletState(CryptoLoadedWalletState state) {
+    Locator.instance<ApiCreateWallet>().clearFormData();
+    setState(() {
+      walletId = state.wallet.id;
+    });
+    BlocProvider.of<LoginBloc>(context)
+        .add(LoginSubmittedEvent(password: state.password));
+  }
+
+  void showSnackBar(CryptoExceptionState state) {
+    final theme = Theme.of(context);
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(buildExplorerConnectionSnackbar(
+        theme,
+        'myWitWallet is experiencing connection problems',
+        theme.colorScheme.error));
+    Timer(Duration(seconds: 4), () {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      Navigator.pushReplacementNamed(context, LoginScreen.route);
+    });
+  }
+
+  Map<dynamic, Function> blocAction() {
+    return {
+      CryptoReadyState: initializeWalletEvent,
+      CryptoInitializingWalletState: initializingWallet,
+      CryptoLoadedWalletState: cryptoLoadedWalletState,
+      CryptoExceptionState: showSnackBar,
+    };
+  }
+
   BlocListener _cryptoBlocListener() {
     return BlocListener<CryptoBloc, CryptoState>(
       listener: (BuildContext context, CryptoState state) {
-        if (state is CryptoReadyState) {
-          ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
-          if (acw.walletName != '') {
-            BlocProvider.of<CryptoBloc>(context).add(
-              CryptoInitializeWalletEvent(
-                  id: acw.walletName,
-                  walletName: acw.walletName,
-                  walletDescription: acw.walletDescription,
-                  keyData: acw.seedData!,
-                  seedSource: acw.seedSource!,
-                  password: acw.password ?? ''),
-            );
-          }
-        }
-
-        if (state is CryptoInitializingWalletState) {
-          setState(() {
-            _balanceController.reset();
-            _balanceController.forward();
-            previousBalance = balance;
-            balance = state.availableNanoWit;
-            currentAddressCount = state.addressCount;
-            currentTransactionCount = state.transactionCount;
-          });
-        } else if (state is CryptoLoadedWalletState) {
-          Locator.instance<ApiCreateWallet>().clearFormData();
-          setState(() {
-            walletId = state.wallet.id;
-          });
-          BlocProvider.of<LoginBloc>(context)
-              .add(LoginSubmittedEvent(password: state.password));
+        if (blocAction()[state.runtimeType] != null) {
+          blocAction()[state.runtimeType]!(state);
         }
       },
       child: _cryptoBlocBuilder(),

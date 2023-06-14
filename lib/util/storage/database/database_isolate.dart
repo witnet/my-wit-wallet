@@ -157,7 +157,22 @@ Future<void> _deleteRecord(
   SendPort port,
   Map<String, dynamic> params,
 ) async {
-  var value = await dbService.delete(params['value']);
+  bool value;
+  switch (params['type']) {
+    case 'wallet':
+      value = await dbService.delete(Wallet.fromJson(params['value']));
+      break;
+    case 'vtt':
+      value =
+          await dbService.delete(ValueTransferInfo.fromDbJson(params['value']));
+      break;
+    case 'account':
+      value = await dbService.delete(Account.fromJson(params['value']));
+      break;
+    default:
+      value = false;
+      break;
+  }
   port.send(value);
 }
 

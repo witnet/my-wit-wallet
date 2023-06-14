@@ -225,6 +225,12 @@ class ApiDatabase {
         method: 'add', params: {'type': 'wallet', 'value': wallet.jsonMap()});
   }
 
+  Future<bool> deleteWallet(Wallet wallet) async {
+    return await _processIsolate(
+        method: 'delete',
+        params: {'type': 'wallet', 'value': wallet.jsonMap()});
+  }
+
   Future<bool> addAccount(Account account) async {
     return await _processIsolate(
         method: 'add', params: {'type': 'account', 'value': account.jsonMap()});
