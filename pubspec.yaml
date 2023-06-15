@@ -76,7 +76,7 @@ flutter_icons:
   macos:
     generate: true
     image_path: "assets/icon/icon.png"
-  
+
 
 flutter:
 
@@ -109,3 +109,18 @@ flutter:
           weight: 500
         - asset: assets/fonts/Roboto_Mono/RobotoMono-Bold.ttf
           weight: 700
+
+msix_config:
+  app_installer:
+    hours_between_update_checks: 0
+    automatic_background_task: true
+    update_blocks_activation: true
+    show_prompt: true
+    force_update_from_any_version: false
+  display_name: myWitWallet
+  publisher_display_name: Witnet Foundation
+  identity_name: WitnetFoundation.myWitWallet
+  logo_path: assets/icon/icon.png
+  store: true
+  publisher: CN=<REAL_CN>, O=Witnet Foundation, C=US
+  msix_version: 1.0.0.0
