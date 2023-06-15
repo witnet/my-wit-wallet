@@ -22,6 +22,20 @@ jobs:
           channel: 'stable'
           cache: true
 
+      - name: Setup Microsoft Store Developer CLI
+        uses: microsoft/setup-msstore-cli@v1
+
+      - name: Configure Microsoft Store Developer CLI
+        env:
+          PCTID: ${{ secrets.PARTNER_CENTER_TENANT_ID }}
+          PCSID: ${{ secrets.PARTNER_CENTER_SELLER_ID }}
+          PCCID: ${{ secrets.PARTNER_CENTER_CLIENT_ID }}
+          PCCS: ${{ secrets.PARTNER_CENTER_CLIENT_SECRET }}
+          CN: ${{ secrets.CN }}
+        run: |
+          msstore reconfigure --tenantId "$PCTID" --sellerId "$PCSID" --clientId "$PCCID" --clientSecret "$PCCS"
+          (Get-Content pubspec.yaml).replace('<REAL_CN>', "$CN") | Set-Content pubspec.yaml
+
       - name: Install Project Dependencies
         run: flutter pub get
 
