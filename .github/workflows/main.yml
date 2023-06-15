@@ -8,6 +8,7 @@ on:
 jobs:
   Windows:
     runs-on: windows-2022
+    environment: Windows
     steps:
       - name: Clone
         uses: actions/checkout@v3
