@@ -53,6 +53,12 @@ jobs:
           Move-Item '.\build\windows\runner\Release' '.\myWitWallet'
           Compress-Archive -Path '.\myWitWallet' -DestinationPath '.\myWitWallet-windows.zip' -Force
 
+      - name: Compile MSIX
+        run: flutter pub run msix:publish
+
+      - name: Release on Microsoft Store
+        run: msstore publish ".\build\windows\runner\Release\myWitWallet.msix"
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
