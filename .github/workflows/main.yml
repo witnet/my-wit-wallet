@@ -42,6 +42,9 @@ jobs:
       - name: Flutter Doctor
         run: flutter doctor
 
+      - name: Set Version
+        run: (Get-Content pubspec.yaml).replace('0.0.0+0', "${{ github.ref_name }}+0") | Set-Content pubspec.yaml
+
       - name: Binary
         run: flutter build windows
 
@@ -80,6 +83,9 @@ jobs:
 
       - name: Flutter Doctor
         run: flutter doctor
+
+      - name: Set Version
+        run: sed -i "s/0.0.0+0/${{github.ref_name}}+0/g" pubspec.yaml
 
       - name: Binary
         run: flutter build linux --release
@@ -120,6 +126,11 @@ jobs:
 
       - name: Flutter Doctor
         run: flutter doctor
+
+      - name: Set Version
+        run: |
+          brew install gsed
+          gsed -i "s/0.0.0+0/${{github.ref_name}}+0/g" pubspec.yaml
 
       - name: Binary
         run: flutter build macos --release
