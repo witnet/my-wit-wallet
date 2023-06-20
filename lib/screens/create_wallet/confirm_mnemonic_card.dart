@@ -77,7 +77,7 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
       children: <Widget>[
         Text(
           'Secret Recovery Phrase Confirmation',
-          style: theme.textTheme.displayMedium,
+          style: theme.textTheme.titleLarge,
         ),
         SizedBox(
           height: 16,
