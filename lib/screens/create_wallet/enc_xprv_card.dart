@@ -15,6 +15,7 @@ final _passController = TextEditingController();
 final _textController = TextEditingController();
 final _textFocusNode = FocusNode();
 final _passFocusNode = FocusNode();
+final _showPasswordFocusNode = FocusNode();
 
 typedef void VoidCallback(NavAction? value);
 typedef void BoolCallback(bool value);
@@ -214,10 +215,12 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   Widget _buildPasswordField() {
     return InputLogin(
       hint: 'Password',
+      autoFocus: true,
       focusNode: _passFocusNode,
       textEditingController: _passController,
       obscureText: true,
       errorText: errorText,
+      showPassFocusNode: _showPasswordFocusNode,
       onFieldSubmitted: (String? value) {
         // hide keyboard
         FocusManager.instance.primaryFocus?.unfocus();

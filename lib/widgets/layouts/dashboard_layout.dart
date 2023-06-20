@@ -223,7 +223,8 @@ class DashboardLayoutState extends State<DashboardLayout>
     String currentRoute = ModalRoute.of(context)!.settings.name!;
     return [
       Semantics(
-        tooltip: 'Settings',
+        label: 'Settings',
+        button: true,
         child: MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(

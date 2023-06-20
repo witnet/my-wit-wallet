@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 
 class InputLogin extends StatefulWidget {
-  InputLogin({
-    Key? key,
-    this.prefixIcon,
-    this.hint,
-    this.keyboardType,
-    this.obscureText = false,
-    this.textEditingController,
-    this.validator,
-    this.errorText,
-    this.focusNode,
-    this.onChanged,
-    this.onEditingComplete,
-    this.onFieldSubmitted,
-    this.onTapOutside,
-    this.onTap,
-    this.showPassFocusNode,
-  });
+  InputLogin(
+      {Key? key,
+      this.prefixIcon,
+      this.hint,
+      this.keyboardType,
+      this.obscureText = false,
+      this.textEditingController,
+      this.validator,
+      this.errorText,
+      this.focusNode,
+      this.onChanged,
+      this.onEditingComplete,
+      this.onFieldSubmitted,
+      this.onTapOutside,
+      this.onTap,
+      this.showPassFocusNode,
+      this.autoFocus = false});
   final IconData? prefixIcon;
   final FocusNode? focusNode;
   final String? errorText;
@@ -33,6 +33,7 @@ class InputLogin extends StatefulWidget {
   final PointerDownCallback? onTapOutside;
   final BlankCallback? onTap;
   final FocusNode? showPassFocusNode;
+  final bool autoFocus;
   @override
   _InputLoginState createState() => _InputLoginState();
 }
@@ -47,12 +48,11 @@ class _InputLoginState extends State<InputLogin> {
 
   void initState() {
     super.initState();
-    if (widget.showPassFocusNode != null)
+    if (widget.showPassFocusNode != null && this.mounted)
       widget.showPassFocusNode!.addListener(_onFocusChange);
   }
 
   void dispose() {
-    if (widget.showPassFocusNode != null) widget.showPassFocusNode!.dispose();
     super.dispose();
   }
 
@@ -108,6 +108,7 @@ class _InputLoginState extends State<InputLogin> {
         minLines: 1,
         style: theme.textTheme.bodyLarge,
         autocorrect: false,
+        autofocus: widget.autoFocus,
         focusNode: widget.focusNode,
         controller: widget.textEditingController,
         obscureText: widget.obscureText ? !showPassword : false,

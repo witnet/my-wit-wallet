@@ -140,6 +140,7 @@ class LoginScreenState extends State<LoginScreen>
       autovalidateMode: AutovalidateMode.disabled,
       child: InputLogin(
         hint: 'Password',
+        autoFocus: true,
         errorText: _passwordInputErrorText,
         showPassFocusNode: _showPasswordFocusNode,
         obscureText: true,

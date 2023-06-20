@@ -121,6 +121,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.id;
     return Semantics(
         label: 'Show wallet list button',
+        button: true,
         child: MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(

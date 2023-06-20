@@ -19,7 +19,7 @@ void main() async {
   if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = WindowOptions(
-      size: Size(400, 660),
+      size: Size(400, 700),
       minimumSize: Size(400, 660),
       title: 'myWitWallet',
       titleBarStyle: TitleBarStyle.normal,

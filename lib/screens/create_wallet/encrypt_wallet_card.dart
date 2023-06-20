@@ -159,6 +159,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
               SizedBox(height: 8),
               InputLogin(
                 hint: 'Password',
+                autoFocus: true,
                 focusNode: _passFocusNode,
                 showPassFocusNode: _showPassFocusNode,
                 textEditingController: _passController,
