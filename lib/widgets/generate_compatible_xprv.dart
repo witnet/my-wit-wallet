@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 final _passController = TextEditingController();
 final _passFocusNode = FocusNode();
 final _passConfirmFocusNode = FocusNode();
+final _showPassFocusNode = FocusNode();
+final _showPassConfirmFocusNode = FocusNode();
 final _passConfirmController = TextEditingController();
 
 typedef void StringCallback(String? value);
@@ -76,7 +78,10 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
         errorText = null;
       });
       if (force ||
-          (!_passConfirmFocusNode.hasFocus && !_passFocusNode.hasFocus)) {
+          (!_passConfirmFocusNode.hasFocus &&
+              !_passFocusNode.hasFocus &&
+              !_showPassFocusNode.hasFocus &&
+              !_showPassConfirmFocusNode.hasFocus)) {
         if (_password.isEmpty && _confirmPassword.isEmpty) {
           setState(() {
             errorText = 'Please input your xprv password';
@@ -141,6 +146,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
               InputLogin(
                 hint: 'Password',
                 focusNode: _passFocusNode,
+                showPassFocusNode: _showPassFocusNode,
                 textEditingController: _passController,
                 obscureText: true,
                 onFieldSubmitted: (String? value) {
@@ -167,6 +173,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                 hint: 'Confirm Password',
                 obscureText: true,
                 focusNode: _passConfirmFocusNode,
+                showPassFocusNode: _showPassConfirmFocusNode,
                 textEditingController: _passConfirmController,
                 errorText: errorText,
                 onFieldSubmitted: (String? value) async {

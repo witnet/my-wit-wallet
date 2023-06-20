@@ -34,6 +34,7 @@ class LoginScreenState extends State<LoginScreen>
   GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   final _loginController = TextEditingController();
   final _loginFocusNode = FocusNode();
+  final _showPasswordFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -140,6 +141,7 @@ class LoginScreenState extends State<LoginScreen>
       child: InputLogin(
         hint: 'Password',
         errorText: _passwordInputErrorText,
+        showPassFocusNode: _showPasswordFocusNode,
         obscureText: true,
         textEditingController: _loginController,
         focusNode: _loginFocusNode,

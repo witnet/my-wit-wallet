@@ -38,7 +38,7 @@ class HeaderLayout extends StatelessWidget {
       dashboardActions == null && navigationActions.length == 1;
 
   EdgeInsets navigationBarPadding() => isCreateWalletFlow()
-      ? EdgeInsets.zero
+      ? EdgeInsets.all(8)
       : EdgeInsets.fromLTRB(16, 16, 16, 16);
 
   Widget build(BuildContext context) {

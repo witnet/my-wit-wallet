@@ -17,6 +17,7 @@ class InputLogin extends StatefulWidget {
     this.onFieldSubmitted,
     this.onTapOutside,
     this.onTap,
+    this.showPassFocusNode,
   });
   final IconData? prefixIcon;
   final FocusNode? focusNode;
@@ -31,6 +32,7 @@ class InputLogin extends StatefulWidget {
   final StringCallback? onFieldSubmitted;
   final PointerDownCallback? onTapOutside;
   final BlankCallback? onTap;
+  final FocusNode? showPassFocusNode;
   @override
   _InputLoginState createState() => _InputLoginState();
 }
@@ -41,6 +43,24 @@ typedef PointerDownCallback = void Function(PointerDownEvent?);
 
 class _InputLoginState extends State<InputLogin> {
   bool showPassword = false;
+  bool showPasswordFocus = false;
+
+  void initState() {
+    super.initState();
+    if (widget.showPassFocusNode != null)
+      widget.showPassFocusNode!.addListener(_onFocusChange);
+  }
+
+  void dispose() {
+    if (widget.showPassFocusNode != null) widget.showPassFocusNode!.dispose();
+    super.dispose();
+  }
+
+  _onFocusChange() {
+    setState(() {
+      showPasswordFocus = widget.showPassFocusNode!.hasFocus;
+    });
+  }
 
   handleShowPass() {
     return IconButton(
@@ -69,9 +89,13 @@ class _InputLoginState extends State<InputLogin> {
             suffixIcon: Semantics(
               label: 'Show password',
               child: IconButton(
+                focusNode: widget.showPassFocusNode,
                 splashRadius: 1,
                 padding: const EdgeInsets.all(2),
-                color: extendedTheme.inputIconColor,
+                color: (widget.showPassFocusNode != null &&
+                        widget.showPassFocusNode!.hasFocus)
+                    ? theme.inputDecorationTheme.focusColor
+                    : extendedTheme.inputIconColor,
                 iconSize: theme.iconTheme.size,
                 icon: showPassword
                     ? Icon(Icons.remove_red_eye)
