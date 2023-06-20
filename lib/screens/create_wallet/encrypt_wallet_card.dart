@@ -123,8 +123,8 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'PLEASE NOTE:',
-          style: theme.textTheme.displaySmall,
+          'Encrypt your wallet',
+          style: theme.textTheme.titleLarge,
         ),
         SizedBox(height: 8),
         Text(
