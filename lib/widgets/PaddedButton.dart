@@ -12,6 +12,7 @@ class PaddedButton extends StatelessWidget {
     this.icon = defaultIcon,
     this.enabled = true,
     required this.type,
+    this.label,
   });
 
   final EdgeInsets padding;
@@ -22,6 +23,7 @@ class PaddedButton extends StatelessWidget {
   final String type;
   final Widget icon;
   final VoidCallback onPressed;
+  final String? label;
 
   Widget _buildCircularProgress(context) {
     final theme = Theme.of(context);
@@ -42,6 +44,7 @@ class PaddedButton extends StatelessWidget {
     final isText = type == 'text';
     final hasHorizontalIcon = type == 'horizontal-icon';
     final hasVerticalIcon = type == 'vertical-icon';
+    final isIconButton = type == 'icon-button';
     final theme = Theme.of(context);
 
     Widget primaryButton = ElevatedButton(
@@ -90,6 +93,20 @@ class PaddedButton extends StatelessWidget {
       onPressed: onPressed,
     );
 
+    Widget iconButton = Semantics(
+        label: label,
+        button: true,
+        child: TextButton(
+          style: color != null
+              ? theme.textButtonTheme.style?.copyWith(
+                  foregroundColor: MaterialStateProperty.all(color),
+                  overlayColor: MaterialStateProperty.all(
+                      Color.fromARGB(16, 255, 255, 255)))
+              : theme.textButtonTheme.style,
+          child: icon,
+          onPressed: onPressed,
+        ));
+
     Widget textButton = TextButton(
       style: color != null
           ? theme.textButtonTheme.style?.copyWith(
@@ -115,6 +132,8 @@ class PaddedButton extends StatelessWidget {
         return textButtonVerticalIcon;
       } else if (hasHorizontalIcon) {
         return textButtonHorizontalIcon;
+      } else if (isIconButton) {
+        return iconButton;
       } else {
         return secondaryButton;
       }

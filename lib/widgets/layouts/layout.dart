@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -119,37 +120,35 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   Widget showWalletList(BuildContext context) {
     String walletId =
         Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.id;
-    return Semantics(
+    return PaddedButton(
+        padding: EdgeInsets.zero,
         label: 'Show wallet list button',
-        button: true,
-        child: MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              child: Container(
-                color: WitnetPallet.white,
-                width: 30,
-                height: 30,
-                child: Identicon(seed: walletId, size: 8),
-              ),
-              onTap: () => {
-                if (panelController.isPanelOpen)
-                  {
-                    panelController.close(),
-                    Timer(Duration(milliseconds: 300), () {
-                      setState(() {
-                        isPanelClose = true;
-                      });
-                    }),
-                  }
-                else
-                  {
-                    panelController.open(),
+        text: 'Show wallet list',
+        type: 'icon-button',
+        icon: Container(
+          color: WitnetPallet.white,
+          width: 30,
+          height: 30,
+          child: Identicon(seed: walletId, size: 8),
+        ),
+        onPressed: () => {
+              if (panelController.isPanelOpen)
+                {
+                  panelController.close(),
+                  Timer(Duration(milliseconds: 300), () {
                     setState(() {
-                      isPanelClose = panelController.isPanelClosed;
-                    })
-                  }
-              },
-            )));
+                      isPanelClose = true;
+                    });
+                  }),
+                }
+              else
+                {
+                  panelController.open(),
+                  setState(() {
+                    isPanelClose = panelController.isPanelClosed;
+                  })
+                }
+            });
   }
 
   // Content displayed between header and bottom actions

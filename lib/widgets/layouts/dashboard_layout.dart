@@ -13,6 +13,7 @@ import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/screens/receive_transaction/receive_tx_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
@@ -50,15 +51,24 @@ class DashboardLayoutState extends State<DashboardLayout>
   Wallet? walletStorage;
   late Timer explorerTimer;
   bool isAddressCopied = false;
+  bool isCopyAddressFocus = false;
+  FocusNode _copyToClipboardFocusNode = FocusNode();
 
   @override
   void initState() {
+    if (this.mounted) _copyToClipboardFocusNode.addListener(_handleFocus);
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  _handleFocus() {
+    setState(() {
+      isCopyAddressFocus = _copyToClipboardFocusNode.hasFocus;
+    });
   }
 
   Future<void> _goToSettings() async {
@@ -142,6 +152,7 @@ class DashboardLayoutState extends State<DashboardLayout>
   Widget _buildBalanceDisplay() {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
+    print(isCopyAddressFocus);
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
       Wallet currentWallet =
@@ -174,8 +185,10 @@ class DashboardLayoutState extends State<DashboardLayout>
                 child: Semantics(
                     label: 'Copy address to clipboard',
                     child: IconButton(
-                        color: theme.textTheme.headlineSmall?.color,
-                        focusColor: Color.fromARGB(255, 255, 0, 0),
+                        color: isCopyAddressFocus
+                            ? WitnetPallet.witnetGreen1
+                            : theme.textTheme.headlineSmall?.color,
+                        focusNode: _copyToClipboardFocusNode,
                         padding: EdgeInsets.all(4),
                         constraints: BoxConstraints(),
                         iconSize: 12,
@@ -222,19 +235,16 @@ class DashboardLayoutState extends State<DashboardLayout>
   List<Widget> _navigationActions() {
     String currentRoute = ModalRoute.of(context)!.settings.name!;
     return [
-      Semantics(
-        label: 'Settings',
-        button: true,
-        child: MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              child: Icon(FontAwesomeIcons.gear,
-                  size: 30, color: getButtonColorByRoute(PreferencePage.route)),
-              onTap: currentRoute != PreferencePage.route
-                  ? () => _goToSettings()
-                  : () {},
-            )),
-      ),
+      PaddedButton(
+          padding: EdgeInsets.zero,
+          label: 'Settings',
+          text: 'Settings',
+          icon: Icon(FontAwesomeIcons.gear,
+              size: 30, color: getButtonColorByRoute(PreferencePage.route)),
+          onPressed: currentRoute != PreferencePage.route
+              ? () => _goToSettings()
+              : () {},
+          type: 'icon-button')
     ];
   }
 
