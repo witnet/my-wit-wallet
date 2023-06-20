@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -151,48 +152,56 @@ class DashboardLayoutState extends State<DashboardLayout>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: 16),
-          Text(
-            '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.headlineMedium,
-          ),
+          Semantics(
+              label: 'balance',
+              child: Text(
+                '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.headlineMedium,
+              )),
           SizedBox(height: 16),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Flexible(
-                child: Text(
-              currentAccount.address.cropMiddle(18),
-              overflow: TextOverflow.ellipsis,
-              style: extendedTheme.monoRegularText!
-                  .copyWith(color: theme.textTheme.headlineMedium!.color),
-            )),
+                child: Semantics(
+                    label: 'Current address',
+                    child: Text(
+                      currentAccount.address.cropMiddle(18),
+                      overflow: TextOverflow.ellipsis,
+                      style: extendedTheme.monoRegularText!.copyWith(
+                          color: theme.textTheme.headlineMedium!.color),
+                    ))),
             Flexible(
-                child: IconButton(
-                    color: theme.textTheme.headlineSmall?.color,
-                    padding: EdgeInsets.all(4),
-                    constraints: BoxConstraints(),
-                    iconSize: 12,
-                    onPressed: () async {
-                      if (!isAddressCopied) {
-                        await Clipboard.setData(
-                            ClipboardData(text: currentAccount.address));
-                        if (await Clipboard.hasStrings()) {
-                          ScaffoldMessenger.of(context).clearSnackBars();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              buildCopiedSnackbar(theme, 'Address copied!'));
-                          setState(() {
-                            isAddressCopied = true;
-                          });
-                          Timer(Duration(milliseconds: 500), () {
-                            setState(() {
-                              isAddressCopied = false;
-                            });
-                          });
-                        }
-                      }
-                    },
-                    icon: Icon(isAddressCopied
-                        ? FontAwesomeIcons.check
-                        : FontAwesomeIcons.copy))),
+                child: Semantics(
+                    label: 'Copy address to clipboard',
+                    child: IconButton(
+                        color: theme.textTheme.headlineSmall?.color,
+                        focusColor: Color.fromARGB(255, 255, 0, 0),
+                        padding: EdgeInsets.all(4),
+                        constraints: BoxConstraints(),
+                        iconSize: 12,
+                        onPressed: () async {
+                          if (!isAddressCopied) {
+                            await Clipboard.setData(
+                                ClipboardData(text: currentAccount.address));
+                            if (await Clipboard.hasStrings()) {
+                              ScaffoldMessenger.of(context).clearSnackBars();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  buildCopiedSnackbar(
+                                      theme, 'Address copied!'));
+                              setState(() {
+                                isAddressCopied = true;
+                              });
+                              Timer(Duration(milliseconds: 500), () {
+                                setState(() {
+                                  isAddressCopied = false;
+                                });
+                              });
+                            }
+                          }
+                        },
+                        icon: Icon(isAddressCopied
+                            ? FontAwesomeIcons.check
+                            : FontAwesomeIcons.copy)))),
           ]),
         ],
       );
@@ -213,15 +222,18 @@ class DashboardLayoutState extends State<DashboardLayout>
   List<Widget> _navigationActions() {
     String currentRoute = ModalRoute.of(context)!.settings.name!;
     return [
-      MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: GestureDetector(
-            child: Icon(FontAwesomeIcons.gear,
-                size: 30, color: getButtonColorByRoute(PreferencePage.route)),
-            onTap: currentRoute != PreferencePage.route
-                ? () => _goToSettings()
-                : () {},
-          )),
+      Semantics(
+        tooltip: 'Settings',
+        child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              child: Icon(FontAwesomeIcons.gear,
+                  size: 30, color: getButtonColorByRoute(PreferencePage.route)),
+              onTap: currentRoute != PreferencePage.route
+                  ? () => _goToSettings()
+                  : () {},
+            )),
+      ),
     ];
   }
 

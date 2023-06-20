@@ -76,7 +76,8 @@ class PaddedButton extends StatelessWidget {
       style: color != null
           ? theme.textButtonTheme.style?.copyWith(
               foregroundColor: MaterialStateProperty.all(color),
-              overlayColor: MaterialStateProperty.all(Colors.transparent))
+              overlayColor:
+                  MaterialStateProperty.all(Color.fromARGB(16, 255, 255, 255)))
           : theme.textButtonTheme.style,
       child: Column(children: [
         icon,
@@ -89,17 +90,21 @@ class PaddedButton extends StatelessWidget {
       onPressed: onPressed,
     );
 
-    Widget textButton = MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          child: Text(
-            text,
-            style: color != null
-                ? theme.textTheme.labelMedium?.copyWith(color: color)
-                : theme.textTheme.labelMedium,
-          ),
-          onTap: onPressed,
-        ));
+    Widget textButton = TextButton(
+      style: color != null
+          ? theme.textButtonTheme.style?.copyWith(
+              foregroundColor: MaterialStateProperty.all(color),
+              overlayColor:
+                  MaterialStateProperty.all(Color.fromARGB(16, 255, 255, 255)))
+          : theme.textButtonTheme.style,
+      child: Text(
+        text,
+        style: color != null
+            ? theme.textTheme.labelMedium?.copyWith(color: color)
+            : theme.textTheme.labelMedium,
+      ),
+      onPressed: onPressed,
+    );
 
     Widget _getButtonByType() {
       if (isPrimary) {

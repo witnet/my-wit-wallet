@@ -20,12 +20,14 @@ Widget witnetLogo(ThemeData theme) {
   return (theme.primaryColor == lightTheme.primaryColor)
       ? Image.asset(
           'assets/img/witnet_light_logo.png',
+          semanticLabel: 'myWitWallet',
           width: 800,
           height: 139.68,
           fit: BoxFit.fitWidth,
         )
       : Image.asset(
           'assets/img/witnet_dark_logo.png',
+          semanticLabel: 'myWitWallet',
           width: 800,
           height: 139.68,
           fit: BoxFit.fitWidth,

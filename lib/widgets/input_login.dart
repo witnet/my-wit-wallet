@@ -57,25 +57,30 @@ class _InputLoginState extends State<InputLogin> {
     final theme = Theme.of(context);
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     return Container(
+        child: Semantics(
+      textField: true,
+      label: 'Input your password',
       child: TextFormField(
         decoration: InputDecoration(
-          hintText: widget.hint ?? 'Input your password',
-          errorText: widget.errorText,
-          prefixIcon:
-              widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
-          suffixIcon: IconButton(
-            splashRadius: 1,
-            padding: const EdgeInsets.all(2),
-            color: extendedTheme.inputIconColor,
-            iconSize: theme.iconTheme.size,
-            icon: showPassword
-                ? Icon(Icons.remove_red_eye)
-                : Icon(Icons.visibility_off),
-            onPressed: () {
-              setState(() => showPassword = !showPassword);
-            },
-          ),
-        ),
+            hintText: widget.hint ?? 'Input your password',
+            errorText: widget.errorText,
+            prefixIcon:
+                widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
+            suffixIcon: Semantics(
+              label: 'Show password',
+              child: IconButton(
+                splashRadius: 1,
+                padding: const EdgeInsets.all(2),
+                color: extendedTheme.inputIconColor,
+                iconSize: theme.iconTheme.size,
+                icon: showPassword
+                    ? Icon(Icons.remove_red_eye)
+                    : Icon(Icons.visibility_off),
+                onPressed: () {
+                  setState(() => showPassword = !showPassword);
+                },
+              ),
+            )),
         minLines: 1,
         style: theme.textTheme.bodyLarge,
         autocorrect: false,
@@ -90,6 +95,6 @@ class _InputLoginState extends State<InputLogin> {
         onTap: widget.onTap ?? () {},
         validator: widget.validator,
       ),
-    );
+    ));
   }
 }

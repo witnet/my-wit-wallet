@@ -81,7 +81,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   List<Widget> _navigationActions() {
     return [
       PaddedButton(
-          padding: EdgeInsets.only(bottom: 8),
+          padding: EdgeInsets.zero,
           text: prevAction != null ? prevAction().label : '',
           type: 'text',
           enabled: prevAction != null,
@@ -209,9 +209,10 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
       listener: (context, state) {},
       child: BlocBuilder<CreateWalletBloc, CreateWalletState>(
           builder: (context, state) {
-        return Center(
+        return Container(
+            child: Center(
           child: _navigationCards()[state.status],
-        );
+        ));
       }),
     );
   }

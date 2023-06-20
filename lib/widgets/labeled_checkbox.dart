@@ -17,21 +17,23 @@ class LabeledCheckbox extends StatelessWidget {
     final theme = Theme.of(context);
     return Row(
       children: [
-        Checkbox(
-          value: checked,
-          onChanged: (value) {
-            onChanged(value);
-          },
-        ),
         Padding(
-            padding: EdgeInsets.only(left: 8),
+            padding: EdgeInsets.only(left: 0, top: 8, bottom: 8),
+            child: Checkbox(
+              value: checked,
+              onChanged: (value) {
+                onChanged(value);
+              },
+            )),
+        MouseRegion(
+            cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: () {
                 final bool valueToSend = !checked;
                 onChanged(valueToSend);
               },
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
+              child: Padding(
+                padding: EdgeInsets.only(left: 8, top: 8, bottom: 8),
                 child: Text(label,
                     style: checked
                         ? theme.textTheme.labelMedium

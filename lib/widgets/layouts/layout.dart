@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
@@ -19,7 +20,6 @@ final panelController = PanelController();
 class Layout extends StatefulWidget {
   final ScrollController? scrollController;
   final List<Widget> widgetList;
-  final AppBar? appBar;
   final List<Widget> actions;
   final List<Widget> navigationActions;
   final Widget? slidingPanel;
@@ -31,7 +31,6 @@ class Layout extends StatefulWidget {
     required this.navigationActions,
     this.dashboardActions,
     this.slidingPanel,
-    this.appBar,
     this.scrollController,
   });
 
@@ -120,34 +119,36 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   Widget showWalletList(BuildContext context) {
     String walletId =
         Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.id;
-    return MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          child: Container(
-            color: WitnetPallet.white,
-            width: 30,
-            height: 30,
-            child: Identicon(seed: walletId, size: 8),
-          ),
-          onTap: () => {
-            if (panelController.isPanelOpen)
-              {
-                panelController.close(),
-                Timer(Duration(milliseconds: 300), () {
-                  setState(() {
-                    isPanelClose = true;
-                  });
-                }),
-              }
-            else
-              {
-                panelController.open(),
-                setState(() {
-                  isPanelClose = panelController.isPanelClosed;
-                })
-              }
-          },
-        ));
+    return Semantics(
+        label: 'Show wallet list button',
+        child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              child: Container(
+                color: WitnetPallet.white,
+                width: 30,
+                height: 30,
+                child: Identicon(seed: walletId, size: 8),
+              ),
+              onTap: () => {
+                if (panelController.isPanelOpen)
+                  {
+                    panelController.close(),
+                    Timer(Duration(milliseconds: 300), () {
+                      setState(() {
+                        isPanelClose = true;
+                      });
+                    }),
+                  }
+                else
+                  {
+                    panelController.open(),
+                    setState(() {
+                      isPanelClose = panelController.isPanelClosed;
+                    })
+                  }
+              },
+            )));
   }
 
   // Content displayed between header and bottom actions
@@ -165,6 +166,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
               topLeft: Radius.circular(8), topRight: Radius.circular(8)),
           panel: widget.slidingPanel,
           body: GestureDetector(
+              excludeFromSemantics: true,
               onTap: () {
                 if (panelController.isPanelOpen) {
                   panelController.close();
@@ -285,6 +287,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return GestureDetector(
+        excludeFromSemantics: true,
         onTap: () {
           FocusScope.of(context).unfocus();
         },

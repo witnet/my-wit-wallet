@@ -90,28 +90,31 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
       decoration: InputDecoration(
         hintText: 'Your Xprv key (starts with xprv...)',
         suffixIcon: !Platform.isWindows && !Platform.isLinux
-            ? IconButton(
-                splashRadius: 1,
-                icon: Icon(FontAwesomeIcons.qrcode),
-                onPressed: () => {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => QrScanner(
-                                  onChanged: (String value) => {
-                                        Navigator.popUntil(
-                                            context,
-                                            ModalRoute.withName(
-                                                CreateWalletScreen.route)),
-                                        _textController.text = value,
-                                        xprv = value,
-                                        setState(() {
-                                          _errorXprvText = _validateXprv(xprv);
-                                        })
-                                      })))
-                    },
-                color:
-                    theme.inputDecorationTheme.enabledBorder?.borderSide.color)
+            ? Semantics(
+                label: 'Scan QR code',
+                child: IconButton(
+                    splashRadius: 1,
+                    icon: Icon(FontAwesomeIcons.qrcode),
+                    onPressed: () => {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => QrScanner(
+                                      onChanged: (String value) => {
+                                            Navigator.popUntil(
+                                                context,
+                                                ModalRoute.withName(
+                                                    CreateWalletScreen.route)),
+                                            _textController.text = value,
+                                            xprv = value,
+                                            setState(() {
+                                              _errorXprvText =
+                                                  _validateXprv(xprv);
+                                            })
+                                          })))
+                        },
+                    color: theme
+                        .inputDecorationTheme.enabledBorder?.borderSide.color))
             : null,
         errorText: _errorXprvText,
       ),
