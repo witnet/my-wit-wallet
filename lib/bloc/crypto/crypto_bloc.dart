@@ -166,7 +166,8 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     if (externalAccounts[0]!.address != '') {
       ApiDatabase database = Locator.instance.get<ApiDatabase>();
       await database.loadWalletsDatabase();
-      await database.updateCurrentWallet(_wallet.id);
+      await database.updateCurrentWallet(
+          currentWalletId: _wallet.id, isNewWallet: true);
       add(CryptoInitWalletDoneEvent(
         wallet: _wallet,
         password: event.password,

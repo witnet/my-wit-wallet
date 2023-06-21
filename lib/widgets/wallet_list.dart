@@ -114,8 +114,14 @@ class WalletListState extends State<WalletList> {
     Wallet? currentWallet = database.walletStorage.wallets[walletId];
     String? balance =
         currentWallet!.balanceNanoWit().availableNanoWit.toString();
-    String currentWalletAccount =
-        database.walletStorage.currentAddressList![walletId]!;
+    String currentWalletAccount;
+    if (database.walletStorage.currentAddressList != null &&
+        database.walletStorage.currentAddressList![walletId] != null) {
+      currentWalletAccount =
+          database.walletStorage.currentAddressList![walletId];
+    } else {
+      currentWalletAccount = '0/0';
+    }
     Map<int, Account>? accountsList = currentWallet.externalAccounts;
     int currentAccountIndex = int.parse(currentWalletAccount.split('/').last);
     String? address = accountsList[currentAccountIndex]?.address.toString();
