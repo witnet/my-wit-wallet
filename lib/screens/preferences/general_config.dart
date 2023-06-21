@@ -23,16 +23,25 @@ enum ConfigSteps {
 
 class _GeneralConfigState extends State<GeneralConfig> {
   bool displayDarkMode = false;
+  FocusNode _switchThemeFocusNode = FocusNode();
+  bool _isThemeSwitchFocus = false;
 
   @override
   void initState() {
     super.initState();
+    _switchThemeFocusNode.addListener(_handleFocus);
     _getTheme();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void _handleFocus() {
+    setState(() {
+      _isThemeSwitchFocus = _switchThemeFocusNode.hasFocus;
+    });
   }
 
   Future<void> _getTheme() async {
@@ -51,6 +60,8 @@ class _GeneralConfigState extends State<GeneralConfig> {
   Widget themeWidget(heigh, context) {
     return Row(children: [
       CustomSwitch(
+          focusNode: _switchThemeFocusNode,
+          isFocused: _isThemeSwitchFocus,
           checked: displayDarkMode,
           primaryLabel: 'Dark Mode',
           secondaryLabel: 'Light Mode',

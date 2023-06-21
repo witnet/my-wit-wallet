@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 
 const defaultIcon = Icon(null);
 
@@ -25,8 +26,7 @@ class PaddedButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String? label;
 
-  Widget _buildCircularProgress(context) {
-    final theme = Theme.of(context);
+  Widget _buildCircularProgress(context, theme) {
     return SizedBox(
         height: 20,
         width: 20,
@@ -45,13 +45,15 @@ class PaddedButton extends StatelessWidget {
     final hasHorizontalIcon = type == 'horizontal-icon';
     final hasVerticalIcon = type == 'vertical-icon';
     final isIconButton = type == 'icon-button';
+    final isStepBarButton = type == 'stepbar';
     final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
 
     Widget primaryButton = ElevatedButton(
       style: ElevatedButton.styleFrom(
         minimumSize: Size(double.infinity, 54),
       ),
-      child: isLoading ? _buildCircularProgress(context) : Text(text),
+      child: isLoading ? _buildCircularProgress(context, theme) : Text(text),
       onPressed: enabled ? onPressed : null,
     );
 
@@ -59,7 +61,7 @@ class PaddedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         minimumSize: Size(double.infinity, 54),
       ),
-      child: isLoading ? _buildCircularProgress(context) : Text(text),
+      child: isLoading ? _buildCircularProgress(context, theme) : Text(text),
       onPressed: onPressed,
     );
 
@@ -123,6 +125,18 @@ class PaddedButton extends StatelessWidget {
       onPressed: onPressed,
     );
 
+    Widget stepBarButton = TextButton(
+      style: theme.textButtonTheme.style!.copyWith(
+          overlayColor: MaterialStateProperty.all(extendedTheme.focusBg)),
+      child: Text(
+        text,
+        style: color != null
+            ? TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: color)
+            : theme.textTheme.labelMedium,
+      ),
+      onPressed: onPressed,
+    );
+
     Widget _getButtonByType() {
       if (isPrimary) {
         return primaryButton;
@@ -134,6 +148,8 @@ class PaddedButton extends StatelessWidget {
         return textButtonHorizontalIcon;
       } else if (isIconButton) {
         return iconButton;
+      } else if (isStepBarButton) {
+        return stepBarButton;
       } else {
         return secondaryButton;
       }

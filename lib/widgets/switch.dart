@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 
 typedef void BoolCallback(bool value);
 
@@ -7,26 +8,33 @@ class CustomSwitch extends StatelessWidget {
   final String primaryLabel;
   final String secondaryLabel;
   final BoolCallback onChanged;
+  final FocusNode focusNode;
+  final bool isFocused;
 
-  const CustomSwitch({
-    required this.checked,
-    required this.primaryLabel,
-    required this.secondaryLabel,
-    required this.onChanged,
-  });
+  const CustomSwitch(
+      {required this.checked,
+      required this.primaryLabel,
+      required this.secondaryLabel,
+      required this.onChanged,
+      required this.isFocused,
+      required this.focusNode});
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       Text(
         secondaryLabel,
         style: theme.textTheme.bodyLarge,
       ),
-      Switch(
-        // This bool value toggles the switch.
-        value: this.checked,
-        onChanged: onChanged,
-      ),
+      Container(
+          color: isFocused ? extendedTheme.focusBg : null,
+          child: Switch(
+            focusNode: focusNode,
+            // This bool value toggles the switch.
+            value: this.checked,
+            onChanged: onChanged,
+          )),
       Text(
         primaryLabel,
         style: theme.textTheme.bodyLarge,
