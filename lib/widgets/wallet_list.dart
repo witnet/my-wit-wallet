@@ -6,16 +6,14 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
-import 'package:my_wit_wallet/theme/colors.dart';
-import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
-import 'package:my_wit_wallet/widgets/identicon.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
+import 'package:my_wit_wallet/widgets/select_wallet_box.dart';
 
 class ListItem {
   bool isSelected = false;
@@ -112,13 +110,6 @@ class WalletListState extends State<WalletList> {
   }
 
   Widget _buildWalletItem(String walletId) {
-    final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
-    final textStyle = TextStyle(
-        fontFamily: 'Almarai',
-        color: WitnetPallet.white,
-        fontSize: 14,
-        fontWeight: FontWeight.normal);
     final isSelectedWallet = walletId == selectedWallet?.id;
     Wallet? currentWallet = database.walletStorage.wallets[walletId];
     String? balance =
@@ -129,71 +120,22 @@ class WalletListState extends State<WalletList> {
     int currentAccountIndex = int.parse(currentWalletAccount.split('/').last);
     String? address = accountsList[currentAccountIndex]?.address.toString();
 
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        child: Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: isSelectedWallet
-                ? extendedTheme.walletActiveItemBackgroundColor
-                : extendedTheme.walletListBackgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(4)),
-            border: Border.all(
-              color: isSelectedWallet
-                  ? extendedTheme.walletActiveItemBorderColor!
-                  : extendedTheme.walletItemBorderColor!,
-              width: 1,
-            ),
-          ),
-          margin: EdgeInsets.all(8),
-          child: Row(children: [
-            Container(
-              color: extendedTheme.selectedTextColor,
-              width: 30,
-              height: 30,
-              child: Identicon(seed: walletId, size: 8),
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(left: 16, right: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      database.walletStorage.wallets[walletId]!.name,
-                      style: textStyle,
-                    ),
-                    Text(
-                      address != null ? address : '',
-                      overflow: TextOverflow.ellipsis,
-                      style: extendedTheme.monoSmallText!
-                          .copyWith(color: WitnetPallet.white),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              child: Text(
-                '${num.parse(balance).standardizeWitUnits(inputUnit: WitUnit.nanoWit, outputUnit: WitUnit.Wit)} ${WIT_UNIT[WitUnit.Wit]}',
-                textAlign: TextAlign.end,
-                overflow: TextOverflow.ellipsis,
-                style: textStyle,
-              ),
-            ),
-          ]),
-        ),
-        onTap: () {
-          setState(() {
-            selectedWallet = database.walletStorage.wallets[walletId]!;
-          });
-          BlocProvider.of<DashboardBloc>(context).add(
-              DashboardUpdateWalletEvent(
-                  currentWallet: selectedWallet,
-                  currentAddress: selectedAccount!.address));
-        },
-      ),
+    return SelectWalletBox(
+      walletId: walletId,
+      label: database.walletStorage.wallets[walletId]!.name,
+      isSelected: isSelectedWallet,
+      walletName: database.walletStorage.wallets[walletId]!.name,
+      balance: num.parse(balance).standardizeWitUnits(
+          inputUnit: WitUnit.nanoWit, outputUnit: WitUnit.Wit),
+      address: address ?? '',
+      onChanged: (walletId) => {
+        setState(() {
+          selectedWallet = database.walletStorage.wallets[walletId]!;
+        }),
+        BlocProvider.of<DashboardBloc>(context).add(DashboardUpdateWalletEvent(
+            currentWallet: selectedWallet,
+            currentAddress: selectedAccount!.address))
+      },
     );
   }
 
