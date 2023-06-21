@@ -152,7 +152,6 @@ class DashboardLayoutState extends State<DashboardLayout>
   Widget _buildBalanceDisplay() {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    print(isCopyAddressFocus);
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
       Wallet currentWallet =
@@ -186,7 +185,7 @@ class DashboardLayoutState extends State<DashboardLayout>
                     label: 'Copy address to clipboard',
                     child: IconButton(
                         color: isCopyAddressFocus
-                            ? WitnetPallet.witnetGreen1
+                            ? extendedTheme.focusIconColor
                             : theme.textTheme.headlineSmall?.color,
                         focusNode: _copyToClipboardFocusNode,
                         padding: EdgeInsets.all(4),

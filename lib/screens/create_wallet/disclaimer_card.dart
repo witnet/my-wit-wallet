@@ -24,11 +24,14 @@ class DisclaimerCardState extends State<DisclaimerCard>
     with TickerProviderStateMixin {
   List<AnimationController> _providerControllerList = <AnimationController>[];
   bool isNextAllow = false;
+  bool isCheckBoxFocus = false;
+  FocusNode _checkBoxFocusNode = FocusNode();
 
   @override
   void initState() {
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
+    _checkBoxFocusNode.addListener(_handleFocus);
     super.initState();
   }
 
@@ -37,6 +40,12 @@ class DisclaimerCardState extends State<DisclaimerCard>
     super.dispose();
     _providerControllerList.forEach((controller) {
       controller.dispose();
+    });
+  }
+
+  _handleFocus() {
+    setState(() {
+      this.isCheckBoxFocus = _checkBoxFocusNode.hasFocus;
     });
   }
 
@@ -122,6 +131,8 @@ class DisclaimerCardState extends State<DisclaimerCard>
           height: 10,
         ),
         LabeledCheckbox(
+            focusNode: _checkBoxFocusNode,
+            isFocus: isCheckBoxFocus,
             checked: isNextAllow,
             label: 'I will be careful, I promise!',
             onChanged: (value) => {

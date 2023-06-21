@@ -42,6 +42,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.inactiveClickableBoxBorderColor,
     required this.numberPaginatiorSelectedBg,
     required this.numberPaginatiorUnselectedFg,
+    required this.focusIconColor,
+    required this.focusBg,
   });
   final Color? selectBackgroundColor;
   final Color? selectedTextColor;
@@ -81,6 +83,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? inactiveClickableBoxBorderColor;
   final Color? numberPaginatiorSelectedBg;
   final Color? numberPaginatiorUnselectedFg;
+  final Color? focusIconColor;
+  final Color? focusBg;
   @override
   ExtendedTheme copyWith(
       {Color? selectBackgroundColor,
@@ -118,63 +122,66 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       Color? inactiveClickableBoxBorderColo,
       Color? numberPaginatiorSelectedBg,
       Color? numberPaginatiorUnselectedFg,
+      Color? focusIconColor,
+      Color? focusBg,
       r}) {
     return ExtendedTheme(
-      selectBackgroundColor:
-          selectBackgroundColor ?? this.selectBackgroundColor,
-      selectedTextColor: selectedTextColor ?? this.selectedTextColor,
-      dropdownBackgroundColor:
-          dropdownBackgroundColor ?? this.dropdownBackgroundColor,
-      dropdownTextColor: dropdownTextColor ?? this.dropdownTextColor,
-      headerDashboardActiveButton:
-          headerDashboardActiveButton ?? this.headerDashboardActiveButton,
-      headerBackgroundColor:
-          headerBackgroundColor ?? this.headerBackgroundColor,
-      headerTextColor: headerTextColor ?? this.headerTextColor,
-      headerActiveTextColor:
-          headerActiveTextColor ?? this.headerActiveTextColor,
-      walletListBackgroundColor:
-          walletListBackgroundColor ?? this.walletListBackgroundColor,
-      walletActiveItemBackgroundColor: walletActiveItemBackgroundColor ??
-          this.walletActiveItemBackgroundColor,
-      walletActiveItemBorderColor:
-          walletActiveItemBorderColor ?? this.walletActiveItemBorderColor,
-      walletItemBorderColor:
-          walletItemBorderColor ?? this.walletItemBorderColor,
-      inputIconColor: inputIconColor ?? this.inputIconColor,
-      txBorderColor: txBorderColor ?? this.txBorderColor,
-      txValueNegativeColor: txValueNegativeColor ?? this.txValueNegativeColor,
-      txValuePositiveColor: txValuePositiveColor ?? this.txValuePositiveColor,
-      stepBarActiveColor: stepBarActiveColor ?? this.stepBarActiveColor,
-      stepBarActionableColor:
-          stepBarActionableColor ?? this.stepBarActionableColor,
-      stepBarColor: stepBarColor ?? this.stepBarColor,
-      switchActiveBg: switchActiveBg ?? this.switchActiveBg,
-      switchActiveFg: switchActiveFg ?? this.switchActiveFg,
-      switchInactiveBg: switchInactiveBg ?? this.switchInactiveBg,
-      switchInactiveFg: switchInactiveFg ?? this.switchInactiveFg,
-      switchBorderColor: switchBorderColor ?? this.switchBorderColor,
-      errorColor: errorColor ?? this.errorColor,
-      activeClickableBoxBgColor:
-          activeClickableBoxBgColor ?? this.activeClickableBoxBgColor,
-      activeClickableBoxBorderColor:
-          activeClickableBoxBorderColor ?? this.activeClickableBoxBorderColor,
-      inactiveClickableBoxBgColor:
-          inactiveClickableBoxBgColor ?? this.inactiveClickableBoxBgColor,
-      inactiveClickableBoxBorderColor: inactiveClickableBoxBorderColor ??
-          this.inactiveClickableBoxBorderColor,
-      dialogBackground: dialogBackground ?? this.dialogBackground,
-      copiedSnackbarBg: copiedSnackbarBg ?? copiedSnackbarBg,
-      copiedSnackbarText: copiedSnackbarText ?? copiedSnackbarText,
-      monoSmallText: monoSmallText ?? this.monoSmallText,
-      monoRegularText: monoRegularText ?? this.monoRegularText,
-      monoMediumText: monoMediumText ?? this.monoMediumText,
-      monoLargeText: monoLargeText ?? this.monoLargeText,
-      numberPaginatiorSelectedBg:
-          numberPaginatiorSelectedBg ?? this.numberPaginatiorSelectedBg,
-      numberPaginatiorUnselectedFg:
-          numberPaginatiorUnselectedFg ?? this.numberPaginatiorUnselectedFg,
-    );
+        selectBackgroundColor:
+            selectBackgroundColor ?? this.selectBackgroundColor,
+        selectedTextColor: selectedTextColor ?? this.selectedTextColor,
+        dropdownBackgroundColor:
+            dropdownBackgroundColor ?? this.dropdownBackgroundColor,
+        dropdownTextColor: dropdownTextColor ?? this.dropdownTextColor,
+        headerDashboardActiveButton:
+            headerDashboardActiveButton ?? this.headerDashboardActiveButton,
+        headerBackgroundColor:
+            headerBackgroundColor ?? this.headerBackgroundColor,
+        headerTextColor: headerTextColor ?? this.headerTextColor,
+        headerActiveTextColor:
+            headerActiveTextColor ?? this.headerActiveTextColor,
+        walletListBackgroundColor:
+            walletListBackgroundColor ?? this.walletListBackgroundColor,
+        walletActiveItemBackgroundColor: walletActiveItemBackgroundColor ??
+            this.walletActiveItemBackgroundColor,
+        walletActiveItemBorderColor:
+            walletActiveItemBorderColor ?? this.walletActiveItemBorderColor,
+        walletItemBorderColor:
+            walletItemBorderColor ?? this.walletItemBorderColor,
+        inputIconColor: inputIconColor ?? this.inputIconColor,
+        txBorderColor: txBorderColor ?? this.txBorderColor,
+        txValueNegativeColor: txValueNegativeColor ?? this.txValueNegativeColor,
+        txValuePositiveColor: txValuePositiveColor ?? this.txValuePositiveColor,
+        stepBarActiveColor: stepBarActiveColor ?? this.stepBarActiveColor,
+        stepBarActionableColor:
+            stepBarActionableColor ?? this.stepBarActionableColor,
+        stepBarColor: stepBarColor ?? this.stepBarColor,
+        switchActiveBg: switchActiveBg ?? this.switchActiveBg,
+        switchActiveFg: switchActiveFg ?? this.switchActiveFg,
+        switchInactiveBg: switchInactiveBg ?? this.switchInactiveBg,
+        switchInactiveFg: switchInactiveFg ?? this.switchInactiveFg,
+        switchBorderColor: switchBorderColor ?? this.switchBorderColor,
+        errorColor: errorColor ?? this.errorColor,
+        activeClickableBoxBgColor:
+            activeClickableBoxBgColor ?? this.activeClickableBoxBgColor,
+        activeClickableBoxBorderColor:
+            activeClickableBoxBorderColor ?? this.activeClickableBoxBorderColor,
+        inactiveClickableBoxBgColor:
+            inactiveClickableBoxBgColor ?? this.inactiveClickableBoxBgColor,
+        inactiveClickableBoxBorderColor: inactiveClickableBoxBorderColor ??
+            this.inactiveClickableBoxBorderColor,
+        dialogBackground: dialogBackground ?? this.dialogBackground,
+        copiedSnackbarBg: copiedSnackbarBg ?? copiedSnackbarBg,
+        copiedSnackbarText: copiedSnackbarText ?? copiedSnackbarText,
+        monoSmallText: monoSmallText ?? this.monoSmallText,
+        monoRegularText: monoRegularText ?? this.monoRegularText,
+        monoMediumText: monoMediumText ?? this.monoMediumText,
+        monoLargeText: monoLargeText ?? this.monoLargeText,
+        numberPaginatiorSelectedBg:
+            numberPaginatiorSelectedBg ?? this.numberPaginatiorSelectedBg,
+        numberPaginatiorUnselectedFg:
+            numberPaginatiorUnselectedFg ?? this.numberPaginatiorUnselectedFg,
+        focusIconColor: focusIconColor ?? this.focusIconColor,
+        focusBg: focusBg ?? this.focusBg);
   }
 
   // Controls how the properties change on theme changes
@@ -250,6 +257,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
           TextStyle.lerp(monoRegularText, other.monoRegularText, t),
       monoMediumText: TextStyle.lerp(monoMediumText, other.monoMediumText, t),
       monoLargeText: TextStyle.lerp(monoLargeText, other.monoLargeText, t),
+      focusIconColor: Color.lerp(focusIconColor, other.focusIconColor, t),
+      focusBg: Color.lerp(focusBg, other.focusBg, t),
     );
   }
 
@@ -289,6 +298,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     numberPaginatiorUnselectedFg: WitnetPallet.darkGrey,
     copiedSnackbarBg: Colors.black,
     copiedSnackbarText: WitnetPallet.white,
+    focusIconColor: Color.fromARGB(16, 255, 255, 255),
+    focusBg: Color.fromARGB(16, 0, 0, 0),
     monoSmallText: TextStyle(
         fontFamily: 'RobotoMono',
         fontWeight: FontWeight.w400,
@@ -346,6 +357,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     numberPaginatiorUnselectedFg: WitnetPallet.white,
     copiedSnackbarBg: WitnetPallet.white,
     copiedSnackbarText: WitnetPallet.black,
+    focusIconColor: Color.fromARGB(16, 255, 255, 255),
+    focusBg: Color.fromARGB(16, 255, 255, 255),
     monoSmallText: TextStyle(
         fontFamily: 'RobotoMono',
         fontWeight: FontWeight.w400,
