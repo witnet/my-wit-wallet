@@ -192,6 +192,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
       controller: widget.scrollController != null
           ? widget.scrollController
           : defaultScrollController,
+      semanticChildCount: 1,
       slivers: [
         SliverAppBar(
             floating: true,

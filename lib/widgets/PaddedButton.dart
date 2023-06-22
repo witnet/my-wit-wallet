@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 
 const defaultIcon = Icon(null);
@@ -106,24 +105,21 @@ class PaddedButton extends StatelessWidget {
       onPressed: onPressed,
     );
 
-    Widget iconButton = Semantics(
-        label: label,
-        button: true,
-        child: SizedBox(
-            height: iconSize + 20,
-            width: iconSize + 20,
-            child: TextButton(
-              style: color != null
-                  ? theme.textButtonTheme.style?.copyWith(
-                      padding: MaterialStateProperty.all(EdgeInsets.zero),
-                      fixedSize: MaterialStateProperty.all(Size.zero),
-                      foregroundColor: MaterialStateProperty.all(color),
-                      overlayColor: MaterialStateProperty.all(
-                          Color.fromARGB(16, 255, 255, 255)))
-                  : theme.textButtonTheme.style,
-              child: icon,
-              onPressed: onPressed,
-            )));
+    Widget iconButton = SizedBox(
+        height: iconSize + 20,
+        width: iconSize + 20,
+        child: TextButton(
+          style: color != null
+              ? theme.textButtonTheme.style?.copyWith(
+                  padding: MaterialStateProperty.all(EdgeInsets.zero),
+                  fixedSize: MaterialStateProperty.all(Size.zero),
+                  foregroundColor: MaterialStateProperty.all(color),
+                  overlayColor: MaterialStateProperty.all(
+                      Color.fromARGB(16, 255, 255, 255)))
+              : theme.textButtonTheme.style,
+          child: Semantics(excludeSemantics: true, label: label, child: icon),
+          onPressed: onPressed,
+        ));
 
     Widget textButton = TextButton(
       style: color != null
@@ -153,20 +149,20 @@ class PaddedButton extends StatelessWidget {
       onPressed: onPressed,
     );
 
-    Widget containerButton = Semantics(
-        label: label,
-        button: true,
-        child: TextButton(
-          autofocus: autofocus ?? false,
-          style: theme.textButtonTheme.style?.copyWith(
-              padding: MaterialStateProperty.all(EdgeInsets.zero),
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              overlayColor: MaterialStateProperty.all(darkBackground
-                  ? extendedTheme.darkBgFocusColor
-                  : extendedTheme.focusBg)),
-          child: container ?? Container(),
-          onPressed: onPressed,
-        ));
+    Widget containerButton = TextButton(
+      autofocus: autofocus ?? false,
+      style: theme.textButtonTheme.style?.copyWith(
+          padding: MaterialStateProperty.all(EdgeInsets.zero),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          overlayColor: MaterialStateProperty.all(darkBackground
+              ? extendedTheme.darkBgFocusColor
+              : extendedTheme.focusBg)),
+      child: Semantics(
+          label: label,
+          excludeSemantics: true,
+          child: container ?? Container()),
+      onPressed: onPressed,
+    );
 
     Widget _getButtonByType() {
       if (isPrimary) {
