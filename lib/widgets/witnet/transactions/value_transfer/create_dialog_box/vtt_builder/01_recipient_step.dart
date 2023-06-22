@@ -45,6 +45,8 @@ class RecipientStepState extends State<RecipientStep>
   final _amountFocusNode = FocusNode();
   final _addressController = TextEditingController();
   final _addressFocusNode = FocusNode();
+  FocusNode _scanQrFocusNode = FocusNode();
+  bool isScanQrFocused = false;
 
   @override
   void initState() {
@@ -53,6 +55,7 @@ class RecipientStepState extends State<RecipientStep>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
+    _scanQrFocusNode.addListener(_handleFocus);
     WidgetsBinding.instance.addPostFrameCallback((_) => {
           widget.nextAction(next),
           _setSavedTxData(),
@@ -67,6 +70,12 @@ class RecipientStepState extends State<RecipientStep>
     _amountController.dispose();
     _amountFocusNode.dispose();
     super.dispose();
+  }
+
+  _handleFocus() {
+    setState(() {
+      isScanQrFocused = _scanQrFocusNode.hasFocus;
+    });
   }
 
   num _amountToNumber() {
@@ -165,11 +174,13 @@ class RecipientStepState extends State<RecipientStep>
           ),
           SizedBox(height: 8),
           TextFormField(
+            autofocus: true,
             style: theme.textTheme.bodyLarge,
             decoration: InputDecoration(
               hintText: 'Recipient address',
               suffixIcon: !Platform.isWindows && !Platform.isLinux
                   ? IconButton(
+                      focusNode: _scanQrFocusNode,
                       splashRadius: 1,
                       icon: Icon(FontAwesomeIcons.qrcode),
                       onPressed: () => {
@@ -190,8 +201,10 @@ class RecipientStepState extends State<RecipientStep>
                                               })
                                             })))
                           },
-                      color: theme
-                          .inputDecorationTheme.enabledBorder?.borderSide.color)
+                      color: isScanQrFocused
+                          ? theme.inputDecorationTheme.focusColor
+                          : theme.inputDecorationTheme.enabledBorder?.borderSide
+                              .color)
                   : null,
               errorText: _errorAddressText,
             ),

@@ -16,6 +16,7 @@ final _textController = TextEditingController();
 final _textFocusNode = FocusNode();
 final _passFocusNode = FocusNode();
 final _showPasswordFocusNode = FocusNode();
+final _scanQrFocusNode = FocusNode();
 
 typedef void VoidCallback(NavAction? value);
 typedef void BoolCallback(bool value);
@@ -42,17 +43,12 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   bool isValidPassword = false;
   bool isXprvValid = false;
   bool useStrongPassword = false;
-  void setPassword(String password) {
-    setState(() {
-      _password = password;
-    });
-  }
-
   int numLines = 0;
   bool _xprvVerified = false;
   bool xprvVerified() => _xprvVerified;
   String? errorText;
   String? _errorXprvText;
+  bool isScanQrFocused = false;
 
   @override
   void initState() {
@@ -60,6 +56,8 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     _passController.clear();
     _textController.clear();
     _passFocusNode.addListener(() => validate());
+    _scanQrFocusNode.addListener(_handleFocus);
+    _textFocusNode.requestFocus();
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
     WidgetsBinding.instance
@@ -71,6 +69,18 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   @override
   void dispose() {
     super.dispose();
+  }
+
+  _handleFocus() {
+    setState(() {
+      isScanQrFocused = _scanQrFocusNode.hasFocus;
+    });
+  }
+
+  void setPassword(String password) {
+    setState(() {
+      _password = password;
+    });
   }
 
   String? _validateXprv(String? input) {
@@ -88,34 +98,38 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   Widget _buildConfirmField() {
     final theme = Theme.of(context);
     return TextField(
+      autofocus: true,
       decoration: InputDecoration(
         hintText: 'Your Xprv key (starts with xprv...)',
         suffixIcon: !Platform.isWindows && !Platform.isLinux
             ? Semantics(
                 label: 'Scan QR code',
                 child: IconButton(
-                    splashRadius: 1,
-                    icon: Icon(FontAwesomeIcons.qrcode),
-                    onPressed: () => {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => QrScanner(
-                                      onChanged: (String value) => {
-                                            Navigator.popUntil(
-                                                context,
-                                                ModalRoute.withName(
-                                                    CreateWalletScreen.route)),
-                                            _textController.text = value,
-                                            xprv = value,
-                                            setState(() {
-                                              _errorXprvText =
-                                                  _validateXprv(xprv);
-                                            })
-                                          })))
-                        },
-                    color: theme
-                        .inputDecorationTheme.enabledBorder?.borderSide.color))
+                  splashRadius: 1,
+                  focusNode: _scanQrFocusNode,
+                  color: isScanQrFocused
+                      ? theme.inputDecorationTheme.focusColor
+                      : theme
+                          .inputDecorationTheme.enabledBorder?.borderSide.color,
+                  icon: Icon(FontAwesomeIcons.qrcode),
+                  onPressed: () => {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => QrScanner(
+                                onChanged: (String value) => {
+                                      Navigator.popUntil(
+                                          context,
+                                          ModalRoute.withName(
+                                              CreateWalletScreen.route)),
+                                      _textController.text = value,
+                                      xprv = value,
+                                      setState(() {
+                                        _errorXprvText = _validateXprv(xprv);
+                                      })
+                                    })))
+                  },
+                ))
             : null,
         errorText: _errorXprvText,
       ),
@@ -215,7 +229,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   Widget _buildPasswordField() {
     return InputLogin(
       hint: 'Password',
-      autoFocus: true,
       focusNode: _passFocusNode,
       textEditingController: _passController,
       obscureText: true,

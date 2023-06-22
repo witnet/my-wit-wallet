@@ -90,6 +90,7 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
           height: 16,
         ),
         TextField(
+          autofocus: true,
           style: extendedTheme.monoLargeText,
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.go,
