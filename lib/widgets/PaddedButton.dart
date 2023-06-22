@@ -159,9 +159,11 @@ class PaddedButton extends StatelessWidget {
         child: TextButton(
           autofocus: autofocus ?? false,
           style: theme.textButtonTheme.style?.copyWith(
-            padding: MaterialStateProperty.all(EdgeInsets.zero),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            overlayColor: MaterialStateProperty.all(darkBackground ? extendedTheme.darkBgFocusColor: extendedTheme.focusBg)),
+              padding: MaterialStateProperty.all(EdgeInsets.zero),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              overlayColor: MaterialStateProperty.all(darkBackground
+                  ? extendedTheme.darkBgFocusColor
+                  : extendedTheme.focusBg)),
           child: container ?? Container(),
           onPressed: onPressed,
         ));

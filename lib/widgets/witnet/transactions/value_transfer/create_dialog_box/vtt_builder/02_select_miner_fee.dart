@@ -348,12 +348,13 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Padding(padding: EdgeInsets.only(left: 8), child:  Text(
-              'Choose your desired miner fee',
-              style: theme.textTheme.titleSmall,
-            ))
+          Row(children: [
+            Padding(
+                padding: EdgeInsets.only(left: 8),
+                child: Text(
+                  'Choose your desired miner fee',
+                  style: theme.textTheme.titleSmall,
+                ))
           ]),
           SizedBox(height: 8),
           _buildFeeOptionsButtonGroup(context),
