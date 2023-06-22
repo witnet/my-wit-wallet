@@ -192,6 +192,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   }
 
   Widget _buildFeeOptionButton(EstimatedFeeOptions label, String value) {
+    final theme = Theme.of(context);
     if (_selectedFeeOption != EstimatedFeeOptions.Custom) {
       if (_selectedFeeOption == label &&
           _notEnoughFunds(customFee: int.parse(value))) {
@@ -201,6 +202,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
       }
     }
     return ClickableBox(
+      label: label.name,
       isSelected: _selectedFeeOption == label,
       error: label != EstimatedFeeOptions.Custom &&
               _notEnoughFunds(
@@ -209,12 +211,16 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
           : null,
       value: value,
       content: [
-        Expanded(flex: 1, child: Text(label.name)),
+        Expanded(
+            flex: 1,
+            child: Text(label.name, style: theme.textTheme.bodyMedium)),
         Expanded(
             flex: 0,
-            child: Text(label != EstimatedFeeOptions.Custom
-                ? '${_nanoWitFeeToWit(value)} ${WIT_UNIT[WitUnit.Wit]}'
-                : '')),
+            child: Text(
+                label != EstimatedFeeOptions.Custom
+                    ? '${_nanoWitFeeToWit(value)} ${WIT_UNIT[WitUnit.Wit]}'
+                    : '',
+                style: theme.textTheme.bodyMedium)),
       ],
       onClick: (value) => {
         setState(() {
@@ -342,11 +348,12 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(children: [
-            Text(
+          Row(
+            children: [
+              Padding(padding: EdgeInsets.only(left: 8), child:  Text(
               'Choose your desired miner fee',
               style: theme.textTheme.titleSmall,
-            ),
+            ))
           ]),
           SizedBox(height: 8),
           _buildFeeOptionsButtonGroup(context),

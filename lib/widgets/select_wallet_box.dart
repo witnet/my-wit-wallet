@@ -35,10 +35,11 @@ class SelectWalletBox extends StatelessWidget {
         fontWeight: FontWeight.normal);
     return PaddedButton(
       padding: EdgeInsets.zero,
-      label: 'wallet',
+      label: label,
       text: 'wallet',
-      type: 'icon-button',
-      icon: Container(
+      type: 'box-button',
+      darkBackground: true,
+      container: Container(
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: isSelected

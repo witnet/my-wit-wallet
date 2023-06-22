@@ -125,6 +125,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         label: 'Show wallet list button',
         text: 'Show wallet list',
         type: 'icon-button',
+        iconSize: 30,
         icon: Container(
           color: WitnetPallet.white,
           width: 30,

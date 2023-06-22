@@ -42,7 +42,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.inactiveClickableBoxBorderColor,
     required this.numberPaginatiorSelectedBg,
     required this.numberPaginatiorUnselectedFg,
-    required this.focusIconColor,
+    required this.darkBgFocusColor,
     required this.focusBg,
   });
   final Color? selectBackgroundColor;
@@ -83,7 +83,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? inactiveClickableBoxBorderColor;
   final Color? numberPaginatiorSelectedBg;
   final Color? numberPaginatiorUnselectedFg;
-  final Color? focusIconColor;
+  final Color? darkBgFocusColor;
   final Color? focusBg;
   @override
   ExtendedTheme copyWith(
@@ -122,7 +122,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       Color? inactiveClickableBoxBorderColo,
       Color? numberPaginatiorSelectedBg,
       Color? numberPaginatiorUnselectedFg,
-      Color? focusIconColor,
+      Color? darkBgFocusColor,
       Color? focusBg,
       r}) {
     return ExtendedTheme(
@@ -180,7 +180,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
             numberPaginatiorSelectedBg ?? this.numberPaginatiorSelectedBg,
         numberPaginatiorUnselectedFg:
             numberPaginatiorUnselectedFg ?? this.numberPaginatiorUnselectedFg,
-        focusIconColor: focusIconColor ?? this.focusIconColor,
+        darkBgFocusColor: darkBgFocusColor ?? this.darkBgFocusColor,
         focusBg: focusBg ?? this.focusBg);
   }
 
@@ -257,7 +257,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
           TextStyle.lerp(monoRegularText, other.monoRegularText, t),
       monoMediumText: TextStyle.lerp(monoMediumText, other.monoMediumText, t),
       monoLargeText: TextStyle.lerp(monoLargeText, other.monoLargeText, t),
-      focusIconColor: Color.lerp(focusIconColor, other.focusIconColor, t),
+      darkBgFocusColor: Color.lerp(darkBgFocusColor, other.darkBgFocusColor, t),
       focusBg: Color.lerp(focusBg, other.focusBg, t),
     );
   }
@@ -298,8 +298,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     numberPaginatiorUnselectedFg: WitnetPallet.darkGrey,
     copiedSnackbarBg: Colors.black,
     copiedSnackbarText: WitnetPallet.white,
-    focusIconColor: Color.fromARGB(16, 255, 255, 255),
-    focusBg: Color.fromARGB(16, 0, 0, 0),
+    darkBgFocusColor: Color.fromARGB(21, 65, 190, 165),
+    focusBg: Color.fromARGB(8, 255, 255, 255),
     monoSmallText: TextStyle(
         fontFamily: 'RobotoMono',
         fontWeight: FontWeight.w400,
@@ -357,8 +357,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     numberPaginatiorUnselectedFg: WitnetPallet.white,
     copiedSnackbarBg: WitnetPallet.white,
     copiedSnackbarText: WitnetPallet.black,
-    focusIconColor: Color.fromARGB(16, 255, 255, 255),
-    focusBg: Color.fromARGB(16, 255, 255, 255),
+    darkBgFocusColor: Color.fromARGB(21, 65, 190, 165),
+    focusBg: Color.fromARGB(14, 255, 255, 255),
     monoSmallText: TextStyle(
         fontFamily: 'RobotoMono',
         fontWeight: FontWeight.w400,

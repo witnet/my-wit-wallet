@@ -131,6 +131,7 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
 TextButtonThemeData textButtonTheme = TextButtonThemeData(
   style: TextButton.styleFrom(
     foregroundColor: WitnetPallet.witnetGreen1,
+    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     splashFactory: NoSplash.splashFactory,
     textStyle: const TextStyle(
       fontFamily: 'Almarai',

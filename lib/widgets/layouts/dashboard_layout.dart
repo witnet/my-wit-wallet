@@ -102,7 +102,7 @@ class DashboardLayoutState extends State<DashboardLayout>
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       PaddedButton(
         color: getButtonColorByRoute(CreateVttScreen.route),
-        padding: EdgeInsets.all(0),
+        padding: EdgeInsets.zero,
         text: 'Send',
         onPressed: currentRoute != CreateVttScreen.route
             ? _showCreateVTTDialog
@@ -115,7 +115,7 @@ class DashboardLayoutState extends State<DashboardLayout>
       ),
       PaddedButton(
         color: getButtonColorByRoute(DashboardScreen.route),
-        padding: EdgeInsets.all(0),
+        padding: EdgeInsets.zero,
         text: 'History',
         onPressed: currentRoute != DashboardScreen.route
             ? () => {
@@ -133,7 +133,7 @@ class DashboardLayoutState extends State<DashboardLayout>
       ),
       PaddedButton(
         color: getButtonColorByRoute(ReceiveTransactionScreen.route),
-        padding: EdgeInsets.all(0),
+        padding: EdgeInsets.zero,
         text: 'Receive',
         onPressed: currentRoute != ReceiveTransactionScreen.route
             ? _showReceiveDialog
@@ -182,38 +182,39 @@ class DashboardLayoutState extends State<DashboardLayout>
                     ))),
             Flexible(
                 child: Semantics(
-                    label: 'Copy address to clipboard',
-                    child: IconButton(
-                        color: isCopyAddressFocus
-                            ? extendedTheme.focusIconColor
-                            : theme.textTheme.headlineSmall?.color,
-                        focusNode: _copyToClipboardFocusNode,
-                        padding: EdgeInsets.all(4),
-                        constraints: BoxConstraints(),
-                        iconSize: 12,
-                        onPressed: () async {
-                          if (!isAddressCopied) {
-                            await Clipboard.setData(
-                                ClipboardData(text: currentAccount.address));
-                            if (await Clipboard.hasStrings()) {
-                              ScaffoldMessenger.of(context).clearSnackBars();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  buildCopiedSnackbar(
-                                      theme, 'Address copied!'));
-                              setState(() {
-                                isAddressCopied = true;
-                              });
-                              Timer(Duration(milliseconds: 500), () {
-                                setState(() {
-                                  isAddressCopied = false;
-                                });
-                              });
-                            }
-                          }
-                        },
-                        icon: Icon(isAddressCopied
-                            ? FontAwesomeIcons.check
-                            : FontAwesomeIcons.copy)))),
+              label: 'Copy address to clipboard',
+              child: PaddedButton(
+                  padding: EdgeInsets.zero,
+                  label: 'Show wallet list button',
+                  text: 'Show wallet list',
+                  type: 'icon-button',
+                  iconSize: 12,
+                  onPressed: () async {
+                    if (!isAddressCopied) {
+                      await Clipboard.setData(
+                          ClipboardData(text: currentAccount.address));
+                      if (await Clipboard.hasStrings()) {
+                        ScaffoldMessenger.of(context).clearSnackBars();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            buildCopiedSnackbar(theme, 'Address copied!'));
+                        setState(() {
+                          isAddressCopied = true;
+                        });
+                        Timer(Duration(milliseconds: 500), () {
+                          setState(() {
+                            isAddressCopied = false;
+                          });
+                        });
+                      }
+                    }
+                  },
+                  icon: Icon(
+                    isAddressCopied
+                        ? FontAwesomeIcons.check
+                        : FontAwesomeIcons.copy,
+                    size: 12,
+                  )),
+            )),
           ]),
         ],
       );
@@ -225,7 +226,7 @@ class DashboardLayoutState extends State<DashboardLayout>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _buildBalanceDisplay(),
-        SizedBox(height: 24),
+        SizedBox(height: 16),
         _buildDashboardActions(),
       ],
     );
@@ -238,6 +239,7 @@ class DashboardLayoutState extends State<DashboardLayout>
           padding: EdgeInsets.zero,
           label: 'Settings',
           text: 'Settings',
+          iconSize: 30,
           icon: Icon(FontAwesomeIcons.gear,
               size: 30, color: getButtonColorByRoute(PreferencePage.route)),
           onPressed: currentRoute != PreferencePage.route
