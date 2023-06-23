@@ -20,7 +20,7 @@ void main() async {
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = WindowOptions(
       size: Size(400, 700),
-      minimumSize: Size(400, 660),
+      minimumSize: Size(400, 700),
       title: 'myWitWallet',
       titleBarStyle: TitleBarStyle.normal,
       center: true,
