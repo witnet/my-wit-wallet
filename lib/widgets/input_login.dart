@@ -94,7 +94,7 @@ class _InputLoginState extends State<InputLogin> {
                 padding: const EdgeInsets.all(2),
                 color: (widget.showPassFocusNode != null &&
                         widget.showPassFocusNode!.hasFocus)
-                    ? theme.inputDecorationTheme.focusColor
+                    ? theme.textSelectionTheme.cursorColor
                     : extendedTheme.inputIconColor,
                 iconSize: theme.iconTheme.size,
                 icon: showPassword

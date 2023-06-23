@@ -202,7 +202,7 @@ class RecipientStepState extends State<RecipientStep>
                                             })))
                           },
                       color: isScanQrFocused
-                          ? theme.inputDecorationTheme.focusColor
+                          ? theme.textSelectionTheme.cursorColor
                           : theme.inputDecorationTheme.enabledBorder?.borderSide
                               .color)
                   : null,

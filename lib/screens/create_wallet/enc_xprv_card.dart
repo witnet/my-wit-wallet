@@ -108,7 +108,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
                   splashRadius: 1,
                   focusNode: _scanQrFocusNode,
                   color: isScanQrFocused
-                      ? theme.inputDecorationTheme.focusColor
+                      ? theme.textSelectionTheme.cursorColor
                       : theme
                           .inputDecorationTheme.enabledBorder?.borderSide.color,
                   icon: Icon(FontAwesomeIcons.qrcode),

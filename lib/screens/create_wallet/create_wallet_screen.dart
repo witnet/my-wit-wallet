@@ -209,10 +209,9 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
       listener: (context, state) {},
       child: BlocBuilder<CreateWalletBloc, CreateWalletState>(
           builder: (context, state) {
-        return Container(
-            child: Center(
+        return Center(
           child: _navigationCards()[state.status],
-        ));
+        );
       }),
     );
   }
