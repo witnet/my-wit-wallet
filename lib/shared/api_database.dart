@@ -70,14 +70,6 @@ class ApiDatabase {
     String addressId = "0/0";
     Map<String, dynamic> addressList = {'$currentWalletId': '0/0'};
 
-    // if currentWalletId exists, preferences should be re-written in local storage
-    if (currentWalletId != null) {
-      await setWalletAndAccountInLocalStorage(
-          currentWalletId,
-          AddressEntry(
-              walletId: currentWalletId, addressIdx: addressId, keyType: 0));
-    }
-
     Map<WalletPreferences, dynamic>? preferences =
         await getCurrentWalletPreferences();
 
@@ -92,6 +84,7 @@ class ApiDatabase {
     ApiDatabase db = Locator.instance<ApiDatabase>();
     WalletStorage walletStorage = db.walletStorage;
     int addressIndex = int.parse(addressId.split('/').last);
+    int addressKeyType = int.parse(addressId.split('/').first);
 
     walletStorage.setCurrentWallet(walletId);
 
@@ -104,6 +97,16 @@ class ApiDatabase {
           walletId,
           accountPreferences[AccountPreferences.address],
           accountPreferences[AccountPreferences.addressList]);
+
+      // if currentWalletId exists, preferences should be re-written in local storage
+      if (currentWalletId != null) {
+        await setWalletAndAccountInLocalStorage(
+            currentWalletId,
+            AddressEntry(
+                walletId: currentWalletId,
+                addressIdx: addressId,
+                keyType: addressKeyType));
+      }
     }
   }
 
