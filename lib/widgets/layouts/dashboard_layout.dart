@@ -71,16 +71,16 @@ class DashboardLayoutState extends State<DashboardLayout>
 
   Future<void> _goToSettings() async {
     BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
-    Navigator.pushReplacementNamed(context, PreferencePage.route);
+    Navigator.pushNamed(context, PreferencePage.route);
   }
 
   Future<void> _showCreateVTTDialog() async {
-    Navigator.pushReplacementNamed(context, CreateVttScreen.route);
+    Navigator.pushNamed(context, CreateVttScreen.route);
   }
 
   Future<void> _showReceiveDialog() async {
     BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
-    Navigator.pushReplacementNamed(context, ReceiveTransactionScreen.route);
+    Navigator.pushNamed(context, ReceiveTransactionScreen.route);
   }
 
   String? currentRoute() {
@@ -117,10 +117,11 @@ class DashboardLayoutState extends State<DashboardLayout>
         text: 'History',
         onPressed: currentRoute != DashboardScreen.route
             ? () => {
+                  print('2'),
                   BlocProvider.of<VTTCreateBloc>(context)
                       .add(ResetTransactionEvent()),
-                  Navigator.pushReplacementNamed(
-                      context, DashboardScreen.route),
+                  Navigator.pushNamed(context, DashboardScreen.route),
+                  print('currentRoute $currentRoute'),
                 }
             : () {},
         icon: Icon(

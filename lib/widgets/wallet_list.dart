@@ -91,7 +91,7 @@ class WalletListState extends State<WalletList> {
     Locator.instance<ApiCreateWallet>().setWalletType(WalletType.unset);
     BlocProvider.of<CreateWalletBloc>(context)
         .add(ResetEvent(WalletType.unset));
-    Navigator.pushReplacementNamed(context, CreateWalletScreen.route);
+    Navigator.pushNamed(context, CreateWalletScreen.route);
   }
 
   Widget _buildInitialButtons() {

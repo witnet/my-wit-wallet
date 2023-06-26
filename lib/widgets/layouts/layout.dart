@@ -17,6 +17,10 @@ import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
 final panelController = PanelController();
 
+class GoBackIntent extends Intent {
+  const GoBackIntent();
+}
+
 class Layout extends StatefulWidget {
   final ScrollController? scrollController;
   final List<Widget> widgetList;
@@ -287,16 +291,44 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return GestureDetector(
-        excludeFromSemantics: true,
-        onTap: () {
-          FocusScope.of(context).unfocus();
+    final navigator = Navigator.of(context);
+    return Shortcuts(
+        shortcuts: <ShortcutActivator, Intent>{
+          LogicalKeySet(LogicalKeyboardKey.browserBack): const GoBackIntent(),
+          LogicalKeySet(LogicalKeyboardKey.goBack): const GoBackIntent(),
+          LogicalKeySet(
+                  LogicalKeyboardKey.metaRight, LogicalKeyboardKey.arrowLeft):
+              const GoBackIntent(),
+          LogicalKeySet(
+                  LogicalKeyboardKey.metaLeft, LogicalKeyboardKey.arrowLeft):
+              const GoBackIntent(),
         },
-        child: Scaffold(
-            resizeToAvoidBottomInset: true,
-            backgroundColor: theme.colorScheme.background,
-            body: buildMainContent(context, theme),
-            bottomNavigationBar:
-                isPanelClose == null || isPanelClose ? bottomBar() : null));
+        child: Actions(
+            actions: {
+              GoBackIntent: CallbackAction<GoBackIntent>(
+                onInvoke: (GoBackIntent intent) => {
+                  if (navigator.canPop())
+                    {
+                      navigator.pop(),
+                      if (panelController.isPanelOpen) {panelController.close()}
+                    }
+                },
+              )
+            },
+            child: FocusScope(
+              autofocus: true,
+              child: GestureDetector(
+                  excludeFromSemantics: true,
+                  onTap: () {
+                    Focus.of(context).nextFocus();
+                  },
+                  child: Scaffold(
+                      resizeToAvoidBottomInset: true,
+                      backgroundColor: theme.colorScheme.background,
+                      body: buildMainContent(context, theme),
+                      bottomNavigationBar: isPanelClose == null || isPanelClose
+                          ? bottomBar()
+                          : null)),
+            )));
   }
 }
