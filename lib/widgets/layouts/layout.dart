@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/layouts/listen_fourth_button.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -317,10 +319,25 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             },
             child: FocusScope(
               autofocus: true,
-              child: GestureDetector(
+              child: RawGestureDetector(
                   excludeFromSemantics: true,
-                  onTap: () {
-                    Focus.of(context).nextFocus();
+                  gestures: <Type, GestureRecognizerFactory>{
+                    FourthButtonTapGestureRecognizer:
+                        GestureRecognizerFactoryWithHandlers<
+                            FourthButtonTapGestureRecognizer>(
+                      () => FourthButtonTapGestureRecognizer(),
+                      (FourthButtonTapGestureRecognizer instance) {
+                        instance
+                          ..onTapDown = (TapDownDetails details) {
+                            if (navigator.canPop()) {
+                              navigator.pop();
+                              if (panelController.isPanelOpen) {
+                                panelController.close();
+                              }
+                            }
+                          };
+                      },
+                    ),
                   },
                   child: Scaffold(
                       resizeToAvoidBottomInset: true,
