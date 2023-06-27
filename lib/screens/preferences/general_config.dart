@@ -82,6 +82,7 @@ class _GeneralConfigState extends State<GeneralConfig> {
     BlocProvider.of<DashboardBloc>(context).add(DashboardResetEvent());
     BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
     BlocProvider.of<LoginBloc>(context).add(LoginLogoutEvent());
+    Navigator.of(context).popUntil((route) => route.isFirst);
     Navigator.pushReplacementNamed(context, '/');
   }
 

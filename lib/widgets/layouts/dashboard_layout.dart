@@ -117,11 +117,9 @@ class DashboardLayoutState extends State<DashboardLayout>
         text: 'History',
         onPressed: currentRoute != DashboardScreen.route
             ? () => {
-                  print('2'),
                   BlocProvider.of<VTTCreateBloc>(context)
                       .add(ResetTransactionEvent()),
                   Navigator.pushNamed(context, DashboardScreen.route),
-                  print('currentRoute $currentRoute'),
                 }
             : () {},
         icon: Icon(
