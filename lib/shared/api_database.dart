@@ -73,7 +73,7 @@ class ApiDatabase {
     WalletStorage walletStorage = db.walletStorage;
     Map<WalletPreferences, dynamic>? preferences =
         await getCurrentWalletPreferences();
-    bool currentWalletNotSaved = isUpdatedWallet &&
+    bool currentWalletNotSaved = (isUpdatedWallet || isNewWallet) &&
         currentWalletId != null &&
         preferences != null &&
         preferences[WalletPreferences.addressList][currentWalletId] == null;
