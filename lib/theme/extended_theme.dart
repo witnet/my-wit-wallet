@@ -299,7 +299,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     copiedSnackbarBg: Colors.black,
     copiedSnackbarText: WitnetPallet.white,
     darkBgFocusColor: Color.fromARGB(21, 65, 190, 165),
-    focusBg: Color.fromARGB(8, 255, 255, 255),
+    focusBg: Color.fromARGB(7, 1, 1, 1),
     monoSmallText: TextStyle(
         fontFamily: 'RobotoMono',
         fontWeight: FontWeight.w400,
