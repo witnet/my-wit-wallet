@@ -170,26 +170,30 @@ class ReviewStepState extends State<ReviewStep>
             ]),
           );
         }
-        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            'Transaction details',
-            style: theme.textTheme.displaySmall,
-          ),
-          SizedBox(height: 24),
-          InfoElement(
-              label: 'To',
-              text: state.vtTransaction.body.outputs.first.pkh.address),
-          SizedBox(height: 16),
-          InfoElement(
-            label: 'Amount',
-            text:
-                '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
-          ),
-          SizedBox(height: 16),
-          InfoElement(
-              label: 'Fee',
-              text: '${fee.standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}'),
-        ]);
+        return Padding(
+            padding: EdgeInsets.only(left: 8, right: 8),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                'Transaction details',
+                style: theme.textTheme.displaySmall,
+              ),
+              SizedBox(height: 24),
+              InfoElement(
+                  label: 'To',
+                  text: state.vtTransaction.body.outputs.first.pkh.address),
+              SizedBox(height: 16),
+              InfoElement(
+                label: 'Amount',
+                text:
+                    '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
+              ),
+              SizedBox(height: 16),
+              InfoElement(
+                  label: 'Fee',
+                  text:
+                      '${fee.standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}'),
+            ]));
       },
     );
   }

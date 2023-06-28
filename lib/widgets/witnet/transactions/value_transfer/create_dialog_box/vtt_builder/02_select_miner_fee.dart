@@ -252,88 +252,91 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>();
     if (_selectedFeeOption == EstimatedFeeOptions.Custom) {
-      return Column(children: [
-        SizedBox(height: 8),
-        InputAmount(
-          hint: 'Input the miner fee',
-          errorText: _errorFeeText,
-          textEditingController: _minerFeeController,
-          focusNode: _minerFeeFocusNode,
-          keyboardType: TextInputType.number,
-          validator: _validateFee,
-          onChanged: (String value) {
-            setState(() {
-              if (value == '') {
-                _minerFeeNanoWit = '';
-              } else {
-                _minerFeeNanoWit = _witFeeTonanoWit(value);
-              }
-              if (_validateFee(_minerFeeNanoWit) == null) {
-                _errorFeeText = null;
-              }
-            });
-          },
-          onTap: () {
-            _minerFeeFocusNode.requestFocus();
-          },
-          onFieldSubmitted: (String value) {
-            widget.goNext();
-          },
-          onTapOutside: (PointerDownEvent event) {
-            if (_minerFeeFocusNode.hasFocus) {
-              setState(() {
-                _errorFeeText = _validateFee(_minerFeeNanoWit);
-              });
-            }
-          },
-          onEditingComplete: () {
-            _setAbsoluteFee();
-          },
-        ),
-        SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(right: 8),
-              child: Tooltip(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: theme.colorScheme.background,
-                  ),
-                  textStyle: theme.textTheme.bodyMedium,
-                  height: 100,
-                  message:
-                      'By default, \'Absolute fee\' is selected.\nTo set a custom weighted fee, you need to select \'Weighted\'. \nThe Weighted fee is automatically calculated by the wallet considering the network congestion and transaction weight multiplied by the value selected as custom.',
-                  child: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: Icon(FontAwesomeIcons.circleQuestion,
-                          size: 12, color: extendedTheme?.inputIconColor))),
-            ),
-            ToggleSwitch(
-              minWidth: 90.0,
-              inactiveBgColor: extendedTheme?.switchInactiveBg,
-              initialLabelIndex: selectedIndex,
-              activeFgColor: extendedTheme?.switchActiveFg,
-              inactiveFgColor: extendedTheme?.switchInactiveFg,
-              activeBgColor: [extendedTheme!.switchActiveBg!],
-              cornerRadius: 4,
-              borderWidth: 1.0,
-              borderColor: [extendedTheme.switchBorderColor!],
-              totalSwitches: 2,
-              labels: FeeType.values.map((e) => e.name).toList(),
-              onToggle: (index) {
+      return Padding(
+          padding: EdgeInsets.only(left: 8, right: 8),
+          child: Column(children: [
+            SizedBox(height: 8),
+            InputAmount(
+              hint: 'Input the miner fee',
+              errorText: _errorFeeText,
+              textEditingController: _minerFeeController,
+              focusNode: _minerFeeFocusNode,
+              keyboardType: TextInputType.number,
+              validator: _validateFee,
+              onChanged: (String value) {
                 setState(() {
-                  selectedIndex = index;
+                  if (value == '') {
+                    _minerFeeNanoWit = '';
+                  } else {
+                    _minerFeeNanoWit = _witFeeTonanoWit(value);
+                  }
+                  if (_validateFee(_minerFeeNanoWit) == null) {
+                    _errorFeeText = null;
+                  }
                 });
-                _setFeeType(FeeType.values.map((e) => e.name).toList()[index]);
-                _updateTxFee();
+              },
+              onTap: () {
+                _minerFeeFocusNode.requestFocus();
+              },
+              onFieldSubmitted: (String value) {
+                widget.goNext();
+              },
+              onTapOutside: (PointerDownEvent event) {
+                if (_minerFeeFocusNode.hasFocus) {
+                  setState(() {
+                    _errorFeeText = _validateFee(_minerFeeNanoWit);
+                  });
+                }
+              },
+              onEditingComplete: () {
+                _setAbsoluteFee();
               },
             ),
-          ],
-        ),
-      ]);
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(right: 8),
+                  child: Tooltip(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: theme.colorScheme.background,
+                      ),
+                      textStyle: theme.textTheme.bodyMedium,
+                      height: 100,
+                      message:
+                          'By default, \'Absolute fee\' is selected.\nTo set a custom weighted fee, you need to select \'Weighted\'. \nThe Weighted fee is automatically calculated by the wallet considering the network congestion and transaction weight multiplied by the value selected as custom.',
+                      child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: Icon(FontAwesomeIcons.circleQuestion,
+                              size: 12, color: extendedTheme?.inputIconColor))),
+                ),
+                ToggleSwitch(
+                  minWidth: 90.0,
+                  inactiveBgColor: extendedTheme?.switchInactiveBg,
+                  initialLabelIndex: selectedIndex,
+                  activeFgColor: extendedTheme?.switchActiveFg,
+                  inactiveFgColor: extendedTheme?.switchInactiveFg,
+                  activeBgColor: [extendedTheme!.switchActiveBg!],
+                  cornerRadius: 4,
+                  borderWidth: 1.0,
+                  borderColor: [extendedTheme.switchBorderColor!],
+                  totalSwitches: 2,
+                  labels: FeeType.values.map((e) => e.name).toList(),
+                  onToggle: (index) {
+                    setState(() {
+                      selectedIndex = index;
+                    });
+                    _setFeeType(
+                        FeeType.values.map((e) => e.name).toList()[index]);
+                    _updateTxFee();
+                  },
+                ),
+              ],
+            ),
+          ]));
     } else {
       return SizedBox(height: 8);
     }

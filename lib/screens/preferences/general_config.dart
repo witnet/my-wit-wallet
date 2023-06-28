@@ -89,33 +89,35 @@ class _GeneralConfigState extends State<GeneralConfig> {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      SizedBox(height: 16),
-      Text(
-        'Theme',
-        style: theme.textTheme.titleSmall,
-      ),
-      themeWidget(deviceSize.height * 0.25, context),
-      SizedBox(height: 16),
-      Text(
-        'Lock your wallet',
-        style: theme.textTheme.titleSmall,
-      ),
-      Container(
-        width: 150,
-        height: 80,
-        child: PaddedButton(
-            padding: EdgeInsets.only(bottom: 16, top: 16),
-            text: 'Lock wallet',
-            type: 'primary',
-            enabled: true,
-            onPressed: () => _logOut()),
-      ),
-      SizedBox(height: 16),
-      Text(
-        'Version $VERSION_NUMBER',
-        style: theme.textTheme.titleSmall,
-      )
-    ]);
+    return Padding(
+        padding: EdgeInsets.only(left: 8, right: 8),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          SizedBox(height: 16),
+          Text(
+            'Theme',
+            style: theme.textTheme.titleSmall,
+          ),
+          themeWidget(deviceSize.height * 0.25, context),
+          SizedBox(height: 16),
+          Text(
+            'Lock your wallet',
+            style: theme.textTheme.titleSmall,
+          ),
+          Container(
+            width: 150,
+            height: 80,
+            child: PaddedButton(
+                padding: EdgeInsets.only(bottom: 16, top: 16),
+                text: 'Lock wallet',
+                type: 'primary',
+                enabled: true,
+                onPressed: () => _logOut()),
+          ),
+          SizedBox(height: 16),
+          Text(
+            'Version $VERSION_NUMBER',
+            style: theme.textTheme.titleSmall,
+          )
+        ]));
   }
 }

@@ -125,35 +125,37 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
     final theme = Theme.of(context);
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
 
-    return Column(
-      children: [
-        QrAddressGenerator(
-          data: selectedAccount!.address,
-        ),
-        SizedBox(height: 24),
-        DashedRect(
-          color: WitnetPallet.witnetGreen1,
-          strokeWidth: 1.0,
-          gap: 3.0,
-          text: selectedAccount!.address,
-        ),
-        SizedBox(height: 24),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+        padding: EdgeInsets.only(left: 8, right: 8),
+        child: Column(
           children: [
-            Text(
-              'Generated addresses',
-              style: theme.textTheme.displaySmall,
-              textAlign: TextAlign.start,
+            QrAddressGenerator(
+              data: selectedAccount!.address,
+            ),
+            SizedBox(height: 24),
+            DashedRect(
+              color: WitnetPallet.witnetGreen1,
+              strokeWidth: 1.0,
+              gap: 3.0,
+              text: selectedAccount!.address,
+            ),
+            SizedBox(height: 24),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Generated addresses',
+                  style: theme.textTheme.displaySmall,
+                  textAlign: TextAlign.start,
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            AddressList(
+              currentWallet: db.walletStorage.currentWallet,
             ),
           ],
-        ),
-        SizedBox(height: 16),
-        AddressList(
-          currentWallet: db.walletStorage.currentWallet,
-        ),
-      ],
-    );
+        ));
   }
 
   BlocListener _dashboardBlocListener() {
