@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,8 +15,6 @@ import 'package:my_wit_wallet/widgets/identicon.dart';
 import 'package:my_wit_wallet/widgets/layouts/headerLayout.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
-
-final panelController = PanelController();
 
 class GoBackIntent extends Intent {
   const GoBackIntent();
@@ -48,6 +45,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   var isPanelClose;
   ScrollController defaultScrollController =
       ScrollController(keepScrollOffset: false);
+  final panelController = PanelController();
 
   BlocListener<VTTCreateBloc, VTTCreateState> _vttListener(Widget child) {
     final theme = Theme.of(context);
