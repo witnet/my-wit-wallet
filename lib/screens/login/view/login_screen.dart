@@ -16,6 +16,7 @@ import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/widgets/password_input.dart';
 
 class LoginScreen extends StatefulWidget {
   static final route = '/';
@@ -28,12 +29,11 @@ class LoginScreen extends StatefulWidget {
 
 class LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
-  String? _password;
+  PasswordInput? _password;
   bool isLoading = false;
   String? _passwordInputErrorText;
   Future<WalletStorage>? _loadWallets;
 
-  GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   final _loginController = TextEditingController();
   final _loginFocusNode = FocusNode();
   final _showPasswordFocusNode = FocusNode();
@@ -53,9 +53,9 @@ class LoginScreenState extends State<LoginScreen>
 
   _login() {
     try {
-      if (_loginFormKey.currentState!.validate()) {
+      if (_password != null && _password!.valid) {
         BlocProvider.of<LoginBloc>(context)
-            .add(LoginSubmittedEvent(password: _password!));
+            .add(LoginSubmittedEvent(password: _password!.value));
       }
     } catch (err) {
       rethrow;
@@ -133,35 +133,20 @@ class LoginScreenState extends State<LoginScreen>
     );
   }
 
-  String? _validatePassword(String? input) {
-    if (input != null) {
-      if (input.isEmpty) {
-        return 'Please input a password';
-      }
-      return null;
-    }
-    return 'Please input a password';
-  }
-
   Form _loginForm() {
     return Form(
-      key: _loginFormKey,
       autovalidateMode: AutovalidateMode.disabled,
       child: InputLogin(
         hint: 'Password',
-        errorText: _passwordInputErrorText,
+        errorText: _password?.error ?? _passwordInputErrorText,
         showPassFocusNode: _showPasswordFocusNode,
         obscureText: true,
         textEditingController: _loginController,
         focusNode: _loginFocusNode,
-        validator: _validatePassword,
         onChanged: (String? value) {
           if (mounted) {
             setState(() {
-              _password = value!;
-              if (_loginFormKey.currentState!.validate()) {
-                _passwordInputErrorText = null;
-              }
+              _password = PasswordInput.dirty(value: value!);
             });
           }
         },
@@ -172,8 +157,8 @@ class LoginScreenState extends State<LoginScreen>
           _login();
         },
         onTapOutside: (PointerDownEvent? event) {
-          if (_loginFocusNode.hasFocus) {
-            _loginFormKey.currentState!.validate();
+          if (_loginFocusNode.hasFocus && _password != null) {
+            _password!.validator(_password!.value);
           }
         },
         onTap: () {
