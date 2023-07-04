@@ -134,7 +134,6 @@ jobs:
           IDENTITY_ID: ${{ secrets.IDENTITY_ID }}
         run: codesign --verify -vvvv ./build/macos/Build/Products/Release/myWitWallet.app
 
-
       - name: Create .dmg
         run: |
           brew install create-dmg
@@ -232,14 +231,13 @@ jobs:
 
       - name: Add Beta Badge for Dev Releases
         run: |
-          if [[ "${{github.ref_name}}" == *"dev"* ]]; then export DEV=true; else export DEV=false; fi;
-          if [[ "$DEV" == "true" ]]; then (cd android && ./beta_badge.sh); fi;
+          if [[ "${{github.ref_name}}" == *"dev"* ]]; then (cd android && ./beta_badge.sh); fi;
 
       - name: Set Version
+        working-directory: android
         run: |
-          cd android && export VCODE=$(bundle exec fastlane vcode | grep -o 'VersionCode: [0-9]*$' | grep -o '[0-9]*$')
-          cd .. && sed -i "s/0.0.0+0/${{github.ref_name}}+$VCODE/g" pubspec.yaml
-          cat pubspec.yaml
+          export VCODE=$(bundle exec fastlane vcode | grep -o 'VersionCode: [0-9]*$' | grep -o '[0-9]*$')
+          sed -i "s/0.0.0+0/${{github.ref_name}}+$VCODE/g" ../pubspec.yaml
 
       - name: Binary (appbundle)
         run: flutter build appbundle --release
@@ -254,9 +252,8 @@ jobs:
           subdirectory: 'android'
 
       - name: Release on Playstore
-        run: |
-          if [[ "${{github.ref_name}}" == *"dev"* ]]; then export DEV=true; else export DEV=false; fi;
-          if [[ "$DEV" == "true" ]]; then (cd android && bundle exec fastlane team); else (cd android && bundle exec fastlane production) fi;
+        working-directory: android
+        run: if [[ "${{github.ref_name}}" == *"dev"* ]]; then bundle exec fastlane beta; else bundle exec fastlane production fi;
 
       - name: Archive Build
         run: mv ./build/app/outputs/flutter-apk/app-release.apk ./myWitWallet.apk
@@ -267,33 +264,82 @@ jobs:
           name: android
           path: ./myWitWallet.apk
 
-  # IOS:
-  #   runs-on: macos-latest
-  #   steps:
-  #     - name: Clone
-  #       uses: actions/checkout@v3
+  IOS:
+    runs-on: macos-latest
+    environment: IOS
+    steps:
+      - name: Clone
+        uses: actions/checkout@v3
 
-  #     - name: Create .env
-  #       run: cp ./.env.example ./.env
+      - name: Create .env
+        run: cp ./.env.example ./.env
 
-  #     - name: Setup Flutter
-  #       uses: subosito/flutter-action@v2
-  #       with:
-  #         architecture: x64
-  #         channel: 'stable'
-  #         cache: true
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          architecture: x64
+          channel: 'stable'
+          cache: true
 
-  #     - name: Install Project Dependencies
-  #       run: flutter pub get
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2.2'
+          bundler-cache: true
+          working-directory: 'ios'
 
-  #     - name: Flutter Doctor
-  #       run: flutter doctor
+      - name: Flutter Doctor
+        run: |
+          flutter --disable-telemetry
+          flutter doctor
 
-  #     - name: Binary
-  #       run: flutter build ios --release --no-codesign
+      - name: Install Project Dependencies
+        run: flutter pub get
+
+      - name: Install Cocoapods
+        working-directory: ios
+        run: pod install
+
+      - name: Setup SSH Keys and known_hosts for Fastlane Match
+        env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
+          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts ~/.ssh/id_rsa
+          eval $(ssh-agent) && ssh-add ~/.ssh/id_rsa
+
+      - name: Add Credentials / Keys
+        working-directory: ios
+        env:
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+          ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_USERNAME: ${{ secrets.FASTLANE_USERNAME }}
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_AASP}}
+        run: |
+          brew install gnu-sed
+          gsed -i "s/TEAM_ID/$TEAM_ID/g" ./export_options.plist
+          gsed -i "s/SENSITIVE_REPLACE_ME/$TEAM_ID/g" ./Runner.xcodeproj/project.pbxproj
+          bundle exec fastlane setup
+
+      - name: Set Version
+        working-directory: ios
+        run: |
+          export VCODE=$(bundle exec fastlane vcode | grep -o 'VersionCode: [0-9]*$' | grep -o '[0-9]*$')
+          gsed -i "s/0.0.0+0/${{github.ref_name}}+$VCODE/g" ../pubspec.yaml
+
+      - name: Binary(ipa)
+        run: flutter build ipa --release --export-options-plist=./ios/export_options.plist
+
+      - name: Release on App-Store
+        working-directory: ios
+        run: if [[ "${{github.ref_name}}" == *"dev"* ]]; then bundle exec fastlane beta; else bundle exec fastlane production fi;
 
   Release:
-    needs: [Windows, Linux, MacOs, Android]
+    needs: [Windows, Linux, MacOs, Android, IOS]
     runs-on: ubuntu-latest
     permissions:
       contents: write
