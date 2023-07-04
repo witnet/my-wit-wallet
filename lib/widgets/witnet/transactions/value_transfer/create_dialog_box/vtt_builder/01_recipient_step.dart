@@ -4,6 +4,7 @@ import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
@@ -45,6 +46,7 @@ class RecipientStepState extends State<RecipientStep>
   final _amountFocusNode = FocusNode();
   final _addressController = TextEditingController();
   final _addressFocusNode = FocusNode();
+  bool _connectionError = false;
   FocusNode _scanQrFocusNode = FocusNode();
   bool isScanQrFocused = false;
 
@@ -119,7 +121,9 @@ class RecipientStepState extends State<RecipientStep>
       _errorAmountText = _validateAmount(_amount);
     });
     return ((_errorAddressText == null && _errorAmountText == null) &&
-        !(_address.isEmpty || _amount.isEmpty));
+        _address.isNotEmpty &&
+        _amount.isNotEmpty &&
+        !_connectionError);
   }
 
   void _setSavedTxData() {
@@ -141,8 +145,20 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   void nextAction() {
+    final theme = Theme.of(context);
+    final vttBloc = BlocProvider.of<VTTCreateBloc>(context);
+    if (_connectionError) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+          buildExplorerConnectionSnackbar(
+              theme,
+              'myWitWallet is experiencing connection problems',
+              theme.colorScheme.error));
+    } else {
+      ScaffoldMessenger.of(context).clearSnackBars();
+    }
     if (validateForm() && _formKey.currentState!.validate()) {
-      BlocProvider.of<VTTCreateBloc>(context).add(AddValueTransferOutputEvent(
+      vttBloc.add(AddValueTransferOutputEvent(
           currentWallet: widget.currentWallet,
           output: ValueTransferOutput.fromJson({
             'pkh': _address,
@@ -283,6 +299,19 @@ class RecipientStepState extends State<RecipientStep>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return _buildForm(context, theme);
+    return BlocListener<VTTCreateBloc, VTTCreateState>(
+      listener: (context, state) {
+        if (state.vttCreateStatus == VTTCreateStatus.exception) {
+          setState(() {
+            _connectionError = true;
+          });
+        } else {
+          setState(() {
+            _connectionError = false;
+          });
+        }
+      },
+      child: _buildForm(context, theme),
+    );
   }
 }

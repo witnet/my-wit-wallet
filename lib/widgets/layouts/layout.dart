@@ -53,20 +53,20 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     return BlocListener<VTTCreateBloc, VTTCreateState>(
       listenWhen: (previousState, currentState) {
         if (previousState.vttCreateStatus == VTTCreateStatus.exception &&
-            currentState.vttCreateStatus != VTTCreateStatus.exception) {
+            currentState.vttCreateStatus != VTTCreateStatus.exception &&
+            currentState.vttCreateStatus != VTTCreateStatus.busy &&
+            currentState.vttCreateStatus != VTTCreateStatus.initial) {
           ScaffoldMessenger.of(context).clearSnackBars();
-          if (currentState.vttCreateStatus != VTTCreateStatus.initial) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(buildExplorerConnectionSnackbar(
-              theme,
-              'Connection reestablished!',
-              extendedTheme.txValuePositiveColor,
-              () => {
-                if (mounted)
-                  {ScaffoldMessenger.of(context).hideCurrentMaterialBanner()}
-              },
-            ));
-          }
+          ScaffoldMessenger.of(context)
+              .showSnackBar(buildExplorerConnectionSnackbar(
+            theme,
+            'Connection reestablished!',
+            extendedTheme.txValuePositiveColor,
+            () => {
+              if (mounted)
+                {ScaffoldMessenger.of(context).hideCurrentMaterialBanner()}
+            },
+          ));
         }
         return true;
       },
