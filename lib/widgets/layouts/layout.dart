@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/layouts/listen_fourth_button.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -14,12 +16,13 @@ import 'package:my_wit_wallet/widgets/layouts/headerLayout.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
-final panelController = PanelController();
+class GoBackIntent extends Intent {
+  const GoBackIntent();
+}
 
 class Layout extends StatefulWidget {
   final ScrollController? scrollController;
   final List<Widget> widgetList;
-  final AppBar? appBar;
   final List<Widget> actions;
   final List<Widget> navigationActions;
   final Widget? slidingPanel;
@@ -31,7 +34,6 @@ class Layout extends StatefulWidget {
     required this.navigationActions,
     this.dashboardActions,
     this.slidingPanel,
-    this.appBar,
     this.scrollController,
   });
 
@@ -43,6 +45,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   var isPanelClose;
   ScrollController defaultScrollController =
       ScrollController(keepScrollOffset: false);
+  final panelController = PanelController();
 
   BlocListener<VTTCreateBloc, VTTCreateState> _vttListener(Widget child) {
     final theme = Theme.of(context);
@@ -120,34 +123,36 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   Widget showWalletList(BuildContext context) {
     String walletId =
         Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.id;
-    return MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          child: Container(
-            color: WitnetPallet.white,
-            width: 30,
-            height: 30,
-            child: Identicon(seed: walletId, size: 8),
-          ),
-          onTap: () => {
-            if (panelController.isPanelOpen)
-              {
-                panelController.close(),
-                Timer(Duration(milliseconds: 300), () {
+    return PaddedButton(
+        padding: EdgeInsets.zero,
+        label: 'Show wallet list button',
+        text: 'Show wallet list',
+        type: 'icon-button',
+        iconSize: 30,
+        icon: Container(
+          color: WitnetPallet.white,
+          width: 30,
+          height: 30,
+          child: Identicon(seed: walletId, size: 8),
+        ),
+        onPressed: () => {
+              if (panelController.isPanelOpen)
+                {
+                  panelController.close(),
+                  Timer(Duration(milliseconds: 300), () {
+                    setState(() {
+                      isPanelClose = true;
+                    });
+                  }),
+                }
+              else
+                {
+                  panelController.open(),
                   setState(() {
-                    isPanelClose = true;
-                  });
-                }),
-              }
-            else
-              {
-                panelController.open(),
-                setState(() {
-                  isPanelClose = panelController.isPanelClosed;
-                })
-              }
-          },
-        ));
+                    isPanelClose = panelController.isPanelClosed;
+                  })
+                }
+            });
   }
 
   // Content displayed between header and bottom actions
@@ -165,6 +170,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
               topLeft: Radius.circular(8), topRight: Radius.circular(8)),
           panel: widget.slidingPanel,
           body: GestureDetector(
+              excludeFromSemantics: true,
               onTap: () {
                 if (panelController.isPanelOpen) {
                   panelController.close();
@@ -190,6 +196,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
       controller: widget.scrollController != null
           ? widget.scrollController
           : defaultScrollController,
+      semanticChildCount: 1,
       slivers: [
         SliverAppBar(
             floating: true,
@@ -284,15 +291,59 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
+    final navigator = Navigator.of(context);
+    return Shortcuts(
+        shortcuts: <ShortcutActivator, Intent>{
+          LogicalKeySet(LogicalKeyboardKey.browserBack): const GoBackIntent(),
+          LogicalKeySet(LogicalKeyboardKey.goBack): const GoBackIntent(),
+          LogicalKeySet(
+                  LogicalKeyboardKey.metaRight, LogicalKeyboardKey.arrowLeft):
+              const GoBackIntent(),
+          LogicalKeySet(
+                  LogicalKeyboardKey.metaLeft, LogicalKeyboardKey.arrowLeft):
+              const GoBackIntent(),
         },
-        child: Scaffold(
-            resizeToAvoidBottomInset: true,
-            backgroundColor: theme.colorScheme.background,
-            body: buildMainContent(context, theme),
-            bottomNavigationBar:
-                isPanelClose == null || isPanelClose ? bottomBar() : null));
+        child: Actions(
+            actions: {
+              GoBackIntent: CallbackAction<GoBackIntent>(
+                onInvoke: (GoBackIntent intent) => {
+                  if (navigator.canPop())
+                    {
+                      navigator.pop(),
+                      if (panelController.isPanelOpen) {panelController.close()}
+                    }
+                },
+              )
+            },
+            child: FocusScope(
+              autofocus: true,
+              child: RawGestureDetector(
+                  excludeFromSemantics: true,
+                  gestures: <Type, GestureRecognizerFactory>{
+                    FourthButtonTapGestureRecognizer:
+                        GestureRecognizerFactoryWithHandlers<
+                            FourthButtonTapGestureRecognizer>(
+                      () => FourthButtonTapGestureRecognizer(),
+                      (FourthButtonTapGestureRecognizer instance) {
+                        instance
+                          ..onTapDown = (TapDownDetails details) {
+                            if (navigator.canPop()) {
+                              navigator.pop();
+                              if (panelController.isPanelOpen) {
+                                panelController.close();
+                              }
+                            }
+                          };
+                      },
+                    ),
+                  },
+                  child: Scaffold(
+                      resizeToAvoidBottomInset: true,
+                      backgroundColor: theme.colorScheme.background,
+                      body: buildMainContent(context, theme),
+                      bottomNavigationBar: isPanelClose == null || isPanelClose
+                          ? bottomBar()
+                          : null)),
+            )));
   }
 }

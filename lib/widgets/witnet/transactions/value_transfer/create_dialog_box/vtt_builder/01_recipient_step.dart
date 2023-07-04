@@ -45,6 +45,8 @@ class RecipientStepState extends State<RecipientStep>
   final _amountFocusNode = FocusNode();
   final _addressController = TextEditingController();
   final _addressFocusNode = FocusNode();
+  FocusNode _scanQrFocusNode = FocusNode();
+  bool isScanQrFocused = false;
 
   @override
   void initState() {
@@ -53,6 +55,7 @@ class RecipientStepState extends State<RecipientStep>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
+    _scanQrFocusNode.addListener(_handleFocus);
     WidgetsBinding.instance.addPostFrameCallback((_) => {
           widget.nextAction(next),
           _setSavedTxData(),
@@ -67,6 +70,12 @@ class RecipientStepState extends State<RecipientStep>
     _amountController.dispose();
     _amountFocusNode.dispose();
     super.dispose();
+  }
+
+  _handleFocus() {
+    setState(() {
+      isScanQrFocused = _scanQrFocusNode.hasFocus;
+    });
   }
 
   num _amountToNumber() {
@@ -156,110 +165,118 @@ class RecipientStepState extends State<RecipientStep>
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.disabled,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Address',
-            style: theme.textTheme.titleSmall,
-          ),
-          SizedBox(height: 8),
-          TextFormField(
-            style: theme.textTheme.bodyLarge,
-            decoration: InputDecoration(
-              hintText: 'Recipient address',
-              suffixIcon: !Platform.isWindows && !Platform.isLinux
-                  ? IconButton(
-                      splashRadius: 1,
-                      icon: Icon(FontAwesomeIcons.qrcode),
-                      onPressed: () => {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => QrScanner(
-                                        onChanged: (String value) => {
-                                              Navigator.popUntil(
-                                                  context,
-                                                  ModalRoute.withName(
-                                                      CreateVttScreen.route)),
-                                              _addressController.text = value,
-                                              _address = value,
-                                              setState(() {
-                                                _errorAddressText =
-                                                    _validateAddress(value);
-                                              })
-                                            })))
-                          },
-                      color: theme
-                          .inputDecorationTheme.enabledBorder?.borderSide.color)
-                  : null,
-              errorText: _errorAddressText,
-            ),
-            controller: _addressController,
-            focusNode: _addressFocusNode,
-            keyboardType: TextInputType.text,
-            validator: _validateAddress,
-            inputFormatters: [WitAddressFormatter()],
-            onChanged: (String value) {
-              setState(() {
-                _address = value;
-                if (_validateAddress(_address) == null) {
-                  _errorAddressText = _validateAddress(_address);
-                }
-              });
-            },
-            onFieldSubmitted: (String value) {
-              _amountFocusNode.requestFocus();
-            },
-            onTap: () {
-              _addressFocusNode.requestFocus();
-            },
-            onTapOutside: (PointerDownEvent event) {
-              if (_addressFocusNode.hasFocus) {
-                setState(() {
-                  _errorAddressText = _validateAddress(_address);
-                });
-              }
-            },
-          ),
-          SizedBox(height: 16),
-          Text(
-            'Amount',
-            style: theme.textTheme.titleSmall,
-          ),
-          SizedBox(height: 8),
-          InputAmount(
-            hint: 'Amount',
-            errorText: _errorAmountText,
-            textEditingController: _amountController,
-            focusNode: _amountFocusNode,
-            keyboardType: TextInputType.number,
-            validator: _validateAmount,
-            onChanged: (String value) {
-              setState(() {
-                _amount = value;
-                if (_validateAmount(_amount) == null) {
-                  _errorAmountText = null;
-                }
-              });
-            },
-            onTap: () {
-              _amountFocusNode.requestFocus();
-            },
-            onFieldSubmitted: (String value) {
-              widget.goNext();
-            },
-            onTapOutside: (PointerDownEvent event) {
-              if (_amountFocusNode.hasFocus) {
-                setState(() {
-                  _errorAmountText = _validateAmount(_amount);
-                });
-              }
-            },
-          ),
-          SizedBox(height: 16),
-        ],
-      ),
+      child: Padding(
+          padding: EdgeInsets.only(left: 8, right: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Address',
+                style: theme.textTheme.titleSmall,
+              ),
+              SizedBox(height: 8),
+              TextFormField(
+                autofocus: true,
+                style: theme.textTheme.bodyLarge,
+                decoration: InputDecoration(
+                  hintText: 'Recipient address',
+                  suffixIcon: !Platform.isWindows && !Platform.isLinux
+                      ? IconButton(
+                          focusNode: _scanQrFocusNode,
+                          splashRadius: 1,
+                          icon: Icon(FontAwesomeIcons.qrcode),
+                          onPressed: () => {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => QrScanner(
+                                            onChanged: (String value) => {
+                                                  Navigator.popUntil(
+                                                      context,
+                                                      ModalRoute.withName(
+                                                          CreateVttScreen
+                                                              .route)),
+                                                  _addressController.text =
+                                                      value,
+                                                  _address = value,
+                                                  setState(() {
+                                                    _errorAddressText =
+                                                        _validateAddress(value);
+                                                  })
+                                                })))
+                              },
+                          color: isScanQrFocused
+                              ? theme.textSelectionTheme.cursorColor
+                              : theme.inputDecorationTheme.enabledBorder
+                                  ?.borderSide.color)
+                      : null,
+                  errorText: _errorAddressText,
+                ),
+                controller: _addressController,
+                focusNode: _addressFocusNode,
+                keyboardType: TextInputType.text,
+                validator: _validateAddress,
+                inputFormatters: [WitAddressFormatter()],
+                onChanged: (String value) {
+                  setState(() {
+                    _address = value;
+                    if (_validateAddress(_address) == null) {
+                      _errorAddressText = _validateAddress(_address);
+                    }
+                  });
+                },
+                onFieldSubmitted: (String value) {
+                  _amountFocusNode.requestFocus();
+                },
+                onTap: () {
+                  _addressFocusNode.requestFocus();
+                },
+                onTapOutside: (PointerDownEvent event) {
+                  if (_addressFocusNode.hasFocus) {
+                    setState(() {
+                      _errorAddressText = _validateAddress(_address);
+                    });
+                  }
+                },
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Amount',
+                style: theme.textTheme.titleSmall,
+              ),
+              SizedBox(height: 8),
+              InputAmount(
+                hint: 'Amount',
+                errorText: _errorAmountText,
+                textEditingController: _amountController,
+                focusNode: _amountFocusNode,
+                keyboardType: TextInputType.number,
+                validator: _validateAmount,
+                onChanged: (String value) {
+                  setState(() {
+                    _amount = value;
+                    if (_validateAmount(_amount) == null) {
+                      _errorAmountText = null;
+                    }
+                  });
+                },
+                onTap: () {
+                  _amountFocusNode.requestFocus();
+                },
+                onFieldSubmitted: (String value) {
+                  widget.goNext();
+                },
+                onTapOutside: (PointerDownEvent event) {
+                  if (_amountFocusNode.hasFocus) {
+                    setState(() {
+                      _errorAmountText = _validateAmount(_amount);
+                    });
+                  }
+                },
+              ),
+              SizedBox(height: 16),
+            ],
+          )),
     );
   }
 

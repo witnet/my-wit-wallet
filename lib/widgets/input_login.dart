@@ -2,22 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 
 class InputLogin extends StatefulWidget {
-  InputLogin({
-    Key? key,
-    this.prefixIcon,
-    this.hint,
-    this.keyboardType,
-    this.obscureText = false,
-    this.textEditingController,
-    this.validator,
-    this.errorText,
-    this.focusNode,
-    this.onChanged,
-    this.onEditingComplete,
-    this.onFieldSubmitted,
-    this.onTapOutside,
-    this.onTap,
-  });
+  InputLogin(
+      {Key? key,
+      this.prefixIcon,
+      this.hint,
+      this.keyboardType,
+      this.obscureText = false,
+      this.textEditingController,
+      this.validator,
+      this.errorText,
+      this.focusNode,
+      this.onChanged,
+      this.onEditingComplete,
+      this.onFieldSubmitted,
+      this.onTapOutside,
+      this.onTap,
+      this.showPassFocusNode,
+      this.autoFocus = false});
   final IconData? prefixIcon;
   final FocusNode? focusNode;
   final String? errorText;
@@ -31,6 +32,8 @@ class InputLogin extends StatefulWidget {
   final StringCallback? onFieldSubmitted;
   final PointerDownCallback? onTapOutside;
   final BlankCallback? onTap;
+  final FocusNode? showPassFocusNode;
+  final bool autoFocus;
   @override
   _InputLoginState createState() => _InputLoginState();
 }
@@ -41,6 +44,23 @@ typedef PointerDownCallback = void Function(PointerDownEvent?);
 
 class _InputLoginState extends State<InputLogin> {
   bool showPassword = false;
+  bool showPasswordFocus = false;
+
+  void initState() {
+    super.initState();
+    if (widget.showPassFocusNode != null && this.mounted)
+      widget.showPassFocusNode!.addListener(_onFocusChange);
+  }
+
+  void dispose() {
+    super.dispose();
+  }
+
+  _onFocusChange() {
+    setState(() {
+      showPasswordFocus = widget.showPassFocusNode!.hasFocus;
+    });
+  }
 
   handleShowPass() {
     return IconButton(
@@ -57,28 +77,38 @@ class _InputLoginState extends State<InputLogin> {
     final theme = Theme.of(context);
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     return Container(
+        child: Semantics(
+      textField: true,
+      label: 'Input your password',
       child: TextFormField(
         decoration: InputDecoration(
-          hintText: widget.hint ?? 'Input your password',
-          errorText: widget.errorText,
-          prefixIcon:
-              widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
-          suffixIcon: IconButton(
-            splashRadius: 1,
-            padding: const EdgeInsets.all(2),
-            color: extendedTheme.inputIconColor,
-            iconSize: theme.iconTheme.size,
-            icon: showPassword
-                ? Icon(Icons.remove_red_eye)
-                : Icon(Icons.visibility_off),
-            onPressed: () {
-              setState(() => showPassword = !showPassword);
-            },
-          ),
-        ),
+            hintText: widget.hint ?? 'Input your password',
+            errorText: widget.errorText,
+            prefixIcon:
+                widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
+            suffixIcon: Semantics(
+              label: 'Show password',
+              child: IconButton(
+                focusNode: widget.showPassFocusNode,
+                splashRadius: 1,
+                padding: const EdgeInsets.all(2),
+                color: (widget.showPassFocusNode != null &&
+                        widget.showPassFocusNode!.hasFocus)
+                    ? theme.textSelectionTheme.cursorColor
+                    : extendedTheme.inputIconColor,
+                iconSize: theme.iconTheme.size,
+                icon: showPassword
+                    ? Icon(Icons.remove_red_eye)
+                    : Icon(Icons.visibility_off),
+                onPressed: () {
+                  setState(() => showPassword = !showPassword);
+                },
+              ),
+            )),
         minLines: 1,
         style: theme.textTheme.bodyLarge,
         autocorrect: false,
+        autofocus: widget.autoFocus,
         focusNode: widget.focusNode,
         controller: widget.textEditingController,
         obscureText: widget.obscureText ? !showPassword : false,
@@ -90,6 +120,6 @@ class _InputLoginState extends State<InputLogin> {
         onTap: widget.onTap ?? () {},
         validator: widget.validator,
       ),
-    );
+    ));
   }
 }

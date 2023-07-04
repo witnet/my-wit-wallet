@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 
 typedef void StringCallback(String value);
 
@@ -13,6 +14,7 @@ class ClickableBox extends StatelessWidget {
   final String? error;
   final List<Widget> content;
   final String value;
+  final String? label;
   final StringCallback onClick;
 
   const ClickableBox({
@@ -21,6 +23,7 @@ class ClickableBox extends StatelessWidget {
     required this.value,
     required this.content,
     required this.onClick,
+    this.label,
   });
 
   Map<ClickableBoxTheme, Color> errorTheme(ExtendedTheme theme) {
@@ -55,29 +58,29 @@ class ClickableBox extends StatelessWidget {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: GestureDetector(
-              child: Container(
-                padding:
-                    EdgeInsets.only(top: 14, bottom: 14, left: 16, right: 16),
-                decoration: BoxDecoration(
-                  color: localTheme(extendedTheme)[ClickableBoxTheme.BgColor],
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                  border: Border.all(
-                    color: localTheme(
-                        extendedTheme)[ClickableBoxTheme.BorderColor]!,
-                    width: 1,
-                  ),
-                ),
-                margin: EdgeInsets.only(bottom: 8),
-                child: Row(children: content),
-              ),
-              onTap: () {
-                if (error == null) {
-                  onClick(value);
-                }
-              })),
+      PaddedButton(
+        padding: EdgeInsets.zero,
+        autofocus: isSelected,
+        label: label,
+        text: 'wallet',
+        type: 'box-button',
+        onPressed: () => {
+          if (error == null) {onClick(value)}
+        },
+        container: Container(
+          padding: EdgeInsets.only(top: 14, bottom: 14, left: 16, right: 16),
+          decoration: BoxDecoration(
+            color: localTheme(extendedTheme)[ClickableBoxTheme.BgColor],
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+            border: Border.all(
+              color: localTheme(extendedTheme)[ClickableBoxTheme.BorderColor]!,
+              width: 1,
+            ),
+          ),
+          margin: EdgeInsets.all(8),
+          child: Row(children: content),
+        ),
+      ),
       if (error != null)
         Padding(
           padding: EdgeInsets.only(left: 8, bottom: 8),

@@ -26,7 +26,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(state.copyWith(status: LoginStatus.LoginInProgress));
       bool verified = await apiDatabase.verifyPassword(event.password);
       if (verified) {
-        await apiDatabase.updateCurrentWallet();
+        final currentWalletId = apiDatabase.walletStorage.currentWallet.id;
+        await apiDatabase.updateCurrentWallet(currentWalletId: currentWalletId);
         emit(state.copyWith(status: LoginStatus.LoginSuccess));
       } else {
         emit(state.copyWith(status: LoginStatus.LoginInvalid));
