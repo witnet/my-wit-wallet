@@ -57,7 +57,7 @@ platform :ios do
   lane :beta do
     upload_to_testflight(
       skip_waiting_for_build_processing: true,
-      ipa: '../build/ios/ipa/*.ipa'
+      ipa: '../build/ios/ipa/myWitWallet.ipa'
     )
   end
 
@@ -65,7 +65,7 @@ platform :ios do
   desc "Push a new production build to AppStore"
   lane :production do
     upload_to_app_store(
-      ipa: '../build/ios/ipa/*.ipa'
+      ipa: '../build/ios/ipa/myWitWallet.ipa'
     )
   end
 
