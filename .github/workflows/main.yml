@@ -325,7 +325,7 @@ jobs:
           brew install gnu-sed
           gsed -i "s/TEAM_ID/$TEAM_ID/g" ./export_options.plist
           gsed -i "s/SENSITIVE_REPLACE_ME/$TEAM_ID/g" ./Runner.xcodeproj/project.pbxproj
-          echo "$APPLE_API_KEY" | base64 -di > key.json
+          echo "$APPLE_API_KEY" > key.json
           bundle exec fastlane setup
 
       - name: Set Version
