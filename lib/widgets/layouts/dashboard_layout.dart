@@ -71,16 +71,31 @@ class DashboardLayoutState extends State<DashboardLayout>
 
   Future<void> _goToSettings() async {
     BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
-    Navigator.pushNamed(context, PreferencePage.route);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            maintainState: false,
+            builder: (context) => PreferencePage(),
+            settings: RouteSettings(name: PreferencePage.route)));
   }
 
   Future<void> _showCreateVTTDialog() async {
-    Navigator.pushNamed(context, CreateVttScreen.route);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            maintainState: false,
+            builder: (context) => CreateVttScreen(),
+            settings: RouteSettings(name: CreateVttScreen.route)));
   }
 
   Future<void> _showReceiveDialog() async {
     BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
-    Navigator.pushNamed(context, ReceiveTransactionScreen.route);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            maintainState: false,
+            builder: (context) => ReceiveTransactionScreen(),
+            settings: RouteSettings(name: ReceiveTransactionScreen.route)));
   }
 
   String? currentRoute() {
@@ -119,7 +134,13 @@ class DashboardLayoutState extends State<DashboardLayout>
             ? () => {
                   BlocProvider.of<VTTCreateBloc>(context)
                       .add(ResetTransactionEvent()),
-                  Navigator.pushNamed(context, DashboardScreen.route),
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          maintainState: false,
+                          builder: (context) => DashboardScreen(),
+                          settings:
+                              RouteSettings(name: DashboardScreen.route))),
                 }
             : () {},
         icon: Icon(
@@ -251,7 +272,12 @@ class DashboardLayoutState extends State<DashboardLayout>
     return BlocListener<LoginBloc, LoginState>(
       listener: (BuildContext context, LoginState state) {
         if (state.status == LoginStatus.LoggedOut) {
-          Navigator.pushReplacementNamed(context, LoginScreen.route);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  maintainState: false,
+                  builder: (context) => LoginScreen(),
+                  settings: RouteSettings(name: LoginScreen.route)));
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(

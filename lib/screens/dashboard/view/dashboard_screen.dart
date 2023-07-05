@@ -61,6 +61,12 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   @override
+  void deactivate() {
+    syncTimer.cancel();
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     _loadingController.dispose();
     syncTimer.cancel();
