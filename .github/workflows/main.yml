@@ -253,7 +253,7 @@ jobs:
 
       - name: Release on Playstore
         working-directory: android
-        run: if [[ "${{github.ref_name}}" == *"dev"* ]]; then bundle exec fastlane beta; else bundle exec fastlane production fi;
+        run: if [[ "${{github.ref_name}}" == *"dev"* ]]; then bundle exec fastlane beta; else bundle exec fastlane production; fi;
 
       - name: Archive Build
         run: mv ./build/app/outputs/flutter-apk/app-release.apk ./myWitWallet.apk
@@ -336,7 +336,7 @@ jobs:
 
       - name: Release on App-Store
         working-directory: ios
-        run: if [[ "${{github.ref_name}}" == *"dev"* ]]; then bundle exec fastlane beta; else bundle exec fastlane production fi;
+        run: if [[ "${{github.ref_name}}" == *"dev"* ]]; then bundle exec fastlane beta; else bundle exec fastlane production; fi;
 
   Release:
     needs: [Windows, Linux, MacOs, Android, IOS]
