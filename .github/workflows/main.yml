@@ -315,7 +315,7 @@ jobs:
         env:
           TEAM_ID: ${{ secrets.TEAM_ID }}
           ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
-          APIKEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           FASTLANE_USER: ${{ secrets.FASTLANE_USERNAME }}
@@ -325,7 +325,7 @@ jobs:
           brew install gnu-sed
           gsed -i "s/TEAM_ID/$TEAM_ID/g" ./export_options.plist
           gsed -i "s/SENSITIVE_REPLACE_ME/$TEAM_ID/g" ./Runner.xcodeproj/project.pbxproj
-          echo "$API_KEY" | base64 -di > key.json
+          echo "$APPLE_API_KEY" | base64 -di > key.json
           bundle exec fastlane setup
 
       - name: Set Version
