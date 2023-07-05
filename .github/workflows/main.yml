@@ -334,12 +334,15 @@ jobs:
       - name: Binary(ipa)
         run: flutter build ipa --release --export-options-plist=./ios/export_options.plist
 
-      - name: File structure
-        working-directory: build
-        run: brew install tree && tree
-
       - name: Release on App-Store
         working-directory: ios
+        env:
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+          ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_USERNAME: ${{ secrets.FASTLANE_USERNAME }}
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_AASP}}
         run: if [[ "${{github.ref_name}}" == *"dev"* ]]; then bundle exec fastlane beta; else bundle exec fastlane production; fi;
 
   Release:
