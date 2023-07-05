@@ -224,7 +224,6 @@ jobs:
           KPROP: ${{ secrets.ANDROID_KEY_PROPERTIES }}
         run: |
           echo "$PGP" > upload-keystore.jks.asc
-          cat upload-keystore.jks.asc
           gpg -d --passphrase "$PHRASE" --batch upload-keystore.jks.asc > upload-keystore.jks
           echo "$GPSA" > gpsa.json
           echo "$KPROP" > key.properties
@@ -315,7 +314,8 @@ jobs:
         env:
           TEAM_ID: ${{ secrets.TEAM_ID }}
           ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
-          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          PGP: ${{ secrets.APPLE_API_KEY }}
+          PHRASE: ${{ secrets.APPLE_API_KEY_PASSPHRASE }}
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           FASTLANE_USER: ${{ secrets.FASTLANE_USERNAME }}
@@ -325,7 +325,8 @@ jobs:
           brew install gnu-sed
           gsed -i "s/TEAM_ID/$TEAM_ID/g" ./export_options.plist
           gsed -i "s/SENSITIVE_REPLACE_ME/$TEAM_ID/g" ./Runner.xcodeproj/project.pbxproj
-          echo "$APPLE_API_KEY" > key.json
+          echo "$PGP" > key.json.asc
+          gpg -d --passphrase "$PHRASE" --batch key.json.asc > key.json
           bundle exec fastlane setup
 
       - name: Set Version
@@ -340,6 +341,12 @@ jobs:
       - name: Release on App-Store
         working-directory: ios
         run: if [[ "${{github.ref_name}}" == *"dev"* ]]; then bundle exec fastlane beta; else bundle exec fastlane production; fi;
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios
+          path: ./build/ios/ipa/myWitWallet.ipa
 
   Release:
     needs: [Windows, Linux, MacOs, Android, IOS]
@@ -366,7 +373,8 @@ jobs:
           mv linux/* .
           mv macos/* .
           mv android/* .
-          rm -rf windows linux macos android
+          mv ios/* .
+          rm -rf windows linux macos android ios
 
       - name: Publish Github Release
         uses: ncipollo/release-action@v1
