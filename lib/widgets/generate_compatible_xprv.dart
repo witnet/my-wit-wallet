@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/widgets/validations/confirmed_password.dart';
+import 'package:my_wit_wallet/widgets/validations/password_input.dart';
 
 final _passController = TextEditingController();
 final _passFocusNode = FocusNode();
@@ -28,8 +31,8 @@ class GenerateCompatibleXprv extends StatefulWidget {
 
 class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
     with TickerProviderStateMixin {
-  String _password = '';
-  String _confirmPassword = '';
+  PasswordInput? _password;
+  ConfirmedPassword? _confirmPassword;
   bool isLoading = false;
   String? errorText;
   String? localEncryptedXprv =
@@ -38,7 +41,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
 
   void setPassword(String password) {
     setState(() {
-      _password = password;
+      _password = PasswordInput.dirty(value: password);
     });
   }
 
@@ -82,26 +85,14 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
               !_passFocusNode.hasFocus &&
               !_showPassFocusNode.hasFocus &&
               !_showPassConfirmFocusNode.hasFocus)) {
-        if (_password.isEmpty && _confirmPassword.isEmpty) {
-          setState(() {
-            errorText = 'Please input your xprv password';
-          });
-          return false;
-        } else if (_password == _confirmPassword) {
-          setState(() {
-            errorText = null;
-          });
-          return true;
-        } else {
-          setState(() {
-            errorText = 'Password Mismatch';
-          });
-          return false;
+        if (_password != null && _confirmPassword != null) {
+          final validInputs = <FormzInput>[
+            _password!,
+            _confirmPassword!,
+          ];
+          return Formz.validate(validInputs).isValid;
         }
       } else {
-        setState(() {
-          errorText = null;
-        });
         return false;
       }
     }
@@ -112,7 +103,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
     if (isLoading) return;
     setState(() => isLoading = true);
     if (validate(force: true)) {
-      await _generateSheikahCompatibleXprv(_password);
+      await _generateSheikahCompatibleXprv(_password!.value);
     }
     setState(() => isLoading = false);
   }
@@ -120,7 +111,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    _passConfirmFocusNode.addListener(() => validate());
+    _passConfirmFocusNode.addListener(() => {validate()});
     _passFocusNode.addListener(() => validate());
 
     final theme = Theme.of(context);
@@ -134,7 +125,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
         SizedBox(height: 16),
         Form(
           key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
+          autovalidateMode: AutovalidateMode.disabled,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -146,6 +137,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
               InputLogin(
                 hint: 'Password',
                 focusNode: _passFocusNode,
+                errorText: _password?.error ?? null,
                 showPassFocusNode: _showPassFocusNode,
                 textEditingController: _passController,
                 obscureText: true,
@@ -158,7 +150,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                 onChanged: (String? value) {
                   if (this.mounted) {
                     setState(() {
-                      _password = value!;
+                      _password = PasswordInput.dirty(value: value!);
                     });
                   }
                 },
@@ -175,7 +167,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                 focusNode: _passConfirmFocusNode,
                 showPassFocusNode: _showPassConfirmFocusNode,
                 textEditingController: _passConfirmController,
-                errorText: errorText,
+                errorText: _confirmPassword?.error ?? null,
                 onFieldSubmitted: (String? value) async {
                   FocusManager.instance.primaryFocus?.unfocus();
                   await _loadAndgenerateSheikahXprv();
@@ -186,7 +178,9 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
                 onChanged: (String? value) {
                   if (this.mounted) {
                     setState(() {
-                      _confirmPassword = value!;
+                      _confirmPassword = ConfirmedPassword.dirty(
+                          original: _password ?? PasswordInput.dirty(value: ''),
+                          value: value!);
                     });
                   }
                 },
