@@ -81,7 +81,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   List<Widget> _navigationActions() {
     return [
       PaddedButton(
-          padding: EdgeInsets.only(bottom: 8),
+          padding: EdgeInsets.zero,
           text: prevAction != null ? prevAction().label : '',
           type: 'text',
           enabled: prevAction != null,

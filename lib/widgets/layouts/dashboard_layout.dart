@@ -49,9 +49,12 @@ class DashboardLayoutState extends State<DashboardLayout>
   Wallet? walletStorage;
   late Timer explorerTimer;
   bool isAddressCopied = false;
+  bool isCopyAddressFocus = false;
+  FocusNode _copyToClipboardFocusNode = FocusNode();
 
   @override
   void initState() {
+    if (this.mounted) _copyToClipboardFocusNode.addListener(_handleFocus);
     super.initState();
   }
 
@@ -60,18 +63,39 @@ class DashboardLayoutState extends State<DashboardLayout>
     super.dispose();
   }
 
+  _handleFocus() {
+    setState(() {
+      isCopyAddressFocus = _copyToClipboardFocusNode.hasFocus;
+    });
+  }
+
   Future<void> _goToSettings() async {
     BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
-    Navigator.pushReplacementNamed(context, PreferencePage.route);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            maintainState: false,
+            builder: (context) => PreferencePage(),
+            settings: RouteSettings(name: PreferencePage.route)));
   }
 
   Future<void> _showCreateVTTDialog() async {
-    Navigator.pushReplacementNamed(context, CreateVttScreen.route);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            maintainState: false,
+            builder: (context) => CreateVttScreen(),
+            settings: RouteSettings(name: CreateVttScreen.route)));
   }
 
   Future<void> _showReceiveDialog() async {
     BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
-    Navigator.pushReplacementNamed(context, ReceiveTransactionScreen.route);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            maintainState: false,
+            builder: (context) => ReceiveTransactionScreen(),
+            settings: RouteSettings(name: ReceiveTransactionScreen.route)));
   }
 
   String? currentRoute() {
@@ -91,7 +115,7 @@ class DashboardLayoutState extends State<DashboardLayout>
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       PaddedButton(
         color: getButtonColorByRoute(CreateVttScreen.route),
-        padding: EdgeInsets.all(0),
+        padding: EdgeInsets.zero,
         text: 'Send',
         onPressed: currentRoute != CreateVttScreen.route
             ? _showCreateVTTDialog
@@ -104,14 +128,19 @@ class DashboardLayoutState extends State<DashboardLayout>
       ),
       PaddedButton(
         color: getButtonColorByRoute(DashboardScreen.route),
-        padding: EdgeInsets.all(0),
+        padding: EdgeInsets.zero,
         text: 'History',
         onPressed: currentRoute != DashboardScreen.route
             ? () => {
                   BlocProvider.of<VTTCreateBloc>(context)
                       .add(ResetTransactionEvent()),
-                  Navigator.pushReplacementNamed(
-                      context, DashboardScreen.route),
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          maintainState: false,
+                          builder: (context) => DashboardScreen(),
+                          settings:
+                              RouteSettings(name: DashboardScreen.route))),
                 }
             : () {},
         icon: Icon(
@@ -122,7 +151,7 @@ class DashboardLayoutState extends State<DashboardLayout>
       ),
       PaddedButton(
         color: getButtonColorByRoute(ReceiveTransactionScreen.route),
-        padding: EdgeInsets.all(0),
+        padding: EdgeInsets.zero,
         text: 'Receive',
         onPressed: currentRoute != ReceiveTransactionScreen.route
             ? _showReceiveDialog
@@ -151,48 +180,59 @@ class DashboardLayoutState extends State<DashboardLayout>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: 16),
-          Text(
-            '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.headlineMedium,
-          ),
+          Semantics(
+              label: 'balance',
+              child: Text(
+                '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.headlineMedium,
+              )),
           SizedBox(height: 16),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Flexible(
-                child: Text(
-              currentAccount.address.cropMiddle(18),
-              overflow: TextOverflow.ellipsis,
-              style: extendedTheme.monoRegularText!
-                  .copyWith(color: theme.textTheme.headlineMedium!.color),
-            )),
+                child: Semantics(
+                    label: 'Current address',
+                    child: Text(
+                      currentAccount.address.cropMiddle(18),
+                      overflow: TextOverflow.ellipsis,
+                      style: extendedTheme.monoRegularText!.copyWith(
+                          color: theme.textTheme.headlineMedium!.color),
+                    ))),
             Flexible(
-                child: IconButton(
-                    color: theme.textTheme.headlineSmall?.color,
-                    padding: EdgeInsets.all(4),
-                    constraints: BoxConstraints(),
-                    iconSize: 12,
-                    onPressed: () async {
-                      if (!isAddressCopied) {
-                        await Clipboard.setData(
-                            ClipboardData(text: currentAccount.address));
-                        if (await Clipboard.hasStrings()) {
-                          ScaffoldMessenger.of(context).clearSnackBars();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              buildCopiedSnackbar(theme, 'Address copied!'));
+                child: Semantics(
+              label: 'Copy address to clipboard',
+              child: PaddedButton(
+                  padding: EdgeInsets.zero,
+                  label: 'Show wallet list button',
+                  text: 'Show wallet list',
+                  type: 'icon-button',
+                  iconSize: 12,
+                  onPressed: () async {
+                    if (!isAddressCopied) {
+                      await Clipboard.setData(
+                          ClipboardData(text: currentAccount.address));
+                      if (await Clipboard.hasStrings()) {
+                        ScaffoldMessenger.of(context).clearSnackBars();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            buildCopiedSnackbar(theme, 'Address copied!'));
+                        setState(() {
+                          isAddressCopied = true;
+                        });
+                        Timer(Duration(milliseconds: 500), () {
                           setState(() {
-                            isAddressCopied = true;
+                            isAddressCopied = false;
                           });
-                          Timer(Duration(milliseconds: 500), () {
-                            setState(() {
-                              isAddressCopied = false;
-                            });
-                          });
-                        }
+                        });
                       }
-                    },
-                    icon: Icon(isAddressCopied
+                    }
+                  },
+                  icon: Icon(
+                    isAddressCopied
                         ? FontAwesomeIcons.check
-                        : FontAwesomeIcons.copy))),
+                        : FontAwesomeIcons.copy,
+                    size: 12,
+                  )),
+            )),
           ]),
         ],
       );
@@ -204,7 +244,7 @@ class DashboardLayoutState extends State<DashboardLayout>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _buildBalanceDisplay(),
-        SizedBox(height: 24),
+        SizedBox(height: 16),
         _buildDashboardActions(),
       ],
     );
@@ -213,15 +253,17 @@ class DashboardLayoutState extends State<DashboardLayout>
   List<Widget> _navigationActions() {
     String currentRoute = ModalRoute.of(context)!.settings.name!;
     return [
-      MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: GestureDetector(
-            child: Icon(FontAwesomeIcons.gear,
-                size: 30, color: getButtonColorByRoute(PreferencePage.route)),
-            onTap: currentRoute != PreferencePage.route
-                ? () => _goToSettings()
-                : () {},
-          )),
+      PaddedButton(
+          padding: EdgeInsets.zero,
+          label: 'Settings',
+          text: 'Settings',
+          iconSize: 30,
+          icon: Icon(FontAwesomeIcons.gear,
+              size: 30, color: getButtonColorByRoute(PreferencePage.route)),
+          onPressed: currentRoute != PreferencePage.route
+              ? () => _goToSettings()
+              : () {},
+          type: 'icon-button')
     ];
   }
 
@@ -230,7 +272,12 @@ class DashboardLayoutState extends State<DashboardLayout>
     return BlocListener<LoginBloc, LoginState>(
       listener: (BuildContext context, LoginState state) {
         if (state.status == LoginStatus.LoggedOut) {
-          Navigator.pushReplacementNamed(context, LoginScreen.route);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  maintainState: false,
+                  builder: (context) => LoginScreen(),
+                  settings: RouteSettings(name: LoginScreen.route)));
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(

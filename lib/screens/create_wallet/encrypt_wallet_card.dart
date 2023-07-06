@@ -10,6 +10,8 @@ import 'package:my_wit_wallet/shared/api_database.dart';
 final _passController = TextEditingController();
 final _passFocusNode = FocusNode();
 final _passConfirmFocusNode = FocusNode();
+final _showPassFocusNode = FocusNode();
+final _showPassConfirmedFocusNode = FocusNode();
 final _passConfirmController = TextEditingController();
 
 typedef void VoidCallback(NavAction? value);
@@ -96,7 +98,10 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
   bool validate({force = false}) {
     if (this.mounted) {
       if (force ||
-          (!_passConfirmFocusNode.hasFocus && !_passFocusNode.hasFocus)) {
+          (!_passConfirmFocusNode.hasFocus &&
+              !_passFocusNode.hasFocus &&
+              !_showPassFocusNode.hasFocus &&
+              !_showPassConfirmedFocusNode.hasFocus)) {
         setState(() {
           errorText = null;
         });
@@ -123,8 +128,8 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'PLEASE NOTE:',
-          style: theme.textTheme.displaySmall,
+          'Encrypt your wallet',
+          style: theme.textTheme.titleLarge,
         ),
         SizedBox(height: 8),
         Text(
@@ -154,9 +159,14 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
               SizedBox(height: 8),
               InputLogin(
                 hint: 'Password',
+                autoFocus: true,
                 focusNode: _passFocusNode,
+                showPassFocusNode: _showPassFocusNode,
                 textEditingController: _passController,
                 obscureText: true,
+                onFieldSubmitted: (String? value) {
+                  _passConfirmFocusNode.requestFocus();
+                },
                 onChanged: (String? value) {
                   if (this.mounted) {
                     setState(() {
@@ -175,6 +185,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                 hint: 'Confirm Password',
                 obscureText: true,
                 focusNode: _passConfirmFocusNode,
+                showPassFocusNode: _showPassConfirmedFocusNode,
                 textEditingController: _passConfirmController,
                 errorText: errorText,
                 onFieldSubmitted: (String? value) {

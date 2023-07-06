@@ -1,0 +1,75 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  ############ ? Version Code Lane ############
+  desc "Get latest build_number"
+  lane :vcode do
+    # ! Function will be used to supress exceptions
+    def ignore_exception
+      begin
+        yield
+      rescue Exception
+      end
+    end
+
+    latestTestFlightBN = ignore_exception { latest_testflight_build_number }
+    latestAppStoreBN = ignore_exception { app_store_build_number }
+
+    # ! Assign 0 if NaN
+    unless latestTestFlightBN.is_a? Numeric
+      latestTestFlightBN = 0
+    end
+    unless latestAppStoreBN.is_a? Numeric
+      latestAppStoreBN = 0
+    end
+
+    # ! Echo bigger number + 1
+    biggerBN = latestTestFlightBN > latestAppStoreBN ? latestTestFlightBN : latestAppStoreBN
+    UI.message "Please use VersionCode: #{biggerBN+1}"
+  end
+
+  ############ ? Prepare CI Lane ############
+  desc "Setup Keychain & Import Provisioning Profiles"
+  lane :setup do
+    if is_ci
+      setup_ci
+    end
+    match(type: "appstore", readonly: is_ci)
+  end
+
+  ############ ? Beta(Testflight) Lane ############
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    pilot(
+      api_key_path: './key.json',
+      ipa: '../build/ios/ipa/myWitWallet.ipa',
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+  ############ ? Production(AppStore) Lane ############
+  desc "Push a new production build to AppStore"
+  lane :production do
+    pilot(
+      api_key_path: './key.json',
+      ipa: '../build/ios/ipa/myWitWallet.ipa',
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+end

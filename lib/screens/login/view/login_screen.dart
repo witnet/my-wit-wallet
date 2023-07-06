@@ -34,6 +34,7 @@ class LoginScreenState extends State<LoginScreen>
   GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   final _loginController = TextEditingController();
   final _loginFocusNode = FocusNode();
+  final _showPasswordFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -139,7 +140,9 @@ class LoginScreenState extends State<LoginScreen>
       autovalidateMode: AutovalidateMode.disabled,
       child: InputLogin(
         hint: 'Password',
+        autoFocus: true,
         errorText: _passwordInputErrorText,
+        showPassFocusNode: _showPasswordFocusNode,
         obscureText: true,
         textEditingController: _loginController,
         focusNode: _loginFocusNode,

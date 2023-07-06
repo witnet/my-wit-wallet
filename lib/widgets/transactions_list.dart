@@ -117,58 +117,61 @@ class TransactionsListState extends State<TransactionsList> {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              transaction.status != "confirmed"
-                  ? "${transaction.status} ${transaction.txnTime.formatDuration()}"
-                  : "${transaction.txnTime.formatDuration()}",
-              textAlign: TextAlign.start,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodySmall,
-            ),
-            Container(
-              margin: EdgeInsets.only(bottom: 8),
-              decoration: BoxDecoration(
-                color: WitnetPallet.transparent,
-                border: Border(
-                    bottom: BorderSide(
-                  color: extendedTheme.txBorderColor!,
-                  width: 0.5,
-                )),
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(top: 16, bottom: 16),
-                child: Row(
-                  children: [
-                    Expanded(child: buildTransactionValue(label, transaction)),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Expanded(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          label.capitalize(),
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          address,
-                          overflow: TextOverflow.fade,
-                          style: extendedTheme.monoSmallText!.copyWith(
-                              color: theme.textTheme.bodyMedium!.color),
-                        ),
-                      ],
-                    )),
-                  ],
+        child: Padding(
+            padding: EdgeInsets.only(left: 8, right: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  transaction.status != "confirmed"
+                      ? "${transaction.status} ${transaction.txnTime.formatDuration()}"
+                      : "${transaction.txnTime.formatDuration()}",
+                  textAlign: TextAlign.start,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall,
                 ),
-              ),
-            )
-          ],
-        ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    color: WitnetPallet.transparent,
+                    border: Border(
+                        bottom: BorderSide(
+                      color: extendedTheme.txBorderColor!,
+                      width: 0.5,
+                    )),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 16, bottom: 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: buildTransactionValue(label, transaction)),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Expanded(
+                            child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              label.capitalize(),
+                              style: theme.textTheme.bodyMedium,
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              address,
+                              overflow: TextOverflow.fade,
+                              style: extendedTheme.monoSmallText!.copyWith(
+                                  color: theme.textTheme.bodyMedium!.color),
+                            ),
+                          ],
+                        )),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            )),
         onTap: () {
           widget.setDetails(transaction);
         },

@@ -40,7 +40,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<void> _hashQueryEvent(
       HashQueryEvent event, Emitter<ExplorerState> emit) async {
-    emit(ExplorerState.unknown());
     try {
       var resp = await Locator.instance
           .get<ApiExplorer>()
@@ -55,7 +54,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
   Future<void> _statusQueryEvent(
       StatusQueryEvent event, Emitter<ExplorerState> emit) async {
     Status resp = await Locator.instance.get<ApiExplorer>().getStatus();
-    emit(ExplorerState.unknown());
     try {
       // TODO: fix type error in witnet.dart to get status
       if (resp.databaseMessage == 'Explorer backend seems healthy') {
@@ -72,7 +70,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<void> _addressQueryEvent(
       AddressQueryEvent event, Emitter<ExplorerState> emit) async {
-    emit(ExplorerState.unknown());
     try {
       var resp = await Locator.instance
           .get<ApiExplorer>()
@@ -87,7 +84,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<void> _vtTransactionPostEvent(
       VTTransactionPostEvent event, Emitter<ExplorerState> emit) async {
-    emit(ExplorerState.unknown());
     try {
       var resp = await Locator.instance
           .get<ApiExplorer>()
@@ -102,7 +98,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<void> _utxoQueryEvent(
       UtxoQueryEvent event, Emitter<ExplorerState> emit) async {
-    emit(ExplorerState.unknown());
     try {
       var resp = await Locator.instance
           .get<ApiExplorer>()
@@ -123,7 +118,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<void> _syncWalletEvent(
       SyncWalletEvent event, Emitter<ExplorerState> emit) async {
-    emit(ExplorerState.unknown());
     try {
       await syncWalletRoutine(event, emit);
     } catch (e) {
@@ -150,7 +144,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
     database.walletStorage.wallets[wallet.id] = wallet;
     await database.loadWalletsDatabase();
-    await database.updateCurrentWallet(wallet.id);
+    await database.updateCurrentWallet(currentWalletId: wallet.id);
     emit(ExplorerState.synced(database.walletStorage));
   }
 
@@ -243,7 +237,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       }
     }
     await database.loadWalletsDatabase();
-    await database.updateCurrentWallet(wallet.id);
+    await database.updateCurrentWallet(currentWalletId: wallet.id);
     emit(ExplorerState.synced(database.walletStorage));
   }
 

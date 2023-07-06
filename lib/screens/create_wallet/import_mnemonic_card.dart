@@ -47,6 +47,7 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
           height: 16,
         ),
         TextField(
+          autofocus: true,
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.go,
           style: theme.textTheme.displayMedium,

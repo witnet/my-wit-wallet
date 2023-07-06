@@ -65,47 +65,53 @@ class ApiDatabase {
     }
   }
 
-  Future<void> updateCurrentWallet([String? currentWalletId]) async {
-    String walletId = currentWalletId ?? '';
-    String addressId = "0/0";
-    Map<String, dynamic> addressList = {'$currentWalletId': '0/0'};
-
-    Map<WalletPreferences, dynamic>? preferences =
-        await getCurrentWalletPreferences();
-
-    if (preferences != null) {
-      addressList = preferences[WalletPreferences.addressList];
-      addressId = currentWalletId != null
-          ? addressList[currentWalletId]
-          : preferences[WalletPreferences.addressIndex];
-      walletId = currentWalletId ?? preferences[WalletPreferences.walletId];
-    }
-
+  Future<void> updateCurrentWallet(
+      {String? currentWalletId,
+      bool isNewWallet = false,
+      bool isUpdatedWallet = false}) async {
     ApiDatabase db = Locator.instance<ApiDatabase>();
     WalletStorage walletStorage = db.walletStorage;
-    int addressIndex = int.parse(addressId.split('/').last);
-    int addressKeyType = int.parse(addressId.split('/').first);
+    Map<WalletPreferences, dynamic>? preferences =
+        await getCurrentWalletPreferences();
+    bool currentWalletNotSaved = (isUpdatedWallet || isNewWallet) &&
+        currentWalletId != null &&
+        preferences != null &&
+        preferences[WalletPreferences.addressList][currentWalletId] == null;
 
-    walletStorage.setCurrentWallet(walletId);
+    // If localStorage is deleted, it resets preferences of the wallet to default values
+    if (currentWalletNotSaved) {
+      await setWalletAndAccountInLocalStorage(currentWalletId,
+          AddressEntry(walletId: currentWalletId, addressIdx: '0', keyType: 0));
+      preferences = await getCurrentWalletPreferences();
+    }
 
+    final walletIdToSet =
+        preferences != null && !isUpdatedWallet && !isNewWallet
+            ? preferences[WalletPreferences.walletId]
+            : currentWalletId;
+
+    // set new wallet in storage
+    walletStorage.setCurrentWallet(walletIdToSet);
+
+    // get account preferences taking into account corrupted localStorage
     Map<AccountPreferences, dynamic> accountPreferences = getUpdatedAccountInfo(
-        AccountPreferencesParams(walletId, addressIndex, addressList,
+        AccountPreferencesParams(walletIdToSet, preferences,
             walletStorage.currentWallet.externalAccounts));
 
+    // set new current wallet and account in local storage
+    if (isNewWallet || isUpdatedWallet && currentWalletId != null) {
+      await setWalletAndAccountInLocalStorage(
+          walletIdToSet,
+          AddressEntry(
+              walletId: walletIdToSet,
+              addressIdx: accountPreferences[AccountPreferences.addressIndex],
+              keyType: 0));
+    }
+    // set account in storage
     setCurrentAddressInStorage(
-        walletId,
+        walletIdToSet,
         accountPreferences[AccountPreferences.address],
         accountPreferences[AccountPreferences.addressList]);
-
-    // if currentWalletId exists, preferences should be re-written in local storage
-    if (currentWalletId != null) {
-      setWalletAndAccountInLocalStorage(
-          currentWalletId,
-          AddressEntry(
-              walletId: currentWalletId,
-              addressIdx: accountPreferences[AccountPreferences.addressIndex],
-              keyType: addressKeyType));
-    }
   }
 
   Future<Map<WalletPreferences, dynamic>?> getCurrentWalletPreferences() async {
@@ -114,8 +120,10 @@ class ApiDatabase {
         await ApiPreferences.getCurrentAddress(walletId ?? '');
     Map<String, dynamic>? addressList =
         await ApiPreferences.getCurrentAddressList();
-    bool hasSavedPrefs =
-        walletId != null && addressIndex != null && addressList != null;
+    bool hasSavedPrefs = walletId != null &&
+        addressIndex != null &&
+        addressList != null &&
+        addressList.length > 0;
     final prefs = {
       WalletPreferences.walletId: walletId,
       WalletPreferences.addressIndex: addressIndex,
@@ -219,6 +227,12 @@ class ApiDatabase {
     _wallets[wallet.name] = wallet;
     return await _processIsolate(
         method: 'add', params: {'type': 'wallet', 'value': wallet.jsonMap()});
+  }
+
+  Future<bool> deleteWallet(Wallet wallet) async {
+    return await _processIsolate(
+        method: 'delete',
+        params: {'type': 'wallet', 'value': wallet.jsonMap()});
   }
 
   Future<bool> addAccount(Account account) async {

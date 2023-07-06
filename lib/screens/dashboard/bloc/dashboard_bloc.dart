@@ -56,7 +56,8 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   void _dashboardUpdateWallet(
       DashboardUpdateWalletEvent event, Emitter<DashboardState> emit) async {
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
-    await db.updateCurrentWallet(event.currentWallet?.id);
+    await db.updateCurrentWallet(
+        currentWalletId: event.currentWallet?.id, isUpdatedWallet: true);
     emit(DashboardState(
         currentWalletId: event.currentWallet?.id ?? defaultWallet.id,
         currentAddress: event.currentAddress ?? defaultAccount.address,

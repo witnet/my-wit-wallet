@@ -126,6 +126,7 @@ ButtonThemeData buttonTheme = ButtonThemeData(
 TextButtonThemeData textButtonTheme = TextButtonThemeData(
   style: TextButton.styleFrom(
     foregroundColor: WitnetPallet.white,
+    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     textStyle: const TextStyle(
       fontFamily: 'Almarai',
       fontSize: 16,

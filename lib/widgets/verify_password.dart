@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 final _passController = TextEditingController();
 final _passFocusNode = FocusNode();
+final _showPasswordFocusNode = FocusNode();
 
 typedef void VoidCallback(String? value);
 
@@ -117,8 +118,10 @@ class VerifyPasswordState extends State<VerifyPassword>
               SizedBox(height: 8),
               InputLogin(
                 hint: 'Password',
+                autoFocus: true,
                 obscureText: true,
                 focusNode: _passFocusNode,
+                showPassFocusNode: _showPasswordFocusNode,
                 textEditingController: _passController,
                 errorText: errorText,
                 onFieldSubmitted: (String? value) async {

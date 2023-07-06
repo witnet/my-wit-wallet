@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 
 typedef void StringCallback(Enum? value);
 
@@ -32,28 +33,21 @@ class StepBar extends StatelessWidget {
     return Container(
         alignment: Alignment.center,
         child: isItemActionable
-            ? MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  child: Padding(
-                      padding: EdgeInsets.only(right: 16),
-                      child: Text(item.name.fromPascalCaseToTitle(),
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: _itemColor(
-                                  item, isItemActionable, extendedTheme)))),
-                  onTap: () => {onChanged(item)},
-                ))
-            : Padding(
-                padding: EdgeInsets.only(right: 16),
-                child: Text(item.name.fromPascalCaseToTitle(),
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: item == selectedItem
-                            ? extendedTheme.stepBarActiveColor
-                            : extendedTheme.inputIconColor))));
+            ? PaddedButton(
+                padding: EdgeInsets.zero,
+                text: item.name.fromPascalCaseToTitle(),
+                color: _itemColor(item, isItemActionable, extendedTheme),
+                onPressed: () => {onChanged(item)},
+                type: 'stepbar')
+            : PaddedButton(
+                padding: EdgeInsets.zero,
+                enabled: false,
+                color: item == selectedItem
+                    ? extendedTheme.stepBarActiveColor
+                    : extendedTheme.inputIconColor,
+                text: item.name.fromPascalCaseToTitle(),
+                onPressed: () => {},
+                type: 'stepbar'));
   }
 
   Widget build(BuildContext context) {

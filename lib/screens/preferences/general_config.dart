@@ -3,12 +3,12 @@ import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/switch.dart';
 import 'package:my_wit_wallet/bloc/theme/theme_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
+import 'package:my_wit_wallet/constants.dart';
 
 class GeneralConfig extends StatefulWidget {
   GeneralConfig({Key? key}) : super(key: key);
@@ -23,13 +23,14 @@ enum ConfigSteps {
 
 class _GeneralConfigState extends State<GeneralConfig> {
   bool displayDarkMode = false;
-  PackageInfo? packageInfo;
+  FocusNode _switchThemeFocusNode = FocusNode();
+  bool _isThemeSwitchFocus = false;
 
   @override
   void initState() {
     super.initState();
+    _switchThemeFocusNode.addListener(_handleFocus);
     _getTheme();
-    _getPackageInfo();
   }
 
   @override
@@ -37,8 +38,10 @@ class _GeneralConfigState extends State<GeneralConfig> {
     super.dispose();
   }
 
-  Future<void> _getPackageInfo() async {
-    packageInfo = await PackageInfo.fromPlatform();
+  void _handleFocus() {
+    setState(() {
+      _isThemeSwitchFocus = _switchThemeFocusNode.hasFocus;
+    });
   }
 
   Future<void> _getTheme() async {
@@ -57,6 +60,8 @@ class _GeneralConfigState extends State<GeneralConfig> {
   Widget themeWidget(heigh, context) {
     return Row(children: [
       CustomSwitch(
+          focusNode: _switchThemeFocusNode,
+          isFocused: _isThemeSwitchFocus,
           checked: displayDarkMode,
           primaryLabel: 'Dark Mode',
           secondaryLabel: 'Light Mode',
@@ -77,6 +82,7 @@ class _GeneralConfigState extends State<GeneralConfig> {
     BlocProvider.of<DashboardBloc>(context).add(DashboardResetEvent());
     BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
     BlocProvider.of<LoginBloc>(context).add(LoginLogoutEvent());
+    Navigator.of(context).popUntil((route) => route.isFirst);
     Navigator.pushReplacementNamed(context, '/');
   }
 
@@ -84,33 +90,35 @@ class _GeneralConfigState extends State<GeneralConfig> {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      SizedBox(height: 16),
-      Text(
-        'Theme',
-        style: theme.textTheme.titleSmall,
-      ),
-      themeWidget(deviceSize.height * 0.25, context),
-      SizedBox(height: 16),
-      Text(
-        'Lock your wallet',
-        style: theme.textTheme.titleSmall,
-      ),
-      Container(
-        width: 150,
-        height: 80,
-        child: PaddedButton(
-            padding: EdgeInsets.only(bottom: 16, top: 16),
-            text: 'Lock wallet',
-            type: 'primary',
-            enabled: true,
-            onPressed: () => _logOut()),
-      ),
-      SizedBox(height: 16),
-      Text(
-        packageInfo != null ? 'Version ${packageInfo!.version}' : '',
-        style: theme.textTheme.titleSmall,
-      )
-    ]);
+    return Padding(
+        padding: EdgeInsets.only(left: 8, right: 8),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          SizedBox(height: 16),
+          Text(
+            'Theme',
+            style: theme.textTheme.titleSmall,
+          ),
+          themeWidget(deviceSize.height * 0.25, context),
+          SizedBox(height: 16),
+          Text(
+            'Lock your wallet',
+            style: theme.textTheme.titleSmall,
+          ),
+          Container(
+            width: 150,
+            height: 80,
+            child: PaddedButton(
+                padding: EdgeInsets.only(bottom: 16, top: 16),
+                text: 'Lock wallet',
+                type: 'primary',
+                enabled: true,
+                onPressed: () => _logOut()),
+          ),
+          SizedBox(height: 16),
+          Text(
+            'Version $VERSION_NUMBER',
+            style: theme.textTheme.titleSmall,
+          )
+        ]));
   }
 }
