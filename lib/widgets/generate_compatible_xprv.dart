@@ -72,9 +72,6 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
     }
   }
 
-  // ignore: todo
-  // TODO[#24]: Use formz model to validate password
-
   bool validate({bool force = false}) {
     if (this.mounted) {
       setState(() {
@@ -111,7 +108,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    _passConfirmFocusNode.addListener(() => {validate()});
+    _passConfirmFocusNode.addListener(() => validate());
     _passFocusNode.addListener(() => validate());
 
     final theme = Theme.of(context);

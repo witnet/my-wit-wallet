@@ -16,7 +16,7 @@ import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
-import 'package:my_wit_wallet/widgets/validations/login_input.dart';
+import 'package:my_wit_wallet/widgets/validations/password_input.dart';
 
 class LoginScreen extends StatefulWidget {
   static final route = '/';
@@ -29,7 +29,7 @@ class LoginScreen extends StatefulWidget {
 
 class LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
-  LoginInput? _password;
+  PasswordInput? _password;
   bool isLoading = false;
   String? _passwordInputErrorText;
   Future<WalletStorage>? _loadWallets;
@@ -146,7 +146,7 @@ class LoginScreenState extends State<LoginScreen>
         onChanged: (String? value) {
           if (mounted) {
             setState(() {
-              _password = LoginInput.dirty(value: value!);
+              _password = PasswordInput.dirty(value: value!);
             });
           }
         },

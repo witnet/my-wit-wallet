@@ -12,6 +12,7 @@ import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/widgets/select.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_wit_wallet/widgets/validations/password_input.dart';
 import 'dart:io' show Platform;
 
 final _passController = TextEditingController();
@@ -41,7 +42,7 @@ class EnterEncryptedXprvCard extends StatefulWidget {
 class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     with TickerProviderStateMixin {
   String xprv = '';
-  String _password = '';
+  PasswordInput? _password;
   String? decryptedLocalXprv;
   bool isValidPassword = false;
   bool isXprvValid = false;
@@ -49,7 +50,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   int numLines = 0;
   bool _xprvVerified = false;
   bool xprvVerified() => _xprvVerified;
-  String? errorText;
+  String? _errorText;
   String? _errorXprvText;
   bool isScanQrFocused = false;
   String _selectedOrigin = ImportOrigin.fromMyWitWallet.name;
@@ -94,7 +95,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
 
   void setPassword(String password) {
     setState(() {
-      _password = password;
+      PasswordInput.dirty(value: password);
     });
   }
 
@@ -140,7 +141,16 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
       style: theme.textTheme.displayMedium,
       maxLines: 3,
       controller: _textController,
-      onSubmitted: (value) => {_passFocusNode.requestFocus()},
+      onSubmitted: (value) => {
+        if (_xprvType == CreateWalletType.encryptedXprv)
+          {_passFocusNode.requestFocus()}
+        else
+          {
+            // hide keyboard
+            FocusManager.instance.primaryFocus?.unfocus(),
+            nextAction(),
+          }
+      },
       onChanged: (String e) {
         setState(() {
           _errorXprvText = null;
@@ -161,16 +171,20 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   }
 
   void nextAction() async {
-    await validateXprv(xprv, _password);
-    if (validate(force: true)) {
-      Locator.instance<ApiCreateWallet>().setSeed(decryptedLocalXprv!, 'xprv');
-      Locator.instance<ApiCreateWallet>()
-          .setWalletType(xprvTypeToWalletType[_xprvType] ?? WalletType.hd);
-      CreateWalletType type =
-          BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
-      BlocProvider.of<CreateWalletBloc>(context)
-          .add(NextCardEvent(type, data: {}));
-    }
+    CreateWalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
+    await validateXprv(xprv, _password ?? PasswordInput.dirty())
+        .whenComplete(() => {
+              if (validate(force: true))
+                {
+                  Locator.instance<ApiCreateWallet>()
+                      .setSeed(decryptedLocalXprv!, 'xprv'),
+                  Locator.instance<ApiCreateWallet>().setWalletType(
+                      xprvTypeToWalletType[_xprvType] ?? WalletType.hd),
+                  BlocProvider.of<CreateWalletBloc>(context)
+                      .add(NextCardEvent(type, data: {})),
+                }
+            });
   }
 
   NavAction prev() {
@@ -187,7 +201,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     );
   }
 
-  Future validateXprv(String xprvString, String password) async {
+  Future validateXprv(String xprvString, PasswordInput password) async {
     ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
     String? xprvDecripted;
     try {
@@ -195,8 +209,8 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
       // Decript localXprv
       int xprvLength = xprvString.length;
       if (xprvLength == 293 && _xprvType == CreateWalletType.encryptedXprv) {
-        xprvDecripted =
-            await apiCrypto.decryptXprv(xprv: xprvString, password: password);
+        xprvDecripted = await apiCrypto.decryptXprv(
+            xprv: xprvString, password: password.value);
       } else if (xprvLength == 117 && _xprvType == CreateWalletType.xprv) {
         xprvDecripted = await apiCrypto.verifiedXprv(xprv: xprvString);
       }
@@ -214,22 +228,28 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   bool validate({force = false}) {
     if (this.mounted) {
       setState(() {
-        errorText = null;
+        _errorText = null;
+        _errorXprvText = null;
       });
-      if (force || (!_passFocusNode.hasFocus && !_textFocusNode.hasFocus)) {
-        if (_password.isEmpty && _xprvType == CreateWalletType.encryptedXprv) {
+      if ((force || (!_passFocusNode.hasFocus && !_textFocusNode.hasFocus))) {
+        // TODO: Create formz validation for xprv
+        if (!isXprvValid) {
           setState(() {
-            errorText = 'Please input a password';
-          });
-        } else if (force && !isXprvValid) {
-          setState(() {
-            errorText = 'Invalid Xprv or password';
-            _errorXprvText = 'Invalid Xprv';
+            _errorXprvText = _xprvType == CreateWalletType.encryptedXprv
+                ? 'Invalid Xprv or password'
+                : 'Invalid Xprv';
+            _errorText = _xprvType == CreateWalletType.encryptedXprv
+                ? 'Invalid Xprv or password'
+                : null;
           });
         }
       }
     }
-    return errorText != null ? false : true;
+    if (_xprvType == CreateWalletType.encryptedXprv) {
+      return _password != null && _password!.valid && _errorXprvText == null;
+    } else {
+      return _errorXprvText == null;
+    }
   }
 
   Widget _buildPasswordField() {
@@ -238,7 +258,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
       focusNode: _passFocusNode,
       textEditingController: _passController,
       obscureText: true,
-      errorText: errorText,
+      errorText: _password?.error ?? _errorText,
       showPassFocusNode: _showPasswordFocusNode,
       onFieldSubmitted: (String? value) {
         // hide keyboard
@@ -248,7 +268,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
       onChanged: (String? value) {
         if (this.mounted) {
           setState(() {
-            _password = value!;
+            _password = PasswordInput.dirty(value: value!);
           });
         }
       },

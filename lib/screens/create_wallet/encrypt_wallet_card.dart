@@ -1,3 +1,4 @@
+import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,8 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/widgets/validations/confirmed_password.dart';
+import 'package:my_wit_wallet/widgets/validations/password_input.dart';
 
 final _passController = TextEditingController();
 final _passFocusNode = FocusNode();
@@ -41,8 +44,9 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
   void nextAction() async {
     if (validate(force: true)) {
       // set masterKey
-      Locator.instance<ApiCreateWallet>().setPassword(_password);
-      await Locator.instance<ApiDatabase>().setPassword(newPassword: _password);
+      Locator.instance<ApiCreateWallet>().setPassword(_password!.value);
+      await Locator.instance<ApiDatabase>()
+          .setPassword(newPassword: _password!.value);
       CreateWalletType type =
           BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
       BlocProvider.of<CreateWalletBloc>(context)
@@ -64,13 +68,13 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     );
   }
 
-  String _password = '';
-  String _confirmPassword = '';
+  PasswordInput? _password;
+  ConfirmedPassword? _confirmPassword;
   String? errorText;
 
   void setPassword(String password) {
     setState(() {
-      _password = password;
+      _password = PasswordInput.dirty(value: password);
     });
   }
 
@@ -92,9 +96,6 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     super.dispose();
   }
 
-  // ignore: todo
-  // TODO[#24]: Use formz model to validate password
-
   bool validate({force = false}) {
     if (this.mounted) {
       if (force ||
@@ -102,17 +103,12 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
               !_passFocusNode.hasFocus &&
               !_showPassFocusNode.hasFocus &&
               !_showPassConfirmedFocusNode.hasFocus)) {
-        setState(() {
-          errorText = null;
-        });
-        if (_password.isEmpty && _confirmPassword.isEmpty) {
-          setState(() {
-            errorText = 'Please input a password';
-          });
-        } else if (_password != _confirmPassword) {
-          setState(() {
-            errorText = 'Password Mismatch';
-          });
+        if (_password != null && _confirmPassword != null) {
+          final validInputs = <FormzInput>[
+            _password!,
+            _confirmPassword!,
+          ];
+          return Formz.validate(validInputs).isValid;
         }
       }
     }
@@ -162,6 +158,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                 focusNode: _passFocusNode,
                 showPassFocusNode: _showPassFocusNode,
                 textEditingController: _passController,
+                errorText: _password?.error ?? null,
                 obscureText: true,
                 onFieldSubmitted: (String? value) {
                   _passConfirmFocusNode.requestFocus();
@@ -169,7 +166,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                 onChanged: (String? value) {
                   if (this.mounted) {
                     setState(() {
-                      _password = value!;
+                      _password = PasswordInput.dirty(value: value!);
                     });
                   }
                 },
@@ -186,7 +183,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                 focusNode: _passConfirmFocusNode,
                 showPassFocusNode: _showPassConfirmedFocusNode,
                 textEditingController: _passConfirmController,
-                errorText: errorText,
+                errorText: _confirmPassword?.error ?? null,
                 onFieldSubmitted: (String? value) {
                   // hide keyboard
                   FocusManager.instance.primaryFocus?.unfocus();
@@ -195,7 +192,9 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                 onChanged: (String? value) {
                   if (this.mounted) {
                     setState(() {
-                      _confirmPassword = value!;
+                      _confirmPassword = ConfirmedPassword.dirty(
+                          original: _password ?? PasswordInput.pure(),
+                          value: value!);
                     });
                   }
                 },

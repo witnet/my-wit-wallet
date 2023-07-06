@@ -4,6 +4,7 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/widgets/validations/password_input.dart';
 
 final _passController = TextEditingController();
 final _passFocusNode = FocusNode();
@@ -22,17 +23,17 @@ class VerifyPassword extends StatefulWidget {
 
 class VerifyPasswordState extends State<VerifyPassword>
     with TickerProviderStateMixin {
-  String _password = '';
+  PasswordInput? _password;
   bool isLoading = false;
   bool isValidPassword = false;
+  String? validPasswordError;
   String? xprv;
-  String? errorText;
   String? localEncryptedXprv =
       Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.xprv;
 
   void setPassword(String password) {
     setState(() {
-      _password = password;
+      _password = PasswordInput.dirty(value: password);
     });
   }
 
@@ -51,7 +52,8 @@ class VerifyPasswordState extends State<VerifyPassword>
     ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
     String? xprvDecripted;
     try {
-      String hashPassword = await apiCrypto.hashPassword(password: _password);
+      String hashPassword =
+          await apiCrypto.hashPassword(password: _password!.value);
       xprvDecripted = await apiCrypto.decryptXprv(
           xprv: localEncryptedXprv ?? '', password: hashPassword);
       setState(() => {xprv = xprvDecripted, isValidPassword = true});
@@ -60,29 +62,25 @@ class VerifyPasswordState extends State<VerifyPassword>
     }
   }
 
-  // ignore: todo
-  // TODO[#24]: Use formz model to validate password
-
   bool validate({bool force = false}) {
     if (this.mounted) {
+      setState(() {
+        validPasswordError = null;
+      });
       if (force || !_passFocusNode.hasFocus) {
-        setState(() {
-          errorText = null;
-        });
-        if (_password.isEmpty) {
+        if (_password != null && _password!.invalid) {
           setState(() {
-            errorText = 'Please input your wallet password';
             if (force) isLoading = false;
           });
         } else if (force && !isValidPassword) {
           setState(() {
-            errorText = 'Wrong password';
+            validPasswordError = 'Wrong password';
             isLoading = false;
           });
         }
       }
     }
-    return errorText != null ? false : true;
+    return validPasswordError == null && (_password!.valid) ? true : false;
   }
 
   Future<void> _verify() async {
@@ -122,7 +120,7 @@ class VerifyPasswordState extends State<VerifyPassword>
                 focusNode: _passFocusNode,
                 showPassFocusNode: _showPasswordFocusNode,
                 textEditingController: _passController,
-                errorText: errorText,
+                errorText: _password?.error ?? validPasswordError,
                 onFieldSubmitted: (String? value) async {
                   FocusManager.instance.primaryFocus?.unfocus();
                   await _verify();
@@ -130,7 +128,7 @@ class VerifyPasswordState extends State<VerifyPassword>
                 onChanged: (String? value) {
                   if (this.mounted) {
                     setState(() {
-                      _password = value!;
+                      _password = PasswordInput.dirty(value: value!);
                     });
                   }
                 },
