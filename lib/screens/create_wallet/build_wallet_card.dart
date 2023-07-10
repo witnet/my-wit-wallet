@@ -1,21 +1,23 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:my_wit_wallet/screens/login/view/login_screen.dart';
-import 'package:my_wit_wallet/widgets/snack_bars.dart';
-import 'package:witnet/utils.dart';
+import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
-import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
+import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
+import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
+import 'package:my_wit_wallet/screens/login/view/login_screen.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/animated_numeric_text.dart';
 import 'package:my_wit_wallet/widgets/auto_size_text.dart';
-import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
-import 'package:my_wit_wallet/shared/locator.dart';
-import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
+import 'package:my_wit_wallet/widgets/snack_bars.dart';
+import 'package:witnet/utils.dart';
 
 typedef void VoidCallback(NavAction? value);
 typedef void BooleanCallback(bool value);
@@ -31,6 +33,7 @@ class BuildWalletCard extends StatefulWidget {
       required VoidCallback this.prevAction,
       required BooleanCallback this.hideButton})
       : super(key: key);
+
   BuildWalletCardState createState() => BuildWalletCardState();
 }
 
@@ -44,15 +47,16 @@ class BuildWalletCardState extends State<BuildWalletCard>
   int currentAddressCount = 0;
   int currentTransactionCount = 0;
   static const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
+
   void prevAction() {
-    WalletType type =
-        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    CreateWalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void nextAction() {
-    WalletType type =
-        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    CreateWalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
     BlocProvider.of<CreateWalletBloc>(context)
         .add(NextCardEvent(type, data: {}));
   }
@@ -95,7 +99,10 @@ class BuildWalletCardState extends State<BuildWalletCard>
         .addPostFrameCallback((_) => widget.hideButton(true));
 
     ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
+    acw.walletType = WalletType.single;
     BlocProvider.of<CryptoBloc>(context).add(CryptoInitializeWalletEvent(
+        walletType: acw.walletType ?? WalletType.hd,
+        //acw.walletType,
         id: acw.walletName,
         walletName: acw.walletName,
         keyData: acw.seedData!,
@@ -149,6 +156,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
     if (acw.walletName != '') {
       BlocProvider.of<CryptoBloc>(context).add(
         CryptoInitializeWalletEvent(
+            walletType: acw.walletType ?? WalletType.single,
             id: acw.walletName,
             walletName: acw.walletName,
             keyData: acw.seedData!,

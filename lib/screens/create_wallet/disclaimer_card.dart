@@ -50,10 +50,11 @@ class DisclaimerCardState extends State<DisclaimerCard>
   }
 
   void prevAction() {
-    WalletType type =
-        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    CreateWalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
     LoginStatus status = BlocProvider.of<LoginBloc>(context).state.status;
-    if (type == WalletType.newWallet && status != LoginStatus.LoginSuccess) {
+    if (type == CreateWalletType.newWallet &&
+        status != LoginStatus.LoginSuccess) {
       Navigator.pushNamed(context, '/');
     } else {
       BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
@@ -61,8 +62,8 @@ class DisclaimerCardState extends State<DisclaimerCard>
   }
 
   void nextAction() {
-    WalletType type =
-        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    CreateWalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
     BlocProvider.of<CreateWalletBloc>(context)
         .add(NextCardEvent(type, data: {}));
   }

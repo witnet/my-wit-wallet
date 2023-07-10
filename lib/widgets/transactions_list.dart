@@ -16,8 +16,10 @@ class TransactionsList extends StatefulWidget {
   final ThemeData themeData;
   final VoidCallback setDetails;
   final ValueTransferInfo? details;
+  // final MintInfo? mints;
   final Map<int, Account> externalAddresses;
   final Map<int, Account> internalAddresses;
+  final Account? nodeAccount;
   final List<ValueTransferInfo> valueTransfers;
   TransactionsList(
       {Key? key,
@@ -26,7 +28,8 @@ class TransactionsList extends StatefulWidget {
       required this.setDetails,
       required this.internalAddresses,
       required this.externalAddresses,
-      required this.valueTransfers})
+      required this.valueTransfers,
+      this.nodeAccount})
       : super(key: key);
 
   @override
@@ -37,6 +40,7 @@ class TransactionsListState extends State<TransactionsList> {
   List<String?> externalAddresses = [];
   List<String?> internalAddresses = [];
   ValueTransferInfo? transactionDetails;
+  String? nodeAddress;
   final ScrollController _scroller = ScrollController();
   @override
   void initState() {

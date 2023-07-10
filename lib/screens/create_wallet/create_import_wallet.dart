@@ -53,17 +53,19 @@ class CreateImportWalletState extends State<CreateImportWallet> {
   }
 
   void createWallet() {
-    Locator.instance<ApiCreateWallet>().setWalletType(WalletType.newWallet);
+    Locator.instance<ApiCreateWallet>()
+        .setWalletType(CreateWalletType.newWallet);
     Navigator.pushReplacementNamed(context, CreateWalletScreen.route);
     BlocProvider.of<CreateWalletBloc>(context)
-        .add(ResetEvent(WalletType.newWallet));
+        .add(ResetEvent(CreateWalletType.newWallet));
   }
 
   void importWallet() {
-    Locator.instance<ApiCreateWallet>().setWalletType(WalletType.imported);
+    Locator.instance<ApiCreateWallet>()
+        .setWalletType(CreateWalletType.imported);
     Navigator.pushReplacementNamed(context, CreateWalletScreen.route);
     BlocProvider.of<CreateWalletBloc>(context)
-        .add(ResetEvent(WalletType.imported));
+        .add(ResetEvent(CreateWalletType.imported));
   }
 
   Action prev() {

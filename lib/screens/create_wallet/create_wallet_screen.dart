@@ -167,8 +167,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
       ),
       CreateWalletStatus.ConfirmMnemonic: ConfirmMnemonicCard(
           nextAction: _setNextAction,
-          prevAction: _setPrevAction,
-          clearActions: _setClearActions),
+          prevAction: _setPrevAction),
       CreateWalletStatus.WalletDetail: WalletDetailCard(
           nextAction: _setNextAction,
           prevAction: _setPrevAction,

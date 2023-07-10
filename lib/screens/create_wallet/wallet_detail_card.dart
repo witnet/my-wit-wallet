@@ -25,16 +25,18 @@ class WalletDetailCard extends StatefulWidget {
 class WalletDetailCardState extends State<WalletDetailCard>
     with TickerProviderStateMixin {
   void prevAction() {
-    WalletType type =
-        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    CreateWalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void nextAction() {
     if (validate(force: true)) {
       Locator.instance.get<ApiCreateWallet>().setWalletName(_walletName);
-      WalletType type =
-          BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+      Locator.instance
+          .get<ApiCreateWallet>();
+      CreateWalletType type =
+          BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
       BlocProvider.of<CreateWalletBloc>(context)
           .add(NextCardEvent(type, data: {}));
     }
@@ -57,7 +59,9 @@ class WalletDetailCardState extends State<WalletDetailCard>
   late TextEditingController _nameController;
   late TextEditingController _descController;
   final _nameFocusNode = FocusNode();
+  final _descriptionFocusNode = FocusNode();
   String _walletName = '';
+  String _walletDescription = '';
   String? errorText;
   String? defaultWalletName;
   @override
@@ -86,7 +90,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
   }
 
   // ignore: todo
-  // TODO[#24]: Use formz model to validate name
+  // TODO[#24]: Use formz model to validate name and description
 
   bool validate({force = false}) {
     if (this.mounted) {
@@ -116,6 +120,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
           ),
           SizedBox(height: 8),
           TextField(
+            autofocus: true,
             style: theme.textTheme.bodyText1,
             decoration: InputDecoration(
               hintText: 'My first million Wits',
@@ -123,7 +128,10 @@ class WalletDetailCardState extends State<WalletDetailCard>
             ),
             controller: _nameController,
             focusNode: _nameFocusNode,
-            onSubmitted: (_value) => nextAction(),
+            onSubmitted: (String value) => {
+              // hide keyboard
+              _descriptionFocusNode.requestFocus()
+            },
             onChanged: (String value) {
               setState(() {
                 _walletName = value;
@@ -149,14 +157,14 @@ class WalletDetailCardState extends State<WalletDetailCard>
           height: 16,
         ),
         Text(
-          'You can better keep track of your different wallets by giving each its own name.',
+          'You can better keep track of your different wallets by giving each its own name and description.',
           style: theme.textTheme.bodyLarge, //Textstyle
         ), //Text
         SizedBox(
           height: 8,
         ), //SizedBox
         Text(
-          'Wallet names make it easy to quickly change from one wallet to another.',
+          'Wallet names make it easy to quickly change from one wallet to another. Wallet descriptions can be more elaborate and rather describe the purpose of a wallet or any other metadata.',
           style: theme.textTheme.bodyLarge, //Textstyle
         ),
         SizedBox(

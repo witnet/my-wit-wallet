@@ -42,8 +42,8 @@ class ImportedOptionState extends State<SelectImportedOption> {
   }
 
   void prevAction() {
-    WalletType type =
-        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    CreateWalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
     LoginStatus status = BlocProvider.of<LoginBloc>(context).state.status;
     if (status != LoginStatus.LoginSuccess) {
       Navigator.pushNamed(context, '/');
@@ -54,21 +54,23 @@ class ImportedOptionState extends State<SelectImportedOption> {
 
   void nextSeedAction() {
     widget.clearActions(true);
-    Locator.instance<ApiCreateWallet>().setWalletType(WalletType.mnemonic);
+    Locator.instance<ApiCreateWallet>()
+        .setWalletType(CreateWalletType.mnemonic);
     BlocProvider.of<CreateWalletBloc>(context)
-        .add(ResetEvent(WalletType.mnemonic));
+        .add(ResetEvent(CreateWalletType.mnemonic));
     BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(
-        Locator.instance<ApiCreateWallet>().walletType,
+        Locator.instance<ApiCreateWallet>().createWalletType,
         data: {}));
   }
 
   void nextXprvAction() {
     widget.clearActions(true);
-    Locator.instance<ApiCreateWallet>().setWalletType(WalletType.encryptedXprv);
+    Locator.instance<ApiCreateWallet>()
+        .setWalletType(CreateWalletType.encryptedXprv);
     BlocProvider.of<CreateWalletBloc>(context)
-        .add(ResetEvent(WalletType.encryptedXprv));
+        .add(ResetEvent(CreateWalletType.encryptedXprv));
     BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(
-        Locator.instance<ApiCreateWallet>().walletType,
+        Locator.instance<ApiCreateWallet>().createWalletType,
         data: {}));
   }
 

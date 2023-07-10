@@ -3,10 +3,10 @@ import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
 
 import 'package:my_wit_wallet/constants.dart';
-
-import '../../shared/api_database.dart';
-import '../../shared/locator.dart';
-import '../../util/storage/database/account.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/util/storage/database/transaction_repository.dart';
 
 enum ExplorerQuery {
   hash,
@@ -233,5 +233,18 @@ class ApiExplorer {
   Future<ValueTransferInfo> getVtt(String transactionId) async {
     var result = await hash(transactionId);
     return result as ValueTransferInfo;
+  }
+
+  Future<MintEntry> getMint(BlockInfo blockInfo) async {
+    String _hash = blockInfo.blockID;
+    var result = await await Locator.instance.get<ApiExplorer>().hash(_hash);
+
+    /// create a MintEntry from the BlockInfo and MintInfo
+    BlockDetails blockDetails = result as BlockDetails;
+    MintEntry mintEntry = MintEntry.fromBlockMintInfo(
+      blockInfo,
+      blockDetails.mintInfo,
+    );
+    return mintEntry;
   }
 }
