@@ -12,6 +12,7 @@ class CryptoInitializeWalletEvent extends CryptoEvent {
   final String keyData;
   final String seedSource;
   final String password;
+  final WalletType walletType;
 
   CryptoInitializeWalletEvent(
       {required this.id,
@@ -19,6 +20,7 @@ class CryptoInitializeWalletEvent extends CryptoEvent {
       required this.keyData,
       required this.seedSource,
       required this.password,
+      required this.walletType,
       int addressCount = 10});
 
   @override

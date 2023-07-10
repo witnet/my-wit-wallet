@@ -162,8 +162,8 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   }
 
   void prevAction() {
-    WalletType type =
-        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    CreateWalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
@@ -171,8 +171,8 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     await validateXprv(xprv, _password);
     if (validate(force: true)) {
       Locator.instance<ApiCreateWallet>().setSeed(decryptedLocalXprv!, 'xprv');
-      WalletType type =
-          BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+      CreateWalletType type =
+          BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
       BlocProvider.of<CreateWalletBloc>(context)
           .add(NextCardEvent(type, data: {}));
     }

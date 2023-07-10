@@ -74,42 +74,48 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
         listener: (BuildContext context, ExplorerState state) {},
         child:
             BlocBuilder<ExplorerBloc, ExplorerState>(builder: (context, state) {
-          return PaddedButton(
-            onPressed: () async {
-              ApiDatabase db = Locator.instance.get<ApiDatabase>();
+          ApiDatabase db = Locator.instance.get<ApiDatabase>();
+          Wallet currentWallet = db.walletStorage.currentWallet;
+          bool isHdWallet = currentWallet.walletType == WalletType.hd;
+          if (isHdWallet) {
+            return PaddedButton(
+              onPressed: () async {
+                ApiDatabase db = Locator.instance.get<ApiDatabase>();
 
-              Wallet currentWallet = db.walletStorage.currentWallet;
-
-              int extAccountsLength = currentWallet.externalAccounts.length;
-              Account ac =
-                  await Locator.instance.get<ApiCrypto>().generateAccount(
-                        currentWallet,
-                        KeyType.external,
-                        extAccountsLength,
-                      );
-              setState(() {
-                currentWallet.externalAccounts[extAccountsLength] = ac;
-              });
-              await db.addAccount(ac);
-              await db.loadWalletsDatabase();
-              await ApiPreferences.setCurrentAddress(AddressEntry(
-                walletId: ac.walletId,
-                addressIdx: ac.path.split('/').last,
-                keyType: 0,
-              ));
-              BlocProvider.of<DashboardBloc>(context)
-                  .add(DashboardUpdateWalletEvent(
-                currentWallet: currentWallet,
-                currentAddress: ac.address,
-              ));
-              BlocProvider.of<ExplorerBloc>(context)
-                  .add(SyncSingleAccountEvent(ExplorerStatus.singleSync, ac));
-            },
-            padding: EdgeInsets.only(top: 8),
-            text: "Generate new Address",
-            type: 'secondary',
-            enabled: state.status != ExplorerStatus.singleSync,
-          );
+                Wallet currentWallet = db.walletStorage.currentWallet;
+                int extAccountsLength = currentWallet.externalAccounts.length;
+                Account ac =
+                    await Locator.instance.get<ApiCrypto>().generateAccount(
+                          currentWallet,
+                          KeyType.external,
+                          extAccountsLength,
+                        );
+                setState(() {
+                  currentWallet.externalAccounts[extAccountsLength] = ac;
+                });
+                await db.addAccount(ac);
+                await db.loadWalletsDatabase();
+                await ApiPreferences.setCurrentAddress(AddressEntry(
+                  walletId: ac.walletId,
+                  addressIdx: int.parse(ac.path.split('/').last),
+                  keyType: '0',
+                ));
+                BlocProvider.of<DashboardBloc>(context)
+                    .add(DashboardUpdateWalletEvent(
+                  currentWallet: currentWallet,
+                  currentAddress: ac.address,
+                ));
+                BlocProvider.of<ExplorerBloc>(context)
+                    .add(SyncSingleAccountEvent(ExplorerStatus.singleSync, ac));
+              },
+              padding: EdgeInsets.only(top: 8),
+              text: "Generate new Address",
+              type: 'secondary',
+              enabled: state.status != ExplorerStatus.singleSync,
+            );
+          } else {
+            return Container();
+          }
         }),
       ),
     ];

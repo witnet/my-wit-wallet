@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:witnet/crypto.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
-import 'package:my_wit_wallet/shared/locator.dart';
-import 'bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:witnet/crypto.dart';
+
+import 'bloc/create_wallet_bloc.dart';
 
 //genius merge win culture lemon remember work native omit digital canal update
 typedef void VoidCallback(NavAction? value);
@@ -12,6 +13,7 @@ typedef void VoidCallback(NavAction? value);
 class EnterMnemonicCard extends StatefulWidget {
   final Function nextAction;
   final Function prevAction;
+
   EnterMnemonicCard({
     Key? key,
     required VoidCallback this.nextAction,
@@ -72,15 +74,15 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
   }
 
   void prevAction() {
-    WalletType type =
-        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    CreateWalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void nextAction() {
     Locator.instance<ApiCreateWallet>().setSeed(mnemonic, 'mnemonic');
     BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(
-        Locator.instance<ApiCreateWallet>().walletType,
+        Locator.instance<ApiCreateWallet>().createWalletType,
         data: {}));
   }
 

@@ -2,20 +2,23 @@ import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 
+import '../../../util/storage/database/wallet.dart';
+
 class ApiCreateWallet {
   String walletName = "";
   String? password;
   late String? seedData;
   late String? seedSource;
-  late WalletType walletType;
+  late CreateWalletType createWalletType;
+  late WalletType? walletType;
 
   void setSeed(String data, String source) {
     seedData = data;
     seedSource = source;
   }
 
-  void setWalletType(WalletType type) {
-    walletType = type;
+  void setWalletType(CreateWalletType type) {
+    createWalletType = type;
   }
 
   void setPassword(String value) => password = value;

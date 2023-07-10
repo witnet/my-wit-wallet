@@ -1,22 +1,24 @@
+import 'dart:core';
+import 'dart:isolate';
+
+import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/storage/database/transaction_repository.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
+import 'package:witnet/constants.dart';
 import 'package:witnet/crypto.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/utils.dart';
-import 'package:my_wit_wallet/constants.dart';
-import 'package:my_wit_wallet/shared/api_database.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
+import 'package:witnet/witnet.dart';
+
 import 'account.dart';
 import 'balance_info.dart';
-import 'dart:core';
-import 'dart:isolate';
 
-import 'package:witnet/constants.dart';
-import 'package:witnet/witnet.dart';
-import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
-import 'package:my_wit_wallet/shared/locator.dart';
-
-enum KeyType { internal, external }
+enum KeyType { internal, external, master }
 
 class PaginatedData {
   final int totalPages;
@@ -25,8 +27,15 @@ class PaginatedData {
   PaginatedData({required this.totalPages, required this.data});
 }
 
+enum WalletType {
+  unknown,
+  hd,
+  single,
+}
+
 class Wallet {
   Wallet({
+    required this.walletType,
     required this.name,
     this.xprv,
     this.externalXpub,
@@ -46,6 +55,7 @@ class Wallet {
     });
   }
 
+  final WalletType walletType;
   late String id;
   final String name;
   late List<String?> txHashes;
@@ -62,6 +72,7 @@ class Wallet {
 
   Map<int, Account> externalAccounts = {};
   Map<int, Account> internalAccounts = {};
+  Account? masterAccount;
 
   Map<String, Account> accountMap(KeyType keyType) {
     Map<String, Account> _accounts = {};
@@ -75,6 +86,9 @@ class Wallet {
         orderAccountsByIndex(externalAccounts).forEach((index, account) {
           _accounts[account.address] = account;
         });
+        break;
+      case KeyType.master:
+        _accounts[masterAccount!.address] = masterAccount!;
         break;
     }
     return _accounts;
@@ -99,8 +113,13 @@ class Wallet {
 
   List<String> allAddresses() {
     List<String> _addresses = [];
-    _addresses.addAll(addressList(KeyType.external));
-    _addresses.addAll(addressList(KeyType.internal));
+    if (walletType == WalletType.hd) {
+      _addresses.addAll(addressList(KeyType.external));
+      _addresses.addAll(addressList(KeyType.internal));
+    } else if (walletType == WalletType.single) {
+      _addresses.add(masterAccount!.address);
+    }
+
     return _addresses;
   }
 
@@ -127,6 +146,13 @@ class Wallet {
         if (vtt.status != 'unknown hash') _vttMap[vtt.txnHash] = vtt;
       });
     });
+
+    if (walletType == WalletType.single) {
+      masterAccount!.vtts.forEach((vtt) {
+        if (vtt.status != 'unknown hash') _vttMap[vtt.txnHash] = vtt;
+      });
+    }
+
     return _vttMap.values.toList()
       ..sort((t1, t2) => t2.txnTime.compareTo(t1.txnTime));
   }
@@ -159,11 +185,13 @@ class Wallet {
   }
 
   static Future<Wallet> fromMnemonic({
+    required WalletType walletType,
     required String name,
     required String mnemonic,
     required String password,
   }) async {
     final _wallet = Wallet(
+      walletType: walletType,
       name: name,
       txHashes: [],
       externalAccounts: {},
@@ -174,11 +202,13 @@ class Wallet {
   }
 
   static Future<Wallet> fromXprvStr({
+    required WalletType walletType,
     required String name,
     required String xprv,
     required String password,
   }) async {
     final _wallet = Wallet(
+      walletType: walletType,
       name: name,
       xprv: xprv,
       txHashes: [],
@@ -190,12 +220,14 @@ class Wallet {
   }
 
   static Future<Wallet> fromEncryptedXprv({
+    required WalletType walletType,
     required String name,
     required String xprv,
     required String password,
   }) async {
     try {
       final _wallet = Wallet(
+        walletType: walletType,
         name: name,
         xprv: xprv,
         txHashes: [],
@@ -224,6 +256,11 @@ class Wallet {
     /// The Wallet ID is the first 4 bytes of the sha256 hash of the Extended Public Key.
     this.id = bytesToHex(sha256(data: Xpub.fromXpub(externalXpub!).key))
         .substring(0, 8);
+    if (walletType == WalletType.single) {
+      masterAccount = Account(
+          walletName: name, address: xprv.address.address, path: xprv.rootPath);
+      masterAccount!.walletId = this.id;
+    }
   }
 
   void addAccount({
@@ -237,6 +274,9 @@ class Wallet {
         break;
       case KeyType.external:
         externalAccounts[index] = account;
+        break;
+      case KeyType.master:
+        masterAccount = account;
         break;
     }
   }
@@ -285,6 +325,8 @@ class Wallet {
           externalAccounts[index] = _account;
           return externalAccounts[index]!;
         }
+      case KeyType.master:
+        return masterAccount!;
     }
   }
 
@@ -298,6 +340,8 @@ class Wallet {
           return internalAccounts[index]!;
         case KeyType.external:
           return externalAccounts[index]!;
+        case KeyType.master:
+          return masterAccount!;
       }
     } catch (e) {
       return defaultAccount;
@@ -325,6 +369,10 @@ class Wallet {
         externalAccounts[index] = account;
         await db.updateAccount(account);
         return externalAccounts[index]!;
+      case KeyType.master:
+        masterAccount = account;
+        await db.updateAccount(account);
+        return masterAccount!;
     }
   }
 
@@ -344,6 +392,8 @@ class Wallet {
           _ext[value.address] = value.jsonMap();
         });
         return _ext;
+      case KeyType.master:
+        return {masterAccount!.address: masterAccount!.jsonMap()};
     }
   }
 
@@ -356,34 +406,33 @@ class Wallet {
       'internalXpub': internalXpub,
       'externalAccounts': accountMapByIndex(keyType: KeyType.external),
       'internalAccounts': accountMapByIndex(keyType: KeyType.internal),
+      'walletType': "${walletType.name}"
     };
   }
 
   factory Wallet.fromJson(Map<String, dynamic> data) {
     Map<int, Account> _externalAccounts = {};
     Map<int, Account> _internalAccounts = {};
-    if (data.containsKey('externalAccounts')) {
-      for (int i = 0; i < data['externalAccounts'].keys.length; i++) {
-        String account = data['externalAccounts'].keys.toList()[i];
-
-        _externalAccounts[i] =
-            Account.fromJson(data['externalAccounts'][account]);
-      }
-    }
-    if (data.containsKey('internalAccounts')) {
-      for (int i = 0; i < data['internalAccounts'].keys.length; i++) {
-        String account = data['internalAccounts'].keys.toList()[i];
-        _internalAccounts[i] =
-            Account.fromJson(data['internalAccounts'][account]);
-      }
-    }
 
     _externalAccounts.entries.toList();
 
     String _id =
         bytesToHex(sha256(data: Xpub.fromXpub(data['externalXpub']).key))
             .substring(0, 8);
+
+    WalletType? _walletType;
+    if (data['walletType'] != null) {
+      if (data['walletType'] == "hd") {
+        _walletType = WalletType.hd;
+      } else if (data['walletType'] == "single") {
+        _walletType = WalletType.single;
+      }
+    } else {
+      _walletType = WalletType.hd;
+    }
+
     Wallet _wallet = Wallet(
+      walletType: _walletType!,
       name: data['name'],
       xprv: data['xprv'],
       externalXpub: data['externalXpub'],
@@ -454,10 +503,16 @@ class Wallet {
   }
 
   void setAccount(Account account) {
-    if (account.keyType == KeyType.external) {
-      externalAccounts[account.index] = account;
-    } else {
-      internalAccounts[account.index] = account;
+    switch (account.keyType) {
+      case KeyType.internal:
+        internalAccounts[account.index] = account;
+        break;
+      case KeyType.external:
+        externalAccounts[account.index] = account;
+        break;
+      case KeyType.master:
+        masterAccount = account;
+        break;
     }
   }
 
@@ -469,28 +524,47 @@ class Wallet {
     internalAccounts.forEach((key, value) {
       if (value.address == address) response = true;
     });
+    if (walletType == WalletType.single) {
+      if (masterAccount!.address == address) response = true;
+    }
     return response;
   }
 
-  void setTransaction(ValueTransferInfo vtt) {
-    List<String> _extAddressList = addressList(KeyType.external);
-    List<String> _intAddressList = addressList(KeyType.internal);
-    List<String> updatedAccounts = [];
-    for (int i = 0; i < _extAddressList.length; i++) {
-      Account account = externalAccounts[i]!;
-      if (vtt.containsAddress(account.address)) {
-        account.addVtt(vtt);
-        externalAccounts[i] = account;
-        updatedAccounts.add(account.address);
-      }
-    }
-    for (int i = 0; i < _intAddressList.length; i++) {
-      Account account = internalAccounts[i]!;
-      if (vtt.containsAddress(account.address)) {
-        account.addVtt(vtt);
-        internalAccounts[i] = account;
-        updatedAccounts.add(account.address);
-      }
+  void setTransaction(dynamic transaction) {
+    switch (transaction.runtimeType) {
+      case ValueTransferInfo:
+        {
+          List<String> _extAddressList = addressList(KeyType.external);
+          List<String> _intAddressList = addressList(KeyType.internal);
+          List<String> updatedAccounts = [];
+          for (int i = 0; i < _extAddressList.length; i++) {
+            Account account = externalAccounts[i]!;
+            if (transaction.containsAddress(account.address)) {
+              account.addVtt(transaction);
+              externalAccounts[i] = account;
+              updatedAccounts.add(account.address);
+            }
+          }
+          for (int i = 0; i < _intAddressList.length; i++) {
+            Account account = internalAccounts[i]!;
+            if (transaction.containsAddress(account.address)) {
+              account.addVtt(transaction);
+              internalAccounts[i] = account;
+              updatedAccounts.add(account.address);
+            }
+          }
+        }
+        break;
+      case MintEntry:
+        {
+          if (walletType == WalletType.single) {
+            masterAccount!.mintHashes.add(transaction.blockHash);
+            masterAccount!.addMint(transaction);
+          }
+        }
+        break;
+      default:
+        break;
     }
   }
 

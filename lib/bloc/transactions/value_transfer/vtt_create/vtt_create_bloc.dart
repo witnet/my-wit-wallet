@@ -168,52 +168,47 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     utxoSelectionStrategy = strategy;
   }
 
+  void _setUtxo(Utxo utxo) {
+    if (utxo.timelock > 0) {
+      int _ts = utxo.timelock * 1000;
+      DateTime _timelock = DateTime.fromMillisecondsSinceEpoch(_ts);
+
+      int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
+      if (_timelock.millisecondsSinceEpoch > currentTimestamp) {
+        /// utxo is still locked
+      } else {
+        utxos.add(utxo);
+        balanceNanoWit += utxo.value;
+      }
+    } else if (utxo.timelock == 0) {
+      utxos.add(utxo);
+      balanceNanoWit += utxo.value;
+    }
+  }
+
   Future<Wallet> _setWalletBalance(Wallet wallet) async {
-    /// setup the external accounts
-    wallet.externalAccounts.forEach((index, account) {
-      balanceNanoWit += account.balance.availableNanoWit;
-
-      externalAddresses.add(account.address);
-
-      account.utxos.forEach((utxo) {
-        if (utxo.timelock > 0) {
-          int _ts = utxo.timelock * 1000;
-          DateTime _timelock = DateTime.fromMillisecondsSinceEpoch(_ts);
-
-          int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
-          if (_timelock.millisecondsSinceEpoch > currentTimestamp) {
-            /// utxo is still locked
-            // int timeRemaining = _timelock.millisecondsSinceEpoch - currentTimestamp;
-          } else {
-            utxos.add(utxo);
-            balanceNanoWit += utxo.value;
-          }
-        } else if (utxo.timelock == 0) {
-          utxos.add(utxo);
-          balanceNanoWit += utxo.value;
-        }
+    if (wallet.walletType == WalletType.hd) {
+      /// setup the external accounts
+      wallet.externalAccounts.forEach((index, account) {
+        externalAddresses.add(account.address);
+        account.utxos.forEach((utxo) {
+          _setUtxo(utxo);
+        });
       });
-    });
 
-    /// setup the internal accounts
-
-    wallet.internalAccounts.forEach((index, account) {
-      balanceNanoWit += account.balance.availableNanoWit;
-      internalAddresses.add(account.address);
-
-      account.utxos.forEach((utxo) {
-        if (utxo.timelock > 0) {
-          int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
-          if (utxo.timelock > currentTimestamp) {
-            /// utxo is still locked
-          } else {
-            utxos.add(utxo);
-          }
-        } else if (utxo.timelock == 0) {
-          utxos.add(utxo);
-        }
+      /// setup the internal accounts
+      wallet.internalAccounts.forEach((index, account) {
+        internalAddresses.add(account.address);
+        account.utxos.forEach((utxo) {
+          _setUtxo(utxo);
+        });
       });
-    });
+    } else {
+      /// master node
+      wallet.masterAccount!.utxos.forEach((utxo) {
+        _setUtxo(utxo);
+      });
+    }
     return wallet;
   }
 
@@ -228,24 +223,29 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       bool changeAccountSet = false;
       Wallet firstWallet = currentWallet;
 
-      for (int i = 0; i < firstWallet.internalAccounts.length; i++) {
-        if (!changeAccountSet) {
-          Account account = firstWallet.internalAccounts[i]!;
-          if (account.vttHashes.isEmpty) {
-            changeAccount = account;
-            changeAccountSet = true;
+      if (currentWallet.walletType == WalletType.hd) {
+        for (int i = 0; i < firstWallet.internalAccounts.length; i++) {
+          if (!changeAccountSet) {
+            Account account = firstWallet.internalAccounts[i]!;
+            if (account.vttHashes.isEmpty) {
+              changeAccount = account;
+              changeAccountSet = true;
+            }
           }
         }
-      }
 
-      /// did we run out of change addresses?
-      if (!changeAccountSet) {
-        ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
-        changeAccount = await apiCrypto.generateAccount(
-          firstWallet,
-          KeyType.internal,
-          internalAddresses.length,
-        );
+        /// did we run out of change addresses?
+        if (!changeAccountSet) {
+          ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
+          changeAccount = await apiCrypto.generateAccount(
+            firstWallet,
+            KeyType.internal,
+            internalAddresses.length,
+          );
+        }
+      } else {
+        /// master node
+        changeAccount = currentWallet.masterAccount!;
       }
 
       /// update the utxo pool

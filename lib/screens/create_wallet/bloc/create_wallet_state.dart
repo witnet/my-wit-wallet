@@ -23,7 +23,7 @@ enum CreateWalletStatus {
 
 class CreateWalletState extends Equatable {
   const CreateWalletState({
-    required this.walletType,
+    required this.createWalletType,
     required this.message,
     required this.xprvString,
     required this.nodeAddress,
@@ -32,14 +32,14 @@ class CreateWalletState extends Equatable {
   });
 
   final CreateWalletStatus status;
-  final WalletType walletType;
+  final CreateWalletType createWalletType;
   final String? message;
   final String? xprvString;
   final String? nodeAddress;
   final String? walletAddress;
 
   CreateWalletState copyWith({
-    WalletType? walletType,
+    CreateWalletType? walletType,
     String? message,
     String? xprvString,
     String? nodeAddress,
@@ -47,7 +47,7 @@ class CreateWalletState extends Equatable {
     CreateWalletStatus? status,
   }) {
     return CreateWalletState(
-      walletType: walletType ?? this.walletType,
+      createWalletType: walletType ?? this.createWalletType,
       xprvString: xprvString ?? this.xprvString,
       message: message ?? this.message,
       nodeAddress: nodeAddress ?? this.nodeAddress,
@@ -58,7 +58,7 @@ class CreateWalletState extends Equatable {
 
   @override
   List<Object?> get props => [
-        walletType,
+        createWalletType,
         message,
         xprvString,
         nodeAddress,

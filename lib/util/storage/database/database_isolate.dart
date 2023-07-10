@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 
+import 'package:my_wit_wallet/util/storage/database/transaction_repository.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
@@ -144,6 +145,9 @@ Future<void> _addRecord(
       break;
     case 'account':
       value = await dbService.add(Account.fromJson(params['value']));
+      break;
+    case 'mint':
+      value = await dbService.add(MintEntry.fromJson(params['value']));
       break;
     default:
       value = false;

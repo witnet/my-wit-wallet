@@ -114,6 +114,9 @@ class DashboardScreenState extends State<DashboardScreen>
         valueTransfers: vtts,
         externalAddresses: currentWallet!.externalAccounts,
         internalAddresses: currentWallet!.internalAccounts,
+        nodeAccount: currentWallet!.walletType == WalletType.single
+            ? currentWallet!.masterAccount
+            : null,
       ),
       (vtts.length > 0 && txDetails == null)
           ? NumberPaginator(

@@ -1,15 +1,18 @@
 import 'dart:isolate';
+
 import 'package:bloc/bloc.dart';
-import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
-import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:equatable/equatable.dart';
-import 'package:my_wit_wallet/shared/api_database.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-part 'create_wallet_state.dart';
+import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+
 part 'create_wallet_event.dart';
 
-enum WalletType {
+part 'create_wallet_state.dart';
+
+enum CreateWalletType {
   unset,
   imported,
   newWallet,
@@ -39,33 +42,34 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
   }
 
   CreateWalletState get initialState => CreateWalletState(
-      walletType: WalletType.imported,
+      createWalletType: CreateWalletType.imported,
       message: null,
       xprvString: null,
       nodeAddress: null,
       walletAddress: null,
       status: CreateWalletStatus.Imported);
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
+
   void _nextCardEvent(
       CreateWalletEvent event, Emitter<CreateWalletState> emit) async {
     final masterKey = await database.getKeychain();
     switch (state.status) {
       case CreateWalletStatus.Disclaimer:
         switch (event.walletType) {
-          case WalletType.imported:
+          case CreateWalletType.imported:
             break;
-          case WalletType.unset:
+          case CreateWalletType.unset:
             break;
-          case WalletType.newWallet:
+          case CreateWalletType.newWallet:
             emit(state.copyWith(status: CreateWalletStatus.GenerateMnemonic));
             break;
-          case WalletType.mnemonic:
+          case CreateWalletType.mnemonic:
             emit(state.copyWith(status: CreateWalletStatus.EnterMnemonic));
             break;
-          case WalletType.xprv:
+          case CreateWalletType.xprv:
             emit(state.copyWith(status: CreateWalletStatus.EnterXprv));
             break;
-          case WalletType.encryptedXprv:
+          case CreateWalletType.encryptedXprv:
             emit(state.copyWith(status: CreateWalletStatus.EnterEncryptedXprv));
             break;
         }
@@ -141,9 +145,9 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       CreateWalletEvent event, Emitter<CreateWalletState> emit) {
     switch (state.status) {
       case CreateWalletStatus.Disclaimer:
-        if (event.walletType == WalletType.encryptedXprv) {
+        if (event.walletType == CreateWalletType.encryptedXprv) {
           emit(state.copyWith(status: CreateWalletStatus.Imported));
-        } else if (event.walletType == WalletType.mnemonic) {
+        } else if (event.walletType == CreateWalletType.mnemonic) {
           emit(state.copyWith(status: CreateWalletStatus.Imported));
         } else {
           emit(state.copyWith(status: CreateWalletStatus.CreateImport));
@@ -165,18 +169,18 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
         break;
       case CreateWalletStatus.ConfirmMnemonic:
-        if (event.walletType == WalletType.newWallet) {
+        if (event.walletType == CreateWalletType.newWallet) {
           emit(state.copyWith(status: CreateWalletStatus.GenerateMnemonic));
         } else {
           emit(state.copyWith(status: CreateWalletStatus.EnterMnemonic));
         }
         break;
       case CreateWalletStatus.WalletDetail:
-        if (event.walletType == WalletType.newWallet) {
+        if (event.walletType == CreateWalletType.newWallet) {
           emit(state.copyWith(status: CreateWalletStatus.ConfirmMnemonic));
-        } else if (event.walletType == WalletType.encryptedXprv) {
+        } else if (event.walletType == CreateWalletType.encryptedXprv) {
           emit(state.copyWith(status: CreateWalletStatus.EnterEncryptedXprv));
-        } else if (event.walletType == WalletType.mnemonic) {
+        } else if (event.walletType == CreateWalletType.mnemonic) {
           emit(state.copyWith(status: CreateWalletStatus.EnterMnemonic));
         }
         break;
@@ -251,6 +255,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       cryptoIsolate.send(
           method: 'initializeWallet',
           params: {
+            'walletType': 'hd',
             'walletName': '_loading',
             'seed': event.xprv,
             'seedSource': 'encryptedXprv',
@@ -280,13 +285,13 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
   }
 
   _getStatus(CreateWalletEvent event) {
-    if (event.walletType == WalletType.newWallet) {
+    if (event.walletType == CreateWalletType.newWallet) {
       return CreateWalletStatus.Disclaimer;
     }
-    if (event.walletType == WalletType.unset) {
+    if (event.walletType == CreateWalletType.unset) {
       return CreateWalletStatus.CreateImport;
     }
-    if (event.walletType == WalletType.imported) {
+    if (event.walletType == CreateWalletType.imported) {
       return CreateWalletStatus.Imported;
     }
   }

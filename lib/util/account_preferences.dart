@@ -13,22 +13,25 @@ class AccountPreferencesParams {
 
 Map<AccountPreferences, dynamic> getUpdatedAccountInfo(
     AccountPreferencesParams params) {
-  String addressId = "0/0";
-  Map<String, dynamic> addressList = {'${params.currentWalletId}': '0/0'};
-
+  bool isHdWallet = params.externalAccounts.isNotEmpty;
+  String addressId = isHdWallet ? "0/0" : "m";
+  Map<String, dynamic> addressList = {
+    '${params.currentWalletId}': isHdWallet ? "0/0" : "m"
+  };
   if (params.preferences != null) {
     addressList = params.preferences![WalletPreferences.addressList];
     addressId = params.currentWalletId != null
         ? addressList[params.currentWalletId]
         : params.preferences![WalletPreferences.addressIndex];
   }
-  int addressIndex = int.parse(addressId.split('/').last);
+  int addressIndex =
+      addressId.contains("/") ? int.parse(addressId.split('/').last) : 0;
 
   bool isAddressIdxInStorage = params.externalAccounts.length > 0 &&
       (addressIndex < params.externalAccounts.length);
   Map<String, dynamic> defaultAccountSettings = {
     ...addressList,
-    '${params.currentWalletId}': '0/0',
+    '${params.currentWalletId}': isHdWallet ? "0/0" : "m",
   };
   String? defaultAddress = params.externalAccounts[0] != null
       ? params.externalAccounts[0]!.address

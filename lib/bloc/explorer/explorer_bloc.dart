@@ -1,19 +1,22 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:witnet/data_structures.dart';
-import 'package:witnet/explorer.dart';
-import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/bloc/explorer/api_explorer.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-
 import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/util/utxo_list_to_string.dart';
+import 'package:witnet/data_structures.dart';
+import 'package:witnet/explorer.dart';
+import 'package:witnet/schema.dart';
+
+import 'package:my_wit_wallet/util/storage/database/transaction_repository.dart';
 
 part 'explorer_event.dart';
+
 part 'explorer_state.dart';
 
 enum ExplorerStatus {
@@ -162,62 +165,79 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       }
     });
 
-    /// maintain gap limit for BIP39
-    await wallet.ensureGapLimit();
+    if (wallet.walletType == WalletType.hd) {
+      /// maintain gap limit for BIP39
+      await wallet.ensureGapLimit();
 
-    /// address limit is the limit of the explorer API for batching utxo calls
-    int addressLimit = 10;
-    List<List<String>> addressChunks = [];
-    List<String> addressList = wallet.allAddresses();
+      /// address limit is the limit of the explorer API for batching utxo calls
+      int addressLimit = 10;
+      List<List<String>> addressChunks = [];
+      List<String> addressList = wallet.allAddresses();
 
-    /// break the address list into chunks of 10 addresses
-    for (int i = 0; i < addressList.length; i += addressLimit) {
-      int end = (i + addressLimit < addressList.length)
-          ? i + addressLimit
-          : addressList.length;
-      addressChunks.add([addressList.sublist(i, end).join(',')]);
-    }
-
-    /// get the UTXOs from the explorer
-    try {
-      for (int i = 0; i < addressChunks.length; i++) {
-        Map<String, List<Utxo>> _utxos = await Locator.instance<ApiExplorer>()
-            .utxosMulti(addressList: addressChunks[i]);
-
-        /// loop over the explorer response
-        /// which is Map<String, List<Utxo>> key = address
-        Map<String, Account> updatedAccounts = {};
-
-        for (int addressIndex = 0;
-            addressIndex < _utxos.length;
-            addressIndex++) {
-          String address = _utxos.keys.toList()[addressIndex];
-          List<Utxo> utxoList = _utxos[address]!;
-
-          Account account = wallet.accountByAddress(address)!;
-
-          if (!isTheSameList(account, utxoList)) {
-            if (utxoList.isNotEmpty) {
-              account.utxos = utxoList;
-              account = await updateAccountVttsAndBalance(account);
-            } else {
-              account.utxos.clear();
-            }
-            updatedAccounts[account.address] = account;
-            wallet.updateAccount(
-                index: account.index,
-                keyType: account.keyType,
-                account: account);
-          }
-        }
-
-        database.walletStorage.wallets[wallet.id] = wallet;
+      /// break the address list into chunks of 10 addresses
+      for (int i = 0; i < addressList.length; i += addressLimit) {
+        int end = (i + addressLimit < addressList.length)
+            ? i + addressLimit
+            : addressList.length;
+        addressChunks.add([addressList.sublist(i, end).join(',')]);
       }
-    } catch (err) {
-      print('Error getting UTXOs from the explorer $err');
-      emit(ExplorerState.error());
-      rethrow;
+
+      /// get the UTXOs from the explorer
+      try {
+        for (int i = 0; i < addressChunks.length; i++) {
+          Map<String, List<Utxo>> _utxos = await Locator.instance<ApiExplorer>()
+              .utxosMulti(addressList: addressChunks[i]);
+
+          /// loop over the explorer response
+          /// which is Map<String, List<Utxo>> key = address
+          Map<String, Account> updatedAccounts = {};
+
+          for (int addressIndex = 0;
+              addressIndex < _utxos.length;
+              addressIndex++) {
+            String address = _utxos.keys.toList()[addressIndex];
+            List<Utxo> utxoList = _utxos[address]!;
+
+            Account account = wallet.accountByAddress(address)!;
+
+            if (!isTheSameList(account, utxoList)) {
+              if (utxoList.isNotEmpty) {
+                account.utxos = utxoList;
+                account = await updateAccountVttsAndBalance(account);
+              } else {
+                account.utxos.clear();
+              }
+              updatedAccounts[account.address] = account;
+              wallet.updateAccount(
+                  index: account.index,
+                  keyType: account.keyType,
+                  account: account);
+            }
+          }
+
+          database.walletStorage.wallets[wallet.id] = wallet;
+        }
+      } catch (err) {
+        print('Error getting UTXOs from the explorer $err');
+        emit(ExplorerState.error());
+        rethrow;
+      }
+    } else if (wallet.walletType == WalletType.single) {
+      List<Utxo> utxoList = await Locator.instance<ApiExplorer>()
+          .utxos(address: wallet.masterAccount!.address);
+      Account account = wallet.masterAccount!;
+
+      if (!isTheSameList(wallet.masterAccount!, utxoList)) {
+        if (utxoList.isNotEmpty) {
+          account = await updateAccountVttsAndBalance(account);
+        } else {
+          account.utxos.clear();
+        }
+        wallet.updateAccount(
+            index: account.index, keyType: account.keyType, account: account);
+      }
     }
+
     for (int i = 0; i < unconfirmedVtts.length; i++) {
       ValueTransferInfo _vtt = unconfirmedVtts[i];
       try {
@@ -259,6 +279,33 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     return isSameList;
   }
 
+  Future<Account> _syncMints(Account account) async {
+    try {
+      /// retrieve all Block Hashes
+      ApiExplorer explorer = Locator.instance.get<ApiExplorer>();
+      final addressBlocks = await explorer.address(
+          value: account.address, tab: 'blocks') as AddressBlocks;
+      /// check if the list of transaction is already in the database
+      for (int i = 0; i < addressBlocks.blocks.length; i++) {
+        String blockHash = addressBlocks.blocks[i].blockID;
+        ApiDatabase database = Locator.instance.get<ApiDatabase>();
+        MintEntry? mintEntry = database.walletStorage.getMint(blockHash);
+        if (mintEntry != null && !account.mintHashes.contains(blockHash)) {
+          BlockInfo blockInfo = addressBlocks.blocks.elementAt(i);
+
+          MintEntry mintEntry = await explorer.getMint(blockInfo);
+          account.mintHashes.add(mintEntry.blockHash);
+          account.mints.add(mintEntry);
+          await database.addMint(mintEntry);
+        }
+      }
+      return account;
+    } catch (e) {
+      print('Error syncing mints $e');
+      rethrow;
+    }
+  }
+
   Future<Account> updateAccountVttsAndBalance(Account account) async {
     try {
       AddressValueTransfers vtts = await Locator.instance
@@ -289,6 +336,9 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
       account.vttHashes.clear();
       account.vttHashes.addAll(vtts.transactionHashes);
+      if (account.keyType == KeyType.master) {
+        account = await _syncMints(account);
+      }
       await account.setBalance();
       database.walletStorage.wallets[account.walletId]!.setAccount(account);
     } catch (e) {

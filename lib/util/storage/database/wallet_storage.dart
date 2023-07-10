@@ -1,10 +1,12 @@
-import 'package:witnet/explorer.dart';
+import 'package:my_wit_wallet/util/storage/database/transaction_repository.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:witnet/explorer.dart';
 
 import 'account.dart';
 import 'balance_info.dart';
 
 final defaultWallet = Wallet(
+    walletType: WalletType.hd,
     name: '',
     xprv: '',
     externalXpub: '',
@@ -34,16 +36,24 @@ class WalletStorage {
   WalletStorage({
     required this.wallets,
   });
+
   // <wallet_id, Wallet>
   Map<String, Wallet> wallets;
+
   // <address, Account>
   Map<String, Account> _accounts = {};
+
   // <transactionId, ValueTransferInfo>
   Map<String, ValueTransferInfo> _transactions = {};
 
+  //<block_id, MintEntry>
+  Map<String, MintEntry> _mints = {};
+
+  // WalletType type;
   String? _currentWalletId;
   String? _currentAddress;
   Map<String, dynamic>? currentAddressList;
+
   Wallet get currentWallet => wallets[_currentWalletId] != null
       ? wallets[_currentWalletId]!
       : wallets[wallets.keys.first]!;
@@ -63,6 +73,12 @@ class WalletStorage {
   void setTransactions(Map<String, ValueTransferInfo> transactions) {
     transactions.forEach((transactionId, vtt) {
       _transactions[transactionId] = vtt;
+    });
+  }
+
+  void setMints(Map<String, MintEntry> mints) {
+    mints.forEach((blockHash, mint) {
+      _mints[blockHash] = mint;
     });
   }
 
@@ -93,9 +109,14 @@ class WalletStorage {
   }
 
   ValueTransferInfo? getVtt(String hash) => _transactions[hash];
+  MintEntry? getMint(String hash) => _mints[hash];
 
   void setVtt(String walletId, ValueTransferInfo vtt) {
     wallets[walletId]!.setTransaction(vtt);
+  }
+
+  void setMint(String walletId, MintEntry mint) {
+    wallets[walletId]!.setTransaction(mint);
   }
 
   void setAccount(Account account) {

@@ -1,11 +1,13 @@
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddressEntry {
   String walletId;
-  String addressIdx;
-  int keyType;
+  int? addressIdx;
+  String keyType;
+
   AddressEntry({
     required this.walletId,
     required this.addressIdx,
@@ -37,19 +39,22 @@ class ApiPreferences {
   static Future<void> setCurrentAddress(AddressEntry addressEntry) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic>? currentMap = await getCurrentAddressList();
+    bool isHdWallet =
+        addressEntry.keyType != "m" && addressEntry.addressIdx != null;
+
+    String _mapEntry;
+
+    if (isHdWallet) {
+      _mapEntry = "${addressEntry.keyType}/${addressEntry.addressIdx}";
+    } else {
+      _mapEntry = "${addressEntry.keyType}";
+    }
     // get list and update current address from the list
     Map<String, String>? finalMap;
     if (currentMap != null) {
-      finalMap = {
-        ...currentMap,
-        "${addressEntry.walletId}":
-            "${addressEntry.keyType}/${addressEntry.addressIdx}"
-      };
+      finalMap = {...currentMap, "${addressEntry.walletId}": "$_mapEntry"};
     } else {
-      finalMap = {
-        "${addressEntry.walletId}":
-            "${addressEntry.keyType}/${addressEntry.addressIdx}"
-      };
+      finalMap = {"${addressEntry.walletId}": "$_mapEntry"};
     }
     await prefs.setString('current_address', json.encode(finalMap));
   }

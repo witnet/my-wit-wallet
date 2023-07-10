@@ -77,15 +77,18 @@ void _generateMnemonic(SendPort port, Map<String, dynamic> params) async {
 Future<void> _initializeWallet(
     SendPort port, Map<String, dynamic> params) async {
   Wallet? wallet;
+  bool isHdWallet = params['walletType'] == "hd";
   switch (params['seedSource']) {
     case 'mnemonic':
       wallet = await Wallet.fromMnemonic(
+          walletType: isHdWallet ? WalletType.hd : WalletType.single,
           name: params['walletName'],
           mnemonic: params['seed'],
           password: params['password']);
       break;
     case 'xprv':
       wallet = await Wallet.fromXprvStr(
+          walletType: isHdWallet ? WalletType.hd : WalletType.single,
           name: params['walletName'],
           xprv: params['seed'],
           password: params['password']);
@@ -93,6 +96,7 @@ Future<void> _initializeWallet(
     case 'encryptedXprv':
       try {
         wallet = await Wallet.fromEncryptedXprv(
+          walletType: isHdWallet ? WalletType.hd : WalletType.single,
           name: params['walletName'],
           xprv: params['seed'],
           password: params['password'],
@@ -113,6 +117,9 @@ void _generateKey(SendPort port, Map<String, dynamic> params) {
       Xpub _xpub = Xpub.fromXpub(params['external_keychain']);
       port.send({'xpub': _xpub / index});
     } else if (keytype.endsWith('internal')) {
+      Xpub _xpub = Xpub.fromXpub(params['internal_keychain']);
+      port.send({'xpub': _xpub / index});
+    } else if (keytype.endsWith('master')) {
       Xpub _xpub = Xpub.fromXpub(params['internal_keychain']);
       port.send({'xpub': _xpub / index});
     }
@@ -153,33 +160,42 @@ Future<void> _signTransaction(
     Map<String, KeyedSignature> _sigMap = {};
     signers.forEach((encryptedXprv, paths) {
       Xprv masterXprv = Xprv.fromEncryptedXprv(encryptedXprv, password);
-      // get external xprv
-      Xprv externalXprv = masterXprv /
-          KEYPATH_PURPOSE /
-          KEYPATH_COIN_TYPE /
-          KEYPATH_ACCOUNT /
-          EXTERNAL_KEYCHAIN;
-
-      // get internal xprv
-      Xprv internalXprv = masterXprv /
-          KEYPATH_PURPOSE /
-          KEYPATH_COIN_TYPE /
-          KEYPATH_ACCOUNT /
-          INTERNAL_KEYCHAIN;
 
       paths.forEach((path) {
-        List<String> indexedPath = path.split('/');
-        assert(indexedPath.length == 6, 'Path does not derive a valid Wallet');
-
         /// ['M','3h','4919h','0h','0', ...]
         /// index 4 is the external[0] or internal[1] key path
         Xprv signer;
-        if (indexedPath.elementAt(4) == '0') {
-          signer = externalXprv / int.parse(indexedPath.last);
+        if (path.contains("/")) {
+          List<String> indexedPath = path.split('/');
+          assert(
+              indexedPath.length == 6, 'Path does not derive a valid Wallet');
+
+          // get external xprv
+          Xprv externalXprv = masterXprv /
+              KEYPATH_PURPOSE /
+              KEYPATH_COIN_TYPE /
+              KEYPATH_ACCOUNT /
+              EXTERNAL_KEYCHAIN;
+
+          // get internal xprv
+          Xprv internalXprv = masterXprv /
+              KEYPATH_PURPOSE /
+              KEYPATH_COIN_TYPE /
+              KEYPATH_ACCOUNT /
+              INTERNAL_KEYCHAIN;
+
+          if (indexedPath.elementAt(4) == '0') {
+            signer = externalXprv / int.parse(indexedPath.last);
+          } else {
+            assert(indexedPath.elementAt(4) == '1');
+            signer = internalXprv / int.parse(indexedPath.last);
+          }
         } else {
-          assert(indexedPath.elementAt(4) == '1');
-          signer = internalXprv / int.parse(indexedPath.last);
+          /// master key
+          assert(path == "m", "Invalid master path");
+          signer = masterXprv;
         }
+
         String address = signer.address.address;
         if (_sigMap.containsKey(address)) {
           signatures.add(_sigMap[address]!);

@@ -9,6 +9,7 @@ import 'package:my_wit_wallet/util/storage/path_provider_interface.dart';
 
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
+import '../util/storage/database/transaction_repository.dart';
 import 'locator.dart';
 
 class DatabaseException {
@@ -77,26 +78,36 @@ class ApiDatabase {
         currentWalletId != null &&
         preferences != null &&
         preferences[WalletPreferences.addressList][currentWalletId] == null;
-
-    // If localStorage is deleted, it resets preferences of the wallet to default values
-    if (currentWalletNotSaved) {
-      await setWalletAndAccountInLocalStorage(currentWalletId,
-          AddressEntry(walletId: currentWalletId, addressIdx: '0', keyType: 0));
-      preferences = await getCurrentWalletPreferences();
-    }
-
     final walletIdToSet =
         preferences != null && !isUpdatedWallet && !isNewWallet
             ? preferences[WalletPreferences.walletId]
             : currentWalletId;
+    walletStorage.setCurrentWallet(walletIdToSet);
+    bool isHdWallet =
+        walletStorage.wallets[currentWalletId]!.walletType == WalletType.hd;
+    // If localStorage is deleted, it resets preferences of the wallet to default values
+    if (currentWalletNotSaved) {
+      await setWalletAndAccountInLocalStorage(
+          currentWalletId,
+          AddressEntry(
+              walletId: currentWalletId,
+              addressIdx: isHdWallet ? 0 : null,
+              keyType: isHdWallet ? '0' : 'm'));
+      preferences = await getCurrentWalletPreferences();
+    }
 
     // set new wallet in storage
-    walletStorage.setCurrentWallet(walletIdToSet);
 
+    WalletType currentWalletType = walletStorage.currentWallet.walletType;
     // get account preferences taking into account corrupted localStorage
-    Map<AccountPreferences, dynamic> accountPreferences = getUpdatedAccountInfo(
-        AccountPreferencesParams(walletIdToSet, preferences,
-            walletStorage.currentWallet.externalAccounts));
+    Map<AccountPreferences, dynamic> accountPreferences;
+
+    accountPreferences = getUpdatedAccountInfo(AccountPreferencesParams(
+        walletIdToSet,
+        preferences,
+        isHdWallet
+            ? walletStorage.currentWallet.externalAccounts
+            : {0: walletStorage.currentWallet.masterAccount!}));
 
     // set new current wallet and account in local storage
     if (isNewWallet || isUpdatedWallet && currentWalletId != null) {
@@ -104,8 +115,11 @@ class ApiDatabase {
           walletIdToSet,
           AddressEntry(
               walletId: walletIdToSet,
-              addressIdx: accountPreferences[AccountPreferences.addressIndex],
-              keyType: 0));
+              addressIdx: isHdWallet
+                  ? int.tryParse(
+                      accountPreferences[AccountPreferences.addressIndex])
+                  : null,
+              keyType: isHdWallet ? '0' : 'm'));
     }
     // set account in storage
     setCurrentAddressInStorage(
@@ -245,6 +259,12 @@ class ApiDatabase {
         method: 'add', params: {'type': 'vtt', 'value': transaction.jsonMap()});
   }
 
+  Future<bool> addMint(MintEntry transaction) async {
+    return await _processIsolate(
+        method: 'add',
+        params: {'type': 'mint', 'value': transaction.jsonMap()});
+  }
+
   Future getAllVtts() async {
     try {
       return await _processIsolate(method: 'getAllVtts', params: {});
@@ -283,7 +303,7 @@ class ApiDatabase {
   }
 
   Future<bool> updateAccount(Account account) async {
-    walletStorage.setAccount(account);
+    // walletStorage.setAccount(account);
     return await _processIsolate(
         method: 'update',
         params: {'type': 'account', 'value': account.jsonMap()});

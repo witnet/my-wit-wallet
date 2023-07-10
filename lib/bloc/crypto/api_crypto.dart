@@ -17,14 +17,17 @@ class ApiCrypto {
   late String? seed;
   late String? seedSource;
   late String? password;
+  late WalletType? walletType;
+
   ApiCrypto();
 
   void setInitialWalletData(
-      String walletName, String seed, String seedSource, String password) {
+      String walletName, String seed, String seedSource, String password, WalletType walletType) {
     this.walletName = walletName;
     this.seed = seed;
     this.seedSource = seedSource;
     this.password = password;
+    this.walletType = walletType;
   }
 
   void clearInitialWalletData() {
@@ -56,14 +59,15 @@ class ApiCrypto {
   Future<Account> generateAccount(
       Wallet wallet, KeyType keyType, int index) async {
     try {
+      if(keyType == KeyType.master) {
+        return wallet.masterAccount!;
+      }
       CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
-
       final receivePort = ReceivePort();
-
       cryptoIsolate.send(
         method: 'generateKey',
         params: {
-          'keyType': keyType.name == 'external' ? 'external' : 'internal',
+          'keyType': keyType.name,
           'external_keychain': wallet.externalXpub,
           'internal_keychain': wallet.internalXpub,
           'index': index
@@ -127,28 +131,33 @@ class ApiCrypto {
       Utxo currentUtxo = utxos.elementAt(i);
 
       Wallet currentWallet = walletStorage;
-
-      /// loop though every external account
-      currentWallet.externalAccounts.forEach((index, account) {
-        if (rawJsonUtxosList(account.utxos).contains(currentUtxo.toRawJson())) {
-          if (_signers.containsKey(currentWallet.xprv)) {
-            _signers[currentWallet.xprv]!.add(account.path);
-          } else {
-            _signers[currentWallet.xprv!] = [account.path];
+      if (currentWallet.walletType == WalletType.hd) {
+        /// loop though every external account
+        currentWallet.externalAccounts.forEach((index, account) {
+          if (rawJsonUtxosList(account.utxos)
+              .contains(currentUtxo.toRawJson())) {
+            if (_signers.containsKey(currentWallet.xprv)) {
+              _signers[currentWallet.xprv]!.add(account.path);
+            } else {
+              _signers[currentWallet.xprv!] = [account.path];
+            }
           }
-        }
-      });
+        });
 
-      /// loop though every internal account
-      currentWallet.internalAccounts.forEach((index, account) {
-        if (rawJsonUtxosList(account.utxos).contains(currentUtxo.toRawJson())) {
-          if (_signers.containsKey(currentWallet.xprv)) {
-            _signers[currentWallet.xprv]!.add(account.path);
-          } else {
-            _signers[currentWallet.xprv!] = [account.path];
+        /// loop though every internal account
+        currentWallet.internalAccounts.forEach((index, account) {
+          if (rawJsonUtxosList(account.utxos)
+              .contains(currentUtxo.toRawJson())) {
+            if (_signers.containsKey(currentWallet.xprv)) {
+              _signers[currentWallet.xprv]!.add(account.path);
+            } else {
+              _signers[currentWallet.xprv!] = [account.path];
+            }
           }
-        }
-      });
+        });
+      } else {
+        _signers[currentWallet.xprv!] = [currentWallet.masterAccount!.path];
+      }
     }
     final receivePort = ReceivePort();
     CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();

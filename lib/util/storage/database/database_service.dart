@@ -54,6 +54,7 @@ class DatabaseService {
   WalletRepository walletRepository = WalletRepository();
   VttRepository vttRepository = VttRepository();
   AccountRepository accountRepository = AccountRepository();
+  MintRepository mintRepository = MintRepository();
 
   KeyChain keyChain = KeyChain();
 
@@ -106,6 +107,9 @@ class DatabaseService {
         case Account:
           await accountRepository.insertAccount(item, _database);
           break;
+        case MintEntry:
+          await mintRepository.insertTransaction(item, _database);
+          break;
         default:
           return false;
       }
@@ -127,6 +131,9 @@ class DatabaseService {
         case Account:
           await accountRepository.deleteAccount(item.address, _database);
           break;
+        case MintEntry:
+          await mintRepository.deleteTransaction(item.txnHash, _database);
+          break;
         default:
           return false;
       }
@@ -147,6 +154,9 @@ class DatabaseService {
           break;
         case Account:
           await accountRepository.updateAccount(item, _database);
+          break;
+        case MintEntry:
+          await mintRepository.updateTransaction(item, _database);
           break;
         default:
           return false;
@@ -196,6 +206,7 @@ class DatabaseService {
 
   Future<WalletStorage> loadWallets() async {
     /// Get all Wallets
+
     try {
       final List<Wallet> wallets = await walletRepository.getWallets(_database);
 
@@ -206,6 +217,9 @@ class DatabaseService {
       /// Get all Transactions
       final List<ValueTransferInfo> transactions =
           await vttRepository.getAllTransactions(_database);
+
+      final List<MintEntry> mints =
+          await mintRepository.getAllTransactions(_database);
 
       /// Create a map of the Wallets with the wallet.id as the key.
       Map<String, Wallet> walletMap = {};
@@ -224,6 +238,15 @@ class DatabaseService {
           /// add the transaction if it is for this account
           if (transactions[j].containsAddress(_address)) {
             accounts[i].vtts.add(transactions[j]);
+          }
+        }
+
+        if (accounts[i].keyType == KeyType.master) {
+          for (int j = 0; j < mints.length; j++) {
+            /// add the transaction if it is for this account
+            if (mints[j].containsAddress(_address)) {
+              accounts[i].mints.add(mints[j]);
+            }
           }
         }
 

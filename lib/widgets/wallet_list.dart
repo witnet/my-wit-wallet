@@ -88,9 +88,9 @@ class WalletListState extends State<WalletList> {
 
   //Go to create or import wallet view
   void _createImportWallet() {
-    Locator.instance<ApiCreateWallet>().setWalletType(WalletType.unset);
+    Locator.instance<ApiCreateWallet>().setWalletType(CreateWalletType.unset);
     BlocProvider.of<CreateWalletBloc>(context)
-        .add(ResetEvent(WalletType.unset));
+        .add(ResetEvent(CreateWalletType.unset));
     Navigator.pushNamed(context, CreateWalletScreen.route);
   }
 
@@ -112,18 +112,24 @@ class WalletListState extends State<WalletList> {
   Widget _buildWalletItem(String walletId) {
     final isSelectedWallet = walletId == selectedWallet?.id;
     Wallet? currentWallet = database.walletStorage.wallets[walletId];
+    bool isHdWallet = currentWallet!.walletType == WalletType.hd;
     String? balance =
-        currentWallet!.balanceNanoWit().availableNanoWit.toString();
+        currentWallet.balanceNanoWit().availableNanoWit.toString();
     String currentWalletAccount;
     if (database.walletStorage.currentAddressList != null &&
         database.walletStorage.currentAddressList![walletId] != null) {
       currentWalletAccount =
           database.walletStorage.currentAddressList![walletId];
     } else {
-      currentWalletAccount = '0/0';
+      currentWalletAccount = isHdWallet ? '0/0' : 'm';
     }
-    Map<int, Account>? accountsList = currentWallet.externalAccounts;
-    int currentAccountIndex = int.parse(currentWalletAccount.split('/').last);
+
+    Map<int, Account>? accountsList = isHdWallet
+        ? currentWallet.externalAccounts
+        : {0: currentWallet.masterAccount!};
+    int currentAccountIndex = currentWalletAccount.contains("/")
+        ? int.parse(currentWalletAccount.split('/').last)
+        : 0;
     String? address = accountsList[currentAccountIndex]?.address.toString();
 
     return SelectWalletBox(
