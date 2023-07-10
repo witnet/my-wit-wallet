@@ -28,7 +28,6 @@ class PaginatedData {
 class Wallet {
   Wallet({
     required this.name,
-    this.description,
     this.xprv,
     this.externalXpub,
     this.internalXpub,
@@ -49,7 +48,6 @@ class Wallet {
 
   late String id;
   final String name;
-  final String? description;
   late List<String?> txHashes;
   late String? xprv;
   late String? externalXpub;
@@ -162,13 +160,11 @@ class Wallet {
 
   static Future<Wallet> fromMnemonic({
     required String name,
-    required String description,
     required String mnemonic,
     required String password,
   }) async {
     final _wallet = Wallet(
       name: name,
-      description: description,
       txHashes: [],
       externalAccounts: {},
       internalAccounts: {},
@@ -179,13 +175,11 @@ class Wallet {
 
   static Future<Wallet> fromXprvStr({
     required String name,
-    required String description,
     required String xprv,
     required String password,
   }) async {
     final _wallet = Wallet(
       name: name,
-      description: description,
       xprv: xprv,
       txHashes: [],
       externalAccounts: {},
@@ -197,14 +191,12 @@ class Wallet {
 
   static Future<Wallet> fromEncryptedXprv({
     required String name,
-    required String description,
     required String xprv,
     required String password,
   }) async {
     try {
       final _wallet = Wallet(
         name: name,
-        description: description,
         xprv: xprv,
         txHashes: [],
         externalAccounts: {},
@@ -359,7 +351,6 @@ class Wallet {
     return {
       'id': id,
       'name': name,
-      'description': description ?? '',
       'xprv': xprv,
       'externalXpub': externalXpub,
       'internalXpub': internalXpub,
@@ -394,7 +385,6 @@ class Wallet {
             .substring(0, 8);
     Wallet _wallet = Wallet(
       name: data['name'],
-      description: data['description'],
       xprv: data['xprv'],
       externalXpub: data['externalXpub'],
       internalXpub: data['internalXpub'],
@@ -508,7 +498,6 @@ class Wallet {
     print('Wallet');
     print(' ID: $id');
     print(' name: $name');
-    print(' description: $description');
     print(' vtt count: ${txHashes.length}');
 
     print(' External Accounts:');

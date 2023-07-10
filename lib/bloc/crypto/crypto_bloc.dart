@@ -213,7 +213,6 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     final masterKey = key != '' ? key : event.password;
     apiCrypto.setInitialWalletData(
       event.walletName,
-      event.walletDescription,
       event.keyData,
       event.seedSource,
       masterKey,

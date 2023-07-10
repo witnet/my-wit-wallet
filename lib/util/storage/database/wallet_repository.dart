@@ -72,7 +72,6 @@ class WalletRepository extends _WalletRepository {
   Map<String, String> _mapWallet(Wallet wallet) => {
         'id': wallet.id,
         'name': wallet.name,
-        'description': wallet.description ?? '',
         'xprv': wallet.xprv!,
         'externalXpub': wallet.externalXpub!,
         'internalXpub': wallet.internalXpub!,

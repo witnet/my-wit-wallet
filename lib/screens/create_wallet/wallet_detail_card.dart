@@ -33,9 +33,6 @@ class WalletDetailCardState extends State<WalletDetailCard>
   void nextAction() {
     if (validate(force: true)) {
       Locator.instance.get<ApiCreateWallet>().setWalletName(_walletName);
-      Locator.instance
-          .get<ApiCreateWallet>()
-          .setWalletDescription(_walletDescription);
       WalletType type =
           BlocProvider.of<CreateWalletBloc>(context).state.walletType;
       BlocProvider.of<CreateWalletBloc>(context)
@@ -60,9 +57,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
   late TextEditingController _nameController;
   late TextEditingController _descController;
   final _nameFocusNode = FocusNode();
-  final _descriptionFocusNode = FocusNode();
   String _walletName = '';
-  String _walletDescription = '';
   String? errorText;
   String? defaultWalletName;
   @override
@@ -79,9 +74,6 @@ class WalletDetailCardState extends State<WalletDetailCard>
     _nameController.value = TextEditingValue(
         text: Locator.instance.get<ApiCreateWallet>().walletName);
     _walletName = _nameController.value.text;
-    _descController.value = TextEditingValue(
-        text: Locator.instance.get<ApiCreateWallet>().walletDescription);
-    _walletDescription = _descController.value.text;
     defaultWalletName =
         "wallet-${Locator.instance.get<ApiDatabase>().walletStorage.wallets.length + 1}";
   }
@@ -94,7 +86,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
   }
 
   // ignore: todo
-  // TODO[#24]: Use formz model to validate name and description
+  // TODO[#24]: Use formz model to validate name
 
   bool validate({force = false}) {
     if (this.mounted) {
@@ -132,10 +124,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
             ),
             controller: _nameController,
             focusNode: _nameFocusNode,
-            onSubmitted: (String value) => {
-              // hide keyboard
-              _descriptionFocusNode.requestFocus()
-            },
+            onSubmitted: (_value) => nextAction(),
             onChanged: (String value) {
               setState(() {
                 _walletName = value;
@@ -144,29 +133,6 @@ class WalletDetailCardState extends State<WalletDetailCard>
               });
             },
           ),
-          SizedBox(height: 16),
-          Text(
-            'Description',
-            style: theme.textTheme.subtitle2,
-          ),
-          SizedBox(height: 8),
-          TextField(
-            style: theme.textTheme.bodyText1,
-            textInputAction: TextInputAction.go,
-            decoration: InputDecoration(
-              hintText: 'I will keep these with me forever',
-            ),
-            focusNode: _descriptionFocusNode,
-            controller: _descController,
-            onSubmitted: (_value) => nextAction(),
-            onChanged: (String value) {
-              setState(() {
-                _walletDescription = value;
-                Locator.instance.get<ApiCreateWallet>().walletDescription =
-                    _walletDescription;
-              });
-            },
-          )
         ],
       ),
     );
@@ -184,14 +150,14 @@ class WalletDetailCardState extends State<WalletDetailCard>
           height: 16,
         ),
         Text(
-          'You can better keep track of your different wallets by giving each its own name and description.',
+          'You can better keep track of your different wallets by giving each its own name.',
           style: theme.textTheme.bodyLarge, //Textstyle
         ), //Text
         SizedBox(
           height: 8,
         ), //SizedBox
         Text(
-          'Wallet names make it easy to quickly change from one wallet to another. Wallet descriptions can be more elaborate and rather describe the purpose of a wallet or any other metadata.',
+          'Wallet names make it easy to quickly change from one wallet to another.',
           style: theme.textTheme.bodyLarge, //Textstyle
         ),
         SizedBox(

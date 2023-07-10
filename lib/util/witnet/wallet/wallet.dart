@@ -9,7 +9,6 @@ enum KeyType { internal, external }
 
 class Wallet {
   final String name;
-  final String? description;
 
   late Xprv masterXprv;
   late Xprv walletXprv;
@@ -20,33 +19,28 @@ class Wallet {
   final Map<int, Xpub> externalKeys = {};
   final Map<int, Xpub> internalKeys = {};
 
-  Wallet(this.name, this.description);
+  Wallet(this.name);
 
   static Future<Wallet> fromMnemonic(
-      {required String name,
-      required String description,
-      required String mnemonic}) async {
-    final _wallet = Wallet(name, description);
+      {required String name, required String mnemonic}) async {
+    final _wallet = Wallet(name);
     _wallet._setMasterXprv(Xprv.fromMnemonic(mnemonic: mnemonic));
     return _wallet;
   }
 
   static Future<Wallet> fromXprvStr(
-      {required String name,
-      required String description,
-      required String xprv}) async {
-    final _wallet = Wallet(name, description);
+      {required String name, required String xprv}) async {
+    final _wallet = Wallet(name);
     _wallet._setMasterXprv(Xprv.fromXprv(xprv));
     return _wallet;
   }
 
   static Future<Wallet> fromEncryptedXprv(
       {required String name,
-      required String description,
       required String xprv,
       required String password}) async {
     try {
-      final _wallet = Wallet(name, description);
+      final _wallet = Wallet(name);
       _wallet._setMasterXprv(Xprv.fromEncryptedXprv(xprv, password));
       return _wallet;
     } catch (e) {

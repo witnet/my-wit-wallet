@@ -6,7 +6,6 @@ import 'balance_info.dart';
 
 final defaultWallet = Wallet(
     name: '',
-    description: '',
     xprv: '',
     externalXpub: '',
     internalXpub: '',

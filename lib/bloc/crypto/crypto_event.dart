@@ -9,7 +9,6 @@ class CryptoEvent extends Equatable {
 class CryptoInitializeWalletEvent extends CryptoEvent {
   final String id;
   final String walletName;
-  final String walletDescription;
   final String keyData;
   final String seedSource;
   final String password;
@@ -17,15 +16,13 @@ class CryptoInitializeWalletEvent extends CryptoEvent {
   CryptoInitializeWalletEvent(
       {required this.id,
       required this.walletName,
-      required this.walletDescription,
       required this.keyData,
       required this.seedSource,
       required this.password,
       int addressCount = 10});
 
   @override
-  List<Object> get props =>
-      [walletName, walletDescription, keyData, password, seedSource];
+  List<Object> get props => [walletName, keyData, password, seedSource];
 }
 
 class CryptoReadyEvent extends CryptoEvent {}

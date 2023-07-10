@@ -14,16 +14,14 @@ enum SeedSource { mnemonic, xprv, encryptedXprv }
 // used to call the isolate thread from anywhere in the main app
 class ApiCrypto {
   late String? walletName;
-  late String? walletDescription;
   late String? seed;
   late String? seedSource;
   late String? password;
   ApiCrypto();
 
-  void setInitialWalletData(String walletName, String walletDescription,
-      String seed, String seedSource, String password) {
+  void setInitialWalletData(
+      String walletName, String seed, String seedSource, String password) {
     this.walletName = walletName;
-    this.walletDescription = walletDescription;
     this.seed = seed;
     this.seedSource = seedSource;
     this.password = password;
@@ -31,7 +29,6 @@ class ApiCrypto {
 
   void clearInitialWalletData() {
     this.walletName = null;
-    this.walletDescription = null;
     this.seed = null;
     this.seedSource = null;
   }
@@ -97,7 +94,6 @@ class ApiCrypto {
           method: 'initializeWallet',
           params: {
             'walletName': walletName,
-            'walletDescription': walletDescription,
             'seedSource': seedSource,
             'seed': seed,
             'password': password,

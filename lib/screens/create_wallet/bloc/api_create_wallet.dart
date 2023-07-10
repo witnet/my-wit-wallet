@@ -4,7 +4,6 @@ import 'package:my_wit_wallet/shared/locator.dart';
 
 class ApiCreateWallet {
   String walletName = "";
-  String walletDescription = "";
   String? password;
   late String? seedData;
   late String? seedSource;
@@ -23,13 +22,10 @@ class ApiCreateWallet {
 
   void setWalletName(String value) => walletName = value;
 
-  void setWalletDescription(String value) => walletDescription = value;
-
   void clearFormData() {
     seedData = '';
     seedSource = '';
     walletName = '';
-    walletDescription = '';
     password = null;
   }
 
@@ -43,7 +39,6 @@ class ApiCreateWallet {
   void printDebug() {
     print('Current Data:');
     print(' name: $walletName');
-    print(' description: $walletDescription');
     print(' source: $seedSource');
     print(' seed: $seedData');
     print(' password: $password');
