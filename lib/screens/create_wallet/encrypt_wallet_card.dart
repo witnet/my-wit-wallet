@@ -33,7 +33,7 @@ class EncryptWalletCard extends StatefulWidget {
 class EncryptWalletCardState extends State<EncryptWalletCard>
     with TickerProviderStateMixin {
   void prevAction() {
-    WalletType type =
+    CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
@@ -43,7 +43,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
       // set masterKey
       Locator.instance<ApiCreateWallet>().setPassword(_password);
       await Locator.instance<ApiDatabase>().setPassword(newPassword: _password);
-      WalletType type =
+      CreateWalletType type =
           BlocProvider.of<CreateWalletBloc>(context).state.walletType;
       BlocProvider.of<CreateWalletBloc>(context)
           .add(NextCardEvent(type, data: {}));

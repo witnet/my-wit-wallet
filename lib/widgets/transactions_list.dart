@@ -16,6 +16,7 @@ class TransactionsList extends StatefulWidget {
   final ThemeData themeData;
   final VoidCallback setDetails;
   final ValueTransferInfo? details;
+  // final MintInfo? mints;
   final Map<int, Account> externalAddresses;
   final Map<int, Account> internalAddresses;
   final List<ValueTransferInfo> valueTransfers;

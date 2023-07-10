@@ -73,7 +73,7 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
   }
 
   void prevAction() {
-    WalletType type =
+    CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }

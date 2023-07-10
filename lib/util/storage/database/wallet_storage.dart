@@ -30,6 +30,11 @@ final defaulVtt = ValueTransferInfo(
     type: 'valueTransfer',
     weight: 0);
 
+enum WalletType {
+  hd,
+  single
+}
+
 /// DbWallet formats the wallet for the database
 class WalletStorage {
   WalletStorage({
@@ -41,7 +46,7 @@ class WalletStorage {
   Map<String, Account> _accounts = {};
   // <transactionId, ValueTransferInfo>
   Map<String, ValueTransferInfo> _transactions = {};
-
+  // WalletType type;
   String? _currentWalletId;
   String? _currentAddress;
   Map<String, dynamic>? currentAddressList;

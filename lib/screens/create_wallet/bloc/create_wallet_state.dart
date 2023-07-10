@@ -32,14 +32,14 @@ class CreateWalletState extends Equatable {
   });
 
   final CreateWalletStatus status;
-  final WalletType walletType;
+  final CreateWalletType walletType;
   final String? message;
   final String? xprvString;
   final String? nodeAddress;
   final String? walletAddress;
 
   CreateWalletState copyWith({
-    WalletType? walletType,
+    CreateWalletType? walletType,
     String? message,
     String? xprvString,
     String? nodeAddress,

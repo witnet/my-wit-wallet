@@ -28,13 +28,13 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
   int numLines = 0;
 
   void prevAction() {
-    WalletType type =
+    CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void nextAction() {
-    WalletType type =
+    CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context)
         .add(NextCardEvent(type, data: {}));

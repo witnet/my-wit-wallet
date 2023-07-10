@@ -45,13 +45,13 @@ class BuildWalletCardState extends State<BuildWalletCard>
   int currentTransactionCount = 0;
   static const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
   void prevAction() {
-    WalletType type =
+    CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void nextAction() {
-    WalletType type =
+    CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context)
         .add(NextCardEvent(type, data: {}));

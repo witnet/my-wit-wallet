@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'create_wallet_state.dart';
 part 'create_wallet_event.dart';
 
-enum WalletType {
+enum CreateWalletType {
   unset,
   imported,
   newWallet,
@@ -39,7 +39,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
   }
 
   CreateWalletState get initialState => CreateWalletState(
-      walletType: WalletType.imported,
+      walletType: CreateWalletType.imported,
       message: null,
       xprvString: null,
       nodeAddress: null,
@@ -52,20 +52,20 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
     switch (state.status) {
       case CreateWalletStatus.Disclaimer:
         switch (event.walletType) {
-          case WalletType.imported:
+          case CreateWalletType.imported:
             break;
-          case WalletType.unset:
+          case CreateWalletType.unset:
             break;
-          case WalletType.newWallet:
+          case CreateWalletType.newWallet:
             emit(state.copyWith(status: CreateWalletStatus.GenerateMnemonic));
             break;
-          case WalletType.mnemonic:
+          case CreateWalletType.mnemonic:
             emit(state.copyWith(status: CreateWalletStatus.EnterMnemonic));
             break;
-          case WalletType.xprv:
+          case CreateWalletType.xprv:
             emit(state.copyWith(status: CreateWalletStatus.EnterXprv));
             break;
-          case WalletType.encryptedXprv:
+          case CreateWalletType.encryptedXprv:
             emit(state.copyWith(status: CreateWalletStatus.EnterEncryptedXprv));
             break;
         }
@@ -141,9 +141,9 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       CreateWalletEvent event, Emitter<CreateWalletState> emit) {
     switch (state.status) {
       case CreateWalletStatus.Disclaimer:
-        if (event.walletType == WalletType.encryptedXprv) {
+        if (event.walletType == CreateWalletType.encryptedXprv) {
           emit(state.copyWith(status: CreateWalletStatus.Imported));
-        } else if (event.walletType == WalletType.mnemonic) {
+        } else if (event.walletType == CreateWalletType.mnemonic) {
           emit(state.copyWith(status: CreateWalletStatus.Imported));
         } else {
           emit(state.copyWith(status: CreateWalletStatus.CreateImport));
@@ -165,18 +165,18 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
         break;
       case CreateWalletStatus.ConfirmMnemonic:
-        if (event.walletType == WalletType.newWallet) {
+        if (event.walletType == CreateWalletType.newWallet) {
           emit(state.copyWith(status: CreateWalletStatus.GenerateMnemonic));
         } else {
           emit(state.copyWith(status: CreateWalletStatus.EnterMnemonic));
         }
         break;
       case CreateWalletStatus.WalletDetail:
-        if (event.walletType == WalletType.newWallet) {
+        if (event.walletType == CreateWalletType.newWallet) {
           emit(state.copyWith(status: CreateWalletStatus.ConfirmMnemonic));
-        } else if (event.walletType == WalletType.encryptedXprv) {
+        } else if (event.walletType == CreateWalletType.encryptedXprv) {
           emit(state.copyWith(status: CreateWalletStatus.EnterEncryptedXprv));
-        } else if (event.walletType == WalletType.mnemonic) {
+        } else if (event.walletType == CreateWalletType.mnemonic) {
           emit(state.copyWith(status: CreateWalletStatus.EnterMnemonic));
         }
         break;
@@ -286,13 +286,13 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
   }
 
   _getStatus(CreateWalletEvent event) {
-    if (event.walletType == WalletType.newWallet) {
+    if (event.walletType == CreateWalletType.newWallet) {
       return CreateWalletStatus.Disclaimer;
     }
-    if (event.walletType == WalletType.unset) {
+    if (event.walletType == CreateWalletType.unset) {
       return CreateWalletStatus.CreateImport;
     }
-    if (event.walletType == WalletType.imported) {
+    if (event.walletType == CreateWalletType.imported) {
       return CreateWalletStatus.Imported;
     }
   }

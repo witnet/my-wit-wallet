@@ -88,17 +88,19 @@ class LoginScreenState extends State<LoginScreen>
   }
 
   void _createNewWallet(BuildContext context) {
-    Locator.instance<ApiCreateWallet>().setWalletType(WalletType.newWallet);
+    Locator.instance<ApiCreateWallet>()
+        .setWalletType(CreateWalletType.newWallet);
     Navigator.pushReplacementNamed(context, CreateWalletScreen.route);
     BlocProvider.of<CreateWalletBloc>(context)
-        .add(ResetEvent(WalletType.newWallet));
+        .add(ResetEvent(CreateWalletType.newWallet));
   }
 
   void _importWallet(BuildContext context) {
-    Locator.instance<ApiCreateWallet>().setWalletType(WalletType.imported);
+    Locator.instance<ApiCreateWallet>()
+        .setWalletType(CreateWalletType.imported);
     Navigator.pushReplacementNamed(context, CreateWalletScreen.route);
     BlocProvider.of<CreateWalletBloc>(context)
-        .add(ResetEvent(WalletType.imported));
+        .add(ResetEvent(CreateWalletType.imported));
   }
 
   Widget _loginListener() {

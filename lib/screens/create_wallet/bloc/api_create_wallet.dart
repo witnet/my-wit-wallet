@@ -8,14 +8,14 @@ class ApiCreateWallet {
   String? password;
   late String? seedData;
   late String? seedSource;
-  late WalletType walletType;
+  late CreateWalletType walletType;
 
   void setSeed(String data, String source) {
     seedData = data;
     seedSource = source;
   }
 
-  void setWalletType(WalletType type) {
+  void setWalletType(CreateWalletType type) {
     walletType = type;
   }
 

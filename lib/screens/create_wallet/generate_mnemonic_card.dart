@@ -83,14 +83,14 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
   }
 
   void prevAction() {
-    WalletType type =
+    CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
   }
 
   void nextAction() {
     Locator.instance.get<ApiCreateWallet>().setSeed(mnemonic, 'mnemonic');
-    WalletType type =
+    CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     BlocProvider.of<CreateWalletBloc>(context)
         .add(NextCardEvent(type, data: {}));

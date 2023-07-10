@@ -2,13 +2,13 @@ part of 'create_wallet_bloc.dart';
 
 abstract class CreateWalletEvent extends Equatable {
   const CreateWalletEvent(this.walletType);
-  final WalletType walletType;
+  final CreateWalletType walletType;
   @override
   List<Object> get props => [this.walletType];
 }
 
 class SetWalletStateEvent extends CreateWalletEvent {
-  const SetWalletStateEvent(WalletType walletType, this.walletState)
+  const SetWalletStateEvent(CreateWalletType walletType, this.walletState)
       : super(walletType);
   final CreateWalletState walletState;
 
@@ -17,7 +17,7 @@ class SetWalletStateEvent extends CreateWalletEvent {
 }
 
 class NextCardEvent extends CreateWalletEvent {
-  const NextCardEvent(WalletType walletType, {required this.data})
+  const NextCardEvent(CreateWalletType walletType, {required this.data})
       : super(walletType);
   final Map<String, dynamic> data;
   @override
@@ -25,7 +25,7 @@ class NextCardEvent extends CreateWalletEvent {
 }
 
 class VerifyXprvEvent extends CreateWalletEvent {
-  const VerifyXprvEvent(WalletType walletType, {required this.xprv})
+  const VerifyXprvEvent(CreateWalletType walletType, {required this.xprv})
       : super(walletType);
   final String xprv;
   @override
@@ -33,7 +33,7 @@ class VerifyXprvEvent extends CreateWalletEvent {
 }
 
 class VerifyEncryptedXprvEvent extends CreateWalletEvent {
-  const VerifyEncryptedXprvEvent(WalletType walletType,
+  const VerifyEncryptedXprvEvent(CreateWalletType walletType,
       {required this.xprv, required this.password})
       : super(walletType);
   final String xprv;
@@ -44,11 +44,11 @@ class VerifyEncryptedXprvEvent extends CreateWalletEvent {
 }
 
 class PreviousCardEvent extends CreateWalletEvent {
-  const PreviousCardEvent(WalletType walletType) : super(walletType);
+  const PreviousCardEvent(CreateWalletType walletType) : super(walletType);
 }
 
 class GenerateMnemonicEvent extends CreateWalletEvent {
-  const GenerateMnemonicEvent(WalletType walletType,
+  const GenerateMnemonicEvent(CreateWalletType walletType,
       {required this.length, required this.language})
       : super(walletType);
   final int length;
@@ -59,9 +59,9 @@ class GenerateMnemonicEvent extends CreateWalletEvent {
 }
 
 class ResetEvent extends CreateWalletEvent {
-  const ResetEvent(WalletType walletType) : super(walletType);
+  const ResetEvent(CreateWalletType walletType) : super(walletType);
 }
 
 class FinishEvent extends CreateWalletEvent {
-  const FinishEvent(WalletType walletType) : super(walletType);
+  const FinishEvent(CreateWalletType walletType) : super(walletType);
 }

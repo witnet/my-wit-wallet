@@ -25,6 +25,12 @@ class PaginatedData {
   PaginatedData({required this.totalPages, required this.data});
 }
 
+enum WalletType {
+  unknown,
+  hd,
+  single,
+}
+
 class Wallet {
   Wallet({
     required this.name,
