@@ -59,7 +59,7 @@ class ImportedOptionState extends State<SelectImportedOption> {
     BlocProvider.of<CreateWalletBloc>(context)
         .add(ResetEvent(CreateWalletType.mnemonic));
     BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(
-        Locator.instance<ApiCreateWallet>().walletType,
+        Locator.instance<ApiCreateWallet>().createWalletType,
         data: {}));
   }
 
@@ -70,7 +70,7 @@ class ImportedOptionState extends State<SelectImportedOption> {
     BlocProvider.of<CreateWalletBloc>(context)
         .add(ResetEvent(CreateWalletType.encryptedXprv));
     BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(
-        Locator.instance<ApiCreateWallet>().walletType,
+        Locator.instance<ApiCreateWallet>().createWalletType,
         data: {}));
   }
 

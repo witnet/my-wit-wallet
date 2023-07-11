@@ -1,32 +1,37 @@
 import 'dart:isolate';
-import 'package:witnet/data_structures.dart';
-import 'package:witnet/schema.dart';
-import 'package:witnet/witnet.dart';
+
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/utxo_list_to_string.dart';
+import 'package:witnet/data_structures.dart';
+import 'package:witnet/schema.dart';
+import 'package:witnet/witnet.dart';
+
 import 'crypto_bloc.dart';
 
 enum SeedSource { mnemonic, xprv, encryptedXprv }
 
 // used to call the isolate thread from anywhere in the main app
 class ApiCrypto {
+  late WalletType? walletType;
   late String? walletName;
   late String? walletDescription;
   late String? seed;
   late String? seedSource;
   late String? password;
+
   ApiCrypto();
 
   void setInitialWalletData(String walletName, String walletDescription,
-      String seed, String seedSource, String password) {
+      String seed, String seedSource, String password, WalletType walletType) {
     this.walletName = walletName;
     this.walletDescription = walletDescription;
     this.seed = seed;
     this.seedSource = seedSource;
     this.password = password;
+    this.walletType = walletType;
   }
 
   void clearInitialWalletData() {
@@ -66,7 +71,7 @@ class ApiCrypto {
       cryptoIsolate.send(
         method: 'generateKey',
         params: {
-          'keyType': keyType.name == 'external' ? 'external' : 'internal',
+          'keyType': keyType.name,
           'external_keychain': wallet.externalXpub,
           'internal_keychain': wallet.internalXpub,
           'index': index
@@ -96,6 +101,7 @@ class ApiCrypto {
       cryptoIsolate.send(
           method: 'initializeWallet',
           params: {
+            'walletType': walletType.toString(),
             'walletName': walletName,
             'walletDescription': walletDescription,
             'seedSource': seedSource,

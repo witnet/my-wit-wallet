@@ -77,9 +77,13 @@ void _generateMnemonic(SendPort port, Map<String, dynamic> params) async {
 Future<void> _initializeWallet(
     SendPort port, Map<String, dynamic> params) async {
   Wallet? wallet;
+  WalletType walletType = params['walletType'] == "WalletType.single"
+      ? WalletType.single
+      : WalletType.hd;
   switch (params['seedSource']) {
     case 'mnemonic':
       wallet = await Wallet.fromMnemonic(
+          walletType: walletType,
           name: params['walletName'],
           description: params['walletDescription'],
           mnemonic: params['seed'],
@@ -87,6 +91,7 @@ Future<void> _initializeWallet(
       break;
     case 'xprv':
       wallet = await Wallet.fromXprvStr(
+          walletType: params['walletType'],
           name: params['walletName'],
           description: params['walletDescription'],
           xprv: params['seed'],
@@ -95,6 +100,7 @@ Future<void> _initializeWallet(
     case 'encryptedXprv':
       try {
         wallet = await Wallet.fromEncryptedXprv(
+          walletType: params['walletType'],
           name: params['walletName'],
           description: params['walletDescription'],
           xprv: params['seed'],
@@ -116,6 +122,9 @@ void _generateKey(SendPort port, Map<String, dynamic> params) {
       Xpub _xpub = Xpub.fromXpub(params['external_keychain']);
       port.send({'xpub': _xpub / index});
     } else if (keytype.endsWith('internal')) {
+      Xpub _xpub = Xpub.fromXpub(params['internal_keychain']);
+      port.send({'xpub': _xpub / index});
+    } else if (keytype.endsWith('master')) {
       Xpub _xpub = Xpub.fromXpub(params['internal_keychain']);
       port.send({'xpub': _xpub / index});
     }

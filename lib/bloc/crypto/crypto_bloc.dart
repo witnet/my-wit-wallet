@@ -59,111 +59,146 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       ),
     );
     Wallet _wallet = await _initializeWallet(event: event);
+    if(_wallet.walletType == WalletType.hd) {
+      /// Account discovery
+      /// (1)- derive the first account's node (index = 0)
+      /// (2)- derive the external chain node of this account
+      /// (3)- scan addresses of the external chain; respect the gap limit described below
+      /// (4)- if no transactions are found on the external chain, stop discovery
+      /// (5)- if there are some transactions, increase the account index and go to step 1
+      /// reference (https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki)
 
-    /// Account discovery
-    /// (1)- derive the first account's node (index = 0)
-    /// (2)- derive the external chain node of this account
-    /// (3)- scan addresses of the external chain; respect the gap limit described below
-    /// (4)- if no transactions are found on the external chain, stop discovery
-    /// (5)- if there are some transactions, increase the account index and go to step 1
-    /// reference (https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki)
+      int externalGapCount = 0;
+      final int externalGapMax = EXTERNAL_GAP_LIMIT;
+      int externalIndex = 0;
 
-    int externalGapCount = 0;
-    final int externalGapMax = EXTERNAL_GAP_LIMIT;
-    int externalIndex = 0;
+      int internalGapCount = 0;
+      final int internalGapMax = INTERNAL_GAP_LIMIT;
+      int internalIndex = 0;
+      Map<int, Account> externalAccounts = {};
+      Map<int, Account> internalAccounts = {};
 
-    int internalGapCount = 0;
-    final int internalGapMax = INTERNAL_GAP_LIMIT;
-    int internalIndex = 0;
-    Map<int, Account> externalAccounts = {};
-    Map<int, Account> internalAccounts = {};
+      int totalTransactions = 0;
+      int bufferTime = EXPLORER_DELAY_MS;
+      BalanceInfo balance = BalanceInfo(availableUtxos: [], lockedUtxos: []);
 
-    int totalTransactions = 0;
-    int bufferTime = EXPLORER_DELAY_MS;
-    BalanceInfo balance = BalanceInfo(availableUtxos: [], lockedUtxos: []);
+      /// search the External keychain for accounts with past transactions
+      /// requirement: 20 consecutive accounts without transactions
+      while (externalGapCount < externalGapMax) {
+        /// wait to not overload the explorer
+        Account _account;
+        try {
+          _account = await _initAccount(
+            _wallet,
+            externalIndex,
+            KeyType.external,
+          );
+        } catch (e) {
+          _deleteWallet(_wallet);
+          print('Error initializing external accounts $e');
+          return;
+        }
 
-    /// search the External keychain for accounts with past transactions
-    /// requirement: 20 consecutive accounts without transactions
-    while (externalGapCount < externalGapMax) {
-      /// wait to not overload the explorer
+        totalTransactions += _account.vttHashes.length;
+        _wallet.externalAccounts[externalIndex] = _account;
+        balance = balance + _account.balance;
+
+        /// yield a state with the current account for ui display
+        /// pass the wallet but not the password since we are already logged in
+        emit(CryptoInitializingWalletState(
+          message: '${_account.address}',
+          availableNanoWit: balance.availableNanoWit,
+          lockedNanoWit: balance.lockedNanoWit,
+          transactionCount: totalTransactions,
+          addressCount: externalIndex + internalIndex,
+        ));
+
+        /// if the account has 0 past transactions, increase the gap counter
+        /// add the account
+        externalAccounts[externalIndex] = _account;
+        externalIndex += 1;
+        if (_account.vttHashes.length == 0) {
+          externalGapCount += 1;
+        }
+      }
+
+      /// search the Internal keychain for accounts with past transactions
+      /// requirement: 1 consecutive account without transactions
+      while (internalGapCount < internalGapMax) {
+        /// wait to not overload the explorer
+        await Future.delayed(Duration(milliseconds: bufferTime));
+        Account _account;
+        try {
+          _account = await _initAccount(
+            _wallet,
+            internalIndex,
+            KeyType.internal,
+          );
+        } catch (e) {
+          _deleteWallet(_wallet);
+          print('Error initializing internal accounts$e');
+          return;
+        }
+
+        _wallet.internalAccounts[internalIndex] = _account;
+        totalTransactions += _account.vttHashes.length;
+        balance = balance + _account.balance;
+
+        /// yield a state with the current account for ui display
+
+        emit(CryptoInitializingWalletState(
+          message: '${_account.address}',
+          availableNanoWit: balance.availableNanoWit,
+          lockedNanoWit: balance.lockedNanoWit,
+          transactionCount: totalTransactions,
+          addressCount: externalIndex + internalIndex,
+        ));
+
+        /// if the account has 0 past transactions, increase the gap counter
+        if (_account.vttHashes.length == 0) {
+          internalGapCount += 1;
+        } else {}
+
+        /// add the account
+        internalAccounts[internalIndex] = _account;
+        internalIndex += 1;
+      }
+      if (externalAccounts[0]!.address != '') {
+        ApiDatabase database = Locator.instance.get<ApiDatabase>();
+        await database.loadWalletsDatabase();
+        await database.updateCurrentWallet(
+            currentWalletId: _wallet.id, isNewWallet: true);
+        add(CryptoInitWalletDoneEvent(
+          wallet: _wallet,
+          password: event.password,
+          internalAccounts: internalAccounts,
+          externalAccounts: externalAccounts,
+        ));
+      }
+    } else if (_wallet.walletType == WalletType.single){
+      BalanceInfo balance = BalanceInfo(availableUtxos: [], lockedUtxos: []);
+
       Account _account;
       try {
         _account = await _initAccount(
           _wallet,
-          externalIndex,
-          KeyType.external,
+          0,
+          KeyType.master,
         );
-      } catch (e) {
-        _deleteWallet(_wallet);
-        print('Error initializing external accounts $e');
-        return;
-      }
-
-      totalTransactions += _account.vttHashes.length;
-      _wallet.externalAccounts[externalIndex] = _account;
-      balance = balance + _account.balance;
-
-      /// yield a state with the current account for ui display
-      /// pass the wallet but not the password since we are already logged in
-      emit(CryptoInitializingWalletState(
-        message: '${_account.address}',
-        availableNanoWit: balance.availableNanoWit,
-        lockedNanoWit: balance.lockedNanoWit,
-        transactionCount: totalTransactions,
-        addressCount: externalIndex + internalIndex,
-      ));
-
-      /// if the account has 0 past transactions, increase the gap counter
-      /// add the account
-      externalAccounts[externalIndex] = _account;
-      externalIndex += 1;
-      if (_account.vttHashes.length == 0) {
-        externalGapCount += 1;
-      }
-    }
-
-    /// search the Internal keychain for accounts with past transactions
-    /// requirement: 1 consecutive account without transactions
-    while (internalGapCount < internalGapMax) {
-      /// wait to not overload the explorer
-      await Future.delayed(Duration(milliseconds: bufferTime));
-      Account _account;
-      try {
-        _account = await _initAccount(
-          _wallet,
-          internalIndex,
-          KeyType.internal,
-        );
+        _wallet.masterAccount = _account;
+        balance = balance + _account.balance;
+        emit(CryptoInitializingWalletState(
+          message: '${_account.address}',
+          availableNanoWit: balance.availableNanoWit,
+          lockedNanoWit: balance.lockedNanoWit,
+          transactionCount: _account.vttHashes.length,
+          addressCount: 1,
+        ));
       } catch (e) {
         _deleteWallet(_wallet);
         print('Error initializing internal accounts$e');
         return;
       }
-
-      _wallet.internalAccounts[internalIndex] = _account;
-      totalTransactions += _account.vttHashes.length;
-      balance = balance + _account.balance;
-
-      /// yield a state with the current account for ui display
-
-      emit(CryptoInitializingWalletState(
-        message: '${_account.address}',
-        availableNanoWit: balance.availableNanoWit,
-        lockedNanoWit: balance.lockedNanoWit,
-        transactionCount: totalTransactions,
-        addressCount: externalIndex + internalIndex,
-      ));
-
-      /// if the account has 0 past transactions, increase the gap counter
-      if (_account.vttHashes.length == 0) {
-        internalGapCount += 1;
-      } else {}
-
-      /// add the account
-      internalAccounts[internalIndex] = _account;
-      internalIndex += 1;
-    }
-    if (externalAccounts[0]!.address != '') {
       ApiDatabase database = Locator.instance.get<ApiDatabase>();
       await database.loadWalletsDatabase();
       await database.updateCurrentWallet(
@@ -171,9 +206,10 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       add(CryptoInitWalletDoneEvent(
         wallet: _wallet,
         password: event.password,
-        internalAccounts: internalAccounts,
-        externalAccounts: externalAccounts,
+        internalAccounts: {},
+        externalAccounts: {},
       ));
+
     }
   }
 
@@ -217,6 +253,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       event.keyData,
       event.seedSource,
       masterKey,
+      event.walletType,
     );
     final Wallet _wallet = await apiCrypto.initializeWallet();
     var creationStatus = await db.openDatabase();

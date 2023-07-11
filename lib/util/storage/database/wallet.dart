@@ -1,22 +1,23 @@
+import 'dart:core';
+import 'dart:isolate';
+
+import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
+import 'package:witnet/constants.dart';
 import 'package:witnet/crypto.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/utils.dart';
-import 'package:my_wit_wallet/constants.dart';
-import 'package:my_wit_wallet/shared/api_database.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
+import 'package:witnet/witnet.dart';
+
 import 'account.dart';
 import 'balance_info.dart';
-import 'dart:core';
-import 'dart:isolate';
 
-import 'package:witnet/constants.dart';
-import 'package:witnet/witnet.dart';
-import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
-import 'package:my_wit_wallet/shared/locator.dart';
-
-enum KeyType { internal, external }
+enum KeyType { internal, external, master }
 
 class PaginatedData {
   final int totalPages;
@@ -33,6 +34,7 @@ enum WalletType {
 
 class Wallet {
   Wallet({
+    required this.walletType,
     required this.name,
     this.description,
     this.xprv,
@@ -53,6 +55,7 @@ class Wallet {
     });
   }
 
+  final WalletType walletType;
   late String id;
   final String name;
   final String? description;
@@ -70,6 +73,7 @@ class Wallet {
 
   Map<int, Account> externalAccounts = {};
   Map<int, Account> internalAccounts = {};
+  late Account masterAccount;
 
   Map<String, Account> accountMap(KeyType keyType) {
     Map<String, Account> _accounts = {};
@@ -107,8 +111,13 @@ class Wallet {
 
   List<String> allAddresses() {
     List<String> _addresses = [];
-    _addresses.addAll(addressList(KeyType.external));
-    _addresses.addAll(addressList(KeyType.internal));
+    if (walletType == WalletType.hd) {
+      _addresses.addAll(addressList(KeyType.external));
+      _addresses.addAll(addressList(KeyType.internal));
+    } else if (walletType == WalletType.single) {
+      _addresses.add(masterAccount.address);
+    }
+
     return _addresses;
   }
 
@@ -167,12 +176,14 @@ class Wallet {
   }
 
   static Future<Wallet> fromMnemonic({
+    required WalletType walletType,
     required String name,
     required String description,
     required String mnemonic,
     required String password,
   }) async {
     final _wallet = Wallet(
+      walletType: walletType,
       name: name,
       description: description,
       txHashes: [],
@@ -184,12 +195,14 @@ class Wallet {
   }
 
   static Future<Wallet> fromXprvStr({
+    required WalletType walletType,
     required String name,
     required String description,
     required String xprv,
     required String password,
   }) async {
     final _wallet = Wallet(
+      walletType: walletType,
       name: name,
       description: description,
       xprv: xprv,
@@ -202,6 +215,7 @@ class Wallet {
   }
 
   static Future<Wallet> fromEncryptedXprv({
+    required WalletType walletType,
     required String name,
     required String description,
     required String xprv,
@@ -209,6 +223,7 @@ class Wallet {
   }) async {
     try {
       final _wallet = Wallet(
+        walletType: walletType,
         name: name,
         description: description,
         xprv: xprv,
@@ -238,6 +253,11 @@ class Wallet {
     /// The Wallet ID is the first 4 bytes of the sha256 hash of the Extended Public Key.
     this.id = bytesToHex(sha256(data: Xpub.fromXpub(externalXpub!).key))
         .substring(0, 8);
+    if (walletType == WalletType.single) {
+      masterAccount = Account(
+          walletName: name, address: xprv.address.address, path: xprv.rootPath);
+      this.id = bytesToHex(sha256(data: xprv.toXpub().key)).substring(0, 8);
+    }
   }
 
   void addAccount({
@@ -251,6 +271,9 @@ class Wallet {
         break;
       case KeyType.external:
         externalAccounts[index] = account;
+        break;
+      case KeyType.master:
+        masterAccount = account;
         break;
     }
   }
@@ -299,6 +322,8 @@ class Wallet {
           externalAccounts[index] = _account;
           return externalAccounts[index]!;
         }
+      case KeyType.master:
+        return masterAccount;
     }
   }
 
@@ -312,6 +337,8 @@ class Wallet {
           return internalAccounts[index]!;
         case KeyType.external:
           return externalAccounts[index]!;
+        case KeyType.master:
+          return masterAccount;
       }
     } catch (e) {
       return defaultAccount;
@@ -339,6 +366,10 @@ class Wallet {
         externalAccounts[index] = account;
         await db.updateAccount(account);
         return externalAccounts[index]!;
+      case KeyType.master:
+        masterAccount = account;
+        await db.updateAccount(account);
+        return masterAccount;
     }
   }
 
@@ -358,6 +389,8 @@ class Wallet {
           _ext[value.address] = value.jsonMap();
         });
         return _ext;
+      case KeyType.master:
+        return {masterAccount.address: masterAccount.jsonMap()};
     }
   }
 
@@ -398,7 +431,20 @@ class Wallet {
     String _id =
         bytesToHex(sha256(data: Xpub.fromXpub(data['externalXpub']).key))
             .substring(0, 8);
+
+    WalletType? _walletType;
+    if (data['walletType'] != null) {
+      if (data['walletType'] == "WalletType.hd") {
+        _walletType = WalletType.hd;
+      } else if (data['walletType'] == "WalletType.single") {
+        _walletType = WalletType.single;
+      }
+    } else {
+      _walletType = WalletType.hd;
+    }
+
     Wallet _wallet = Wallet(
+      walletType: _walletType!,
       name: data['name'],
       description: data['description'],
       xprv: data['xprv'],
@@ -470,10 +516,16 @@ class Wallet {
   }
 
   void setAccount(Account account) {
-    if (account.keyType == KeyType.external) {
-      externalAccounts[account.index] = account;
-    } else {
-      internalAccounts[account.index] = account;
+    switch (account.keyType) {
+      case KeyType.internal:
+        internalAccounts[account.index] = account;
+        break;
+      case KeyType.external:
+        externalAccounts[account.index] = account;
+        break;
+      case KeyType.master:
+        masterAccount = account;
+        break;
     }
   }
 

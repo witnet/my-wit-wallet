@@ -1,11 +1,12 @@
+import 'dart:core';
+
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/util/utxo_list_to_string.dart';
+import 'package:quiver/core.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 
-import 'package:my_wit_wallet/util/utxo_list_to_string.dart';
 import 'balance_info.dart';
-import 'dart:core';
-import 'package:quiver/core.dart';
 
 abstract class _Account {
   _Account();
@@ -16,6 +17,7 @@ abstract class _Account {
 
   List<Utxo> utxos = [];
   List<ValueTransferInfo> vtts = [];
+  List<MintInfo> mints = [];
 
   int get hashCode;
 
@@ -41,10 +43,12 @@ class Account extends _Account {
   final String path;
 
   int get index => pathToIndex(5, path);
+
   KeyType get keyType =>
       (pathToIndex(4, path) == 0) ? KeyType.external : KeyType.internal;
   final String address;
   List<String> vttHashes = [];
+  List<String> mintHashes = [];
   List<Utxo> utxos = [];
 
   @override
@@ -61,6 +65,12 @@ class Account extends _Account {
     );
     account.walletId = data['walletId'];
     account.vttHashes = List<String>.from(data['value_transfer_hashes']);
+    if (data.containsKey("mint_hashes")) {
+      account.mintHashes = List<String>.from(data['mint_hashes']);
+    } else {
+      account.mintHashes = [];
+    }
+
     account.utxos = _utxos;
     return account;
   }
@@ -122,6 +132,12 @@ class Account extends _Account {
     return addedVtt;
   }
 
+  bool addMint(MintInfo mint) {
+    mintHashes.add(mint.txnHash);
+    mints.add(mint);
+    return true;
+  }
+
   @override
   Map<String, dynamic> jsonMap() {
     List<Map<String, dynamic>> _utxos = [];
@@ -137,6 +153,7 @@ class Account extends _Account {
       'utxos': _utxos.toList(),
       'balance': balance.jsonMap(),
       'value_transfer_hashes': vttHashes.toList(),
+      'mint_hashes': mintHashes.toList(),
     };
   }
 
@@ -151,29 +168,6 @@ class Account extends _Account {
   int get hashCode => hash4(walletName.hashCode, address.hashCode,
       vttHashes.hashCode, utxos.hashCode);
 }
-
-class NodeAccount extends Account {
-  NodeAccount(String walletName, String address)
-      : super(walletName: walletName, address: address, path: 'm');
-
-  Map<String, MintInfo> mints = {};
-  Map<String, dynamic> commits = {};
-  Map<String, dynamic> reveals = {};
-  Map<String, TallyTxn> tallies = {};
-  int eligibility = 0;
-  int reputation = 0;
-}
-
-List<Utxo> utxos = [];
-int lastSynced = -1;
-Map<String, dynamic> transactions = {
-  "value_transfer_transactions": {},
-  "mint_transactions": {},
-  "reveal_transactions": {},
-  "commit_transactions": {},
-  "tally_transactions": {},
-  "data_request_transactions": {},
-};
 
 bool isTheSameList(List<Utxo> a, List<Utxo> b) {
   int currentLength = a.length;

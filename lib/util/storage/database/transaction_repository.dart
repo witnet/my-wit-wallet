@@ -141,4 +141,63 @@ class DataRequestRepository extends _TransactionRepository {
   }
 }
 
+class MintRepository extends _TransactionRepository {
+  final StoreRef _store = stringMapStoreFactory.store("data_requests");
 
+  @override
+  Future<bool> deleteTransaction(
+    String transactionId,
+    DatabaseClient databaseClient,
+  ) async {
+    try {
+      await _store.record(transactionId).delete(databaseClient);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  Future<List> getAllTransactions(DatabaseClient databaseClient) async {
+    final List<RecordSnapshot<dynamic, dynamic>> snapshots =
+        await _store.find(databaseClient);
+
+    List<MintTransaction> wallets = snapshots
+        .map((snapshot) => MintTransaction.fromJson(snapshot.value))
+        .toList(growable: false);
+    return wallets;
+  }
+
+  @override
+  Future<bool> insertTransaction(
+    transaction,
+    DatabaseClient databaseClient,
+  ) async {
+    try {
+      assert(transaction.runtimeType == MintTransaction);
+      await _store
+          .record(transaction.transactionID)
+          .add(databaseClient, transaction.jsonMap());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> updateTransaction(
+    transaction,
+    DatabaseClient databaseClient,
+  ) async {
+    try {
+      assert(transaction.runtimeType == MintTransaction);
+      await _store.record(transaction.transactionID).update(
+            databaseClient,
+            transaction.jsonMap(),
+          );
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+}

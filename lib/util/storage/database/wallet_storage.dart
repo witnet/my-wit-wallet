@@ -1,10 +1,11 @@
-import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:witnet/explorer.dart';
 
 import 'account.dart';
 import 'balance_info.dart';
 
 final defaultWallet = Wallet(
+    walletType: WalletType.hd,
     name: '',
     description: '',
     xprv: '',
@@ -30,26 +31,26 @@ final defaulVtt = ValueTransferInfo(
     type: 'valueTransfer',
     weight: 0);
 
-enum WalletType {
-  hd,
-  single
-}
-
 /// DbWallet formats the wallet for the database
 class WalletStorage {
   WalletStorage({
     required this.wallets,
   });
+
   // <wallet_id, Wallet>
   Map<String, Wallet> wallets;
+
   // <address, Account>
   Map<String, Account> _accounts = {};
+
   // <transactionId, ValueTransferInfo>
   Map<String, ValueTransferInfo> _transactions = {};
+
   // WalletType type;
   String? _currentWalletId;
   String? _currentAddress;
   Map<String, dynamic>? currentAddressList;
+
   Wallet get currentWallet => wallets[_currentWalletId] != null
       ? wallets[_currentWalletId]!
       : wallets[wallets.keys.first]!;

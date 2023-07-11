@@ -1,13 +1,16 @@
 import 'dart:isolate';
+
 import 'package:bloc/bloc.dart';
-import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
-import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:equatable/equatable.dart';
-import 'package:my_wit_wallet/shared/api_database.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-part 'create_wallet_state.dart';
+import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+
 part 'create_wallet_event.dart';
+
+part 'create_wallet_state.dart';
 
 enum CreateWalletType {
   unset,
@@ -46,6 +49,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       walletAddress: null,
       status: CreateWalletStatus.Imported);
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
+
   void _nextCardEvent(
       CreateWalletEvent event, Emitter<CreateWalletState> emit) async {
     final masterKey = await database.getKeychain();
@@ -256,6 +260,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       cryptoIsolate.send(
           method: 'initializeWallet',
           params: {
+            'walletType': 'hd',
             'walletName': '_loading',
             'walletDescription': '_loading',
             'seed': event.xprv,

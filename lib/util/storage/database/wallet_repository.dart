@@ -1,4 +1,5 @@
 import 'package:sembast/sembast.dart';
+
 import 'wallet.dart';
 
 abstract class _WalletRepository {
@@ -76,5 +77,6 @@ class WalletRepository extends _WalletRepository {
         'xprv': wallet.xprv!,
         'externalXpub': wallet.externalXpub!,
         'internalXpub': wallet.internalXpub!,
+        'walletType': wallet.walletType.name ?? WalletType.hd.toString(),
       };
 }
