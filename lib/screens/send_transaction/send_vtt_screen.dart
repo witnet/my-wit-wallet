@@ -197,7 +197,10 @@ class CreateVttScreenState extends State<CreateVttScreen>
     return BlocListener<DashboardBloc, DashboardState>(
       listener: (BuildContext context, DashboardState state) {
         _getCurrentWallet();
-        Navigator.pushReplacementNamed(context, CreateVttScreen.route);
+        MaterialPageRoute(
+            maintainState: false,
+            builder: (context) => CreateVttScreen(),
+            settings: RouteSettings(name: CreateVttScreen.route));
       },
       child: _dashboardBlocBuilder(),
     );
