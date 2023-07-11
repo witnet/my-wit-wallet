@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Explorer Settings
@@ -14,14 +13,6 @@ class Constants {
   static const String logoTag = 'witnet.logo';
   static const String titleTag = 'witnet.title';
 }
-
-const kTitleKey = Key('WALLET_TITLE');
-const kDebugToolbarKey = Key('DEBUG_TOOLBAR');
-const kRecoverWalletIntroKey = Key('RECOVER_WALLET_INTRO');
-const kRecoverWalletDescriptionKey = Key('RECOVER_WALLET_DESCRIPTION');
-
-const kMinLogoHeight = 50.0; // hide logo if less than this
-const kMaxLogoHeight = 125.0;
 
 /// Wallet Settings
 
