@@ -207,6 +207,18 @@ class ApiCrypto {
     return passwordHash['xprv']!;
   }
 
+  Future<String> verifiedXprv({required String xprv}) async {
+    try {
+      Xprv _xprv = Xprv.fromXprv(xprv);
+      assert(_xprv.address.address.isNotEmpty);
+    } catch (e) {
+      print('error $e');
+      print('invalid xprv');
+      rethrow;
+    }
+    return xprv;
+  }
+
   Future<String> decryptXprv(
       {required String xprv, required String password}) async {
     final receivePort = ReceivePort();

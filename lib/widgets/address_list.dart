@@ -149,6 +149,7 @@ class AddressListState extends State<AddressList> {
                           width: 4,
                         ),
                         Tooltip(
+                            margin: EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               color: theme.colorScheme.background,

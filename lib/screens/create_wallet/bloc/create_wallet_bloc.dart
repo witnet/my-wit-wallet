@@ -178,7 +178,8 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       case CreateWalletStatus.WalletDetail:
         if (event.walletType == CreateWalletType.newWallet) {
           emit(state.copyWith(status: CreateWalletStatus.ConfirmMnemonic));
-        } else if (event.walletType == CreateWalletType.encryptedXprv) {
+        } else if (event.walletType == CreateWalletType.encryptedXprv ||
+            event.walletType == CreateWalletType.xprv) {
           emit(state.copyWith(status: CreateWalletStatus.EnterEncryptedXprv));
         } else if (event.walletType == CreateWalletType.mnemonic) {
           emit(state.copyWith(status: CreateWalletStatus.EnterMnemonic));

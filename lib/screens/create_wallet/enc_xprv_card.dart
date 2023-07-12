@@ -5,8 +5,11 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
+import 'package:my_wit_wallet/widgets/toggle_switch.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:io' show Platform;
@@ -20,6 +23,21 @@ final _scanQrFocusNode = FocusNode();
 
 typedef void VoidCallback(NavAction? value);
 typedef void BoolCallback(bool value);
+
+Map<WalletType, CreateWalletType> walletTypeToXprvType = {
+  WalletType.hd: CreateWalletType.encryptedXprv,
+  WalletType.single: CreateWalletType.xprv
+};
+
+Map<CreateWalletType, WalletType> xprvTypeToWalletType = {
+  CreateWalletType.encryptedXprv: WalletType.hd,
+  CreateWalletType.xprv: WalletType.single
+};
+
+Map<WalletType, String> walletTypeToLabel = {
+  WalletType.hd: 'HD wallet',
+  WalletType.single: 'Single address',
+};
 
 class EnterEncryptedXprvCard extends StatefulWidget {
   final Function nextAction;
@@ -49,6 +67,8 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   String? errorText;
   String? _errorXprvText;
   bool isScanQrFocused = false;
+  int _selectedIndex = 0;
+  CreateWalletType _xprvType = CreateWalletType.encryptedXprv;
 
   @override
   void initState() {
@@ -58,6 +78,8 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     _passFocusNode.addListener(() => validate());
     _scanQrFocusNode.addListener(_handleFocus);
     _textFocusNode.requestFocus();
+    _xprvType = BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+    _selectedIndex = xprvTypeToWalletType[_xprvType]!.index - 1;
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
     WidgetsBinding.instance
@@ -77,22 +99,18 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     });
   }
 
+  void _setXprvType(CreateWalletType type) {
+    BlocProvider.of<CreateWalletBloc>(context).add(ResetEvent(type));
+    setState(() {
+      _errorXprvText = null;
+      _xprvType = type;
+    });
+  }
+
   void setPassword(String password) {
     setState(() {
       _password = password;
     });
-  }
-
-  String? _validateXprv(String? input) {
-    String? errorText;
-
-    const xprvLen = 293;
-
-    if (input == null || input.length != xprvLen) {
-      errorText = "Invalid xprv";
-    }
-
-    return errorText;
   }
 
   Widget _buildConfirmField() {
@@ -124,9 +142,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
                                               CreateWalletScreen.route)),
                                       _textController.text = value,
                                       xprv = value,
-                                      setState(() {
-                                        _errorXprvText = _validateXprv(xprv);
-                                      })
+                                      validate(force: true),
                                     })))
                   },
                 ))
@@ -142,22 +158,13 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
       onSubmitted: (value) => {_passFocusNode.requestFocus()},
       onChanged: (String e) {
         setState(() {
+          _errorXprvText = null;
           xprv = _textController.value.text;
-          numLines = '\n'.allMatches(e).length + 1;
-          if (_validateXprv(xprv) == null) {
-            _errorXprvText = _validateXprv(xprv);
-          }
+          validate();
         });
       },
       onTap: () {
         _textFocusNode.requestFocus();
-      },
-      onTapOutside: (PointerDownEvent event) {
-        if (_textFocusNode.hasFocus) {
-          setState(() {
-            _errorXprvText = _validateXprv(xprv);
-          });
-        }
       },
     );
   }
@@ -197,10 +204,21 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
     String? xprvDecripted;
     try {
+      //is is excrypted xprv
       // Decript localXprv
-      xprvDecripted =
-          await apiCrypto.decryptXprv(xprv: xprvString, password: password);
-      setState(() => {decryptedLocalXprv = xprvDecripted, isXprvValid = true});
+      int xprvLength = xprvString.length;
+      if (xprvLength == 293 && _xprvType == CreateWalletType.encryptedXprv) {
+        xprvDecripted =
+            await apiCrypto.decryptXprv(xprv: xprvString, password: password);
+      } else if (xprvLength == 117 && _xprvType == CreateWalletType.xprv) {
+        xprvDecripted = await apiCrypto.verifiedXprv(xprv: xprvString);
+      }
+      if (xprvDecripted != null) {
+        setState(
+            () => {decryptedLocalXprv = xprvDecripted, isXprvValid = true});
+      } else {
+        setState(() => {isXprvValid = false});
+      }
     } catch (e) {
       setState(() => isXprvValid = false);
     }
@@ -212,13 +230,14 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
         errorText = null;
       });
       if (force || (!_passFocusNode.hasFocus && !_textFocusNode.hasFocus)) {
-        if (_password.isEmpty) {
+        if (_password.isEmpty && _xprvType == CreateWalletType.encryptedXprv) {
           setState(() {
             errorText = 'Please input a password';
           });
         } else if (force && !isXprvValid) {
           setState(() {
             errorText = 'Invalid Xprv or password';
+            _errorXprvText = 'Invalid Xprv';
           });
         }
       }
@@ -269,22 +288,29 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+    CreateWalletType type =
+        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            'Import wallet from Xprv key and password',
+            'Import wallet from an Xprv key',
             style: theme.textTheme.titleLarge, //Textstyle
           ),
           SizedBox(
             height: 16,
           ),
           Text(
-            'Xprv is a key exchange format that encodes and protects your wallet with a password. Xprv keys look like an long sequence of apparently random letters and numbers, preceded by "xprv".',
+            'Xprv is a key exchange format that encodes and protects your wallet with a password. Xprv keys look like a long sequence of apparently random letters and numbers, preceded by "xprv".',
             style: theme.textTheme.bodyLarge, //Textstyle
           ),
           Text(
-            'To import your wallet from an Xprv key, you need to type the key itself and its password below:',
+            'To import your wallet from a node master key, you need to type the key itself and click continue.',
+            style: theme.textTheme.bodyLarge, //Textstyle
+          ),
+          Text(
+            'To import your wallet from an Xprv key encrypted with a password, you need to type the key itself and its password below:',
             style: theme.textTheme.bodyLarge, //Textstyle
           ),
           SizedBox(
@@ -294,10 +320,75 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
           SizedBox(
             height: 16,
           ),
-          _buildPasswordField(),
+          type == CreateWalletType.encryptedXprv
+              ? _buildPasswordField()
+              : SizedBox(
+                  height: 0,
+                ),
           SizedBox(
-            height: 16,
+            height: type == CreateWalletType.encryptedXprv ? 16 : 0,
           ),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(right: 8),
+                  child: Tooltip(
+                      margin: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: extendedTheme.tooltipBgColor,
+                      ),
+                      height: 100,
+                      richMessage: TextSpan(
+                        text: '\'HD Wallet\' ',
+                        style: theme.textTheme.bodyMedium!
+                            .copyWith(fontWeight: FontWeight.bold),
+                        children: <InlineSpan>[
+                          TextSpan(
+                              text:
+                                  '(recommended) is the standard BIP-32 compliant wallet.\nSelect ',
+                              style: theme.textTheme.bodyMedium),
+                          TextSpan(
+                            text: '\'Single address\' ',
+                            style: theme.textTheme.bodyMedium!
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          TextSpan(
+                              text: 'wallet to import a node address.',
+                              style: theme.textTheme.bodyMedium),
+                        ],
+                      ),
+                      child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: Icon(FontAwesomeIcons.circleQuestion,
+                              size: 12, color: extendedTheme.inputIconColor))),
+                ),
+                ToggleSwitch(
+                  minWidth: 120.0,
+                  inactiveBgColor: extendedTheme.switchInactiveBg,
+                  initialLabelIndex: _selectedIndex,
+                  activeFgColor: extendedTheme.switchActiveFg,
+                  inactiveFgColor: extendedTheme.switchInactiveFg,
+                  activeBgColor: [extendedTheme.switchActiveBg!],
+                  cornerRadius: 4,
+                  borderWidth: 1.0,
+                  borderColor: [extendedTheme.switchBorderColor!],
+                  totalSwitches: 2,
+                  labels:
+                      walletTypeToLabel.values.map((label) => label).toList(),
+                  onToggle: (index) {
+                    WalletType selectedKeyLabel = walletTypeToLabel.keys
+                        .map((label) => label)
+                        .toList()[index];
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                    _setXprvType(walletTypeToXprvType[selectedKeyLabel]!);
+                  },
+                )
+              ]),
         ]);
   }
 }

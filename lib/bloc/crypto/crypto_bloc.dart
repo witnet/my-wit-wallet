@@ -59,7 +59,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       ),
     );
     Wallet _wallet = await _initializeWallet(event: event);
-    if(_wallet.walletType == WalletType.hd) {
+    if (_wallet.walletType == WalletType.hd) {
       /// Account discovery
       /// (1)- derive the first account's node (index = 0)
       /// (2)- derive the external chain node of this account
@@ -175,7 +175,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
           externalAccounts: externalAccounts,
         ));
       }
-    } else if (_wallet.walletType == WalletType.single){
+    } else if (_wallet.walletType == WalletType.single) {
       BalanceInfo balance = BalanceInfo(availableUtxos: [], lockedUtxos: []);
 
       Account _account;
@@ -209,7 +209,6 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
         internalAccounts: {},
         externalAccounts: {},
       ));
-
     }
   }
 

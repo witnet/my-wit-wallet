@@ -300,6 +300,8 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                 Padding(
                   padding: EdgeInsets.only(right: 8),
                   child: Tooltip(
+                      margin: EdgeInsets.all(8),
+                      padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: theme.colorScheme.background,
