@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
@@ -53,12 +54,14 @@ class _InputAmountState extends State<InputAmount> {
           suffixText: WIT_UNIT[WitUnit.Wit],
         ),
         minLines: 1,
+        keyboardType: Platform.isIOS
+            ? TextInputType.numberWithOptions(signed: true, decimal: true)
+            : widget.keyboardType,
         inputFormatters: [WitValueFormatter()],
         style: theme.textTheme.bodyLarge,
         autocorrect: false,
         focusNode: widget.focusNode,
         controller: widget.textEditingController,
-        keyboardType: widget.keyboardType,
         onChanged: widget.onChanged ?? (String? value) {},
         onEditingComplete: widget.onEditingComplete ?? () {},
         onFieldSubmitted: widget.onFieldSubmitted ?? (String? value) {},
