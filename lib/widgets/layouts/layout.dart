@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -147,6 +148,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                 }
               else
                 {
+                  // If keyboard is open hide keyboard
+                  FocusScope.of(context).unfocus(),
                   panelController.open(),
                   setState(() {
                     isPanelClose = panelController.isPanelClosed;
@@ -155,12 +158,23 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             });
   }
 
+  void hidePanelOnMobileIfKeyboard() {
+    if ((Platform.isAndroid || Platform.isIOS) &&
+        FocusScope.of(context).isFirstFocus &&
+        panelController.isAttached &&
+        panelController.isPanelOpen) {
+      panelController.close();
+    }
+  }
+
   // Content displayed between header and bottom actions
   Widget buildMainContent(BuildContext context, theme) {
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     if (widget.slidingPanel == null) {
       return _buildMainLayout(context, theme, false);
     } else {
+      // Hide panel if the mobile keyboard is open
+      hidePanelOnMobileIfKeyboard();
       return SlidingUpPanel(
           controller: panelController,
           color: extendedTheme.walletListBackgroundColor!,
