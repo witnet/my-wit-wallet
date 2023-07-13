@@ -67,7 +67,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
         PaddedButton(
             padding: EdgeInsets.only(top: 8),
             text: nextAction != null ? secondaryAction().label : '',
-            type: 'primary',
+            type: 'secondary',
             enabled: nextAction != null,
             onPressed: () => {
                   nextAction != null ? secondaryAction().action() : null,
