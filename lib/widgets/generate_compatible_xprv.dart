@@ -145,7 +145,6 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
               SizedBox(height: 8),
               InputLogin(
                 hint: 'Password',
-                autoFocus: true,
                 focusNode: _passFocusNode,
                 showPassFocusNode: _showPassFocusNode,
                 textEditingController: _passController,

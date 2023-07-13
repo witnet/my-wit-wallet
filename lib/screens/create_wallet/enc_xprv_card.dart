@@ -98,7 +98,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   Widget _buildConfirmField() {
     final theme = Theme.of(context);
     return TextField(
-      autofocus: true,
       decoration: InputDecoration(
         hintText: 'Your Xprv key (starts with xprv...)',
         suffixIcon: !Platform.isWindows && !Platform.isLinux

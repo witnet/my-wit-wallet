@@ -192,7 +192,6 @@ class RecipientStepState extends State<RecipientStep>
               ),
               SizedBox(height: 8),
               TextFormField(
-                autofocus: true,
                 style: theme.textTheme.bodyLarge,
                 decoration: InputDecoration(
                   hintText: 'Recipient address',

@@ -116,7 +116,6 @@ class WalletDetailCardState extends State<WalletDetailCard>
           ),
           SizedBox(height: 8),
           TextField(
-            autofocus: true,
             style: theme.textTheme.bodyText1,
             decoration: InputDecoration(
               hintText: 'My first million Wits',

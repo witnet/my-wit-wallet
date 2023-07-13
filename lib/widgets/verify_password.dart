@@ -118,7 +118,6 @@ class VerifyPasswordState extends State<VerifyPassword>
               SizedBox(height: 8),
               InputLogin(
                 hint: 'Password',
-                autoFocus: true,
                 obscureText: true,
                 focusNode: _passFocusNode,
                 showPassFocusNode: _showPasswordFocusNode,
