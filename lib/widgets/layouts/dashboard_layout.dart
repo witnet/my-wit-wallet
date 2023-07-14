@@ -30,6 +30,16 @@ import 'package:my_wit_wallet/widgets/snack_bars.dart';
 
 const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
+// MaterialPageRoute without transition
+class CustomPageRoute extends MaterialPageRoute {
+  CustomPageRoute({builder, maintainState, settings})
+      : super(
+            builder: builder, maintainState: maintainState, settings: settings);
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 0);
+}
+
 class DashboardLayout extends StatefulWidget {
   final ScrollController? scrollController;
   final Widget dashboardChild;
@@ -73,18 +83,22 @@ class DashboardLayoutState extends State<DashboardLayout>
     BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
     Navigator.push(
         context,
-        MaterialPageRoute(
+        CustomPageRoute(
+            builder: (BuildContext context) {
+              return PreferencePage();
+            },
             maintainState: false,
-            builder: (context) => PreferencePage(),
             settings: RouteSettings(name: PreferencePage.route)));
   }
 
   Future<void> _showCreateVTTDialog() async {
     Navigator.push(
         context,
-        MaterialPageRoute(
+        CustomPageRoute(
+            builder: (BuildContext context) {
+              return CreateVttScreen();
+            },
             maintainState: false,
-            builder: (context) => CreateVttScreen(),
             settings: RouteSettings(name: CreateVttScreen.route)));
   }
 
@@ -92,9 +106,11 @@ class DashboardLayoutState extends State<DashboardLayout>
     BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
     Navigator.push(
         context,
-        MaterialPageRoute(
+        CustomPageRoute(
+            builder: (BuildContext context) {
+              return ReceiveTransactionScreen();
+            },
             maintainState: false,
-            builder: (context) => ReceiveTransactionScreen(),
             settings: RouteSettings(name: ReceiveTransactionScreen.route)));
   }
 
@@ -136,9 +152,11 @@ class DashboardLayoutState extends State<DashboardLayout>
                       .add(ResetTransactionEvent()),
                   Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      CustomPageRoute(
+                          builder: (BuildContext context) {
+                            return DashboardScreen();
+                          },
                           maintainState: false,
-                          builder: (context) => DashboardScreen(),
                           settings:
                               RouteSettings(name: DashboardScreen.route))),
                 }
