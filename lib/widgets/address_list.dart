@@ -78,49 +78,53 @@ class AddressListState extends State<AddressList> {
     final textStyle = isAddressSelected
         ? extendedTheme.monoMediumText
         : extendedTheme.monoRegularText;
-    return MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-            child: Container(
-              decoration: BoxDecoration(
-                color: WitnetPallet.transparent,
-                border: Border(
-                    bottom: BorderSide(
-                  color: extendedTheme.txBorderColor!,
-                  width: 1,
-                )),
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        account.address,
-                        overflow: TextOverflow.ellipsis,
-                        style: textStyle,
-                      ),
+    return Semantics(
+        button: true,
+        enabled: true,
+        label: 'Generated address',
+        child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: WitnetPallet.transparent,
+                    border: Border(
+                        bottom: BorderSide(
+                      color: extendedTheme.txBorderColor!,
+                      width: 1,
+                    )),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            account.address,
+                            overflow: TextOverflow.ellipsis,
+                            style: textStyle,
+                          ),
+                        ),
+                        Expanded(
+                          child: _syncSpinnerOrBalanceDisplay(account, theme),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      child: _syncSpinnerOrBalanceDisplay(account, theme),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-            onTap: () async {
-              await ApiPreferences.setCurrentAddress(AddressEntry(
-                walletId: widget.currentWallet.id,
-                addressIdx: account.index.toString(),
-                keyType: account.keyType == KeyType.internal ? 1 : 0,
-              ));
-              BlocProvider.of<DashboardBloc>(context)
-                  .add(DashboardUpdateWalletEvent(
-                currentWallet: widget.currentWallet,
-                currentAddress: account.address,
-              ));
-            }));
+                onTap: () async {
+                  await ApiPreferences.setCurrentAddress(AddressEntry(
+                    walletId: widget.currentWallet.id,
+                    addressIdx: account.index.toString(),
+                    keyType: account.keyType == KeyType.internal ? 1 : 0,
+                  ));
+                  BlocProvider.of<DashboardBloc>(context)
+                      .add(DashboardUpdateWalletEvent(
+                    currentWallet: widget.currentWallet,
+                    currentAddress: account.address,
+                  ));
+                })));
   }
 
   Widget _internalAccountsBalance(ThemeData theme) {

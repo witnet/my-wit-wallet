@@ -199,12 +199,10 @@ class DashboardLayoutState extends State<DashboardLayout>
                           color: theme.textTheme.headlineMedium!.color),
                     ))),
             Flexible(
-                child: Semantics(
-              label: 'Copy address to clipboard',
               child: PaddedButton(
                   padding: EdgeInsets.zero,
-                  label: 'Show wallet list button',
-                  text: 'Show wallet list',
+                  label: 'Copy address to clipboard',
+                  text: 'Copy address to clipboard',
                   type: 'icon-button',
                   iconSize: 12,
                   onPressed: () async {
@@ -232,7 +230,7 @@ class DashboardLayoutState extends State<DashboardLayout>
                         : FontAwesomeIcons.copy,
                     size: 12,
                   )),
-            )),
+            ),
           ]),
         ],
       );
