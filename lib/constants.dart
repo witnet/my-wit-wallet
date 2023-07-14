@@ -46,4 +46,4 @@ const int EXTERNAL_GAP_LIMIT = 3;
 const int INTERNAL_GAP_LIMIT = 3;
 const bool ENCRYPT_DB = false;
 const int PAGINATION_LIMIT = 10;
-const String VERSION_NUMBER = '0.1.1-dev';
+const String VERSION_NUMBER = '0.1.2-dev';
