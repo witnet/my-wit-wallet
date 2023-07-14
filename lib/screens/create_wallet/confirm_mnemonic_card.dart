@@ -8,14 +8,17 @@ import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 
 typedef void VoidCallback(NavAction? value);
+typedef void BoolCallback(bool value);
 
 class ConfirmMnemonicCard extends StatefulWidget {
   final Function nextAction;
   final Function prevAction;
+  final Function clearActions;
   ConfirmMnemonicCard({
     Key? key,
     required VoidCallback this.nextAction,
     required VoidCallback this.prevAction,
+    required BoolCallback this.clearActions,
   }) : super(key: key);
 
   ConfirmMnemonicCardState createState() => ConfirmMnemonicCardState();
@@ -24,8 +27,20 @@ class ConfirmMnemonicCard extends StatefulWidget {
 class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
     with TickerProviderStateMixin {
   String mnemonic = '';
+  String? _secretRecoveryPhraseErrorText;
   final TextEditingController textController = TextEditingController();
   int numLines = 0;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.nextAction(next));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.prevAction(prev));
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.clearActions(false));
+    super.initState();
+  }
 
   void prevAction() {
     WalletType type =
@@ -34,10 +49,16 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
   }
 
   void nextAction() {
-    WalletType type =
-        BlocProvider.of<CreateWalletBloc>(context).state.walletType;
-    BlocProvider.of<CreateWalletBloc>(context)
-        .add(NextCardEvent(type, data: {}));
+    if (validMnemonic(mnemonic)) {
+      WalletType type =
+          BlocProvider.of<CreateWalletBloc>(context).state.walletType;
+      BlocProvider.of<CreateWalletBloc>(context)
+          .add(NextCardEvent(type, data: {}));
+    } else {
+      setState(() {
+        _secretRecoveryPhraseErrorText = 'Invalid secret recovery phrase';
+      });
+    }
   }
 
   NavAction prev() {
@@ -59,13 +80,6 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
     String _mn = Locator.instance.get<ApiCreateWallet>().seedData!;
     if (mnemonic != _mn) return false;
     return validateMnemonic(mnemonic);
-  }
-
-  @override
-  void initState() {
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => widget.prevAction(prev));
-    super.initState();
   }
 
   @override
@@ -91,6 +105,9 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
         ),
         TextField(
           style: extendedTheme.monoLargeText,
+          decoration: InputDecoration(
+            errorText: _secretRecoveryPhraseErrorText,
+          ),
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.go,
           maxLines: 3,
@@ -100,9 +117,9 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
           },
           onChanged: (String e) {
             if (validMnemonic(textController.value.text)) {
-              widget.nextAction(next);
-            } else {
-              widget.nextAction(null);
+              setState(() {
+                _secretRecoveryPhraseErrorText = null;
+              });
             }
             setState(() {
               mnemonic = textController.value.text;
