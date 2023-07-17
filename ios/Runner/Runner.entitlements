@@ -3,6 +3,6 @@
 <plist version="1.0">
 <dict>
     <key>aps-environment</key>
-    <true/>
+    <false/>
 </dict>
 </plist>
