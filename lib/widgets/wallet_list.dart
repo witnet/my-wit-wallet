@@ -13,6 +13,7 @@ import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
+import 'package:my_wit_wallet/widgets/custom_page_route.dart';
 import 'package:my_wit_wallet/widgets/select_wallet_box.dart';
 
 class ListItem {
@@ -91,7 +92,14 @@ class WalletListState extends State<WalletList> {
     Locator.instance<ApiCreateWallet>().setWalletType(WalletType.unset);
     BlocProvider.of<CreateWalletBloc>(context)
         .add(ResetEvent(WalletType.unset));
-    Navigator.pushNamed(context, CreateWalletScreen.route);
+    Navigator.push(
+        context,
+        CustomPageRoute(
+            builder: (BuildContext context) {
+              return CreateWalletScreen();
+            },
+            maintainState: false,
+            settings: RouteSettings(name: CreateWalletScreen.route)));
   }
 
   Widget _buildInitialButtons() {

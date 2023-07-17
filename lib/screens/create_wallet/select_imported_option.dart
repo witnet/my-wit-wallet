@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
+import 'package:my_wit_wallet/widgets/custom_page_route.dart';
 
 typedef void VoidCallback(NavAction? value);
 typedef void BoolCallback(bool value);
@@ -46,7 +48,14 @@ class ImportedOptionState extends State<SelectImportedOption> {
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     LoginStatus status = BlocProvider.of<LoginBloc>(context).state.status;
     if (status != LoginStatus.LoginSuccess) {
-      Navigator.pushNamed(context, '/');
+      Navigator.push(
+          context,
+          CustomPageRoute(
+              builder: (BuildContext context) {
+                return DashboardScreen();
+              },
+              maintainState: false,
+              settings: RouteSettings(name: DashboardScreen.route)));
     } else {
       BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
     }

@@ -110,7 +110,7 @@ class TransactionDetails extends StatelessWidget {
           type: 'text'),
       SizedBox(height: 16),
       Padding(
-          padding: EdgeInsets.only(left: 12, right: 8),
+          padding: EdgeInsets.only(left: 16, right: 16),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
