@@ -157,8 +157,11 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
           nextAction: _setNextAction, prevAction: _setPrevAction),
       CreateWalletStatus.EnterMnemonic: EnterMnemonicCard(
           nextAction: _setNextAction, prevAction: _setPrevAction),
-      CreateWalletStatus.EnterXprv:
-          EnterXprvCard(nextAction: _setNextAction, prevAction: _setPrevAction),
+      CreateWalletStatus.EnterXprv: EnterEncryptedXprvCard(
+        nextAction: _setNextAction,
+        prevAction: _setPrevAction,
+        clearActions: _setClearActions,
+      ),
       CreateWalletStatus.ValidXprv: null,
       CreateWalletStatus.EnterEncryptedXprv: EnterEncryptedXprvCard(
         nextAction: _setNextAction,
