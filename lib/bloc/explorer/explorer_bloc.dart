@@ -147,7 +147,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
     database.walletStorage.wallets[wallet.id] = wallet;
     await database.loadWalletsDatabase();
-    await database.updateCurrentWallet(currentWalletId: wallet.id);
+    await database.updateCurrentWallet(currentWalletId: wallet.id, isHdWallet: wallet.walletType == WalletType.hd);
     emit(ExplorerState.synced(database.walletStorage));
   }
 
@@ -259,7 +259,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       }
     }
     await database.loadWalletsDatabase();
-    await database.updateCurrentWallet(currentWalletId: wallet.id);
+    await database.updateCurrentWallet(currentWalletId: wallet.id, isHdWallet: wallet.walletType == WalletType.hd);
     emit(ExplorerState.synced(database.walletStorage));
   }
 

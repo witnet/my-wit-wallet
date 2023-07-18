@@ -68,6 +68,7 @@ class ApiDatabase {
 
   Future<void> updateCurrentWallet(
       {String? currentWalletId,
+      bool isHdWallet = false,
       bool isNewWallet = false,
       bool isUpdatedWallet = false}) async {
     ApiDatabase db = Locator.instance<ApiDatabase>();
@@ -81,23 +82,25 @@ class ApiDatabase {
 
     // If localStorage is deleted, it resets preferences of the wallet to default values
     if (currentWalletNotSaved) {
-      await setWalletAndAccountInLocalStorage(currentWalletId,
-          AddressEntry(walletId: currentWalletId, addressIdx: 0, keyType: '0'));
+      await setWalletAndAccountInLocalStorage(
+          currentWalletId,
+          AddressEntry(
+              walletId: currentWalletId,
+              addressIdx: isHdWallet ? 0 : null,
+              keyType: isHdWallet ? '0' : 'm'));
       preferences = await getCurrentWalletPreferences();
     }
     final walletIdToSet =
         preferences != null && !isUpdatedWallet && !isNewWallet
             ? preferences[WalletPreferences.walletId]
             : currentWalletId;
-    walletStorage.setCurrentWallet(walletIdToSet);
 
     // set new wallet in storage
     walletStorage.setCurrentWallet(walletIdToSet);
 
     // get account preferences taking into account corrupted localStorage
     Map<AccountPreferences, dynamic> accountPreferences;
-    bool isHdWallet = walletStorage.currentWallet.walletType == WalletType.hd;
-
+    print('master account:: ${walletStorage.currentWallet.masterAccount}');
     accountPreferences = getUpdatedAccountInfo(AccountPreferencesParams(
         walletIdToSet,
         preferences,

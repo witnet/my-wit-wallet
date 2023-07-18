@@ -14,6 +14,7 @@ final defaultWallet = Wallet(
     txHashes: [],
     externalAccounts: {},
     internalAccounts: {},
+    masterAccount: null,
     lastSynced: -1);
 final defaultAccount = Account(address: '', walletName: '', path: '');
 

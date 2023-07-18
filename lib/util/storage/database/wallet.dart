@@ -41,6 +41,7 @@ class Wallet {
     this.externalXpub,
     this.internalXpub,
     required this.txHashes,
+    required this.masterAccount,
     required this.externalAccounts,
     required this.internalAccounts,
     this.lastSynced = -1,
@@ -196,6 +197,7 @@ class Wallet {
       txHashes: [],
       externalAccounts: {},
       internalAccounts: {},
+      masterAccount: null,
     );
     _wallet._setMasterXprv(Xprv.fromMnemonic(mnemonic: mnemonic), password);
     return _wallet;
@@ -214,6 +216,7 @@ class Wallet {
       txHashes: [],
       externalAccounts: {},
       internalAccounts: {},
+      masterAccount: null,
     );
     _wallet._setMasterXprv(Xprv.fromXprv(xprv), password);
     return _wallet;
@@ -233,6 +236,7 @@ class Wallet {
         txHashes: [],
         externalAccounts: {},
         internalAccounts: {},
+        masterAccount: null,
       );
       _wallet._setMasterXprv(Xprv.fromEncryptedXprv(xprv, password), password);
       return _wallet;
@@ -257,9 +261,9 @@ class Wallet {
     this.id = bytesToHex(sha256(data: Xpub.fromXpub(externalXpub!).key))
         .substring(0, 8);
     if (walletType == WalletType.single) {
-      masterAccount = Account(
+      this.masterAccount = Account(
           walletName: name, address: xprv.address.address, path: xprv.rootPath);
-      masterAccount!.walletId = this.id;
+      this.masterAccount!.walletId = this.id;
     }
   }
 
@@ -443,6 +447,7 @@ class Wallet {
       txHashes: [],
       externalAccounts: _externalAccounts,
       internalAccounts: _internalAccounts,
+      masterAccount: null,
     );
 
     _wallet.id = _id;

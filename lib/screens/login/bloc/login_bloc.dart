@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/models/wallet_name.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -26,8 +27,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(state.copyWith(status: LoginStatus.LoginInProgress));
       bool verified = await apiDatabase.verifyPassword(event.password);
       if (verified) {
-        final currentWalletId = apiDatabase.walletStorage.currentWallet.id;
-        await apiDatabase.updateCurrentWallet(currentWalletId: currentWalletId);
+        final currentWallet = apiDatabase.walletStorage.currentWallet;
+        await apiDatabase.updateCurrentWallet(
+            currentWalletId: currentWallet.id,
+            isHdWallet: currentWallet.walletType == WalletType.hd);
         emit(state.copyWith(status: LoginStatus.LoginSuccess));
       } else {
         emit(state.copyWith(status: LoginStatus.LoginInvalid));
