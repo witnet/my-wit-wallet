@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +8,7 @@ import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/dashed_rect.dart';
 import 'package:my_wit_wallet/widgets/generate_compatible_xprv.dart';
+import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/widgets/verify_password.dart';
 
 class WalletConfig extends StatefulWidget {
@@ -40,6 +39,7 @@ class _WalletConfigState extends State<WalletConfig> {
   }
 
   Widget _exportWalletContent(BuildContext context) {
+    final theme = Theme.of(context);
     Wallet currentWallet =
         Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
     bool isSingleAddressWallet = currentWallet.walletType == WalletType.single;
@@ -79,15 +79,11 @@ class _WalletConfigState extends State<WalletConfig> {
         padding: EdgeInsets.only(bottom: 8),
         onPressed: () async {
           Clipboard.setData(ClipboardData(text: newXprv ?? ''));
+          await Clipboard.setData(ClipboardData(text: newXprv ?? ''));
           if (await Clipboard.hasStrings()) {
-            setState(() {
-              isLoading = true;
-            });
-            Timer(Duration(milliseconds: 500), () {
-              setState(() {
-                isLoading = false;
-              });
-            });
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context)
+                .showSnackBar(buildCopiedSnackbar(theme, 'Xprv copied!'));
           }
         },
       ),

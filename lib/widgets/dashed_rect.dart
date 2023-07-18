@@ -39,9 +39,7 @@ class DashedRect extends StatelessWidget {
               child: Text(
                 text,
                 style: blur
-                    ? TextStyle(
-                        fontSize: extendedTheme.monoLargeText!.fontSize,
-                        fontWeight: extendedTheme.monoLargeText!.fontWeight,
+                    ? extendedTheme.monoLargeText!.copyWith(
                         foreground: Paint()
                           ..style = PaintingStyle.fill
                           ..color = extendedTheme.monoLargeText!.color!
@@ -50,7 +48,7 @@ class DashedRect extends StatelessWidget {
               )),
           showEye
               ? Padding(
-                  padding: EdgeInsets.all(8),
+                  padding: EdgeInsets.only(bottom: 16),
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: PaddedButton(
@@ -61,7 +59,7 @@ class DashedRect extends StatelessWidget {
                       icon: !blur
                           ? Icon(Icons.remove_red_eye)
                           : Icon(Icons.visibility_off),
-                      type: 'vertical-icon',
+                      type: 'icon-button',
                     ),
                   ))
               : SizedBox(height: 0),
