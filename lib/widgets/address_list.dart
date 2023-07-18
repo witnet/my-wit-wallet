@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -144,7 +146,7 @@ class AddressListState extends State<AddressList> {
         (account) => internalBalance += account.balance.availableNanoWit);
     return Container(
         child: Padding(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 70),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -211,15 +213,17 @@ class AddressListState extends State<AddressList> {
       builder: (BuildContext context, DashboardState state) {
         return Column(
           children: [
-            ListView.builder(
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: externalAccounts.length,
-              itemBuilder: (context, index) {
-                return _buildAddressItem(externalAccounts[index], theme);
-              },
-            ),
+            widget.currentWallet.walletType == WalletType.hd
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: externalAccounts.length,
+                    itemBuilder: (context, index) {
+                      return _buildAddressItem(externalAccounts[index], theme);
+                    },
+                  )
+                : _buildAddressItem(widget.currentWallet.masterAccount!, theme),
             SizedBox(height: 24),
             _internalAccountsBalance(theme)
           ],
