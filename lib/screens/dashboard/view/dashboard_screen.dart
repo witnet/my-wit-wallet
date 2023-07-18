@@ -119,19 +119,23 @@ class DashboardScreenState extends State<DashboardScreen>
             : null,
       ),
       (vtts.length > 0 && txDetails == null)
-          ? NumberPaginator(
-              config: NumberPaginatorUIConfig(
-                buttonSelectedBackgroundColor:
-                    extendedTheme.numberPaginatiorSelectedBg,
-                buttonUnselectedForegroundColor:
-                    extendedTheme.numberPaginatiorUnselectedFg,
-              ),
-              numberPages: numberOfPages,
-              onPageChange: (int index) {
-                getPaginatedTransactions(
-                    PaginationParams(currentPage: index + 1, limit: 10));
-              },
-            )
+          ? Container(
+              width: numberOfPages < 4 ? 250 : null,
+              alignment: Alignment.center,
+              child: NumberPaginator(
+                config: NumberPaginatorUIConfig(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  buttonSelectedBackgroundColor:
+                      extendedTheme.numberPaginatiorSelectedBg,
+                  buttonUnselectedForegroundColor:
+                      extendedTheme.numberPaginatiorUnselectedFg,
+                ),
+                numberPages: numberOfPages,
+                onPageChange: (int index) {
+                  getPaginatedTransactions(
+                      PaginationParams(currentPage: index + 1, limit: 10));
+                },
+              ))
           : SizedBox(height: 8),
       vtts.length > 0 ? SizedBox(height: 16) : SizedBox(height: 8),
     ]);
