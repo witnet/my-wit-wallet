@@ -290,6 +290,9 @@ class Wallet {
     externalAccounts.forEach((address, account) {
       _utxos.addAll(account.utxos);
     });
+    if (masterAccount != null) {
+      _utxos.addAll(masterAccount!.utxos);
+    }
     return BalanceInfo.fromUtxoList(_utxos);
   }
 
