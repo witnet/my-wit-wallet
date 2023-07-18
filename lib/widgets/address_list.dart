@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -225,7 +223,9 @@ class AddressListState extends State<AddressList> {
                   )
                 : _buildAddressItem(widget.currentWallet.masterAccount!, theme),
             SizedBox(height: 24),
-            _internalAccountsBalance(theme)
+            widget.currentWallet.walletType == WalletType.hd
+                ? _internalAccountsBalance(theme)
+                : Container(),
           ],
         );
       },

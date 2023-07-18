@@ -105,8 +105,6 @@ class TransactionsListState extends State<TransactionsList> {
   Widget _buildTransactionItem(ValueTransferInfo transaction) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    print('** TRANSACTION **');
-    print(internalAddresses);
     String label = getTransactionLabel(externalAddresses, internalAddresses,
         transaction.inputs, widget.singleAddressAccount);
     String address =

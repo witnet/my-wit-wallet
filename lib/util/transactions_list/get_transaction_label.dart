@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:witnet/explorer.dart';
 

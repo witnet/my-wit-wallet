@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/dashed_rect.dart';
 import 'package:my_wit_wallet/widgets/generate_compatible_xprv.dart';
@@ -37,6 +40,13 @@ class _WalletConfigState extends State<WalletConfig> {
   }
 
   Widget _exportWalletContent(BuildContext context) {
+    Wallet currentWallet =
+        Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
+    bool isSingleAddressWallet = currentWallet.walletType == WalletType.single;
+    String? singleAddressXprv = currentWallet.xprv;
+    if (isSingleAddressWallet) {
+      newXprv = singleAddressXprv;
+    }
     Widget verifyPassword = VerifyPassword(
         onXprvGenerated: (generatedXprv) => {
               widget.scrollController.jumpTo(0.0),
