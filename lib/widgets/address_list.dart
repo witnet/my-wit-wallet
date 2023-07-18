@@ -115,14 +115,16 @@ class AddressListState extends State<AddressList> {
                 ),
                 onTap: () async {
                   String _keytype = '';
-                  if(account.keyType == KeyType.master){
+                  if (account.keyType == KeyType.master) {
                     _keytype = 'm';
                   } else {
                     _keytype = account.keyType == KeyType.internal ? '1' : '0';
                   }
                   await ApiPreferences.setCurrentAddress(AddressEntry(
                     walletId: widget.currentWallet.id,
-                    addressIdx: account.keyType == KeyType.master ? null : account.index,
+                    addressIdx: account.keyType == KeyType.master
+                        ? null
+                        : account.index,
                     keyType: _keytype,
                   ));
                   BlocProvider.of<DashboardBloc>(context)

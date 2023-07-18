@@ -33,8 +33,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
   void nextAction() {
     if (validate(force: true)) {
       Locator.instance.get<ApiCreateWallet>().setWalletName(_walletName);
-      Locator.instance
-          .get<ApiCreateWallet>();
+      Locator.instance.get<ApiCreateWallet>();
       CreateWalletType type =
           BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
       BlocProvider.of<CreateWalletBloc>(context)

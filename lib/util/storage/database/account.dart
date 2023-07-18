@@ -26,7 +26,8 @@ abstract class _Account {
   bool operator ==(Object other);
 }
 
-int pathToIndex(int depth, String path) => path.contains("/") ? int.parse(path.split('/')[depth]) : 0;
+int pathToIndex(int depth, String path) =>
+    path.contains("/") ? int.parse(path.split('/')[depth]) : 0;
 
 class Account extends _Account {
   Account(

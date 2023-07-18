@@ -287,6 +287,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       ApiExplorer explorer = Locator.instance.get<ApiExplorer>();
       final addressBlocks = await explorer.address(
           value: account.address, tab: 'blocks') as AddressBlocks;
+
       /// check if the list of transaction is already in the database
       for (int i = 0; i < addressBlocks.blocks.length; i++) {
         String blockHash = addressBlocks.blocks[i].blockID;

@@ -21,8 +21,8 @@ class ApiCrypto {
 
   ApiCrypto();
 
-  void setInitialWalletData(
-      String walletName, String seed, String seedSource, String password, WalletType walletType) {
+  void setInitialWalletData(String walletName, String seed, String seedSource,
+      String password, WalletType walletType) {
     this.walletName = walletName;
     this.seed = seed;
     this.seedSource = seedSource;
@@ -59,7 +59,7 @@ class ApiCrypto {
   Future<Account> generateAccount(
       Wallet wallet, KeyType keyType, int index) async {
     try {
-      if(keyType == KeyType.master) {
+      if (keyType == KeyType.master) {
         return wallet.masterAccount!;
       }
       CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();

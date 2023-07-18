@@ -67,6 +67,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     int bufferTime = EXPLORER_DELAY_MS;
     BalanceInfo balance = BalanceInfo(availableUtxos: [], lockedUtxos: []);
     Account? _account;
+
     /// Account discovery
     /// (1)- derive the first account's node (index = 0)
     /// (2)- derive the external chain node of this account

@@ -14,7 +14,6 @@ import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'build_wallet_card.dart';
 import 'enc_xprv_card.dart';
 import 'encrypt_wallet_card.dart';
-import 'xprv_card.dart';
 
 class CreateWalletScreen extends StatefulWidget {
   static final route = '/create-wallet';
@@ -169,8 +168,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
         clearActions: _setClearActions,
       ),
       CreateWalletStatus.ConfirmMnemonic: ConfirmMnemonicCard(
-          nextAction: _setNextAction,
-          prevAction: _setPrevAction),
+          nextAction: _setNextAction, prevAction: _setPrevAction),
       CreateWalletStatus.WalletDetail: WalletDetailCard(
           nextAction: _setNextAction,
           prevAction: _setPrevAction,

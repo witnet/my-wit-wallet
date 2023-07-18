@@ -78,28 +78,25 @@ class ApiDatabase {
         currentWalletId != null &&
         preferences != null &&
         preferences[WalletPreferences.addressList][currentWalletId] == null;
+
+    // If localStorage is deleted, it resets preferences of the wallet to default values
+    if (currentWalletNotSaved) {
+      await setWalletAndAccountInLocalStorage(currentWalletId,
+          AddressEntry(walletId: currentWalletId, addressIdx: 0, keyType: '0'));
+      preferences = await getCurrentWalletPreferences();
+    }
     final walletIdToSet =
         preferences != null && !isUpdatedWallet && !isNewWallet
             ? preferences[WalletPreferences.walletId]
             : currentWalletId;
     walletStorage.setCurrentWallet(walletIdToSet);
-    bool isHdWallet =
-        walletStorage.wallets[currentWalletId]!.walletType == WalletType.hd;
-    // If localStorage is deleted, it resets preferences of the wallet to default values
-    if (currentWalletNotSaved) {
-      await setWalletAndAccountInLocalStorage(
-          currentWalletId,
-          AddressEntry(
-              walletId: currentWalletId,
-              addressIdx: isHdWallet ? 0 : null,
-              keyType: isHdWallet ? '0' : 'm'));
-      preferences = await getCurrentWalletPreferences();
-    }
 
     // set new wallet in storage
+    walletStorage.setCurrentWallet(walletIdToSet);
 
     // get account preferences taking into account corrupted localStorage
     Map<AccountPreferences, dynamic> accountPreferences;
+    bool isHdWallet = walletStorage.currentWallet.walletType == WalletType.hd;
 
     accountPreferences = getUpdatedAccountInfo(AccountPreferencesParams(
         walletIdToSet,

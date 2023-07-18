@@ -3,6 +3,8 @@ import 'package:my_wit_wallet/util/extensions/int_extensions.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/util/transactions_list/get_transaction_address.dart';
+import 'package:my_wit_wallet/util/transactions_list/get_transaction_label.dart';
 import 'package:my_wit_wallet/widgets/transaction_details.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
@@ -19,7 +21,7 @@ class TransactionsList extends StatefulWidget {
   // final MintInfo? mints;
   final Map<int, Account> externalAddresses;
   final Map<int, Account> internalAddresses;
-  final Account? nodeAccount;
+  final Account? singleAddressAccount;
   final List<ValueTransferInfo> valueTransfers;
   TransactionsList(
       {Key? key,
@@ -29,7 +31,7 @@ class TransactionsList extends StatefulWidget {
       required this.internalAddresses,
       required this.externalAddresses,
       required this.valueTransfers,
-      this.nodeAccount})
+      this.singleAddressAccount})
       : super(key: key);
 
   @override
@@ -40,7 +42,6 @@ class TransactionsListState extends State<TransactionsList> {
   List<String?> externalAddresses = [];
   List<String?> internalAddresses = [];
   ValueTransferInfo? transactionDetails;
-  String? nodeAddress;
   final ScrollController _scroller = ScrollController();
   @override
   void initState() {
@@ -58,6 +59,9 @@ class TransactionsListState extends State<TransactionsList> {
     vti.outputs.forEach((element) {
       if ((externalAddresses.contains(element.pkh.address) ||
           internalAddresses.contains(element.pkh.address))) {
+        nanoWitvalue += element.value.toInt();
+      } else if (widget.singleAddressAccount != null &&
+          widget.singleAddressAccount!.address == element.pkh.address) {
         nanoWitvalue += element.value.toInt();
       }
     });
@@ -101,23 +105,12 @@ class TransactionsListState extends State<TransactionsList> {
   Widget _buildTransactionItem(ValueTransferInfo transaction) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    String label = '';
-    String address = '';
-    transaction.inputs.forEach((element) {
-      if (!externalAddresses.contains(element.address) &&
-          !internalAddresses.contains(element.address)) {
-        label = 'from';
-      }
-    });
-    label = label == 'from' ? label : 'to';
-    if (label == 'from' && transaction.inputs.length > 0) {
-      address = transaction.inputs[0].address.cropMiddle(18);
-    } else if (transaction.outputs.length > 0) {
-      address = transaction.outputs[0].pkh.address.cropMiddle(18);
-    }
-    if (label == 'from' && transaction.inputs.length > 1) {
-      address = 'Several addresses';
-    }
+    print('** TRANSACTION **');
+    print(internalAddresses);
+    String label = getTransactionLabel(externalAddresses, internalAddresses,
+        transaction.inputs, widget.singleAddressAccount);
+    String address =
+        getTransactionAddress(label, transaction.inputs, transaction.outputs);
     return Semantics(
         button: true,
         enabled: true,
