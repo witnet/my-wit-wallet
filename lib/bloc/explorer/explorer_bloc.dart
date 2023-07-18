@@ -237,6 +237,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         wallet.updateAccount(
             index: account.index, keyType: account.keyType, account: account);
       }
+      database.walletStorage.wallets[wallet.id] = wallet;
     }
 
     for (int i = 0; i < unconfirmedVtts.length; i++) {
