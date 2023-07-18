@@ -229,6 +229,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
       if (!isTheSameList(wallet.masterAccount!, utxoList)) {
         if (utxoList.isNotEmpty) {
+          account.utxos = utxoList;
           account = await updateAccountVttsAndBalance(account);
         } else {
           account.utxos.clear();
