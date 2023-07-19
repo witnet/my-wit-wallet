@@ -55,7 +55,7 @@ class ImportedOptionState extends State<SelectImportedOption> {
   void nextSeedAction() {
     widget.clearActions(true);
     Locator.instance<ApiCreateWallet>()
-        .setWalletType(CreateWalletType.mnemonic);
+        .setCreateWalletType(CreateWalletType.mnemonic);
     BlocProvider.of<CreateWalletBloc>(context)
         .add(ResetEvent(CreateWalletType.mnemonic));
     BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(
@@ -66,7 +66,7 @@ class ImportedOptionState extends State<SelectImportedOption> {
   void nextXprvAction() {
     widget.clearActions(true);
     Locator.instance<ApiCreateWallet>()
-        .setWalletType(CreateWalletType.encryptedXprv);
+        .setCreateWalletType(CreateWalletType.encryptedXprv);
     BlocProvider.of<CreateWalletBloc>(context)
         .add(ResetEvent(CreateWalletType.encryptedXprv));
     BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:isolate';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -49,6 +50,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
 
   Future<void> _cryptoInitializeWalletEvent(
       CryptoInitializeWalletEvent event, Emitter<CryptoState> emit) async {
+
     /// setup default default structure for database and unlock it
     emit(
       CryptoInitializingWalletState(
@@ -191,7 +193,9 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     ApiDatabase database = Locator.instance.get<ApiDatabase>();
     await database.loadWalletsDatabase();
     await database.updateCurrentWallet(
-        currentWalletId: _wallet.id, isHdWallet: _wallet.walletType == WalletType.hd, isNewWallet: true);
+        currentWalletId: _wallet.id,
+        isHdWallet: _wallet.walletType == WalletType.hd,
+        isNewWallet: true);
     add(CryptoInitWalletDoneEvent(
       wallet: _wallet,
       password: event.password,
@@ -234,6 +238,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     ApiDatabase db = Locator.instance<ApiDatabase>();
     String key = await db.getKeychain();
     final masterKey = key != '' ? key : event.password;
+
     apiCrypto.setInitialWalletData(
       event.walletName,
       event.keyData,

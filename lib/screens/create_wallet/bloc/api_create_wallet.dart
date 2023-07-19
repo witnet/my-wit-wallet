@@ -17,13 +17,15 @@ class ApiCreateWallet {
     seedSource = source;
   }
 
-  void setWalletType(CreateWalletType type) {
+  void setCreateWalletType(CreateWalletType type) {
     createWalletType = type;
   }
 
   void setPassword(String value) => password = value;
 
   void setWalletName(String value) => walletName = value;
+
+  void setWalletType(WalletType value) => walletType = value;
 
   void clearFormData() {
     seedData = '';
