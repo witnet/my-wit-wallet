@@ -132,9 +132,9 @@ class WalletListState extends State<WalletList> {
         ? int.parse(currentWalletAccount.split('/').last)
         : 0;
     String? address = accountsList[currentAccountIndex]?.address.toString();
-
     return SelectWalletBox(
       walletId: walletId,
+      walletType: database.walletStorage.wallets[walletId]!.walletType,
       label: database.walletStorage.wallets[walletId]!.name,
       isSelected: isSelectedWallet,
       walletName: database.walletStorage.wallets[walletId]!.name,

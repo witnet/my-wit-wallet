@@ -1,4 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 
 /// Explorer Settings
 const bool USE_EXPLORER_DEV = false;
@@ -41,6 +43,18 @@ Map<EstimatedFeeOptions, String?> DEFAULT_MINER_FEE_OPTIONS = {
   EstimatedFeeOptions.High: '0',
   EstimatedFeeOptions.Opulent: '0',
   EstimatedFeeOptions.Custom: null,
+};
+Map<WalletType, String> walletTypeToLabel = {
+  WalletType.hd: 'HD wallet',
+  WalletType.single: 'Single address',
+};
+Map<CreateWalletType, WalletType> xprvTypeToWalletType = {
+  CreateWalletType.encryptedXprv: WalletType.hd,
+  CreateWalletType.xprv: WalletType.single
+};
+Map<WalletType, CreateWalletType> walletTypeToXprvType = {
+  WalletType.hd: CreateWalletType.encryptedXprv,
+  WalletType.single: CreateWalletType.xprv
 };
 const int EXTERNAL_GAP_LIMIT = 3;
 const int INTERNAL_GAP_LIMIT = 3;

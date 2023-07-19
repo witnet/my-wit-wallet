@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/identicon.dart';
 import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/widgets/wallet_type_label.dart';
 
 typedef void StringCallback(String? value);
 
@@ -11,6 +13,7 @@ class SelectWalletBox extends StatelessWidget {
   final bool isSelected;
   final String label;
   final StringCallback onChanged;
+  final WalletType walletType;
   final String walletId;
   final String walletName;
   final String address;
@@ -23,6 +26,7 @@ class SelectWalletBox extends StatelessWidget {
       required this.walletId,
       required this.walletName,
       required this.address,
+      required this.walletType,
       required this.balance});
 
   Widget build(BuildContext context) {
@@ -82,12 +86,17 @@ class SelectWalletBox extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Text(
-              '$balance ${WIT_UNIT[WitUnit.Wit]}',
-              textAlign: TextAlign.end,
-              overflow: TextOverflow.ellipsis,
-              style: textStyle,
-            ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+              WalletTypeLabel(label: walletType),
+              SizedBox(height: 8),
+              Text(
+                '$balance ${WIT_UNIT[WitUnit.Wit]}',
+                textAlign: TextAlign.end,
+                overflow: TextOverflow.ellipsis,
+                style: textStyle,
+              )
+            ]),
           ),
         ]),
       ),

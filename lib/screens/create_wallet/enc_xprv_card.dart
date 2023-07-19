@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
@@ -23,21 +24,6 @@ final _scanQrFocusNode = FocusNode();
 
 typedef void VoidCallback(NavAction? value);
 typedef void BoolCallback(bool value);
-
-Map<WalletType, CreateWalletType> walletTypeToXprvType = {
-  WalletType.hd: CreateWalletType.encryptedXprv,
-  WalletType.single: CreateWalletType.xprv
-};
-
-Map<CreateWalletType, WalletType> xprvTypeToWalletType = {
-  CreateWalletType.encryptedXprv: WalletType.hd,
-  CreateWalletType.xprv: WalletType.single
-};
-
-Map<WalletType, String> walletTypeToLabel = {
-  WalletType.hd: 'HD wallet',
-  WalletType.single: 'Single address',
-};
 
 class EnterEncryptedXprvCard extends StatefulWidget {
   final Function nextAction;
@@ -80,7 +66,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     _textFocusNode.requestFocus();
     _xprvType =
         BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
-    _selectedIndex = xprvTypeToWalletType[_xprvType]!.index - 1;
+    _selectedIndex = walletTypeToXprvType[_xprvType]!.index - 1;
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
     WidgetsBinding.instance

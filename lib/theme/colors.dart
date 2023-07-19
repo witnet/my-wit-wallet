@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' show Color, MaterialColor;
 class WitnetPallet {
   static const black = Color.fromARGB(255, 40, 40, 40);
   static const lightGrey = Color.fromARGB(255, 193, 196, 198);
+  static const mediumGrey = Color.fromRGBO(101, 101, 101, 1);
   static const darkGrey = Color.fromARGB(255, 50, 50, 50);
   static const white = Color.fromARGB(255, 240, 243, 245);
   static const witnetGreen1 = Color.fromARGB(255, 80, 186, 177);
@@ -19,6 +20,7 @@ class WitnetPallet {
   static const darkGreen = Color.fromARGB(255, 54, 140, 83);
   static const brightGreen = Color.fromRGBO(74, 182, 161, 1);
   static const transparent = Color.fromARGB(0, 255, 255, 255);
+  static const brown = Color.fromRGBO(95, 65, 33, 1);
 }
 
 MaterialColor createMaterialColor(Color color) {
