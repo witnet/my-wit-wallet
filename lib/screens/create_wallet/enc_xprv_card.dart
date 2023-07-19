@@ -179,6 +179,8 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     await validateXprv(xprv, _password);
     if (validate(force: true)) {
       Locator.instance<ApiCreateWallet>().setSeed(decryptedLocalXprv!, 'xprv');
+      Locator.instance<ApiCreateWallet>()
+          .setWalletType(xprvTypeToWalletType[_xprvType] ?? WalletType.hd);
       CreateWalletType type =
           BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
       BlocProvider.of<CreateWalletBloc>(context)
@@ -220,6 +222,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
         setState(() => {isXprvValid = false});
       }
     } catch (e) {
+      print(e);
       setState(() => isXprvValid = false);
     }
   }

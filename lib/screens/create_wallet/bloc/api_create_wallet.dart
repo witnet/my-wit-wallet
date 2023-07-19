@@ -10,7 +10,7 @@ class ApiCreateWallet {
   late String? seedData;
   late String? seedSource;
   late CreateWalletType createWalletType;
-  late WalletType? walletType;
+  late WalletType walletType = WalletType.hd;
 
   void setSeed(String data, String source) {
     seedData = data;
@@ -32,6 +32,7 @@ class ApiCreateWallet {
     seedSource = '';
     walletName = '';
     password = null;
+    walletType = WalletType.unknown;
   }
 
   Future<String> createMnemonic(

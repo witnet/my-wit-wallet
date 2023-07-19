@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:witnet/crypto.dart';
 
 import 'bloc/create_wallet_bloc.dart';
@@ -81,6 +82,7 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
 
   void nextAction() {
     Locator.instance<ApiCreateWallet>().setSeed(mnemonic, 'mnemonic');
+    Locator.instance<ApiCreateWallet>().setWalletType(WalletType.hd);
     BlocProvider.of<CreateWalletBloc>(context).add(NextCardEvent(
         Locator.instance<ApiCreateWallet>().createWalletType,
         data: {}));

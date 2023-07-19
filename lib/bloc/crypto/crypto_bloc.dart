@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:isolate';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -50,7 +49,6 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
 
   Future<void> _cryptoInitializeWalletEvent(
       CryptoInitializeWalletEvent event, Emitter<CryptoState> emit) async {
-
     /// setup default default structure for database and unlock it
     emit(
       CryptoInitializingWalletState(

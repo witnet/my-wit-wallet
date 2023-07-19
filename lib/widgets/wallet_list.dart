@@ -88,7 +88,8 @@ class WalletListState extends State<WalletList> {
 
   //Go to create or import wallet view
   void _createImportWallet() {
-    Locator.instance<ApiCreateWallet>().setCreateWalletType(CreateWalletType.unset);
+    Locator.instance<ApiCreateWallet>()
+        .setCreateWalletType(CreateWalletType.unset);
     BlocProvider.of<CreateWalletBloc>(context)
         .add(ResetEvent(CreateWalletType.unset));
     Navigator.pushNamed(context, CreateWalletScreen.route);

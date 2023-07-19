@@ -98,6 +98,7 @@ class ApiCrypto {
           method: 'initializeWallet',
           params: {
             'walletName': walletName,
+            'walletType': walletType != null ? walletType!.name : null,
             'seedSource': seedSource,
             'seed': seed,
             'password': password,
@@ -237,7 +238,7 @@ class ApiCrypto {
 
     Map<String, String> response =
         await receivePort.first.then((value) => value as Map<String, String>);
-
+    print('response XRPV $response');
     if (response.containsKey('xprv')) {
       return response['xprv']!;
     } else {

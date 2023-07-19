@@ -13,7 +13,6 @@ import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/screens/login/view/login_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/animated_numeric_text.dart';
 import 'package:my_wit_wallet/widgets/auto_size_text.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
@@ -99,10 +98,8 @@ class BuildWalletCardState extends State<BuildWalletCard>
         .addPostFrameCallback((_) => widget.hideButton(true));
 
     ApiCreateWallet acw = Locator.instance<ApiCreateWallet>();
-    acw.walletType = WalletType.single;
     BlocProvider.of<CryptoBloc>(context).add(CryptoInitializeWalletEvent(
-        walletType: acw.walletType ?? WalletType.hd,
-        //acw.walletType,
+        walletType: acw.walletType,
         id: acw.walletName,
         walletName: acw.walletName,
         keyData: acw.seedData!,
@@ -156,7 +153,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
     if (acw.walletName != '') {
       BlocProvider.of<CryptoBloc>(context).add(
         CryptoInitializeWalletEvent(
-            walletType: acw.walletType ?? WalletType.single,
+            walletType: acw.walletType,
             id: acw.walletName,
             walletName: acw.walletName,
             keyData: acw.seedData!,
@@ -231,6 +228,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
     ]).createShader(Rect.fromLTWH(0.0, 0.0, 100.0, 78.0));
     return BlocBuilder<CryptoBloc, CryptoState>(
       builder: (context, state) {
+        print('state!!! $state');
         if (state is CryptoInitializingWalletState) {
           WidgetsBinding.instance
               .addPostFrameCallback((_) => widget.prevAction(null));
