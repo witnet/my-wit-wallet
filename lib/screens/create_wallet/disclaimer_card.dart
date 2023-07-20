@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
+import 'package:my_wit_wallet/widgets/custom_page_route.dart';
 import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 
@@ -54,7 +56,14 @@ class DisclaimerCardState extends State<DisclaimerCard>
         BlocProvider.of<CreateWalletBloc>(context).state.walletType;
     LoginStatus status = BlocProvider.of<LoginBloc>(context).state.status;
     if (type == WalletType.newWallet && status != LoginStatus.LoginSuccess) {
-      Navigator.pushNamed(context, '/');
+      Navigator.push(
+          context,
+          CustomPageRoute(
+              builder: (BuildContext context) {
+                return DashboardScreen();
+              },
+              maintainState: false,
+              settings: RouteSettings(name: DashboardScreen.route)));
     } else {
       BlocProvider.of<CreateWalletBloc>(context).add(PreviousCardEvent(type));
     }

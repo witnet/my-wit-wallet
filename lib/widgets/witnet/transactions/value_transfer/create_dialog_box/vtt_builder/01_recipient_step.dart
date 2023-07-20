@@ -4,6 +4,7 @@ import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_wit_wallet/widgets/custom_page_route.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
@@ -203,22 +204,26 @@ class RecipientStepState extends State<RecipientStep>
                           onPressed: () => {
                                 Navigator.push(
                                     context,
-                                    MaterialPageRoute(
-                                        builder: (context) => QrScanner(
-                                            onChanged: (String value) => {
-                                                  Navigator.popUntil(
-                                                      context,
-                                                      ModalRoute.withName(
-                                                          CreateVttScreen
-                                                              .route)),
-                                                  _addressController.text =
-                                                      value,
-                                                  _address = value,
-                                                  setState(() {
-                                                    _errorAddressText =
-                                                        _validateAddress(value);
-                                                  })
-                                                })))
+                                    CustomPageRoute(
+                                        builder: (BuildContext context) {
+                                          return QrScanner(
+                                              onChanged: (String value) => {
+                                                    Navigator.popUntil(
+                                                        context,
+                                                        ModalRoute.withName(
+                                                            CreateVttScreen
+                                                                .route)),
+                                                    _addressController.text =
+                                                        value,
+                                                    _address = value,
+                                                    setState(() {
+                                                      _errorAddressText =
+                                                          _validateAddress(
+                                                              value);
+                                                    })
+                                                  });
+                                        },
+                                        maintainState: false))
                               },
                           color: isScanQrFocused
                               ? theme.textSelectionTheme.cursorColor

@@ -17,7 +17,8 @@ import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
-import 'package:my_wit_wallet/widgets//wallet_list.dart';
+import 'package:my_wit_wallet/widgets/wallet_list.dart';
+import 'package:my_wit_wallet/widgets/custom_page_route.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/screens/login/view/login_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -29,16 +30,6 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 
 const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
-
-// MaterialPageRoute without transition
-class CustomPageRoute extends MaterialPageRoute {
-  CustomPageRoute({builder, maintainState, settings})
-      : super(
-            builder: builder, maintainState: maintainState, settings: settings);
-
-  @override
-  Duration get transitionDuration => const Duration(milliseconds: 0);
-}
 
 class DashboardLayout extends StatefulWidget {
   final ScrollController? scrollController;
