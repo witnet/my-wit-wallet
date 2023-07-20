@@ -156,7 +156,12 @@ class ApiCrypto {
           }
         });
       } else {
-        _signers[currentWallet.xprv!] = [currentWallet.masterAccount!.path];
+        /// single account
+        if (_signers.containsKey(currentWallet.xprv)) {
+          _signers[currentWallet.xprv]!.add(currentWallet.masterAccount!.path);
+        } else {
+          _signers[currentWallet.xprv!] = [currentWallet.masterAccount!.path];
+        }
       }
     }
     final receivePort = ReceivePort();
