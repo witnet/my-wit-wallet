@@ -198,6 +198,7 @@ class TransactionsListState extends State<TransactionsList> {
       if (widget.valueTransfers.length > 0) {
         return ListView.builder(
           controller: _scroller,
+          padding: EdgeInsets.zero,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           scrollDirection: Axis.vertical,

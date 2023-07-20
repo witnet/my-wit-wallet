@@ -73,6 +73,7 @@ class SelectWalletBox extends StatelessWidget {
                 children: [
                   Text(
                     walletName,
+                    overflow: TextOverflow.ellipsis,
                     style: textStyle,
                   ),
                   Text(

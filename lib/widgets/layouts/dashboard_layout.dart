@@ -13,6 +13,7 @@ import 'package:my_wit_wallet/screens/receive_transaction/receive_tx_screen.dart
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
@@ -127,6 +128,8 @@ class DashboardLayoutState extends State<DashboardLayout>
   }
 
   Widget _buildDashboardActions() {
+    final theme = Theme.of(context);
+    final double iconHeight = 40;
     String currentRoute = ModalRoute.of(context)!.settings.name!;
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       PaddedButton(
@@ -136,10 +139,12 @@ class DashboardLayoutState extends State<DashboardLayout>
         onPressed: currentRoute != CreateVttScreen.route
             ? _showCreateVTTDialog
             : () {},
-        icon: Icon(
-          FontAwesomeIcons.locationArrow,
-          size: 18,
-        ),
+        icon: Container(
+            height: 38,
+            child: Icon(
+              FontAwesomeIcons.locationArrow,
+              size: 18,
+            )),
         type: 'vertical-icon',
       ),
       PaddedButton(
@@ -161,10 +166,7 @@ class DashboardLayoutState extends State<DashboardLayout>
                               RouteSettings(name: DashboardScreen.route))),
                 }
             : () {},
-        icon: Icon(
-          FontAwesomeIcons.wallet,
-          size: 18,
-        ),
+        icon: witnetEyeIcon(theme, height: iconHeight),
         type: 'vertical-icon',
       ),
       PaddedButton(
@@ -176,10 +178,12 @@ class DashboardLayoutState extends State<DashboardLayout>
             : () {},
         icon: Transform.rotate(
             angle: 90 * math.pi / 90,
-            child: Icon(
-              FontAwesomeIcons.locationArrow,
-              size: 18,
-            )),
+            child: Container(
+                height: 38,
+                child: Icon(
+                  FontAwesomeIcons.locationArrow,
+                  size: 18,
+                ))),
         type: 'vertical-icon',
       ),
     ]);
@@ -197,7 +201,7 @@ class DashboardLayoutState extends State<DashboardLayout>
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: 16),
+          SizedBox(height: 8),
           Semantics(
               label: 'balance',
               child: Text(
@@ -205,7 +209,7 @@ class DashboardLayoutState extends State<DashboardLayout>
                 textAlign: TextAlign.center,
                 style: theme.textTheme.headlineMedium,
               )),
-          SizedBox(height: 16),
+          SizedBox(height: 8),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Flexible(
                 child: Semantics(
@@ -260,7 +264,6 @@ class DashboardLayoutState extends State<DashboardLayout>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _buildBalanceDisplay(),
-        SizedBox(height: 16),
         _buildDashboardActions(),
       ],
     );
@@ -273,9 +276,9 @@ class DashboardLayoutState extends State<DashboardLayout>
           padding: EdgeInsets.zero,
           label: 'Settings',
           text: 'Settings',
-          iconSize: 30,
+          iconSize: 28,
           icon: Icon(FontAwesomeIcons.gear,
-              size: 30, color: getButtonColorByRoute(PreferencePage.route)),
+              size: 28, color: getButtonColorByRoute(PreferencePage.route)),
           onPressed: currentRoute != PreferencePage.route
               ? () => _goToSettings()
               : () {},

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
@@ -36,10 +37,11 @@ class HeaderLayout extends StatelessWidget {
 
   bool isCreateWalletFlow() =>
       dashboardActions == null && navigationActions.length == 1;
+  bool isLoginPage() =>
+      dashboardActions == null && navigationActions.length == 0;
 
-  EdgeInsets navigationBarPadding() => isCreateWalletFlow()
-      ? EdgeInsets.all(8)
-      : EdgeInsets.fromLTRB(16, 16, 16, 16);
+  EdgeInsets navigationBarPadding() =>
+      isLoginPage() ? EdgeInsets.all(16) : EdgeInsets.all(8);
 
   Widget build(BuildContext context) {
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
@@ -50,14 +52,16 @@ class HeaderLayout extends StatelessWidget {
             color: extendedTheme.headerBackgroundColor,
             child: SafeArea(
                 child: Container(
-              height: dashboardActions != null ? 300 : 185,
+              height: dashboardActions != null
+                  ? DASHBOARD_HEADER_HEIGTH
+                  : HEADER_HEIGTH,
               width: MediaQuery.of(context).size.width,
               color: extendedTheme.headerBackgroundColor,
               child: Column(children: [
                 Container(
                     padding: navigationBarPadding(),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: navigationActions.length > 1
                           ? MainAxisAlignment.spaceBetween
                           : MainAxisAlignment.start,

@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/layouts/listen_fourth_button.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
@@ -15,7 +17,6 @@ import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/widgets/identicon.dart';
 import 'package:my_wit_wallet/widgets/layouts/headerLayout.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
-import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
 class GoBackIntent extends Intent {
   const GoBackIntent();
@@ -132,8 +133,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         iconSize: 30,
         icon: Container(
           color: WitnetPallet.white,
-          width: 30,
-          height: 30,
+          width: 28,
+          height: 28,
           child: Identicon(seed: walletId, size: 8),
         ),
         onPressed: () => {
@@ -224,8 +225,12 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             elevation: 0,
             automaticallyImplyLeading: false,
             backgroundColor: Colors.transparent,
-            expandedHeight: widget.dashboardActions != null ? 300 : 200,
-            toolbarHeight: widget.dashboardActions != null ? 300 : 200,
+            expandedHeight: widget.dashboardActions != null
+                ? DASHBOARD_HEADER_HEIGTH
+                : HEADER_HEIGTH,
+            toolbarHeight: widget.dashboardActions != null
+                ? DASHBOARD_HEADER_HEIGTH
+                : HEADER_HEIGTH,
             flexibleSpace: headerLayout(context, theme)),
         SliverPadding(
           padding: EdgeInsets.only(left: 16, right: 16),
@@ -247,7 +252,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   }
 
   Widget headerLayout(context, theme) {
-    final double iconHeight = 50;
+    final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     if (widget.slidingPanel == null) {
       return Container(
           child: HeaderLayout(
@@ -255,18 +261,40 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         dashboardActions: widget.dashboardActions,
       ));
     } else {
+      Wallet wallet =
+          Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
       return HeaderLayout(
         navigationActions: [
           showWalletList(context),
-          Flexible(
-              child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: iconHeight,
-            ),
-            child: Column(
-              children: [witnetEyeIcon(theme, height: iconHeight)],
-            ),
-          )),
+          Expanded(
+              child: Padding(
+                  padding: EdgeInsets.only(left: 24, right: 24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Tooltip(
+                          margin: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: extendedTheme.tooltipBgColor,
+                          ),
+                          height: 50,
+                          richMessage: TextSpan(
+                            text: wallet.name,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                          child: Text(wallet.name,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: extendedTheme.headerTextColor,
+                                  fontSize: 16))),
+                      SizedBox(height: 4),
+                      Text(walletTypeToLabel[wallet.walletType] ?? 'unknown',
+                          style: TextStyle(
+                              color: extendedTheme.headerDashboardActiveButton,
+                              fontSize: 12))
+                    ],
+                  ))),
           ...widget.navigationActions
         ],
         dashboardActions: widget.dashboardActions,
