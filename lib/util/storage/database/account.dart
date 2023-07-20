@@ -26,7 +26,7 @@ abstract class _Account {
   bool operator ==(Object other);
 }
 
-int pathToIndex(int depth, String path) => int.parse(path.split('/')[depth]);
+int pathToIndex(int depth, String path) => path.contains("/") ? int.parse(path.split('/')[depth]) : 0;
 
 class Account extends _Account {
   Account(
@@ -55,7 +55,6 @@ class Account extends _Account {
   final String address;
   List<String> vttHashes = [];
   List<String> mintHashes = [];
-  List<Utxo> utxos = [];
 
   @override
   String toString() => '{"address": $address, "path": $path}';
