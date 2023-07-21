@@ -1,6 +1,6 @@
 import 'dart:core';
 
-import 'package:my_wit_wallet/util/storage/database/transaction_repository.dart';
+import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/utxo_list_to_string.dart';
 import 'package:quiver/core.dart';

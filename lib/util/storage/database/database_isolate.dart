@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 
-import 'package:my_wit_wallet/util/storage/database/transaction_repository.dart';
+import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';

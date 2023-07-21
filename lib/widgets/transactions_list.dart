@@ -3,26 +3,26 @@ import 'package:my_wit_wallet/util/extensions/int_extensions.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/transactions_list/get_transaction_address.dart';
 import 'package:my_wit_wallet/util/transactions_list/get_transaction_label.dart';
 import 'package:my_wit_wallet/widgets/transaction_details.dart';
-import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
-typedef void VoidCallback(ValueTransferInfo? value);
+typedef void VoidCallback(GeneralTransaction? value);
 
 class TransactionsList extends StatefulWidget {
   final ThemeData themeData;
   final VoidCallback setDetails;
-  final ValueTransferInfo? details;
+  final GeneralTransaction? details;
   // final MintInfo? mints;
   final Map<int, Account> externalAddresses;
   final Map<int, Account> internalAddresses;
   final Account? singleAddressAccount;
-  final List<ValueTransferInfo> valueTransfers;
+  final List<GeneralTransaction> valueTransfers;
   TransactionsList(
       {Key? key,
       required this.themeData,
@@ -41,7 +41,7 @@ class TransactionsList extends StatefulWidget {
 class TransactionsListState extends State<TransactionsList> {
   List<String?> externalAddresses = [];
   List<String?> internalAddresses = [];
-  ValueTransferInfo? transactionDetails;
+  GeneralTransaction? transactionDetails;
   final ScrollController _scroller = ScrollController();
   @override
   void initState() {
@@ -54,25 +54,42 @@ class TransactionsListState extends State<TransactionsList> {
     super.dispose();
   }
 
-  int receiveValue(ValueTransferInfo vti) {
+  int receiveValue(GeneralTransaction vti) {
     int nanoWitvalue = 0;
-    vti.outputs.forEach((element) {
-      if ((externalAddresses.contains(element.pkh.address) ||
-          internalAddresses.contains(element.pkh.address))) {
-        nanoWitvalue += element.value.toInt();
-      } else if (widget.singleAddressAccount != null &&
-          widget.singleAddressAccount!.address == element.pkh.address) {
-        nanoWitvalue += element.value.toInt();
-      }
-    });
-    return nanoWitvalue;
+    if (vti.txnType == TransactionType.value_transfer) {
+      vti.vtt!.outputs.forEach((element) {
+        if ((externalAddresses.contains(element.pkh.address) ||
+            internalAddresses.contains(element.pkh.address))) {
+          nanoWitvalue += element.value.toInt();
+        } else if (widget.singleAddressAccount != null &&
+            widget.singleAddressAccount!.address == element.pkh.address) {
+          nanoWitvalue += element.value.toInt();
+        }
+      });
+      return nanoWitvalue;
+    } else {
+      vti.mint!.outputs.forEach((element) {
+        if ((externalAddresses.contains(element.pkh.address) ||
+            internalAddresses.contains(element.pkh.address))) {
+          nanoWitvalue += element.value.toInt();
+        } else if (widget.singleAddressAccount != null &&
+            widget.singleAddressAccount!.address == element.pkh.address) {
+          nanoWitvalue += element.value.toInt();
+        }
+      });
+      return nanoWitvalue;
+    }
   }
 
-  int sendValue(ValueTransferInfo vti) {
-    bool isInternalTx =
-        externalAddresses.contains(vti.outputs[0].pkh.address) ||
-            internalAddresses.contains(vti.outputs[0].pkh.address);
-    return isInternalTx ? vti.fee : vti.outputs[0].value.toInt();
+  int sendValue(GeneralTransaction vti) {
+    if (vti.txnType == TransactionType.value_transfer) {
+      bool isInternalTx =
+          externalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
+              internalAddresses.contains(vti.vtt!.outputs[0].pkh.address);
+      return isInternalTx ? vti.fee : vti.vtt!.outputs[0].value.toInt();
+    } else {
+      return 0;
+    }
   }
 
   Widget buildTransactionValue(label, transaction) {
@@ -102,13 +119,24 @@ class TransactionsListState extends State<TransactionsList> {
     }
   }
 
-  Widget _buildTransactionItem(ValueTransferInfo transaction) {
+  Widget _buildTransactionItem(GeneralTransaction transaction) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    String label = getTransactionLabel(externalAddresses, internalAddresses,
-        transaction.inputs, widget.singleAddressAccount);
-    String address =
-        getTransactionAddress(label, transaction.inputs, transaction.outputs);
+
+    String label;
+    String address;
+    TransactionType txnType = transaction.txnType;
+
+    if (txnType == TransactionType.value_transfer) {
+      label = getTransactionLabel(externalAddresses, internalAddresses,
+          transaction.vtt!.inputs, widget.singleAddressAccount);
+      address = getTransactionAddress(
+          label, transaction.vtt!.inputs, transaction.vtt!.outputs);
+    } else {
+      label = 'from';
+      address = 'Mint';
+    }
+
     return Semantics(
         button: true,
         enabled: true,

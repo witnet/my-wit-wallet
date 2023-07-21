@@ -228,7 +228,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
     ]).createShader(Rect.fromLTWH(0.0, 0.0, 100.0, 78.0));
     return BlocBuilder<CryptoBloc, CryptoState>(
       builder: (context, state) {
-        print('state!!! $state');
         if (state is CryptoInitializingWalletState) {
           WidgetsBinding.instance
               .addPostFrameCallback((_) => widget.prevAction(null));

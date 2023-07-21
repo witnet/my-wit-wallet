@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/constants.dart';
@@ -13,7 +14,7 @@ import 'package:my_wit_wallet/widgets/info_element.dart';
 typedef void VoidCallback();
 
 class TransactionDetails extends StatelessWidget {
-  final ValueTransferInfo transaction;
+  final GeneralTransaction transaction;
   final VoidCallback goToList;
 
   const TransactionDetails({
@@ -102,6 +103,10 @@ class TransactionDetails extends StatelessWidget {
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    List<ValueTransferOutput> outputs =
+        transaction.txnType == TransactionType.value_transfer
+            ? transaction.vtt!.outputs
+            : transaction.mint!.outputs;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       PaddedButton(
           padding: EdgeInsets.all(0),
@@ -133,7 +138,7 @@ class TransactionDetails extends StatelessWidget {
                 label: 'Epoch',
                 text: _isPendingTransaction(transaction.status)
                     ? '_'
-                    : transaction.txnEpoch.toString()),
+                    : transaction.epoch.toString()),
             SizedBox(height: 16),
             InfoElement(
                 label: 'Type',
@@ -150,24 +155,30 @@ class TransactionDetails extends StatelessWidget {
                     ? '_'
                     : transaction.txnTime.formatDate()),
             SizedBox(height: 16),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                'Inputs',
-                style: theme.textTheme.displaySmall,
-              ),
-              SizedBox(height: 8),
-              ListView.builder(
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: transaction.inputs.length,
-                itemBuilder: (context, index) {
-                  return _buildInput(theme, transaction.inputs[index],
-                      index + 1 == transaction.inputs.length);
-                },
-              ),
-            ]),
-            SizedBox(height: 16),
+            transaction.txnType == TransactionType.value_transfer
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                        Text(
+                          'Inputs',
+                          style: theme.textTheme.displaySmall,
+                        ),
+                        SizedBox(height: 8),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: transaction.vtt!.inputs.length,
+                          itemBuilder: (context, index) {
+                            return _buildInput(
+                                theme,
+                                transaction.vtt!.inputs[index],
+                                index + 1 == transaction.vtt!.inputs.length);
+                          },
+                        ),
+                        SizedBox(height: 16),
+                      ])
+                : Container(),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
                 'Outputs',
@@ -178,10 +189,10 @@ class TransactionDetails extends StatelessWidget {
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: transaction.outputs.length,
+                itemCount: outputs.length,
                 itemBuilder: (context, index) {
-                  return _buildOutput(theme, transaction.outputs[index],
-                      index + 1 == transaction.outputs.length);
+                  return _buildOutput(
+                      theme, outputs[index], index + 1 == outputs.length);
                 },
               ),
             ])

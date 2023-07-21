@@ -6,7 +6,7 @@ import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
-import 'package:my_wit_wallet/util/storage/database/transaction_repository.dart';
+import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:witnet/constants.dart';
 import 'package:witnet/crypto.dart';
@@ -22,7 +22,7 @@ enum KeyType { internal, external, master }
 
 class PaginatedData {
   final int totalPages;
-  final List<ValueTransferInfo> data;
+  final List<GeneralTransaction> data;
 
   PaginatedData({required this.totalPages, required this.data});
 }
@@ -135,6 +135,16 @@ class Wallet {
     return _accounts;
   }
 
+  List<MintEntry> allMints() {
+    List<MintEntry> allMints = [];
+    if (walletType == WalletType.single) {
+      masterAccount!.mints.forEach((MintEntry mint) {
+        if (mint.status != 'unknown hash') allMints.add(mint);
+      });
+    }
+    return allMints;
+  }
+
   List<ValueTransferInfo> allTransactions() {
     Map<String, ValueTransferInfo> _vttMap = {};
     externalAccounts.forEach((key, account) {
@@ -159,15 +169,28 @@ class Wallet {
   }
 
   PaginatedData getPaginatedTransactions(PaginationParams args) {
-    List<ValueTransferInfo> sortedTransactions = allTransactions();
-    if (sortedTransactions.length > 0) {
-      final totalPages = (sortedTransactions.length / args.limit).ceil();
+    List<ValueTransferInfo> vtts = allTransactions();
+    List<MintEntry> mints = allMints();
+    List<GeneralTransaction> standardizeVtts = vtts
+        .map((ValueTransferInfo vtt) =>
+            GeneralTransaction.fromValueTransferInfo(vtt))
+        .toList();
+    List<GeneralTransaction> standardizeMints = mints
+        .map((MintEntry mint) => GeneralTransaction.fromMintEntry(mint))
+        .toList();
+    List<GeneralTransaction> allSortedTransactions = [
+      ...standardizeVtts,
+      ...standardizeMints
+    ]..sort((GeneralTransaction t1, GeneralTransaction t2) =>
+        t2.txnTime.compareTo(t1.txnTime));
+    if (allSortedTransactions.length > 0) {
+      final totalPages = (allSortedTransactions.length / args.limit).ceil();
       int offset = (args.currentPage - 1) * args.limit;
       int pageEndPosition = args.currentPage >= totalPages
-          ? sortedTransactions.length - 1
+          ? allSortedTransactions.length - 1
           : (offset + args.limit);
-      List<ValueTransferInfo> pageData =
-          sortedTransactions.sublist(offset, pageEndPosition);
+      List<GeneralTransaction> pageData =
+          allSortedTransactions.sublist(offset, pageEndPosition);
       return PaginatedData(totalPages: totalPages, data: pageData);
     } else {
       return PaginatedData(totalPages: 0, data: []);

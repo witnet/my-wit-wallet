@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:number_paginator/number_paginator.dart';
-import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/widgets/transactions_list.dart';
@@ -33,12 +33,12 @@ class DashboardScreenState extends State<DashboardScreen>
   String? currentAddress;
   Wallet? currentWallet;
   Account? currentAccount;
-  ValueTransferInfo? txDetails;
+  GeneralTransaction? txDetails;
   late AnimationController _loadingController;
   late Timer syncTimer;
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
   ScrollController scrollController = ScrollController(keepScrollOffset: true);
-  List<ValueTransferInfo> vtts = [];
+  List<GeneralTransaction> vtts = [];
   int numberOfPages = 0;
 
   @override
@@ -96,7 +96,7 @@ class DashboardScreenState extends State<DashboardScreen>
     getPaginatedTransactions(PaginationParams(currentPage: 1));
   }
 
-  void _setDetails(ValueTransferInfo? transaction) {
+  void _setDetails(GeneralTransaction? transaction) {
     scrollController.jumpTo(0.0);
     setState(() {
       txDetails = transaction;
