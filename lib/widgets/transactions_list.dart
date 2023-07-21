@@ -85,7 +85,9 @@ class TransactionsListState extends State<TransactionsList> {
     if (vti.txnType == TransactionType.value_transfer) {
       bool isInternalTx =
           externalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
-              internalAddresses.contains(vti.vtt!.outputs[0].pkh.address);
+              internalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
+              widget.singleAddressAccount?.address ==
+                  vti.vtt!.outputs[0].pkh.address;
       return isInternalTx ? vti.fee : vti.vtt!.outputs[0].value.toInt();
     } else {
       return 0;

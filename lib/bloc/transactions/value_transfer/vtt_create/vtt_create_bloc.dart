@@ -259,7 +259,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     }
   }
 
-  void buildTransactionBody(int balanceNanoWit) {
+  void buildTransactionBody(int balanceNanoWit, WalletType walletType) {
     int valueOwedNanoWit = 0;
     int valuePaidNanoWit = 0;
     int valueChangeNanoWit = 0;
@@ -278,7 +278,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       });
 
       ///
-      if (containsChangeAddress) {
+      if (containsChangeAddress && walletType != WalletType.single) {
         outputs.removeAt(changeIndex);
       }
       outputs.forEach((element) {
@@ -368,7 +368,8 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         outputs.add(event.output);
       }
     } catch (e) {}
-    buildTransactionBody(event.currentWallet.balanceNanoWit().availableNanoWit);
+    buildTransactionBody(event.currentWallet.balanceNanoWit().availableNanoWit,
+        event.currentWallet.walletType);
     setEstimatedWeightedFees();
     emit(
       state.copyWith(
@@ -393,7 +394,8 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     Wallet walletStorage = currentWallet;
     ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
     try {
-      buildTransactionBody(currentWallet.balanceNanoWit().availableNanoWit);
+      buildTransactionBody(currentWallet.balanceNanoWit().availableNanoWit,
+          currentWallet.walletType);
       List<KeyedSignature> signatures = await apiCrypto.signTransaction(
         selectedUtxos,
         walletStorage,
