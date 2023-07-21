@@ -104,14 +104,9 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   bool _notEnoughFunds({int? customFee, FeeType? feeType}) {
     final balance = balanceInfo.availableNanoWit;
     final localFeeType = feeType != null ? feeType : _feeType;
-    final amount = BlocProvider.of<VTTCreateBloc>(context)
-        .state
-        .vtTransaction
-        .body
-        .outputs
-        .first
-        .value
-        .toInt();
+    final vttState = BlocProvider.of<VTTCreateBloc>(context).state;
+    final vtTransaction = vttState.vtTransaction;
+    final amount = vtTransaction.body.outputs.first.value.toInt();
     if (localFeeType == FeeType.Absolute) {
       int minerFee = customFee ?? _minerFeeNanoWitToNumber();
       int totalToSpend = minerFee + amount;

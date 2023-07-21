@@ -58,7 +58,6 @@ class WalletDetailCardState extends State<WalletDetailCard>
   late TextEditingController _nameController;
   late TextEditingController _descController;
   final _nameFocusNode = FocusNode();
-  final _descriptionFocusNode = FocusNode();
   String _walletName = '';
   String? errorText;
   String? defaultWalletName;
@@ -128,7 +127,8 @@ class WalletDetailCardState extends State<WalletDetailCard>
             focusNode: _nameFocusNode,
             onSubmitted: (String value) => {
               // hide keyboard
-              _descriptionFocusNode.requestFocus()
+              FocusManager.instance.primaryFocus?.unfocus(),
+              nextAction()
             },
             onChanged: (String value) {
               setState(() {

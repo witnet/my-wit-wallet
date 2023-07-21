@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:sembast/sembast.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
-import 'package:witnet/witnet.dart';
 
 abstract class _TransactionRepository {
   Future<bool> insertTransaction(

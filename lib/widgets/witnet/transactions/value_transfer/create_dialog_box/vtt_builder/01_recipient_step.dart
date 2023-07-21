@@ -279,6 +279,8 @@ class RecipientStepState extends State<RecipientStep>
                   _amountFocusNode.requestFocus();
                 },
                 onFieldSubmitted: (String value) {
+                  // hide keyboard
+                  FocusManager.instance.primaryFocus?.unfocus();
                   widget.goNext();
                 },
                 onTapOutside: (PointerDownEvent event) {
