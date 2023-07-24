@@ -210,8 +210,6 @@ class LoginScreenState extends State<LoginScreen>
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasData) {
-            BlocProvider.of<LoginBloc>(context).add(LoginDoneLoadingEvent(
-                walletCount: snapshot.data!.wallets.length));
             // There are wallets stored
             if (snapshot.data!.wallets.isNotEmpty) {
               return Layout(

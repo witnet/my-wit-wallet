@@ -21,10 +21,3 @@ class LoginSubmittedEvent extends LoginEvent {
 class LoginAutenticationEvent extends LoginEvent {
   LoginAutenticationEvent() : super();
 }
-
-class LoginDoneLoadingEvent extends LoginEvent {
-  const LoginDoneLoadingEvent({required this.walletCount}) : super();
-  final int walletCount;
-  @override
-  List<Object> get props => [this.walletCount];
-}

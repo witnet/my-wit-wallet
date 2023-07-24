@@ -28,7 +28,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginSubmittedEvent>(_onSubmitted);
     on<LoginAutenticationEvent>(_onBiometricsAutenticate);
     on<LoginLogoutEvent>(_onLogoutEvent);
-    on<LoginDoneLoadingEvent>(_onDoneLoadingEvent);
   }
   final LocalAuthentication auth = LocalAuthentication();
 
@@ -87,12 +86,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } catch (e) {
       print('Error submitting $e');
     }
-  }
-
-  void _onDoneLoadingEvent(
-      LoginDoneLoadingEvent event, Emitter<LoginState> emit) async {
-    emit(state.copyWith(
-        status: LoginStatus.LoggedOut, message: event.walletCount.toString()));
   }
 
   void _onLogoutEvent(LoginLogoutEvent event, Emitter<LoginState> emit) async {
