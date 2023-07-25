@@ -63,7 +63,7 @@ class ClickableBox extends StatelessWidget {
         autofocus: isSelected,
         label: label,
         text: 'wallet',
-        type: 'box-button',
+        type: ButtonType.boxButton,
         onPressed: () => {
           if (error == null) {onClick(value)}
         },

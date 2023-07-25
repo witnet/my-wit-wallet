@@ -195,7 +195,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
               PaddedButton(
                   padding: EdgeInsets.only(bottom: 8),
                   text: 'Generate xprv',
-                  type: 'primary',
+                  type: ButtonType.primary,
                   isLoading: isLoading,
                   enabled: true,
                   onPressed: () async {

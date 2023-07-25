@@ -65,7 +65,7 @@ class LoginScreenState extends State<LoginScreen>
       padding: EdgeInsets.only(top: 8, bottom: 0),
       text: 'Unlock wallet',
       isLoading: isLoading,
-      type: 'primary',
+      type: ButtonType.primary,
       onPressed: _login,
     );
   }
@@ -76,12 +76,12 @@ class LoginScreenState extends State<LoginScreen>
         PaddedButton(
             padding: EdgeInsets.only(top: 8, bottom: 0),
             text: 'Create new wallet',
-            type: 'primary',
+            type: ButtonType.primary,
             onPressed: () => _createNewWallet(context)),
         PaddedButton(
             padding: EdgeInsets.only(top: 8, bottom: 0),
             text: 'Import wallet',
-            type: 'secondary',
+            type: ButtonType.secondary,
             onPressed: () => _importWallet(context)),
       ],
     );

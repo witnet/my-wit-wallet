@@ -106,7 +106,7 @@ class WalletListState extends State<WalletList> {
         FontAwesomeIcons.circlePlus,
         size: 18,
       ),
-      type: 'horizontal-icon',
+      type: ButtonType.horizontalIcon,
     );
   }
 

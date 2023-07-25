@@ -69,7 +69,7 @@ class TestCardState extends State<TestCard> with TickerProviderStateMixin {
     return PaddedButton(
         padding: EdgeInsets.all(5),
         text: 'Back',
-        type: 'primary',
+        type: ButtonType.primary,
         onPressed: () => Navigator.pushReplacement(
               context,
               FadeRoute(page: LoginScreen()),

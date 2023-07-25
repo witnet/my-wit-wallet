@@ -49,7 +49,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
         PaddedButton(
             padding: EdgeInsets.only(bottom: 0),
             text: nextAction != null ? nextAction().label : 'Continue',
-            type: 'primary',
+            type: ButtonType.primary,
             isLoading: isLoading,
             enabled: nextAction != null,
             onPressed: () async {
@@ -66,7 +66,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
         PaddedButton(
             padding: EdgeInsets.only(top: 8),
             text: nextAction != null ? secondaryAction().label : '',
-            type: 'secondary',
+            type: ButtonType.secondary,
             enabled: nextAction != null,
             onPressed: () => {
                   nextAction != null ? secondaryAction().action() : null,
@@ -82,7 +82,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
       PaddedButton(
           padding: EdgeInsets.zero,
           text: prevAction != null ? prevAction().label : '',
-          type: 'text',
+          type: ButtonType.text,
           enabled: prevAction != null,
           onPressed: () => {
                 prevAction != null ? prevAction().action() : null,

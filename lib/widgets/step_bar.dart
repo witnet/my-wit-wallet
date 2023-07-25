@@ -38,7 +38,7 @@ class StepBar extends StatelessWidget {
                 text: item.name.fromPascalCaseToTitle(),
                 color: _itemColor(item, isItemActionable, extendedTheme),
                 onPressed: () => {onChanged(item)},
-                type: 'stepbar')
+                type: ButtonType.stepbar)
             : PaddedButton(
                 padding: EdgeInsets.zero,
                 enabled: false,
@@ -47,7 +47,7 @@ class StepBar extends StatelessWidget {
                     : extendedTheme.inputIconColor,
                 text: item.name.fromPascalCaseToTitle(),
                 onPressed: () => {},
-                type: 'stepbar'));
+                type: ButtonType.stepbar));
   }
 
   Widget build(BuildContext context) {

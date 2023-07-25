@@ -41,7 +41,7 @@ class SelectWalletBox extends StatelessWidget {
       padding: EdgeInsets.zero,
       label: label,
       text: 'wallet',
-      type: 'box-button',
+      type: ButtonType.boxButton,
       darkBackground: true,
       container: Container(
         padding: EdgeInsets.all(8),

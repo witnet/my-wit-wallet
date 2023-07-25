@@ -112,7 +112,7 @@ class TransactionDetails extends StatelessWidget {
           padding: EdgeInsets.all(0),
           text: 'Back',
           onPressed: () => goToList(),
-          type: 'text'),
+          type: ButtonType.text),
       SizedBox(height: 16),
       Padding(
           padding: EdgeInsets.only(left: 12, right: 8),

@@ -83,7 +83,7 @@ class ReviewStepState extends State<ReviewStep>
                 PaddedButton(
                     padding: EdgeInsets.all(8),
                     text: 'Cancel',
-                    type: 'text',
+                    type: ButtonType.text,
                     enabled: true,
                     onPressed: () => {
                           Navigator.popUntil(context,
@@ -94,7 +94,7 @@ class ReviewStepState extends State<ReviewStep>
                 PaddedButton(
                     padding: EdgeInsets.all(8),
                     text: 'Try again!',
-                    type: 'text',
+                    type: ButtonType.text,
                     enabled: true,
                     onPressed: () => {
                           Navigator.popUntil(context,
@@ -146,7 +146,7 @@ class ReviewStepState extends State<ReviewStep>
               PaddedButton(
                   padding: EdgeInsets.all(8),
                   text: 'Close',
-                  type: 'text',
+                  type: ButtonType.text,
                   enabled: true,
                   onPressed: () => {
                         Navigator.popUntil(context,

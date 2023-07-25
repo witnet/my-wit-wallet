@@ -74,7 +74,7 @@ class _WalletConfigState extends State<WalletConfig> {
       SizedBox(height: 16),
       PaddedButton(
         text: 'Copy Xprv',
-        type: 'primary',
+        type: ButtonType.primary,
         isLoading: isLoading,
         padding: EdgeInsets.only(bottom: 8),
         onPressed: () async {

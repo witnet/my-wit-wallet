@@ -59,7 +59,7 @@ class DashedRect extends StatelessWidget {
                       icon: !blur
                           ? Icon(Icons.remove_red_eye)
                           : Icon(Icons.visibility_off),
-                      type: 'icon-button',
+                      type: ButtonType.verticalIcon,
                     ),
                   ))
               : SizedBox(height: 0),

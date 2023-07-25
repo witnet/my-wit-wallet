@@ -58,7 +58,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
       PaddedButton(
           padding: EdgeInsets.zero,
           text: copyText,
-          type: 'primary',
+          type: ButtonType.primary,
           enabled: enableButton,
           isLoading: isLoading,
           onPressed: () async {
@@ -110,7 +110,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
               },
               padding: EdgeInsets.only(top: 8),
               text: "Generate new Address",
-              type: 'secondary',
+              type: ButtonType.secondary,
               enabled: state.status != ExplorerStatus.singleSync,
             );
           } else {

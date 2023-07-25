@@ -110,7 +110,7 @@ class _GeneralConfigState extends State<GeneralConfig> {
             child: PaddedButton(
                 padding: EdgeInsets.only(bottom: 16, top: 16),
                 text: 'Lock wallet',
-                type: 'primary',
+                type: ButtonType.primary,
                 enabled: true,
                 onPressed: () => _logOut()),
           ),

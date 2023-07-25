@@ -140,7 +140,7 @@ class VerifyPasswordState extends State<VerifyPassword>
                   padding: EdgeInsets.only(bottom: 8),
                   text: 'Verify',
                   isLoading: isLoading,
-                  type: 'primary',
+                  type: ButtonType.primary,
                   enabled: true,
                   onPressed: () async {
                     await _verify();

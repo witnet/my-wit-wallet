@@ -145,7 +145,7 @@ class DashboardLayoutState extends State<DashboardLayout>
               FontAwesomeIcons.locationArrow,
               size: 18,
             )),
-        type: 'vertical-icon',
+        type: ButtonType.verticalIcon,
       ),
       PaddedButton(
         color: getButtonColorByRoute(DashboardScreen.route),
@@ -167,7 +167,7 @@ class DashboardLayoutState extends State<DashboardLayout>
                 }
             : () {},
         icon: witnetEyeIcon(theme, height: iconHeight),
-        type: 'vertical-icon',
+        type: ButtonType.verticalIcon,
       ),
       PaddedButton(
         color: getButtonColorByRoute(ReceiveTransactionScreen.route),
@@ -178,13 +178,11 @@ class DashboardLayoutState extends State<DashboardLayout>
             : () {},
         icon: Transform.rotate(
             angle: 90 * math.pi / 90,
-            child: Container(
-                height: 38,
-                child: Icon(
-                  FontAwesomeIcons.locationArrow,
-                  size: 18,
-                ))),
-        type: 'vertical-icon',
+            child: Icon(
+              FontAwesomeIcons.locationArrow,
+              size: 18,
+            )),
+        type: ButtonType.verticalIcon,
       ),
     ]);
   }
@@ -225,7 +223,7 @@ class DashboardLayoutState extends State<DashboardLayout>
                   padding: EdgeInsets.zero,
                   label: 'Copy address to clipboard',
                   text: 'Copy address to clipboard',
-                  type: 'icon-button',
+                  type: ButtonType.iconButton,
                   iconSize: 12,
                   onPressed: () async {
                     if (!isAddressCopied) {
@@ -282,7 +280,7 @@ class DashboardLayoutState extends State<DashboardLayout>
           onPressed: currentRoute != PreferencePage.route
               ? () => _goToSettings()
               : () {},
-          type: 'icon-button')
+          type: ButtonType.iconButton)
     ];
   }
 

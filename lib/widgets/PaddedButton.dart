@@ -3,6 +3,17 @@ import 'package:my_wit_wallet/theme/extended_theme.dart';
 
 const defaultIcon = Icon(null);
 
+enum ButtonType {
+  primary,
+  secondary,
+  text,
+  horizontalIcon,
+  verticalIcon,
+  iconButton,
+  stepbar,
+  boxButton
+}
+
 class PaddedButton extends StatelessWidget {
   PaddedButton(
       {required this.padding,
@@ -24,7 +35,7 @@ class PaddedButton extends StatelessWidget {
   final bool isLoading;
   final bool enabled;
   final Color? color;
-  final String type;
+  final ButtonType type;
   final Widget icon;
   final VoidCallback onPressed;
   final String? label;
@@ -47,13 +58,13 @@ class PaddedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isPrimary = type == 'primary';
-    final isText = type == 'text';
-    final hasHorizontalIcon = type == 'horizontal-icon';
-    final hasVerticalIcon = type == 'vertical-icon';
-    final isIconButton = type == 'icon-button';
-    final isStepBarButton = type == 'stepbar';
-    final isBoxButton = type == 'box-button';
+    final isPrimary = type == ButtonType.primary;
+    final isText = type == ButtonType.text;
+    final hasHorizontalIcon = type == ButtonType.horizontalIcon;
+    final hasVerticalIcon = type == ButtonType.verticalIcon;
+    final isIconButton = type == ButtonType.iconButton;
+    final isStepBarButton = type == ButtonType.stepbar;
+    final isBoxButton = type == ButtonType.boxButton;
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
 
@@ -74,14 +85,17 @@ class PaddedButton extends StatelessWidget {
     );
 
     Widget textButtonHorizontalIcon = TextButton(
-      child: Row(children: [
-        Text(
-          text,
-          style: TextStyle(fontFamily: 'Almarai', fontSize: 14),
-        ),
-        Padding(padding: EdgeInsets.only(left: 8)),
-        icon,
-      ]),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              text,
+              style: TextStyle(fontFamily: 'Almarai', fontSize: 14),
+            ),
+            Padding(padding: EdgeInsets.only(left: 8)),
+            icon,
+          ]),
       onPressed: onPressed,
     );
 
