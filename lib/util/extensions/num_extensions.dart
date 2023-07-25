@@ -1,6 +1,20 @@
 import 'package:decimal/decimal.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'dart:math';
+import 'package:intl/intl.dart';
+
+final formatter = NumberFormat('#,###,000');
+String format(result) {
+  List parts = result.toString().split('.');
+  bool noCommaSeparatorNeeded = parts[0].toString().length < 3;
+  String numberWithCommaSeparator =
+      formatter.format(num.tryParse(parts[0] ?? 0));
+  if (parts.length > 1) {
+    return '${noCommaSeparatorNeeded ? parts[0] : numberWithCommaSeparator}.${parts[1]}';
+  } else {
+    return '${noCommaSeparatorNeeded ? parts[0] : numberWithCommaSeparator}';
+  }
+}
 
 extension TruncateDoubles on double {
   double truncateToDecimals(int decimals) =>
@@ -48,12 +62,12 @@ extension TimestampExtension on num {
             truncate == -1 ||
             result.compareTo(1) == -1) {
           // result < 1
-          return Decimal.parse(result.toStringAsFixed(10)).toString();
+          final decimal = Decimal.parse(result.toStringAsFixed(10));
+          return format(decimal);
         } else {
-          return Decimal.parse(double.parse(result.toString())
-                  .truncateToDecimals(2)
-                  .toString())
-              .toString();
+          final decimal = Decimal.parse(
+              double.parse(result.toString()).truncateToDecimals(2).toString());
+          return format(decimal);
         }
       } else {
         return '0';

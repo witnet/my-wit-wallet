@@ -107,7 +107,7 @@ void main() {
                                               10.standardizeWitUnits(
                                                   outputUnit: WitUnit.microWit,
                                                   inputUnit: WitUnit.milliWit),
-                                              '10000')
+                                              '10,000')
                                         }),
                                 test(
                                     'with decimal',
@@ -138,7 +138,7 @@ void main() {
                                               1.standardizeWitUnits(
                                                   outputUnit: WitUnit.nanoWit,
                                                   inputUnit: WitUnit.milliWit),
-                                              '1000000')
+                                              '1,000,000')
                                         })
                               })
                     }),
@@ -230,7 +230,7 @@ void main() {
                                               10.standardizeWitUnits(
                                                   outputUnit: WitUnit.nanoWit,
                                                   inputUnit: WitUnit.microWit),
-                                              '10000')
+                                              '10,000')
                                         })
                               })
                     }),
@@ -247,7 +247,7 @@ void main() {
                                               1000000.standardizeWitUnits(
                                                   outputUnit: WitUnit.Wit,
                                                   inputUnit: WitUnit.Wit),
-                                              '1000000')
+                                              '1,000,000')
                                         }),
                                 test(
                                     'with decimal',
@@ -269,7 +269,7 @@ void main() {
                                               1.standardizeWitUnits(
                                                   outputUnit: WitUnit.milliWit,
                                                   inputUnit: WitUnit.Wit),
-                                              '1000')
+                                              '1,000')
                                         }),
                                 test(
                                     'with decimal',
@@ -278,7 +278,7 @@ void main() {
                                               1.0001.standardizeWitUnits(
                                                   outputUnit: WitUnit.milliWit,
                                                   inputUnit: WitUnit.Wit),
-                                              '1000.1')
+                                              '1,000.1')
                                         })
                               }),
                       group(
@@ -291,7 +291,7 @@ void main() {
                                               1.standardizeWitUnits(
                                                   outputUnit: WitUnit.microWit,
                                                   inputUnit: WitUnit.Wit),
-                                              '1000000')
+                                              '1,000,000')
                                         }),
                                 test(
                                     'with decimal',
@@ -322,7 +322,7 @@ void main() {
                                               10.standardizeWitUnits(
                                                   outputUnit: WitUnit.nanoWit,
                                                   inputUnit: WitUnit.Wit),
-                                              '10000000000')
+                                              '10,000,000,000')
                                         })
                               })
                     })
