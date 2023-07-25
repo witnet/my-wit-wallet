@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/screens/login/view/biometrics_autentication.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
@@ -121,6 +123,11 @@ class LoginScreenState extends State<LoginScreen>
         if (state.status == LoginStatus.LoginSuccess) {
           Navigator.pushReplacementNamed(context, DashboardScreen.route);
         }
+        if (state.status == LoginStatus.LoginCancelled) {
+          setState(() {
+            isLoading = false;
+          });
+        }
       },
       child: _buttonLogin(),
     );
@@ -213,6 +220,9 @@ class LoginScreenState extends State<LoginScreen>
                   ...mainComponents(),
                   SizedBox(height: 16),
                   _loginForm(),
+                  Platform.isIOS || Platform.isAndroid
+                      ? BiometricsAutentication()
+                      : Container(),
                 ],
                 actions: [_loginListener()],
               );

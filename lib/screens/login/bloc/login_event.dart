@@ -18,6 +18,10 @@ class LoginSubmittedEvent extends LoginEvent {
   List<Object> get props => [password];
 }
 
+class LoginAutenticationEvent extends LoginEvent {
+  LoginAutenticationEvent() : super();
+}
+
 class LoginDoneLoadingEvent extends LoginEvent {
   const LoginDoneLoadingEvent({required this.walletCount}) : super();
   final int walletCount;

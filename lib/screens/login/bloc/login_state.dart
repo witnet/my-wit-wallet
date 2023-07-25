@@ -7,6 +7,7 @@ enum LoginStatus {
   LoginSuccess,
   LoggedIn,
   LoginInvalid,
+  LoginCancelled,
 }
 
 class LoginState extends Equatable {
