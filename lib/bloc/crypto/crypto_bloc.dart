@@ -10,7 +10,6 @@ import 'package:witnet/constants.dart';
 import 'package:witnet/crypto.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
-import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';

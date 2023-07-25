@@ -61,7 +61,6 @@ class WalletDetailCardState extends State<WalletDetailCard>
   final _nameFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
   String _walletName = '';
-  String _walletDescription = '';
   String? errorText;
   String? defaultWalletName;
   @override

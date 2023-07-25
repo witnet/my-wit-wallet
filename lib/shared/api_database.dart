@@ -98,7 +98,6 @@ class ApiDatabase {
 
     // set new wallet in storage
 
-    WalletType currentWalletType = walletStorage.currentWallet.walletType;
     // get account preferences taking into account corrupted localStorage
     Map<AccountPreferences, dynamic> accountPreferences;
 
