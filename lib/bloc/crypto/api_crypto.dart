@@ -218,7 +218,6 @@ class ApiCrypto {
       assert(_xprv.address.address.isNotEmpty);
     } catch (e) {
       print('error $e');
-      print('invalid xprv');
       rethrow;
     }
     return xprv;
@@ -238,7 +237,6 @@ class ApiCrypto {
 
     Map<String, String> response =
         await receivePort.first.then((value) => value as Map<String, String>);
-    print('response XRPV $response');
     if (response.containsKey('xprv')) {
       return response['xprv']!;
     } else {

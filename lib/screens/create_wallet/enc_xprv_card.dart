@@ -205,7 +205,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
         setState(
             () => {decryptedLocalXprv = xprvDecripted, isXprvValid = true});
       } else {
-        setState(() => {isXprvValid = false});
+        setState(() => isXprvValid = false);
       }
     } catch (e) {
       print(e);
