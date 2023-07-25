@@ -13,6 +13,7 @@ class BiometricsAutentication extends StatefulWidget {
 
 class BiometricsAutenticationState extends State<BiometricsAutentication> {
   BiometricsStatus? autenticationStatus;
+  Widget child = Container();
 
   @override
   void initState() {
@@ -20,32 +21,35 @@ class BiometricsAutenticationState extends State<BiometricsAutentication> {
     _authenticateWithBiometrics();
   }
 
-  void _authenticateWithBiometrics() {
-    setState(() {
-      autenticationStatus = BlocProvider.of<LoginBloc>(context)
-          .add(LoginAutenticationEvent()) as BiometricsStatus?;
-    });
+  void _authenticateWithBiometrics() async {
+    BlocProvider.of<LoginBloc>(context).add(LoginAutenticationEvent())
+        as BiometricsStatus?;
   }
 
   @override
   Widget build(BuildContext context) {
-    print('Current State: $autenticationStatus');
-    return autenticationStatus != BiometricsStatus.notSupported
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              PaddedButton(
-                padding: EdgeInsets.all(0),
-                onPressed: _authenticateWithBiometrics,
-                text: autenticationStatus == BiometricsStatus.autenticating
-                    ? 'Cancel autentication'
-                    : 'Authenticate with your fingerprint',
-                icon: const Icon(Icons.fingerprint),
-                type: ButtonType.horizontalIcon,
-              )
-            ],
-          )
-        : Container();
+    return BlocListener<LoginBloc, LoginState>(
+        listener: (BuildContext context, LoginState state) {
+          if (state.status != LoginStatus.BiometricsNotSupported) {
+            setState(() {
+              child = Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  PaddedButton(
+                    padding: EdgeInsets.all(0),
+                    onPressed: _authenticateWithBiometrics,
+                    text: autenticationStatus == BiometricsStatus.autenticating
+                        ? 'Cancel autentication'
+                        : 'Authenticate with biometrics',
+                    icon: const Icon(Icons.fingerprint),
+                    type: ButtonType.horizontalIcon,
+                  )
+                ],
+              );
+            });
+          }
+        },
+        child: child);
   }
 }

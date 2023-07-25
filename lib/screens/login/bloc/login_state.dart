@@ -8,6 +8,7 @@ enum LoginStatus {
   LoggedIn,
   LoginInvalid,
   LoginCancelled,
+  BiometricsNotSupported,
 }
 
 class LoginState extends Equatable {

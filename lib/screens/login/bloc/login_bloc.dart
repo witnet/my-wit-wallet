@@ -60,11 +60,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         }
       } else {
         status = BiometricsStatus.notSupported;
+        emit(state.copyWith(status: LoginStatus.BiometricsNotSupported));
       }
-    } on PlatformException catch (e) {
+    } on PlatformException catch (error) {
+      print('Exception using biometrics authentication $error');
       status = BiometricsStatus.error;
       emit(state.copyWith(status: LoginStatus.LoginCancelled));
-      print('Error submitting $e');
     }
     return status;
   }
