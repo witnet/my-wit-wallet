@@ -118,7 +118,7 @@ class DashboardScreenState extends State<DashboardScreen>
             ? currentWallet!.masterAccount
             : null,
       ),
-      (vtts.length > 0 && txDetails == null)
+      (numberOfPages > 1 && txDetails == null)
           ? Container(
               width: numberOfPages < 4 ? 250 : null,
               alignment: Alignment.center,

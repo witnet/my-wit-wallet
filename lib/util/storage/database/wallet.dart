@@ -187,7 +187,7 @@ class Wallet {
       final totalPages = (allSortedTransactions.length / args.limit).ceil();
       int offset = (args.currentPage - 1) * args.limit;
       int pageEndPosition = args.currentPage >= totalPages
-          ? allSortedTransactions.length - 1
+          ? allSortedTransactions.length
           : (offset + args.limit);
       List<GeneralTransaction> pageData =
           allSortedTransactions.sublist(offset, pageEndPosition);
