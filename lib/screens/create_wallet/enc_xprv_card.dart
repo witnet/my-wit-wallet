@@ -66,7 +66,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     _textFocusNode.requestFocus();
     _xprvType =
         BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
-    _selectedIndex = walletTypeToXprvType[_xprvType]?.index ?? 1 - 1;
+    _selectedIndex = _xprvType == CreateWalletType.encryptedXprv ? 0 : 1;
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
     WidgetsBinding.instance
