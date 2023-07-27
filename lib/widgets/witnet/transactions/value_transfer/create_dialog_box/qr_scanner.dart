@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 
 typedef void StringCallback(String value);
 
 class QrScanner extends StatelessWidget {
   final StringCallback onChanged;
+  final String currentRoute;
   const QrScanner({
     Key? key,
+    required this.currentRoute,
     required this.onChanged,
   }) : super(key: key);
 
@@ -26,30 +27,31 @@ class QrScanner extends StatelessWidget {
                 }
               },
             ),
-            Align(
-                alignment: Alignment.topCenter,
-                child: Container(
+            SafeArea(
+                child: Align(
                     alignment: Alignment.topCenter,
-                    height: 50,
-                    color: Colors.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          icon: Icon(FontAwesomeIcons.arrowLeft, size: 18),
-                          color: Colors.white,
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(
-                                context, CreateVttScreen.route);
-                          },
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 16),
-                          child: Text('Scan a QR code',
-                              style: TextStyle(color: Colors.white)),
-                        )
-                      ],
-                    )))
+                    child: Container(
+                        alignment: Alignment.topCenter,
+                        height: 50,
+                        color: Colors.transparent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              icon: Icon(FontAwesomeIcons.arrowLeft, size: 18),
+                              color: Colors.white,
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(
+                                    context, currentRoute);
+                              },
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(right: 16),
+                              child: Text('Scan a QR code',
+                                  style: TextStyle(color: Colors.white)),
+                            )
+                          ],
+                        ))))
           ]);
         }));
   }

@@ -1,4 +1,5 @@
 import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
@@ -205,6 +206,8 @@ class RecipientStepState extends State<RecipientStep>
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => QrScanner(
+                                            currentRoute:
+                                                CreateWalletScreen.route,
                                             onChanged: (String value) => {
                                                   Navigator.popUntil(
                                                       context,

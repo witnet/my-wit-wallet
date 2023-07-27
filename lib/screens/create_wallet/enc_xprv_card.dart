@@ -121,6 +121,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
                         context,
                         MaterialPageRoute(
                             builder: (context) => QrScanner(
+                                currentRoute: CreateWalletScreen.route,
                                 onChanged: (String value) => {
                                       Navigator.popUntil(
                                           context,
