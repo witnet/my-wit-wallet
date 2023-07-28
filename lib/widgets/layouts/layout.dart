@@ -94,6 +94,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
       listenWhen: (previousState, currentState) {
         if (previousState.status == ExplorerStatus.error &&
             currentState.status != ExplorerStatus.error &&
+            currentState.status != ExplorerStatus.dataloading &&
             currentState.status != ExplorerStatus.unknown) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context)

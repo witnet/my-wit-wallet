@@ -90,6 +90,25 @@ class SyncSingleAccountEvent extends ExplorerEvent {
   List<Object> get props => [account];
 }
 
+class DataLoadedEvent extends ExplorerEvent {
+  final WalletStorage walletStorage;
+  DataLoadedEvent(
+    ExplorerStatus status,
+    this.walletStorage,
+  ) : super(status);
+
+  @override
+  List<Object> get props => [walletStorage];
+}
+
+class DataLoadingEvent extends ExplorerEvent {
+  DataLoadingEvent(ExplorerStatus status) : super(status);
+}
+
+class SyncErrorEvent extends ExplorerEvent {
+  SyncErrorEvent(ExplorerStatus status) : super(status);
+}
+
 class BlockchainQueryEvent extends ExplorerEvent {
   BlockchainQueryEvent(ExplorerStatus status) : super(status);
 }

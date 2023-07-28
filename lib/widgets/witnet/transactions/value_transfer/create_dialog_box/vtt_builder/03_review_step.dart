@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
@@ -88,8 +89,15 @@ class ReviewStepState extends State<ReviewStep>
                     onPressed: () => {
                           Navigator.popUntil(context,
                               ModalRoute.withName(CreateVttScreen.route)),
-                          Navigator.pushReplacementNamed(
-                              context, DashboardScreen.route)
+                          Navigator.pushReplacement(
+                              context,
+                              CustomPageRoute(
+                                  builder: (BuildContext context) {
+                                    return DashboardScreen();
+                                  },
+                                  maintainState: false,
+                                  settings: RouteSettings(
+                                      name: DashboardScreen.route)))
                         }),
                 PaddedButton(
                     padding: EdgeInsets.all(8),
@@ -151,8 +159,15 @@ class ReviewStepState extends State<ReviewStep>
                   onPressed: () => {
                         Navigator.popUntil(context,
                             ModalRoute.withName(CreateVttScreen.route)),
-                        Navigator.pushReplacementNamed(
-                            context, DashboardScreen.route)
+                        Navigator.pushReplacement(
+                            context,
+                            CustomPageRoute(
+                                builder: (BuildContext context) {
+                                  return DashboardScreen();
+                                },
+                                maintainState: false,
+                                settings:
+                                    RouteSettings(name: DashboardScreen.route)))
                       })
             ],
             title: 'Transaction succesfully sent!',

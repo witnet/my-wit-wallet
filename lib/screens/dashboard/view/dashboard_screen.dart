@@ -53,23 +53,17 @@ class DashboardScreenState extends State<DashboardScreen>
     _setWallet();
     _setAccount();
     _syncWallet(walletId);
-    syncTimer = Timer.periodic(Duration(minutes: 0, seconds: 30), (timer) {
-      _syncWallet(walletId);
-    });
     getPaginatedTransactions(PaginationParams(currentPage: 1));
-    //BlocProvider.of<DashboardBloc>(context).add(DashboardUpdateWalletEvent(currentWallet: currentWallet, currentAddress: currentAccount!.address));
   }
 
   @override
   void deactivate() {
-    syncTimer.cancel();
     super.deactivate();
   }
 
   @override
   void dispose() {
     _loadingController.dispose();
-    syncTimer.cancel();
     super.dispose();
   }
 

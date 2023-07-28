@@ -28,6 +28,10 @@ enum ExplorerStatus {
 }
 
 class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
+  late Stream syncWalletStream;
+  // ignore: cancel_subscriptions
+  StreamSubscription? syncWalletSubscription;
+
   ExplorerBloc(initialState) : super(initialState) {
     on<HashQueryEvent>(_hashQueryEvent);
     on<StatusQueryEvent>(_statusQueryEvent);
@@ -36,6 +40,9 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     on<UtxoQueryEvent>(_utxoQueryEvent);
     on<SyncWalletEvent>(_syncWalletEvent);
     on<SyncSingleAccountEvent>(_syncSingleAccount);
+    on<DataLoadedEvent>(_emitDataLoadedStatus);
+    on<DataLoadingEvent>(_emitDataLoadingStatus);
+    on<SyncErrorEvent>(_emitSyncError);
   }
 
   static ExplorerState get initialState => ExplorerState.ready();
@@ -118,15 +125,41 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     }
   }
 
+  void _emitDataLoadedStatus(event, emit) {
+    emit(ExplorerState.synced(event.walletStorage));
+  }
+
+  void _emitDataLoadingStatus(_, emit) {
+    emit(ExplorerState.dataLoading());
+  }
+
+  void _emitSyncError(_, emit) {
+    emit(ExplorerState.error());
+  }
+
   Future<void> _syncWalletEvent(
       SyncWalletEvent event, Emitter<ExplorerState> emit) async {
     try {
-      await syncWalletRoutine(event, emit);
+      add(DataLoadingEvent(ExplorerStatus.dataloading));
+      add(DataLoadedEvent(
+          ExplorerStatus.dataloaded, await syncWalletRoutine(event, emit)));
     } catch (e) {
-      print('Error syncing wallet $e');
-      emit(ExplorerState.error());
-      rethrow;
+      setError(e);
     }
+    // Create a periodic stream for syncing the wallet
+    syncWalletStream = Stream.periodic(Duration(seconds: 30), (_) {
+      add(DataLoadingEvent(ExplorerStatus.dataloading));
+      return syncWalletRoutine(event, emit);
+    }).asyncMap((event) async => await event);
+    if (syncWalletSubscription != null) syncWalletSubscription!.cancel();
+    syncWalletSubscription = syncWalletStream.listen((event) {
+      add(DataLoadedEvent(ExplorerStatus.dataloaded, event));
+    }, onError: setError, cancelOnError: false);
+  }
+
+  void setError(error) {
+    print('Error syncing the wallet $error');
+    add(SyncErrorEvent(ExplorerStatus.error));
   }
 
   Future<void> _syncSingleAccount(
@@ -152,7 +185,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     emit(ExplorerState.synced(database.walletStorage));
   }
 
-  Future<void> syncWalletRoutine(
+  Future<WalletStorage> syncWalletRoutine(
       SyncWalletEvent event, Emitter<ExplorerState> emit) async {
     /// get current wallet
     ApiDatabase database = Locator.instance<ApiDatabase>();
@@ -209,7 +242,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
                 account.utxos.clear();
               }
               updatedAccounts[account.address] = account;
-              wallet.updateAccount(
+              await wallet.updateAccount(
                   index: account.index,
                   keyType: account.keyType,
                   account: account);
@@ -220,7 +253,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         }
       } catch (err) {
         print('Error getting UTXOs from the explorer $err');
-        emit(ExplorerState.error());
         rethrow;
       }
     } else if (wallet.walletType == WalletType.single) {
@@ -263,7 +295,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     await database.updateCurrentWallet(
         currentWalletId: wallet.id,
         isHdWallet: wallet.walletType == WalletType.hd);
-    emit(ExplorerState.synced(database.walletStorage));
+    return database.walletStorage;
   }
 
   bool isTheSameList(Account account, List<Utxo> utxoList) {
