@@ -139,13 +139,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<void> _syncWalletEvent(
       SyncWalletEvent event, Emitter<ExplorerState> emit) async {
-    try {
-      add(DataLoadingEvent(ExplorerStatus.dataloading));
-      add(DataLoadedEvent(
-          ExplorerStatus.dataloaded, await syncWalletRoutine(event, emit)));
-    } catch (e) {
-      setError(e);
-    }
     // Create a periodic stream for syncing the wallet
     syncWalletStream = Stream.periodic(Duration(seconds: 30), (_) {
       add(DataLoadingEvent(ExplorerStatus.dataloading));
