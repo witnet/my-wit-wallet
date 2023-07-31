@@ -295,10 +295,12 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
             'Xprv is a key exchange format that encodes and protects your wallet with a password. Xprv keys look like a long sequence of apparently random letters and numbers, preceded by "xprv".',
             style: theme.textTheme.bodyLarge, //Textstyle
           ),
+          SizedBox(height: 8),
           Text(
             'To import your wallet from a node master key, you need to type the key itself and click continue.',
             style: theme.textTheme.bodyLarge, //Textstyle
           ),
+          SizedBox(height: 8),
           Text(
             'To import your wallet from an Xprv key encrypted with a password, you need to type the key itself and its password below:',
             style: theme.textTheme.bodyLarge, //Textstyle
