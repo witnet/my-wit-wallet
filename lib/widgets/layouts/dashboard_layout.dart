@@ -176,12 +176,14 @@ class DashboardLayoutState extends State<DashboardLayout>
         onPressed: currentRoute != ReceiveTransactionScreen.route
             ? _showReceiveDialog
             : () {},
-        icon: Transform.rotate(
-            angle: 90 * math.pi / 90,
-            child: Icon(
-              FontAwesomeIcons.locationArrow,
-              size: 18,
-            )),
+        icon: Container(
+            height: 38,
+            child: Transform.rotate(
+                angle: 90 * math.pi / 90,
+                child: Icon(
+                  FontAwesomeIcons.locationArrow,
+                  size: 18,
+                ))),
         type: ButtonType.verticalIcon,
       ),
     ]);
