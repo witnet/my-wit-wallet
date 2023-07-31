@@ -145,7 +145,9 @@ class TransactionDetails extends StatelessWidget {
                 text: transaction.type.split('_').join(' ').toTitleCase()),
             SizedBox(height: 16),
             InfoElement(
-                label: 'Fee',
+                label: transaction.txnType == TransactionType.value_transfer
+                    ? 'Fees payed'
+                    : 'Fees collected',
                 text:
                     '${transaction.fee.standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}'),
             SizedBox(height: 16),
