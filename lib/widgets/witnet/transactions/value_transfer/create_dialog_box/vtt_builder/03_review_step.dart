@@ -136,7 +136,7 @@ class ReviewStepState extends State<ReviewStep>
               content: Column(mainAxisSize: MainAxisSize.min, children: [
                 svgThemeImage(theme, name: 'sending-transaction', height: 100),
                 SizedBox(height: 16),
-                Text('The transaction is being send',
+                Text('The transaction is being sent',
                     style: theme.textTheme.bodyLarge)
               ]));
         } else if (state.vttCreateStatus == VTTCreateStatus.accepted) {
