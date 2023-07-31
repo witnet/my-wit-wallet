@@ -10,6 +10,7 @@ import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/layouts/listen_fourth_button.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
+import 'package:my_wit_wallet/widgets/wallet_type_label.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
@@ -288,11 +289,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                               style: TextStyle(
                                   color: extendedTheme.headerTextColor,
                                   fontSize: 16))),
-                      SizedBox(height: 4),
-                      Text(walletTypeToLabel[wallet.walletType] ?? 'unknown',
-                          style: TextStyle(
-                              color: extendedTheme.headerDashboardActiveButton,
-                              fontSize: 12))
+                      SizedBox(height: 8),
+                      WalletTypeLabel(label: wallet.walletType),
                     ],
                   ))),
           ...widget.navigationActions
