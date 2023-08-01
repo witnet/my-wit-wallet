@@ -35,6 +35,8 @@ Map<WitUnit, String> WIT_UNIT = {
 
 enum EstimatedFeeOptions { Stinky, Low, Medium, High, Opulent, Custom }
 
+enum ImportOrigin { fromSheikah, fromMyWitWallet, fromNode }
+
 // ignore: non_constant_identifier_names
 Map<EstimatedFeeOptions, String?> DEFAULT_MINER_FEE_OPTIONS = {
   EstimatedFeeOptions.Stinky: '0',
@@ -48,13 +50,20 @@ Map<WalletType, String> walletTypeToLabel = {
   WalletType.hd: 'HD wallet',
   WalletType.single: 'Node',
 };
+
+Map<ImportOrigin, String> importOriginToLabel = {
+  ImportOrigin.fromMyWitWallet: 'myWitWallet',
+  ImportOrigin.fromSheikah: 'Sheikah',
+  ImportOrigin.fromNode: 'Node'
+};
+Map<ImportOrigin, CreateWalletType> importOriginToXprvType = {
+  ImportOrigin.fromMyWitWallet: CreateWalletType.encryptedXprv,
+  ImportOrigin.fromSheikah: CreateWalletType.encryptedXprv,
+  ImportOrigin.fromNode: CreateWalletType.xprv
+};
 Map<CreateWalletType, WalletType> xprvTypeToWalletType = {
   CreateWalletType.encryptedXprv: WalletType.hd,
   CreateWalletType.xprv: WalletType.single
-};
-Map<WalletType, CreateWalletType> walletTypeToXprvType = {
-  WalletType.hd: CreateWalletType.encryptedXprv,
-  WalletType.single: CreateWalletType.xprv
 };
 const int EXTERNAL_GAP_LIMIT = 3;
 const int INTERNAL_GAP_LIMIT = 3;

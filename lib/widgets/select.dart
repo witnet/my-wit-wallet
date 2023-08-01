@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 
-DropdownMenuItem<String> _buildWalletDropdownItem(String value) {
+DropdownMenuItem<String> _buildWalletDropdownItem(SelectItem value) {
   return DropdownMenuItem<String>(
-    value: value,
-    child: Text(value),
+    value: value.key,
+    child: Text(value.label),
   );
 }
 
 typedef void StringCallback(String? value);
 
+class SelectItem {
+  final String key;
+  final String label;
+
+  SelectItem(this.key, this.label);
+}
+
 class Select extends StatelessWidget {
   final String selectedItem;
-  final List<String> listItems;
+  final List<SelectItem> listItems;
   final StringCallback onChanged;
 
   const Select({
@@ -37,11 +44,12 @@ class Select extends StatelessWidget {
             iconEnabledColor: theme.selectedTextColor,
             style: TextStyle(color: theme.dropdownTextColor, fontSize: 16),
             selectedItemBuilder: (BuildContext context) {
-              return listItems.map<Widget>((String item) {
+              return listItems.map<Widget>((SelectItem item) {
                 return Container(
+                  padding: EdgeInsets.all(8),
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    item,
+                    item.label,
                     style: TextStyle(
                         color: theme.selectedTextColor,
                         fontWeight: FontWeight.normal),
@@ -53,7 +61,8 @@ class Select extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             isExpanded: true,
             items: listItems
-                .map<DropdownMenuItem<String>>(_buildWalletDropdownItem)
+                .map<DropdownMenuItem<String>>(
+                    (SelectItem item) => _buildWalletDropdownItem(item))
                 .toList(),
             onChanged: onChanged),
       ),
