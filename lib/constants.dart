@@ -46,7 +46,7 @@ Map<EstimatedFeeOptions, String?> DEFAULT_MINER_FEE_OPTIONS = {
 };
 Map<WalletType, String> walletTypeToLabel = {
   WalletType.hd: 'HD wallet',
-  WalletType.single: 'Single address',
+  WalletType.single: 'Node',
 };
 Map<CreateWalletType, WalletType> xprvTypeToWalletType = {
   CreateWalletType.encryptedXprv: WalletType.hd,

@@ -90,7 +90,7 @@ class SelectWalletBox extends StatelessWidget {
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
               WalletTypeLabel(label: walletType),
-              SizedBox(height: 8),
+              SizedBox(height: walletType == WalletType.single ? 8 : 0),
               Text(
                 '$balance ${WIT_UNIT[WitUnit.Wit]}',
                 textAlign: TextAlign.end,

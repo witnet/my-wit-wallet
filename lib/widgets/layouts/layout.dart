@@ -290,7 +290,9 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                               style: TextStyle(
                                   color: extendedTheme.headerTextColor,
                                   fontSize: 16))),
-                      SizedBox(height: 8),
+                      SizedBox(
+                          height:
+                              wallet.walletType == WalletType.single ? 8 : 0),
                       WalletTypeLabel(label: wallet.walletType),
                     ],
                   ))),

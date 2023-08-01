@@ -140,7 +140,7 @@ class DashboardLayoutState extends State<DashboardLayout>
             ? _showCreateVTTDialog
             : () {},
         icon: Container(
-            height: 38,
+            height: 40,
             child: Icon(
               FontAwesomeIcons.locationArrow,
               size: 18,
@@ -177,7 +177,7 @@ class DashboardLayoutState extends State<DashboardLayout>
             ? _showReceiveDialog
             : () {},
         icon: Container(
-            height: 38,
+            height: 40,
             child: Transform.rotate(
                 angle: 90 * math.pi / 90,
                 child: Icon(
@@ -264,6 +264,7 @@ class DashboardLayoutState extends State<DashboardLayout>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _buildBalanceDisplay(),
+        SizedBox(height: 8),
         _buildDashboardActions(),
       ],
     );

@@ -22,13 +22,15 @@ class WalletTypeLabel extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            color: walletTypeToBgColor(context)[label]),
-        child: Padding(
-            padding: EdgeInsets.only(top: 2, bottom: 2, left: 4, right: 4),
-            child: Text(walletTypeToLabel[label]!,
-                style: TextStyle(color: WitnetPallet.white, fontSize: 10))));
+    return label == WalletType.single
+        ? Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: walletTypeToBgColor(context)[label]),
+            child: Padding(
+                padding: EdgeInsets.only(top: 2, bottom: 2, left: 4, right: 4),
+                child: Text(walletTypeToLabel[label]!,
+                    style: TextStyle(color: WitnetPallet.white, fontSize: 10))))
+        : Container();
   }
 }
