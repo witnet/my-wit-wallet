@@ -124,8 +124,10 @@ class CreateVttScreenState extends State<CreateVttScreen>
     try {
       setState(() => {
             currentTxOutput = vttBloc.state.vtTransaction.body.outputs.first,
-            savedFeeAmount = vttBloc.feeNanoWit.standardizeWitUnits(
-                outputUnit: WitUnit.Wit, inputUnit: WitUnit.nanoWit),
+            savedFeeAmount = vttBloc.feeNanoWit
+                .standardizeWitUnits(
+                    outputUnit: WitUnit.Wit, inputUnit: WitUnit.nanoWit)
+                .toString(),
             savedFeeType = vttBloc.feeType,
           });
     } catch (err) {

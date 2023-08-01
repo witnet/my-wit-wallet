@@ -21,8 +21,22 @@ extension TruncateDoubles on double {
       (this * pow(10, decimals)).truncate() / pow(10, decimals);
 }
 
-extension TimestampExtension on num {
-  String standardizeWitUnits(
+extension FormatNumber on Decimal {
+  String formatWithCommaSeparator() {
+    List parts = this.toString().split('.');
+    bool noCommaSeparatorNeeded = parts[0].toString().length < 3;
+    String numberWithCommaSeparator =
+        formatter.format(num.tryParse(parts[0] ?? 0));
+    if (parts.length > 1) {
+      return '${noCommaSeparatorNeeded ? parts[0] : numberWithCommaSeparator}.${parts[1]}';
+    } else {
+      return '${noCommaSeparatorNeeded ? parts[0] : numberWithCommaSeparator}';
+    }
+  }
+}
+
+extension StandardizeWitUnit on num {
+  Decimal standardizeWitUnits(
       {WitUnit outputUnit = WitUnit.Wit,
       WitUnit inputUnit = WitUnit.nanoWit,
       int truncate = 2}) {
@@ -63,18 +77,18 @@ extension TimestampExtension on num {
             result.compareTo(1) == -1) {
           // result < 1
           final decimal = Decimal.parse(result.toStringAsFixed(10));
-          return format(decimal);
+          return decimal;
         } else {
           final decimal = Decimal.parse(
               double.parse(result.toString()).truncateToDecimals(2).toString());
-          return format(decimal);
+          return decimal;
         }
       } else {
-        return '0';
+        return Decimal.parse('0');
       }
     } catch (err) {
       print('Error standardizing Wit unit :: $err');
-      return '';
+      return Decimal.parse('0');
     }
   }
 }

@@ -59,7 +59,7 @@ class TransactionDetails extends StatelessWidget {
                       style: extendedTheme.monoSmallText),
                   SizedBox(height: 8),
                   Text(
-                      '${output.value.toInt().standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
+                      '${output.value.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
                       style: theme.textTheme.labelMedium),
                 ],
               ),
@@ -91,7 +91,7 @@ class TransactionDetails extends StatelessWidget {
             Text(input.address.toString(), style: extendedTheme.monoSmallText),
             SizedBox(height: 8),
             Text(
-                '${input.value.standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
+                '${input.value.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
                 style: theme.textTheme.labelMedium),
           ],
         ));
@@ -149,7 +149,7 @@ class TransactionDetails extends StatelessWidget {
                     ? 'Fees payed'
                     : 'Fees collected',
                 text:
-                    '${transaction.fee.standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}'),
+                    '${transaction.fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
             SizedBox(height: 16),
             InfoElement(
                 label: 'Timestamp',

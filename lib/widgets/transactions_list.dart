@@ -100,21 +100,21 @@ class TransactionsListState extends State<TransactionsList> {
 
     if (label == 'from') {
       return Text(
-        ' + ${receiveValue(transaction).standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
+        ' + ${receiveValue(transaction).standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
         style: theme.textTheme.bodyLarge
             ?.copyWith(color: extendedTheme.txValuePositiveColor),
         overflow: TextOverflow.ellipsis,
       );
-    } else if (sendValue(transaction).standardizeWitUnits() != '0') {
+    } else if (sendValue(transaction).standardizeWitUnits().toString() != '0') {
       return Text(
-        ' - ${sendValue(transaction).standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
+        ' - ${sendValue(transaction).standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
         style: theme.textTheme.bodyLarge
             ?.copyWith(color: extendedTheme.txValueNegativeColor),
         overflow: TextOverflow.ellipsis,
       );
     } else {
       return Text(
-        '${sendValue(transaction).standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
+        '${sendValue(transaction).standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
         style: theme.textTheme.bodyLarge,
         overflow: TextOverflow.ellipsis,
       );

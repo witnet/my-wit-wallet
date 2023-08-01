@@ -81,8 +81,10 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
 
   String _nanoWitFeeToWit(String fee) {
     try {
-      return num.parse(fee).standardizeWitUnits(
-          outputUnit: WitUnit.Wit, inputUnit: WitUnit.nanoWit);
+      return num.parse(fee)
+          .standardizeWitUnits(
+              outputUnit: WitUnit.Wit, inputUnit: WitUnit.nanoWit)
+          .toString();
     } catch (e) {
       return '0';
     }
@@ -90,8 +92,10 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
 
   String _witFeeTonanoWit(String fee) {
     try {
-      return num.parse(fee).standardizeWitUnits(
-          outputUnit: WitUnit.nanoWit, inputUnit: WitUnit.Wit);
+      return num.parse(fee)
+          .standardizeWitUnits(
+              outputUnit: WitUnit.nanoWit, inputUnit: WitUnit.Wit)
+          .toString();
     } catch (e) {
       return '0';
     }

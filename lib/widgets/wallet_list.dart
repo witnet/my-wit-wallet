@@ -138,8 +138,10 @@ class WalletListState extends State<WalletList> {
       label: database.walletStorage.wallets[walletId]!.name,
       isSelected: isSelectedWallet,
       walletName: database.walletStorage.wallets[walletId]!.name,
-      balance: num.parse(balance).standardizeWitUnits(
-          inputUnit: WitUnit.nanoWit, outputUnit: WitUnit.Wit),
+      balance: num.parse(balance)
+          .standardizeWitUnits(
+              inputUnit: WitUnit.nanoWit, outputUnit: WitUnit.Wit)
+          .formatWithCommaSeparator(),
       address: address ?? '',
       onChanged: (walletId) => {
         setState(() {

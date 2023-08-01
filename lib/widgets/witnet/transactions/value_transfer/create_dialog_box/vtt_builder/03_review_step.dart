@@ -201,13 +201,13 @@ class ReviewStepState extends State<ReviewStep>
               InfoElement(
                 label: 'Amount',
                 text:
-                    '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
+                    '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
               ),
               SizedBox(height: 16),
               InfoElement(
                   label: 'Fee',
                   text:
-                      '${fee.standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}'),
+                      '${fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
             ]));
       },
     );

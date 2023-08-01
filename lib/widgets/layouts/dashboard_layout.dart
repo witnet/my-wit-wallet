@@ -205,7 +205,7 @@ class DashboardLayoutState extends State<DashboardLayout>
           Semantics(
               label: 'balance',
               child: Text(
-                '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits()} ${WIT_UNIT[WitUnit.Wit]}',
+                '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.headlineMedium,
               )),

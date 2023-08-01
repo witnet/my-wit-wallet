@@ -91,8 +91,10 @@ class RecipientStepState extends State<RecipientStep>
 
   bool _notEnoughFunds() {
     final balance = balanceInfo.availableNanoWit;
-    int nanoWitAmount = int.parse(_amountToNumber().standardizeWitUnits(
-        inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit));
+    int nanoWitAmount = int.parse(_amountToNumber()
+        .standardizeWitUnits(
+            inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)
+        .toString());
     return balance < nanoWitAmount;
   }
 
@@ -130,7 +132,7 @@ class RecipientStepState extends State<RecipientStep>
   void _setSavedTxData() {
     String? savedAddress = widget.ongoingOutput?.pkh.address;
     String? savedAmount =
-        widget.ongoingOutput?.value.toInt().standardizeWitUnits();
+        widget.ongoingOutput?.value.toInt().standardizeWitUnits().toString();
 
     if (savedAddress != null) {
       _addressController.text = savedAddress;
@@ -163,8 +165,10 @@ class RecipientStepState extends State<RecipientStep>
           currentWallet: widget.currentWallet,
           output: ValueTransferOutput.fromJson({
             'pkh': _address,
-            'value': int.parse(_amountToNumber().standardizeWitUnits(
-                inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)),
+            'value': int.parse(_amountToNumber()
+                .standardizeWitUnits(
+                    inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)
+                .toString()),
             'time_lock': 0
           }),
           merge: true));
