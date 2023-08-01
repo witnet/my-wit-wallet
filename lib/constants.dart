@@ -9,6 +9,7 @@ String EXPLORER_ADDRESS = dotenv.get('EXPLORER_ADDRESS');
 // ignore: non_constant_identifier_names
 String EXPLORER_DEV_ADDRESS = dotenv.get('EXPLORER_DEV_ADDRESS');
 const int EXPLORER_DELAY_MS = 100;
+const int SYNC_TIMER_IN_SECONDS = 30;
 
 class Constants {
   static const String appName = 'Witnet';

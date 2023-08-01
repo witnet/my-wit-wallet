@@ -70,13 +70,15 @@ class AddressQueryEvent extends ExplorerEvent {
 
 class SyncWalletEvent extends ExplorerEvent {
   final Wallet currentWallet;
+  final bool force;
   SyncWalletEvent(
     ExplorerStatus status,
-    this.currentWallet,
-  ) : super(status);
+    this.currentWallet, {
+    this.force = false,
+  }) : super(status);
 
   @override
-  List<Object> get props => [currentWallet];
+  List<Object> get props => [currentWallet, force];
 }
 
 class SyncSingleAccountEvent extends ExplorerEvent {

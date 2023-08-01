@@ -12,6 +12,7 @@ import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/util/utxo_list_to_string.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:witnet/schema.dart';
 
 part 'explorer_event.dart';
@@ -137,17 +138,33 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     emit(ExplorerState.error());
   }
 
+  Future<void> _singleSyncEvent(
+      SyncWalletEvent event, Emitter<ExplorerState> emit) async {
+    try {
+      add(DataLoadingEvent(ExplorerStatus.dataloading));
+      add(DataLoadedEvent(
+          ExplorerStatus.dataloaded, await syncWalletRoutine(event, emit)));
+    } catch (e) {
+      setError(e);
+    }
+  }
+
   Future<void> _syncWalletEvent(
       SyncWalletEvent event, Emitter<ExplorerState> emit) async {
-    // Create a periodic stream for syncing the wallet
-    syncWalletStream = Stream.periodic(Duration(seconds: 30), (_) {
-      add(DataLoadingEvent(ExplorerStatus.dataloading));
-      return syncWalletRoutine(event, emit);
-    }).asyncMap((event) async => await event);
-    if (syncWalletSubscription != null) syncWalletSubscription!.cancel();
-    syncWalletSubscription = syncWalletStream.listen((event) {
-      add(DataLoadedEvent(ExplorerStatus.dataloaded, event));
-    }, onError: setError, cancelOnError: false);
+    if (event.force) {
+      await _singleSyncEvent(event, emit);
+    } else {
+      // Create a periodic stream for syncing the wallet
+      syncWalletStream =
+          Stream.periodic(Duration(seconds: SYNC_TIMER_IN_SECONDS), (_) {
+        add(DataLoadingEvent(ExplorerStatus.dataloading));
+        return syncWalletRoutine(event, emit);
+      }).asyncMap((event) async => await event);
+      if (syncWalletSubscription != null) syncWalletSubscription!.cancel();
+      syncWalletSubscription = syncWalletStream.listen((event) {
+        add(DataLoadedEvent(ExplorerStatus.dataloaded, event));
+      }, onError: setError, cancelOnError: false);
+    }
   }
 
   void setError(error) {

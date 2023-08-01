@@ -29,7 +29,6 @@ class PaginationParams {
 
 class DashboardScreenState extends State<DashboardScreen>
     with TickerProviderStateMixin {
-  String? walletId;
   String? currentAddress;
   Wallet? currentWallet;
   Account? currentAccount;
@@ -67,9 +66,10 @@ class DashboardScreenState extends State<DashboardScreen>
     super.dispose();
   }
 
-  void _syncWallet(String walletId) {
+  void _syncWallet(String walletId, {bool force = false}) {
     BlocProvider.of<ExplorerBloc>(context).add(SyncWalletEvent(
-        ExplorerStatus.dataloading, database.walletStorage.wallets[walletId]!));
+        ExplorerStatus.dataloading, database.walletStorage.wallets[walletId]!,
+        force: force));
   }
 
   void _setWallet() {
@@ -139,7 +139,8 @@ class DashboardScreenState extends State<DashboardScreen>
     return BlocListener<DashboardBloc, DashboardState>(
       listener: (BuildContext context, DashboardState state) {
         if (state.status == DashboardStatus.Ready) {
-          _setNewWalletData();
+          String walletId = database.walletStorage.currentWallet.id;
+          _syncWallet(walletId, force: true);
         }
       },
       child: _dashboardBuilder(),
