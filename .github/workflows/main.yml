@@ -48,19 +48,18 @@ jobs:
           Compress-Archive -Path '.\myWitWallet' -DestinationPath '.\myWitWallet-windows.zip' -Force
 
       - name: Compile MSIX
-        run: flutter pub run msix:create
+        run: dart run msix:create
 
-      - name: List files
-        run: tree .\build\
-
-      - name: Release on Microsoft Store
-        run: msstore publish ".\build\windows\runner\Release\myWitWallet.msix"
+      # - name: Release on Microsoft Store
+      #   run: msstore publish ".\build\windows\runner\Release\my_wit_wallet.msix"
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: windows
-          path: .\myWitWallet-windows.zip
+          path: |
+            .\build\windows\runner\Release\my_wit_wallet.msix
+            .\myWitWallet-windows.zip
 
   Linux:
     runs-on: ubuntu-22.04
