@@ -51,7 +51,7 @@ jobs:
         run: dart run msix:create
 
       - name: Release on Microsoft Store
-        run: msstore publish ".\build\windows\runner\Release\my_wit_wallet.msix"
+        run: msstore publish "." -i ".\build\windows\runner\Release"
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
