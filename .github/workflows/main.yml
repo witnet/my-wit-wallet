@@ -48,7 +48,10 @@ jobs:
           Compress-Archive -Path '.\myWitWallet' -DestinationPath '.\myWitWallet-windows.zip' -Force
 
       - name: Compile MSIX
-        run: flutter pub run msix:publish
+        run: flutter pub run msix:create
+
+      - name: List files
+        run: tree .\build\
 
       - name: Release on Microsoft Store
         run: msstore publish ".\build\windows\runner\Release\myWitWallet.msix"

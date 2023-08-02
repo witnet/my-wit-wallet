@@ -9,7 +9,7 @@ environment:
   sdk: ">=2.15.0 <3.0.0"
 
 dev_dependencies:
-  msix: ^3.15.1
+  msix: ^3.16.1
   test: ^1.21.4
 
 dependencies:
@@ -112,15 +112,9 @@ flutter:
           weight: 700
 
 msix_config:
-  app_installer:
-    hours_between_update_checks: 0
-    automatic_background_task: true
-    update_blocks_activation: true
-    show_prompt: true
-    force_update_from_any_version: false
   display_name: myWitWallet
   publisher_display_name: Witnet Foundation
-  identity_name: WitnetFoundation.myWitWallet
+  identity_name: io.witnet.myWitWallet
   logo_path: assets/icon/icon.png
   store: true
   publisher: CN=<REAL_CN>, O=Witnet Foundation, C=US
