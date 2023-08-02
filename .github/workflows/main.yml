@@ -50,16 +50,14 @@ jobs:
       - name: Compile MSIX
         run: dart run msix:create
 
-      # - name: Release on Microsoft Store
-      #   run: msstore publish ".\build\windows\runner\Release\my_wit_wallet.msix"
+      - name: Release on Microsoft Store
+        run: msstore publish ".\build\windows\runner\Release\my_wit_wallet.msix"
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: windows
-          path: |
-            .\build\windows\runner\Release\my_wit_wallet.msix
-            .\myWitWallet-windows.zip
+          path: .\myWitWallet-windows.zip
 
   Linux:
     runs-on: ubuntu-22.04
