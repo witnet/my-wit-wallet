@@ -133,6 +133,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         this.feeNanoWit = feeNanoWit;
         break;
       case FeeType.Weighted:
+        this.feeNanoWit = feeNanoWit;
         break;
     }
   }
@@ -317,7 +318,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         if (valueChangeNanoWit > 0) {
           // add change
           // +1 to the outputs length to include for change address
-          feeNanoWit = getFee(1);
+          feeNanoWit = getFee(feeNanoWit);
           valueChangeNanoWit = (valuePaidNanoWit - valueOwedNanoWit);
 
           outputs.add(ValueTransferOutput.fromJson({

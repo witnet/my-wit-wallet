@@ -99,14 +99,15 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   }
 
   void _setSavedFeeData() {
-    if (widget.savedFeeType != null) _setFeeType(widget.savedFeeType?.name);
-    if (_isAbsoluteFee()) {
-      _minerFeeController.text = _nanoWitFeeToWit(widget.savedFeeAmount ?? '1');
-      _minerFeeWit = VttAmountInput.dirty(
-          availableNanoWit: balanceInfo.availableNanoWit,
-          value: _nanoWitFeeToWit(widget.savedFeeAmount ?? '1'),
-          allowZero: true);
+    if (widget.savedFeeType != null) {
+      _setFeeType(widget.savedFeeType?.name);
+      selectedIndex = widget.savedFeeType == FeeType.Absolute ? 0 : 1;
     }
+    _minerFeeController.text = _nanoWitFeeToWit(widget.savedFeeAmount ?? '1');
+    _minerFeeWit = VttAmountInput.dirty(
+        availableNanoWit: balanceInfo.availableNanoWit,
+        value: _nanoWitFeeToWit(widget.savedFeeAmount ?? '1'),
+        allowZero: true);
   }
 
   void _setFeeType(type) {
@@ -130,8 +131,8 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   }
 
   void _setWeightedFee() {
-    BlocProvider.of<VTTCreateBloc>(context)
-        .add(UpdateFeeEvent(feeType: FeeType.Weighted));
+    BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
+        feeType: FeeType.Weighted, feeNanoWit: _minerFeeWitToNanoWitNumber()));
   }
 
   bool validateForm({force = false}) {
@@ -190,6 +191,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                 style: theme.textTheme.bodyMedium)),
       ],
       onClick: (value) => {
+        _setFeeType(FeeType.Absolute.name),
         setState(() {
           _minerFeeWit = VttAmountInput.dirty(
               availableNanoWit: balanceInfo.availableNanoWit,

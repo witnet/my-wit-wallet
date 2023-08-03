@@ -74,7 +74,7 @@ class ReviewStepState extends State<ReviewStep>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    int fee = BlocProvider.of<VTTCreateBloc>(context).feeNanoWit;
+    int fee = BlocProvider.of<VTTCreateBloc>(context).getFee();
     return BlocBuilder<VTTCreateBloc, VTTCreateState>(
       builder: (context, state) {
         if (state.vttCreateStatus == VTTCreateStatus.exception) {
