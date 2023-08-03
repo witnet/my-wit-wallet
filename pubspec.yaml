@@ -114,8 +114,8 @@ flutter:
 msix_config:
   display_name: myWitWallet
   publisher_display_name: Witnet Foundation
-  identity_name: WitnetFoundation.myWitWallet
-  logo_path: assets/icon/icon.png
   publisher: CN=<REAL_CN>
-  store: true
-  msix_version: 1.0.0.0
+  identity_name: WitnetFoundation.myWitWallet
+  msix_version: 0.0.1.0
+  logo_path: .\assets\icon\icon.png
+  msstore_appId: 9PN09DKWPL57
