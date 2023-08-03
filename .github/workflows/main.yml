@@ -48,10 +48,10 @@ jobs:
           Compress-Archive -Path '.\myWitWallet' -DestinationPath '.\myWitWallet-windows.zip' -Force
 
       - name: Compile MSIX
-        run: dart run msix:create
+        run: msstore package
 
       - name: Release on Microsoft Store
-        run: msstore publish "." -i ".\build\windows\runner\Release"
+        run: msstore publish -v
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
