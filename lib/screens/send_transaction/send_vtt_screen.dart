@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
-import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
@@ -9,7 +8,6 @@ import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/step_bar.dart';
-import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/01_recipient_step.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/02_select_miner_fee.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/03_review_step.dart';
@@ -93,10 +91,10 @@ class CreateVttScreenState extends State<CreateVttScreen>
   bool _isNextStepAllow() {
     bool isTransactionFormValid = stepSelectedItem == VTTsteps.Transaction &&
         (transactionFormState.currentState != null &&
-            transactionFormState.currentState!.validateForm());
+            transactionFormState.currentState!.validateForm(force: true));
     bool isMinerFeeFormValid = stepSelectedItem == VTTsteps.MinerFee &&
         (minerFeeState.currentState != null &&
-            minerFeeState.currentState!.validateForm());
+            minerFeeState.currentState!.validateForm(force: true));
     return (isTransactionFormValid |
         isMinerFeeFormValid |
         (stepSelectedItem == VTTsteps.Review));
@@ -124,10 +122,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
     try {
       setState(() => {
             currentTxOutput = vttBloc.state.vtTransaction.body.outputs.first,
-            savedFeeAmount = vttBloc.feeNanoWit
-                .standardizeWitUnits(
-                    outputUnit: WitUnit.Wit, inputUnit: WitUnit.nanoWit)
-                .toString(),
+            savedFeeAmount = vttBloc.feeNanoWit.toString(),
             savedFeeType = vttBloc.feeType,
           });
     } catch (err) {

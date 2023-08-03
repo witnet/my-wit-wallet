@@ -1,3 +1,4 @@
+import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
@@ -6,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
+import 'package:my_wit_wallet/widgets/validations/address_input.dart';
+import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
 import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
@@ -39,10 +42,8 @@ class RecipientStepState extends State<RecipientStep>
   late BalanceInfo balanceInfo = widget.currentWallet.balanceNanoWit();
   late AnimationController _loadingController;
   final _formKey = GlobalKey<FormState>();
-  String _address = '';
-  String _amount = '';
-  String? _errorAddressText;
-  String? _errorAmountText;
+  AddressInput? _address;
+  VttAmountInput? _amount;
   final _amountController = TextEditingController();
   final _amountFocusNode = FocusNode();
   final _addressController = TextEditingController();
@@ -83,50 +84,25 @@ class RecipientStepState extends State<RecipientStep>
 
   num _amountToNumber() {
     try {
-      return num.parse(_amount != '' ? _amount : '0');
+      return num.parse(
+          (_amount?.value ?? '') != '' ? _amount?.value ?? '' : '0');
     } catch (e) {
       return 0;
     }
   }
 
-  bool _notEnoughFunds() {
-    final balance = balanceInfo.availableNanoWit;
-    int nanoWitAmount = int.parse(_amountToNumber()
-        .standardizeWitUnits(
-            inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)
-        .toString());
-    return balance < nanoWitAmount;
-  }
-
-  String? _validateAddress(String? input) {
-    return validateAddress(input);
-  }
-
-  String? _validateAmount(String? input) {
-    String? errorText;
-    if (_notEnoughFunds()) {
-      errorText = 'Not enough Funds';
-    }
-    errorText = errorText ?? validateWitValue(input);
-    try {
-      if (num.parse(input!) == 0) {
-        errorText = errorText ?? 'Amount cannot be zero';
+  bool validateForm({force = false}) {
+    if (force || (!_addressFocusNode.hasFocus && !_amountFocusNode.hasFocus)) {
+      if (_amount != null && _address != null) {
+        final validInputs = <FormzInput>[
+          _amount!,
+          _address!,
+        ];
+        bool valid = Formz.validate(validInputs).isValid;
+        return valid;
       }
-    } catch (e) {
-      errorText = 'Invalid amount';
     }
-    return errorText;
-  }
-
-  bool validateForm() {
-    setState(() {
-      _errorAddressText = _validateAddress(_address);
-      _errorAmountText = _validateAmount(_amount);
-    });
-    return ((_errorAddressText == null && _errorAmountText == null) &&
-        _address.isNotEmpty &&
-        _amount.isNotEmpty &&
-        !_connectionError);
+    return false;
   }
 
   void _setSavedTxData() {
@@ -136,12 +112,13 @@ class RecipientStepState extends State<RecipientStep>
 
     if (savedAddress != null) {
       _addressController.text = savedAddress;
-      _address = savedAddress;
+      _address = AddressInput.dirty(value: savedAddress);
     }
 
     if (savedAmount != null) {
       _amountController.text = savedAmount;
-      _amount = savedAmount;
+      _amount = VttAmountInput.dirty(
+          availableNanoWit: balanceInfo.availableNanoWit, value: savedAmount);
     }
 
     BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
@@ -160,11 +137,11 @@ class RecipientStepState extends State<RecipientStep>
     } else {
       ScaffoldMessenger.of(context).clearSnackBars();
     }
-    if (validateForm() && _formKey.currentState!.validate()) {
+    if (validateForm(force: true) && !_connectionError) {
       vttBloc.add(AddValueTransferOutputEvent(
           currentWallet: widget.currentWallet,
           output: ValueTransferOutput.fromJson({
-            'pkh': _address,
+            'pkh': _address?.value,
             'value': int.parse(_amountToNumber()
                 .standardizeWitUnits(
                     inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)
@@ -183,6 +160,8 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   _buildForm(BuildContext context, ThemeData theme) {
+    _addressFocusNode.addListener(() => validateForm());
+    _amountFocusNode.addListener(() => validateForm());
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.disabled,
@@ -220,11 +199,8 @@ class RecipientStepState extends State<RecipientStep>
                                                               .route)),
                                                   _addressController.text =
                                                       value,
-                                                  _address = value,
-                                                  setState(() {
-                                                    _errorAddressText =
-                                                        _validateAddress(value);
-                                                  })
+                                                  _address = AddressInput.dirty(
+                                                      value: value)
                                                 })))
                               },
                           color: isScanQrFocused
@@ -232,19 +208,15 @@ class RecipientStepState extends State<RecipientStep>
                               : theme.inputDecorationTheme.enabledBorder
                                   ?.borderSide.color)
                       : null,
-                  errorText: _errorAddressText,
+                  errorText: _address?.error ?? null,
                 ),
                 controller: _addressController,
                 focusNode: _addressFocusNode,
                 keyboardType: TextInputType.text,
-                validator: _validateAddress,
                 inputFormatters: [WitAddressFormatter()],
                 onChanged: (String value) {
                   setState(() {
-                    _address = value;
-                    if (_validateAddress(_address) == null) {
-                      _errorAddressText = _validateAddress(_address);
-                    }
+                    _address = AddressInput.dirty(value: value);
                   });
                 },
                 onFieldSubmitted: (String value) {
@@ -252,13 +224,6 @@ class RecipientStepState extends State<RecipientStep>
                 },
                 onTap: () {
                   _addressFocusNode.requestFocus();
-                },
-                onTapOutside: (PointerDownEvent event) {
-                  if (_addressFocusNode.hasFocus) {
-                    setState(() {
-                      _errorAddressText = _validateAddress(_address);
-                    });
-                  }
                 },
               ),
               SizedBox(height: 16),
@@ -269,17 +234,15 @@ class RecipientStepState extends State<RecipientStep>
               SizedBox(height: 8),
               InputAmount(
                 hint: 'Amount',
-                errorText: _errorAmountText,
+                errorText: _amount?.error ?? null,
                 textEditingController: _amountController,
                 focusNode: _amountFocusNode,
                 keyboardType: TextInputType.number,
-                validator: _validateAmount,
                 onChanged: (String value) {
                   setState(() {
-                    _amount = value;
-                    if (_validateAmount(_amount) == null) {
-                      _errorAmountText = null;
-                    }
+                    _amount = VttAmountInput.dirty(
+                        availableNanoWit: balanceInfo.availableNanoWit,
+                        value: value);
                   });
                 },
                 onTap: () {
@@ -289,13 +252,6 @@ class RecipientStepState extends State<RecipientStep>
                   // hide keyboard
                   FocusManager.instance.primaryFocus?.unfocus();
                   widget.goNext();
-                },
-                onTapOutside: (PointerDownEvent event) {
-                  if (_amountFocusNode.hasFocus) {
-                    setState(() {
-                      _errorAmountText = _validateAmount(_amount);
-                    });
-                  }
                 },
               ),
               SizedBox(height: 16),
