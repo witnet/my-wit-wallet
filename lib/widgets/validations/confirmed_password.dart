@@ -16,18 +16,23 @@ String? getErrorText(ConfirmedPasswordError error) {
 class ConfirmedPassword extends FormzInput<String, String?> {
   const ConfirmedPassword.pure()
       : original = const PasswordInput.pure(),
+        allowValidation = false,
         super.pure('');
-  const ConfirmedPassword.dirty({required this.original, String value = ''})
+  const ConfirmedPassword.dirty(
+      {required this.original, String value = '', this.allowValidation = false})
       : super.dirty(value);
 
   final PasswordInput original;
+  final bool allowValidation;
 
   @override
   String? validator(String? value) {
-    if (value != null) {
-      if (value != this.original.value)
-        return getErrorText(ConfirmedPasswordError.match);
-      if (value.isEmpty) return getErrorText(ConfirmedPasswordError.empty);
+    if (this.allowValidation) {
+      if (value != null) {
+        if (value != this.original.value)
+          return getErrorText(ConfirmedPasswordError.match);
+        if (value.isEmpty) return getErrorText(ConfirmedPasswordError.empty);
+      }
     }
 
     return null;

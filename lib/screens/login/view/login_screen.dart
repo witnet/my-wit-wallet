@@ -29,7 +29,7 @@ class LoginScreen extends StatefulWidget {
 
 class LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
-  PasswordInput? _password;
+  PasswordInput _password = PasswordInput.pure();
   bool isLoading = false;
   String? _passwordInputErrorText;
   Future<WalletStorage>? _loadWallets;
@@ -53,9 +53,9 @@ class LoginScreenState extends State<LoginScreen>
 
   _login() {
     try {
-      if (_password != null && _password!.valid) {
+      if (validateForm(force: true)) {
         BlocProvider.of<LoginBloc>(context)
-            .add(LoginSubmittedEvent(password: _password!.value));
+            .add(LoginSubmittedEvent(password: _password.value));
       }
     } catch (err) {
       rethrow;
@@ -133,33 +133,49 @@ class LoginScreenState extends State<LoginScreen>
     );
   }
 
+  bool formValidation() {
+    return _password.valid;
+  }
+
+  bool validateForm({force = false}) {
+    if (force) {
+      setPassword(_password.value, validate: true);
+    }
+    return formValidation();
+  }
+
+  bool isFormUnFocus() {
+    return !_loginFocusNode.hasFocus;
+  }
+
+  void setPassword(String password, {bool? validate}) {
+    setState(() {
+      _password = PasswordInput.dirty(
+          value: password, allowValidation: validate ?? isFormUnFocus());
+    });
+  }
+
   Form _loginForm() {
+    _loginFocusNode.addListener(() => validateForm());
     return Form(
       autovalidateMode: AutovalidateMode.disabled,
       child: InputLogin(
         hint: 'Password',
-        errorText: _password?.error ?? _passwordInputErrorText,
+        errorText: _password.error ?? _passwordInputErrorText,
         showPassFocusNode: _showPasswordFocusNode,
         obscureText: true,
         textEditingController: _loginController,
         focusNode: _loginFocusNode,
         onChanged: (String? value) {
           if (mounted) {
-            setState(() {
-              _password = PasswordInput.dirty(value: value!);
-            });
+            _passwordInputErrorText = null;
+            setPassword(value ?? '');
           }
         },
-        onEditingComplete: () {},
         onFieldSubmitted: (String? value) {
           // hide keyboard
           FocusManager.instance.primaryFocus?.unfocus();
           _login();
-        },
-        onTapOutside: (PointerDownEvent? event) {
-          if (_loginFocusNode.hasFocus && _password != null) {
-            _password!.validator(_password!.value);
-          }
         },
         onTap: () {
           _loginFocusNode.requestFocus();

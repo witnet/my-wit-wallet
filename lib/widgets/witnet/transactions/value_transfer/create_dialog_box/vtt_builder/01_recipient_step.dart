@@ -42,8 +42,8 @@ class RecipientStepState extends State<RecipientStep>
   late BalanceInfo balanceInfo = widget.currentWallet.balanceNanoWit();
   late AnimationController _loadingController;
   final _formKey = GlobalKey<FormState>();
-  AddressInput? _address;
-  VttAmountInput? _amount;
+  AddressInput _address = AddressInput.pure();
+  VttAmountInput _amount = VttAmountInput.pure();
   final _amountController = TextEditingController();
   final _amountFocusNode = FocusNode();
   final _addressController = TextEditingController();
@@ -84,25 +84,46 @@ class RecipientStepState extends State<RecipientStep>
 
   num _amountToNumber() {
     try {
-      return num.parse(
-          (_amount?.value ?? '') != '' ? _amount?.value ?? '' : '0');
+      return num.parse((_amount.value) != '' ? _amount.value : '0');
     } catch (e) {
       return 0;
     }
   }
 
+  bool formValidation() {
+    final validInputs = <FormzInput>[
+      _amount,
+      _address,
+    ];
+    return Formz.validate(validInputs).isValid;
+  }
+
   bool validateForm({force = false}) {
-    if (force || (!_addressFocusNode.hasFocus && !_amountFocusNode.hasFocus)) {
-      if (_amount != null && _address != null) {
-        final validInputs = <FormzInput>[
-          _amount!,
-          _address!,
-        ];
-        bool valid = Formz.validate(validInputs).isValid;
-        return valid;
-      }
+    if (force) {
+      setAddress(_address.value, validate: true);
+      setAmount(_amount.value, validate: true);
     }
-    return false;
+    return formValidation();
+  }
+
+  bool isFormUnFocus() {
+    return (!_addressFocusNode.hasFocus && !_amountFocusNode.hasFocus);
+  }
+
+  void setAddress(String value, {bool? validate}) {
+    setState(() {
+      _address = AddressInput.dirty(
+          value: value, allowValidation: validate ?? isFormUnFocus());
+    });
+  }
+
+  void setAmount(String value, {bool? validate}) {
+    setState(() {
+      _amount = VttAmountInput.dirty(
+          availableNanoWit: balanceInfo.availableNanoWit,
+          allowValidation: validate ?? isFormUnFocus(),
+          value: value);
+    });
   }
 
   void _setSavedTxData() {
@@ -112,13 +133,12 @@ class RecipientStepState extends State<RecipientStep>
 
     if (savedAddress != null) {
       _addressController.text = savedAddress;
-      _address = AddressInput.dirty(value: savedAddress);
+      setAddress(savedAddress, validate: false);
     }
 
     if (savedAmount != null) {
       _amountController.text = savedAmount;
-      _amount = VttAmountInput.dirty(
-          availableNanoWit: balanceInfo.availableNanoWit, value: savedAmount);
+      setAmount(savedAmount, validate: false);
     }
 
     BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
@@ -141,7 +161,7 @@ class RecipientStepState extends State<RecipientStep>
       vttBloc.add(AddValueTransferOutputEvent(
           currentWallet: widget.currentWallet,
           output: ValueTransferOutput.fromJson({
-            'pkh': _address?.value,
+            'pkh': _address.value,
             'value': int.parse(_amountToNumber()
                 .standardizeWitUnits(
                     inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)
@@ -199,8 +219,7 @@ class RecipientStepState extends State<RecipientStep>
                                                               .route)),
                                                   _addressController.text =
                                                       value,
-                                                  _address = AddressInput.dirty(
-                                                      value: value)
+                                                  setAddress(value)
                                                 })))
                               },
                           color: isScanQrFocused
@@ -208,16 +227,14 @@ class RecipientStepState extends State<RecipientStep>
                               : theme.inputDecorationTheme.enabledBorder
                                   ?.borderSide.color)
                       : null,
-                  errorText: _address?.error ?? null,
+                  errorText: _address.error,
                 ),
                 controller: _addressController,
                 focusNode: _addressFocusNode,
                 keyboardType: TextInputType.text,
                 inputFormatters: [WitAddressFormatter()],
                 onChanged: (String value) {
-                  setState(() {
-                    _address = AddressInput.dirty(value: value);
-                  });
+                  setAddress(value);
                 },
                 onFieldSubmitted: (String value) {
                   _amountFocusNode.requestFocus();
@@ -234,16 +251,12 @@ class RecipientStepState extends State<RecipientStep>
               SizedBox(height: 8),
               InputAmount(
                 hint: 'Amount',
-                errorText: _amount?.error ?? null,
+                errorText: _amount.error,
                 textEditingController: _amountController,
                 focusNode: _amountFocusNode,
                 keyboardType: TextInputType.number,
                 onChanged: (String value) {
-                  setState(() {
-                    _amount = VttAmountInput.dirty(
-                        availableNanoWit: balanceInfo.availableNanoWit,
-                        value: value);
-                  });
+                  setAmount(value);
                 },
                 onTap: () {
                   _amountFocusNode.requestFocus();

@@ -4,7 +4,7 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
-import 'package:my_wit_wallet/widgets/validations/password_input.dart';
+import 'package:my_wit_wallet/widgets/validations/password_valid_input.dart';
 
 final _passController = TextEditingController();
 final _passFocusNode = FocusNode();
@@ -23,18 +23,22 @@ class VerifyPassword extends StatefulWidget {
 
 class VerifyPasswordState extends State<VerifyPassword>
     with TickerProviderStateMixin {
-  PasswordInput? _password;
+  VerifyPasswordInput _password = VerifyPasswordInput.pure();
   bool isLoading = false;
-  bool isValidPassword = false;
   String? validPasswordError;
   String? xprv;
   String? localEncryptedXprv =
       Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.xprv;
 
-  void setPassword(String password) {
+  void setPassword(String password, {bool? validate}) {
     setState(() {
-      _password = PasswordInput.dirty(value: password);
+      _password = VerifyPasswordInput.dirty(
+          value: password, allowValidation: validate ?? isFormUnFocus());
     });
+  }
+
+  bool isFormUnFocus() {
+    return !_passFocusNode.hasFocus;
   }
 
   @override
@@ -48,53 +52,47 @@ class VerifyPasswordState extends State<VerifyPassword>
     super.dispose();
   }
 
-  Future validatePassword() async {
+  Future<String?> decryptedXprv() async {
     ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
     String? xprvDecripted;
     try {
       String hashPassword =
-          await apiCrypto.hashPassword(password: _password!.value);
+          await apiCrypto.hashPassword(password: _password.value);
       xprvDecripted = await apiCrypto.decryptXprv(
           xprv: localEncryptedXprv ?? '', password: hashPassword);
-      setState(() => {xprv = xprvDecripted, isValidPassword = true});
+      setState(() => xprv = xprvDecripted);
+      return xprvDecripted;
     } catch (e) {
-      setState(() => isValidPassword = false);
+      return null;
     }
   }
 
-  bool validate({bool force = false}) {
-    if (this.mounted) {
-      setState(() {
-        validPasswordError = null;
-      });
-      if (force || !_passFocusNode.hasFocus) {
-        if (_password != null && _password!.invalid) {
-          setState(() {
-            if (force) isLoading = false;
-          });
-        } else if (force && !isValidPassword) {
-          setState(() {
-            validPasswordError = 'Wrong password';
-            isLoading = false;
-          });
-        }
-      }
+  bool formValidation() {
+    return _password.valid;
+  }
+
+  Future<bool> validateForm({force = false}) async {
+    if (force) {
+      _password = VerifyPasswordInput.dirty(
+          value: _password.value,
+          allowValidation: true,
+          decriptedXprv: await decryptedXprv());
     }
-    return validPasswordError == null && (_password!.valid) ? true : false;
+    return formValidation();
   }
 
   Future<void> _verify() async {
     if (isLoading) return;
     setState(() => isLoading = true);
-    await validatePassword();
-    if (validate(force: true)) {
+    if (await validateForm(force: true)) {
       widget.onXprvGenerated(xprv);
     }
+    setState(() => isLoading = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    _passFocusNode.addListener(() => validate());
+    _passFocusNode.addListener(() => validateForm());
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,17 +118,13 @@ class VerifyPasswordState extends State<VerifyPassword>
                 focusNode: _passFocusNode,
                 showPassFocusNode: _showPasswordFocusNode,
                 textEditingController: _passController,
-                errorText: _password?.error ?? validPasswordError,
+                errorText: _password.error ?? validPasswordError,
                 onFieldSubmitted: (String? value) async {
                   FocusManager.instance.primaryFocus?.unfocus();
                   await _verify();
                 },
                 onChanged: (String? value) {
-                  if (this.mounted) {
-                    setState(() {
-                      _password = PasswordInput.dirty(value: value!);
-                    });
-                  }
+                  setPassword(value ?? '');
                 },
               ),
               SizedBox(height: 16),

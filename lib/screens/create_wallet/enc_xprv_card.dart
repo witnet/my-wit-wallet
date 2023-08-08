@@ -55,9 +55,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     _passController.clear();
     _textController.clear();
     _scanQrFocusNode.addListener(_handleFocus);
-    _textFocusNode.requestFocus();
-    _xprvType =
-        BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
     WidgetsBinding.instance
@@ -99,6 +96,16 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     setState(() {
       xprv = XprvInput.dirty(
           xprvType: _xprvType, allowValidation: isFormUnFocus(), value: value);
+    });
+  }
+
+  void clearForm() {
+    _textController.text = '';
+    _passController.text = '';
+    setState(() {
+      xprv = XprvInput.dirty(
+          allowValidation: false, value: '', xprvType: _xprvType);
+      _password = PasswordInput.dirty(allowValidation: false, value: '');
     });
   }
 
@@ -148,8 +155,11 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
                                       xprvType: _xprvType,
                                       allowValidation: false,
                                       value: value);
-                                  if (_xprvType == CreateWalletType.xprv)
+                                  if (_xprvType == CreateWalletType.xprv) {
                                     validate(force: true);
+                                  } else {
+                                    _passFocusNode.requestFocus();
+                                  }
                                 })))
                   },
                 ))
@@ -298,8 +308,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     final theme = Theme.of(context);
     _textFocusNode.addListener(() => formValidation());
     _passFocusNode.addListener(() => formValidation());
-    CreateWalletType type =
-        BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
         Widget>[
       Text(
@@ -333,6 +341,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
                   SelectItem(label.name, importOriginToLabel[label] ?? ''))
               .toList(),
           onChanged: (String? label) => {
+                clearForm(),
                 if (label != null)
                   {
                     setState(() {
@@ -349,13 +358,13 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
       SizedBox(
         height: 16,
       ),
-      type == CreateWalletType.encryptedXprv
+      _xprvType == CreateWalletType.encryptedXprv
           ? _buildPasswordField()
           : SizedBox(
               height: 0,
             ),
       SizedBox(
-        height: type == CreateWalletType.encryptedXprv ? 16 : 0,
+        height: _xprvType == CreateWalletType.encryptedXprv ? 16 : 0,
       ),
     ]);
   }

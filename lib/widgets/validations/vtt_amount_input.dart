@@ -22,14 +22,19 @@ class VttAmountInput extends FormzInput<String, String?> {
   VttAmountInput.pure()
       : availableNanoWit = 0,
         allowZero = false,
+        allowValidation = false,
         super.pure('');
 
   // Call super.dirty to represent a modified form input.
   VttAmountInput.dirty(
-      {required this.availableNanoWit, value = '', this.allowZero = false})
+      {required this.availableNanoWit,
+      value = '',
+      this.allowZero = false,
+      this.allowValidation = false})
       : super.dirty(value);
   final int availableNanoWit;
   final bool allowZero;
+  final bool allowValidation;
 
   String? validateWitValue(String? input) {
     if (input != null) {
@@ -51,39 +56,44 @@ class VttAmountInput extends FormzInput<String, String?> {
     try {
       return num.parse(amount != '' ? amount : '0');
     } catch (e) {
+      print('Error parsing number $e');
       return 0;
     }
   }
 
   bool _notEnoughFunds(int availableNanoWit, String amount) {
     int balance = availableNanoWit;
-    int nanoWitAmount = int.parse(_amountToNumber(amount)
+    int nanoWitAmount = _amountToNumber(amount)
         .standardizeWitUnits(
             inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)
-        .toString());
+        .toBigInt()
+        .toInt();
     return balance < nanoWitAmount;
   }
 
   // Override validator to handle validating a given input value.
   @override
-  String? validator(String? value) {
-    String? errorText;
-    if (value != null && value.isEmpty) {
-      errorText = getErrorText(AmountInputError.empty);
-    }
-    if (_notEnoughFunds(this.availableNanoWit, value ?? '')) {
-      errorText = getErrorText(AmountInputError.notEnough);
-    }
-    errorText = errorText ?? validateWitValue(value);
-    if (value != null && value.isNotEmpty && !this.allowZero) {
-      try {
-        if (num.parse(value) == 0) {
-          errorText = errorText ?? getErrorText(AmountInputError.zero);
-        }
-      } catch (e) {
-        return errorText = getErrorText(AmountInputError.invalid);
+  String? validator(String value) {
+    if (this.allowValidation) {
+      String? errorText;
+      if (value.isEmpty) {
+        errorText = getErrorText(AmountInputError.empty);
       }
+      if (_notEnoughFunds(this.availableNanoWit, value)) {
+        errorText = getErrorText(AmountInputError.notEnough);
+      }
+      errorText = errorText ?? validateWitValue(value);
+      if (value.isNotEmpty && !this.allowZero) {
+        try {
+          if (num.parse(value) == 0) {
+            errorText = errorText ?? getErrorText(AmountInputError.zero);
+          }
+        } catch (e) {
+          return errorText = getErrorText(AmountInputError.invalid);
+        }
+      }
+      return errorText;
     }
-    return errorText;
+    return null;
   }
 }

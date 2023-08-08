@@ -1,10 +1,11 @@
 import 'package:formz/formz.dart';
 
 // Define input validation errors
-enum PasswordInputError { empty }
+enum PasswordInputError { empty, valid }
 
 Map<PasswordInputError, String?> errorText = {
-  PasswordInputError.empty: 'Please input a password'
+  PasswordInputError.empty: 'Please input a password',
+  PasswordInputError.valid: 'Invalid password'
 };
 
 String? getErrorText(PasswordInputError error) {
@@ -12,22 +13,29 @@ String? getErrorText(PasswordInputError error) {
 }
 
 // Extend FormzInput and provide the input type and error type.
-class PasswordInput extends FormzInput<String, String?> {
+class VerifyPasswordInput extends FormzInput<String, String?> {
   final bool allowValidation;
+  final String? decriptedXprv;
   // Call super.pure to represent an unmodified form input.
-  const PasswordInput.pure()
+  const VerifyPasswordInput.pure()
       : allowValidation = false,
+        decriptedXprv = null,
         super.pure('');
 
   // Call super.dirty to represent a modified form input.
-  const PasswordInput.dirty({this.allowValidation = false, String value = ''})
+  const VerifyPasswordInput.dirty(
+      {this.allowValidation = false, this.decriptedXprv, String value = ''})
       : super.dirty(value);
 
   // Override validator to handle validating a given input value.
   @override
   String? validator(String value) {
     if (this.allowValidation) {
-      return value.isEmpty ? getErrorText(PasswordInputError.empty) : null;
+      if (value.isEmpty) {
+        return getErrorText(PasswordInputError.empty);
+      } else if (this.decriptedXprv == null) {
+        return getErrorText(PasswordInputError.valid);
+      }
     }
     return null;
   }

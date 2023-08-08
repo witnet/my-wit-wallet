@@ -42,11 +42,11 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
   }
 
   void nextAction() async {
-    if (validate(force: true)) {
+    if (validateForm(force: true)) {
       // set masterKey
-      Locator.instance<ApiCreateWallet>().setPassword(_password!.value);
+      Locator.instance<ApiCreateWallet>().setPassword(_password.value);
       await Locator.instance<ApiDatabase>()
-          .setPassword(newPassword: _password!.value);
+          .setPassword(newPassword: _password.value);
       CreateWalletType type =
           BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
       BlocProvider.of<CreateWalletBloc>(context)
@@ -68,13 +68,43 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     );
   }
 
-  PasswordInput? _password;
-  ConfirmedPassword? _confirmPassword;
+  PasswordInput _password = PasswordInput.pure();
+  ConfirmedPassword _confirmPassword = ConfirmedPassword.pure();
   String? errorText;
 
-  void setPassword(String password) {
+  bool formValidation() {
+    final validInputs = <FormzInput>[
+      _password,
+      _confirmPassword,
+    ];
+    return Formz.validate(validInputs).isValid;
+  }
+
+  bool validateForm({force = false}) {
+    if (force) {
+      setPassword(_password.value, validate: true);
+      setConfirmPassword(_confirmPassword.value, validate: true);
+    }
+    return formValidation();
+  }
+
+  bool isFormUnFocus() {
+    return (!_passFocusNode.hasFocus && !_passConfirmFocusNode.hasFocus);
+  }
+
+  void setPassword(String password, {bool? validate}) {
     setState(() {
-      _password = PasswordInput.dirty(value: password);
+      _password = PasswordInput.dirty(
+          value: password, allowValidation: validate ?? isFormUnFocus());
+    });
+  }
+
+  void setConfirmPassword(String password, {bool? validate}) {
+    setState(() {
+      _confirmPassword = ConfirmedPassword.dirty(
+          value: password,
+          original: _password,
+          allowValidation: validate ?? isFormUnFocus());
     });
   }
 
@@ -96,29 +126,10 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     super.dispose();
   }
 
-  bool validate({force = false}) {
-    if (this.mounted) {
-      if (force ||
-          (!_passConfirmFocusNode.hasFocus &&
-              !_passFocusNode.hasFocus &&
-              !_showPassFocusNode.hasFocus &&
-              !_showPassConfirmedFocusNode.hasFocus)) {
-        if (_password != null && _confirmPassword != null) {
-          final validInputs = <FormzInput>[
-            _password!,
-            _confirmPassword!,
-          ];
-          return Formz.validate(validInputs).isValid;
-        }
-      }
-    }
-    return errorText != null ? false : true;
-  }
-
   @override
   Widget build(BuildContext context) {
-    _passConfirmFocusNode.addListener(() => validate());
-    _passFocusNode.addListener(() => validate());
+    _passConfirmFocusNode.addListener(() => validateForm());
+    _passFocusNode.addListener(() => validateForm());
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,16 +169,14 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                 focusNode: _passFocusNode,
                 showPassFocusNode: _showPassFocusNode,
                 textEditingController: _passController,
-                errorText: _password?.error ?? null,
+                errorText: _password.error,
                 obscureText: true,
                 onFieldSubmitted: (String? value) {
                   _passConfirmFocusNode.requestFocus();
                 },
                 onChanged: (String? value) {
                   if (this.mounted) {
-                    setState(() {
-                      _password = PasswordInput.dirty(value: value!);
-                    });
+                    setPassword(value ?? '');
                   }
                 },
               ),
@@ -183,7 +192,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                 focusNode: _passConfirmFocusNode,
                 showPassFocusNode: _showPassConfirmedFocusNode,
                 textEditingController: _passConfirmController,
-                errorText: _confirmPassword?.error ?? null,
+                errorText: _confirmPassword.error,
                 onFieldSubmitted: (String? value) {
                   // hide keyboard
                   FocusManager.instance.primaryFocus?.unfocus();
@@ -191,11 +200,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
                 },
                 onChanged: (String? value) {
                   if (this.mounted) {
-                    setState(() {
-                      _confirmPassword = ConfirmedPassword.dirty(
-                          original: _password ?? PasswordInput.pure(),
-                          value: value!);
-                    });
+                    setConfirmPassword(value ?? '');
                   }
                 },
               )
