@@ -106,8 +106,9 @@ Future<bool> tapButtonByLabel(WidgetTester tester, String label,
 
 Future<bool> enterText(WidgetTester tester, Type type, String text,
     {int? index, bool delay = true, int milliseconds = defaultDelay}) async {
-  index != null ? await tester.enterText(widgetByType(type).at(index), text) :
-  await tester.enterText(widgetByType(type), text);
+  index != null
+      ? await tester.enterText(widgetByType(type).at(index), text)
+      : await tester.enterText(widgetByType(type), text);
   await tester.pumpAndSettle();
   if (delay) {
     await Future.delayed(Duration(milliseconds: milliseconds));
@@ -117,9 +118,8 @@ Future<bool> enterText(WidgetTester tester, Type type, String text,
 
 enum ScrollDirection { Up, Down, Left, Right }
 
-Future<bool> scrollUntilVisible(
-  WidgetTester tester,
-  Finder finder, {int index = 0, bool delay = true, int milliseconds = defaultDelay}) async {
+Future<bool> scrollUntilVisible(WidgetTester tester, Finder finder,
+    {int index = 0, bool delay = true, int milliseconds = defaultDelay}) async {
   await tester.scrollUntilVisible(finder, -100.0,
       duration: Duration(milliseconds: 500), maxScrolls: 100);
   await tester.pumpAndSettle();
