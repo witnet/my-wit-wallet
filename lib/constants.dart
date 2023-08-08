@@ -73,3 +73,5 @@ const int PAGINATION_LIMIT = 10;
 const String VERSION_NUMBER = '0.1.2-dev';
 const double DASHBOARD_HEADER_HEIGTH = 280;
 const double HEADER_HEIGTH = 185;
+const int ENCRYPTED_XPRV_LENGTH = 293;
+const int XPRV_LENGTH = 117;

@@ -13,17 +13,23 @@ String? getErrorText(PasswordInputError error) {
 
 // Extend FormzInput and provide the input type and error type.
 class PasswordInput extends FormzInput<String, String?> {
+  final bool allowValidation;
   // Call super.pure to represent an unmodified form input.
-  const PasswordInput.pure() : super.pure('');
+  const PasswordInput.pure()
+      : allowValidation = false,
+        super.pure('');
 
   // Call super.dirty to represent a modified form input.
-  const PasswordInput.dirty({String value = ''}) : super.dirty(value);
+  const PasswordInput.dirty({this.allowValidation = false, String value = ''})
+      : super.dirty(value);
 
   // Override validator to handle validating a given input value.
   @override
-  String? validator(String? value) {
-    return value != null && value.isEmpty
-        ? getErrorText(PasswordInputError.empty)
-        : null;
+  String? validator(String value) {
+    print('allow validation ${this.allowValidation}');
+    if (this.allowValidation) {
+      return value.isEmpty ? getErrorText(PasswordInputError.empty) : null;
+    }
+    return null;
   }
 }

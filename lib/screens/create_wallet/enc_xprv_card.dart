@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
+import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
@@ -10,6 +10,7 @@ import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/widgets/select.dart';
+import 'package:my_wit_wallet/widgets/validations/xprv_input.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/widgets/validations/password_input.dart';
@@ -41,27 +42,18 @@ class EnterEncryptedXprvCard extends StatefulWidget {
 
 class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     with TickerProviderStateMixin {
-  String xprv = '';
-  PasswordInput? _password;
-  String? decryptedLocalXprv;
-  bool isValidPassword = false;
-  bool isXprvValid = false;
-  bool useStrongPassword = false;
-  int numLines = 0;
-  bool _xprvVerified = false;
-  bool xprvVerified() => _xprvVerified;
-  String? _errorText;
-  String? _errorXprvText;
+  XprvInput xprv = XprvInput.pure();
+  PasswordInput _password = PasswordInput.pure();
   bool isScanQrFocused = false;
   String _selectedOrigin = ImportOrigin.fromMyWitWallet.name;
   CreateWalletType _xprvType = CreateWalletType.encryptedXprv;
+  ApiCreateWallet createWalletApi = Locator.instance<ApiCreateWallet>();
 
   @override
   void initState() {
     super.initState();
     _passController.clear();
     _textController.clear();
-    _passFocusNode.addListener(() => validate());
     _scanQrFocusNode.addListener(_handleFocus);
     _textFocusNode.requestFocus();
     _xprvType =
@@ -88,14 +80,39 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   void _setXprvType(CreateWalletType type) {
     BlocProvider.of<CreateWalletBloc>(context).add(ResetEvent(type));
     setState(() {
-      _errorXprvText = null;
       _xprvType = type;
     });
   }
 
+  bool isFormUnFocus() {
+    return (!_passFocusNode.hasFocus && !_textFocusNode.hasFocus);
+  }
+
   void setPassword(String password) {
     setState(() {
-      PasswordInput.dirty(value: password);
+      _password = PasswordInput.dirty(
+          allowValidation: isFormUnFocus(), value: password);
+    });
+  }
+
+  void setXprv(String value) {
+    setState(() {
+      xprv = XprvInput.dirty(
+          xprvType: _xprvType, allowValidation: isFormUnFocus(), value: value);
+    });
+  }
+
+  void clearXprvError() {
+    setState(() {
+      xprv = XprvInput.dirty(
+          allowValidation: false, value: xprv.value, xprvType: _xprvType);
+    });
+  }
+
+  void clearPasswordError() {
+    setState(() {
+      _password =
+          PasswordInput.dirty(allowValidation: false, value: _password.value);
     });
   }
 
@@ -121,19 +138,23 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
                         MaterialPageRoute(
                             builder: (context) => QrScanner(
                                 currentRoute: CreateWalletScreen.route,
-                                onChanged: (String value) => {
-                                      Navigator.popUntil(
-                                          context,
-                                          ModalRoute.withName(
-                                              CreateWalletScreen.route)),
-                                      _textController.text = value,
-                                      xprv = value,
-                                      validate(force: true),
-                                    })))
+                                onChanged: (String value) async {
+                                  Navigator.popUntil(
+                                      context,
+                                      ModalRoute.withName(
+                                          CreateWalletScreen.route));
+                                  _textController.text = value;
+                                  xprv = XprvInput.dirty(
+                                      xprvType: _xprvType,
+                                      allowValidation: false,
+                                      value: value);
+                                  if (_xprvType == CreateWalletType.xprv)
+                                    validate(force: true);
+                                })))
                   },
                 ))
             : null,
-        errorText: _errorXprvText,
+        errorText: xprv.error,
       ),
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.go,
@@ -141,22 +162,18 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
       style: theme.textTheme.displayMedium,
       maxLines: 3,
       controller: _textController,
-      onSubmitted: (value) => {
-        if (_xprvType == CreateWalletType.encryptedXprv)
-          {_passFocusNode.requestFocus()}
-        else
-          {
-            // hide keyboard
-            FocusManager.instance.primaryFocus?.unfocus(),
-            nextAction(),
-          }
+      onSubmitted: (value) async {
+        if (_xprvType == CreateWalletType.encryptedXprv) {
+          _passFocusNode.requestFocus();
+        } else {
+          // hide keyboard
+          FocusManager.instance.primaryFocus?.unfocus();
+          nextAction();
+        }
       },
-      onChanged: (String e) {
-        setState(() {
-          _errorXprvText = null;
-          xprv = _textController.value.text;
-          validate();
-        });
+      onChanged: (String value) async {
+        setXprv(_textController.value.text);
+        clearPasswordError();
       },
       onTap: () {
         _textFocusNode.requestFocus();
@@ -173,18 +190,18 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   void nextAction() async {
     CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
-    await validateXprv(xprv, _password ?? PasswordInput.dirty())
-        .whenComplete(() => {
-              if (validate(force: true))
-                {
-                  Locator.instance<ApiCreateWallet>()
-                      .setSeed(decryptedLocalXprv!, 'xprv'),
-                  Locator.instance<ApiCreateWallet>().setWalletType(
-                      xprvTypeToWalletType[_xprvType] ?? WalletType.hd),
-                  BlocProvider.of<CreateWalletBloc>(context)
-                      .add(NextCardEvent(type, data: {})),
-                }
-            });
+    bool force = true;
+    if (await validate(force: force)) {
+      createWalletApi.setSeed(
+          await createWalletApi.decryptedXprv(
+                  xprv.value, _xprvType, _password) ??
+              '',
+          'xprv');
+      createWalletApi
+          .setWalletType(xprvTypeToWalletType[_xprvType] ?? WalletType.hd);
+      BlocProvider.of<CreateWalletBloc>(context)
+          .add(NextCardEvent(type, data: {}));
+    }
   }
 
   NavAction prev() {
@@ -201,55 +218,34 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     );
   }
 
-  Future validateXprv(String xprvString, PasswordInput password) async {
-    ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
-    String? xprvDecripted;
-    try {
-      //is is excrypted xprv
-      // Decript localXprv
-      int xprvLength = xprvString.length;
-      if (xprvLength == 293 && _xprvType == CreateWalletType.encryptedXprv) {
-        xprvDecripted = await apiCrypto.decryptXprv(
-            xprv: xprvString, password: password.value);
-      } else if (xprvLength == 117 && _xprvType == CreateWalletType.xprv) {
-        xprvDecripted = await apiCrypto.verifiedXprv(xprv: xprvString);
-      }
-      if (xprvDecripted != null) {
-        setState(
-            () => {decryptedLocalXprv = xprvDecripted, isXprvValid = true});
-      } else {
-        setState(() => isXprvValid = false);
-      }
-    } catch (e) {
-      setState(() => isXprvValid = false);
+  bool formValidation() {
+    if (_xprvType == CreateWalletType.encryptedXprv) {
+      final validInputs = <FormzInput>[
+        _password,
+        xprv,
+      ];
+      return Formz.validate(validInputs).isValid;
+    } else {
+      return xprv.valid;
     }
   }
 
-  bool validate({force = false}) {
-    if (this.mounted) {
+  Future<bool> validate({force = false}) async {
+    if (force) {
+      xprv = XprvInput.dirty(
+          xprvType: _xprvType,
+          allowValidation: true,
+          decriptedXprv: await createWalletApi.decryptedXprv(
+              xprv.value, _xprvType, _password),
+          value: xprv.value);
       setState(() {
-        _errorText = null;
-        _errorXprvText = null;
-      });
-      if ((force || (!_passFocusNode.hasFocus && !_textFocusNode.hasFocus))) {
-        // TODO: Create formz validation for xprv
-        if (!isXprvValid) {
-          setState(() {
-            _errorXprvText = _xprvType == CreateWalletType.encryptedXprv
-                ? 'Invalid Xprv or password'
-                : 'Invalid Xprv';
-            _errorText = _xprvType == CreateWalletType.encryptedXprv
-                ? 'Invalid Xprv or password'
-                : null;
-          });
+        if (_xprvType == CreateWalletType.encryptedXprv) {
+          _password = PasswordInput.dirty(
+              allowValidation: true, value: _password.value);
         }
-      }
+      });
     }
-    if (_xprvType == CreateWalletType.encryptedXprv) {
-      return _password != null && _password!.valid && _errorXprvText == null;
-    } else {
-      return _errorXprvText == null;
-    }
+    return formValidation();
   }
 
   Widget _buildPasswordField() {
@@ -258,18 +254,17 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
       focusNode: _passFocusNode,
       textEditingController: _passController,
       obscureText: true,
-      errorText: _password?.error ?? _errorText,
+      errorText: _password.error ?? xprv.error,
       showPassFocusNode: _showPasswordFocusNode,
       onFieldSubmitted: (String? value) {
         // hide keyboard
         FocusManager.instance.primaryFocus?.unfocus();
         nextAction();
       },
-      onChanged: (String? value) {
-        if (this.mounted) {
-          setState(() {
-            _password = PasswordInput.dirty(value: value!);
-          });
+      onChanged: (String? value) async {
+        if (this.mounted && value != null) {
+          setPassword(value);
+          clearXprvError();
         }
       },
     );
@@ -301,6 +296,8 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    _textFocusNode.addListener(() => formValidation());
+    _passFocusNode.addListener(() => formValidation());
     CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
