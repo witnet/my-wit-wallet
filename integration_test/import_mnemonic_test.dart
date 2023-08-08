@@ -17,7 +17,13 @@ void main() async {
     myWitWallet.main();
     await tester.pumpAndSettle();
 
-    walletsExist = isTextOnScreen("Unlock wallet");
+    /// Assess what is on the screen
+    walletsExist = await isTextOnScreen(tester, "Unlock wallet");
+    bool biometricsActive = await isTextOnScreen(tester, "CANCEL");
+
+    /// Cancel the Biometrics popup
+    if (walletsExist && biometricsActive) await tapButton(tester, "CANCEL");
+
     if (walletsExist) {
       /// Login Screen
       await enterText(tester, TextFormField, password);
