@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
@@ -7,10 +8,10 @@ Finder widgetByType(Type type) => find.byType(type);
 Finder widgetByText(String text) => find.text(text);
 Finder widgetByIcon(IconData icon) => find.byIcon(icon);
 Finder widgetByLabel(String label) => find.bySemanticsLabel(label);
-const int defaultDelay = 1000;
+int defaultDelay = int.tryParse(dotenv.env["DELAY"]!) ?? 1000;
 
 Future<bool> tapButton(WidgetTester tester, dynamic value,
-    {int? index, bool delay = true, int milliseconds = defaultDelay}) async {
+    {int? index, bool delay = true, int? milliseconds}) async {
   Finder finder;
   switch (value.runtimeType) {
     case Type:
@@ -39,15 +40,13 @@ Future<bool> tapButton(WidgetTester tester, dynamic value,
   await tester.tap(index != null ? finder.at(index) : finder);
   await tester.pumpAndSettle();
   if (delay) {
-    await Future.delayed(Duration(milliseconds: milliseconds));
+    await Future.delayed(Duration(milliseconds: milliseconds ?? defaultDelay));
   }
   return true;
 }
 
 Future<bool> tapButtonByName(WidgetTester tester, String text,
-        {int index = 0,
-        bool delay = true,
-        int milliseconds = defaultDelay}) async =>
+        {int index = 0, bool delay = true, int? milliseconds}) async =>
     await tapButton(
       tester,
       text,
@@ -57,9 +56,7 @@ Future<bool> tapButtonByName(WidgetTester tester, String text,
     );
 
 Future<bool> tapButtonByType(WidgetTester tester, Type type,
-        {int index = 0,
-        bool delay = true,
-        int milliseconds = defaultDelay}) async =>
+        {int index = 0, bool delay = true, int? milliseconds}) async =>
     await tapButton(
       tester,
       type,
@@ -69,9 +66,7 @@ Future<bool> tapButtonByType(WidgetTester tester, Type type,
     );
 
 Future<bool> tapButtonByIndex(WidgetTester tester, dynamic data,
-        {int index = 0,
-        bool delay = true,
-        int milliseconds = defaultDelay}) async =>
+        {int index = 0, bool delay = true, int? milliseconds}) async =>
     await tapButton(
       tester,
       data,
@@ -81,9 +76,7 @@ Future<bool> tapButtonByIndex(WidgetTester tester, dynamic data,
     );
 
 Future<bool> tapButtonByIcon(WidgetTester tester, IconData icon,
-        {int index = 0,
-        bool delay = true,
-        int milliseconds = defaultDelay}) async =>
+        {int index = 0, bool delay = true, int? milliseconds}) async =>
     await tapButton(
       tester,
       icon,
@@ -93,9 +86,7 @@ Future<bool> tapButtonByIcon(WidgetTester tester, IconData icon,
     );
 
 Future<bool> tapButtonByLabel(WidgetTester tester, String label,
-        {int index = 0,
-        bool delay = true,
-        int milliseconds = defaultDelay}) async =>
+        {int index = 0, bool delay = true, int? milliseconds}) async =>
     await tapButton(
       tester,
       label,
@@ -105,13 +96,13 @@ Future<bool> tapButtonByLabel(WidgetTester tester, String label,
     );
 
 Future<bool> enterText(WidgetTester tester, Type type, String text,
-    {int? index, bool delay = true, int milliseconds = defaultDelay}) async {
+    {int? index, bool delay = true, int? milliseconds}) async {
   index != null
       ? await tester.enterText(widgetByType(type).at(index), text)
       : await tester.enterText(widgetByType(type), text);
   await tester.pumpAndSettle();
   if (delay) {
-    await Future.delayed(Duration(milliseconds: milliseconds));
+    await Future.delayed(Duration(milliseconds: milliseconds ?? defaultDelay));
   }
   return true;
 }
@@ -119,15 +110,19 @@ Future<bool> enterText(WidgetTester tester, Type type, String text,
 enum ScrollDirection { Up, Down, Left, Right }
 
 Future<bool> scrollUntilVisible(WidgetTester tester, Finder finder,
-    {int index = 0, bool delay = true, int milliseconds = defaultDelay}) async {
+    {int index = 0, bool delay = true, int? milliseconds}) async {
   await tester.scrollUntilVisible(finder, -100.0,
       duration: Duration(milliseconds: 500), maxScrolls: 100);
   await tester.pumpAndSettle();
   if (delay) {
-    await Future.delayed(Duration(milliseconds: milliseconds));
+    await Future.delayed(Duration(milliseconds: milliseconds ?? defaultDelay));
   }
   return true;
 }
 
-bool isTextOnScreen(String text) =>
-    !find.text(text).toString().startsWith('zero widgets with text "$text"');
+Future<bool> isTextOnScreen(WidgetTester tester, String text) async {
+  bool response =
+      !find.text(text).toString().startsWith('zero widgets with text "$text"');
+  await tester.pumpAndSettle();
+  return response;
+}
