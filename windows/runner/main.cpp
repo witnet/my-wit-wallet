@@ -1,7 +1,7 @@
 #include <flutter/dart_project.h>
 #include <flutter/flutter_view_controller.h>
 #include <windows.h>
-
+#include "window_configuration.h"
 #include "flutter_window.h"
 #include "run_loop.h"
 #include "utils.h"
@@ -27,10 +27,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
 
   project.set_dart_entrypoint_arguments(std::move(command_line_arguments));
 
+  int* offset = getFlutterWindowPosition();
+  int xOffset = offset[0];
+  int yOffset = offset[1];
+
   FlutterWindow window(&run_loop, project);
-  Win32Window::Point origin(10, 10);
-  Win32Window::Size size(1280, 720);
-  if (!window.CreateAndShow(L"myWitWallet", origin, size)) {
+  Win32Window::Point origin(xOffset, yOffset);
+  Win32Window::Size size(kFlutterWindowWidth, kFlutterWindowHeight);
+  if (!window.CreateAndShow(kFlutterWindowTitle, origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);
