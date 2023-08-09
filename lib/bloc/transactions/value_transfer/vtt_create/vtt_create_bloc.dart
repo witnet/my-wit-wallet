@@ -472,6 +472,14 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
               value: currentUtxo.value));
         }
       });
+
+      if (currentWallet.walletType == WalletType.single &&
+          currentWallet.masterAccount != null) {
+        _inputs.add(InputUtxo(
+            address: currentWallet.masterAccount!.address,
+            input: currentUtxo.toInput(),
+            value: currentUtxo.value));
+      }
     }
     return _inputs;
   }

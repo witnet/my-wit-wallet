@@ -132,6 +132,7 @@ class Wallet {
     Map<String, Account> _accounts = {};
     _accounts.addAll(accountMap(KeyType.external));
     _accounts.addAll(accountMap(KeyType.internal));
+    if (masterAccount != null) _accounts.addAll(accountMap(KeyType.master));
     return _accounts;
   }
 

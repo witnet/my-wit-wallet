@@ -240,11 +240,11 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
               addressIndex < _utxos.length;
               addressIndex++) {
             String address = _utxos.keys.toList()[addressIndex];
-            List<Utxo> utxoList = _utxos[address]!;
+            List<Utxo> utxoList = _utxos[address] ?? [];
 
-            Account account = wallet.accountByAddress(address)!;
+            Account? account = wallet.accountByAddress(address);
 
-            if (!isTheSameList(account, utxoList)) {
+            if (account != null && !isTheSameList(account, utxoList)) {
               if (utxoList.isNotEmpty) {
                 account.utxos = utxoList;
                 account = await updateAccountVttsAndBalance(account);
