@@ -109,16 +109,20 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     setMinerFeeValue(savedFee, validate: false);
   }
 
-  bool isFormUnFocus() {
+  bool _isFormUnFocus() {
     return !_minerFeeFocusNode.hasFocus;
   }
 
   void setMinerFeeValue(String amount, {bool? validate}) {
+    int weightedFeeAmount = BlocProvider.of<VTTCreateBloc>(context)
+        .calculatedWeightedFee(_minerFeeWitToNanoWitNumber());
     setState(() {
       _minerFeeWit = VttAmountInput.dirty(
-          allowValidation: validate ?? isFormUnFocus(),
+          allowValidation: validate ?? _isFormUnFocus(),
           availableNanoWit: balanceInfo.availableNanoWit,
           value: amount,
+          weightedAmount:
+              _feeType == FeeType.Weighted ? weightedFeeAmount : null,
           allowZero: true);
     });
   }
@@ -186,7 +190,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     return ClickableBox(
       label: label.name,
       isSelected: _selectedFeeOption == label,
-      error: _minerFeeWit.validator(value),
+      error: _minerFeeWit.validator(value, avoidWeightedAmountCheck: true),
       value: value,
       content: [
         Expanded(
