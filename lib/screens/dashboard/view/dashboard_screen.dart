@@ -138,6 +138,7 @@ class DashboardScreenState extends State<DashboardScreen>
   BlocListener _dashboardListener() {
     return BlocListener<DashboardBloc, DashboardState>(
       listener: (BuildContext context, DashboardState state) {
+        _setNewWalletData();
         if (state.status == DashboardStatus.Ready) {
           String walletId = database.walletStorage.currentWallet.id;
           _syncWallet(walletId, force: true);
