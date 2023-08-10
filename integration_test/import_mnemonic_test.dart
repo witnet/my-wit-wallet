@@ -18,8 +18,8 @@ void main() async {
     await tester.pumpAndSettle();
 
     /// Assess what is on the screen
-    walletsExist = await isTextOnScreen(tester, "Unlock wallet");
-    bool biometricsActive = await isTextOnScreen(tester, "CANCEL");
+    walletsExist = isTextOnScreen("Unlock wallet");
+    bool biometricsActive = isTextOnScreen("CANCEL");
 
     /// Cancel the Biometrics popup
     if (walletsExist && biometricsActive) await tapButton(tester, "CANCEL");
