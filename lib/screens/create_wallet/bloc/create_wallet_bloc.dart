@@ -14,6 +14,7 @@ part 'create_wallet_state.dart';
 
 enum CreateWalletType {
   unset,
+  reset,
   imported,
   newWallet,
   mnemonic,
@@ -59,6 +60,8 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
           case CreateWalletType.imported:
             break;
           case CreateWalletType.unset:
+            break;
+          case CreateWalletType.reset:
             break;
           case CreateWalletType.newWallet:
             emit(state.copyWith(status: CreateWalletStatus.GenerateMnemonic));
@@ -127,6 +130,9 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
         break;
 
+      case CreateWalletStatus.Reset:
+        break;
+
       case CreateWalletStatus.Complete:
         break;
 
@@ -134,9 +140,6 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         break;
 
       case CreateWalletStatus.LoadingException:
-        break;
-
-      case CreateWalletStatus.Reset:
         break;
     }
   }
@@ -152,6 +155,8 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         } else {
           emit(state.copyWith(status: CreateWalletStatus.CreateImport));
         }
+        break;
+      case CreateWalletStatus.Reset:
         break;
       case CreateWalletStatus.GenerateMnemonic:
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
@@ -207,9 +212,6 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
         break;
       case CreateWalletStatus.LoadingException:
-        emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
-        break;
-      case CreateWalletStatus.Reset:
         emit(state.copyWith(status: CreateWalletStatus.Disclaimer));
         break;
     }
@@ -291,6 +293,9 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
     }
     if (event.walletType == CreateWalletType.unset) {
       return CreateWalletStatus.CreateImport;
+    }
+    if (event.walletType == CreateWalletType.reset) {
+      return CreateWalletStatus.Reset;
     }
     if (event.walletType == CreateWalletType.imported) {
       return CreateWalletStatus.Imported;

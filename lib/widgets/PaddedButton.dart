@@ -20,6 +20,7 @@ class PaddedButton extends StatelessWidget {
       required this.text,
       required this.onPressed,
       this.color,
+      this.fontSize = 16,
       this.isLoading = false,
       this.icon = defaultIcon,
       this.enabled = true,
@@ -43,6 +44,7 @@ class PaddedButton extends StatelessWidget {
   final bool? autofocus;
   final double iconSize;
   final bool darkBackground;
+  final double? fontSize;
 
   Widget _buildCircularProgress(context, theme) {
     return SizedBox(
@@ -91,7 +93,8 @@ class PaddedButton extends StatelessWidget {
           children: [
             Text(
               text,
-              style: TextStyle(fontFamily: 'Almarai', fontSize: 14),
+              style: TextStyle(
+                  fontFamily: 'Almarai', fontSize: 14, color: color ?? null),
             ),
             Padding(padding: EdgeInsets.only(left: 8)),
             icon,
@@ -140,12 +143,13 @@ class PaddedButton extends StatelessWidget {
           ? theme.textButtonTheme.style?.copyWith(
               foregroundColor: MaterialStateProperty.all(color),
               overlayColor:
-                  MaterialStateProperty.all(Color.fromARGB(16, 255, 255, 255)))
+                  MaterialStateProperty.all(Color.fromARGB(16, 126, 126, 126)))
           : theme.textButtonTheme.style,
       child: Text(
         text,
         style: color != null
-            ? theme.textTheme.labelMedium?.copyWith(color: color)
+            ? theme.textTheme.labelMedium
+                ?.copyWith(color: color, fontSize: fontSize)
             : theme.textTheme.labelMedium,
       ),
       onPressed: onPressed,

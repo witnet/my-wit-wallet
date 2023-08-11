@@ -47,6 +47,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.tooltipBgColor,
     required this.hdWalletTypeBgColor,
     required this.singleWalletBgColor,
+    required this.warningColor,
   });
   final Color? selectBackgroundColor;
   final Color? selectedTextColor;
@@ -91,6 +92,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? tooltipBgColor;
   final Color? hdWalletTypeBgColor;
   final Color? singleWalletBgColor;
+  final Color? warningColor;
   @override
   ExtendedTheme copyWith(
       {Color? selectBackgroundColor,
@@ -133,6 +135,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       Color? tooltipBgColor,
       Color? hdWalletTypeBgColor,
       Color? singleWalletBgColor,
+      Color? warningColor,
       r}) {
     return ExtendedTheme(
         selectBackgroundColor:
@@ -193,7 +196,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         focusBg: focusBg ?? this.focusBg,
         tooltipBgColor: tooltipBgColor ?? this.tooltipBgColor,
         hdWalletTypeBgColor: hdWalletTypeBgColor ?? this.hdWalletTypeBgColor,
-        singleWalletBgColor: singleWalletBgColor ?? this.singleWalletBgColor);
+        singleWalletBgColor: singleWalletBgColor ?? this.singleWalletBgColor,
+        warningColor: warningColor ?? this.warningColor);
   }
 
   // Controls how the properties change on theme changes
@@ -270,7 +274,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         focusBg: Color.lerp(focusBg, other.focusBg, t),
         tooltipBgColor: Color.lerp(focusBg, other.focusBg, t),
         hdWalletTypeBgColor: Color.lerp(hdWalletTypeBgColor, other.hdWalletTypeBgColor, t),
-        singleWalletBgColor: Color.lerp(singleWalletBgColor, other.singleWalletBgColor, t));
+        singleWalletBgColor: Color.lerp(singleWalletBgColor, other.singleWalletBgColor, t),
+        warningColor: Color.lerp(warningColor, other.warningColor, t));
   }
 
   // the light theme
@@ -300,6 +305,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     switchInactiveFg: WitnetPallet.darkGrey,
     switchBorderColor: WitnetPallet.darkBlue2,
     errorColor: WitnetPallet.darkRed,
+    warningColor: WitnetPallet.darkOrange,
     activeClickableBoxBgColor: Color.fromARGB(34, 65, 190, 165),
     activeClickableBoxBorderColor: WitnetPallet.witnetGreen1,
     inactiveClickableBoxBgColor: WitnetPallet.white,
@@ -362,6 +368,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     switchInactiveFg: WitnetPallet.white,
     switchBorderColor: WitnetPallet.witnetGreen1,
     errorColor: WitnetPallet.brightRed,
+    warningColor: WitnetPallet.brightOrange,
     activeClickableBoxBgColor: WitnetPallet.opacityWitnetGreen3,
     activeClickableBoxBorderColor: WitnetPallet.witnetGreen1,
     inactiveClickableBoxBgColor: WitnetPallet.darkBlue2,

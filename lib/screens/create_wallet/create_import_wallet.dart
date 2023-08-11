@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
@@ -49,7 +50,12 @@ class CreateImportWalletState extends State<CreateImportWallet> {
   }
 
   void prevAction() {
-    Navigator.pushReplacementNamed(context, DashboardScreen.route);
+    LoginStatus status = BlocProvider.of<LoginBloc>(context).state.status;
+    if (status != LoginStatus.LoggedIn) {
+      Navigator.pushReplacementNamed(context, '/');
+    } else {
+      Navigator.pushReplacementNamed(context, DashboardScreen.route);
+    }
   }
 
   void createWallet() {
