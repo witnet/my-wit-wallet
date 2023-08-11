@@ -17,6 +17,7 @@ import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/widgets/validations/password_input.dart';
+import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 
 class LoginScreen extends StatefulWidget {
   static final route = '/';
@@ -37,6 +38,7 @@ class LoginScreenState extends State<LoginScreen>
   final _loginController = TextEditingController();
   final _loginFocusNode = FocusNode();
   final _showPasswordFocusNode = FocusNode();
+  ValidationUtils validationUtils = ValidationUtils();
 
   @override
   void initState() {
@@ -144,14 +146,12 @@ class LoginScreenState extends State<LoginScreen>
     return formValidation();
   }
 
-  bool _isFormUnFocus() {
-    return !_loginFocusNode.hasFocus;
-  }
-
   void setPassword(String password, {bool? validate}) {
     setState(() {
       _password = PasswordInput.dirty(
-          value: password, allowValidation: validate ?? _isFormUnFocus());
+          value: password,
+          allowValidation:
+              validate ?? validationUtils.isFormUnFocus([_loginFocusNode]));
     });
   }
 

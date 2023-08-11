@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/widgets/validations/address_input.dart';
+import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
 import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
@@ -51,6 +52,8 @@ class RecipientStepState extends State<RecipientStep>
   bool _connectionError = false;
   FocusNode _scanQrFocusNode = FocusNode();
   bool isScanQrFocused = false;
+  ValidationUtils validationUtils = ValidationUtils();
+  List<FocusNode> _formFocusElements() => [_addressFocusNode, _amountFocusNode];
 
   @override
   void initState() {
@@ -106,14 +109,12 @@ class RecipientStepState extends State<RecipientStep>
     return formValidation();
   }
 
-  bool _isFormUnFocus() {
-    return (!_addressFocusNode.hasFocus && !_amountFocusNode.hasFocus);
-  }
-
   void setAddress(String value, {bool? validate}) {
     setState(() {
       _address = AddressInput.dirty(
-          value: value, allowValidation: validate ?? _isFormUnFocus());
+          value: value,
+          allowValidation:
+              validate ?? validationUtils.isFormUnFocus(_formFocusElements()));
     });
   }
 
@@ -121,7 +122,8 @@ class RecipientStepState extends State<RecipientStep>
     setState(() {
       _amount = VttAmountInput.dirty(
           availableNanoWit: balanceInfo.availableNanoWit,
-          allowValidation: validate ?? _isFormUnFocus(),
+          allowValidation:
+              validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
           value: value);
     });
   }

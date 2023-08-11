@@ -2,6 +2,7 @@ import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
@@ -49,6 +50,8 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   FeeType _feeType = FeeType.Absolute;
   final _minerFeeController = TextEditingController();
   final _minerFeeFocusNode = FocusNode();
+  ValidationUtils validationUtils = ValidationUtils();
+  List<FocusNode> _formFocusElements() => [_minerFeeFocusNode];
 
   @override
   void initState() {
@@ -109,16 +112,13 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     setMinerFeeValue(savedFee, validate: false);
   }
 
-  bool _isFormUnFocus() {
-    return !_minerFeeFocusNode.hasFocus;
-  }
-
   void setMinerFeeValue(String amount, {bool? validate}) {
     int weightedFeeAmount = BlocProvider.of<VTTCreateBloc>(context)
         .calculatedWeightedFee(_minerFeeWitToNanoWitNumber());
     setState(() {
       _minerFeeWit = VttAmountInput.dirty(
-          allowValidation: validate ?? _isFormUnFocus(),
+          allowValidation:
+              validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
           availableNanoWit: balanceInfo.availableNanoWit,
           value: amount,
           weightedAmount:

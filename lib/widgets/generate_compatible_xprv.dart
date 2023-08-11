@@ -8,6 +8,7 @@ import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/widgets/validations/confirmed_password.dart';
 import 'package:my_wit_wallet/widgets/validations/password_input.dart';
+import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 
 final _passController = TextEditingController();
 final _passFocusNode = FocusNode();
@@ -38,18 +39,20 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
   String? localEncryptedXprv =
       Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.xprv;
   String? compatibleXprv;
-
-  bool _isFormUnFocus() {
-    return (!_passConfirmFocusNode.hasFocus &&
-        !_passFocusNode.hasFocus &&
-        !_showPassFocusNode.hasFocus &&
-        !_showPassConfirmFocusNode.hasFocus);
-  }
+  ValidationUtils validationUtils = ValidationUtils();
+  List<FocusNode> _formFocusElements = [
+    _passConfirmFocusNode,
+    _passFocusNode,
+    _showPassFocusNode,
+    _showPassConfirmFocusNode
+  ];
 
   void setPassword(String password, {bool? validate}) {
     setState(() {
       _password = PasswordInput.dirty(
-          value: password, allowValidation: validate ?? _isFormUnFocus());
+          value: password,
+          allowValidation:
+              validate ?? validationUtils.isFormUnFocus(_formFocusElements));
     });
   }
 
@@ -58,7 +61,8 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
       _confirmPassword = ConfirmedPassword.dirty(
           value: password,
           original: _password,
-          allowValidation: validate ?? _isFormUnFocus());
+          allowValidation:
+              validate ?? validationUtils.isFormUnFocus(_formFocusElements));
     });
   }
 

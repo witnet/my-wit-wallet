@@ -9,6 +9,7 @@ import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/widgets/validations/confirmed_password.dart';
 import 'package:my_wit_wallet/widgets/validations/password_input.dart';
+import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 
 final _passController = TextEditingController();
 final _passFocusNode = FocusNode();
@@ -35,6 +36,9 @@ class EncryptWalletCard extends StatefulWidget {
 
 class EncryptWalletCardState extends State<EncryptWalletCard>
     with TickerProviderStateMixin {
+  List<FocusNode> _formFocusElements = [_passFocusNode, _passConfirmFocusNode];
+  ValidationUtils validationUtils = ValidationUtils();
+
   void prevAction() {
     CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
@@ -88,14 +92,12 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     return formValidation();
   }
 
-  bool _isFormUnFocus() {
-    return (!_passFocusNode.hasFocus && !_passConfirmFocusNode.hasFocus);
-  }
-
   void setPassword(String password, {bool? validate}) {
     setState(() {
       _password = PasswordInput.dirty(
-          value: password, allowValidation: validate ?? _isFormUnFocus());
+          value: password,
+          allowValidation:
+              validate ?? validationUtils.isFormUnFocus(_formFocusElements));
     });
   }
 
@@ -104,7 +106,8 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
       _confirmPassword = ConfirmedPassword.dirty(
           value: password,
           original: _password,
-          allowValidation: validate ?? _isFormUnFocus());
+          allowValidation:
+              validate ?? validationUtils.isFormUnFocus(_formFocusElements));
     });
   }
 

@@ -5,6 +5,7 @@ import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/widgets/validations/password_valid_input.dart';
+import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 
 final _passController = TextEditingController();
 final _passFocusNode = FocusNode();
@@ -29,16 +30,16 @@ class VerifyPasswordState extends State<VerifyPassword>
   String? xprv;
   String? localEncryptedXprv =
       Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.xprv;
+  ValidationUtils validationUtils = ValidationUtils();
+  List<FocusNode> _formFocusElements = [_passFocusNode];
 
   void setPassword(String password, {bool? validate}) {
     setState(() {
       _password = VerifyPasswordInput.dirty(
-          value: password, allowValidation: validate ?? _isFormUnFocus());
+          value: password,
+          allowValidation:
+              validate ?? validationUtils.isFormUnFocus(_formFocusElements));
     });
-  }
-
-  bool _isFormUnFocus() {
-    return !_passFocusNode.hasFocus;
   }
 
   @override

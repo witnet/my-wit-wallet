@@ -10,6 +10,7 @@ import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/widgets/select.dart';
+import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/widgets/validations/xprv_input.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -48,6 +49,8 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   String _selectedOrigin = ImportOrigin.fromMyWitWallet.name;
   CreateWalletType _xprvType = CreateWalletType.encryptedXprv;
   ApiCreateWallet createWalletApi = Locator.instance<ApiCreateWallet>();
+  List<FocusNode> _formFocusElements = [_passFocusNode, _textFocusNode];
+  ValidationUtils validationUtils = ValidationUtils();
 
   @override
   void initState() {
@@ -81,21 +84,20 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     });
   }
 
-  bool _isFormUnFocus() {
-    return (!_passFocusNode.hasFocus && !_textFocusNode.hasFocus);
-  }
-
   void setPassword(String password) {
     setState(() {
       _password = PasswordInput.dirty(
-          allowValidation: _isFormUnFocus(), value: password);
+          allowValidation: validationUtils.isFormUnFocus(_formFocusElements),
+          value: password);
     });
   }
 
   void setXprv(String value) {
     setState(() {
       xprv = XprvInput.dirty(
-          xprvType: _xprvType, allowValidation: _isFormUnFocus(), value: value);
+          xprvType: _xprvType,
+          allowValidation: validationUtils.isFormUnFocus(_formFocusElements),
+          value: value);
     });
   }
 
