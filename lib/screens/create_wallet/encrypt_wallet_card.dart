@@ -88,14 +88,14 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     return formValidation();
   }
 
-  bool isFormUnFocus() {
+  bool _isFormUnFocus() {
     return (!_passFocusNode.hasFocus && !_passConfirmFocusNode.hasFocus);
   }
 
   void setPassword(String password, {bool? validate}) {
     setState(() {
       _password = PasswordInput.dirty(
-          value: password, allowValidation: validate ?? isFormUnFocus());
+          value: password, allowValidation: validate ?? _isFormUnFocus());
     });
   }
 
@@ -104,7 +104,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
       _confirmPassword = ConfirmedPassword.dirty(
           value: password,
           original: _password,
-          allowValidation: validate ?? isFormUnFocus());
+          allowValidation: validate ?? _isFormUnFocus());
     });
   }
 

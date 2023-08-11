@@ -106,14 +106,14 @@ class RecipientStepState extends State<RecipientStep>
     return formValidation();
   }
 
-  bool isFormUnFocus() {
+  bool _isFormUnFocus() {
     return (!_addressFocusNode.hasFocus && !_amountFocusNode.hasFocus);
   }
 
   void setAddress(String value, {bool? validate}) {
     setState(() {
       _address = AddressInput.dirty(
-          value: value, allowValidation: validate ?? isFormUnFocus());
+          value: value, allowValidation: validate ?? _isFormUnFocus());
     });
   }
 
@@ -121,7 +121,7 @@ class RecipientStepState extends State<RecipientStep>
     setState(() {
       _amount = VttAmountInput.dirty(
           availableNanoWit: balanceInfo.availableNanoWit,
-          allowValidation: validate ?? isFormUnFocus(),
+          allowValidation: validate ?? _isFormUnFocus(),
           value: value);
     });
   }

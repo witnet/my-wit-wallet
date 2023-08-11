@@ -1,11 +1,11 @@
 import 'package:formz/formz.dart';
 
 // Define input validation errors
-enum PasswordInputError { empty, valid }
+enum PasswordInputError { empty, invalid }
 
 Map<PasswordInputError, String?> errorText = {
   PasswordInputError.empty: 'Please input a password',
-  PasswordInputError.valid: 'Invalid password'
+  PasswordInputError.invalid: 'Invalid password'
 };
 
 String? getErrorText(PasswordInputError error) {
@@ -34,7 +34,7 @@ class VerifyPasswordInput extends FormzInput<String, String?> {
       if (value.isEmpty) {
         return getErrorText(PasswordInputError.empty);
       } else if (this.decriptedXprv == null) {
-        return getErrorText(PasswordInputError.valid);
+        return getErrorText(PasswordInputError.invalid);
       }
     }
     return null;

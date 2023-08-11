@@ -81,21 +81,21 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     });
   }
 
-  bool isFormUnFocus() {
+  bool _isFormUnFocus() {
     return (!_passFocusNode.hasFocus && !_textFocusNode.hasFocus);
   }
 
   void setPassword(String password) {
     setState(() {
       _password = PasswordInput.dirty(
-          allowValidation: isFormUnFocus(), value: password);
+          allowValidation: _isFormUnFocus(), value: password);
     });
   }
 
   void setXprv(String value) {
     setState(() {
       xprv = XprvInput.dirty(
-          xprvType: _xprvType, allowValidation: isFormUnFocus(), value: value);
+          xprvType: _xprvType, allowValidation: _isFormUnFocus(), value: value);
     });
   }
 

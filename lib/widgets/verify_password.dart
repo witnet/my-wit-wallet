@@ -33,11 +33,11 @@ class VerifyPasswordState extends State<VerifyPassword>
   void setPassword(String password, {bool? validate}) {
     setState(() {
       _password = VerifyPasswordInput.dirty(
-          value: password, allowValidation: validate ?? isFormUnFocus());
+          value: password, allowValidation: validate ?? _isFormUnFocus());
     });
   }
 
-  bool isFormUnFocus() {
+  bool _isFormUnFocus() {
     return !_passFocusNode.hasFocus;
   }
 

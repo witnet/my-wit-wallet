@@ -39,7 +39,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
       Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.xprv;
   String? compatibleXprv;
 
-  bool isFormUnFocus() {
+  bool _isFormUnFocus() {
     return (!_passConfirmFocusNode.hasFocus &&
         !_passFocusNode.hasFocus &&
         !_showPassFocusNode.hasFocus &&
@@ -49,7 +49,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
   void setPassword(String password, {bool? validate}) {
     setState(() {
       _password = PasswordInput.dirty(
-          value: password, allowValidation: validate ?? isFormUnFocus());
+          value: password, allowValidation: validate ?? _isFormUnFocus());
     });
   }
 
@@ -58,7 +58,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
       _confirmPassword = ConfirmedPassword.dirty(
           value: password,
           original: _password,
-          allowValidation: validate ?? isFormUnFocus());
+          allowValidation: validate ?? _isFormUnFocus());
     });
   }
 

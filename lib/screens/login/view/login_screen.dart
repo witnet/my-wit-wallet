@@ -144,14 +144,14 @@ class LoginScreenState extends State<LoginScreen>
     return formValidation();
   }
 
-  bool isFormUnFocus() {
+  bool _isFormUnFocus() {
     return !_loginFocusNode.hasFocus;
   }
 
   void setPassword(String password, {bool? validate}) {
     setState(() {
       _password = PasswordInput.dirty(
-          value: password, allowValidation: validate ?? isFormUnFocus());
+          value: password, allowValidation: validate ?? _isFormUnFocus());
     });
   }
 
