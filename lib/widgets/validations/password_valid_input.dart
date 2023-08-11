@@ -1,16 +1,13 @@
 import 'package:formz/formz.dart';
+import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 
 // Define input validation errors
 enum PasswordInputError { empty, invalid }
 
-Map<PasswordInputError, String?> errorText = {
+Map<PasswordInputError, String> errorMap = {
   PasswordInputError.empty: 'Please input a password',
   PasswordInputError.invalid: 'Invalid password'
 };
-
-String? getErrorText(PasswordInputError error) {
-  return errorText[error];
-}
 
 // Extend FormzInput and provide the input type and error type.
 class VerifyPasswordInput extends FormzInput<String, String?> {
@@ -30,11 +27,12 @@ class VerifyPasswordInput extends FormzInput<String, String?> {
   // Override validator to handle validating a given input value.
   @override
   String? validator(String value) {
+    final validationUtils = ValidationUtils(errorMap: errorMap);
     if (this.allowValidation) {
       if (value.isEmpty) {
-        return getErrorText(PasswordInputError.empty);
+        return validationUtils.getErrorText(PasswordInputError.empty);
       } else if (this.decriptedXprv == null) {
-        return getErrorText(PasswordInputError.invalid);
+        return validationUtils.getErrorText(PasswordInputError.invalid);
       }
     }
     return null;

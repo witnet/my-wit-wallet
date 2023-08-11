@@ -1,6 +1,7 @@
 import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
+import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 
 // Define input validation errors
 enum AmountInputError {
@@ -13,7 +14,7 @@ enum AmountInputError {
   invalidNumber
 }
 
-Map<AmountInputError, String?> errorText = {
+Map<AmountInputError, String> errorMap = {
   AmountInputError.empty: 'Please input an amount',
   AmountInputError.notEnough: 'Not enough Funds',
   AmountInputError.zero: 'Amount cannot be zero',
@@ -21,10 +22,6 @@ Map<AmountInputError, String?> errorText = {
   AmountInputError.decimals: 'Only 9 decimal digits supported',
   AmountInputError.tooBig: 'Amount too big',
 };
-
-String? getErrorText(AmountInputError error) {
-  return errorText[error];
-}
 
 // Extend FormzInput and provide the input type and error type.
 class VttAmountInput extends FormzInput<String, String?> {
@@ -77,27 +74,30 @@ class VttAmountInput extends FormzInput<String, String?> {
   // Override validator to handle validating a given input value.
   @override
   String? validator(String value, {bool avoidWeightedAmountCheck = false}) {
+    final validationUtils = ValidationUtils(errorMap: errorMap);
     if (this.allowValidation) {
-      if (value.isEmpty) return getErrorText(AmountInputError.empty);
+      if (value.isEmpty)
+        return validationUtils.getErrorText(AmountInputError.empty);
       if (RegExp(r'[a-zA-Z]').hasMatch(value))
-        return getErrorText(AmountInputError.invalid);
+        return validationUtils.getErrorText(AmountInputError.invalid);
       if (value.contains('.')) {
         if (value.split('.').length != 2)
-          return getErrorText(AmountInputError.invalid);
+          return validationUtils.getErrorText(AmountInputError.invalid);
         if (value.split('.')[1].isEmpty)
-          return getErrorText(AmountInputError.invalid);
+          return validationUtils.getErrorText(AmountInputError.invalid);
         if (!RegExp(r'^[0-9]+(\.[0-9]{1,9})?$').hasMatch(value))
-          return getErrorText(AmountInputError.decimals);
+          return validationUtils.getErrorText(AmountInputError.decimals);
       }
       if (!RegExp(r'^[0-9]{1,10}(\.[0-9]+)?$').hasMatch(value))
-        return getErrorText(AmountInputError.tooBig);
+        return validationUtils.getErrorText(AmountInputError.tooBig);
       if (_notEnoughFunds(avoidWeightedAmountCheck: avoidWeightedAmountCheck))
-        return getErrorText(AmountInputError.notEnough);
+        return validationUtils.getErrorText(AmountInputError.notEnough);
       if (value.isNotEmpty && !this.allowZero) {
         try {
-          if (num.parse(value) == 0) return getErrorText(AmountInputError.zero);
+          if (num.parse(value) == 0)
+            return validationUtils.getErrorText(AmountInputError.zero);
         } catch (e) {
-          return getErrorText(AmountInputError.invalid);
+          return validationUtils.getErrorText(AmountInputError.invalid);
         }
       }
     }

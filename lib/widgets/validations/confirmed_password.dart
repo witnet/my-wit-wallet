@@ -1,17 +1,14 @@
 import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/widgets/validations/password_input.dart';
+import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 
 // Define input validation errors
 enum ConfirmedPasswordError { empty, match }
 
-Map<ConfirmedPasswordError, String?> errorText = {
+Map<ConfirmedPasswordError, String> errorMap = {
   ConfirmedPasswordError.empty: 'Please input a password',
   ConfirmedPasswordError.match: 'Password mismatch'
 };
-
-String? getErrorText(ConfirmedPasswordError error) {
-  return errorText[error];
-}
 
 class ConfirmedPassword extends FormzInput<String, String?> {
   const ConfirmedPassword.pure()
@@ -27,11 +24,13 @@ class ConfirmedPassword extends FormzInput<String, String?> {
 
   @override
   String? validator(String? value) {
+    final validationUtils = ValidationUtils(errorMap: errorMap);
     if (this.allowValidation) {
       if (value != null) {
         if (value != this.original.value)
-          return getErrorText(ConfirmedPasswordError.match);
-        if (value.isEmpty) return getErrorText(ConfirmedPasswordError.empty);
+          return validationUtils.getErrorText(ConfirmedPasswordError.match);
+        if (value.isEmpty)
+          return validationUtils.getErrorText(ConfirmedPasswordError.empty);
       }
     }
 
