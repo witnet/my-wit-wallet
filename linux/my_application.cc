@@ -1,4 +1,5 @@
 #include "my_application.h"
+#include "window_configuration.h"
 
 #include <flutter_linux/flutter_linux.h>
 #ifdef GDK_WINDOWING_X11
@@ -40,15 +41,16 @@ static void my_application_activate(GApplication* application) {
   if (use_header_bar) {
     GtkHeaderBar *header_bar = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_widget_show(GTK_WIDGET(header_bar));
-    gtk_header_bar_set_title(header_bar, "myWitWallet");
+    gtk_header_bar_set_title(header_bar, kFlutterWindowTitle);
     gtk_header_bar_set_show_close_button(header_bar, TRUE);
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
   }
   else {
-    gtk_window_set_title(window, "myWitWallet");
+    gtk_window_set_title(window, kFlutterWindowTitle);
   }
 
-  gtk_window_set_default_size(window, 1280, 720);
+  gtk_window_set_default_size(window, kFlutterWindowWidth,  kFlutterWindowHeight);
+  gtk_window_set_position(window, GTK_WIN_POS_CENTER);
   gtk_widget_show(GTK_WIDGET(window));
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
