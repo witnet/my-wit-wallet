@@ -4,6 +4,7 @@ buildAlertDialog({
   required BuildContext context,
   required List<Widget> actions,
   IconData? icon,
+  Color? color,
   required String title,
   required Widget content,
 }) {
@@ -18,7 +19,7 @@ buildAlertDialog({
                 style: theme.textTheme.displayMedium,
               ),
               backgroundColor: theme.colorScheme.background,
-              icon: Icon(icon, size: 24),
+              icon: Icon(icon, size: 24, color: color ?? null),
               content: content,
               actions: actions,
             ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_import_wallet.dart';
-import 'package:my_wit_wallet/screens/create_wallet/reset_disclaimer.dart';
+import 'package:my_wit_wallet/screens/create_wallet/re_establish_wallet_disclaimer.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/screens/create_wallet/import_mnemonic_card.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
@@ -193,7 +193,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
           nextAction: _setNextAction,
           secondaryAction: _setSecondaryAction,
           prevAction: _setPrevAction),
-      CreateWalletStatus.Reset: ResetDisclaimer(
+      CreateWalletStatus.Reset: ReEstablishWalletDisclaimer(
           nextAction: _setNextAction, prevAction: _setPrevAction),
       CreateWalletStatus.CreateWallet: null,
       CreateWalletStatus.Complete: Container(),

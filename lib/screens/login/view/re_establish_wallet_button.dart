@@ -7,7 +7,7 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 
-class ReEstablishWallet extends StatelessWidget {
+class ReEstablishWalletBtn extends StatelessWidget {
   void resetWallet(BuildContext context) {
     Locator.instance<ApiCreateWallet>()
         .setCreateWalletType(CreateWalletType.reset);
