@@ -1,4 +1,3 @@
-import 'test_utils.dart';
 import "e2e_mnemonic_test.dart";
 import 'package:flutter_test/flutter_test.dart';
 
