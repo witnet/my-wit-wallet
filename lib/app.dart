@@ -51,6 +51,7 @@ Widget _buildWithTheme(BuildContext context, ThemeState state) {
             parent: RangeMaintainingScrollPhysics())),
     title: 'myWitWallet',
     home: LoginScreen(),
+    initialRoute: LoginScreen.route,
     theme: state.themeData,
     routes: {
       CreateWalletScreen.route: (context) => CreateWalletScreen(),
