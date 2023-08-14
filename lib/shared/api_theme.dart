@@ -11,9 +11,9 @@ class ApiTheme {
   Brightness _brightness = Brightness.dark;
   bool _shouldLoadBrightness = true;
 
-  ApiTheme({
-    Key? key,
-  });
+  static final ApiTheme _apiTheme = ApiTheme._internal();
+  ApiTheme._internal();
+  factory ApiTheme.instance() => _apiTheme;
 
   Future<void> setBrightness(Brightness brightness) async {
     _brightness = brightness;

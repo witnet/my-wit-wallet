@@ -15,14 +15,18 @@ class Locator {
   Locator.setup() {
     _i = GetIt.I;
 
-    _i.registerSingleton<ApiTheme>(ApiTheme());
-    _i.registerSingleton<ApiDatabase>(ApiDatabase());
-    _i.registerSingleton<ApiExplorer>(ApiExplorer());
-    _i.registerSingleton<ApiPreferences>(ApiPreferences());
-    _i.registerSingleton<ApiCreateWallet>(ApiCreateWallet());
-    _i.registerSingleton<ApiCrypto>(ApiCrypto());
-    _i.registerSingleton<CryptoIsolate>(CryptoIsolate.instance());
-    _i.registerSingleton<DatabaseIsolate>(DatabaseIsolate.instance());
+    /// check if things are already registered, if they are skip it.
+    /// if they are already registered it is because of end-to-end testing.
+    if(!_i.isRegistered<ApiTheme>()){
+      _i.registerSingleton<ApiTheme>(ApiTheme.instance());
+      _i.registerSingleton<ApiDatabase>(ApiDatabase());
+      _i.registerSingleton<ApiExplorer>(ApiExplorer());
+      _i.registerSingleton<ApiPreferences>(ApiPreferences());
+      _i.registerSingleton<ApiCreateWallet>(ApiCreateWallet());
+      _i.registerSingleton<ApiCrypto>(ApiCrypto());
+      _i.registerSingleton<CryptoIsolate>(CryptoIsolate.instance());
+      _i.registerSingleton<DatabaseIsolate>(DatabaseIsolate.instance());
+    }
   }
 
   Future<bool> initialize() async {
