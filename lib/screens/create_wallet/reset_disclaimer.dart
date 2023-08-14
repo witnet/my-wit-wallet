@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 
@@ -52,10 +54,14 @@ class ResetDisclaimerState extends State<ResetDisclaimer>
     Navigator.pushNamed(context, '/');
   }
 
-  void nextAction() {
-    // TODO: delete storage and show modal when deleted
-    BlocProvider.of<CreateWalletBloc>(context)
-        .add(ResetEvent(CreateWalletType.unset));
+  void nextAction() async {
+    ApiDatabase db = Locator.instance.get<ApiDatabase>();
+    final storageDeleted =
+        await db.deleteAllWallets(db.walletStorage.wallets.values.toList());
+    if (storageDeleted) {
+      BlocProvider.of<CreateWalletBloc>(context)
+          .add(ResetEvent(CreateWalletType.unset));
+    }
   }
 
   NavAction prev() {

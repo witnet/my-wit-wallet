@@ -122,7 +122,8 @@ class WalletStorage {
 
   void setAccount(Account account) {
     _accounts[account.address] = account;
-    wallets[account.walletId]!.setAccount(account);
+    if (wallets[account.walletId] != null)
+      wallets[account.walletId]!.setAccount(account);
   }
 
   BalanceInfo balanceNanoWit() {

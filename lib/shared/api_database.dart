@@ -247,6 +247,12 @@ class ApiDatabase {
         params: {'type': 'wallet', 'value': wallet.jsonMap()});
   }
 
+  Future<bool> deleteAllWallets(List<Wallet> wallets) async {
+    return wallets.fold(false, (prevWallet, newWallet) async {
+      return await deleteWallet(newWallet);
+    });
+  }
+
   Future<bool> addAccount(Account account) async {
     return await _processIsolate(
         method: 'add', params: {'type': 'account', 'value': account.jsonMap()});

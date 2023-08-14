@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/sembast.dart';
@@ -226,45 +227,46 @@ class DatabaseService {
       Map<String, Wallet> walletMap = {};
       Map<String, Account> accountMap = {};
       Map<String, ValueTransferInfo> vttMap = {};
-
       for (int i = 0; i < wallets.length; i++) {
         walletMap[wallets[i].id] = wallets[i];
       }
 
-      /// Process by account
-      for (int i = 0; i < accounts.length; i++) {
-        String _walletId = accounts[i].walletId;
-        String _address = accounts[i].address;
-        for (int j = 0; j < transactions.length; j++) {
-          /// add the transaction if it is for this account
-          if (transactions[j].containsAddress(_address)) {
-            accounts[i].vtts.add(transactions[j]);
-          }
-        }
-
-        if (accounts[i].keyType == KeyType.master) {
-          for (int j = 0; j < mints.length; j++) {
+      if (wallets.isNotEmpty) {
+        /// Process by account
+        for (int i = 0; i < accounts.length; i++) {
+          String _walletId = accounts[i].walletId;
+          String _address = accounts[i].address;
+          for (int j = 0; j < transactions.length; j++) {
             /// add the transaction if it is for this account
-            if (mints[j].containsAddress(_address)) {
-              accounts[i].mints.add(mints[j]);
+            if (transactions[j].containsAddress(_address)) {
+              accounts[i].vtts.add(transactions[j]);
             }
           }
+
+          if (accounts[i].keyType == KeyType.master) {
+            for (int j = 0; j < mints.length; j++) {
+              /// add the transaction if it is for this account
+              if (mints[j].containsAddress(_address)) {
+                accounts[i].mints.add(mints[j]);
+              }
+            }
+          }
+
+          /// Set the account balance since the transactions are set.
+          await accounts[i].setBalance();
+
+          /// Add the account to the wallet
+          if (walletMap[_walletId] != null) {
+            walletMap[_walletId]!.setAccount(accounts[i]);
+          }
         }
-
-        /// Set the account balance since the transactions are set.
-        await accounts[i].setBalance();
-
-        /// Add the account to the wallet
-        walletMap[_walletId]!.setAccount(accounts[i]);
+        accounts.forEach((account) {
+          accountMap[account.address] = account;
+        });
+        transactions.forEach((vtt) {
+          vttMap[vtt.txnHash] = vtt;
+        });
       }
-
-      accounts.forEach((account) {
-        accountMap[account.address] = account;
-      });
-
-      transactions.forEach((vtt) {
-        vttMap[vtt.txnHash] = vtt;
-      });
 
       /// Load current wallet and address from preferences
       WalletStorage _walletStorage = WalletStorage(wallets: walletMap);

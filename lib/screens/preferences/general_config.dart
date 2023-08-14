@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
@@ -79,6 +80,8 @@ class _GeneralConfigState extends State<GeneralConfig> {
 
   //Log out
   void _logOut() {
+    BlocProvider.of<ExplorerBloc>(context)
+        .add(CancelSyncWalletEvent(ExplorerStatus.unknown));
     BlocProvider.of<DashboardBloc>(context).add(DashboardResetEvent());
     BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
     BlocProvider.of<LoginBloc>(context).add(LoginLogoutEvent());

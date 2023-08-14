@@ -51,7 +51,7 @@ class CreateImportWalletState extends State<CreateImportWallet> {
 
   void prevAction() {
     LoginStatus status = BlocProvider.of<LoginBloc>(context).state.status;
-    if (status != LoginStatus.LoggedIn) {
+    if (status != LoginStatus.LoginSuccess && status != LoginStatus.LoggedIn) {
       Navigator.pushReplacementNamed(context, '/');
     } else {
       Navigator.pushReplacementNamed(context, DashboardScreen.route);

@@ -40,6 +40,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     on<VTTransactionPostEvent>(_vtTransactionPostEvent);
     on<UtxoQueryEvent>(_utxoQueryEvent);
     on<SyncWalletEvent>(_syncWalletEvent);
+    on<CancelSyncWalletEvent>(_cancelSyncEvent);
     on<SyncSingleAccountEvent>(_syncSingleAccount);
     on<DataLoadedEvent>(_emitDataLoadedStatus);
     on<DataLoadingEvent>(_emitDataLoadingStatus);
@@ -147,6 +148,11 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     } catch (e) {
       setError(e);
     }
+  }
+
+  void _cancelSyncEvent(
+      CancelSyncWalletEvent event, Emitter<ExplorerState> emit) {
+    if (syncWalletSubscription != null) syncWalletSubscription!.cancel();
   }
 
   Future<void> _syncWalletEvent(

@@ -81,6 +81,12 @@ class SyncWalletEvent extends ExplorerEvent {
   List<Object> get props => [currentWallet, force];
 }
 
+class CancelSyncWalletEvent extends ExplorerEvent {
+  CancelSyncWalletEvent(
+    ExplorerStatus status,
+  ) : super(status);
+}
+
 class SyncSingleAccountEvent extends ExplorerEvent {
   final Account account;
   SyncSingleAccountEvent(
