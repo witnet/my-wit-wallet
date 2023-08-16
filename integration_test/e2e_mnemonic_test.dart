@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -15,8 +17,14 @@ Future<void> e2eImportMnemonicTest(WidgetTester tester) async {
   walletsExist = isTextOnScreen("Unlock wallet");
   bool biometricsActive = isTextOnScreen("CANCEL");
 
-  /// Cancel the Biometrics popup
-  if (walletsExist && biometricsActive) await tapButton(tester, "CANCEL");
+  /// Cancel the Biometrics popup for linux
+  if (walletsExist && biometricsActive) {
+    if (Platform.isAndroid) {
+      await tapButton(tester, "CANCEL");
+    } else if (Platform.isIOS) {
+      await tapButton(tester, "OK");
+    }
+  }
 
   if (walletsExist) {
     /// Login Screen
@@ -60,6 +68,7 @@ Future<void> e2eImportMnemonicTest(WidgetTester tester) async {
       tester.state(widgetByType(DashboardScreen));
   dashboardScreenState.currentWallet!.printDebug();
   Wallet? currentWallet = dashboardScreenState.currentWallet;
+
   /// Verify the imported wallet and the current address
   expect(currentWallet!.externalAccounts[0]!.address,
       "wit174la8pevl74hczcpfepgmt036zkmjen4hu8zzs");

@@ -6,7 +6,7 @@ import 'package:my_wit_wallet/main.dart' as myWitWallet;
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 
 bool walletsExist = false;
-int defaultDelay =  int.parse(dotenv.env['DELAY']!);
+int defaultDelay = int.parse(dotenv.env['DELAY']!);
 String password = dotenv.env['PASSWORD'] ?? "password";
 String mnemonic = dotenv.env['MNEMONIC'] ??
     "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";

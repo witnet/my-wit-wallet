@@ -169,7 +169,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   void setError(error) {
     print('Error syncing the wallet $error');
-    add(SyncErrorEvent(ExplorerStatus.error));
+    if (syncWalletStream.isBroadcast) add(SyncErrorEvent(ExplorerStatus.error));
   }
 
   Future<void> _syncSingleAccount(

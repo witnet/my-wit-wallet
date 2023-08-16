@@ -17,7 +17,7 @@ class Locator {
 
     /// check if things are already registered, if they are skip it.
     /// if they are already registered it is because of end-to-end testing.
-    if(!_i.isRegistered<ApiTheme>()){
+    if (!_i.isRegistered<ApiTheme>()) {
       _i.registerSingleton<ApiTheme>(ApiTheme.instance());
       _i.registerSingleton<ApiDatabase>(ApiDatabase());
       _i.registerSingleton<ApiExplorer>(ApiExplorer());
