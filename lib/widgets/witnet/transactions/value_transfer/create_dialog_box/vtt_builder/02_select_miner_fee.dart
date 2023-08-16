@@ -109,22 +109,21 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     }
     String savedFee = _nanoWitFeeToWit(widget.savedFeeAmount ?? '1');
     _minerFeeController.text = savedFee;
-    setMinerFeeValue(savedFee, validate: false);
+    setState(() {
+      setMinerFeeValue(savedFee, validate: false);
+    });
   }
 
   void setMinerFeeValue(String amount, {bool? validate}) {
     int weightedFeeAmount = BlocProvider.of<VTTCreateBloc>(context)
         .calculatedWeightedFee(_minerFeeWitToNanoWitNumber());
-    setState(() {
-      _minerFeeWit = VttAmountInput.dirty(
-          allowValidation:
-              validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
-          availableNanoWit: balanceInfo.availableNanoWit,
-          value: amount,
-          weightedAmount:
-              _feeType == FeeType.Weighted ? weightedFeeAmount : null,
-          allowZero: true);
-    });
+    _minerFeeWit = VttAmountInput.dirty(
+        allowValidation:
+            validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
+        availableNanoWit: balanceInfo.availableNanoWit,
+        value: amount,
+        weightedAmount: _feeType == FeeType.Weighted ? weightedFeeAmount : null,
+        allowZero: true);
   }
 
   void _setFeeType(type) {
@@ -158,7 +157,9 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
 
   bool validateForm({force = false}) {
     if (force) {
-      setMinerFeeValue(_minerFeeWit.value, validate: true);
+      setState(() {
+        setMinerFeeValue(_minerFeeWit.value, validate: true);
+      });
     }
     return formValidation();
   }
@@ -178,19 +179,20 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
 
   Widget _buildFeeOptionButton(EstimatedFeeOptions label, String value) {
     final theme = Theme.of(context);
-    if (_selectedFeeOption != EstimatedFeeOptions.Custom) {
-      if (_selectedFeeOption == label &&
-          _minerFeeWit.validator(value) != null) {
-        _selectedFeeOption = null;
-      } else if (_selectedFeeOption == label) {
-        WidgetsBinding.instance.addPostFrameCallback(
-            (_) => {widget.nextAction(next), setMinerFeeValue(value)});
-      }
+    VttAmountInput _feePriority = VttAmountInput.dirty(
+        value: value,
+        allowValidation: true,
+        availableNanoWit: balanceInfo.availableNanoWit);
+    String? errorText =
+        _feePriority.validator(value, avoidWeightedAmountCheck: true);
+    if (_selectedFeeOption != EstimatedFeeOptions.Custom &&
+        _selectedFeeOption == label) {
+      setMinerFeeValue(value);
     }
     return ClickableBox(
       label: label.name,
       isSelected: _selectedFeeOption == label,
-      error: _minerFeeWit.validator(value, avoidWeightedAmountCheck: true),
+      error: label != EstimatedFeeOptions.Custom ? errorText : null,
       value: value,
       content: [
         Expanded(
@@ -206,8 +208,8 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
       ],
       onClick: (value) => {
         _setFeeType(FeeType.Absolute.name),
-        setMinerFeeValue(value),
         setState(() {
+          setMinerFeeValue(value);
           _minerFeeController.text = value;
           _selectedFeeOption = label;
         }),

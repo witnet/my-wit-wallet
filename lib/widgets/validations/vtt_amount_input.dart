@@ -75,30 +75,36 @@ class VttAmountInput extends FormzInput<String, String?> {
   @override
   String? validator(String value, {bool avoidWeightedAmountCheck = false}) {
     final validationUtils = ValidationUtils(errorMap: errorMap);
-    if (this.allowValidation) {
-      if (value.isEmpty)
-        return validationUtils.getErrorText(AmountInputError.empty);
-      if (RegExp(r'[a-zA-Z]').hasMatch(value))
+    if (!this.allowValidation) {
+      return null;
+    }
+    // Check if the amount input is empty
+    if (value.isEmpty)
+      return validationUtils.getErrorText(AmountInputError.empty);
+    // Check if the amount is a number
+    if (RegExp(r'[a-zA-Z]').hasMatch(value))
+      return validationUtils.getErrorText(AmountInputError.invalid);
+    // Check if the amount has decimals
+    if (value.contains('.')) {
+      // Check if the decimal amount is valid
+      if (value.split('.').length != 2 || value.split('.')[1].isEmpty)
         return validationUtils.getErrorText(AmountInputError.invalid);
-      if (value.contains('.')) {
-        if (value.split('.').length != 2)
-          return validationUtils.getErrorText(AmountInputError.invalid);
-        if (value.split('.')[1].isEmpty)
-          return validationUtils.getErrorText(AmountInputError.invalid);
-        if (!RegExp(r'^[0-9]+(\.[0-9]{1,9})?$').hasMatch(value))
-          return validationUtils.getErrorText(AmountInputError.decimals);
-      }
-      if (!RegExp(r'^[0-9]{1,10}(\.[0-9]+)?$').hasMatch(value))
-        return validationUtils.getErrorText(AmountInputError.tooBig);
-      if (_notEnoughFunds(avoidWeightedAmountCheck: avoidWeightedAmountCheck))
-        return validationUtils.getErrorText(AmountInputError.notEnough);
-      if (value.isNotEmpty && !this.allowZero) {
-        try {
-          if (num.parse(value) == 0)
-            return validationUtils.getErrorText(AmountInputError.zero);
-        } catch (e) {
-          return validationUtils.getErrorText(AmountInputError.invalid);
-        }
+      // Check if the amount has more than nine decimals
+      if (!RegExp(r'^[0-9]+(\.[0-9]{1,9})?$').hasMatch(value))
+        return validationUtils.getErrorText(AmountInputError.decimals);
+    }
+    // Check if the amount has more than nine digits
+    if (!RegExp(r'^[0-9]{1,10}(\.[0-9]+)?$').hasMatch(value))
+      return validationUtils.getErrorText(AmountInputError.tooBig);
+    if (_notEnoughFunds(avoidWeightedAmountCheck: avoidWeightedAmountCheck))
+      return validationUtils.getErrorText(AmountInputError.notEnough);
+    // Check if the amount is zero
+    if (value.isNotEmpty && !this.allowZero) {
+      try {
+        if (num.parse(value) == 0)
+          return validationUtils.getErrorText(AmountInputError.zero);
+      } catch (e) {
+        return validationUtils.getErrorText(AmountInputError.invalid);
       }
     }
     return null;
