@@ -55,11 +55,12 @@ Future<void> e2eImportMnemonicTest(WidgetTester tester) async {
     await tapButton(tester, "Continue");
   }
 
-  /// Verify the imported wallet and the current address
+  /// Get the currentWallet loaded in the dashboard
   final DashboardScreenState dashboardScreenState =
       tester.state(widgetByType(DashboardScreen));
   dashboardScreenState.currentWallet!.printDebug();
   Wallet? currentWallet = dashboardScreenState.currentWallet;
+  /// Verify the imported wallet and the current address
   expect(currentWallet!.externalAccounts[0]!.address,
       "wit174la8pevl74hczcpfepgmt036zkmjen4hu8zzs");
 }
