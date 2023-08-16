@@ -23,12 +23,12 @@ class PasswordInput extends FormzInput<String, String?> {
   // Override validator to handle validating a given input value.
   @override
   String? validator(String value) {
-    if (this.allowValidation) {
-      return value.isEmpty
-          ? ValidationUtils(errorMap: errorMap)
-              .getErrorText(PasswordInputError.empty)
-          : null;
+    if (!this.allowValidation) {
+      return null;
     }
-    return null;
+    return value.isEmpty
+        ? ValidationUtils(errorMap: errorMap)
+            .getErrorText(PasswordInputError.empty)
+        : null;
   }
 }

@@ -90,12 +90,9 @@ class VttAmountInput extends FormzInput<String, String?> {
       if (value.split('.').length != 2 || value.split('.')[1].isEmpty)
         return validationUtils.getErrorText(AmountInputError.invalid);
       // Check if the amount has more than nine decimals
-      if (!RegExp(r'^[0-9]+(\.[0-9]{1,9})?$').hasMatch(value))
+      if (!RegExp(r'^\d+\.?\d{1,9}$').hasMatch(value))
         return validationUtils.getErrorText(AmountInputError.decimals);
     }
-    // Check if the amount has more than nine digits
-    if (!RegExp(r'^[0-9]{1,10}(\.[0-9]+)?$').hasMatch(value))
-      return validationUtils.getErrorText(AmountInputError.tooBig);
     if (_notEnoughFunds(avoidWeightedAmountCheck: avoidWeightedAmountCheck))
       return validationUtils.getErrorText(AmountInputError.notEnough);
     // Check if the amount is zero

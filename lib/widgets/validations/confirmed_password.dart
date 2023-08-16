@@ -25,15 +25,15 @@ class ConfirmedPassword extends FormzInput<String, String?> {
   @override
   String? validator(String? value) {
     final validationUtils = ValidationUtils(errorMap: errorMap);
-    if (this.allowValidation) {
-      if (value != null) {
-        if (value != this.original.value)
-          return validationUtils.getErrorText(ConfirmedPasswordError.match);
-        if (value.isEmpty)
-          return validationUtils.getErrorText(ConfirmedPasswordError.empty);
-      }
+    if (!this.allowValidation) {
+      return null;
     }
-
+    if (value != null) {
+      if (value != this.original.value)
+        return validationUtils.getErrorText(ConfirmedPasswordError.match);
+      if (value.isEmpty)
+        return validationUtils.getErrorText(ConfirmedPasswordError.empty);
+    }
     return null;
   }
 }

@@ -28,12 +28,13 @@ class VerifyPasswordInput extends FormzInput<String, String?> {
   @override
   String? validator(String value) {
     final validationUtils = ValidationUtils(errorMap: errorMap);
-    if (this.allowValidation) {
-      if (value.isEmpty) {
-        return validationUtils.getErrorText(PasswordInputError.empty);
-      } else if (this.decriptedXprv == null) {
-        return validationUtils.getErrorText(PasswordInputError.invalid);
-      }
+    if (!this.allowValidation) {
+      return null;
+    }
+    if (value.isEmpty) {
+      return validationUtils.getErrorText(PasswordInputError.empty);
+    } else if (this.decriptedXprv == null) {
+      return validationUtils.getErrorText(PasswordInputError.invalid);
     }
     return null;
   }

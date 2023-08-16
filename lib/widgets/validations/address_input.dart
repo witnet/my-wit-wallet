@@ -27,22 +27,23 @@ class AddressInput extends FormzInput<String, String?> {
   @override
   String? validator(String? value) {
     final validationUtils = ValidationUtils(errorMap: errorMap);
-    if (this.allowValidation) {
-      if (value != null) {
-        if (value.isEmpty)
-          return validationUtils.getErrorText(AddressInputError.empty);
-        if (RegExp(r'^wit1[02-9ac-hj-np-z]{38}$').hasMatch(value)) {
-          try {
-            Address address = Address.fromAddress(value);
-            assert(address.address.isNotEmpty);
-          } catch (e) {
-            return validationUtils.getErrorText(AddressInputError.invalid);
-          }
-        } else {
-          if (value.length < 42)
-            return validationUtils.getErrorText(AddressInputError.length);
+    if (!this.allowValidation) {
+      return null;
+    }
+    if (value != null) {
+      if (value.isEmpty)
+        return validationUtils.getErrorText(AddressInputError.empty);
+      if (RegExp(r'^wit1[02-9ac-hj-np-z]{38}$').hasMatch(value)) {
+        try {
+          Address address = Address.fromAddress(value);
+          assert(address.address.isNotEmpty);
+        } catch (e) {
           return validationUtils.getErrorText(AddressInputError.invalid);
         }
+      } else {
+        if (value.length < 42)
+          return validationUtils.getErrorText(AddressInputError.length);
+        return validationUtils.getErrorText(AddressInputError.invalid);
       }
     }
     return null;

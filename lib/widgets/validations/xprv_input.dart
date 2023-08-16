@@ -31,22 +31,21 @@ class XprvInput extends FormzInput<String, String?> {
   @override
   String? validator(String? value) {
     final validationUtils = ValidationUtils(errorMap: errorMap);
-    if (this.allowValidation) {
-      try {
-        if (decriptedXprv != null) {
-          return null;
-        } else {
-          return this.xprvType == CreateWalletType.encryptedXprv
-              ? validationUtils.getErrorText(XprvError.invalidEncryptedXprv)
-              : validationUtils.getErrorText(XprvError.invalidXprv);
-        }
-      } catch (e) {
+    if (!this.allowValidation) {
+      return null;
+    }
+    try {
+      if (decriptedXprv != null) {
+        return null;
+      } else {
         return this.xprvType == CreateWalletType.encryptedXprv
             ? validationUtils.getErrorText(XprvError.invalidEncryptedXprv)
             : validationUtils.getErrorText(XprvError.invalidXprv);
       }
-    } else {
-      return null;
+    } catch (e) {
+      return this.xprvType == CreateWalletType.encryptedXprv
+          ? validationUtils.getErrorText(XprvError.invalidEncryptedXprv)
+          : validationUtils.getErrorText(XprvError.invalidXprv);
     }
   }
 }

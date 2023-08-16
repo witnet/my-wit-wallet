@@ -32,13 +32,8 @@ class WitValueFormatter extends TextInputFormatter {
       if (value.startsWith('.')) value = '0$value';
       String leftPart = value.split('.')[0];
       String rightPart = value.split('.')[1];
-      leftPart = leftPart.length > 10 ? leftPart.substring(0, 10) : leftPart;
       rightPart = rightPart.length > 9 ? rightPart.substring(0, 9) : rightPart;
       value = leftPart + "." + rightPart;
-    } else {
-      if (value.length > 10) {
-        value = value.substring(0, 10);
-      }
     }
     return TextEditingValue(
         text: value,
