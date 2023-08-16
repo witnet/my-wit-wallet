@@ -6,6 +6,7 @@ import 'package:my_wit_wallet/main.dart' as myWitWallet;
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 
 bool walletsExist = false;
+int defaultDelay =  int.parse(dotenv.env['DELAY']!);
 String password = dotenv.env['PASSWORD'] ?? "password";
 String mnemonic = dotenv.env['MNEMONIC'] ??
     "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
@@ -17,7 +18,6 @@ Finder widgetByText(String text) => find.text(text);
 Finder widgetByIcon(IconData icon) => find.byIcon(icon);
 
 Finder widgetByLabel(String label) => find.bySemanticsLabel(label);
-const int defaultDelay = 1000;
 
 Future<void> initializeTest(WidgetTester tester) async {
   myWitWallet.main();
@@ -29,7 +29,7 @@ Future<bool> tapButton(
   dynamic value, {
   int? index,
   bool delay = true,
-  int milliseconds = defaultDelay,
+  int? milliseconds,
 }) async {
   Finder finder;
   switch (value.runtimeType) {
@@ -58,7 +58,7 @@ Future<bool> tapButton(
   await tester.tap(index != null ? finder.at(index) : finder);
   await tester.pumpAndSettle();
   if (delay) {
-    await Future.delayed(Duration(milliseconds: milliseconds));
+    await Future.delayed(Duration(milliseconds: milliseconds ?? defaultDelay));
   }
   return true;
 }
@@ -68,7 +68,7 @@ Future<bool> tapButtonByName(
   String text, {
   int index = 0,
   bool delay = true,
-  int milliseconds = defaultDelay,
+  int? milliseconds,
 }) async =>
     await tapButton(
       tester,
@@ -83,7 +83,7 @@ Future<bool> tapButtonByType(
   Type type, {
   int index = 0,
   bool delay = true,
-  int milliseconds = defaultDelay,
+  int? milliseconds,
 }) async =>
     await tapButton(
       tester,
@@ -98,7 +98,7 @@ Future<bool> tapButtonByIndex(
   dynamic data, {
   int index = 0,
   bool delay = true,
-  int milliseconds = defaultDelay,
+  int? milliseconds,
 }) async =>
     await tapButton(
       tester,
@@ -113,7 +113,7 @@ Future<bool> tapButtonByIcon(
   IconData icon, {
   int index = 0,
   bool delay = true,
-  int milliseconds = defaultDelay,
+  int? milliseconds,
 }) async =>
     await tapButton(
       tester,
@@ -128,7 +128,7 @@ Future<bool> tapButtonByLabel(
   String label, {
   int index = 0,
   bool delay = true,
-  int milliseconds = defaultDelay,
+  int? milliseconds,
 }) async =>
     await tapButton(
       tester,
@@ -144,14 +144,14 @@ Future<bool> enterText(
   String text, {
   int? index,
   bool delay = true,
-  int milliseconds = defaultDelay,
+  int? milliseconds,
 }) async {
   index != null
       ? await tester.enterText(widgetByType(type).at(index), text)
       : await tester.enterText(widgetByType(type), text);
   await tester.pumpAndSettle();
   if (delay) {
-    await Future.delayed(Duration(milliseconds: milliseconds));
+    await Future.delayed(Duration(milliseconds: milliseconds ?? defaultDelay));
   }
   return true;
 }
@@ -163,13 +163,13 @@ Future<bool> scrollUntilVisible(
   Finder finder, {
   int index = 0,
   bool delay = true,
-  int milliseconds = defaultDelay,
+  int? milliseconds,
 }) async {
   await tester.scrollUntilVisible(finder, -100.0,
       duration: Duration(milliseconds: 500), maxScrolls: 100);
   await tester.pumpAndSettle();
   if (delay) {
-    await Future.delayed(Duration(milliseconds: milliseconds));
+    await Future.delayed(Duration(milliseconds: milliseconds ?? defaultDelay));
   }
   return true;
 }
