@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/sembast.dart';

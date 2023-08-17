@@ -215,6 +215,7 @@ class ApiDatabase {
           'fileExists': fileExists
         },
       );
+
       assert(response != null);
       return true;
     } on DBException {

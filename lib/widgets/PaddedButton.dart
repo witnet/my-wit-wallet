@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 
 const defaultIcon = Icon(null);
@@ -107,7 +108,7 @@ class PaddedButton extends StatelessWidget {
           ? theme.textButtonTheme.style?.copyWith(
               foregroundColor: MaterialStateProperty.all(color),
               overlayColor:
-                  MaterialStateProperty.all(Color.fromARGB(16, 255, 255, 255)))
+                  MaterialStateProperty.all(WitnetPallet.transparentWhite))
           : theme.textButtonTheme.style,
       child: Column(children: [
         SizedBox(height: 8),
@@ -131,8 +132,8 @@ class PaddedButton extends StatelessWidget {
                   padding: MaterialStateProperty.all(EdgeInsets.zero),
                   fixedSize: MaterialStateProperty.all(Size.zero),
                   foregroundColor: MaterialStateProperty.all(color),
-                  overlayColor: MaterialStateProperty.all(
-                      Color.fromARGB(16, 255, 255, 255)))
+                  overlayColor:
+                      MaterialStateProperty.all(WitnetPallet.transparentWhite))
               : theme.textButtonTheme.style,
           child: Semantics(excludeSemantics: true, label: label, child: icon),
           onPressed: onPressed,
@@ -143,7 +144,7 @@ class PaddedButton extends StatelessWidget {
           ? theme.textButtonTheme.style?.copyWith(
               foregroundColor: MaterialStateProperty.all(color),
               overlayColor:
-                  MaterialStateProperty.all(Color.fromARGB(16, 126, 126, 126)))
+                  MaterialStateProperty.all(WitnetPallet.transparentGrey))
           : theme.textButtonTheme.style,
       child: Text(
         text,

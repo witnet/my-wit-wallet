@@ -10,6 +10,7 @@ import 'package:window_manager/window_manager.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
+import 'package:my_wit_wallet/globals.dart' as globals;
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -31,6 +32,9 @@ void main() async {
       await windowManager.show();
       await windowManager.focus();
     });
+  }
+  if (globals.testingActive) {
+    print("This is a testing environment!");
   }
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);

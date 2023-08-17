@@ -6,7 +6,8 @@ import 'package:my_wit_wallet/main.dart' as myWitWallet;
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 
 bool walletsExist = false;
-int defaultDelay = int.parse(dotenv.env['DELAY']!);
+int defaultDelay = int.parse(dotenv.env['DELAY'] ?? '100');
+int initializeDelay = int.parse(dotenv.env['INIT_E2E_DELAY_IN_SECONDS'] ?? '5');
 String password = dotenv.env['PASSWORD'] ?? "password";
 String mnemonic = dotenv.env['MNEMONIC'] ??
     "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
@@ -22,6 +23,7 @@ Finder widgetByLabel(String label) => find.bySemanticsLabel(label);
 Future<void> initializeTest(WidgetTester tester) async {
   myWitWallet.main();
   await tester.pumpAndSettle();
+  await tester.pumpAndSettle(Duration(seconds: initializeDelay));
 }
 
 Future<bool> tapButton(
@@ -161,12 +163,12 @@ enum ScrollDirection { Up, Down, Left, Right }
 Future<bool> scrollUntilVisible(
   WidgetTester tester,
   Finder finder, {
-  int index = 0,
+  int? index,
   bool delay = true,
   int? milliseconds,
 }) async {
   await tester.scrollUntilVisible(finder, -100.0,
-      duration: Duration(milliseconds: 500), maxScrolls: 100);
+      duration: Duration(milliseconds: 500), maxScrolls: 200);
   await tester.pumpAndSettle();
   if (delay) {
     await Future.delayed(Duration(milliseconds: milliseconds ?? defaultDelay));

@@ -120,9 +120,7 @@ class ReEstablishWalletDisclaimerState
               text: 'Cancel',
               type: ButtonType.text,
               enabled: true,
-              onPressed: () => {
-                    setState(() => {closeModal()})
-                  }),
+              onPressed: () => {setState(() => closeModal())}),
           PaddedButton(
               color: extendedTheme.errorColor,
               padding: EdgeInsets.all(8),

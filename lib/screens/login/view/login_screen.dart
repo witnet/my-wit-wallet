@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/screens/login/view/biometrics_autentication.dart';
 import 'package:my_wit_wallet/screens/login/view/re_establish_wallet_button.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
+import 'package:my_wit_wallet/util/allow_biometrics.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/widgets/carousel.dart';
@@ -224,7 +224,7 @@ class LoginScreenState extends State<LoginScreen>
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Platform.isIOS || Platform.isAndroid
+                        showBiometrics()
                             ? BiometricsAutentication()
                             : Container(),
                         SizedBox(height: 8),
