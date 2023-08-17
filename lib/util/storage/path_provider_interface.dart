@@ -86,6 +86,12 @@ class PathProviderInterface {
     file.writeAsString(contents);
   }
 
+  Future<bool> deleteWalletFile() async {
+    io.File file = io.File(getDbWalletsPath());
+    await file.delete();
+    return true;
+  }
+
   Future<String> readFile(String filePath) async {
     io.File file = io.File(filePath);
     String content = await file.readAsString();

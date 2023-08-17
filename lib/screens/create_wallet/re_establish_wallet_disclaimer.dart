@@ -77,8 +77,8 @@ class ReEstablishWalletDisclaimerState
 
   void deleteStorageAndContinue() async {
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
-    final storageDeleted =
-        await db.deleteAllWallets(db.walletStorage.wallets.values.toList());
+    final storageDeleted = await db.deleteAllWallets();
+    await db.openDatabase();
     if (storageDeleted) {
       // Close current modal
       Navigator.pop(context);

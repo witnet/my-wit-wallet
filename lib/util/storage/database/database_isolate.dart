@@ -15,6 +15,7 @@ Map<String, Function(DatabaseService, SendPort, Map<String, dynamic>)>
   'configure': _configure,
   'add': _addRecord,
   'delete': _deleteRecord,
+  'deleteDatabase': _deleteDatabase,
   'update': _updateRecord,
   'setPassword': _setPassword,
   'verifyPassword': _verifyPassword,
@@ -178,6 +179,12 @@ Future<void> _deleteRecord(
       break;
   }
   port.send(value);
+}
+
+Future<void> _deleteDatabase(DatabaseService dbService, SendPort port,
+    Map<String, dynamic> params) async {
+  await dbService.deleteDatabase();
+  port.send(true);
 }
 
 Future<void> _updateRecord(

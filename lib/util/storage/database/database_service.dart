@@ -121,6 +121,10 @@ class DatabaseService {
     return true;
   }
 
+  Future<void> deleteDatabase() async {
+    if (_dbConfig != null) await dbFactory.deleteDatabase(_dbConfig!.path);
+  }
+
   Future<bool> delete(dynamic item) async {
     try {
       switch (item.runtimeType) {

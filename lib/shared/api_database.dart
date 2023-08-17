@@ -215,7 +215,6 @@ class ApiDatabase {
           'fileExists': fileExists
         },
       );
-
       assert(response != null);
       return true;
     } on DBException {
@@ -247,10 +246,8 @@ class ApiDatabase {
         params: {'type': 'wallet', 'value': wallet.jsonMap()});
   }
 
-  Future<bool> deleteAllWallets(List<Wallet> wallets) async {
-    return wallets.fold(false, (prevWallet, newWallet) async {
-      return await deleteWallet(newWallet);
-    });
+  Future<bool> deleteAllWallets() async {
+    return await _processIsolate(method: 'deleteDatabase');
   }
 
   Future<bool> addAccount(Account account) async {
