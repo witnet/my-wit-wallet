@@ -50,8 +50,7 @@ class ApiCreateWallet {
     try {
       int xprvLength = xprvString.length;
       String? xprvDecripted;
-      if (xprvLength == ENCRYPTED_XPRV_LENGTH &&
-          _xprvType == CreateWalletType.encryptedXprv) {
+      if (_xprvType == CreateWalletType.encryptedXprv) {
         xprvDecripted = await apiCrypto.decryptXprv(
             xprv: xprvString, password: password?.value ?? '');
       } else if (xprvLength == XPRV_LENGTH &&
