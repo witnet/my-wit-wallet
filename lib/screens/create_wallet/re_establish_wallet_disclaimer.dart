@@ -11,6 +11,7 @@ import 'package:my_wit_wallet/widgets/alert_dialog.dart';
 import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/widgets/ordered_list_item.dart';
+import 'package:my_wit_wallet/widgets/snack_bars.dart';
 
 typedef void VoidCallback(NavAction? value);
 
@@ -76,6 +77,7 @@ class ReEstablishWalletDisclaimerState
   }
 
   void deleteStorageAndContinue() async {
+    final theme = Theme.of(context);
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
     final storageDeleted = await db.deleteAllWallets();
     await db.openDatabase();
@@ -84,6 +86,10 @@ class ReEstablishWalletDisclaimerState
       Navigator.pop(context);
       // Show next modal
       showStorageDeletedMessage();
+    } else {
+      closeModal();
+      showErrorSnackBar(context, theme,
+          'There was an error re-establishing myWitWallet, please try again!');
     }
   }
 

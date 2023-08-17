@@ -183,8 +183,8 @@ Future<void> _deleteRecord(
 
 Future<void> _deleteDatabase(DatabaseService dbService, SendPort port,
     Map<String, dynamic> params) async {
-  await dbService.deleteDatabase();
-  port.send(true);
+  bool databaseDeleted = await dbService.deleteDatabase();
+  port.send(databaseDeleted);
 }
 
 Future<void> _updateRecord(

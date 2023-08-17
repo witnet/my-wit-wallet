@@ -60,8 +60,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             currentState.vttCreateStatus != VTTCreateStatus.busy &&
             currentState.vttCreateStatus != VTTCreateStatus.initial) {
           ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context)
-              .showSnackBar(buildExplorerConnectionSnackbar(
+          ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
             theme,
             'Connection reestablished!',
             extendedTheme.txValuePositiveColor,
@@ -76,11 +75,10 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
       listener: (context, state) {
         if (state.vttCreateStatus == VTTCreateStatus.exception) {
           ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-              buildExplorerConnectionSnackbar(
-                  theme,
-                  'myWitWallet is experiencing connection problems',
-                  theme.colorScheme.error));
+          ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
+              theme,
+              'myWitWallet is experiencing connection problems',
+              theme.colorScheme.error));
         }
       },
       child: child,
@@ -97,8 +95,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             currentState.status != ExplorerStatus.dataloading &&
             currentState.status != ExplorerStatus.unknown) {
           ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context)
-              .showSnackBar(buildExplorerConnectionSnackbar(
+          ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
             theme,
             'Connection reestablished!',
             extendedTheme.txValuePositiveColor,
@@ -113,11 +110,10 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
       listener: (context, state) {
         if (state.status == ExplorerStatus.error) {
           ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-              buildExplorerConnectionSnackbar(
-                  theme,
-                  'myWitWallet is experiencing connection problems',
-                  theme.colorScheme.error));
+          ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
+              theme,
+              'myWitWallet is experiencing connection problems',
+              theme.colorScheme.error));
         }
       },
       child: child,

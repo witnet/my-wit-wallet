@@ -17,8 +17,20 @@ SnackBar buildCopiedSnackbar(ThemeData theme, String text) {
   );
 }
 
-SnackBar buildExplorerConnectionSnackbar(
-    ThemeData theme, String text, Color? color,
+showErrorSnackBar(BuildContext context, ThemeData theme, String text) {
+  ScaffoldMessenger.of(context).clearSnackBars();
+  ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
+    theme,
+    text,
+    theme.colorScheme.error,
+    () => {
+      if (context.mounted)
+        {ScaffoldMessenger.of(context).hideCurrentMaterialBanner()}
+    },
+  ));
+}
+
+SnackBar buildErrorSnackbar(ThemeData theme, String text, Color? color,
     [Function? action]) {
   return SnackBar(
     clipBehavior: Clip.none,

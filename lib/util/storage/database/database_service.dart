@@ -121,8 +121,14 @@ class DatabaseService {
     return true;
   }
 
-  Future<void> deleteDatabase() async {
-    if (_dbConfig != null) await dbFactory.deleteDatabase(_dbConfig!.path);
+  Future<bool> deleteDatabase() async {
+    try {
+      if (_dbConfig != null) await dbFactory.deleteDatabase(_dbConfig!.path);
+      return true;
+    } catch (e) {
+      print('Error deleting the storage $e');
+      return false;
+    }
   }
 
   Future<bool> delete(dynamic item) async {

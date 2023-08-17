@@ -151,11 +151,10 @@ class RecipientStepState extends State<RecipientStep>
     final vttBloc = BlocProvider.of<VTTCreateBloc>(context);
     if (_connectionError) {
       ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-          buildExplorerConnectionSnackbar(
-              theme,
-              'myWitWallet is experiencing connection problems',
-              theme.colorScheme.error));
+      ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
+          theme,
+          'myWitWallet is experiencing connection problems',
+          theme.colorScheme.error));
     } else {
       ScaffoldMessenger.of(context).clearSnackBars();
     }

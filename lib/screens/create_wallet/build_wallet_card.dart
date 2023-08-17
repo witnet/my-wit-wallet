@@ -186,7 +186,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
   void showSnackBar(CryptoExceptionState state) {
     final theme = Theme.of(context);
     ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(buildExplorerConnectionSnackbar(
+    ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
         theme,
         'myWitWallet is experiencing connection problems',
         theme.colorScheme.error));
