@@ -47,6 +47,8 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
 
   void nextAction() async {
     if (validateForm(force: true)) {
+      WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.nextAction(null));
       // set masterKey
       Locator.instance<ApiCreateWallet>().setPassword(_password.value);
       await Locator.instance<ApiDatabase>()
