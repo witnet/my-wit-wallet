@@ -2,8 +2,8 @@
 #include <windows.h>
 
 const wchar_t* kFlutterWindowTitle = L"myWitWallet";
-const unsigned int kFlutterWindowWidth = 400;
-const unsigned int kFlutterWindowHeight = 700;
+const unsigned int kFlutterWindowWidth = 430;
+const unsigned int kFlutterWindowHeight = 730;
 
 int* alignCenter(int screenWidth, int screenHeight){
   static int pos[2];
