@@ -128,31 +128,32 @@ class ApiExplorer {
 
   Future<Map<String, List<Utxo>>> utxosMulti(
       {required List<String> addressList}) async {
-    try {
-      /// address limit is the limit of the explorer API
-      int addressLimit = 10;
-      List<List<String>> addressChunks = [];
+    /// address limit is the limit of the explorer API
+    int addressLimit = 10;
+    List<List<String>> addressChunks = [];
 
-      /// break the address list into chunks of 10 addresses
-      for (int i = 0; i < addressList.length; i += addressLimit) {
-        int end = (i + addressLimit < addressList.length)
-            ? i + addressLimit
-            : addressList.length;
-        addressChunks.add([addressList.sublist(i, end).join(',')]);
-      }
-
-      /// get the UTXOs from the explorer
-      Map<String, List<Utxo>> _utxos = {};
-      for (int i = 0; i < addressChunks.length; i++) {
-        Map<String, List<Utxo>> multiUtxo =
-            await client.getMultiUtxoInfo(addresses: addressChunks[i]);
-        _utxos.addAll(multiUtxo);
-        await delay();
-      }
-      return _utxos;
-    } catch (e) {
-      rethrow;
+    /// break the address list into chunks of 10 addresses
+    for (int i = 0; i < addressList.length; i += addressLimit) {
+      int end = (i + addressLimit < addressList.length)
+          ? i + addressLimit
+          : addressList.length;
+      addressChunks.add([addressList.sublist(i, end).join(',')]);
     }
+
+    /// get the UTXOs from the explorer
+    Map<String, List<Utxo>> _utxos = {};
+    for (int i = 0; i < addressChunks.length; i++) {
+      Map<String, List<Utxo>> multiUtxo;
+      try {
+        multiUtxo = await client.getMultiUtxoInfo(addresses: addressChunks[i]);
+      } catch (err) {
+        print('Error getting multi utxo info $err');
+        rethrow;
+      }
+      if (multiUtxo.keys.length > 0) _utxos.addAll(multiUtxo);
+      await delay();
+    }
+    return _utxos;
   }
 
   Future<Account> updateAccountVtts(Account account) async {

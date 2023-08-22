@@ -235,8 +235,14 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       /// get the UTXOs from the explorer
       try {
         for (int i = 0; i < addressChunks.length; i++) {
-          Map<String, List<Utxo>> _utxos = await Locator.instance<ApiExplorer>()
-              .utxosMulti(addressList: addressChunks[i]);
+          Map<String, List<Utxo>> _utxos = {};
+          try {
+            _utxos = await Locator.instance<ApiExplorer>()
+                .utxosMulti(addressList: addressChunks[i]);
+          } catch (err) {
+            print('Error getting UTXOs from the explorer $err');
+            rethrow;
+          }
 
           /// loop over the explorer response
           /// which is Map<String, List<Utxo>> key = address
@@ -247,9 +253,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
               addressIndex++) {
             String address = _utxos.keys.toList()[addressIndex];
             List<Utxo> utxoList = _utxos[address] ?? [];
-
             Account? account = wallet.accountByAddress(address);
-
             if (account != null && !isTheSameList(account, utxoList)) {
               if (utxoList.isNotEmpty) {
                 account.utxos = utxoList;
@@ -264,11 +268,10 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
                   account: account);
             }
           }
-
           database.walletStorage.wallets[wallet.id] = wallet;
         }
       } catch (err) {
-        print('Error getting UTXOs from the explorer $err');
+        print('Error updating UTXOs $err');
         rethrow;
       }
     } else if (wallet.walletType == WalletType.single) {
@@ -299,7 +302,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         }
       } catch (e) {
         var vtt = await Locator.instance.get<ApiExplorer>().hash(_vtt.txnHash);
-        if (vtt.jsonMap()['status'] == 'unknown hash') {
+        if (vtt != null && vtt.jsonMap()['status'] == 'unknown hash') {
           vtt = _vtt;
           ValueTransferInfo unknownTransaction = _vtt;
           unknownTransaction.status = 'unknown hash';
