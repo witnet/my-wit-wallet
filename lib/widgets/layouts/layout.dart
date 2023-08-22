@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/showTxConnectionError.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/layouts/listen_fourth_button.dart';
@@ -55,10 +56,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     return BlocListener<VTTCreateBloc, VTTCreateState>(
       listenWhen: (previousState, currentState) {
-        if (previousState.vttCreateStatus == VTTCreateStatus.exception &&
-            currentState.vttCreateStatus != VTTCreateStatus.exception &&
-            currentState.vttCreateStatus != VTTCreateStatus.busy &&
-            currentState.vttCreateStatus != VTTCreateStatus.initial) {
+        if (showTxConnectionReEstablish(
+            previousState.vttCreateStatus, currentState.vttCreateStatus)) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
             theme,

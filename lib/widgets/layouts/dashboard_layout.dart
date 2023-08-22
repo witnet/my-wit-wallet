@@ -155,6 +155,7 @@ class DashboardLayoutState extends State<DashboardLayout>
             ? () => {
                   BlocProvider.of<VTTCreateBloc>(context)
                       .add(ResetTransactionEvent()),
+                  ScaffoldMessenger.of(context).clearSnackBars(),
                   Navigator.push(
                       context,
                       CustomPageRoute(

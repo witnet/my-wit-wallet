@@ -2,6 +2,7 @@ import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/util/showTxConnectionError.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
 import 'package:witnet/data_structures.dart';
@@ -52,6 +53,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   final _minerFeeFocusNode = FocusNode();
   ValidationUtils validationUtils = ValidationUtils();
   List<FocusNode> _formFocusElements() => [_minerFeeFocusNode];
+  bool _connectionError = false;
 
   @override
   void initState() {
@@ -161,7 +163,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         setMinerFeeValue(_minerFeeWit.value, validate: true);
       });
     }
-    return formValidation();
+    return formValidation() && !_connectionError;
   }
 
   void nextAction() {
@@ -317,31 +319,48 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Form(
-      key: _formKey,
-      autovalidateMode: AutovalidateMode.disabled,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(children: [
-            Padding(
-                padding: EdgeInsets.only(left: 8),
-                child: Text(
-                  'Choose your desired miner fee',
-                  style: theme.textTheme.titleSmall,
-                ))
-          ]),
-          SizedBox(height: 8),
-          _buildFeeOptionsButtonGroup(context),
-          _buildCustomInput(context),
-          if (_selectedFeeOption != EstimatedFeeOptions.Custom &&
-              _errorFeeText != null)
-            Text(
-              _errorFeeText!,
-              style: theme.inputDecorationTheme.errorStyle,
-            ),
-        ],
-      ),
-    );
+    return BlocListener<VTTCreateBloc, VTTCreateState>(
+        listenWhen: (previousState, currentState) {
+          if (showTxConnectionReEstablish(
+              previousState.vttCreateStatus, currentState.vttCreateStatus)) {
+            setState(() {
+              _connectionError = false;
+            });
+          }
+          return true;
+        },
+        listener: (context, state) {
+          if (state.vttCreateStatus == VTTCreateStatus.exception) {
+            setState(() {
+              _connectionError = true;
+            });
+          }
+        },
+        child: Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.disabled,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                Padding(
+                    padding: EdgeInsets.only(left: 8),
+                    child: Text(
+                      'Choose your desired miner fee',
+                      style: theme.textTheme.titleSmall,
+                    ))
+              ]),
+              SizedBox(height: 8),
+              _buildFeeOptionsButtonGroup(context),
+              _buildCustomInput(context),
+              if (_selectedFeeOption != EstimatedFeeOptions.Custom &&
+                  _errorFeeText != null)
+                Text(
+                  _errorFeeText!,
+                  style: theme.inputDecorationTheme.errorStyle,
+                ),
+            ],
+          ),
+        ));
   }
 }

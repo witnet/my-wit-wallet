@@ -6,6 +6,7 @@ import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_wit_wallet/util/showTxConnectionError.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/widgets/validations/address_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
@@ -106,7 +107,7 @@ class RecipientStepState extends State<RecipientStep>
       setAddress(_address.value, validate: true);
       setAmount(_amount.value, validate: true);
     }
-    return formValidation();
+    return formValidation() && !_connectionError;
   }
 
   void setAddress(String value, {bool? validate}) {
@@ -158,7 +159,7 @@ class RecipientStepState extends State<RecipientStep>
     } else {
       ScaffoldMessenger.of(context).clearSnackBars();
     }
-    if (validateForm(force: true) && !_connectionError) {
+    if (validateForm(force: true)) {
       vttBloc.add(AddValueTransferOutputEvent(
           currentWallet: widget.currentWallet,
           output: ValueTransferOutput.fromJson({
@@ -278,14 +279,19 @@ class RecipientStepState extends State<RecipientStep>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return BlocListener<VTTCreateBloc, VTTCreateState>(
+      listenWhen: (previousState, currentState) {
+        if (showTxConnectionReEstablish(
+            previousState.vttCreateStatus, currentState.vttCreateStatus)) {
+          setState(() {
+            _connectionError = false;
+          });
+        }
+        return true;
+      },
       listener: (context, state) {
         if (state.vttCreateStatus == VTTCreateStatus.exception) {
           setState(() {
             _connectionError = true;
-          });
-        } else {
-          setState(() {
-            _connectionError = false;
           });
         }
       },

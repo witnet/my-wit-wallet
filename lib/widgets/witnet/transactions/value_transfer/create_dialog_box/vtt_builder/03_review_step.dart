@@ -89,6 +89,7 @@ class ReviewStepState extends State<ReviewStep>
                     onPressed: () => {
                           Navigator.popUntil(context,
                               ModalRoute.withName(CreateVttScreen.route)),
+                          ScaffoldMessenger.of(context).clearSnackBars(),
                           Navigator.pushReplacement(
                               context,
                               CustomPageRoute(
@@ -159,6 +160,7 @@ class ReviewStepState extends State<ReviewStep>
                   onPressed: () => {
                         Navigator.popUntil(context,
                             ModalRoute.withName(CreateVttScreen.route)),
+                        ScaffoldMessenger.of(context).clearSnackBars(),
                         Navigator.pushReplacement(
                             context,
                             CustomPageRoute(

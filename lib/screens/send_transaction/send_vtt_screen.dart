@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
@@ -53,6 +54,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
       duration: const Duration(milliseconds: 1200),
     );
     _loadingController.forward();
+    print('^^^^SEND VTT SCREEEN INIT^^^^');
     _getCurrentWallet();
   }
 
@@ -83,6 +85,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
   void _getCurrentWallet() {
     setState(() {
       currentWallet = database.walletStorage.currentWallet;
+      print('current wallet ${database.walletStorage.currentWallet}');
       BlocProvider.of<VTTCreateBloc>(context)
           .add(AddSourceWalletsEvent(currentWallet: currentWallet!));
     });
@@ -193,11 +196,15 @@ class CreateVttScreenState extends State<CreateVttScreen>
   BlocListener _dashboardBlocListener() {
     return BlocListener<DashboardBloc, DashboardState>(
       listener: (BuildContext context, DashboardState state) {
-        _getCurrentWallet();
-        MaterialPageRoute(
-            maintainState: false,
-            builder: (context) => CreateVttScreen(),
-            settings: RouteSettings(name: CreateVttScreen.route));
+        BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
+        Navigator.push(
+            context,
+            CustomPageRoute(
+                builder: (BuildContext context) {
+                  return CreateVttScreen();
+                },
+                maintainState: false,
+                settings: RouteSettings(name: CreateVttScreen.route)));
       },
       child: _dashboardBlocBuilder(),
     );
