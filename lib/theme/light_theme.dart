@@ -168,7 +168,12 @@ CheckboxThemeData checkboxTheme = CheckboxThemeData(
   splashRadius: 0,
   side: MaterialStateBorderSide.resolveWith(
       (_) => const BorderSide(width: 2, color: WitnetPallet.witnetGreen1)),
-  fillColor: MaterialStateProperty.all(WitnetPallet.witnetGreen1),
+  fillColor: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+    if (states.contains(MaterialState.selected)) {
+      return WitnetPallet.witnetGreen1;
+    }
+    return WitnetPallet.transparent;
+  }),
   checkColor: MaterialStateProperty.all(WitnetPallet.white),
   overlayColor: MaterialStateProperty.all(WitnetPallet.white),
 );
