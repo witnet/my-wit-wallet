@@ -291,8 +291,9 @@ class DashboardLayoutState extends State<DashboardLayout>
   Widget _authBuilder() {
     final theme = Theme.of(context);
     return BlocListener<LoginBloc, LoginState>(
-      listener: (BuildContext context, LoginState state) {
-        if (state.status == LoginStatus.LoggedOut) {
+      listenWhen: (previous, current) {
+        if (previous.status != LoginStatus.LoggedOut &&
+            current.status == LoginStatus.LoggedOut) {
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -300,7 +301,9 @@ class DashboardLayoutState extends State<DashboardLayout>
                   builder: (context) => LoginScreen(),
                   settings: RouteSettings(name: LoginScreen.route)));
         }
+        return true;
       },
+      listener: (BuildContext context, LoginState state) {},
       child: BlocBuilder<LoginBloc, LoginState>(
           builder: (BuildContext context, LoginState loginState) {
         Widget _body;

@@ -84,9 +84,8 @@ class _GeneralConfigState extends State<GeneralConfig> {
         .add(CancelSyncWalletEvent(ExplorerStatus.unknown));
     BlocProvider.of<DashboardBloc>(context).add(DashboardResetEvent());
     BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
-    BlocProvider.of<LoginBloc>(context).add(LoginLogoutEvent());
     Navigator.of(context).popUntil((route) => route.isFirst);
-    Navigator.pushReplacementNamed(context, '/');
+    BlocProvider.of<LoginBloc>(context).add(LoginLogoutEvent());
   }
 
   @override
