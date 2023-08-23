@@ -3,6 +3,7 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
+import 'package:my_wit_wallet/util/storage/cache/implementations/vtt_get_through_block_explorer.dart';
 import 'package:my_wit_wallet/util/storage/database/database_isolate.dart';
 import 'package:my_wit_wallet/bloc/explorer/api_explorer.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -26,6 +27,8 @@ class Locator {
       _i.registerSingleton<ApiCrypto>(ApiCrypto());
       _i.registerSingleton<CryptoIsolate>(CryptoIsolate.instance());
       _i.registerSingleton<DatabaseIsolate>(DatabaseIsolate.instance());
+      _i.registerSingleton<VttGetThroughBlockExplorer>(
+          VttGetThroughBlockExplorer());
     }
   }
 

@@ -4,6 +4,7 @@ import 'dart:isolate';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/util/storage/cache/implementations/vtt_get_through_block_explorer.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/constants.dart';
@@ -39,6 +40,8 @@ Future<dynamic> isolateRunner(
 class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   ApiExplorer apiExplorer = Locator.instance.get<ApiExplorer>();
   ApiDatabase db = Locator.instance.get<ApiDatabase>();
+  VttGetThroughBlockExplorer _vttGetThroughBlockExplorer =
+      Locator.instance.get<VttGetThroughBlockExplorer>();
 
   CryptoBloc(initialState) : super(initialState) {
     on<CryptoInitializeWalletEvent>(_cryptoInitializeWalletEvent);
@@ -291,10 +294,11 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     try {
       for (int i = 0; i < account.vttHashes.length; i++) {
         String _hash = account.vttHashes.elementAt(i);
-        var result = await apiExplorer.hash(_hash);
-        ValueTransferInfo valueTransferInfo = result as ValueTransferInfo;
-        account.vtts.add(valueTransferInfo);
-        await db.addVtt(valueTransferInfo);
+        ValueTransferInfo? valueTransferInfo =
+            await _vttGetThroughBlockExplorer.get(_hash);
+        if (valueTransferInfo != null) {
+          account.vtts.add(valueTransferInfo);
+        }
       }
       return account;
     } catch (e) {
