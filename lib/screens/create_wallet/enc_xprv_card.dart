@@ -310,64 +310,65 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     final theme = Theme.of(context);
     _textFocusNode.addListener(() => formValidation());
     _passFocusNode.addListener(() => formValidation());
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
-        Widget>[
-      Text(
-        'Import wallet from an Xprv key',
-        style: theme.textTheme.titleLarge, //Textstyle
-      ),
-      SizedBox(
-        height: 16,
-      ),
-      Text(
-        'Xprv is a key exchange format that encodes and protects your wallet with a password. Xprv keys look like a long sequence of apparently random letters and numbers, preceded by "xprv".',
-        style: theme.textTheme.bodyLarge, //Textstyle
-      ),
-      SizedBox(height: 8),
-      Text(
-        'To import your wallet from an Xprv key encrypted with a password, you need to type the key itself and its password below:',
-        style: theme.textTheme.bodyLarge, //Textstyle
-      ),
-      SizedBox(
-        height: 16,
-      ),
-      Text(
-        'Xprv origin',
-        style: theme.textTheme.titleSmall,
-      ),
-      SizedBox(height: 8),
-      Select(
-          selectedItem: _selectedOrigin,
-          listItems: importOriginToXprvType.keys
-              .map((label) =>
-                  SelectItem(label.name, importOriginToLabel[label] ?? ''))
-              .toList(),
-          onChanged: (String? label) => {
-                clearForm(),
-                if (label != null)
-                  {
-                    setState(() {
-                      _selectedOrigin = label;
-                    }),
-                    _setXprvType(
-                        importOriginToXprvType[labelToWalletOrigin(label)]!),
-                  },
-              }),
-      SizedBox(
-        height: 16,
-      ),
-      _buildXprvInput(),
-      SizedBox(
-        height: 16,
-      ),
-      _xprvType == CreateWalletType.encryptedXprv
-          ? _buildPasswordField()
-          : SizedBox(
-              height: 0,
-            ),
-      SizedBox(
-        height: _xprvType == CreateWalletType.encryptedXprv ? 16 : 0,
-      ),
-    ]);
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            'Import wallet from an Xprv key',
+            style: theme.textTheme.titleLarge, //Textstyle
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          Text(
+            'Xprv is a key exchange format that encodes and protects your wallet with a password. Xprv keys look like a long sequence of apparently random letters and numbers, preceded by "xprv".',
+            style: theme.textTheme.bodyLarge, //Textstyle
+          ),
+          SizedBox(height: 8),
+          Text(
+            'To import your wallet from an Xprv key encrypted with a password, you need to type the key itself and its password below:',
+            style: theme.textTheme.bodyLarge, //Textstyle
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          Text(
+            'Xprv origin',
+            style: theme.textTheme.titleSmall,
+          ),
+          SizedBox(height: 8),
+          Select(
+              selectedItem: _selectedOrigin,
+              listItems: importOriginToXprvType.keys
+                  .map((label) =>
+                      SelectItem(label.name, importOriginToLabel[label] ?? ''))
+                  .toList(),
+              onChanged: (String? label) => {
+                    clearForm(),
+                    if (label != null)
+                      {
+                        setState(() {
+                          _selectedOrigin = label;
+                        }),
+                        _setXprvType(importOriginToXprvType[
+                            labelToWalletOrigin(label)]!),
+                      },
+                  }),
+          SizedBox(
+            height: 16,
+          ),
+          _buildXprvInput(),
+          SizedBox(
+            height: 16,
+          ),
+          _xprvType == CreateWalletType.encryptedXprv
+              ? _buildPasswordField()
+              : SizedBox(
+                  height: 0,
+                ),
+          SizedBox(
+            height: _xprvType == CreateWalletType.encryptedXprv ? 16 : 0,
+          ),
+        ]);
   }
 }

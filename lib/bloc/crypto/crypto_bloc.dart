@@ -52,7 +52,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     /// setup default default structure for database and unlock it
     emit(
       CryptoInitializingWalletState(
-        message: 'Initializing Wallet.',
+        message: 'Initializing wallet...',
         availableNanoWit: 0,
         lockedNanoWit: 0,
         transactionCount: 0,
