@@ -271,6 +271,15 @@ class ApiDatabase {
         params: {'type': 'mint', 'value': transaction.jsonMap()});
   }
 
+  Future<ValueTransferInfo?> getVtt(String hash) async {
+    try {
+      return await _processIsolate(method: 'getVtt', params: {"hash": hash});
+    } catch (err) {
+      print('Error getting vtt:: $err');
+      return null;
+    }
+  }
+
   Future getAllVtts() async {
     try {
       return await _processIsolate(method: 'getAllVtts', params: {});

@@ -79,6 +79,21 @@ class VttRepository extends _TransactionRepository {
       return false;
     }
   }
+
+  Future<ValueTransferInfo?> getTransaction(
+      String txHash, DatabaseClient databaseClient) async {
+    try {
+      dynamic valueTransferInfoDbJson =
+          await _store.record(txHash).get(databaseClient);
+
+      ValueTransferInfo valueTransferInfo =
+          ValueTransferInfo.fromDbJson(valueTransferInfoDbJson);
+
+      return valueTransferInfo;
+    } catch (e) {
+      return null;
+    }
+  }
 }
 
 class DataRequestRepository extends _TransactionRepository {

@@ -303,4 +303,8 @@ class DatabaseService {
     unlocked = false;
     return true;
   }
+
+  Future<ValueTransferInfo?> getVtt(params) async {
+    return await vttRepository.getTransaction(params["hash"], _database);
+  }
 }

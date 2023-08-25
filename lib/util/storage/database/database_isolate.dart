@@ -17,6 +17,7 @@ Map<String, Function(DatabaseService, SendPort, Map<String, dynamic>)>
   'delete': _deleteRecord,
   'deleteDatabase': _deleteDatabase,
   'getKeychain': _getKeychain,
+  'getVtt': _getVtt,
   'loadWallets': _getAllWallets,
   'lock': _lock,
   'masterKeySet': _masterKeySet,
@@ -227,4 +228,13 @@ Future<void> _getKeychain(
 ) async {
   await dbService.getKey();
   port.send(dbService.keyChain.keyHash);
+}
+
+Future<void> _getVtt(
+  DatabaseService dbService,
+  SendPort port,
+  Map<String, dynamic> params,
+) async {
+  ValueTransferInfo? vtt = await dbService.getVtt(params);
+  port.send(vtt);
 }
