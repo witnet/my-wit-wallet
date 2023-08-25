@@ -12,17 +12,17 @@ import 'database_service.dart';
 
 Map<String, Function(DatabaseService, SendPort, Map<String, dynamic>)>
     methodMap = {
-  'configure': _configure,
   'add': _addRecord,
+  'configure': _configure,
   'delete': _deleteRecord,
   'deleteDatabase': _deleteDatabase,
-  'update': _updateRecord,
-  'setPassword': _setPassword,
-  'verifyPassword': _verifyPassword,
-  'masterKeySet': _masterKeySet,
-  'loadWallets': _getAllWallets,
   'getKeychain': _getKeychain,
+  'loadWallets': _getAllWallets,
   'lock': _lock,
+  'masterKeySet': _masterKeySet,
+  'setPassword': _setPassword,
+  'update': _updateRecord,
+  'verifyPassword': _verifyPassword,
 };
 
 class DatabaseIsolate {
