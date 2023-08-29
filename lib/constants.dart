@@ -75,3 +75,4 @@ const double DASHBOARD_HEADER_HEIGTH = 280;
 const double HEADER_HEIGTH = 185;
 const int ENCRYPTED_XPRV_LENGTH = 293;
 const int XPRV_LENGTH = 117;
+const int MAX_VT_WEIGHT = 20000;

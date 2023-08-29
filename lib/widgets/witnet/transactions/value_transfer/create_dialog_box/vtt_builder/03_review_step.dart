@@ -133,8 +133,44 @@ class ReviewStepState extends State<ReviewStep>
                     style: theme.textTheme.bodyLarge)
               ]));
         } else if (state.vttCreateStatus == VTTCreateStatus.finished) {
-          // Send transaction after signed
-          _sendTransaction(state.vtTransaction);
+          // Validate vtt weight to ensure confirmation
+          if (state.vtTransaction.weight <= MAX_VT_WEIGHT) {
+            // Send transaction after signed
+            _sendTransaction(state.vtTransaction);
+          } else {
+            buildAlertDialog(
+                context: context,
+                actions: [
+                  PaddedButton(
+                      padding: EdgeInsets.all(8),
+                      text: 'Cancel',
+                      type: ButtonType.text,
+                      enabled: true,
+                      onPressed: () => {
+                            Navigator.popUntil(context,
+                                ModalRoute.withName(CreateVttScreen.route)),
+                            ScaffoldMessenger.of(context).clearSnackBars(),
+                            Navigator.pushReplacement(
+                                context,
+                                CustomPageRoute(
+                                    builder: (BuildContext context) {
+                                      return DashboardScreen();
+                                    },
+                                    maintainState: false,
+                                    settings: RouteSettings(
+                                        name: DashboardScreen.route)))
+                          })
+                ],
+                icon: FontAwesomeIcons.circleExclamation,
+                title: 'Transaction too large',
+                content: Column(mainAxisSize: MainAxisSize.min, children: [
+                  svgThemeImage(theme, name: 'transaction-error', height: 100),
+                  SizedBox(height: 16),
+                  Text(
+                      'Please, create smaller transactions to ensure its confirmation!',
+                      style: theme.textTheme.bodyLarge)
+                ]));
+          }
         } else if (state.vttCreateStatus == VTTCreateStatus.sending) {
           Navigator.popUntil(
               context, ModalRoute.withName(CreateVttScreen.route));
