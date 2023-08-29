@@ -100,12 +100,16 @@ class ApiDatabase {
 
     // get account preferences taking into account corrupted localStorage
     Map<AccountPreferences, dynamic> accountPreferences;
-    accountPreferences = getUpdatedAccountInfo(AccountPreferencesParams(
-        walletIdToSet,
-        preferences,
-        walletStorage.currentWallet.masterAccount != null
+    accountPreferences = getUpdatedAccountInfo(
+      AccountPreferencesParams(
+        currentWalletId: walletIdToSet,
+        preferences: preferences,
+        accountList: walletStorage.currentWallet.masterAccount != null
             ? {0: walletStorage.currentWallet.masterAccount!}
-            : walletStorage.currentWallet.externalAccounts));
+            : walletStorage.currentWallet.externalAccounts,
+        isHdWallet: walletStorage.currentWallet.masterAccount == null,
+      ),
+    );
 
     // set new current wallet and account in local storage
     if (isNewWallet || isUpdatedWallet && currentWalletId != null) {

@@ -1,19 +1,23 @@
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 
-enum AccountPreferences { address, addressIndex, addressList }
+enum AccountPreferences { address, addressIndex, addressList, isHdWallet }
 
 class AccountPreferencesParams {
   String? currentWalletId;
   Map<WalletPreferences, dynamic>? preferences;
-  Map<int, Account> externalAccounts;
+  Map<int, Account> accountList;
+  bool isHdWallet;
   AccountPreferencesParams(
-      this.currentWalletId, this.preferences, this.externalAccounts);
+      {this.currentWalletId,
+      this.preferences,
+      required this.accountList,
+      required this.isHdWallet});
 }
 
 Map<AccountPreferences, dynamic> getUpdatedAccountInfo(
     AccountPreferencesParams params) {
-  bool isHdWallet = params.externalAccounts.isNotEmpty;
+  bool isHdWallet = params.isHdWallet;
   String addressId = isHdWallet ? "0/0" : "m";
   Map<String, dynamic> addressList = {
     '${params.currentWalletId}': isHdWallet ? "0/0" : "m"
@@ -27,18 +31,17 @@ Map<AccountPreferences, dynamic> getUpdatedAccountInfo(
   int addressIndex =
       addressId.contains("/") ? int.parse(addressId.split('/').last) : 0;
 
-  bool isAddressIdxInStorage = params.externalAccounts.length > 0 &&
-      (addressIndex < params.externalAccounts.length);
+  bool isAddressIdxInStorage = params.accountList.length > 0 &&
+      (addressIndex < params.accountList.length);
   Map<String, dynamic> defaultAccountSettings = {
     ...addressList,
     '${params.currentWalletId}': isHdWallet ? "0/0" : "m",
   };
-  String? defaultAddress = params.externalAccounts[0] != null
-      ? params.externalAccounts[0]!.address
-      : null;
+  String? defaultAddress =
+      params.accountList[0] != null ? params.accountList[0]!.address : null;
   return {
     AccountPreferences.address: isAddressIdxInStorage
-        ? params.externalAccounts[addressIndex]!.address
+        ? params.accountList[addressIndex]!.address
         : defaultAddress,
     AccountPreferences.addressIndex:
         isAddressIdxInStorage ? addressIndex.toString() : "0",
