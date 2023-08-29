@@ -41,27 +41,27 @@ void main() {
       getTransactionAddress(tolabel, inputs, outputs);
   String transactionAddressFromLabel =
       getTransactionAddress(fromlabel, inputs, outputs);
-  String transactionAddressFromSeveralAddresses =
+  String transactionAddressFromSeveralInputs =
       getTransactionAddress(fromlabel, severalInputs, outputs);
 
   group(
       'getTransactionAddress',
       () => {
             test(
-                'with to label',
+                'with \'to\' label',
                 () => {
                       expect(transactionAddressToLabel, 'wit1zl7...4wv69cw'),
                     }),
             test(
-                'with from label',
+                'with \'from\' label',
                 () => {
                       expect(transactionAddressFromLabel, 'wit1zl7...4wv69cw'),
                     }),
             test(
-                'with from label from several addresses',
+                'with \'from\' label and several inputs',
                 () => {
-                      expect(transactionAddressFromSeveralAddresses,
-                          'Several addresses'),
+                      expect(transactionAddressFromSeveralInputs,
+                          'wit1zl7...4wv69cw'),
                     })
           });
 }
