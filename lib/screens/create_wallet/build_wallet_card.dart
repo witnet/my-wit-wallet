@@ -10,7 +10,7 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
-import 'package:my_wit_wallet/screens/login/view/login_screen.dart';
+import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/animated_numeric_text.dart';
 import 'package:my_wit_wallet/widgets/auto_size_text.dart';
@@ -191,7 +191,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
         theme.colorScheme.error));
     Timer(Duration(seconds: 4), () {
       ScaffoldMessenger.of(context).clearSnackBars();
-      Navigator.pushReplacementNamed(context, LoginScreen.route);
+      Navigator.pushReplacementNamed(context, InitScreen.route);
     });
   }
 

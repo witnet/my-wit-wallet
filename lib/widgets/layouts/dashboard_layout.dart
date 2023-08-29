@@ -20,7 +20,7 @@ import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
 import 'package:my_wit_wallet/widgets//wallet_list.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
-import 'package:my_wit_wallet/screens/login/view/login_screen.dart';
+import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
@@ -298,8 +298,8 @@ class DashboardLayoutState extends State<DashboardLayout>
               context,
               MaterialPageRoute(
                   maintainState: false,
-                  builder: (context) => LoginScreen(),
-                  settings: RouteSettings(name: LoginScreen.route)));
+                  builder: (context) => InitScreen(),
+                  settings: RouteSettings(name: InitScreen.route)));
         }
         return true;
       },

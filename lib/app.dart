@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/bloc_providers.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
-import 'package:my_wit_wallet/screens/login/view/login_screen.dart';
+import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
 import 'package:my_wit_wallet/screens/receive_transaction/receive_tx_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
@@ -50,8 +50,8 @@ Widget _buildWithTheme(BuildContext context, ThemeState state) {
         physics: const ClampingScrollPhysics(
             parent: RangeMaintainingScrollPhysics())),
     title: 'myWitWallet',
-    home: LoginScreen(),
-    initialRoute: LoginScreen.route,
+    home: InitScreen(),
+    initialRoute: InitScreen.route,
     theme: state.themeData,
     routes: {
       CreateWalletScreen.route: (context) => CreateWalletScreen(),
