@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/screens/dashboard/view/blocks_mined.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/util/enum_from_string.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
+import 'package:my_wit_wallet/widgets/step_bar.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -14,6 +17,8 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
+
+enum DashboardStepBar { transactions, blocks }
 
 class DashboardScreen extends StatefulWidget {
   static final route = '/dashboard';
@@ -39,6 +44,7 @@ class DashboardScreenState extends State<DashboardScreen>
   ScrollController scrollController = ScrollController(keepScrollOffset: true);
   List<GeneralTransaction> vtts = [];
   int numberOfPages = 0;
+  DashboardStepBar selectedItem = DashboardStepBar.transactions;
 
   @override
   void initState() {
@@ -148,11 +154,41 @@ class DashboardScreenState extends State<DashboardScreen>
     );
   }
 
+  Map<DashboardStepBar, String> dashboardSteps = {
+    DashboardStepBar.transactions: 'Transactions',
+    DashboardStepBar.blocks: 'Blocks'
+  };
+
+  Widget buildMainDashboardContent(Enum selectedItem, ThemeData theme) {
+    if (selectedItem == DashboardStepBar.transactions) {
+      return _buildTransactionList(theme);
+    } else {
+      return BlockStats(currentWallet: currentWallet!);
+    }
+  }
+
   Widget _dashboardBuilder() {
     final theme = Theme.of(context);
+    bool isHdWallet = currentWallet!.masterAccount == null;
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
-      return _buildTransactionList(theme);
+      return isHdWallet
+          ? _buildTransactionList(theme)
+          : Column(
+              children: [
+                StepBar(
+                    actionable: true,
+                    selectedItem: dashboardSteps[selectedItem]!,
+                    listItems: dashboardSteps.values.toList(),
+                    onChanged: (value) => {
+                          setState(() => selectedItem =
+                              getEnumFromString(dashboardSteps, value ?? '')!
+                                  as DashboardStepBar)
+                        }),
+                SizedBox(height: 16),
+                buildMainDashboardContent(selectedItem, theme)
+              ],
+            );
     });
   }
 
