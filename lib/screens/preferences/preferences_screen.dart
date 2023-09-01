@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/screens/preferences/general_config.dart';
 import 'package:my_wit_wallet/screens/preferences/wallet_config.dart';
+import 'package:my_wit_wallet/util/enum_from_string.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/step_bar.dart';
 
@@ -12,15 +13,19 @@ class PreferencePage extends StatefulWidget {
 }
 
 enum ConfigSteps {
-  General,
-  Wallet,
+  general,
+  wallet,
 }
+
+Map<ConfigSteps, String> preferencesSteps = {
+  ConfigSteps.general: 'General',
+  ConfigSteps.wallet: 'Wallet'
+};
 
 class _PreferencePageState extends State<PreferencePage> {
   bool checked = false;
   List<ConfigSteps> stepListItems = ConfigSteps.values.toList();
-  Enum stepSelectedItem = ConfigSteps.General;
-  ConfigSteps? prevSelectedItem;
+  ConfigSteps stepSelectedItem = ConfigSteps.general;
   ScrollController scrollController = ScrollController(keepScrollOffset: false);
   GlobalKey<WalletConfigState> walletConfigState =
       GlobalKey<WalletConfigState>();
@@ -43,14 +48,13 @@ class _PreferencePageState extends State<PreferencePage> {
       children: [
         StepBar(
             actionable: true,
-            selectedItem: stepSelectedItem,
-            listItems: stepListItems,
+            selectedItem: preferencesSteps[stepSelectedItem]!,
+            listItems: preferencesSteps.values.toList(),
             onChanged: (item) => {
                   scrollController.jumpTo(0.0),
-                  setState(() => {
-                        prevSelectedItem = stepSelectedItem as ConfigSteps,
-                        stepSelectedItem = item!,
-                      })
+                  setState(() => stepSelectedItem =
+                      getEnumFromString(preferencesSteps, item ?? '')!
+                          as ConfigSteps),
                 }),
         SizedBox(height: 16),
         child
@@ -59,7 +63,7 @@ class _PreferencePageState extends State<PreferencePage> {
   }
 
   Widget _buildConfigView() {
-    return stepSelectedItem == ConfigSteps.General
+    return stepSelectedItem == ConfigSteps.general
         ? buildStepWithNavBar(GeneralConfig(key: generalConfigState))
         : buildStepWithNavBar(WalletConfig(
             key: walletConfigState, scrollController: scrollController));

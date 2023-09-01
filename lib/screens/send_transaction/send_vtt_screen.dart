@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/enum_from_string.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
@@ -38,11 +39,10 @@ class CreateVttScreenState extends State<CreateVttScreen>
   dynamic nextAction;
   dynamic nextStep;
   List<VTTsteps> stepListItems = VTTsteps.values.toList();
-  Enum stepSelectedItem = VTTsteps.Transaction;
+  VTTsteps stepSelectedItem = VTTsteps.Transaction;
   ValueTransferOutput? currentTxOutput;
   String? savedFeeAmount;
   FeeType? savedFeeType;
-  int currentStepIndex = 0;
   ScrollController scrollController = ScrollController(keepScrollOffset: false);
 
   @override
@@ -71,11 +71,11 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   void goToNextStep() {
-    if ((currentStepIndex + 1) < stepListItems.length) {
+    if (stepListItems.indexOf(stepSelectedItem) < stepListItems.length) {
       scrollController.jumpTo(0.0);
       setState(() {
-        currentStepIndex += 1;
-        stepSelectedItem = stepListItems[currentStepIndex];
+        stepSelectedItem =
+            stepListItems[stepListItems.indexOf(stepSelectedItem) + 1];
       });
     }
   }
@@ -169,18 +169,25 @@ class CreateVttScreenState extends State<CreateVttScreen>
     }
   }
 
+  Map<VTTsteps, String> vttSteps = {
+    VTTsteps.Transaction: 'Transaction',
+    VTTsteps.MinerFee: 'MinerFee',
+    VTTsteps.Review: 'Review'
+  };
+
   Widget _buildSendVttForm() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         StepBar(
             actionable: false,
-            selectedItem: stepSelectedItem,
-            listItems: stepListItems,
+            selectedItem: vttSteps[stepSelectedItem]!,
+            listItems: vttSteps.values.toList(),
             onChanged: (item) => {
                   setState(() => {
-                        stepSelectedItem = item!,
-                        currentStepIndex = item.index,
+                        stepSelectedItem =
+                            getEnumFromString(vttSteps, item ?? '')!
+                                as VTTsteps,
                         setOngoingTransaction(),
                       })
                 }),

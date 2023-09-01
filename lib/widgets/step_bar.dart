@@ -3,12 +3,12 @@ import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 
-typedef void StringCallback(Enum? value);
+typedef void StringCallback(String? value);
 
 class StepBar extends StatelessWidget {
-  final Enum selectedItem;
+  final String selectedItem;
   final bool actionable;
-  final List<Enum> listItems;
+  final List<String> listItems;
   final StringCallback onChanged;
 
   const StepBar({
@@ -19,7 +19,7 @@ class StepBar extends StatelessWidget {
   });
 
   Color _itemColor(
-      Enum item, bool isItemActionable, ExtendedTheme extendedTheme) {
+      String item, bool isItemActionable, ExtendedTheme extendedTheme) {
     if (item == selectedItem) {
       return extendedTheme.stepBarActiveColor!;
     } else if (isItemActionable) {
@@ -28,14 +28,14 @@ class StepBar extends StatelessWidget {
     return extendedTheme.stepBarColor!;
   }
 
-  Widget _buildStepBarItem(Enum item, BuildContext context,
+  Widget _buildStepBarItem(String item, BuildContext context,
       ExtendedTheme extendedTheme, bool isItemActionable) {
     return Container(
         alignment: Alignment.center,
         child: isItemActionable
             ? PaddedButton(
                 padding: EdgeInsets.zero,
-                text: item.name.fromPascalCaseToTitle(),
+                text: item.fromPascalCaseToTitle(),
                 color: _itemColor(item, isItemActionable, extendedTheme),
                 onPressed: () => {onChanged(item)},
                 type: ButtonType.stepbar)
@@ -45,7 +45,7 @@ class StepBar extends StatelessWidget {
                 color: item == selectedItem
                     ? extendedTheme.stepBarActiveColor
                     : extendedTheme.inputIconColor,
-                text: item.name.fromPascalCaseToTitle(),
+                text: item.fromPascalCaseToTitle(),
                 onPressed: () => {},
                 type: ButtonType.stepbar));
   }
@@ -59,7 +59,9 @@ class StepBar extends StatelessWidget {
           itemCount: listItems.length,
           itemBuilder: (context, index) {
             bool isItemActionable =
-                (actionable || (index < selectedItem.index)) ? true : false;
+                (actionable || (index < listItems.indexOf(selectedItem)))
+                    ? true
+                    : false;
             return _buildStepBarItem(
                 listItems[index], context, extendedTheme, isItemActionable);
           },
