@@ -6,6 +6,7 @@ import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:witnet/constants.dart';
@@ -42,6 +43,7 @@ class Wallet {
     this.internalXpub,
     required this.txHashes,
     required this.masterAccount,
+    required this.masterAccountStats,
     required this.externalAccounts,
     required this.internalAccounts,
     this.lastSynced = -1,
@@ -63,6 +65,7 @@ class Wallet {
   late String? xprv;
   late String? externalXpub;
   late String? internalXpub;
+  AccountStats? masterAccountStats;
 
   late Xpub _internalXpub;
   late Xpub _externalXpub;
@@ -222,6 +225,7 @@ class Wallet {
       externalAccounts: {},
       internalAccounts: {},
       masterAccount: null,
+      masterAccountStats: null,
     );
     _wallet._setMasterXprv(Xprv.fromMnemonic(mnemonic: mnemonic), password);
     return _wallet;
@@ -241,6 +245,7 @@ class Wallet {
       externalAccounts: {},
       internalAccounts: {},
       masterAccount: null,
+      masterAccountStats: null,
     );
     _wallet._setMasterXprv(Xprv.fromXprv(xprv), password);
     return _wallet;
@@ -261,6 +266,7 @@ class Wallet {
         externalAccounts: {},
         internalAccounts: {},
         masterAccount: null,
+        masterAccountStats: null,
       );
       _wallet._setMasterXprv(Xprv.fromEncryptedXprv(xprv, password), password);
       return _wallet;
@@ -472,6 +478,7 @@ class Wallet {
       externalAccounts: _externalAccounts,
       internalAccounts: _internalAccounts,
       masterAccount: null,
+      masterAccountStats: null,
     );
 
     _wallet.id = _id;
@@ -532,6 +539,10 @@ class Wallet {
     } catch (e) {
       return false;
     }
+  }
+
+  void setMasterAccountStats(AccountStats stats) {
+    masterAccountStats = stats;
   }
 
   void setAccount(Account account) {

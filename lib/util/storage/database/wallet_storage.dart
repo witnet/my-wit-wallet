@@ -1,3 +1,4 @@
+import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:witnet/explorer.dart';
@@ -15,6 +16,7 @@ final defaultWallet = Wallet(
     externalAccounts: {},
     internalAccounts: {},
     masterAccount: null,
+    masterAccountStats: null,
     lastSynced: -1);
 final defaultAccount = Account(address: '', walletName: '', path: '');
 
@@ -114,6 +116,10 @@ class WalletStorage {
 
   void setVtt(String walletId, ValueTransferInfo vtt) {
     wallets[walletId]!.setTransaction(vtt);
+  }
+
+  void setStats(String walletId, AccountStats stats) {
+    wallets[walletId]!.setMasterAccountStats(stats);
   }
 
   void setMint(String walletId, MintEntry mint) {

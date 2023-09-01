@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/sembast.dart';
@@ -6,6 +7,7 @@ import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/account_repository.dart';
+import 'package:my_wit_wallet/util/storage/database/stats_repository.dart';
 import 'package:my_wit_wallet/util/storage/database/encrypt/keychain.dart';
 import 'package:my_wit_wallet/util/storage/database/encrypt/salsa20/codec.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
@@ -56,6 +58,7 @@ class DatabaseService {
   VttRepository vttRepository = VttRepository();
   AccountRepository accountRepository = AccountRepository();
   MintRepository mintRepository = MintRepository();
+  StatsRepository statsRepository = StatsRepository();
 
   KeyChain keyChain = KeyChain();
 
@@ -111,6 +114,9 @@ class DatabaseService {
         case MintEntry:
           await mintRepository.insertTransaction(item, _database);
           break;
+        case AccountStats:
+          await statsRepository.insertStats(item, _database);
+          break;
         default:
           return false;
       }
@@ -145,6 +151,9 @@ class DatabaseService {
         case MintEntry:
           await mintRepository.deleteTransaction(item.txnHash, _database);
           break;
+        case AccountStats:
+          await statsRepository.deleteStats(item.address, _database);
+          break;
         default:
           return false;
       }
@@ -169,6 +178,9 @@ class DatabaseService {
         case MintEntry:
           await mintRepository.updateTransaction(item, _database);
           break;
+        case AccountStats:
+          await statsRepository.updateStats(item, _database);
+          break;
         default:
           return false;
       }
@@ -176,6 +188,15 @@ class DatabaseService {
       return false;
     }
     return true;
+  }
+
+  Future<AccountStats?> getStatsByAddress(String address) async {
+    try {
+      return await statsRepository.getStatsByAddress(_database, address);
+    } catch (err) {
+      print('Error getting stats from address $address :: $err');
+      return null;
+    }
   }
 
   Future<bool> masterKeySet() async {
@@ -257,6 +278,13 @@ class DatabaseService {
               /// add the transaction if it is for this account
               if (mints[j].containsAddress(_address)) {
                 accounts[i].mints.add(mints[j]);
+              }
+              // Load saved node account stats
+              final AccountStats? accountStats = await statsRepository
+                  .getStatsByAddress(_database, accounts[i].address);
+              if (accountStats != null) {
+                walletMap[accounts[i].walletId]!
+                    .setMasterAccountStats(accountStats);
               }
             }
           }

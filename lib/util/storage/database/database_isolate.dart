@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 
+import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
@@ -17,6 +18,7 @@ Map<String, Function(DatabaseService, SendPort, Map<String, dynamic>)>
   'delete': _deleteRecord,
   'deleteDatabase': _deleteDatabase,
   'getKeychain': _getKeychain,
+  'getStatsByAddress': _getStatsByAddress,
   'getVtt': _getVtt,
   'loadWallets': _getAllWallets,
   'lock': _lock,
@@ -151,6 +153,9 @@ Future<void> _addRecord(
     case 'mint':
       value = await dbService.add(MintEntry.fromJson(params['value']));
       break;
+    case 'stats':
+      value = await dbService.add(AccountStats.fromJson(params['value']));
+      break;
     default:
       value = false;
       break;
@@ -174,6 +179,9 @@ Future<void> _deleteRecord(
       break;
     case 'account':
       value = await dbService.delete(Account.fromJson(params['value']));
+      break;
+    case 'stats':
+      value = await dbService.delete(AccountStats.fromJson(params['value']));
       break;
     default:
       value = false;
@@ -205,11 +213,21 @@ Future<void> _updateRecord(
     case 'account':
       value = await dbService.update(Account.fromJson(params['value']));
       break;
+    case 'stats':
+      value = await dbService.update(AccountStats.fromJson(params['value']));
+      break;
     default:
       value = false;
       break;
   }
   port.send(value);
+}
+
+Future<void> _getStatsByAddress(DatabaseService dbService, SendPort port,
+    Map<String, dynamic> params) async {
+  AccountStats? accountStats =
+      await dbService.getStatsByAddress(params['address']);
+  port.send(accountStats);
 }
 
 Future<void> _getAllWallets(

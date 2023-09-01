@@ -1,6 +1,7 @@
 import 'dart:isolate';
 import 'package:my_wit_wallet/util/account_preferences.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
+import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/util/storage/database/database_isolate.dart';
 import 'package:my_wit_wallet/util/storage/database/database_service.dart';
@@ -237,6 +238,29 @@ class ApiDatabase {
     } catch (e) {
       return false;
     }
+  }
+
+  Future<bool> addStats(AccountStats accountStats) async {
+    return await _processIsolate(
+        method: 'add',
+        params: {'type': 'stats', 'value': accountStats.jsonMap()});
+  }
+
+  Future<bool> deleteStats(AccountStats accountStats) async {
+    return await _processIsolate(
+        method: 'delete',
+        params: {'type': 'stats', 'value': accountStats.jsonMap()});
+  }
+
+  Future<bool> updateStats(AccountStats accountStats) async {
+    return await _processIsolate(
+        method: 'update',
+        params: {'type': 'stats', 'value': accountStats.jsonMap()});
+  }
+
+  Future<AccountStats?> getStatsByAddress(String address) async {
+    return await _processIsolate(
+        method: 'getStatsByAddress', params: {'address': address});
   }
 
   Future<bool> addWallet(Wallet wallet) async {
