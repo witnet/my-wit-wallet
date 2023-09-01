@@ -3,12 +3,9 @@ part of 'explorer_bloc.dart';
 class ExplorerState extends Equatable {
   const ExplorerState._(
       {this.status = ExplorerStatus.unknown,
-      this.syncWalletTimer,
       this.data = const {},
       this.walletStorage});
   final Map<String, dynamic> data;
-  final Timer? syncWalletTimer;
-
   final ExplorerStatus status;
   final WalletStorage? walletStorage;
 
