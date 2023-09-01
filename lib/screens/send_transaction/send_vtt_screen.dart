@@ -71,7 +71,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   void goToNextStep() {
-    if (stepListItems.indexOf(stepSelectedItem) < stepListItems.length) {
+    if (stepListItems.indexOf(stepSelectedItem) + 1 < stepListItems.length) {
       scrollController.jumpTo(0.0);
       setState(() {
         stepSelectedItem =
