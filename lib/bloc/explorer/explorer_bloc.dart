@@ -6,6 +6,7 @@ import 'package:my_wit_wallet/bloc/explorer/api_explorer.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
@@ -175,7 +176,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   void setError(error) {
     print('Error syncing the wallet $error');
-    if (syncWalletStream.isBroadcast) add(SyncErrorEvent(ExplorerStatus.error));
+    add(SyncErrorEvent(ExplorerStatus.error));
   }
 
   Future<void> _syncSingleAccount(
@@ -199,6 +200,77 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         currentWalletId: wallet.id,
         isHdWallet: wallet.walletType == WalletType.hd);
     emit(ExplorerState.synced(database.walletStorage));
+  }
+
+  Future<dynamic> _getStatsByAddress(String address, String tab) async {
+    try {
+      return await Locator.instance
+          .get<ApiExplorer>()
+          .address(value: address, tab: tab);
+    } catch (err) {
+      print('Error getting $tab stats from master account $address :: $err');
+      rethrow;
+    }
+  }
+
+  Future<void> _saveStatsInDB(
+      {required ApiDatabase database,
+      required AccountStats statsToSave}) async {
+    try {
+      await database.addStats(statsToSave);
+    } catch (err) {
+      print('Error updating stats for adddress ${statsToSave.address} :: $err');
+    }
+  }
+
+  Future<void> _updateStatsInDB(
+      {required ApiDatabase database,
+      required AccountStats statsToUpdate}) async {
+    try {
+      await database.updateStats(statsToUpdate);
+    } catch (err) {
+      print(
+          'Error updating stats for adddress ${statsToUpdate.address} :: $err');
+    }
+  }
+
+  Future<AddressBlocks?> getAddressBlocks({required String address}) async {
+    try {
+      // Get address blocks from explorer
+      final result = await _getStatsByAddress(address, 'blocks');
+      if (result.runtimeType != AddressBlocks && result['error'] != null) {
+        print('Error getting address blocks: ${result['error']}');
+        return null;
+      }
+      return result as AddressBlocks?;
+    } catch (err) {
+      print('Error getting address blocks: $err');
+      rethrow;
+    }
+  }
+
+  Future<void> _updateDBStatsFromExplorerResult(
+      {required String address,
+      required String walletId,
+      required ApiDatabase database}) async {
+    // Get saved stats from db
+    AccountStats? savedStatsByAddress =
+        await database.getStatsByAddress(address);
+    AddressBlocks? addressBlocks = await getAddressBlocks(address: address);
+    AccountStats statsByAddressToSave = AccountStats(
+        walletId: walletId, address: address, blocks: addressBlocks);
+
+    if (savedStatsByAddress == null) {
+      await _saveStatsInDB(
+          database: database, statsToSave: statsByAddressToSave);
+    } else {
+      await _updateStatsInDB(
+          database: database, statsToUpdate: statsByAddressToSave);
+    }
+
+    // Update stats in walletStorage
+    database.walletStorage
+        .setStats(walletId, savedStatsByAddress ?? statsByAddressToSave);
   }
 
   Future<WalletStorage> syncWalletRoutine(
@@ -275,6 +347,11 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         rethrow;
       }
     } else if (wallet.walletType == WalletType.single) {
+      await _updateDBStatsFromExplorerResult(
+          address: wallet.masterAccount!.address,
+          walletId: wallet.id,
+          database: database);
+
       List<Utxo> utxoList = await Locator.instance<ApiExplorer>()
           .utxos(address: wallet.masterAccount!.address);
       Account account = wallet.masterAccount!;

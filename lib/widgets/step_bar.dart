@@ -59,9 +59,7 @@ class StepBar extends StatelessWidget {
           itemCount: listItems.length,
           itemBuilder: (context, index) {
             bool isItemActionable =
-                (actionable || (index < listItems.indexOf(selectedItem)))
-                    ? true
-                    : false;
+                (actionable || (index < listItems.indexOf(selectedItem)));
             return _buildStepBarItem(
                 listItems[index], context, extendedTheme, isItemActionable);
           },

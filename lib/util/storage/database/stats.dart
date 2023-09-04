@@ -35,7 +35,7 @@ class AccountStats {
     AccountStats account = AccountStats(
       walletId: data['walletId'],
       address: data['address'],
-      blocks: data['blocks'],
+      blocks: AddressBlocks.fromJson(data['blocks']),
       details: data['details'],
       drSolved: data['drSolved'],
       drLaunched: data['drLaunched'],

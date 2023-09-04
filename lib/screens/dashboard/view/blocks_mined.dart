@@ -3,6 +3,7 @@ import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:my_wit_wallet/util/extensions/int_extensions.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
@@ -97,7 +98,14 @@ class BlockStatsState extends State<BlockStats> with TickerProviderStateMixin {
                         return _buildBlockItem(blocks.blocks[index], theme);
                       },
                     )
-                  : Text('No blocks mined yet'),
+                  : Column(children: [
+                      Text('You don\'t have mined blocks yet!'),
+                      SizedBox(
+                        height: 24,
+                      ),
+                      svgThemeImage(theme,
+                          name: 'no-transactions', height: 152),
+                    ])
             ]));
   }
 }

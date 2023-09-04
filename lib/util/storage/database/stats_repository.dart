@@ -35,6 +35,7 @@ class StatsRepository extends _StatsRepository {
       await _store.record(stats.address).add(databaseClient, stats.jsonMap());
       return true;
     } catch (e) {
+      print('Error adding stats record $e');
       return false;
     }
   }
@@ -50,6 +51,7 @@ class StatsRepository extends _StatsRepository {
           .update(databaseClient, stats.jsonMap());
       return true;
     } catch (e) {
+      print('Error updating stats record $e');
       return false;
     }
   }
@@ -72,8 +74,13 @@ class StatsRepository extends _StatsRepository {
       DatabaseClient databaseClient, String address) async {
     try {
       final result = await _store.record(address).get(databaseClient);
-      return AccountStats.fromJson(result as Map<String, dynamic>);
+      if (result != null) {
+        return AccountStats.fromJson(result as Map<String, dynamic>);
+      } else {
+        return null;
+      }
     } catch (err) {
+      print('Error getting stats record from address $address :: $err');
       return null;
     }
   }

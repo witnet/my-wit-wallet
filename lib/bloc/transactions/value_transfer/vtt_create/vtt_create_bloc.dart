@@ -407,6 +407,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
           body: VTTransactionBody(inputs: inputs, outputs: outputs),
           signatures: signatures);
     } catch (e) {
+      print('Error signing transaction $e');
       rethrow;
     }
   }
@@ -509,10 +510,8 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       SendTransactionEvent event, Emitter<VTTCreateState> emit) async {
     emit(state.copyWith(status: VTTCreateStatus.sending));
     ApiDatabase database = Locator.instance.get<ApiDatabase>();
-
     bool transactionAccepted =
         await _sendTransaction(Transaction(valueTransfer: event.transaction));
-
     if (transactionAccepted) {
       /// add pending transaction
       ///
@@ -564,7 +563,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
           );
         }
       }
-
       emit(state.copyWith(status: VTTCreateStatus.accepted));
       List<Account> utxoListToUpdate = [];
       selectedUtxos.forEach((selectedUtxo) {
