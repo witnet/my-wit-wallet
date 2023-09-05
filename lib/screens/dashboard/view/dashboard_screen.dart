@@ -4,14 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/blocks_mined.dart';
-import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/screens/dashboard/view/transactions_view.dart';
 import 'package:my_wit_wallet/util/enum_from_string.dart';
-import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/widgets/step_bar.dart';
-import 'package:number_paginator/number_paginator.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
-import 'package:my_wit_wallet/widgets/transactions_list.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
@@ -37,13 +34,10 @@ class DashboardScreenState extends State<DashboardScreen>
   String? currentAddress;
   Wallet? currentWallet;
   Account? currentAccount;
-  GeneralTransaction? txDetails;
   late AnimationController _loadingController;
   late Timer syncTimer;
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
   ScrollController scrollController = ScrollController(keepScrollOffset: true);
-  List<GeneralTransaction> vtts = [];
-  int numberOfPages = 0;
   DashboardStepBar selectedItem = DashboardStepBar.transactions;
 
   @override
@@ -58,7 +52,6 @@ class DashboardScreenState extends State<DashboardScreen>
     _setWallet();
     _setAccount();
     _syncWallet(walletId);
-    getPaginatedTransactions(PaginationParams(currentPage: 1));
   }
 
   @override
@@ -93,52 +86,6 @@ class DashboardScreenState extends State<DashboardScreen>
   void _setNewWalletData() {
     _setWallet();
     _setAccount();
-    getPaginatedTransactions(PaginationParams(currentPage: 1));
-  }
-
-  void _setDetails(GeneralTransaction? transaction) {
-    scrollController.jumpTo(0.0);
-    setState(() {
-      txDetails = transaction;
-    });
-  }
-
-  Widget _buildTransactionList(ThemeData themeData) {
-    final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
-    return Column(children: [
-      TransactionsList(
-        themeData: themeData,
-        setDetails: _setDetails,
-        details: txDetails,
-        valueTransfers: vtts,
-        externalAddresses: currentWallet!.externalAccounts,
-        internalAddresses: currentWallet!.internalAccounts,
-        singleAddressAccount: currentWallet!.walletType == WalletType.single
-            ? currentWallet!.masterAccount
-            : null,
-      ),
-      (numberOfPages > 1 && txDetails == null)
-          ? Container(
-              width: numberOfPages < 4 ? 250 : null,
-              alignment: Alignment.center,
-              child: NumberPaginator(
-                config: NumberPaginatorUIConfig(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  buttonSelectedBackgroundColor:
-                      extendedTheme.numberPaginatiorSelectedBg,
-                  buttonUnselectedForegroundColor:
-                      extendedTheme.numberPaginatiorUnselectedFg,
-                ),
-                numberPages: numberOfPages,
-                onPageChange: (int index) {
-                  getPaginatedTransactions(
-                      PaginationParams(currentPage: index + 1, limit: 10));
-                },
-              ))
-          : SizedBox(height: 8),
-      vtts.length > 0 ? SizedBox(height: 16) : SizedBox(height: 8),
-    ]);
   }
 
   BlocListener _dashboardListener() {
@@ -159,9 +106,18 @@ class DashboardScreenState extends State<DashboardScreen>
     DashboardStepBar.blocks: 'Blocks'
   };
 
+  void scrollToTop() {
+    scrollController.jumpTo(0.0);
+  }
+
+  Widget buildTransactionsView() {
+    return TransactionsView(
+        currentWallet: currentWallet!, scrollJumpToTop: scrollToTop);
+  }
+
   Widget buildMainDashboardContent(Enum selectedItem, ThemeData theme) {
     if (selectedItem == DashboardStepBar.transactions) {
-      return _buildTransactionList(theme);
+      return buildTransactionsView();
     } else {
       return BlockStats(currentWallet: currentWallet!);
     }
@@ -173,7 +129,7 @@ class DashboardScreenState extends State<DashboardScreen>
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
       return isHdWallet
-          ? _buildTransactionList(theme)
+          ? buildTransactionsView()
           : Column(
               children: [
                 StepBar(
@@ -190,18 +146,6 @@ class DashboardScreenState extends State<DashboardScreen>
               ],
             );
     });
-  }
-
-  PaginatedData getPaginatedTransactions(PaginationParams args) {
-    PaginatedData paginatedData = currentWallet!.getPaginatedTransactions(args);
-    setState(() {
-      numberOfPages = paginatedData.totalPages;
-      vtts = paginatedData.data;
-    });
-    if (scrollController.hasClients) {
-      scrollController.jumpTo(0.0);
-    }
-    return paginatedData;
   }
 
   @override
