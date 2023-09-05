@@ -29,17 +29,22 @@ class BlockStatsState extends State<BlockStats> with TickerProviderStateMixin {
     super.initState();
   }
 
-  Widget _buildBlockItem(BlockInfo block, ThemeData theme) {
+  Widget _buildBlockItem(
+      {required BlockInfo block,
+      required ThemeData theme,
+      required bool showSeparator}) {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Container(
         margin: EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
           color: WitnetPallet.transparent,
-          border: Border(
-              bottom: BorderSide(
-            color: extendedTheme.txBorderColor!,
-            width: 0.5,
-          )),
+          border: showSeparator
+              ? Border(
+                  bottom: BorderSide(
+                  color: extendedTheme.txBorderColor!,
+                  width: 0.5,
+                ))
+              : null,
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           SizedBox(height: 16),
@@ -95,7 +100,10 @@ class BlockStatsState extends State<BlockStats> with TickerProviderStateMixin {
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: blocks.blocks.length,
                       itemBuilder: (context, index) {
-                        return _buildBlockItem(blocks.blocks[index], theme);
+                        return _buildBlockItem(
+                            block: blocks.blocks[index],
+                            theme: theme,
+                            showSeparator: index != blocks.blocks.length - 1);
                       },
                     )
                   : Column(children: [
