@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/main.dart' as myWitWallet;
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/select.dart';
 
 bool walletsExist = false;
 int defaultDelay = int.parse(dotenv.env['DELAY'] ?? '100');
@@ -45,6 +46,12 @@ Future<bool> tapButton(
       finder = widgetByIcon(value);
       break;
     case PaddedButton:
+      finder = widgetByType(value);
+      break;
+    case Select:
+      finder = widgetByType(value);
+      break;
+    case SelectItem:
       finder = widgetByType(value);
       break;
     default:
