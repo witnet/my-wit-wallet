@@ -156,29 +156,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     if (syncWalletSubscription != null) syncWalletSubscription!.cancel();
   }
 
-  Future<void> _syncWalletEvent(
-      SyncWalletEvent event, Emitter<ExplorerState> emit) async {
-    if (event.force) {
-      await _singleSyncEvent(event, emit);
-    } else {
-      // Create a periodic stream for syncing the wallet
-      syncWalletStream =
-          Stream.periodic(Duration(seconds: SYNC_TIMER_IN_SECONDS), (_) {
-        add(DataLoadingEvent(ExplorerStatus.dataloading));
-        return syncWalletRoutine(event, emit);
-      }).asyncMap((event) async => await event);
-      if (syncWalletSubscription != null) syncWalletSubscription!.cancel();
-      syncWalletSubscription = syncWalletStream.listen((event) {
-        add(DataLoadedEvent(ExplorerStatus.dataloaded, event));
-      }, onError: setError, cancelOnError: false);
-    }
-  }
-
-  void setError(error) {
-    print('Error syncing the wallet $error');
-    add(SyncErrorEvent(ExplorerStatus.error));
-  }
-
   Future<void> _syncSingleAccount(
       SyncSingleAccountEvent event, Emitter<ExplorerState> emit) async {
     emit(ExplorerState.singleAccountSyncing(
@@ -200,6 +177,31 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         currentWalletId: wallet.id,
         isHdWallet: wallet.walletType == WalletType.hd);
     emit(ExplorerState.synced(database.walletStorage));
+  }
+
+  void setError(error) {
+    print('Error syncing the wallet $error');
+    if (!this.isClosed) add(SyncErrorEvent(ExplorerStatus.error));
+  }
+
+  Future<void> _syncWalletEvent(
+      SyncWalletEvent event, Emitter<ExplorerState> emit) async {
+    if (event.force) {
+      await _singleSyncEvent(event, emit);
+    } else {
+      // Create a periodic stream for syncing the wallet
+      syncWalletStream =
+          Stream.periodic(Duration(seconds: SYNC_TIMER_IN_SECONDS), (_) {
+        add(DataLoadingEvent(ExplorerStatus.dataloading));
+        return syncWalletRoutine(event, emit);
+      }).asyncMap((event) async => await event);
+      if (syncWalletSubscription != null) {
+        syncWalletSubscription!.cancel();
+      }
+      syncWalletSubscription = syncWalletStream.listen((event) {
+        add(DataLoadedEvent(ExplorerStatus.dataloaded, event));
+      }, onError: setError, cancelOnError: false);
+    }
   }
 
   Future<dynamic> _getStatsByAddress(String address, String tab) async {
@@ -236,7 +238,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<AddressBlocks?> getAddressBlocks({required String address}) async {
     try {
-      // Get address blocks from explorer
       final result = await _getStatsByAddress(address, 'blocks');
       if (result.runtimeType != AddressBlocks && result['error'] != null) {
         print('Error getting address blocks: ${result['error']}');
@@ -256,6 +257,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     // Get saved stats from db
     AccountStats? savedStatsByAddress =
         await database.getStatsByAddress(address);
+    // Get address mined blocks from explorer
     AddressBlocks? addressBlocks = await getAddressBlocks(address: address);
     AccountStats statsByAddressToSave = AccountStats(
         walletId: walletId, address: address, blocks: addressBlocks);

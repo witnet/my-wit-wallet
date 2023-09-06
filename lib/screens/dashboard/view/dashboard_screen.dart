@@ -39,6 +39,7 @@ class DashboardScreenState extends State<DashboardScreen>
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
   ScrollController scrollController = ScrollController(keepScrollOffset: true);
   DashboardStepBar selectedItem = DashboardStepBar.transactions;
+  ExplorerBloc? explorerBlock;
 
   @override
   void initState() {
@@ -60,8 +61,18 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   @override
+  void didChangeDependencies() {
+    explorerBlock = BlocProvider.of<ExplorerBloc>(context);
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     _loadingController.dispose();
+    if (explorerBlock != null &&
+        explorerBlock!.syncWalletSubscription != null) {
+      explorerBlock!.syncWalletSubscription!.cancel();
+    }
     super.dispose();
   }
 
