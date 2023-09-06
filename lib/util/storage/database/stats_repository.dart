@@ -17,7 +17,7 @@ abstract class _StatsRepository {
     DatabaseClient databaseClient,
   );
 
-  Future<List<AccountStats>> getAccountStats(DatabaseClient databaseClient);
+  Future<List<AccountStats>> getAllStats(DatabaseClient databaseClient);
 
   Future<AccountStats?> getStatsByAddress(
       DatabaseClient databaseClient, String address);
@@ -86,8 +86,7 @@ class StatsRepository extends _StatsRepository {
   }
 
   @override
-  Future<List<AccountStats>> getAccountStats(
-      DatabaseClient databaseClient) async {
+  Future<List<AccountStats>> getAllStats(DatabaseClient databaseClient) async {
     final List<RecordSnapshot<dynamic, dynamic>> snapshots =
         await _store.find(databaseClient);
 
