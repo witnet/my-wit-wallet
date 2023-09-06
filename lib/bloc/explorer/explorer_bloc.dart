@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -238,7 +239,8 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<AddressBlocks?> getAddressBlocks({required String address}) async {
     try {
-      final result = await _getStatsByAddress(address, 'blocks');
+      final result =
+          await _getStatsByAddress(address, MasterAccountStats.blocks.name);
       if (result.runtimeType != AddressBlocks && result['error'] != null) {
         print('Error getting address blocks: ${result['error']}');
         return null;
@@ -250,18 +252,56 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     }
   }
 
+  Future<AddressDataRequestsSolved?> getDataRequestsSolved(
+      {required String address}) async {
+    try {
+      final result = await _getStatsByAddress(
+          address, MasterAccountStats.data_requests_solved.name);
+      if (result.runtimeType != AddressDataRequestsSolved &&
+          result['error'] != null) {
+        print('Error getting data requests solved: ${result['error']}');
+        return null;
+      }
+      return result as AddressDataRequestsSolved?;
+    } catch (err) {
+      print('Error getting data requests solved: $err');
+      rethrow;
+    }
+  }
+
+  Future<AccountStats> getAccountStats(Wallet currentWallet) async {
+    String address = currentWallet.masterAccount!.address;
+    AddressDataRequestsSolved? dataRequestsSolved =
+        await getDataRequestsSolved(address: address);
+
+    List<MintEntry> blocks = currentWallet.allMints();
+    int feesPayed =
+        blocks.map((block) => block.fees).reduce((fees, acc) => fees + acc);
+    int totalRewards =
+        blocks.map((block) => block.reward).reduce((fees, acc) => fees + acc);
+
+    return AccountStats(
+        walletId: currentWallet.id,
+        address: address,
+        totalBlocksMined: blocks.length,
+        totalFeesPayed: feesPayed,
+        totalRewards: totalRewards,
+        totalDrSolved: dataRequestsSolved?.numDataRequestsSolved ?? 0);
+  }
+
   Future<void> _updateDBStatsFromExplorerResult(
-      {required String address,
-      required String walletId,
-      required ApiDatabase database}) async {
+      {required Wallet currentWallet, required ApiDatabase database}) async {
+    String address = currentWallet.masterAccount!.address;
+    String walletId = currentWallet.id;
     // Get saved stats from db
     AccountStats? savedStatsByAddress =
         await database.getStatsByAddress(address);
-    // Get address mined blocks from explorer
-    AddressBlocks? addressBlocks = await getAddressBlocks(address: address);
-    AccountStats statsByAddressToSave = AccountStats(
-        walletId: walletId, address: address, blocks: addressBlocks);
-
+    // Get new account data requests info from explorer
+    AccountStats statsByAddressToSave = await getAccountStats(currentWallet);
+    if (savedStatsByAddress != null &&
+        savedStatsByAddress == statsByAddressToSave) {
+      return;
+    }
     if (savedStatsByAddress == null) {
       await _saveStatsInDB(
           database: database, statsToSave: statsByAddressToSave);
@@ -350,9 +390,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       }
     } else if (wallet.walletType == WalletType.single) {
       await _updateDBStatsFromExplorerResult(
-          address: wallet.masterAccount!.address,
-          walletId: wallet.id,
-          database: database);
+          currentWallet: wallet, database: database);
 
       List<Utxo> utxoList = await Locator.instance<ApiExplorer>()
           .utxos(address: wallet.masterAccount!.address);

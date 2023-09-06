@@ -142,6 +142,7 @@ class DashboardScreenState extends State<DashboardScreen>
       return isHdWallet
           ? buildTransactionsView()
           : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 StepBar(
                     actionable: true,

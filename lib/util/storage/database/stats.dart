@@ -1,6 +1,6 @@
 import 'dart:core';
-import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:witnet/explorer.dart';
+
+import 'package:equatable/equatable.dart';
 
 enum MasterAccountStats {
   blocks,
@@ -10,35 +10,40 @@ enum MasterAccountStats {
   value_transfers,
 }
 
-class AccountStats {
-  AddressBlocks? blocks;
-  Map<String, dynamic>? details;
-  Map<String, dynamic>? drSolved;
-  Map<String, dynamic>? drLaunched;
+class AccountStats extends Equatable {
+  final String address;
+  final String walletId;
+  final int totalBlocksMined;
+  final int totalFeesPayed;
+  final int totalRewards;
+  final int totalDrSolved;
 
   AccountStats(
       {required this.address,
       required this.walletId,
-      this.blocks,
-      this.details,
-      this.drSolved,
-      this.drLaunched});
+      required this.totalBlocksMined,
+      required this.totalFeesPayed,
+      required this.totalRewards,
+      required this.totalDrSolved});
 
-  KeyType get keyType {
-    return KeyType.master;
-  }
-
-  final String address;
-  final String walletId;
+  @override
+  List<Object?> get props => [
+        address,
+        walletId,
+        totalBlocksMined,
+        totalFeesPayed,
+        totalRewards,
+        totalDrSolved
+      ];
 
   factory AccountStats.fromJson(Map<String, dynamic> data) {
     AccountStats account = AccountStats(
       walletId: data['walletId'],
       address: data['address'],
-      blocks: AddressBlocks.fromJson(data['blocks']),
-      details: data['details'],
-      drSolved: data['drSolved'],
-      drLaunched: data['drLaunched'],
+      totalBlocksMined: data['totalBlocksMined'],
+      totalFeesPayed: data['totalFeesPayed'],
+      totalRewards: data['totalRewards'],
+      totalDrSolved: data['totalDrSolved'],
     );
     return account;
   }
@@ -47,10 +52,10 @@ class AccountStats {
     return {
       'walletId': walletId,
       'address': address,
-      'blocks': blocks != null ? blocks!.jsonMap() : null,
-      'details': details,
-      'drSolved': drSolved,
-      'drLaunched': drLaunched,
+      'totalBlocksMined': totalBlocksMined,
+      'totalFeesPayed': totalFeesPayed,
+      'totalRewards': totalRewards,
+      'totalDrSolved': totalDrSolved,
     };
   }
 }
