@@ -47,6 +47,34 @@ class TransactionsListState extends State<TransactionsView>
     return paginatedData;
   }
 
+  Widget buildPagination(ExtendedTheme theme) {
+    if (numberOfPages > 1 && txDetails == null) {
+      return Container(
+          width: numberOfPages < 4 ? 250 : null,
+          alignment: Alignment.center,
+          child: NumberPaginator(
+            config: NumberPaginatorUIConfig(
+              mainAxisAlignment: MainAxisAlignment.center,
+              buttonSelectedBackgroundColor: theme.numberPaginatiorSelectedBg,
+              buttonUnselectedForegroundColor:
+                  theme.numberPaginatiorUnselectedFg,
+            ),
+            numberPages: numberOfPages,
+            initialPage: currentPage,
+            onPageChange: (int index) {
+              widget.scrollJumpToTop();
+              setState(() {
+                currentPage = index;
+              });
+              getPaginatedTransactions(
+                  PaginationParams(currentPage: index + 1, limit: 10));
+            },
+          ));
+    } else {
+      return SizedBox(height: 8);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
@@ -64,30 +92,7 @@ class TransactionsListState extends State<TransactionsView>
                 ? widget.currentWallet.masterAccount
                 : null,
       ),
-      (numberOfPages > 1 && txDetails == null)
-          ? Container(
-              width: numberOfPages < 4 ? 250 : null,
-              alignment: Alignment.center,
-              child: NumberPaginator(
-                config: NumberPaginatorUIConfig(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  buttonSelectedBackgroundColor:
-                      extendedTheme.numberPaginatiorSelectedBg,
-                  buttonUnselectedForegroundColor:
-                      extendedTheme.numberPaginatiorUnselectedFg,
-                ),
-                numberPages: numberOfPages,
-                initialPage: currentPage,
-                onPageChange: (int index) {
-                  widget.scrollJumpToTop();
-                  setState(() {
-                    currentPage = index;
-                  });
-                  getPaginatedTransactions(
-                      PaginationParams(currentPage: index + 1, limit: 10));
-                },
-              ))
-          : SizedBox(height: 8),
+      buildPagination(extendedTheme),
       vtts.length > 0 ? SizedBox(height: 16) : SizedBox(height: 8),
     ]);
   }
