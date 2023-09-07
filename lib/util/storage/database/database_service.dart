@@ -100,9 +100,6 @@ class DatabaseService {
   }
 
   Future<bool> add(dynamic item) async {
-    if (item == AccountStats) {
-      print('ADDin repo ${item.toString()}');
-    }
     try {
       switch (item.runtimeType) {
         case Wallet:

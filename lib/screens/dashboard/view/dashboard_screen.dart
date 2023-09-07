@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
-import 'package:my_wit_wallet/screens/dashboard/view/blocks_mined.dart';
+import 'package:my_wit_wallet/screens/dashboard/view/stats.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/transactions_view.dart';
 import 'package:my_wit_wallet/util/enum_from_string.dart';
 import 'package:my_wit_wallet/widgets/step_bar.dart';
@@ -130,7 +130,7 @@ class DashboardScreenState extends State<DashboardScreen>
     if (selectedItem == DashboardStepBar.transactions) {
       return buildTransactionsView();
     } else {
-      return BlockStats(currentWallet: currentWallet!);
+      return Stats(currentWallet: currentWallet!);
     }
   }
 
