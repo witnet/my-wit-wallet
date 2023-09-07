@@ -35,7 +35,7 @@ class BlockStatsState extends State<Stats> with TickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               InfoElement(
-                  label: 'Data Requests solved',
+                  label: 'Data requests solved',
                   text: stats?.totalDrSolved.toString() ?? '0'),
               InfoElement(
                   label: 'Blocks mined',

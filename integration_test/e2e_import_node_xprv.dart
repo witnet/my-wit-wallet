@@ -71,27 +71,12 @@ Future<void> e2eImportXprvTest(WidgetTester tester) async {
   expectLater(currentWallet!.masterAccount!.address,
       "wit1zl7ty0lwr7atp5fu34azkgewhtfx2fl4wv69cw");
 
-  await tapButton(tester, "Blocks");
+  await tapButton(tester, "Stats");
 
-  expect(find.text('Block ID'), findsWidgets);
-  expect(find.text('Timestamp'), findsWidgets);
-  expect(find.text('2021-05-04 09:05:15'), findsWidgets);
-  expect(find.text('Epoch'), findsWidgets);
-  expect(find.text('387686'), findsWidgets);
-  expect(find.text('Reward'), findsWidgets);
-  expect(find.text('250 WIT'), findsWidgets);
-  expect(find.text('Fees'), findsWidgets);
-  expect(find.text('0.0000001 WIT'), findsWidgets);
-  expect(find.text('Value transfer count'), findsWidgets);
-  expect(find.text('0'), findsWidgets);
-  expect(find.text('DR count'), findsWidgets);
-  expect(find.text('0'), findsWidgets);
-  expect(find.text('Commit count'), findsWidgets);
-  expect(find.text('100'), findsWidgets);
-  expect(find.text('Reveal count'), findsWidgets);
-  expect(find.text('0'), findsWidgets);
-  expect(find.text('Tally count'), findsWidgets);
-  expect(find.text('0'), findsWidgets);
+  expect(find.text('Data requests solved'), findsWidgets);
+  expect(find.text('Blocks mined'), findsWidgets);
+  expect(find.text('Total fees payed'), findsWidgets);
+  expect(find.text('Total mining rewards'), findsWidgets);
 
   /// Tap on the first PaddedButton on the screen, which is the identicon
   /// and brings up the wallet list.
@@ -101,5 +86,5 @@ Future<void> e2eImportXprvTest(WidgetTester tester) async {
   await tapButton(tester, "wit174la8pevl74hczcpfepgmt036zkmjen4hu8zzs");
 
   /// HD Wallets should not show Transactions/Blocks stepbar
-  expect(widgetByText('Blocks'), findsNothing);
+  expect(widgetByText('Stats'), findsNothing);
 }
