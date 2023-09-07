@@ -15,7 +15,7 @@ import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 
-enum DashboardStepBar { transactions, blocks }
+enum DashboardStepBar { transactions, stats }
 
 class DashboardScreen extends StatefulWidget {
   static final route = '/dashboard';
@@ -114,7 +114,7 @@ class DashboardScreenState extends State<DashboardScreen>
 
   Map<DashboardStepBar, String> dashboardSteps = {
     DashboardStepBar.transactions: 'Transactions',
-    DashboardStepBar.blocks: 'Blocks'
+    DashboardStepBar.stats: 'Stats'
   };
 
   void scrollToTop() {

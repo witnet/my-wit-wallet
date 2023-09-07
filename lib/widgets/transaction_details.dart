@@ -127,36 +127,30 @@ class TransactionDetails extends StatelessWidget {
                 label: 'Status',
                 text: transaction.status.capitalize(),
                 color: theme.textTheme.labelMedium?.color),
-            SizedBox(height: 16),
             InfoElement(
               label: 'Transaction ID',
               text: transaction.txnHash,
               url: 'https://witnet.network/search/${transaction.txnHash}',
             ),
-            SizedBox(height: 16),
             InfoElement(
                 label: 'Epoch',
                 text: _isPendingTransaction(transaction.status)
                     ? '_'
                     : transaction.epoch.toString()),
-            SizedBox(height: 16),
             InfoElement(
                 label: 'Type',
                 text: transaction.type.split('_').join(' ').toTitleCase()),
-            SizedBox(height: 16),
             InfoElement(
                 label: transaction.txnType == TransactionType.value_transfer
                     ? 'Fees payed'
                     : 'Fees collected',
                 text:
                     '${transaction.fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
-            SizedBox(height: 16),
             InfoElement(
                 label: 'Timestamp',
                 text: _isPendingTransaction(transaction.status)
                     ? '_'
                     : transaction.txnTime.formatDate()),
-            SizedBox(height: 16),
             transaction.txnType == TransactionType.value_transfer
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

@@ -38,18 +38,16 @@ class BlockStatsState extends State<BlockStats> with TickerProviderStateMixin {
                 InfoElement(
                     label: 'Data Requests solved',
                     text: stats.totalDrSolved.toString()),
-                SizedBox(height: 16),
                 InfoElement(
                     label: 'Blocks mined',
                     text: stats.totalBlocksMined.toString()),
-                SizedBox(height: 16),
                 InfoElement(
                     label: 'Total fees payed',
                     text:
                         '${stats.totalFeesPayed.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
-                SizedBox(height: 16),
                 InfoElement(
                     label: 'Total rewards',
+                    isLastItem: true,
                     text:
                         '${stats.totalRewards.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
               ]));

@@ -7,11 +7,13 @@ class InfoElement extends StatelessWidget {
   final String? url;
   final bool plainText;
   final Color? color;
+  final bool isLastItem;
 
   const InfoElement({
     required this.label,
     required this.text,
     this.plainText = false,
+    this.isLastItem = false,
     this.url,
     this.color,
   });
@@ -31,7 +33,8 @@ class InfoElement extends StatelessWidget {
           : Text(text,
               style: (color != null
                   ? theme.textTheme.bodyLarge?.copyWith(color: color)
-                  : theme.textTheme.bodyLarge))
+                  : theme.textTheme.bodyLarge)),
+      SizedBox(height: isLastItem ? 0 : 16),
     ]);
   }
 }
