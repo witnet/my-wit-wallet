@@ -19,6 +19,7 @@ import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/widgets/identicon.dart';
 import 'package:my_wit_wallet/widgets/layouts/headerLayout.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/app_lifecycle_overlay.dart';
 
 class GoBackIntent extends Intent {
   const GoBackIntent();
@@ -327,6 +328,18 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     );
   }
 
+  Widget buildOverlay(Widget child) {
+    return Overlay(
+      initialEntries: <OverlayEntry>[
+        OverlayEntry(
+          builder: (BuildContext context) => AppLifecycle(
+            child: child,
+          ),
+        )
+      ],
+    );
+  }
+
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final navigator = Navigator.of(context);
@@ -375,13 +388,13 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                       },
                     ),
                   },
-                  child: Scaffold(
+                  child: buildOverlay(Scaffold(
                       resizeToAvoidBottomInset: true,
                       backgroundColor: theme.colorScheme.background,
                       body: buildMainContent(context, theme),
                       bottomNavigationBar: isPanelClose == null || isPanelClose
                           ? bottomBar()
-                          : null)),
+                          : null))),
             )));
   }
 }
