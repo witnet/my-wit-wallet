@@ -328,22 +328,17 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     );
   }
 
-  Widget buildOverlay(Widget child) {
-    return Overlay(
-      initialEntries: <OverlayEntry>[
-        OverlayEntry(
-          builder: (BuildContext context) => AppLifecycle(
-            child: child,
-          ),
-        )
-      ],
+  Widget buildOverlay(Widget child, {bool isBottomBar = false}) {
+    return AppLifecycleOverlay(
+      isBottomBar: isBottomBar,
+      child: child,
     );
   }
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final navigator = Navigator.of(context);
-    return Shortcuts(
+    return buildOverlay(Shortcuts(
         shortcuts: <ShortcutActivator, Intent>{
           LogicalKeySet(LogicalKeyboardKey.browserBack): const GoBackIntent(),
           LogicalKeySet(LogicalKeyboardKey.goBack): const GoBackIntent(),
@@ -388,13 +383,13 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                       },
                     ),
                   },
-                  child: buildOverlay(Scaffold(
+                  child: Scaffold(
                       resizeToAvoidBottomInset: true,
                       backgroundColor: theme.colorScheme.background,
-                      body: buildMainContent(context, theme),
+                      body: buildOverlay(buildMainContent(context, theme)),
                       bottomNavigationBar: isPanelClose == null || isPanelClose
-                          ? bottomBar()
-                          : null))),
-            )));
+                          ? buildOverlay(bottomBar(), isBottomBar: true)
+                          : null)),
+            ))));
   }
 }
