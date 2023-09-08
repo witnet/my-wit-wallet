@@ -497,13 +497,22 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         String transactionId = vtts.transactionHashes[i];
         ValueTransferInfo? vtt = database.walletStorage.getVtt(transactionId);
         if (vtt != null && !account.vttHashes.contains(transactionId)) {
+          /// this vtt.status check for "confirmed" is in the local database
           if (vtt.status != "confirmed") {
-            ValueTransferInfo vtt =
+            /// this vtt is what is returned from the explorer.
+            ValueTransferInfo _vtt =
                 await Locator.instance.get<ApiExplorer>().getVtt(transactionId);
-            account.addVtt(vtt);
-
-            await database.addVtt(vtt);
-            await database.updateAccount(account);
+            /// if a vtt was previously unconfirmed and the status is now
+            /// "unknown hash", it is a stale transaction we should remove.
+            if(_vtt.status == "unknown hash"){
+              account.deleteVtt(_vtt);
+              await database.deleteVtt(_vtt.txnHash);
+              await database.updateAccount(account);
+            } else {
+              account.addVtt(_vtt);
+              await database.addVtt(_vtt);
+              await database.updateAccount(account);
+            }
           }
         } else {
           ValueTransferInfo vtt =
