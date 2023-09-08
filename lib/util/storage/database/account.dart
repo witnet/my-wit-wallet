@@ -138,6 +138,16 @@ class Account extends _Account {
     return addedVtt;
   }
 
+  bool deleteVtt(ValueTransferInfo vtt){
+    try{
+      vttHashes.removeWhere((hash) => hash == vtt.txnHash);
+      vtts.removeWhere((_vtt) => _vtt.txnHash == vtt.txnHash);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
   bool addMint(MintEntry mint) {
     mintHashes.add(mint.blockHash);
     mints.add(mint);

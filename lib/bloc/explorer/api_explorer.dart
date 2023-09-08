@@ -238,7 +238,7 @@ class ApiExplorer {
 
   Future<MintEntry> getMint(BlockInfo blockInfo) async {
     String _hash = blockInfo.blockID;
-    var result = await await Locator.instance.get<ApiExplorer>().hash(_hash);
+    var result = await Locator.instance.get<ApiExplorer>().hash(_hash);
 
     /// create a MintEntry from the BlockInfo and MintInfo
     BlockDetails blockDetails = result as BlockDetails;
