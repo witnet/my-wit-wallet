@@ -20,9 +20,24 @@ class _PreferencePageState extends State<PreferencePage> {
   bool checked = false;
   List<ConfigSteps> stepListItems = ConfigSteps.values.toList();
   Enum stepSelectedItem = ConfigSteps.General;
+  ConfigSteps? prevSelectedItem;
   ScrollController scrollController = ScrollController(keepScrollOffset: false);
+  GlobalKey<WalletConfigState> walletConfigState =
+      GlobalKey<WalletConfigState>();
+  GlobalKey<GeneralConfigState> generalConfigState =
+      GlobalKey<GeneralConfigState>();
 
-  Widget _buildConfigView() {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  Widget buildStepWithNavBar(Widget child) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -32,14 +47,22 @@ class _PreferencePageState extends State<PreferencePage> {
             listItems: stepListItems,
             onChanged: (item) => {
                   scrollController.jumpTo(0.0),
-                  setState(() => stepSelectedItem = item!)
+                  setState(() => {
+                        prevSelectedItem = stepSelectedItem as ConfigSteps,
+                        stepSelectedItem = item!,
+                      })
                 }),
         SizedBox(height: 16),
-        stepSelectedItem == ConfigSteps.General
-            ? GeneralConfig()
-            : WalletConfig(scrollController: scrollController)
+        child
       ],
     );
+  }
+
+  Widget _buildConfigView() {
+    return stepSelectedItem == ConfigSteps.General
+        ? buildStepWithNavBar(GeneralConfig(key: generalConfigState))
+        : buildStepWithNavBar(WalletConfig(
+            key: walletConfigState, scrollController: scrollController));
   }
 
   @override

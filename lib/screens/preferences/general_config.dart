@@ -14,7 +14,7 @@ import 'package:my_wit_wallet/constants.dart';
 class GeneralConfig extends StatefulWidget {
   GeneralConfig({Key? key}) : super(key: key);
   @override
-  State<StatefulWidget> createState() => _GeneralConfigState();
+  State<StatefulWidget> createState() => GeneralConfigState();
 }
 
 enum ConfigSteps {
@@ -22,7 +22,7 @@ enum ConfigSteps {
   Wallet,
 }
 
-class _GeneralConfigState extends State<GeneralConfig> {
+class GeneralConfigState extends State<GeneralConfig> {
   bool displayDarkMode = false;
   FocusNode _switchThemeFocusNode = FocusNode();
   bool _isThemeSwitchFocus = false;

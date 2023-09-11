@@ -24,6 +24,14 @@ class CreateWalletScreen extends StatefulWidget {
 
 class CreateWalletScreenState extends State<CreateWalletScreen> {
   ScrollController scrollController = ScrollController(keepScrollOffset: false);
+  GlobalKey<EnterXprvCardState> walletConfigState =
+      GlobalKey<EnterXprvCardState>();
+  GlobalKey<EnterMnemonicCardState> enterMnemonicState =
+      GlobalKey<EnterMnemonicCardState>();
+  GlobalKey<ConfirmMnemonicCardState> confirmMnemonicState =
+      GlobalKey<ConfirmMnemonicCardState>();
+  GlobalKey<EncryptWalletCardState> encryptWalletState =
+      GlobalKey<EncryptWalletCardState>();
   dynamic nextAction;
   dynamic secondaryAction;
   dynamic prevAction;
@@ -156,25 +164,32 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
       CreateWalletStatus.GenerateMnemonic: GenerateMnemonicCard(
           nextAction: _setNextAction, prevAction: _setPrevAction),
       CreateWalletStatus.EnterMnemonic: EnterMnemonicCard(
-          nextAction: _setNextAction, prevAction: _setPrevAction),
+          key: enterMnemonicState,
+          nextAction: _setNextAction,
+          prevAction: _setPrevAction),
       CreateWalletStatus.EnterXprv: EnterEncryptedXprvCard(
+        key: walletConfigState,
         nextAction: _setNextAction,
         prevAction: _setPrevAction,
         clearActions: _setClearActions,
       ),
       CreateWalletStatus.ValidXprv: null,
       CreateWalletStatus.EnterEncryptedXprv: EnterEncryptedXprvCard(
+        key: walletConfigState,
         nextAction: _setNextAction,
         prevAction: _setPrevAction,
         clearActions: _setClearActions,
       ),
       CreateWalletStatus.ConfirmMnemonic: ConfirmMnemonicCard(
-          nextAction: _setNextAction, prevAction: _setPrevAction),
+          key: confirmMnemonicState,
+          nextAction: _setNextAction,
+          prevAction: _setPrevAction),
       CreateWalletStatus.WalletDetail: WalletDetailCard(
           nextAction: _setNextAction,
           prevAction: _setPrevAction,
           clearActions: _setClearActions),
       CreateWalletStatus.EncryptWallet: EncryptWalletCard(
+        key: encryptWalletState,
         nextAction: _setNextAction,
         prevAction: _setPrevAction,
         clearActions: _setClearActions,

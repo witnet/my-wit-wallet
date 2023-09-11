@@ -19,7 +19,7 @@ class WalletConfig extends StatefulWidget {
     required this.scrollController,
   }) : super(key: key);
   @override
-  State<StatefulWidget> createState() => _WalletConfigState();
+  State<StatefulWidget> createState() => WalletConfigState();
 }
 
 enum ConfigSteps {
@@ -27,7 +27,7 @@ enum ConfigSteps {
   Wallet,
 }
 
-class _WalletConfigState extends State<WalletConfig> {
+class WalletConfigState extends State<WalletConfig> {
   String? xprv;
   String? newXprv;
   bool showXprv = false;

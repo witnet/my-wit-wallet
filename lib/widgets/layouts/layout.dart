@@ -338,7 +338,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final navigator = Navigator.of(context);
-    return buildOverlay(Shortcuts(
+    return Shortcuts(
         shortcuts: <ShortcutActivator, Intent>{
           LogicalKeySet(LogicalKeyboardKey.browserBack): const GoBackIntent(),
           LogicalKeySet(LogicalKeyboardKey.goBack): const GoBackIntent(),
@@ -390,6 +390,6 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                       bottomNavigationBar: isPanelClose == null || isPanelClose
                           ? buildOverlay(bottomBar(), isBottomBar: true)
                           : null)),
-            ))));
+            )));
   }
 }
