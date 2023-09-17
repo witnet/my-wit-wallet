@@ -58,7 +58,11 @@ platform :ios do
     pilot(
       api_key_path: './key.json',
       ipa: '../build/ios/ipa/myWitWallet.ipa',
-      skip_waiting_for_build_processing: true
+      distribute_external: true,
+      groups: ['Testers'],
+      skip_submission: true,
+      notify_external_testers: true,
+      skip_waiting_for_build_processing: false
     )
   end
 
