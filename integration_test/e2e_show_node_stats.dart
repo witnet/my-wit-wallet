@@ -15,7 +15,7 @@ bool walletsExist = false;
 String password = dotenv.env['PASSWORD'] ?? "password";
 String nodeXprv = dotenv.env['NODE_XPRV'] ?? '';
 
-Future<void> e2eImportXprvTest(WidgetTester tester) async {
+Future<void> e2eShowNodeStatsTest(WidgetTester tester) async {
   await initializeTest(tester);
 
   /// Assess what is on the screen

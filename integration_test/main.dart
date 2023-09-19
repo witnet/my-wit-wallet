@@ -1,5 +1,5 @@
 import 'e2e_import_mnemonic_test.dart';
-import 'e2e_import_node_xprv.dart';
+import 'e2e_show_node_stats.dart';
 import "e2e_mnemonic_test.dart";
 import 'package:flutter_test/flutter_test.dart';
 import 'e2e_re_establish_wallet.dart';
@@ -14,8 +14,8 @@ void main() async {
     testWidgets("Create Mnemonic Test", e2eCreateMnemonicTest);
     testWidgets("Import Mnemonic Test", e2eImportMnemonicTest);
     testWidgets("Import Xprv Test", e2eImportXprvTest);
+    testWidgets("Show node stats Test", e2eShowNodeStatsTest);
     testWidgets("Re-establish wallets", e2eReEstablishWallets);
-    testWidgets("Import Xprv Test", e2eImportXprvTest);
     testWidgets("Import Xprv From Sheikah Test", e2eImportXprvFromSheikahTest);
   });
 }
