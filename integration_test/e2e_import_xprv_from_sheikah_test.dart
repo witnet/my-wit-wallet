@@ -53,6 +53,7 @@ Future<void> e2eImportXprvFromSheikahTest(WidgetTester tester) async {
   // Select Sheikah option
   await tapButton(tester, Select, index: 0);
   await tapButton(tester, "Sheikah");
+
   /// Enter Mnemonic
   await enterText(tester, TextField, xprv, index: 0);
   await enterText(tester, TextField, password, index: 1);

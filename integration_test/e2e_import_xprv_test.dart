@@ -14,7 +14,6 @@ bool walletsExist = false;
 String password = dotenv.env['PASSWORD'] ?? "password";
 String xprv = dotenv.env['XPRV'] ??
     "xprv13vegej6qvgn6e9kfhyp40p2fhdwg70z2ffc4z80jst6v74pz7uk78n9x04e8rwsje4ylyfnq4vxj6mgpt9syh5tqply8amck90ujhxlgt2nu88kxxzut6f02yvzzkfxjpjruxmhm80drt8sl43xelp266qgkmveray3k3nlq9ndwa9hgx0z32sd2wx5sj8hegp2c74agha3rcysq0tvhfapmdz88xhy6nd5r6sed9g3p0pnlp8m49jl76x36tksef6u0jr2uyd8a66hd3qpvlfazhcadnusc";
-    
 
 Future<void> e2eImportXprvTest(WidgetTester tester) async {
   await initializeTest(tester);
