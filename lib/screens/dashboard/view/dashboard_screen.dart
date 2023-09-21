@@ -49,9 +49,9 @@ class DashboardScreenState extends State<DashboardScreen>
       duration: const Duration(milliseconds: 1200),
     );
     _loadingController.forward();
-    String walletId = database.walletStorage.currentWallet.id;
     _setWallet();
     _setAccount();
+    String walletId = database.walletStorage.currentWallet.id;
     _syncWallet(walletId);
   }
 
@@ -102,8 +102,8 @@ class DashboardScreenState extends State<DashboardScreen>
   BlocListener _dashboardListener() {
     return BlocListener<DashboardBloc, DashboardState>(
       listener: (BuildContext context, DashboardState state) {
-        _setNewWalletData();
         if (state.status == DashboardStatus.Ready) {
+          _setNewWalletData();
           String walletId = database.walletStorage.currentWallet.id;
           _syncWallet(walletId, force: true);
         }

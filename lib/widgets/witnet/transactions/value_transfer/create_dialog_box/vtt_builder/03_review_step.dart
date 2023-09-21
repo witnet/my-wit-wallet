@@ -75,7 +75,7 @@ class ReviewStepState extends State<ReviewStep>
     int fee = BlocProvider.of<VTTCreateBloc>(context).getFee();
     return BlocBuilder<VTTCreateBloc, VTTCreateState>(
       builder: (context, state) {
-        if (state.vttCreateStatus == VTTCreateStatus.exception) {
+        if (state.vttCreateStatus == VTTCreateStatus.discarded) {
           buildTxGeneralExceptionModal(
               theme: theme,
               context: context,

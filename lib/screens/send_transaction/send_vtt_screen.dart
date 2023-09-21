@@ -54,6 +54,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
     );
     _loadingController.forward();
     _getCurrentWallet();
+    _getPriorityEstimations();
   }
 
   @override
@@ -86,6 +87,10 @@ class CreateVttScreenState extends State<CreateVttScreen>
       BlocProvider.of<VTTCreateBloc>(context)
           .add(AddSourceWalletsEvent(currentWallet: currentWallet!));
     });
+  }
+
+  void _getPriorityEstimations() {
+    BlocProvider.of<VTTCreateBloc>(context).add(SetPriorityEstimationsEvent());
   }
 
   bool _isNextStepAllow() {
@@ -201,7 +206,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
     return BlocListener<DashboardBloc, DashboardState>(
       listener: (BuildContext context, DashboardState state) {
         BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
-        Navigator.push(
+        Navigator.pushReplacement(
             context,
             CustomPageRoute(
                 builder: (BuildContext context) {

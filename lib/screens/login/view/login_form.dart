@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/screens/login/view/biometrics_autentication.dart';
 import 'package:my_wit_wallet/screens/login/view/re_establish_wallet_button.dart';
 import 'package:my_wit_wallet/util/allow_biometrics.dart';
+import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
@@ -79,7 +80,14 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
           });
         }
         if (state.status == LoginStatus.LoginSuccess) {
-          Navigator.pushReplacementNamed(context, DashboardScreen.route);
+                      Navigator.pushReplacement(
+                context,
+                CustomPageRoute(
+                    builder: (BuildContext context) {
+                      return DashboardScreen();
+                    },
+                    maintainState: false,
+                    settings: RouteSettings(name: DashboardScreen.route)));
         }
         if (state.status == LoginStatus.LoginCancelled) {
           setState(() {

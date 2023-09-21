@@ -26,7 +26,7 @@ Future<bool> _sendTransaction(Transaction transaction) async {
         await Locator.instance.get<ApiExplorer>().sendTransaction(transaction);
     return resp['result'];
   } catch (e) {
-    print('Error sending transaction: $e');
+    print('Error sending transaction: $transaction $e');
     return false;
   }
 }
@@ -55,6 +55,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     on<UpdateFeeEvent>(_updateFeeEvent);
     on<UpdateUtxoSelectionStrategyEvent>(_updateUtxoSelectionStrategyEvent);
     on<AddSourceWalletsEvent>(_addSourceWalletsEvent);
+    on<SetPriorityEstimationsEvent>(_setPriorityEstimations);
     on<ResetTransactionEvent>(_resetTransactionEvent);
     on<ValidateTransactionEvent>(_validateTransactionEvent);
 
@@ -81,6 +82,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   UtxoSelectionStrategy utxoSelectionStrategy =
       UtxoSelectionStrategy.SmallFirst;
   PrioritiesEstimate? prioritiesEstimate;
+  bool isPrioritiesLoading = false;
   Map<EstimatedFeeOptions, String?> minerFeeOptions = DEFAULT_MINER_FEE_OPTIONS;
 
   int getFee([int additionalOutputs = 0]) {
@@ -96,15 +98,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     num txWeight = (inputs.length * INPUT_SIZE) +
         (outputs.length + additionalOutputs * OUTPUT_SIZE * GAMMA);
     return (txWeight * multiplier).round();
-  }
-
-  Future setEstimatedPriorities() async {
-    try {
-      prioritiesEstimate = await Locator.instance.get<ApiExplorer>().priority();
-    } catch (e) {
-      print('Error getting priority estimations $e');
-      rethrow;
-    }
   }
 
   void setEstimatedWeightedFees() {
@@ -593,7 +586,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       await Locator.instance<ApiDatabase>().getWalletStorage(true);
       await database.updateCurrentWallet();
     } else {
-      emit(state.copyWith(status: VTTCreateStatus.exception));
+      emit(state.copyWith(status: VTTCreateStatus.discarded));
     }
   }
 
@@ -615,12 +608,21 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     await setWallet(event.currentWallet);
     emit(state.copyWith(
         inputs: inputs, outputs: outputs, status: VTTCreateStatus.building));
-    try {
-      await setEstimatedPriorities();
-    } catch (err) {
-      print('Error setting estimated priorities $err');
-      emit(state.copyWith(status: VTTCreateStatus.exception));
-      rethrow;
+  }
+
+  Future<void> _setPriorityEstimations(
+      SetPriorityEstimationsEvent event, Emitter<VTTCreateState> emit) async {
+    if (!isPrioritiesLoading) {
+      isPrioritiesLoading = true;
+      try {
+        prioritiesEstimate =
+            await Locator.instance.get<ApiExplorer>().priority();
+        isPrioritiesLoading = false;
+      } catch (e) {
+        print('Error getting priority estimations $e');
+        isPrioritiesLoading = false;
+        rethrow;
+      }
     }
   }
 

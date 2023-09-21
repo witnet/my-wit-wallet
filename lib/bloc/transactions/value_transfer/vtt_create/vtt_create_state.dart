@@ -11,6 +11,7 @@ enum VTTCreateStatus {
   recipientSet,
   inputSet,
   exception,
+  discarded,
 }
 
 class VTTCreateState extends Equatable {

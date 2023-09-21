@@ -14,6 +14,7 @@ import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/animated_numeric_text.dart';
 import 'package:my_wit_wallet/widgets/auto_size_text.dart';
+import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:witnet/utils.dart';
 
@@ -377,7 +378,14 @@ class BuildWalletCardState extends State<BuildWalletCard>
           if (state.status == LoginStatus.LoginSuccess) {
             BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
             listenStatus = false;
-            Navigator.pushReplacementNamed(context, DashboardScreen.route);
+            Navigator.pushReplacement(
+                context,
+                CustomPageRoute(
+                    builder: (BuildContext context) {
+                      return DashboardScreen();
+                    },
+                    maintainState: false,
+                    settings: RouteSettings(name: DashboardScreen.route)));
           }
         },
         child: Column(

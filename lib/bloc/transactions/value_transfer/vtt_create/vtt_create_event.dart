@@ -52,6 +52,12 @@ class AddSourceWalletsEvent extends VTTCreateEvent {
   List<Object?> get props => [currentWallet];
 }
 
+class SetPriorityEstimationsEvent extends VTTCreateEvent {
+  SetPriorityEstimationsEvent();
+  @override
+  List<Object?> get props => [];
+}
+
 class ValidRecipientAddressEvent extends VTTCreateEvent {
   final String address;
   ValidRecipientAddressEvent({required this.address});
