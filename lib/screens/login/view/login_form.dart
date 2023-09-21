@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_wit_wallet/screens/login/view/biometrics_autentication.dart';
 import 'package:my_wit_wallet/screens/login/view/re_establish_wallet_button.dart';
-import 'package:my_wit_wallet/util/allow_biometrics.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
