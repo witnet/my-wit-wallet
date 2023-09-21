@@ -68,6 +68,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
 
   @override
   void dispose() {
+    _scanQrFocusNode.removeListener(_handleFocus);
     super.dispose();
   }
 

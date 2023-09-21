@@ -45,6 +45,7 @@ class ReEstablishWalletDisclaimerState
 
   @override
   void dispose() {
+    _checkBoxFocusNode.removeListener(_handleFocus);
     super.dispose();
     _providerControllerList.forEach((controller) {
       controller.dispose();

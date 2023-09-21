@@ -71,6 +71,7 @@ class RecipientStepState extends State<RecipientStep>
 
   @override
   void dispose() {
+    _scanQrFocusNode.removeListener(_handleFocus);
     _loadingController.dispose();
     _addressController.dispose();
     _addressFocusNode.dispose();

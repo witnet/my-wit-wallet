@@ -36,6 +36,7 @@ class GeneralConfigState extends State<GeneralConfig> {
 
   @override
   void dispose() {
+    _switchThemeFocusNode.removeListener(_handleFocus);
     super.dispose();
   }
 

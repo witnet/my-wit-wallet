@@ -71,6 +71,7 @@ class DashboardLayoutState extends State<DashboardLayout>
 
   @override
   void dispose() {
+    _copyToClipboardFocusNode.removeListener(_handleFocus);
     super.dispose();
   }
 

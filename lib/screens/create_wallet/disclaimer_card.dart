@@ -37,6 +37,7 @@ class DisclaimerCardState extends State<DisclaimerCard>
 
   @override
   void dispose() {
+    _checkBoxFocusNode.removeListener(_handleFocus);
     super.dispose();
     _providerControllerList.forEach((controller) {
       controller.dispose();
