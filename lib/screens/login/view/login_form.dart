@@ -80,14 +80,14 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
           });
         }
         if (state.status == LoginStatus.LoginSuccess) {
-                      Navigator.pushReplacement(
-                context,
-                CustomPageRoute(
-                    builder: (BuildContext context) {
-                      return DashboardScreen();
-                    },
-                    maintainState: false,
-                    settings: RouteSettings(name: DashboardScreen.route)));
+          Navigator.pushReplacement(
+              context,
+              CustomPageRoute(
+                  builder: (BuildContext context) {
+                    return DashboardScreen();
+                  },
+                  maintainState: false,
+                  settings: RouteSettings(name: DashboardScreen.route)));
         }
         if (state.status == LoginStatus.LoginCancelled) {
           setState(() {

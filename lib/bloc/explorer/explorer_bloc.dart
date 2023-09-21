@@ -322,8 +322,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<WalletStorage> syncWalletRoutine(
       SyncWalletEvent event, Emitter<ExplorerState> emit) async {
-    print('⚙️ ${new DateTime.now()} ⚙️ ⚙️ ⚙️ sync wallet routine ⚙️ ⚙️ ⚙️ ⚙️');
-
     /// get current wallet
     ApiDatabase database = Locator.instance<ApiDatabase>();
     Wallet wallet = database.walletStorage.currentWallet;
