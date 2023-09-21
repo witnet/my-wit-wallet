@@ -152,7 +152,6 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              showBiometrics() ? BiometricsAutentication() : Container(),
               SizedBox(height: 8),
               ReEstablishWalletBtn(),
             ])
