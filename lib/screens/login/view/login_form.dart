@@ -24,12 +24,14 @@ class LoginForm extends StatefulWidget {
 class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
   PasswordInput _password = PasswordInput.pure();
   bool isLoading = false;
+  bool _showBiometrics = false;
   String? _passwordInputErrorText;
 
   final _loginController = TextEditingController();
   final _loginFocusNode = FocusNode();
   final _showPasswordFocusNode = FocusNode();
   ValidationUtils validationUtils = ValidationUtils();
+  Widget biometricsOrPassword = Container();
 
   @override
   void initState() {
@@ -149,23 +151,32 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
   }
 
   @override
-  Layout build(BuildContext context) {
-    return Layout(
-      navigationActions: [],
-      widgetList: [
-        ...widget.mainComponents,
-        SizedBox(height: 16),
-        _loginForm(),
-        Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              showBiometrics() ? BiometricsAutentication() : Container(),
-              SizedBox(height: 8),
-              ReEstablishWalletBtn(),
-            ])
-      ],
-      actions: [_loginListener()],
-    );
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: showBiometrics(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            _showBiometrics = snapshot.data as bool;
+            biometricsOrPassword =
+                _showBiometrics ? BiometricsAutentication() : Container();
+          }
+          return Layout(
+            navigationActions: [],
+            widgetList: [
+              ...widget.mainComponents,
+              SizedBox(height: 16),
+              _loginForm(),
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    biometricsOrPassword,
+                    SizedBox(height: 8),
+                    ReEstablishWalletBtn(),
+                  ])
+            ],
+            actions: [_loginListener()],
+          );
+        });
   }
 }

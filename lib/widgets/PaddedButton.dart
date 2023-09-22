@@ -15,6 +15,18 @@ enum ButtonType {
   boxButton
 }
 
+Widget buildCircularProgress(context, theme) {
+  return SizedBox(
+      height: 20,
+      width: 20,
+      child: CircularProgressIndicator(
+        color: theme.textTheme.labelMedium?.color,
+        strokeWidth: 2,
+        value: null,
+        semanticsLabel: 'Circular progress indicator',
+      ));
+}
+
 class PaddedButton extends StatelessWidget {
   PaddedButton(
       {required this.padding,
@@ -47,18 +59,6 @@ class PaddedButton extends StatelessWidget {
   final bool darkBackground;
   final double? fontSize;
 
-  Widget _buildCircularProgress(context, theme) {
-    return SizedBox(
-        height: 20,
-        width: 20,
-        child: CircularProgressIndicator(
-          color: theme.textTheme.labelMedium?.color,
-          strokeWidth: 2,
-          value: null,
-          semanticsLabel: 'Circular progress indicator',
-        ));
-  }
-
   @override
   Widget build(BuildContext context) {
     final isPrimary = type == ButtonType.primary;
@@ -75,7 +75,7 @@ class PaddedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         minimumSize: Size(double.infinity, 54),
       ),
-      child: isLoading ? _buildCircularProgress(context, theme) : Text(text),
+      child: isLoading ? buildCircularProgress(context, theme) : Text(text),
       onPressed: enabled ? onPressed : null,
     );
 
@@ -83,7 +83,7 @@ class PaddedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         minimumSize: Size(double.infinity, 54),
       ),
-      child: isLoading ? _buildCircularProgress(context, theme) : Text(text),
+      child: isLoading ? buildCircularProgress(context, theme) : Text(text),
       onPressed: onPressed,
     );
 

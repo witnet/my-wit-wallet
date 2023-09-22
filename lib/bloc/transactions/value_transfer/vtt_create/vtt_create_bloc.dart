@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/allow_biometrics.dart';
 import 'package:witnet/constants.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
@@ -58,6 +59,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     on<SetPriorityEstimationsEvent>(_setPriorityEstimations);
     on<ResetTransactionEvent>(_resetTransactionEvent);
     on<ValidateTransactionEvent>(_validateTransactionEvent);
+    on<ShowAuthPreferencesEvent>(_showPasswordValidationModal);
 
     ///
   }
@@ -91,6 +93,13 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         return feeNanoWit;
       case FeeType.Weighted:
         return calculatedWeightedFee(feeNanoWit);
+    }
+  }
+
+  Future<void> _showPasswordValidationModal(
+      ShowAuthPreferencesEvent event, Emitter<VTTCreateState> emit) async {
+    if (await showBiometrics()) {
+      emit(state.copyWith(status: VTTCreateStatus.needPasswordValidation));
     }
   }
 

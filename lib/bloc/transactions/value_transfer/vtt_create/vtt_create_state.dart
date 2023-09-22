@@ -2,6 +2,7 @@ part of 'vtt_create_bloc.dart';
 
 enum VTTCreateStatus {
   initial,
+  needPasswordValidation,
   building,
   busy,
   signing,

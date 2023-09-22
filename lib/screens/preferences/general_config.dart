@@ -3,6 +3,7 @@ import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
+import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/switch.dart';
@@ -10,6 +11,9 @@ import 'package:my_wit_wallet/bloc/theme/theme_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/unlock_keychain_modal.dart';
+
+enum AuthPreferences { Password, Biometrics }
 
 class GeneralConfig extends StatefulWidget {
   GeneralConfig({Key? key}) : super(key: key);
@@ -24,14 +28,18 @@ enum ConfigSteps {
 
 class GeneralConfigState extends State<GeneralConfig> {
   bool displayDarkMode = false;
+  bool authWithBiometrics = false;
   FocusNode _switchThemeFocusNode = FocusNode();
   bool _isThemeSwitchFocus = false;
+  FocusNode _switchAuthModeFocusNode = FocusNode();
+  bool _isAuthModeSwitchFocus = false;
 
   @override
   void initState() {
     super.initState();
     _switchThemeFocusNode.addListener(_handleFocus);
     _getTheme();
+    _getAuthPreferences();
   }
 
   @override
@@ -59,7 +67,21 @@ class GeneralConfigState extends State<GeneralConfig> {
     }
   }
 
-  Widget themeWidget(heigh, context) {
+  Future<void> _getAuthPreferences() async {
+    String? authPreferences = await ApiPreferences.getAuthPreferences();
+    if (authPreferences != null &&
+        authPreferences == AuthPreferences.Biometrics.name) {
+      setState(() {
+        authWithBiometrics = true;
+      });
+    } else {
+      setState(() {
+        authWithBiometrics = false;
+      });
+    }
+  }
+
+  Widget themeWidget(context) {
     return Row(children: [
       CustomSwitch(
           focusNode: _switchThemeFocusNode,
@@ -79,6 +101,32 @@ class GeneralConfigState extends State<GeneralConfig> {
     ]);
   }
 
+  Widget biometricsAuth(ThemeData theme, BuildContext context) {
+    return Row(children: [
+      CustomSwitch(
+          focusNode: _switchAuthModeFocusNode,
+          isFocused: _isAuthModeSwitchFocus,
+          checked: authWithBiometrics,
+          primaryLabel: 'Biometrics',
+          secondaryLabel: 'Password',
+          onChanged: (value) => {
+                setState(() {
+                  authWithBiometrics = !authWithBiometrics;
+                  final authMode = authWithBiometrics
+                      ? AuthPreferences.Biometrics
+                      : AuthPreferences.Password;
+                  ApiPreferences.setAuthPreferences(authMode);
+                  if (authMode == AuthPreferences.Password) {
+                    unlockKeychainModal(
+                        theme: theme,
+                        context: context,
+                        routeToRedirect: PreferencePage.route);
+                  }
+                })
+              }),
+    ]);
+  }
+
   //Log out
   void _logOut() {
     BlocProvider.of<ExplorerBloc>(context)
@@ -91,7 +139,6 @@ class GeneralConfigState extends State<GeneralConfig> {
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     return Padding(
         padding: EdgeInsets.only(left: 8, right: 8),
@@ -101,7 +148,13 @@ class GeneralConfigState extends State<GeneralConfig> {
             'Theme',
             style: theme.textTheme.titleSmall,
           ),
-          themeWidget(deviceSize.height * 0.25, context),
+          themeWidget(context),
+          SizedBox(height: 16),
+          Text(
+            'Enable login with biometrics',
+            style: theme.textTheme.titleSmall,
+          ),
+          biometricsAuth(theme, context),
           SizedBox(height: 16),
           Text(
             'Lock your wallet',

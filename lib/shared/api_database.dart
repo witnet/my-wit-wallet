@@ -163,16 +163,25 @@ class ApiDatabase {
 
   Future<bool> verifyPassword(String password) async {
     try {
-      // verify password if empty but has master key
-      ApiDatabase db = Locator.instance<ApiDatabase>();
-      String key = await db.getKeychain();
-      var value = await _processIsolate(
+      bool isValidPasssword = await await _processIsolate(
         method: 'verifyPassword',
         params: {'password': password},
       );
-      if (value) {
+      if (isValidPasssword) {
         unlocked = true;
       }
+      return isValidPasssword;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> verifyLogin(String password) async {
+    try {
+      // verify password if empty but has master key
+      ApiDatabase db = Locator.instance<ApiDatabase>();
+      String key = await db.getKeychain();
+      var value = await verifyPassword(password);
       return key != '' ? true : value;
     } catch (e) {
       return false;

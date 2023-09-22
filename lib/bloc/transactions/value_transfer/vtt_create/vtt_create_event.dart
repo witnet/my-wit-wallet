@@ -77,6 +77,8 @@ class BuildTransactionEvent extends VTTCreateEvent {}
 
 class ValidateTransactionEvent extends VTTCreateEvent {}
 
+class ShowAuthPreferencesEvent extends VTTCreateEvent {}
+
 class SignTransactionEvent extends VTTCreateEvent {
   final VTTransactionBody vtTransactionBody;
   final Wallet currentWallet;

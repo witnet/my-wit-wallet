@@ -78,7 +78,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     ApiDatabase apiDatabase = Locator.instance<ApiDatabase>();
     try {
       emit(state.copyWith(status: LoginStatus.LoginInProgress));
-      bool verified = await apiDatabase.verifyPassword(event.password);
+      bool verified = await apiDatabase.verifyLogin(event.password);
       if (verified) {
         final currentWallet = apiDatabase.walletStorage.currentWallet;
         await apiDatabase.updateCurrentWallet(

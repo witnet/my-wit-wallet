@@ -7,12 +7,14 @@ buildAlertDialog({
   Color? color,
   required String title,
   required Widget content,
+  bool closable = true,
 }) {
   final theme = Theme.of(context);
   return Future.delayed(
       Duration.zero,
       () => showDialog<String>(
             context: context,
+            barrierDismissible: closable,
             builder: (BuildContext context) => AlertDialog(
               title: Text(
                 title,

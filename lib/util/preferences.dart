@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:my_wit_wallet/screens/preferences/general_config.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,6 +35,16 @@ class ApiPreferences {
   static Future<String?> getTheme() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     return pref.getString('theme');
+  }
+
+  static Future<void> setAuthPreferences(AuthPreferences theme) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('auth_preferences', theme.name);
+  }
+
+  static Future<String?> getAuthPreferences() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getString('auth_preferences');
   }
 
   static Future<void> setCurrentAddress(AddressEntry addressEntry) async {
