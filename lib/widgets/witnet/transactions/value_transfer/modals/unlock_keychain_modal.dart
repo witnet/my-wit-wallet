@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
-import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/screens/login/view/password_validate.dart';
-import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
-import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 
 Future<String?> unlockKeychainModal(
     {required ThemeData theme,
+    required String title,
     required BuildContext context,
+    required VoidCallback onAction,
     required String routeToRedirect}) {
   return Future.delayed(
       Duration.zero,
@@ -42,11 +39,10 @@ Future<String?> unlockKeychainModal(
                       setState(
                           () => _passwordInputErrorText = 'Invalid password');
                     } else {
+                      onAction();
                       Navigator.popUntil(
                           context, ModalRoute.withName(routeToRedirect));
                       ScaffoldMessenger.of(context).clearSnackBars();
-                      BlocProvider.of<VTTCreateBloc>(context)
-                          .add(ResetTransactionEvent());
                     }
                   }
                 } catch (err) {
@@ -56,7 +52,7 @@ Future<String?> unlockKeychainModal(
 
               return AlertDialog(
                 title: Text(
-                  'Input your password to send a transaction',
+                  title,
                   style: theme.textTheme.displayMedium,
                 ),
                 backgroundColor: theme.colorScheme.background,
@@ -82,18 +78,6 @@ Future<String?> unlockKeychainModal(
                             Navigator.popUntil(
                                 context, ModalRoute.withName(routeToRedirect)),
                             ScaffoldMessenger.of(context).clearSnackBars(),
-                            if (routeToRedirect == CreateVttScreen.route)
-                              {
-                                Navigator.pushReplacement(
-                                    context,
-                                    CustomPageRoute(
-                                        builder: (BuildContext context) {
-                                          return DashboardScreen();
-                                        },
-                                        maintainState: false,
-                                        settings: RouteSettings(
-                                            name: DashboardScreen.route)))
-                              }
                           }),
                   PaddedButton(
                       padding: EdgeInsets.only(top: 0),

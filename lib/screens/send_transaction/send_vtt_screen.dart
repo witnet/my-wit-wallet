@@ -55,7 +55,6 @@ class CreateVttScreenState extends State<CreateVttScreen>
     _loadingController.forward();
     _getCurrentWallet();
     _getPriorityEstimations();
-    BlocProvider.of<VTTCreateBloc>(context).add(ShowAuthPreferencesEvent());
   }
 
   @override

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/util/allow_biometrics.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/general_error_tx_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/sending_tx_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/signing_tx_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/successfull_transaction_modal.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/unlock_keychain_modal.dart';
 import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
@@ -49,8 +51,18 @@ class ReviewStepState extends State<ReviewStep>
     super.dispose();
   }
 
-  void nextAction() {
+  void nextAction() async {
     // Sign transaction
+    if (await showBiometrics()) {
+      setState(() {
+        BlocProvider.of<VTTCreateBloc>(context).add(ShowAuthPreferencesEvent());
+      });
+    } else {
+      _signTransaction();
+    }
+  }
+
+  void _signTransaction() {
     final vtt =
         BlocProvider.of<VTTCreateBloc>(context).state.vtTransaction.body;
     BlocProvider.of<VTTCreateBloc>(context).add(SignTransactionEvent(
@@ -75,6 +87,14 @@ class ReviewStepState extends State<ReviewStep>
     int fee = BlocProvider.of<VTTCreateBloc>(context).getFee();
     return BlocBuilder<VTTCreateBloc, VTTCreateState>(
       builder: (context, state) {
+        if (state.vttCreateStatus == VTTCreateStatus.needPasswordValidation) {
+          unlockKeychainModal(
+              title: 'Input your password to sign the transaction',
+              theme: theme,
+              context: context,
+              onAction: () => _signTransaction(),
+              routeToRedirect: CreateVttScreen.route);
+        }
         if (state.vttCreateStatus == VTTCreateStatus.discarded) {
           buildTxGeneralExceptionModal(
               theme: theme,

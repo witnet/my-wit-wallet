@@ -118,6 +118,8 @@ class GeneralConfigState extends State<GeneralConfig> {
                   ApiPreferences.setAuthPreferences(authMode);
                   if (authMode == AuthPreferences.Password) {
                     unlockKeychainModal(
+                        onAction: () => {},
+                        title: 'Input your password',
                         theme: theme,
                         context: context,
                         routeToRedirect: PreferencePage.route);

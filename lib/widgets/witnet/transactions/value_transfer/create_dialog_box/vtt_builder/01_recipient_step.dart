@@ -289,12 +289,6 @@ class RecipientStepState extends State<RecipientStep>
         return true;
       },
       listener: (context, state) {
-        if (state.vttCreateStatus == VTTCreateStatus.needPasswordValidation) {
-          unlockKeychainModal(
-              theme: theme,
-              context: context,
-              routeToRedirect: CreateVttScreen.route);
-        }
         if (state.vttCreateStatus == VTTCreateStatus.exception) {
           setState(() {
             _connectionError = true;
