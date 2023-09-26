@@ -3,52 +3,52 @@ import 'colors.dart';
 
 @immutable
 class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
-  const ExtendedTheme({
-    required this.selectBackgroundColor,
-    required this.selectedTextColor,
-    required this.dropdownBackgroundColor,
-    required this.dropdownTextColor,
-    required this.headerDashboardActiveButton,
-    required this.headerBackgroundColor,
-    required this.headerTextColor,
-    required this.headerActiveTextColor,
-    required this.walletListBackgroundColor,
-    required this.walletActiveItemBackgroundColor,
-    required this.walletActiveItemBorderColor,
-    required this.walletItemBorderColor,
-    required this.inputIconColor,
-    required this.txBorderColor,
-    required this.txValuePositiveColor,
-    required this.txValueNegativeColor,
-    required this.stepBarActiveColor,
-    required this.stepBarActionableColor,
-    required this.stepBarColor,
-    required this.switchActiveBg,
-    required this.switchActiveFg,
-    required this.switchInactiveBg,
-    required this.switchInactiveFg,
-    required this.switchBorderColor,
-    required this.dialogBackground,
-    required this.copiedSnackbarBg,
-    required this.copiedSnackbarText,
-    required this.monoSmallText,
-    required this.monoRegularText,
-    required this.monoMediumText,
-    required this.monoLargeText,
-    required this.errorColor,
-    required this.activeClickableBoxBgColor,
-    required this.activeClickableBoxBorderColor,
-    required this.inactiveClickableBoxBgColor,
-    required this.inactiveClickableBoxBorderColor,
-    required this.numberPaginatiorSelectedBg,
-    required this.numberPaginatiorUnselectedFg,
-    required this.darkBgFocusColor,
-    required this.focusBg,
-    required this.tooltipBgColor,
-    required this.hdWalletTypeBgColor,
-    required this.singleWalletBgColor,
-    required this.warningColor,
-  });
+  const ExtendedTheme(
+      {required this.selectBackgroundColor,
+      required this.selectedTextColor,
+      required this.dropdownBackgroundColor,
+      required this.dropdownTextColor,
+      required this.headerDashboardActiveButton,
+      required this.headerBackgroundColor,
+      required this.headerTextColor,
+      required this.headerActiveTextColor,
+      required this.walletListBackgroundColor,
+      required this.walletActiveItemBackgroundColor,
+      required this.walletActiveItemBorderColor,
+      required this.walletItemBorderColor,
+      required this.inputIconColor,
+      required this.txBorderColor,
+      required this.txValuePositiveColor,
+      required this.txValueNegativeColor,
+      required this.stepBarActiveColor,
+      required this.stepBarActionableColor,
+      required this.stepBarColor,
+      required this.switchActiveBg,
+      required this.switchActiveFg,
+      required this.switchInactiveBg,
+      required this.switchInactiveFg,
+      required this.switchBorderColor,
+      required this.dialogBackground,
+      required this.copiedSnackbarBg,
+      required this.copiedSnackbarText,
+      required this.monoSmallText,
+      required this.monoRegularText,
+      required this.monoMediumText,
+      required this.monoLargeText,
+      required this.errorColor,
+      required this.activeClickableBoxBgColor,
+      required this.activeClickableBoxBorderColor,
+      required this.inactiveClickableBoxBgColor,
+      required this.inactiveClickableBoxBorderColor,
+      required this.numberPaginatiorSelectedBg,
+      required this.numberPaginatiorUnselectedFg,
+      required this.darkBgFocusColor,
+      required this.focusBg,
+      required this.tooltipBgColor,
+      required this.hdWalletTypeBgColor,
+      required this.singleWalletBgColor,
+      required this.warningColor,
+      required this.backgroundBox});
   final Color? selectBackgroundColor;
   final Color? selectedTextColor;
   final Color? dropdownBackgroundColor;
@@ -93,6 +93,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? hdWalletTypeBgColor;
   final Color? singleWalletBgColor;
   final Color? warningColor;
+  final Color? backgroundBox;
   @override
   ExtendedTheme copyWith(
       {Color? selectBackgroundColor,
@@ -136,6 +137,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       Color? hdWalletTypeBgColor,
       Color? singleWalletBgColor,
       Color? warningColor,
+      Color? backgroundBox,
       r}) {
     return ExtendedTheme(
         selectBackgroundColor:
@@ -197,7 +199,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         tooltipBgColor: tooltipBgColor ?? this.tooltipBgColor,
         hdWalletTypeBgColor: hdWalletTypeBgColor ?? this.hdWalletTypeBgColor,
         singleWalletBgColor: singleWalletBgColor ?? this.singleWalletBgColor,
-        warningColor: warningColor ?? this.warningColor);
+        warningColor: warningColor ?? this.warningColor,
+        backgroundBox: backgroundBox ?? this.backgroundBox);
   }
 
   // Controls how the properties change on theme changes
@@ -275,7 +278,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         tooltipBgColor: Color.lerp(focusBg, other.focusBg, t),
         hdWalletTypeBgColor: Color.lerp(hdWalletTypeBgColor, other.hdWalletTypeBgColor, t),
         singleWalletBgColor: Color.lerp(singleWalletBgColor, other.singleWalletBgColor, t),
-        warningColor: Color.lerp(warningColor, other.warningColor, t));
+        warningColor: Color.lerp(warningColor, other.warningColor, t),
+        backgroundBox: Color.lerp(backgroundBox, other.backgroundBox, t));
   }
 
   // the light theme
@@ -317,6 +321,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     copiedSnackbarText: WitnetPallet.white,
     darkBgFocusColor: Color.fromARGB(21, 65, 190, 165),
     focusBg: Color.fromARGB(7, 1, 1, 1),
+    backgroundBox: Color.fromRGBO(114, 114, 114, 0.08),
     tooltipBgColor: Color.fromARGB(255, 214, 217, 220),
     hdWalletTypeBgColor: WitnetPallet.mediumGrey,
     singleWalletBgColor: WitnetPallet.brown,
@@ -380,6 +385,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     copiedSnackbarText: WitnetPallet.black,
     darkBgFocusColor: Color.fromARGB(21, 65, 190, 165),
     focusBg: Color.fromARGB(14, 255, 255, 255),
+    backgroundBox: Color.fromARGB(14, 255, 255, 255),
     tooltipBgColor: WitnetPallet.opacityWitnetGreen,
     hdWalletTypeBgColor: WitnetPallet.mediumGrey,
     singleWalletBgColor: WitnetPallet.brown,

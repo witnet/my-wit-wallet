@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
@@ -55,8 +56,7 @@ class _AppLifecycleState extends State<AppLifecycleOverlay>
       width: MediaQuery.of(context).size.width,
       color: WitnetPallet.darkBlue2,
     );
-    if (shouldBlur) {
-      FocusScope.of(context).unfocus();
+    if (shouldBlur && (Platform.isIOS || Platform.isAndroid)) {
       if (widget.isBottomBar) {
         return overlayBackground;
       }

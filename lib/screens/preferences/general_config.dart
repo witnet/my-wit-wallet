@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/switch.dart';
@@ -81,14 +84,16 @@ class GeneralConfigState extends State<GeneralConfig> {
     }
   }
 
-  Widget themeWidget(context) {
-    return Row(children: [
-      CustomSwitch(
+  Widget themeWidget(ThemeData theme, BuildContext context) {
+    return backgroundBox(
+      theme: theme,
+      context: context,
+      child: CustomSwitch(
           focusNode: _switchThemeFocusNode,
           isFocused: _isThemeSwitchFocus,
           checked: displayDarkMode,
-          primaryLabel: 'Dark Mode',
-          secondaryLabel: 'Light Mode',
+          primaryLabel: 'Dark mode',
+          secondaryLabel: '',
           onChanged: (value) => {
                 setState(() {
                   displayDarkMode = !displayDarkMode;
@@ -98,35 +103,58 @@ class GeneralConfigState extends State<GeneralConfig> {
                   BlocProvider.of<ThemeBloc>(context).add(ThemeChanged(theme));
                 })
               }),
-    ]);
+    );
+  }
+
+  Widget backgroundBox(
+      {required ThemeData theme,
+      required BuildContext context,
+      required Widget child}) {
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+    return Container(
+        alignment: Alignment.centerLeft,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+          color: extendedTheme.backgroundBox,
+        ),
+        child: child);
+  }
+
+  void changeAuthMode(ThemeData theme) {
+    setState(() {
+      authWithBiometrics = !authWithBiometrics;
+      final authMode = authWithBiometrics
+          ? AuthPreferences.Biometrics
+          : AuthPreferences.Password;
+      ApiPreferences.setAuthPreferences(authMode);
+    });
   }
 
   Widget biometricsAuth(ThemeData theme, BuildContext context) {
-    return Row(children: [
-      CustomSwitch(
-          focusNode: _switchAuthModeFocusNode,
-          isFocused: _isAuthModeSwitchFocus,
-          checked: authWithBiometrics,
-          primaryLabel: 'Biometrics',
-          secondaryLabel: 'Password',
-          onChanged: (value) => {
-                setState(() {
-                  authWithBiometrics = !authWithBiometrics;
-                  final authMode = authWithBiometrics
-                      ? AuthPreferences.Biometrics
-                      : AuthPreferences.Password;
-                  ApiPreferences.setAuthPreferences(authMode);
-                  if (authMode == AuthPreferences.Password) {
-                    unlockKeychainModal(
-                        onAction: () => {},
-                        title: 'Input your password',
-                        theme: theme,
-                        context: context,
-                        routeToRedirect: PreferencePage.route);
-                  }
-                })
-              }),
-    ]);
+    return backgroundBox(
+        theme: theme,
+        context: context,
+        child: CustomSwitch(
+            focusNode: _switchAuthModeFocusNode,
+            isFocused: _isAuthModeSwitchFocus,
+            checked: authWithBiometrics,
+            primaryLabel: 'Biometrics',
+            secondaryLabel: '',
+            onChanged: (value) => {
+                  if (!value)
+                    {
+                      unlockKeychainModal(
+                          onAction: () => changeAuthMode(theme),
+                          title: 'Input your password',
+                          theme: theme,
+                          context: context,
+                          routeToRedirect: PreferencePage.route)
+                    }
+                  else
+                    {
+                      changeAuthMode(theme),
+                    }
+                }));
   }
 
   //Log out
@@ -137,6 +165,23 @@ class GeneralConfigState extends State<GeneralConfig> {
     BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
     Navigator.of(context).popUntil((route) => route.isFirst);
     BlocProvider.of<LoginBloc>(context).add(LoginLogoutEvent());
+  }
+
+  List<Widget> showAuthModeSettings(ThemeData theme) {
+    if ((Platform.isAndroid || Platform.isIOS)) {
+      return [
+        SizedBox(height: 16),
+        Text(
+          'Enable login with biometrics',
+          style: theme.textTheme.titleSmall,
+        ),
+        SizedBox(height: 16),
+        biometricsAuth(theme, context),
+        SizedBox(height: 16)
+      ];
+    } else {
+      return [SizedBox(height: 16)];
+    }
   }
 
   @override
@@ -150,14 +195,9 @@ class GeneralConfigState extends State<GeneralConfig> {
             'Theme',
             style: theme.textTheme.titleSmall,
           ),
-          themeWidget(context),
           SizedBox(height: 16),
-          Text(
-            'Enable login with biometrics',
-            style: theme.textTheme.titleSmall,
-          ),
-          biometricsAuth(theme, context),
-          SizedBox(height: 16),
+          themeWidget(theme, context),
+          ...showAuthModeSettings(theme),
           Text(
             'Lock your wallet',
             style: theme.textTheme.titleSmall,

@@ -6,7 +6,7 @@ typedef void BoolCallback(bool value);
 class CustomSwitch extends StatelessWidget {
   final bool checked;
   final String primaryLabel;
-  final String secondaryLabel;
+  final String? secondaryLabel;
   final BoolCallback onChanged;
   final FocusNode focusNode;
   final bool isFocused;
@@ -22,11 +22,13 @@ class CustomSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text(
-        secondaryLabel,
-        style: theme.textTheme.bodyLarge,
-      ),
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Padding(
+          padding: EdgeInsets.only(left: 16),
+          child: Text(
+            primaryLabel,
+            style: theme.textTheme.bodyLarge,
+          )),
       Container(
           color: isFocused ? extendedTheme.focusBg : null,
           child: Switch(
@@ -35,10 +37,6 @@ class CustomSwitch extends StatelessWidget {
             value: this.checked,
             onChanged: onChanged,
           )),
-      Text(
-        primaryLabel,
-        style: theme.textTheme.bodyLarge,
-      ),
     ]);
   }
 }

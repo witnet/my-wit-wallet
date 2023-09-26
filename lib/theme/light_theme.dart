@@ -183,7 +183,7 @@ Color getColorPrimary(Set<MaterialState> states) {
     MaterialState.selected
   };
   if (states.any(activeStates.contains)) {
-    return WitnetPallet.witnetGreen1;
+    return Color.fromARGB(126, 193, 196, 198);
   }
   return Color.fromARGB(126, 193, 196, 198);
 }
@@ -193,7 +193,7 @@ Color getColorSecondary(Set<MaterialState> states) {
     MaterialState.selected
   };
   if (states.any(activeStates.contains)) {
-    return WitnetPallet.opacityWitnetGreen;
+    return WitnetPallet.witnetGreen1;
   }
   return WitnetPallet.lightGrey;
 }
