@@ -6,6 +6,7 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/sort_wallets_by_name.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -22,6 +23,16 @@ class ListItem {
   ListItem(this.data);
 }
 
+class WalletIdName {
+  String id;
+  String name;
+
+  WalletIdName({
+    required this.id,
+    required this.name,
+  });
+}
+
 class WalletList extends StatefulWidget {
   const WalletList({
     Key? key,
@@ -34,12 +45,15 @@ class WalletList extends StatefulWidget {
 }
 
 class WalletListState extends State<WalletList> {
-  List<String> walletIdList = [];
+  List<WalletIdName> walletIdList = [];
   Wallet? selectedWallet;
   Account? selectedAccount;
   Map<String, dynamic>? selectedAddressList;
   late Function onSelected;
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
+  List<WalletIdName> get sortedWalletsByName =>
+      sortWalletListByName(walletIdList);
+
   @override
   void initState() {
     super.initState();
@@ -81,7 +95,7 @@ class WalletListState extends State<WalletList> {
       selectedWallet = walletStorage.currentWallet;
       selectedAddressList = walletStorage.currentAddressList;
       walletStorage.wallets.forEach((key, value) {
-        walletIdList.add(value.id);
+        walletIdList.add(WalletIdName(id: value.id, name: value.name));
       });
     });
   }
@@ -110,7 +124,8 @@ class WalletListState extends State<WalletList> {
     );
   }
 
-  Widget _buildWalletItem(String walletId) {
+  Widget _buildWalletItem(WalletIdName walletIdName) {
+    String walletId = walletIdName.id;
     final isSelectedWallet = walletId == selectedWallet?.id;
     Wallet? currentWallet = database.walletStorage.wallets[walletId];
     bool isHdWallet = currentWallet!.walletType == WalletType.hd;
@@ -166,9 +181,9 @@ class WalletListState extends State<WalletList> {
             padding: EdgeInsets.zero,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: walletIdList.length,
+            itemCount: sortedWalletsByName.length,
             itemBuilder: (context, index) {
-              return _buildWalletItem(walletIdList[index]);
+              return _buildWalletItem(sortedWalletsByName[index]);
             },
           ),
         ]));

@@ -18,7 +18,7 @@ import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
-import 'package:my_wit_wallet/widgets//wallet_list.dart';
+import 'package:my_wit_wallet/widgets/wallet_list.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
