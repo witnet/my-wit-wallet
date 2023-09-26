@@ -54,6 +54,9 @@ Future<bool> tapButton(
     case SelectItem:
       finder = widgetByType(value);
       break;
+    case Switch:
+      finder = widgetByType(value);
+      break;
     default:
       {
         if (value.runtimeType.toString().startsWith("IconData")) {

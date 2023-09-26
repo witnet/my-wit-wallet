@@ -1,3 +1,4 @@
+import 'e2e_auth_preferences_test.dart';
 import 'e2e_import_mnemonic_test.dart';
 import 'e2e_show_node_stats.dart';
 import "e2e_mnemonic_test.dart";
@@ -16,6 +17,7 @@ void main() async {
     testWidgets("Import Mnemonic Test", e2eImportMnemonicTest);
     testWidgets("Import Xprv Test", e2eImportXprvTest);
     testWidgets("Export Xprv Test", e2eExportXprvTest);
+    testWidgets("Auth preferences Test", e2eAuthPreferencesTest);
     testWidgets("Show node stats Test", e2eShowNodeStatsTest);
     testWidgets("Re-establish wallets", e2eReEstablishWallets);
     testWidgets("Import Xprv From Sheikah Test", e2eImportXprvFromSheikahTest);
