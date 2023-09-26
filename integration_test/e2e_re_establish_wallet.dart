@@ -33,12 +33,8 @@ Future<void> e2eReEstablishWallets(WidgetTester tester) async {
       await tapButton(tester, "CANCEL");
     }
   }
-  // Scroll Save button into view
-  final listFinder = find
-      .byType(Scrollable)
-      .last; // take last because the tab bar up top is also a Scrollable
-  await tester.scrollUntilVisible(find.byType(PaddedButton).at(0), -100.0,
-      scrollable: listFinder);
+  await scrollUntilVisible(tester, find.byType(PaddedButton).at(0),
+      lastScroll: true);
   await tester.pumpAndSettle();
 
   await tapButton(tester, PaddedButton, index: 0);

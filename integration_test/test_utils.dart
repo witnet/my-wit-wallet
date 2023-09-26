@@ -173,9 +173,21 @@ Future<bool> scrollUntilVisible(
   int? index,
   bool delay = true,
   int? milliseconds,
+  // take last because the tab bar up top is also a Scrollable
+  bool? lastScroll,
 }) async {
-  await tester.scrollUntilVisible(finder, -100.0,
-      duration: Duration(milliseconds: 500), maxScrolls: 200);
+  Finder? lastScrollFinder;
+  if (lastScroll == true) {
+    lastScrollFinder = find.byType(Scrollable).last;
+  }
+
+  await tester.scrollUntilVisible(
+    finder,
+    -100.0,
+    duration: Duration(milliseconds: 500),
+    maxScrolls: 200,
+    scrollable: lastScrollFinder ?? null
+  );
   await tester.pumpAndSettle();
   if (delay) {
     await Future.delayed(Duration(milliseconds: milliseconds ?? defaultDelay));
