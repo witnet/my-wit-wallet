@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/globals.dart' as globals;
 
 class BiometricsAutentication extends StatefulWidget {
   const BiometricsAutentication({Key? key}) : super(key: key);
@@ -11,19 +12,23 @@ class BiometricsAutentication extends StatefulWidget {
       BiometricsAutenticationState();
 }
 
-class BiometricsAutenticationState extends State<BiometricsAutentication> {
+class BiometricsAutenticationState extends State<BiometricsAutentication>
+    with WidgetsBindingObserver {
   BiometricsStatus? autenticationStatus;
   Widget child = Container();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _authenticateWithBiometrics();
   }
 
   void _authenticateWithBiometrics() async {
-    BlocProvider.of<LoginBloc>(context).add(LoginAutenticationEvent())
-        as BiometricsStatus?;
+    if (!globals.avoidBiometrics) {
+      BlocProvider.of<LoginBloc>(context).add(LoginAutenticationEvent())
+          as BiometricsStatus?;
+    }
   }
 
   @override

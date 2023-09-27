@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
+import 'package:my_wit_wallet/globals.dart' as globals;
 
 class AppLifecycleOverlay extends StatefulWidget {
   const AppLifecycleOverlay({
@@ -34,10 +35,17 @@ class _AppLifecycleState extends State<AppLifecycleOverlay>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    setState(() {
-      shouldBlur = state == AppLifecycleState.inactive ||
-          state == AppLifecycleState.paused;
-    });
+    if (!globals.biometricsAuthInProgress) {
+      setState(() {
+        shouldBlur = state == AppLifecycleState.inactive ||
+            state == AppLifecycleState.paused;
+      });
+    } else {
+      setState(() {
+        shouldBlur = false;
+      });
+    }
+    globals.avoidBiometrics = shouldBlur;
   }
 
   @override
@@ -48,6 +56,7 @@ class _AppLifecycleState extends State<AppLifecycleOverlay>
       color: WitnetPallet.darkBlue2,
     );
     if (shouldBlur) {
+      FocusScope.of(context).unfocus();
       if (widget.isBottomBar) {
         return overlayBackground;
       }

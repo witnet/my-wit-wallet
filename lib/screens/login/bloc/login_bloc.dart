@@ -7,6 +7,7 @@ import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:my_wit_wallet/globals.dart' as globals;
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -37,8 +38,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     BiometricsStatus status = BiometricsStatus.autenticating;
     try {
       bool isDeviceSupported = await auth.isDeviceSupported();
-      if (isDeviceSupported) {
+      bool canCheckBiometrics = await auth.canCheckBiometrics;
+      if (isDeviceSupported && canCheckBiometrics) {
         emit(state.copyWith(status: LoginStatus.LoginInProgress));
+        globals.biometricsAuthInProgress = true;
         bool authenticated = await auth.authenticate(
           localizedReason:
               'Scan your fingerprint (or face or whatever) to authenticate',
@@ -61,9 +64,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         status = BiometricsStatus.notSupported;
         emit(state.copyWith(status: LoginStatus.BiometricsNotSupported));
       }
+      globals.biometricsAuthInProgress = false;
     } on PlatformException catch (error) {
       print('Exception using biometrics authentication $error');
       status = BiometricsStatus.error;
+      globals.biometricsAuthInProgress = false;
       emit(state.copyWith(status: LoginStatus.LoginCancelled));
     }
     return status;
