@@ -82,8 +82,19 @@ Future<void> e2eShowNodeStatsTest(WidgetTester tester) async {
   /// and brings up the wallet list.
   await tapButton(tester, PaddedButton, index: 0);
 
+  final listFinder = find
+      .byType(Scrollable)
+      .first; // take first because it is the wallet list scroll
+  await tester.scrollUntilVisible(
+      find.text("wit174la8pevl74hczcpfepgmt036zkmjen4hu8zzs"), -100.0,
+      scrollable: listFinder);
+
+  await tester.pumpAndSettle();
+
   /// Select HD wallet from the wallets list
   await tapButton(tester, "wit174la8pevl74hczcpfepgmt036zkmjen4hu8zzs");
+
+  await tester.pumpAndSettle();
 
   /// HD Wallets should not show Transactions/Blocks stepbar
   expect(widgetByText('Stats'), findsNothing);
