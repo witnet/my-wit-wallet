@@ -338,7 +338,7 @@ class ApiDatabase {
 
   Future<bool> deleteVtt(String transactionId) async {
     return await _processIsolate(
-        method: 'delete', params: {'value': transactionId});
+        method: 'delete', params: {'value': transactionId, 'type': 'vtt' });
   }
 
   Future<bool> updateAccount(Account account) async {

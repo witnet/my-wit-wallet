@@ -423,13 +423,28 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           await database.updateVtt(wallet.id, vtt);
         }
       } catch (e) {
-        var vtt = await Locator.instance.get<ApiExplorer>().hash(_vtt.txnHash);
-        if (vtt != null && vtt.jsonMap()['status'] == 'unknown hash') {
-          vtt = _vtt;
-          ValueTransferInfo unknownTransaction = _vtt;
-          unknownTransaction.status = 'unknown hash';
-          await database.updateVtt(wallet.id, unknownTransaction);
+        /// If the getVtt method returns null we enter this catch
+        /// and the vtt has an unknown hash
+
+        /// check the inputs for accounts in the wallet and remove the vtt
+        for (int i = 0; i < _vtt.inputs.length; i++) {
+          Account? account = wallet.accountByAddress(_vtt.inputs[i].address);
+          if (account != null) {
+            account.deleteVtt(_vtt);
+            await database.updateAccount(account);
+          }
         }
+        /// check the outputs for accounts in the wallet and remove the vtt
+        for (int i = 0; i < _vtt.outputs.length; i++) {
+          Account? account =
+              wallet.accountByAddress(_vtt.outputs[i].pkh.address);
+          if (account != null) {
+            account.deleteVtt(_vtt);
+            await database.updateAccount(account);
+          }
+        }
+        /// delete the stale vtt from the database.
+        await database.deleteVtt(_vtt.txnHash);
       }
     }
     await database.loadWalletsDatabase();
@@ -496,23 +511,16 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       for (int i = 0; i < vtts.transactionHashes.length; i++) {
         String transactionId = vtts.transactionHashes[i];
         ValueTransferInfo? vtt = database.walletStorage.getVtt(transactionId);
-        if (vtt != null && !account.vttHashes.contains(transactionId)) {
+
+        if (vtt != null) {
           /// this vtt.status check for "confirmed" is in the local database
           if (vtt.status != "confirmed") {
             /// this vtt is what is returned from the explorer.
             ValueTransferInfo _vtt =
                 await Locator.instance.get<ApiExplorer>().getVtt(transactionId);
-            /// if a vtt was previously unconfirmed and the status is now
-            /// "unknown hash", it is a stale transaction we should remove.
-            if(_vtt.status == "unknown hash"){
-              account.deleteVtt(_vtt);
-              await database.deleteVtt(_vtt.txnHash);
-              await database.updateAccount(account);
-            } else {
-              account.addVtt(_vtt);
-              await database.addVtt(_vtt);
-              await database.updateAccount(account);
-            }
+            account.addVtt(_vtt);
+            await database.updateVtt(account.walletId, _vtt);
+            await database.updateAccount(account);
           }
         } else {
           ValueTransferInfo vtt =
