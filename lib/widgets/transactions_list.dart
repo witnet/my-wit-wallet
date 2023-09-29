@@ -238,13 +238,23 @@ class TransactionsListState extends State<TransactionsList> {
           },
         );
       } else {
-        return Column(
+        return Row(
           children: [
-            Text('You don\'t have transactions yet!'),
-            SizedBox(
-              height: 24,
-            ),
-            svgThemeImage(theme, name: 'no-transactions', height: 152),
+            Expanded(
+              flex: 1,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 24,
+                    ),
+                    svgThemeImage(theme, name: 'no-transactions', height: 152),
+                    SizedBox(
+                      height: 24,
+                    ),
+                    Text('You don\'t have transactions yet!')
+                  ]),
+            )
           ],
         );
       }
