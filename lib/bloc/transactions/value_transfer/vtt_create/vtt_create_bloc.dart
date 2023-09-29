@@ -564,32 +564,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         }
       }
       emit(state.copyWith(status: VTTCreateStatus.accepted));
-      List<Account> utxoListToUpdate = [];
-      selectedUtxos.forEach((selectedUtxo) {
-        event.currentWallet.externalAccounts.forEach((index, value) {
-          if (value.utxos.contains(selectedUtxo)) {
-            value.utxos.remove(selectedUtxo);
-            utxoListToUpdate.add(value);
-          }
-        });
-
-        event.currentWallet.internalAccounts.forEach((index, value) {
-          if (value.utxos.contains(selectedUtxo)) {
-            value.utxos.remove(selectedUtxo);
-            utxoListToUpdate.add(value);
-          }
-        });
-      });
-      for (int i = 0; i < utxoListToUpdate.length; i++) {
-        Account account = utxoListToUpdate[i];
-        await Locator.instance<ApiDatabase>()
-            .walletStorage
-            .currentWallet
-            .updateAccount(
-                index: account.index,
-                keyType: account.keyType,
-                account: account);
-      }
       await Locator.instance<ApiDatabase>().getWalletStorage(true);
       await database.updateCurrentWallet();
     } else {
