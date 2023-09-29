@@ -90,7 +90,6 @@ class ReviewStepState extends State<ReviewStep>
             // Send transaction after signed
             _sendTransaction(state.vtTransaction);
           } else {
-            // buildTransactionTooLargeModal(theme, context);
             buildTxGeneralExceptionModal(
                 theme: theme,
                 context: context,

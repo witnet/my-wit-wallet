@@ -181,13 +181,10 @@ Future<bool> scrollUntilVisible(
     lastScrollFinder = find.byType(Scrollable).last;
   }
 
-  await tester.scrollUntilVisible(
-    finder,
-    -100.0,
-    duration: Duration(milliseconds: 500),
-    maxScrolls: 200,
-    scrollable: lastScrollFinder ?? null
-  );
+  await tester.scrollUntilVisible(finder, -100.0,
+      duration: Duration(milliseconds: 500),
+      maxScrolls: 200,
+      scrollable: lastScrollFinder ?? null);
   await tester.pumpAndSettle();
   if (delay) {
     await Future.delayed(Duration(milliseconds: milliseconds ?? defaultDelay));

@@ -61,7 +61,8 @@ Future<void> e2eExportXprvTest(WidgetTester tester) async {
   await tapButton(tester, "Wallet");
 
   // Scroll Save button into view
-  await scrollUntilVisible(tester, widgetByText("Copy Xprv").first, lastScroll: true);
+  await scrollUntilVisible(tester, widgetByText("Copy Xprv").first,
+      lastScroll: true);
   await tester.pumpAndSettle();
   await tapButton(tester, "Copy Xprv");
 
