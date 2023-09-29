@@ -1,14 +1,14 @@
 import 'dart:core';
 
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/utxo_list_to_string.dart';
 import 'package:quiver/core.dart';
+
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
-
-import '../../../shared/api_database.dart';
-import '../../../shared/locator.dart';
 import 'balance_info.dart';
 
 abstract class _Account {
