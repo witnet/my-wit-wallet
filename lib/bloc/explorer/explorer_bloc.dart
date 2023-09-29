@@ -425,6 +425,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           Account? account = wallet.accountByAddress(_vtt.inputs[i].address);
           if (account != null) {
             account.deleteVtt(_vtt);
+            account.vttHashes.removeWhere((element) => element == _vtt.txnHash);
             await database.updateAccount(account);
           }
         }
@@ -434,11 +435,12 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
               wallet.accountByAddress(_vtt.outputs[i].pkh.address);
           if (account != null) {
             account.deleteVtt(_vtt);
+            account.vttHashes.removeWhere((element) => element == _vtt.txnHash);
             await database.updateAccount(account);
           }
         }
         /// delete the stale vtt from the database.
-        await database.deleteVtt(_vtt.txnHash);
+        await database.deleteVtt(_vtt);
       }
     }
     await database.loadWalletsDatabase();
