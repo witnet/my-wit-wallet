@@ -367,7 +367,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
             String address = _utxos.keys.toList()[addressIndex];
             List<Utxo> utxoList = _utxos[address] ?? [];
             Account? account = wallet.accountByAddress(address);
-            if (account != null && !isTheSameList(account, utxoList)) {
+            if (account != null && !account.sameUtxoList(utxoList)) {
               if (utxoList.isNotEmpty) {
                 account.utxos = utxoList;
                 account = await updateAccountVttsAndBalance(account);
@@ -395,7 +395,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           .utxos(address: wallet.masterAccount!.address);
       Account account = wallet.masterAccount!;
 
-      if (!isTheSameList(wallet.masterAccount!, utxoList)) {
+      if (!wallet.masterAccount!.sameUtxoList(utxoList)) {
         if (utxoList.isNotEmpty) {
           account.utxos = utxoList;
           account = await updateAccountVttsAndBalance(account);
@@ -424,9 +424,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         for (int i = 0; i < _vtt.inputs.length; i++) {
           Account? account = wallet.accountByAddress(_vtt.inputs[i].address);
           if (account != null) {
-            account.deleteVtt(_vtt);
-            account.vttHashes.removeWhere((element) => element == _vtt.txnHash);
-            await database.updateAccount(account);
+            await account.deleteVtt(_vtt);
           }
         }
         /// check the outputs for accounts in the wallet and remove the vtt
@@ -434,9 +432,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           Account? account =
               wallet.accountByAddress(_vtt.outputs[i].pkh.address);
           if (account != null) {
-            account.deleteVtt(_vtt);
-            account.vttHashes.removeWhere((element) => element == _vtt.txnHash);
-            await database.updateAccount(account);
+            await account.deleteVtt(_vtt);
           }
         }
         /// delete the stale vtt from the database.
@@ -450,23 +446,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     return database.walletStorage;
   }
 
-  bool isTheSameList(Account account, List<Utxo> utxoList) {
-    int currentLength = account.utxos.length;
-    int newLength = utxoList.length;
-    bool isSameList = true;
-    if (currentLength == newLength) {
-      utxoList.forEach((element) {
-        bool containsUtxo =
-            rawJsonUtxosList(account.utxos).contains(element.toRawJson());
-        if (!containsUtxo) {
-          isSameList = false;
-        }
-      });
-    } else {
-      isSameList = false;
-    }
-    return isSameList;
-  }
+
 
   Future<Account> _syncMints(Account account) async {
     try {
@@ -484,9 +464,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           BlockInfo blockInfo = addressBlocks.blocks.elementAt(i);
 
           MintEntry mintEntry = await explorer.getMint(blockInfo);
-          account.mintHashes.add(mintEntry.blockHash);
-          account.mints.add(mintEntry);
-          await database.addMint(mintEntry);
+          await account.addMint(mintEntry);
         }
       }
       return account;
@@ -511,18 +489,14 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         if (vtt != null) {
           /// this vtt.status check for "confirmed" is in the local database
           if (vtt.status != "confirmed") {
-            /// this vtt is what is returned from the explorer.
             ValueTransferInfo _vtt =
                 await Locator.instance.get<ApiExplorer>().getVtt(transactionId);
-            account.addVtt(_vtt);
-            await database.updateVtt(account.walletId, _vtt);
-            await database.updateAccount(account);
+            await account.addVtt(_vtt);
           }
         } else {
           ValueTransferInfo vtt =
               await Locator.instance.get<ApiExplorer>().getVtt(transactionId);
-          account.addVtt(vtt);
-          await database.addVtt(vtt);
+          await account.addVtt(vtt);
         }
       }
 
