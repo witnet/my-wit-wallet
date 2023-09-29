@@ -7,6 +7,8 @@ import 'package:quiver/core.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 
+import '../../../shared/api_database.dart';
+import '../../../shared/locator.dart';
 import 'balance_info.dart';
 
 abstract class _Account {
@@ -117,7 +119,38 @@ class Account extends _Account {
     }
   }
 
-  bool addVtt(ValueTransferInfo vtt) {
+  bool sameUtxoList(List<Utxo> utxoList){
+    int currentLength = this.utxos.length;
+    int newLength = utxoList.length;
+    bool isSameList = true;
+    if (currentLength == newLength) {
+      utxoList.forEach((element) {
+        bool containsUtxo =
+        rawJsonUtxosList(this.utxos).contains(element.toRawJson());
+        if (!containsUtxo) {
+          isSameList = false;
+        }
+      });
+    } else {
+      isSameList = false;
+    }
+    return isSameList;
+  }
+
+  Future<bool> addMint(MintEntry mintEntry) async {
+    try{
+      ApiDatabase database = Locator.instance<ApiDatabase>();
+      mintHashes.add(mintEntry.blockHash);
+      mints.add(mintEntry);
+      await database.addMint(mintEntry);
+      return true;
+    } catch (e){
+      return false;
+    }
+  }
+
+  Future<bool> addVtt(ValueTransferInfo vtt) async {
+    ApiDatabase database = Locator.instance<ApiDatabase>();
     bool addedVtt = false;
     vtt.inputs.forEach((input) {
       if (input.address == address) {
@@ -135,22 +168,24 @@ class Account extends _Account {
         }
       }
     });
+    if(await database.getVtt(vtt.txnHash) == null){
+      await database.addVtt(vtt);
+    } else {
+      await database.updateVtt(this.walletId, vtt);
+    }
+    await database.updateAccount(this);
     return addedVtt;
   }
 
-  bool deleteVtt(ValueTransferInfo vtt){
+  Future<bool> deleteVtt(ValueTransferInfo vtt) async {
+    ApiDatabase database = Locator.instance<ApiDatabase>();
     try{
       vttHashes.removeWhere((hash) => hash == vtt.txnHash);
       vtts.removeWhere((_vtt) => _vtt.txnHash == vtt.txnHash);
+      await database.updateAccount(this);
     } catch (e) {
       return false;
     }
-    return true;
-  }
-
-  bool addMint(MintEntry mint) {
-    mintHashes.add(mint.blockHash);
-    mints.add(mint);
     return true;
   }
 
