@@ -119,14 +119,14 @@ class Account extends _Account {
     }
   }
 
-  bool sameUtxoList(List<Utxo> utxoList){
+  bool sameUtxoList(List<Utxo> utxoList) {
     int currentLength = this.utxos.length;
     int newLength = utxoList.length;
     bool isSameList = true;
     if (currentLength == newLength) {
       utxoList.forEach((element) {
         bool containsUtxo =
-        rawJsonUtxosList(this.utxos).contains(element.toRawJson());
+            rawJsonUtxosList(this.utxos).contains(element.toRawJson());
         if (!containsUtxo) {
           isSameList = false;
         }
@@ -138,13 +138,13 @@ class Account extends _Account {
   }
 
   Future<bool> addMint(MintEntry mintEntry) async {
-    try{
+    try {
       ApiDatabase database = Locator.instance<ApiDatabase>();
       mintHashes.add(mintEntry.blockHash);
       mints.add(mintEntry);
       await database.addMint(mintEntry);
       return true;
-    } catch (e){
+    } catch (e) {
       return false;
     }
   }
@@ -168,7 +168,7 @@ class Account extends _Account {
         }
       }
     });
-    if(await database.getVtt(vtt.txnHash) == null){
+    if (await database.getVtt(vtt.txnHash) == null) {
       await database.addVtt(vtt);
     } else {
       await database.updateVtt(this.walletId, vtt);
@@ -179,7 +179,7 @@ class Account extends _Account {
 
   Future<bool> deleteVtt(ValueTransferInfo vtt) async {
     ApiDatabase database = Locator.instance<ApiDatabase>();
-    try{
+    try {
       vttHashes.removeWhere((hash) => hash == vtt.txnHash);
       vtts.removeWhere((_vtt) => _vtt.txnHash == vtt.txnHash);
       await database.updateAccount(this);

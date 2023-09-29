@@ -10,7 +10,6 @@ import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
-import 'package:my_wit_wallet/util/utxo_list_to_string.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/constants.dart';
@@ -427,6 +426,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
             await account.deleteVtt(_vtt);
           }
         }
+
         /// check the outputs for accounts in the wallet and remove the vtt
         for (int i = 0; i < _vtt.outputs.length; i++) {
           Account? account =
@@ -435,6 +435,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
             await account.deleteVtt(_vtt);
           }
         }
+
         /// delete the stale vtt from the database.
         await database.deleteVtt(_vtt);
       }
@@ -445,8 +446,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         isHdWallet: wallet.walletType == WalletType.hd);
     return database.walletStorage;
   }
-
-
 
   Future<Account> _syncMints(Account account) async {
     try {
