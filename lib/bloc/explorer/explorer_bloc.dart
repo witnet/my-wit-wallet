@@ -274,17 +274,21 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         await getDataRequestsSolved(address: address);
 
     List<MintEntry> blocks = currentWallet.allMints();
-    int feesPayed =
-        blocks.map((block) => block.fees).reduce((fees, acc) => fees + acc);
-    int totalRewards =
-        blocks.map((block) => block.reward).reduce((fees, acc) => fees + acc);
+    int? feesPayed;
+    int? totalRewards;
+    if (blocks.length > 0) {
+      feesPayed =
+          blocks.map((block) => block.fees).reduce((fees, acc) => fees + acc);
+      totalRewards =
+          blocks.map((block) => block.reward).reduce((fees, acc) => fees + acc);
+    }
 
     return AccountStats(
         walletId: currentWallet.id,
         address: address,
         totalBlocksMined: blocks.length,
-        totalFeesPayed: feesPayed,
-        totalRewards: totalRewards,
+        totalFeesPayed: feesPayed ?? 0,
+        totalRewards: totalRewards ?? 0,
         totalDrSolved: dataRequestsSolved?.numDataRequestsSolved ?? 0);
   }
 
@@ -292,26 +296,30 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       {required Wallet currentWallet, required ApiDatabase database}) async {
     String address = currentWallet.masterAccount!.address;
     String walletId = currentWallet.id;
-    // Get saved stats from db
-    AccountStats? savedStatsByAddress =
-        await database.getStatsByAddress(address);
-    // Get new account data requests info from explorer
-    AccountStats statsByAddressToSave = await getAccountStats(currentWallet);
-    if (savedStatsByAddress != null &&
-        savedStatsByAddress == statsByAddressToSave) {
-      return;
-    }
-    if (savedStatsByAddress == null) {
-      await _saveStatsInDB(
-          database: database, statsToSave: statsByAddressToSave);
-    } else {
-      await _updateStatsInDB(
-          database: database, statsToUpdate: statsByAddressToSave);
-    }
+    try {
+      // Get saved stats from db
+      AccountStats? savedStatsByAddress =
+          await database.getStatsByAddress(address);
+      // Get new account data requests info from explorer
+      AccountStats statsByAddressToSave = await getAccountStats(currentWallet);
+      if (savedStatsByAddress != null &&
+          savedStatsByAddress == statsByAddressToSave) {
+        return;
+      }
+      if (savedStatsByAddress == null) {
+        await _saveStatsInDB(
+            database: database, statsToSave: statsByAddressToSave);
+      } else {
+        await _updateStatsInDB(
+            database: database, statsToUpdate: statsByAddressToSave);
+      }
 
-    // Update stats in walletStorage
-    database.walletStorage
-        .setStats(walletId, savedStatsByAddress ?? statsByAddressToSave);
+      // Update stats in walletStorage
+      database.walletStorage
+          .setStats(walletId, savedStatsByAddress ?? statsByAddressToSave);
+    } catch (err) {
+      print('Error updating stats $err');
+    }
   }
 
   Future<WalletStorage> syncWalletRoutine(

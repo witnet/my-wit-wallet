@@ -141,12 +141,14 @@ class Wallet {
 
   List<MintEntry> allMints() {
     List<MintEntry> allMints = [];
-    if (walletType == WalletType.single) {
+    if (walletType == WalletType.single && masterAccount!.mints.length > 0) {
       masterAccount!.mints.forEach((MintEntry mint) {
         if (mint.status != 'unknown hash') allMints.add(mint);
       });
+      return allMints;
+    } else {
+      return [];
     }
-    return allMints;
   }
 
   List<ValueTransferInfo> allTransactions() {
