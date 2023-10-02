@@ -176,12 +176,13 @@ class ApiDatabase {
     }
   }
 
+  // Check if can login
   Future<bool> verifyLogin(String password) async {
     try {
-      // verify password if empty but has master key
       ApiDatabase db = Locator.instance<ApiDatabase>();
       String key = await db.getKeychain();
       var value = await verifyPassword(password);
+      // Avoid validating the password when importing a new wallet and a keychain is already unlocked
       return key != '' ? true : value;
     } catch (e) {
       return false;
