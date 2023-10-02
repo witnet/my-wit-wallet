@@ -9,7 +9,6 @@ import 'package:fixnum/fixnum.dart';
 /// [color] - main color of the identicon (43% probability)
 /// [bgColor] - background color of the identicon (43% probability)
 /// [spotColor] - additional color of the identicon (13% probability)
-///
 class Identicon extends StatelessWidget {
   const Identicon({
     required this.seed,

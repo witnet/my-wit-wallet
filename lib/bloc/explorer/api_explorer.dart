@@ -168,7 +168,6 @@ class ApiExplorer {
 
       List<String> vttsInDb = [];
 
-      ///
       vttsToUpdate.retainWhere((txnId) => !vttsInDb.contains(txnId));
 
       for (int i = 0; i < vttsToUpdate.length; i++) {

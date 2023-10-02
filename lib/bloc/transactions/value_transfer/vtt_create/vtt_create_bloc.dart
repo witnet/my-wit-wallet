@@ -60,8 +60,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     on<ResetTransactionEvent>(_resetTransactionEvent);
     on<ValidateTransactionEvent>(_validateTransactionEvent);
     on<ShowAuthPreferencesEvent>(_showPasswordValidationModal);
-
-    ///
   }
 
   final Map<String, Account> utxoAccountMap = {};
@@ -280,12 +278,10 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         outIdx += 1;
       });
 
-      ///
       if (containsChangeAddress && walletType != WalletType.single) {
         outputs.removeAt(changeIndex);
       }
       outputs.forEach((element) {
-        ///
         valueOwedNanoWit += element.value.toInt();
       });
 
@@ -316,7 +312,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         /// calculate change
         valueChangeNanoWit = (valuePaidNanoWit - valueOwedNanoWit);
 
-        ///
         if (valueChangeNanoWit > 0) {
           // add change
           // +1 to the outputs length to include for change address
@@ -516,7 +511,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         await _sendTransaction(Transaction(valueTransfer: event.transaction));
     if (transactionAccepted) {
       /// add pending transaction
-      ///
       List<InputUtxo> _inputUtxoList = buildInputUtxoList();
       ValueTransferInfo vti = ValueTransferInfo(
           blockHash: '',

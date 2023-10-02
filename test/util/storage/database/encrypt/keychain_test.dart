@@ -10,7 +10,6 @@ void main() async {
 
     var encoded = bytesToHex(keyChain.encode(password));
 
-    ///
     expect(await keyChain.validatePassword(encoded, password), true);
     expect(await keyChain.validatePassword(encoded, incorrectPassword), false);
     expect(keyChain.decode(encoded, password).runtimeType, String);
