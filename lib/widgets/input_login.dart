@@ -79,10 +79,10 @@ class _InputLoginState extends State<InputLogin> {
     return Container(
         child: Semantics(
       textField: true,
-      label: 'Input your password',
+      label: 'Enter your password',
       child: TextFormField(
         decoration: InputDecoration(
-            hintText: widget.hint ?? 'Input your password',
+            hintText: widget.hint ?? 'Enter your password',
             errorText: widget.errorText,
             prefixIcon:
                 widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,

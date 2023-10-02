@@ -145,7 +145,7 @@ class GeneralConfigState extends State<GeneralConfig> {
                     {
                       unlockKeychainModal(
                           onAction: () => changeAuthMode(theme),
-                          title: 'Input your password',
+                          title: 'Enter your password',
                           imageName: 'import-wallet',
                           theme: theme,
                           context: context,

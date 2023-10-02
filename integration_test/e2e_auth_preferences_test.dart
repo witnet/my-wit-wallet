@@ -33,7 +33,7 @@ Future<void> e2eAuthPreferencesTest(WidgetTester tester) async {
     await tapButton(tester, Switch, index: 1);
 
     // Show modal to verify password
-    expect(widgetByText('Input your password'), findsWidgets);
+    expect(widgetByText('Enter your password'), findsWidgets);
 
     // Enter password for verification and continue
     await enterText(tester, TextFormField, password);

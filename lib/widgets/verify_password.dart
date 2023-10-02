@@ -99,7 +99,7 @@ class VerifyPasswordState extends State<VerifyPassword>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Please, input your wallet\'s password.',
+          'Please, enter your wallet\'s password.',
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 16),
