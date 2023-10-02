@@ -462,16 +462,27 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
       /// check if the list of transaction is already in the database
       for (int i = 0; i < addressBlocks.blocks.length; i++) {
-        String blockHash = addressBlocks.blocks[i].blockID;
         ApiDatabase database = Locator.instance.get<ApiDatabase>();
+        String blockHash = addressBlocks.blocks[i].blockID;
         MintEntry? mintEntry = database.walletStorage.getMint(blockHash);
-        if (mintEntry != null && !account.mintHashes.contains(blockHash)) {
-          BlockInfo blockInfo = addressBlocks.blocks.elementAt(i);
+        BlockInfo blockInfo = addressBlocks.blocks.elementAt(i);
 
+        if (mintEntry != null) {
+          /// this mintEntry.status check for "confirmed" is in the local database
+          if (mintEntry.status != "confirmed") {
+            MintEntry mintEntry = await explorer.getMint(blockInfo);
+            await account.addMint(mintEntry);
+          }
+        } else {
           MintEntry mintEntry = await explorer.getMint(blockInfo);
           await account.addMint(mintEntry);
         }
       }
+
+      account.mintHashes.clear();
+      account.mintHashes
+          .addAll(addressBlocks.blocks.map((block) => block.blockID));
+
       return account;
     } catch (e) {
       print('Error syncing mints $e');
