@@ -101,7 +101,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
   }
 
   bool formValidation() {
-    return _password.valid;
+    return _password.isValid;
   }
 
   bool validateForm({force = false}) {

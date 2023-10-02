@@ -98,7 +98,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
       _password,
       _confirmPassword,
     ];
-    return Formz.validate(validInputs).isValid;
+    return Formz.validate(validInputs);
   }
 
   bool validateForm({force = false}) {

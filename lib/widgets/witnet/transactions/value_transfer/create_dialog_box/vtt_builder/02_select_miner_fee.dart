@@ -154,7 +154,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   }
 
   bool formValidation() {
-    return _minerFeeWit.valid;
+    return _minerFeeWit.isValid;
   }
 
   bool validateForm({force = false}) {

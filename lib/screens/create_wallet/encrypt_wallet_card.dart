@@ -83,7 +83,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
       _password,
       _confirmPassword,
     ];
-    return Formz.validate(validInputs).isValid;
+    return Formz.validate(validInputs);
   }
 
   bool validateForm({force = false}) {

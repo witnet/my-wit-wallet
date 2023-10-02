@@ -69,7 +69,7 @@ class VerifyPasswordState extends State<VerifyPassword>
   }
 
   bool formValidation() {
-    return _password.valid;
+    return _password.isValid;
   }
 
   Future<bool> validateForm({force = false}) async {

@@ -237,9 +237,9 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
         _password,
         xprv,
       ];
-      return Formz.validate(validInputs).isValid;
+      return Formz.validate(validInputs);
     } else {
-      return xprv.valid;
+      return xprv.isValid;
     }
   }
 

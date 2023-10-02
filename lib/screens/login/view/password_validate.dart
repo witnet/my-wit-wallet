@@ -47,7 +47,7 @@ class PasswordValidationState extends State<PasswordValidation>
   }
 
   bool formValidation() {
-    return _password.valid;
+    return _password.isValid;
   }
 
   bool validateForm({force = false}) {

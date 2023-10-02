@@ -99,7 +99,7 @@ class RecipientStepState extends State<RecipientStep>
       _amount,
       _address,
     ];
-    return Formz.validate(validInputs).isValid;
+    return Formz.validate(validInputs);
   }
 
   bool validateForm({force = false}) {
