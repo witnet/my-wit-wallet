@@ -24,7 +24,6 @@ class LoginForm extends StatefulWidget {
 class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
   PasswordInput _password = PasswordInput.pure();
   bool isLoading = false;
-  bool _showBiometrics = false;
   String? _passwordInputErrorText;
 
   final _loginController = TextEditingController();
@@ -156,9 +155,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
         future: showBiometrics(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            _showBiometrics = snapshot.data as bool;
-            biometricsOrPassword =
-                _showBiometrics ? BiometricsAutentication() : Container();
+            biometricsOrPassword = BiometricsAutentication();
           }
           return Layout(
             navigationActions: [],
