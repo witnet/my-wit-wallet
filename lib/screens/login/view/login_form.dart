@@ -154,7 +154,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
     return FutureBuilder(
         future: showBiometrics(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data == true) {
             biometricsOrPassword = BiometricsAutentication();
           }
           return Layout(
