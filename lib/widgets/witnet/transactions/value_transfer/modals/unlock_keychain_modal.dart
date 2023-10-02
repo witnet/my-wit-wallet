@@ -8,6 +8,7 @@ import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 Future<String?> unlockKeychainModal(
     {required ThemeData theme,
     required String title,
+    required String imageName,
     required BuildContext context,
     required VoidCallback onAction,
     required String routeToRedirect}) {
@@ -57,8 +58,7 @@ Future<String?> unlockKeychainModal(
                 ),
                 backgroundColor: theme.colorScheme.background,
                 content: Column(mainAxisSize: MainAxisSize.min, children: [
-                  svgThemeImage(theme,
-                      name: 'sending-transaction', height: 100),
+                  svgThemeImage(theme, name: imageName, height: 100),
                   SizedBox(height: 16),
                   PasswordValidation(
                     validate: _login,
