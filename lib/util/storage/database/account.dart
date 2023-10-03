@@ -142,7 +142,12 @@ class Account extends _Account {
       ApiDatabase database = Locator.instance<ApiDatabase>();
       mintHashes.add(mintEntry.blockHash);
       mints.add(mintEntry);
-      await database.addMint(mintEntry);
+      if (await database.getMint(mintEntry.blockHash) == null) {
+        await database.addMint(mintEntry);
+      } else {
+        await database.updateMint(this.walletId, mintEntry);
+      }
+      await database.updateAccount(this);
       return true;
     } catch (e) {
       return false;

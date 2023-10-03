@@ -314,6 +314,15 @@ class ApiDatabase {
     }
   }
 
+  Future<MintEntry?> getMint(String hash) async {
+    try {
+      return await _processIsolate(method: 'getMint', params: {"hash": hash});
+    } catch (err) {
+      print('Error getting mint:: $err');
+      return null;
+    }
+  }
+
   Future getAllVtts() async {
     try {
       return await _processIsolate(method: 'getAllVtts', params: {});
@@ -344,6 +353,11 @@ class ApiDatabase {
 
     return await _processIsolate(
         method: 'update', params: {'type': 'vtt', 'value': vtt.jsonMap()});
+  }
+
+  Future<bool> updateMint(String walletId, MintEntry mint) async {
+    return await _processIsolate(
+        method: 'update', params: {'type': 'mint', 'value': mint.jsonMap()});
   }
 
   Future<bool> deleteVtt(ValueTransferInfo vtt) async {

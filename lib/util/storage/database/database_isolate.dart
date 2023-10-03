@@ -20,6 +20,7 @@ Map<String, Function(DatabaseService, SendPort, Map<String, dynamic>)>
   'getKeychain': _getKeychain,
   'getStatsByAddress': _getStatsByAddress,
   'getVtt': _getVtt,
+  'getMint': _getMint,
   'loadWallets': _getAllWallets,
   'lock': _lock,
   'masterKeySet': _masterKeySet,
@@ -206,6 +207,9 @@ Future<void> _updateRecord(
     case 'wallet':
       value = await dbService.update(Wallet.fromJson(params['value']));
       break;
+    case 'mint':
+      value = await dbService.update(MintEntry.fromJson(params['value']));
+      break;
     case 'vtt':
       value =
           await dbService.update(ValueTransferInfo.fromDbJson(params['value']));
@@ -255,4 +259,13 @@ Future<void> _getVtt(
 ) async {
   ValueTransferInfo? vtt = await dbService.getVtt(params);
   port.send(vtt);
+}
+
+Future<void> _getMint(
+  DatabaseService dbService,
+  SendPort port,
+  Map<String, dynamic> params,
+) async {
+  MintEntry? mint = await dbService.getMint(params);
+  port.send(mint);
 }

@@ -32,6 +32,8 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
   late Stream syncWalletStream;
   // ignore: cancel_subscriptions
   StreamSubscription? syncWalletSubscription;
+  ApiExplorer explorer = Locator.instance.get<ApiExplorer>();
+  ApiDatabase database = Locator.instance.get<ApiDatabase>();
 
   ExplorerBloc(initialState) : super(initialState) {
     on<HashQueryEvent>(_hashQueryEvent);
@@ -64,7 +66,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<void> _statusQueryEvent(
       StatusQueryEvent event, Emitter<ExplorerState> emit) async {
-    Status resp = await Locator.instance.get<ApiExplorer>().getStatus();
+    Status resp = await explorer.getStatus();
     try {
       // TODO: fix type error in witnet.dart to get status
       if (resp.databaseMessage == 'Explorer backend seems healthy') {
@@ -289,7 +291,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         totalDrSolved: dataRequestsSolved?.numDataRequestsSolved ?? 0);
   }
 
-  Future<void> _updateDBStatsFromExplorerResult(
+  Future<void> _updateDBStatsFromExplorer(
       {required Wallet currentWallet, required ApiDatabase database}) async {
     String address = currentWallet.masterAccount!.address;
     String walletId = currentWallet.id;
@@ -317,6 +319,86 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     } catch (err) {
       print('Error updating stats $err');
     }
+  }
+
+  Future<Account> _updateAccountVttsFromExplorer(Account account) async {
+    try {
+      AddressValueTransfers vtts = await explorer.address(
+          value: account.address, tab: 'value_transfers');
+
+      for (int i = 0; i < vtts.transactionHashes.length; i++) {
+        String transactionId = vtts.transactionHashes[i];
+        ValueTransferInfo? vtt = database.walletStorage.getVtt(transactionId);
+
+        if (vtt != null) {
+          /// this vtt.status check for "confirmed" is in the local database
+          if (vtt.status != "confirmed") {
+            ValueTransferInfo _vtt = await explorer.getVtt(transactionId);
+            await account.addVtt(_vtt);
+          }
+        } else {
+          ValueTransferInfo vtt = await explorer.getVtt(transactionId);
+          await account.addVtt(vtt);
+        }
+      }
+
+      account.vttHashes.clear();
+      account.vttHashes.addAll(vtts.transactionHashes);
+      return account;
+    } catch (e) {
+      print('Error updating vtts from explorer: $e');
+      rethrow;
+    }
+  }
+
+  Future<Account> _updateAccountMintsFromExplorer(Account account) async {
+    try {
+      /// retrieve all Block Hashes
+      final addressBlocks = await explorer.address(
+          value: account.address, tab: 'blocks') as AddressBlocks;
+
+      /// check if the list of transaction is already in the database
+      for (int i = 0; i < addressBlocks.blocks.length; i++) {
+        String blockHash = addressBlocks.blocks[i].blockID;
+        MintEntry? mintEntry = database.walletStorage.getMint(blockHash);
+        BlockInfo blockInfo = addressBlocks.blocks.elementAt(i);
+
+        if (mintEntry != null) {
+          /// this mintEntry.status check for "confirmed" is in the local database
+          if (mintEntry.status != "confirmed") {
+            MintEntry mintEntry = await explorer.getMint(blockInfo);
+            await account.addMint(mintEntry);
+          }
+        } else {
+          MintEntry mintEntry = await explorer.getMint(blockInfo);
+          await account.addMint(mintEntry);
+        }
+      }
+
+      account.mintHashes.clear();
+      account.mintHashes
+          .addAll(addressBlocks.blocks.map((block) => block.blockID));
+
+      return account;
+    } catch (e) {
+      print('Error syncing mints $e');
+      rethrow;
+    }
+  }
+
+  Future<Account> updateAccountVttsAndBalance(Account account) async {
+    try {
+      await _updateAccountVttsFromExplorer(account);
+      if (account.keyType == KeyType.master) {
+        await _updateAccountMintsFromExplorer(account);
+      }
+      await account.setBalance();
+      database.walletStorage.wallets[account.walletId]!.setAccount(account);
+    } catch (e) {
+      print('Error updating account vtts and balance $e');
+      rethrow;
+    }
+    return account;
   }
 
   Future<WalletStorage> syncWalletRoutine(
@@ -393,7 +475,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         rethrow;
       }
     } else if (wallet.walletType == WalletType.single) {
-      await _updateDBStatsFromExplorerResult(
+      await _updateDBStatsFromExplorer(
           currentWallet: wallet, database: database);
 
       List<Utxo> utxoList = await Locator.instance<ApiExplorer>()
@@ -416,8 +498,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     for (int i = 0; i < unconfirmedVtts.length; i++) {
       ValueTransferInfo _vtt = unconfirmedVtts[i];
       try {
-        ValueTransferInfo vtt =
-            await Locator.instance.get<ApiExplorer>().getVtt(_vtt.txnHash);
+        ValueTransferInfo vtt = await explorer.getVtt(_vtt.txnHash);
         if (_vtt.status != vtt.status) {
           await database.updateVtt(wallet.id, vtt);
         }
@@ -451,82 +532,5 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         currentWalletId: wallet.id,
         isHdWallet: wallet.walletType == WalletType.hd);
     return database.walletStorage;
-  }
-
-  Future<Account> _syncMints(Account account) async {
-    try {
-      /// retrieve all Block Hashes
-      ApiExplorer explorer = Locator.instance.get<ApiExplorer>();
-      final addressBlocks = await explorer.address(
-          value: account.address, tab: 'blocks') as AddressBlocks;
-
-      /// check if the list of transaction is already in the database
-      for (int i = 0; i < addressBlocks.blocks.length; i++) {
-        ApiDatabase database = Locator.instance.get<ApiDatabase>();
-        String blockHash = addressBlocks.blocks[i].blockID;
-        MintEntry? mintEntry = database.walletStorage.getMint(blockHash);
-        BlockInfo blockInfo = addressBlocks.blocks.elementAt(i);
-
-        if (mintEntry != null) {
-          /// this mintEntry.status check for "confirmed" is in the local database
-          if (mintEntry.status != "confirmed") {
-            MintEntry mintEntry = await explorer.getMint(blockInfo);
-            await account.addMint(mintEntry);
-          }
-        } else {
-          MintEntry mintEntry = await explorer.getMint(blockInfo);
-          await account.addMint(mintEntry);
-        }
-      }
-
-      account.mintHashes.clear();
-      account.mintHashes
-          .addAll(addressBlocks.blocks.map((block) => block.blockID));
-
-      return account;
-    } catch (e) {
-      print('Error syncing mints $e');
-      rethrow;
-    }
-  }
-
-  Future<Account> updateAccountVttsAndBalance(Account account) async {
-    try {
-      AddressValueTransfers vtts = await Locator.instance
-          .get<ApiExplorer>()
-          .address(value: account.address, tab: 'value_transfers');
-
-      /// check if the list of transaction is already in the database
-      ApiDatabase database = Locator.instance.get<ApiDatabase>();
-      for (int i = 0; i < vtts.transactionHashes.length; i++) {
-        String transactionId = vtts.transactionHashes[i];
-        ValueTransferInfo? vtt = database.walletStorage.getVtt(transactionId);
-
-        if (vtt != null) {
-          /// this vtt.status check for "confirmed" is in the local database
-          if (vtt.status != "confirmed") {
-            ValueTransferInfo _vtt =
-                await Locator.instance.get<ApiExplorer>().getVtt(transactionId);
-            await account.addVtt(_vtt);
-          }
-        } else {
-          ValueTransferInfo vtt =
-              await Locator.instance.get<ApiExplorer>().getVtt(transactionId);
-          await account.addVtt(vtt);
-        }
-      }
-
-      account.vttHashes.clear();
-      account.vttHashes.addAll(vtts.transactionHashes);
-      if (account.keyType == KeyType.master) {
-        account = await _syncMints(account);
-      }
-      await account.setBalance();
-      database.walletStorage.wallets[account.walletId]!.setAccount(account);
-    } catch (e) {
-      print('Error updating account vtts and balance $e');
-      rethrow;
-    }
-    return account;
   }
 }

@@ -257,6 +257,7 @@ class DatabaseService {
       Map<String, Wallet> walletMap = {};
       Map<String, Account> accountMap = {};
       Map<String, ValueTransferInfo> vttMap = {};
+      Map<String, MintEntry> mintMap = {};
       for (int i = 0; i < wallets.length; i++) {
         walletMap[wallets[i].id] = wallets[i];
       }
@@ -303,12 +304,16 @@ class DatabaseService {
         transactions.forEach((vtt) {
           vttMap[vtt.txnHash] = vtt;
         });
+        mints.forEach((mint) {
+          mintMap[mint.blockHash] = mint;
+        });
       }
 
       /// Load current wallet and address from preferences
       WalletStorage _walletStorage = WalletStorage(wallets: walletMap);
       _walletStorage.setAccounts(accountMap);
       _walletStorage.setTransactions(vttMap);
+      _walletStorage.setMints(mintMap);
 
       return _walletStorage;
     } catch (e) {
@@ -334,5 +339,9 @@ class DatabaseService {
 
   Future<ValueTransferInfo?> getVtt(params) async {
     return await vttRepository.getTransaction(params["hash"], _database);
+  }
+
+  Future<MintEntry?> getMint(params) async {
+    return await mintRepository.getTransaction(params["hash"], _database);
   }
 }
