@@ -13,7 +13,7 @@ import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
 bool walletsExist = false;
 String password = dotenv.env['PASSWORD'] ?? "password";
 String xprv = dotenv.env['XPRV'] ??
-    "xprv13vegej6qvgn6e9kfhyp40p2fhdwg70z2ffc4z80jst6v74pz7uk78n9x04e8rwsje4ylyfnq4vxj6mgpt9syh5tqply8amck90ujhxlgt2nu88kxxzut6f02yvzzkfxjpjruxmhm80drt8sl43xelp266qgkmveray3k3nlq9ndwa9hgx0z32sd2wx5sj8hegp2c74agha3rcysq0tvhfapmdz88xhy6nd5r6sed9g3p0pnlp8m49jl76x36tksef6u0jr2uyd8a66hd3qpvlfazhcadnusc";
+    "xprv1m9datmt8l4qyqa2nf7lxrw76vu3kyy63qndhtpjyezm7rjrlqrqjh23yks7zjwycud9k25g20rjqkl7uyfcvq6e246du73cl8hhcfa2xwm6cun5ma69jrtyyzjzm0nqwurwa8vg5pxhd9wxu2lgrpmwknsl3yk3t4qn5au4mnf33qpnk3gg7e093nkk0kqzhfkecg45jm0qsczellg6hll4nzuldckjvj6xku75gmhjc340jau26t634c98ke3a454mqjsxtvfs53f2464jfyhd605hqs0lu";
 
 Future<void> e2eImportXprvTest(WidgetTester tester) async {
   await initializeTest(tester);
