@@ -18,11 +18,10 @@ class TransactionsList extends StatefulWidget {
   final ThemeData themeData;
   final VoidCallback setDetails;
   final GeneralTransaction? details;
-  // final MintInfo? mints;
-  final Map<int, Account> externalAddresses;
-  final Map<int, Account> internalAddresses;
+  final List<String> externalAddresses;
+  final List<String> internalAddresses;
   final Account? singleAddressAccount;
-  final List<GeneralTransaction> valueTransfers;
+  final List<GeneralTransaction> transactions;
   TransactionsList(
       {Key? key,
       required this.themeData,
@@ -30,7 +29,7 @@ class TransactionsList extends StatefulWidget {
       required this.setDetails,
       required this.internalAddresses,
       required this.externalAddresses,
-      required this.valueTransfers,
+      required this.transactions,
       this.singleAddressAccount})
       : super(key: key);
 
@@ -39,8 +38,6 @@ class TransactionsList extends StatefulWidget {
 }
 
 class TransactionsListState extends State<TransactionsList> {
-  List<String?> externalAddresses = [];
-  List<String?> internalAddresses = [];
   GeneralTransaction? transactionDetails;
   final ScrollController _scroller = ScrollController();
   @override
@@ -58,8 +55,8 @@ class TransactionsListState extends State<TransactionsList> {
     int nanoWitvalue = 0;
     if (vti.txnType == TransactionType.value_transfer) {
       vti.vtt!.outputs.forEach((element) {
-        if ((externalAddresses.contains(element.pkh.address) ||
-            internalAddresses.contains(element.pkh.address))) {
+        if ((widget.externalAddresses.contains(element.pkh.address) ||
+            widget.internalAddresses.contains(element.pkh.address))) {
           nanoWitvalue += element.value.toInt();
         } else if (widget.singleAddressAccount != null &&
             widget.singleAddressAccount!.address == element.pkh.address) {
@@ -69,8 +66,8 @@ class TransactionsListState extends State<TransactionsList> {
       return nanoWitvalue;
     } else {
       vti.mint!.outputs.forEach((element) {
-        if ((externalAddresses.contains(element.pkh.address) ||
-            internalAddresses.contains(element.pkh.address))) {
+        if ((widget.externalAddresses.contains(element.pkh.address) ||
+            widget.internalAddresses.contains(element.pkh.address))) {
           nanoWitvalue += element.value.toInt();
         } else if (widget.singleAddressAccount != null &&
             widget.singleAddressAccount!.address == element.pkh.address) {
@@ -84,8 +81,8 @@ class TransactionsListState extends State<TransactionsList> {
   int sendValue(GeneralTransaction vti) {
     if (vti.txnType == TransactionType.value_transfer) {
       bool isInternalTx =
-          externalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
-              internalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
+          widget.externalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
+              widget.internalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
               widget.singleAddressAccount?.address ==
                   vti.vtt!.outputs[0].pkh.address;
       return isInternalTx ? vti.fee : vti.vtt!.outputs[0].value.toInt();
@@ -130,7 +127,7 @@ class TransactionsListState extends State<TransactionsList> {
     TransactionType txnType = transaction.txnType;
 
     if (txnType == TransactionType.value_transfer) {
-      label = getTransactionLabel(externalAddresses, internalAddresses,
+      label = getTransactionLabel(widget.externalAddresses, widget.internalAddresses,
           transaction.vtt!.inputs, widget.singleAddressAccount);
       address = getTransactionAddress(
           label, transaction.vtt!.inputs, transaction.vtt!.outputs);
@@ -212,12 +209,6 @@ class TransactionsListState extends State<TransactionsList> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    externalAddresses = widget.externalAddresses.values
-        .map((account) => account.address)
-        .toList();
-    internalAddresses = widget.internalAddresses.values
-        .map((account) => account.address)
-        .toList();
 
     if (widget.details != null) {
       return TransactionDetails(
@@ -225,16 +216,16 @@ class TransactionsListState extends State<TransactionsList> {
         goToList: () => widget.setDetails(null),
       );
     } else {
-      if (widget.valueTransfers.length > 0) {
+      if (widget.transactions.length > 0) {
         return ListView.builder(
           controller: _scroller,
           padding: EdgeInsets.zero,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           scrollDirection: Axis.vertical,
-          itemCount: widget.valueTransfers.length,
+          itemCount: widget.transactions.length,
           itemBuilder: (context, index) {
-            return _buildTransactionItem(widget.valueTransfers[index]);
+            return _buildTransactionItem(widget.transactions[index]);
           },
         );
       } else {
