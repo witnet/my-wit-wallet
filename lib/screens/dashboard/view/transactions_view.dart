@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
@@ -15,13 +17,13 @@ class TransactionsView extends StatefulWidget {
       {Key? key, required this.currentWallet, required this.scrollJumpToTop})
       : super(key: key);
 
-  TransactionsListState createState() => TransactionsListState();
+  TransactionsViewState createState() => TransactionsViewState();
 }
 
-class TransactionsListState extends State<TransactionsView>
+class TransactionsViewState extends State<TransactionsView>
     with TickerProviderStateMixin {
   GeneralTransaction? txDetails;
-  List<GeneralTransaction> vtts = [];
+  List<GeneralTransaction> transactions = [];
   int numberOfPages = 0;
   int currentPage = 0;
   @override
@@ -42,7 +44,7 @@ class TransactionsListState extends State<TransactionsView>
         widget.currentWallet.getPaginatedTransactions(args);
     setState(() {
       numberOfPages = paginatedData.totalPages;
-      vtts = paginatedData.data;
+      transactions = paginatedData.data;
     });
     return paginatedData;
   }
@@ -79,21 +81,31 @@ class TransactionsListState extends State<TransactionsView>
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     final extendedTheme = themeData.extension<ExtendedTheme>()!;
-    return Column(children: [
-      TransactionsList(
-        themeData: themeData,
-        setDetails: _setDetails,
-        details: txDetails,
-        valueTransfers: vtts,
-        externalAddresses: widget.currentWallet.externalAccounts,
-        internalAddresses: widget.currentWallet.internalAccounts,
-        singleAddressAccount:
-            widget.currentWallet.walletType == WalletType.single
-                ? widget.currentWallet.masterAccount
-                : null,
-      ),
-      buildPagination(extendedTheme),
-      vtts.length > 0 ? SizedBox(height: 16) : SizedBox(height: 8),
-    ]);
+    return BlocListener<ExplorerBloc, ExplorerState>(listener: (context, state){
+      if(state.status == ExplorerStatus.dataloaded){
+        getPaginatedTransactions(PaginationParams(currentPage: currentPage + 1, limit: 10));
+      }
+    },
+      child: Column(children: [
+        TransactionsList(
+          themeData: themeData,
+          setDetails: _setDetails,
+          details: txDetails,
+          transactions: transactions,
+          externalAddresses: widget.currentWallet.externalAccounts.values
+              .map((account) => account.address)
+              .toList(),
+          internalAddresses: widget.currentWallet.internalAccounts.values
+              .map((account) => account.address)
+              .toList(),
+          singleAddressAccount:
+          widget.currentWallet.walletType == WalletType.single
+              ? widget.currentWallet.masterAccount
+              : null,
+        ),
+        buildPagination(extendedTheme),
+        transactions.length > 0 ? SizedBox(height: 16) : SizedBox(height: 8),
+      ]),
+    );
   }
 }
