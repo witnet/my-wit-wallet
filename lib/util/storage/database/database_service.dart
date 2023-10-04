@@ -128,7 +128,11 @@ class DatabaseService {
 
   Future<bool> deleteDatabase() async {
     try {
-      if (_dbConfig != null) await dbFactory.deleteDatabase(_dbConfig!.path);
+      if (_dbConfig != null) {
+        await _database.close();
+        await dbFactory.deleteDatabase(_dbConfig!.path);
+        _dbConfig = null;
+      }
       return true;
     } catch (e) {
       print('Error deleting the storage $e');

@@ -81,12 +81,18 @@ class ReEstablishWalletDisclaimerState
     final theme = Theme.of(context);
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
     final storageDeleted = await db.deleteAllWallets();
-    await db.openDatabase();
     if (storageDeleted) {
-      // Close current modal
-      Navigator.pop(context);
-      // Show next modal
-      showStorageDeletedMessage();
+      final isdbOpen = await db.openDatabase();
+      if (isdbOpen) {
+        // Close current modal
+        Navigator.pop(context);
+        // Show next modal
+        showStorageDeletedMessage();
+      } else {
+        closeModal();
+        showErrorSnackBar(context, theme,
+            'There was an error re-establishing myWitWallet, please try again!');
+      }
     } else {
       closeModal();
       showErrorSnackBar(context, theme,
