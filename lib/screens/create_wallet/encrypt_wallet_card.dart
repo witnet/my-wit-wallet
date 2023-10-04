@@ -136,6 +136,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     _passConfirmFocusNode.addListener(() => validateForm());
     _passFocusNode.addListener(() => validateForm());
     final theme = Theme.of(context);
+    String? seedSource = Locator.instance.get<ApiCreateWallet>().seedSource;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -155,7 +156,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
         ),
         SizedBox(height: 8),
         Text(
-          'Your ${Locator.instance.get<ApiCreateWallet>().seedData!.split(' ').length} word seed phrase is still your ultimate recovery method.',
+          'Your ${seedSource == "xprv" ? "Xprv" : "${Locator.instance.get<ApiCreateWallet>().seedData!.split(' ').length} word seed phrase"} is still your ultimate recovery method.',
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 16),
