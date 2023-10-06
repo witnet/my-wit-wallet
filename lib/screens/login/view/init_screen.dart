@@ -48,28 +48,27 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
     ];
   }
 
-  Future<WalletStorage> loadWalletsDatabase() async {
-    return await Locator.instance<ApiDatabase>().loadWalletsDatabase();
+  Future<Widget> loadWalletsDatabase() async {
+    WalletStorage storage =
+        await Locator.instance<ApiDatabase>().loadWalletsDatabase();
+    if (storage.wallets.isNotEmpty) {
+      // There are wallets stored
+      return LoginForm(mainComponents: mainComponents());
+    } else {
+      // No wallets stored yet
+      return FtuActions(mainComponents: mainComponents());
+    }
   }
 
   @override
-  FutureBuilder<WalletStorage> build(BuildContext context) {
+  FutureBuilder<Widget> build(BuildContext context) {
     final theme = Theme.of(context);
     return FutureBuilder(
       future: loadWalletsDatabase(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasData) {
-            if (snapshot.data!.wallets.isNotEmpty) {
-              // There are wallets stored
-              return LoginForm(mainComponents: mainComponents());
-            } else {
-              // No wallets stored yet
-              return FtuActions(mainComponents: mainComponents());
-            }
-          }
+      builder: (context, widget) {
+        if (widget.connectionState == ConnectionState.done && widget.hasData) {
+          return widget.data!;
         }
-        // Default screen while loading wallets
         return Layout(
           navigationActions: [],
           widgetList: [
