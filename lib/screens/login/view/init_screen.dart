@@ -48,7 +48,7 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
     ];
   }
 
-  Future<Widget> loadWalletsDatabase() async {
+  Future<Widget> loadInitialScreen() async {
     WalletStorage storage =
         await Locator.instance<ApiDatabase>().loadWalletsDatabase();
     if (storage.wallets.isNotEmpty) {
@@ -64,7 +64,7 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
   FutureBuilder<Widget> build(BuildContext context) {
     final theme = Theme.of(context);
     return FutureBuilder(
-      future: loadWalletsDatabase(),
+      future: loadInitialScreen(),
       builder: (context, widget) {
         if (widget.connectionState == ConnectionState.done && widget.hasData) {
           return widget.data!;
