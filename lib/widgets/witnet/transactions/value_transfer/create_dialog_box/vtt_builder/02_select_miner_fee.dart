@@ -258,6 +258,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                 _minerFeeFocusNode.requestFocus();
               },
               onFieldSubmitted: (String value) {
+                FocusManager.instance.primaryFocus?.unfocus();
                 widget.goNext();
               },
               onEditingComplete: () {
