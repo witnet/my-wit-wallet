@@ -81,11 +81,13 @@ class TransactionsViewState extends State<TransactionsView>
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
     final extendedTheme = themeData.extension<ExtendedTheme>()!;
-    return BlocListener<ExplorerBloc, ExplorerState>(listener: (context, state){
-      if(state.status == ExplorerStatus.dataloaded){
-        getPaginatedTransactions(PaginationParams(currentPage: currentPage + 1, limit: 10));
-      }
-    },
+    return BlocListener<ExplorerBloc, ExplorerState>(
+      listener: (context, state) {
+        if (state.status == ExplorerStatus.dataloaded) {
+          getPaginatedTransactions(
+              PaginationParams(currentPage: currentPage + 1, limit: 10));
+        }
+      },
       child: Column(children: [
         TransactionsList(
           themeData: themeData,
@@ -99,9 +101,9 @@ class TransactionsViewState extends State<TransactionsView>
               .map((account) => account.address)
               .toList(),
           singleAddressAccount:
-          widget.currentWallet.walletType == WalletType.single
-              ? widget.currentWallet.masterAccount
-              : null,
+              widget.currentWallet.walletType == WalletType.single
+                  ? widget.currentWallet.masterAccount
+                  : null,
         ),
         buildPagination(extendedTheme),
         transactions.length > 0 ? SizedBox(height: 16) : SizedBox(height: 8),

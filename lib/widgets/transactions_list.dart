@@ -80,11 +80,11 @@ class TransactionsListState extends State<TransactionsList> {
 
   int sendValue(GeneralTransaction vti) {
     if (vti.txnType == TransactionType.value_transfer) {
-      bool isInternalTx =
-          widget.externalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
-              widget.internalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
-              widget.singleAddressAccount?.address ==
-                  vti.vtt!.outputs[0].pkh.address;
+      bool isInternalTx = widget.externalAddresses
+              .contains(vti.vtt!.outputs[0].pkh.address) ||
+          widget.internalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
+          widget.singleAddressAccount?.address ==
+              vti.vtt!.outputs[0].pkh.address;
       return isInternalTx ? vti.fee : vti.vtt!.outputs[0].value.toInt();
     } else {
       return 0;
@@ -127,8 +127,11 @@ class TransactionsListState extends State<TransactionsList> {
     TransactionType txnType = transaction.txnType;
 
     if (txnType == TransactionType.value_transfer) {
-      label = getTransactionLabel(widget.externalAddresses, widget.internalAddresses,
-          transaction.vtt!.inputs, widget.singleAddressAccount);
+      label = getTransactionLabel(
+          widget.externalAddresses,
+          widget.internalAddresses,
+          transaction.vtt!.inputs,
+          widget.singleAddressAccount);
       address = getTransactionAddress(
           label, transaction.vtt!.inputs, transaction.vtt!.outputs);
     } else {
