@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
@@ -28,6 +29,8 @@ class SelectImportedOption extends StatefulWidget {
 }
 
 class ImportedOptionState extends State<SelectImportedOption> {
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
+
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
@@ -76,21 +79,21 @@ class ImportedOptionState extends State<SelectImportedOption> {
 
   NavAction prev() {
     return NavAction(
-      label: 'Back',
+      label: _localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction nextSeed() {
     return NavAction(
-      label: 'Import from secret security phrase',
+      label: _localization.importMnemonicLabel,
       action: nextSeedAction,
     );
   }
 
   NavAction nextXprv() {
     return NavAction(
-      label: 'Import from Xprv key',
+      label: _localization.importXprvLabel,
       action: nextXprvAction,
     );
   }
@@ -114,17 +117,16 @@ class ImportedOptionState extends State<SelectImportedOption> {
         Center(child: svgThemeImage(theme, name: 'import-wallet', height: 152)),
         SizedBox(height: 16),
         Text(
-          'Import your wallet',
+          _localization.selectImportOptionHeader,
           style: theme.textTheme.titleLarge,
         ),
         SizedBox(height: 16),
         Text(
-          'When you created your wallet, you probably wrote down the secret security phrase on a piece of paper. It looks like a list of 12 apparently random words.',
+          _localization.createImportWallet01,
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 16),
-        Text(
-            'If you did not keep the secret security phrase, you can still export a password-protected Xprv key from the settings of your existing wallet.',
+        Text(_localization.createImportWallet02,
             style: theme.textTheme.bodyLarge),
       ],
     );

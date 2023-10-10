@@ -2,6 +2,7 @@ import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
@@ -39,6 +40,8 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
   List<FocusNode> _formFocusElements = [_passFocusNode, _passConfirmFocusNode];
   ValidationUtils validationUtils = ValidationUtils();
 
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
+
   void prevAction() {
     CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
@@ -62,14 +65,14 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
 
   NavAction prev() {
     return NavAction(
-      label: 'Back',
+      label: _localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: 'Continue',
+      label: _localization.continueLabel,
       action: nextAction,
     );
   }
@@ -131,32 +134,70 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     super.dispose();
   }
 
+  List<Widget> buildLocalizedTextBlock(BuildContext context) {
+    final theme = Theme.of(context);
+    String? seedSource = Locator.instance.get<ApiCreateWallet>().seedSource;
+    Map<int, String> _encryptWalletTextLocalization(BuildContext context) => {
+          0: _localization.encryptWalletHeader,
+          1: _localization.encryptWallet01,
+          2: _localization.encryptWallet02,
+          3: seedSource == "xprv"
+              ? _localization.encryptWallet04
+              : _localization.encryptWallet03(Locator.instance
+                  .get<ApiCreateWallet>()
+                  .seedData!
+                  .split(' ')
+                  .length),
+        };
+    List<Widget> _widgets = [];
+    List<String> _localizedText =
+        _encryptWalletTextLocalization(context).values.toList();
+
+    // for each item, add a text widget and a spacer SizedBox
+    // if it is the first item, set the text style for a header
+    _encryptWalletTextLocalization(context).forEach((key, value) {
+      _widgets.add(Text(
+        _localizedText[key],
+        style:
+            key == 0 ? theme.textTheme.titleLarge : theme.textTheme.bodyLarge,
+      ));
+      _widgets.add(SizedBox(height: 8));
+    });
+    _widgets.add(SizedBox(height: 8));
+    return _widgets;
+  }
+
   @override
   Widget build(BuildContext context) {
     _passConfirmFocusNode.addListener(() => validateForm());
     _passFocusNode.addListener(() => validateForm());
     final theme = Theme.of(context);
     String? seedSource = Locator.instance.get<ApiCreateWallet>().seedSource;
+    int? seedLength =
+        Locator.instance.get<ApiCreateWallet>().seedData!.split(' ').length;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // ...buildLocalizedTextBlock(context),
         Text(
-          'Encrypt your wallet',
+          _localization.encryptWalletHeader,
           style: theme.textTheme.titleLarge,
         ),
         SizedBox(height: 8),
         Text(
-          'This password encrypts your Witnet wallet only on this computer.',
+          _localization.encryptWallet01,
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 8),
         Text(
-          'This is not your backup and you cannot restore your wallet with this password.',
+          _localization.encryptWallet02,
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 8),
         Text(
-          'Your ${seedSource == "xprv" ? "Xprv" : "${Locator.instance.get<ApiCreateWallet>().seedData!.split(' ').length} word seed phrase"} is still your ultimate recovery method.',
+          seedSource! == "xprv"
+              ? _localization.encryptWallet04
+              : _localization.encryptWallet03(seedLength),
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 16),
@@ -166,12 +207,12 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Password',
+                _localization.passwordLabel,
                 style: theme.textTheme.titleSmall,
               ),
               SizedBox(height: 8),
               InputLogin(
-                hint: 'Password',
+                hint: _localization.passwordLabel,
                 focusNode: _passFocusNode,
                 showPassFocusNode: _showPassFocusNode,
                 textEditingController: _passController,
@@ -188,12 +229,12 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
               ),
               SizedBox(height: 16),
               Text(
-                'Confirm password',
+                _localization.confirmPassword,
                 style: theme.textTheme.titleSmall,
               ),
               SizedBox(height: 8),
               InputLogin(
-                hint: 'Confirm Password',
+                hint: _localization.confirmPassword,
                 obscureText: true,
                 focusNode: _passConfirmFocusNode,
                 showPassFocusNode: _showPassConfirmedFocusNode,

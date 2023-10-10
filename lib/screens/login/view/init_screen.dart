@@ -9,6 +9,8 @@ import 'package:my_wit_wallet/widgets/carousel.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class InitScreen extends StatefulWidget {
   static final route = '/';
 
@@ -19,6 +21,8 @@ class InitScreen extends StatefulWidget {
 }
 
 class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
+
   @override
   void initState() {
     super.initState();
@@ -37,13 +41,13 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
         child: witnetLogo(Theme.of(context)),
       ),
       Text(
-        'Welcome',
+        _localization.welcome,
         style: theme.textTheme.displayLarge,
       ),
       Carousel(list: [
-        'myWitWallet allows you to send and receive Wit immediately. Bye bye synchronization!',
-        'myWitWallet uses state-of-the-art cryptography to store your Wit coins securely.',
-        'myWitWallet is completely non-custodial. Your keys will never leave your device.',
+        _localization.carouselMsg01,
+        _localization.carouselMsg02,
+        _localization.carouselMsg03,
       ])
     ];
   }

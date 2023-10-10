@@ -47,5 +47,5 @@ void main() async {
       ? WalletTheme.Dark
       : WalletTheme.Light;
 
-  runApp(WitnetWalletApp(initialTheme));
+  runApp(MyWitWalletApp(initialTheme));
 }

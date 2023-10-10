@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/globals.dart' as globals;
@@ -16,6 +17,8 @@ class BiometricsAutenticationState extends State<BiometricsAutentication>
     with WidgetsBindingObserver {
   BiometricsStatus? autenticationStatus;
   Widget child = Container();
+
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -45,8 +48,8 @@ class BiometricsAutenticationState extends State<BiometricsAutentication>
                     padding: EdgeInsets.all(0),
                     onPressed: _authenticateWithBiometrics,
                     text: autenticationStatus == BiometricsStatus.autenticating
-                        ? 'Cancel autentication'
-                        : 'Authenticate with biometrics',
+                        ? _localization.cancelAuthentication
+                        : _localization.authenticateWithBiometrics,
                     icon: const Icon(Icons.fingerprint),
                     type: ButtonType.horizontalIcon,
                   )

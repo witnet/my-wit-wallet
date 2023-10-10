@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/screens/login/view/biometrics_autentication.dart';
 import 'package:my_wit_wallet/screens/login/view/re_establish_wallet_button.dart';
 import 'package:my_wit_wallet/util/allow_biometrics.dart';
@@ -32,6 +33,8 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
   ValidationUtils validationUtils = ValidationUtils();
   Widget biometricsOrPassword = Container();
 
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
+
   @override
   void initState() {
     super.initState();
@@ -58,7 +61,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
   Widget _buttonLogin() {
     return PaddedButton(
       padding: EdgeInsets.only(top: 8, bottom: 0),
-      text: 'Unlock wallet',
+      text: _localization.unlockWallet,
       isLoading: isLoading,
       type: ButtonType.primary,
       onPressed: _login,
@@ -70,7 +73,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
       listener: (BuildContext context, LoginState state) {
         if (state.status == LoginStatus.LoginInvalid) {
           setState(() {
-            _passwordInputErrorText = "Invalid Password";
+            _passwordInputErrorText = _localization.invalidPassword;
             BlocProvider.of<LoginBloc>(context).add(LoginLogoutEvent());
             isLoading = false;
           });
@@ -125,7 +128,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
     return Form(
       autovalidateMode: AutovalidateMode.disabled,
       child: InputLogin(
-        hint: 'Password',
+        hint: _localization.passwordLabel,
         errorText: _password.error ?? _passwordInputErrorText,
         showPassFocusNode: _showPasswordFocusNode,
         obscureText: true,

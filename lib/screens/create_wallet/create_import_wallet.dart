@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,6 +36,8 @@ class Action {
 }
 
 class CreateImportWalletState extends State<CreateImportWallet> {
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
+
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
@@ -76,21 +79,21 @@ class CreateImportWalletState extends State<CreateImportWallet> {
 
   Action prev() {
     return Action(
-      label: 'Back',
+      label: _localization.backLabel,
       action: prevAction,
     );
   }
 
   Action nextCreateAction() {
     return Action(
-      label: 'Create new wallet',
+      label: _localization.createNewWalletLabel,
       action: createWallet,
     );
   }
 
   Action nextImportAction() {
     return Action(
-      label: 'Import wallet',
+      label: _localization.importWalletLabel,
       action: importWallet,
     );
   }
@@ -116,17 +119,16 @@ class CreateImportWalletState extends State<CreateImportWallet> {
                 name: 'create-or-import-wallet', height: 152)),
         SizedBox(height: 16),
         Text(
-          'Create or import your wallet',
+          _localization.createImportWalletHeader,
           style: theme.textTheme.titleLarge,
         ),
         SizedBox(height: 16),
         Text(
-          'When you created your wallet, you probably wrote down the secret security phrase on a piece of paper. It looks like a list of 12 apparently random words.',
+          _localization.createImportWallet01,
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 16),
-        Text(
-            'If you did not keep the secret security phrase, you can still export a password-protected Xprv key from the settings of your existing wallet.',
+        Text(_localization.createImportWallet02,
             style: theme.textTheme.bodyLarge)
       ],
     );

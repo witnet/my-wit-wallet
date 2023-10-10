@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
@@ -27,6 +28,8 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
   String _language = 'English';
   int _radioWordCount = 12;
 
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
+
   Future<String> _genMnemonic() async {
     return await Locator.instance
         .get<ApiCrypto>()
@@ -40,21 +43,21 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'These $_radioWordCount apparently random words are your secret recovery phrase. They will allow you to recover your Wit coins if you uninstall this app or forget your wallet lock password.',
+          _localization.generateMnemonic01(_radioWordCount),
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 8,
         ),
         Text(
-          'You must write down your secret recovery phrase on a piece of paper and store it somewhere safe. Do not store it in a file in your device or anywhere else electronically. If you lose your secret recovery phrase, you may permanently lose access to your wallet and your Wit coins.',
+          _localization.generateMnemonic02,
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 8,
         ),
         Text(
-          'You should never share your secret recovery phrase with anyone. If someone finds or sees your secret recovery phrase, they will have full access to your wallet and your Wit coins.',
+          _localization.generateMnemonic03,
           style: theme.textTheme.bodyLarge,
         ),
       ],
@@ -98,14 +101,14 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
 
   NavAction prev() {
     return NavAction(
-      label: 'Back',
+      label: _localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: 'Continue',
+      label: _localization.continueLabel,
       action: nextAction,
     );
   }
@@ -130,7 +133,7 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
     final deviceSize = MediaQuery.of(context).size;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(
-        'Write down your secret recovery phrase',
+        _localization.generateMnemonicHeader,
         style: theme.textTheme.titleLarge,
       ),
       SizedBox(

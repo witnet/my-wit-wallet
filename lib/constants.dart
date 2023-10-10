@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 
@@ -47,10 +50,6 @@ Map<EstimatedFeeOptions, String?> DEFAULT_MINER_FEE_OPTIONS = {
   EstimatedFeeOptions.Opulent: '0',
   EstimatedFeeOptions.Custom: null,
 };
-Map<WalletType, String> walletTypeToLabel = {
-  WalletType.hd: 'HD wallet',
-  WalletType.single: 'Node',
-};
 
 Map<ImportOrigin, String> importOriginToLabel = {
   ImportOrigin.fromMyWitWallet: 'myWitWallet',
@@ -76,3 +75,17 @@ const double HEADER_HEIGTH = 185;
 const int ENCRYPTED_XPRV_LENGTH = 293;
 const int XPRV_LENGTH = 117;
 const int MAX_VT_WEIGHT = 20000;
+
+List<LocalizationsDelegate<dynamic>> localizationDelegates = [
+  AppLocalizations.delegate,
+  GlobalMaterialLocalizations.delegate,
+  GlobalWidgetsLocalizations.delegate,
+  GlobalCupertinoLocalizations.delegate,
+];
+
+const Map<String, Locale> SUPPORTED_LOCALES = {
+  "en": const Locale("en"),
+  // "es": const Locale("es"),
+};
+
+const String APP_TITLE = "myWitWallet";

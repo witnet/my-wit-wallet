@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
@@ -11,12 +12,13 @@ void buildTxGeneralExceptionModal(
     {required ThemeData theme,
     required BuildContext context,
     required VoidCallback onAction}) {
+  AppLocalizations _localization = AppLocalizations.of(context)!;
   return buildAlertDialog(
       context: context,
       actions: [
         PaddedButton(
             padding: EdgeInsets.all(8),
-            text: 'Cancel',
+            text: _localization.cancel,
             type: ButtonType.text,
             enabled: true,
             onPressed: () => {
@@ -34,7 +36,7 @@ void buildTxGeneralExceptionModal(
                 }),
         PaddedButton(
             padding: EdgeInsets.all(8),
-            text: 'Try again!',
+            text: _localization.tryAgain,
             type: ButtonType.text,
             enabled: true,
             onPressed: () => {
@@ -44,11 +46,10 @@ void buildTxGeneralExceptionModal(
                 })
       ],
       icon: FontAwesomeIcons.circleExclamation,
-      title: 'Error',
+      title: _localization.error,
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         svgThemeImage(theme, name: 'transaction-error', height: 100),
         SizedBox(height: 16),
-        Text('Error sending the transaction, try again!',
-            style: theme.textTheme.bodyLarge)
+        Text(_localization.errorTransaction, style: theme.textTheme.bodyLarge)
       ]));
 }

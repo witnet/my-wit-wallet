@@ -1,13 +1,14 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
-import 'dart:math' as math;
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/screens/receive_transaction/receive_tx_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
@@ -62,6 +63,8 @@ class DashboardLayoutState extends State<DashboardLayout>
   bool isAddressCopied = false;
   bool isCopyAddressFocus = false;
   FocusNode _copyToClipboardFocusNode = FocusNode();
+
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -136,7 +139,7 @@ class DashboardLayoutState extends State<DashboardLayout>
       PaddedButton(
         color: getButtonColorByRoute(CreateVttScreen.route),
         padding: EdgeInsets.zero,
-        text: 'Send',
+        text: _localization.send,
         onPressed: currentRoute != CreateVttScreen.route
             ? _showCreateVTTDialog
             : () {},
@@ -151,7 +154,7 @@ class DashboardLayoutState extends State<DashboardLayout>
       PaddedButton(
         color: getButtonColorByRoute(DashboardScreen.route),
         padding: EdgeInsets.zero,
-        text: 'History',
+        text: _localization.history,
         onPressed: currentRoute != DashboardScreen.route
             ? () => {
                   BlocProvider.of<VTTCreateBloc>(context)
@@ -174,7 +177,7 @@ class DashboardLayoutState extends State<DashboardLayout>
       PaddedButton(
         color: getButtonColorByRoute(ReceiveTransactionScreen.route),
         padding: EdgeInsets.zero,
-        text: 'Receive',
+        text: _localization.receive,
         onPressed: currentRoute != ReceiveTransactionScreen.route
             ? _showReceiveDialog
             : () {},
@@ -205,7 +208,7 @@ class DashboardLayoutState extends State<DashboardLayout>
         children: [
           SizedBox(height: 8),
           Semantics(
-              label: 'balance',
+              label: _localization.balance,
               child: Text(
                 '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
                 textAlign: TextAlign.center,
@@ -215,7 +218,7 @@ class DashboardLayoutState extends State<DashboardLayout>
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Flexible(
                 child: Semantics(
-                    label: 'Current address',
+                    label: _localization.currentAddress,
                     child: Text(
                       currentAccount.address.cropMiddle(18),
                       overflow: TextOverflow.ellipsis,
@@ -225,8 +228,8 @@ class DashboardLayoutState extends State<DashboardLayout>
             Flexible(
               child: PaddedButton(
                   padding: EdgeInsets.zero,
-                  label: 'Copy address to clipboard',
-                  text: 'Copy address to clipboard',
+                  label: _localization.copyAddressToClipboard,
+                  text: _localization.copyAddressToClipboard,
                   type: ButtonType.iconButton,
                   iconSize: 12,
                   onPressed: () async {
@@ -236,7 +239,8 @@ class DashboardLayoutState extends State<DashboardLayout>
                       if (await Clipboard.hasStrings()) {
                         ScaffoldMessenger.of(context).clearSnackBars();
                         ScaffoldMessenger.of(context).showSnackBar(
-                            buildCopiedSnackbar(theme, 'Address copied!'));
+                            buildCopiedSnackbar(
+                                theme, _localization.addressCopied));
                         setState(() {
                           isAddressCopied = true;
                         });
@@ -277,8 +281,8 @@ class DashboardLayoutState extends State<DashboardLayout>
     return [
       PaddedButton(
           padding: EdgeInsets.zero,
-          label: 'Settings',
-          text: 'Settings',
+          label: _localization.settings,
+          text: _localization.settings,
           iconSize: 28,
           icon: Icon(FontAwesomeIcons.gear,
               size: 28, color: getButtonColorByRoute(PreferencePage.route)),

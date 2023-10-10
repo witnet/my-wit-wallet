@@ -1,3 +1,4 @@
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
@@ -8,7 +9,6 @@ import 'package:witnet/crypto.dart';
 
 import 'bloc/create_wallet_bloc.dart';
 
-//genius merge win culture lemon remember work native omit digital canal update
 typedef void VoidCallback(NavAction? value);
 
 class EnterMnemonicCard extends StatefulWidget {
@@ -30,20 +30,22 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
   final TextEditingController textController = TextEditingController();
   int numLines = 0;
 
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
+
   Widget _buildConfirmField() {
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Import wallet from secret recovery phrase',
+          _localization.importMnemonicHeader,
           style: theme.textTheme.titleLarge, //Textstyle
         ), //Text
         SizedBox(
           height: 16,
         ),
         Text(
-          'Type your secret recovery phrase below. It looks like a list of 12 apparently random words.',
+          _localization.importMnemonic01,
           style: theme.textTheme.bodyLarge, //Textstyle
         ), //Text
         SizedBox(
@@ -90,14 +92,14 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
 
   NavAction prev() {
     return NavAction(
-      label: 'Back',
+      label: _localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: 'Continue',
+      label: _localization.continueLabel,
       action: nextAction,
     );
   }

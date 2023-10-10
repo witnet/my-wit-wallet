@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_import_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/re_establish_wallet_disclaimer.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
@@ -39,6 +40,8 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   bool isLoading = false;
   bool hideButton = false;
 
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
+
   @override
   void initState() {
     super.initState();
@@ -57,7 +60,9 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
       actions = [
         PaddedButton(
             padding: EdgeInsets.only(bottom: 0),
-            text: nextAction != null ? nextAction().label : 'Continue',
+            text: nextAction != null
+                ? nextAction().label
+                : _localization.continueLabel,
             type: ButtonType.primary,
             isLoading: isLoading,
             enabled: nextAction != null,

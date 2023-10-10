@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:witnet/crypto.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
@@ -26,6 +27,7 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
   String mnemonic = '';
   final TextEditingController textController = TextEditingController();
   int numLines = 0;
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   void prevAction() {
     CreateWalletType type =
@@ -42,14 +44,14 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
 
   NavAction prev() {
     return NavAction(
-      label: 'Back',
+      label: _localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: 'Continue',
+      label: _localization.continueLabel,
       action: nextAction,
     );
   }
@@ -76,14 +78,14 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Secret Recovery Phrase Confirmation',
+          _localization.confirmMnemonicHeader,
           style: theme.textTheme.titleLarge,
         ),
         SizedBox(
           height: 16,
         ),
         Text(
-          'Type in your secret recovery phrase below exactly as shown before. This will ensure that you have written down your secret recovery phrase correctly.',
+          _localization.confirmMnemonic01,
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(

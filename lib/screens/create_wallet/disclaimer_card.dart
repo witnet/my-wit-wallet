@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
@@ -26,6 +27,8 @@ class DisclaimerCardState extends State<DisclaimerCard>
   bool isNextAllow = false;
   bool isCheckBoxFocus = false;
   FocusNode _checkBoxFocusNode = FocusNode();
+
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -71,14 +74,14 @@ class DisclaimerCardState extends State<DisclaimerCard>
 
   NavAction prev() {
     return NavAction(
-      label: 'Back',
+      label: _localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: 'Continue',
+      label: _localization.continueLabel,
       action: nextAction,
     );
   }
@@ -91,44 +94,37 @@ class DisclaimerCardState extends State<DisclaimerCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
-        Text('Wallet security', style: theme.textTheme.titleLarge!),
+        Text(
+          _localization.walletSecurityHeader,
+          style: theme.textTheme.titleLarge!,
+        ),
         SizedBox(
           height: 16,
         ),
         Text(
-          'Please, read carefully before continuing.',
+          _localization.walletSecurity01,
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 10,
         ),
-        Text(
-            'A wallet is an app that keeps your credentials safe and lets you interface with the Witnet blockchain. It allows you to easily transfer and receive Wit.',
-            style: theme.textTheme.bodyLarge),
+        Text(_localization.walletSecurity02, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
         ),
-        Text(
-            'You should never share your seed phrase with anyone. We at Witnet do not store your seed phrase and will never ask you to share it with us. If you lose your seed phrase, you will permanently lose access to your wallet and your funds.',
-            style: theme.textTheme.bodyLarge),
+        Text(_localization.walletSecurity03, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
         ),
-        Text(
-            'If someone finds or sees your seed phrase, they will have access to your wallet and all of your funds.',
-            style: theme.textTheme.bodyLarge),
+        Text(_localization.walletSecurity04, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
         ),
-        Text(
-            'We recommend storing your seed phrase on paper somewhere safe. Do not store it in a file on your computer or anywhere electronically.',
-            style: theme.textTheme.bodyLarge),
+        Text(_localization.walletSecurity05, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
         ),
-        Text(
-            'By accepting these disclaimers, you commit to comply with the explained restrictions and digitally sign your conformance using your Witnet wallet.',
-            style: theme.textTheme.bodyLarge),
+        Text(_localization.walletSecurity06, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
         ),
@@ -136,7 +132,7 @@ class DisclaimerCardState extends State<DisclaimerCard>
             focusNode: _checkBoxFocusNode,
             isFocus: isCheckBoxFocus,
             checked: isNextAllow,
-            label: 'I will be careful, I promise!',
+            label: _localization.walletSecurityConfirmLabel,
             onChanged: (value) => {
                   setState(() {
                     isNextAllow = !isNextAllow;

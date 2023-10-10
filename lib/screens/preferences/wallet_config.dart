@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/screens/preferences/export_xprv.dart';
 import 'package:my_wit_wallet/screens/preferences/sign_message.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/custom_divider.dart';
 
@@ -19,6 +20,8 @@ class WalletConfig extends StatefulWidget {
 
 class WalletConfigState extends State<WalletConfig> {
   WalletConfigActions? currentSetting;
+
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -59,31 +62,28 @@ class WalletConfigState extends State<WalletConfig> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           SizedBox(height: 32),
           Text(
-            'Export the Xprv key of my wallet',
+            _localization.walletConfigHeader,
             style: theme.textTheme.titleMedium,
           ),
           SizedBox(height: 16),
-          Text(
-              'Your Xprv key allows you to export and back up your wallet at any point after creating it.',
-              style: theme.textTheme.bodyLarge),
+          Text(_localization.walletConfig01, style: theme.textTheme.bodyLarge),
           PaddedButton(
               padding: EdgeInsets.only(bottom: 16, top: 16),
-              text: 'Export xprv',
+              text: _localization.walletConfig01,
               type: ButtonType.primary,
               enabled: true,
               onPressed: () => _toggleSetting(WalletConfigActions.exportXprv)),
           CustomDivider(),
           Text(
-            'Message Signing',
+            _localization.messageSigning,
             style: theme.textTheme.titleMedium,
           ),
           SizedBox(height: 16),
-          Text(
-              'Prove the ownership of your address by adding your signature to a message.',
+          Text(_localization.messageSigning01,
               style: theme.textTheme.bodyLarge),
           PaddedButton(
               padding: EdgeInsets.only(bottom: 16, top: 16),
-              text: 'Sign message',
+              text: _localization.signMessage,
               type: ButtonType.primary,
               enabled: true,
               onPressed: () => _toggleSetting(WalletConfigActions.signMsg)),

@@ -1,4 +1,5 @@
 import 'package:my_wit_wallet/constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/util/extensions/int_extensions.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
@@ -40,6 +41,8 @@ class TransactionsList extends StatefulWidget {
 class TransactionsListState extends State<TransactionsList> {
   GeneralTransaction? transactionDetails;
   final ScrollController _scroller = ScrollController();
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
+
   @override
   void initState() {
     super.initState();
@@ -95,7 +98,7 @@ class TransactionsListState extends State<TransactionsList> {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
 
-    if (label == 'from') {
+    if (label == _localization.from) {
       return Text(
         ' + ${receiveValue(transaction).standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
         style: theme.textTheme.bodyLarge
@@ -128,21 +131,26 @@ class TransactionsListState extends State<TransactionsList> {
 
     if (txnType == TransactionType.value_transfer) {
       label = getTransactionLabel(
-          widget.externalAddresses,
-          widget.internalAddresses,
-          transaction.vtt!.inputs,
-          widget.singleAddressAccount);
+        widget.externalAddresses,
+        widget.internalAddresses,
+        transaction.vtt!.inputs,
+        widget.singleAddressAccount,
+        context,
+      );
+
       address = getTransactionAddress(
           label, transaction.vtt!.inputs, transaction.vtt!.outputs);
     } else {
-      label = 'from';
+      label = _localization.from;
       address = 'Mint';
     }
 
+    String txnStatus = _localization.txnStatus(transaction.status);
+    String txnTime = transaction.txnTime.formatDuration(context);
     return Semantics(
         button: true,
         enabled: true,
-        label: 'Transaction',
+        label: _localization.transaction,
         child: MouseRegion(
           cursor: SystemMouseCursors.click,
           child: GestureDetector(
@@ -153,8 +161,8 @@ class TransactionsListState extends State<TransactionsList> {
                   children: [
                     Text(
                       transaction.status != "confirmed"
-                          ? "${transaction.status} ${transaction.txnTime.formatDuration()}"
-                          : "${transaction.txnTime.formatDuration()}",
+                          ? "$txnStatus $txnTime"
+                          : txnTime,
                       textAlign: TextAlign.start,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall,
@@ -246,7 +254,7 @@ class TransactionsListState extends State<TransactionsList> {
                     SizedBox(
                       height: 24,
                     ),
-                    Text('You don\'t have transactions yet!')
+                    Text(_localization.noTransactions),
                   ]),
             )
           ],

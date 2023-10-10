@@ -1,4 +1,5 @@
 import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
@@ -32,6 +33,8 @@ class VerifyPasswordState extends State<VerifyPassword>
       Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.xprv;
   ValidationUtils validationUtils = ValidationUtils();
   List<FocusNode> _formFocusElements = [_passFocusNode];
+
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   void setPassword(String password, {bool? validate}) {
     setState(() {
@@ -99,7 +102,7 @@ class VerifyPasswordState extends State<VerifyPassword>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Please, enter your wallet\'s password.',
+          _localization.inputPasswordPrompt,
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 16),
@@ -109,12 +112,12 @@ class VerifyPasswordState extends State<VerifyPassword>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Password',
+                _localization.passwordLabel,
                 style: theme.textTheme.titleSmall,
               ),
               SizedBox(height: 8),
               InputLogin(
-                hint: 'Password',
+                hint: _localization.passwordLabel,
                 obscureText: true,
                 focusNode: _passFocusNode,
                 showPassFocusNode: _showPasswordFocusNode,
@@ -131,7 +134,7 @@ class VerifyPasswordState extends State<VerifyPassword>
               SizedBox(height: 16),
               PaddedButton(
                   padding: EdgeInsets.only(bottom: 8),
-                  text: 'Verify',
+                  text: _localization.verifyLabel,
                   isLoading: isLoading,
                   type: ButtonType.primary,
                   enabled: true,

@@ -28,10 +28,10 @@ void main() {
         value: 10180697116),
   ];
 
-  String transactionFromLabel =
-      getTransactionLabel(externalAddresses, internalAddresses, inputs, null);
+  String transactionFromLabel = getTransactionLabel(
+      externalAddresses, internalAddresses, inputs, null, null);
   String transactionToLabel =
-      getTransactionLabel([], [], inputs, singleAddressAccount);
+      getTransactionLabel([], [], inputs, singleAddressAccount, null);
 
   group(
       'getTransactionAddress',

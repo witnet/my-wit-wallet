@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/util/allow_biometrics.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/general_error_tx_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/sending_tx_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/signing_tx_modal.dart';
@@ -32,6 +33,8 @@ class ReviewStep extends StatefulWidget {
 class ReviewStepState extends State<ReviewStep>
     with SingleTickerProviderStateMixin {
   late AnimationController _loadingController;
+
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -76,7 +79,7 @@ class ReviewStepState extends State<ReviewStep>
 
   NavAction next() {
     return NavAction(
-      label: 'Sign and send',
+      label: _localization.signAndSend,
       action: nextAction,
     );
   }
@@ -128,20 +131,20 @@ class ReviewStepState extends State<ReviewStep>
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
-                'Transaction details',
+                _localization.txnDetails,
                 style: theme.textTheme.displaySmall,
               ),
               SizedBox(height: 24),
               InfoElement(
-                  label: 'To',
+                  label: _localization.to,
                   text: state.vtTransaction.body.outputs.first.pkh.address),
               InfoElement(
-                label: 'Amount',
+                label: _localization.amount,
                 text:
                     '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
               ),
               InfoElement(
-                  label: 'Fee',
+                  label: _localization.fee,
                   isLastItem: true,
                   text:
                       '${fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),

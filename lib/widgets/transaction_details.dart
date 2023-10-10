@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/constants.dart';
@@ -103,6 +104,7 @@ class TransactionDetails extends StatelessWidget {
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    AppLocalizations _localization = AppLocalizations.of(context)!;
     List<ValueTransferOutput> outputs =
         transaction.txnType == TransactionType.value_transfer
             ? transaction.vtt!.outputs
@@ -110,7 +112,7 @@ class TransactionDetails extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       PaddedButton(
           padding: EdgeInsets.all(0),
-          text: 'Back',
+          text: _localization.backLabel,
           onPressed: () => goToList(),
           type: ButtonType.text),
       SizedBox(height: 16),
@@ -119,35 +121,35 @@ class TransactionDetails extends StatelessWidget {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
-              'Transaction details',
+              _localization.transactionDetails,
               style: theme.textTheme.displaySmall,
             ),
             SizedBox(height: 24),
             InfoElement(
-                label: 'Status',
+                label: _localization.status,
                 text: transaction.status.capitalize(),
                 color: theme.textTheme.labelMedium?.color),
             InfoElement(
-              label: 'Transaction ID',
+              label: _localization.transactionId,
               text: transaction.txnHash,
               url: 'https://witnet.network/search/${transaction.txnHash}',
             ),
             InfoElement(
-                label: 'Epoch',
+                label: _localization.epoch,
                 text: _isPendingTransaction(transaction.status)
                     ? '_'
                     : transaction.epoch.toString()),
             InfoElement(
-                label: 'Type',
+                label: _localization.type,
                 text: transaction.type.split('_').join(' ').toTitleCase()),
             InfoElement(
                 label: transaction.txnType == TransactionType.value_transfer
-                    ? 'Fees payed'
-                    : 'Fees collected',
+                    ? _localization.feesPayed
+                    : _localization.feesCollected,
                 text:
                     '${transaction.fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
             InfoElement(
-                label: 'Timestamp',
+                label: _localization.timestamp,
                 text: _isPendingTransaction(transaction.status)
                     ? '_'
                     : transaction.txnTime.formatDate()),
@@ -156,7 +158,7 @@ class TransactionDetails extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                         Text(
-                          'Inputs',
+                          _localization.inputs,
                           style: theme.textTheme.displaySmall,
                         ),
                         SizedBox(height: 8),
@@ -177,7 +179,7 @@ class TransactionDetails extends StatelessWidget {
                 : Container(),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
-                'Outputs',
+                _localization.outputs,
                 style: theme.textTheme.displaySmall,
               ),
               SizedBox(height: 8),
