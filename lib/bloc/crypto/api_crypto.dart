@@ -13,13 +13,14 @@ enum SeedSource { mnemonic, xprv, encryptedXprv }
 
 // used to call the isolate thread from anywhere in the main app
 class ApiCrypto {
+  ApiCrypto();
+
   late String? walletName;
   late String? seed;
   late String? seedSource;
   late String? password;
   late WalletType? walletType;
-
-  ApiCrypto();
+  ApiDatabase db = Locator.instance<ApiDatabase>();
 
   void setInitialWalletData(String walletName, String seed, String seedSource,
       String password, WalletType walletType) {
@@ -124,7 +125,6 @@ class ApiCrypto {
   ) async {
     Map<String, List<String>> _signers = {};
     // get master key
-    ApiDatabase db = Locator.instance<ApiDatabase>();
     String key = await db.getKeychain();
 
     /// loop through utxos
@@ -272,5 +272,33 @@ class ApiCrypto {
         port: receivePort.sendPort);
     bool valid = await receivePort.first.then((value) => value as bool);
     return valid;
+  }
+
+  Future<Map<String, dynamic>> signMessage(
+      String message, String address) async {
+    String key = await db.getKeychain();
+
+    Wallet currentWallet = db.walletStorage.currentWallet;
+    Account? _account = currentWallet.allAccounts()[address];
+
+    // the signer map is {master xprv: address path}
+    // e.g. {"xprv1...": "m/3h/4919h/0h/0/0"}
+    Map<String, String> _signer = {
+      currentWallet.xprv!: _account!.path,
+    };
+
+    final receivePort = ReceivePort();
+    CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
+    cryptoIsolate.send(
+        method: 'signMessage',
+        params: {
+          'password': key,
+          'signer': _signer,
+          'message': message,
+        },
+        port: receivePort.sendPort);
+    var signedMessage = await receivePort.first.then((value) => value);
+
+    return signedMessage;
   }
 }

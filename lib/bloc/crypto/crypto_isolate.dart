@@ -41,6 +41,7 @@ Map<String, Function(SendPort, Map<String, dynamic>)> _methodMap = {
   'generateKey': _generateKey,
   'generateKeys': _generateKeys,
   'signTransaction': _signTransaction,
+  'signMessage': _signMessage,
   'hashPassword': _hashPassword,
   'encryptXprv': _encryptXprv,
   'decryptXprv': _decryptXprv,
@@ -213,6 +214,67 @@ Future<void> _signTransaction(
       sigMap.add(element);
     });
     port.send(sigMap);
+  } catch (e) {
+    errorMsg = e.toString();
+  }
+  port.send(errorMsg);
+}
+
+Future<void> _signMessage(SendPort port, Map<String, dynamic> params) async {
+  String password = params["password"];
+  Map<String, dynamic> signerMap = params['signer'];
+
+  Map<String, dynamic> signedMessage = {};
+  String address;
+  String message = params['message'];
+  String errorMsg = '';
+  try {
+    assert(signerMap.length == 1);
+    String encryptedXprv = signerMap.keys.first;
+    String path = signerMap[encryptedXprv];
+    Xprv masterXprv = Xprv.fromEncryptedXprv(encryptedXprv, password);
+
+    Xprv signer;
+
+    if (path.contains("/")) {
+      List<String> indexedPath = path.split('/');
+      assert(indexedPath.length == 6, 'Path does not derive a valid Wallet');
+      if (indexedPath.elementAt(4) == '0') {
+        signer = masterXprv /
+            KEYPATH_PURPOSE /
+            KEYPATH_COIN_TYPE /
+            KEYPATH_ACCOUNT /
+            EXTERNAL_KEYCHAIN /
+            int.parse(indexedPath.last);
+      } else {
+        assert(indexedPath.elementAt(4) == '1');
+        signer = masterXprv /
+            KEYPATH_PURPOSE /
+            KEYPATH_COIN_TYPE /
+            KEYPATH_ACCOUNT /
+            INTERNAL_KEYCHAIN /
+            int.parse(indexedPath.last);
+      }
+    } else {
+      assert(path == "m", "Invalid master path");
+      signer = masterXprv;
+    }
+
+    address = signer.address.address;
+    KeyedSignature signature = signer.address.signHash(
+        bytesToHex(sha256(data: Uint8List.fromList(message.codeUnits))),
+        signer.privateKey);
+
+    String _formatBytes(List<int> data) =>
+        "0x${bytesToHex(Uint8List.fromList(data))}";
+
+    signedMessage["address"] = address;
+    signedMessage["message"] = message;
+    signedMessage["public_key"] = _formatBytes(signature.publicKey.publicKey);
+    signedMessage["signature"] =
+        _formatBytes(signature.signature.secp256k1.der);
+
+    port.send(signedMessage);
   } catch (e) {
     errorMsg = e.toString();
   }

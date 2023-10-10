@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
+import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:witnet/constants.dart';
 import 'package:witnet/crypto.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
+import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
