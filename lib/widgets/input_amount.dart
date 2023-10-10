@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
 
@@ -42,12 +43,14 @@ typedef BlankCallback = void Function();
 typedef PointerDownCallback = void Function(PointerDownEvent);
 
 class _InputAmountState extends State<InputAmount> {
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
+
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
       child: TextFormField(
         decoration: InputDecoration(
-          hintText: widget.hint ?? 'Input an amount',
+          hintText: widget.hint ?? _localization.inputAmountHint,
           errorText: widget.errorText,
           prefixIcon:
               widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -46,6 +47,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
   int currentAddressCount = 0;
   int currentTransactionCount = 0;
   static const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   void prevAction() {
     CreateWalletType type =
@@ -62,14 +64,14 @@ class BuildWalletCardState extends State<BuildWalletCard>
 
   NavAction prev() {
     return NavAction(
-      label: 'Back',
+      label: _localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: 'Continue',
+      label: _localization.continueLabel,
       action: nextAction,
     );
   }
@@ -128,7 +130,8 @@ class BuildWalletCardState extends State<BuildWalletCard>
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Address discovery", style: theme.textTheme.titleLarge),
+          Text(_localization.buildWalletHeader,
+              style: theme.textTheme.titleLarge),
         ],
       ),
       SizedBox(
@@ -138,7 +141,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
         Expanded(
             flex: 1,
             child: Text(
-              "The different addresses in your wallet are being scanned for existing transactions and balance. This will normally take less than 1 minute.",
+              _localization.buildWallet01,
               style: theme.textTheme.bodyLarge,
             ))
       ]),
@@ -187,9 +190,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
     final theme = Theme.of(context);
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
-        theme,
-        'myWitWallet is experiencing connection problems',
-        theme.colorScheme.error));
+        theme, _localization.connectionIssue, theme.colorScheme.error));
     Timer(Duration(seconds: 4), () {
       ScaffoldMessenger.of(context).clearSnackBars();
       Navigator.pushReplacementNamed(context, InitScreen.route);
@@ -253,7 +254,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
                         children: [
                           Row(
                             children: [
-                              Text("Balance:",
+                              Text(_localization.buildWalletBalance,
                                   style: theme.textTheme.bodyLarge),
                               SizedBox(
                                 height: 8,
@@ -282,7 +283,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
               ),
               Row(
                 children: [
-                  Text('Transactions found: ',
+                  Text(_localization.transactionsFound,
                       style: theme.textTheme.bodyLarge!),
                   AutoSizeText(
                     '$currentTransactionCount',
@@ -295,7 +296,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
               Row(
                 children: [
                   AutoSizeText(
-                    'Explored addresses: ',
+                    _localization.exploredAddresses,
                     maxLines: 2,
                     minFontSize: 16,
                   ),
@@ -313,8 +314,10 @@ class BuildWalletCardState extends State<BuildWalletCard>
               ),
               Row(
                 children: [
-                  Text('Exploring address: ',
-                      style: theme.textTheme.bodyLarge!),
+                  Text(
+                    _localization.exploringAddress,
+                    style: theme.textTheme.bodyLarge!,
+                  ),
                   Expanded(
                       flex: 1,
                       child: Text(

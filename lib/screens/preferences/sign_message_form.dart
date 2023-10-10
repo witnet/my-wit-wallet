@@ -13,6 +13,7 @@ import 'package:my_wit_wallet/widgets/select.dart';
 import 'package:my_wit_wallet/widgets/validations/message_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/unlock_keychain_modal.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 typedef void VoidCallback(Map<String, dynamic> signedMessage);
 
@@ -40,7 +41,7 @@ class SignMessageFormState extends State<SignMessageForm> {
   Wallet? _currentWallet;
   String? _address;
   bool isLoading = false;
-
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
   @override
   void initState() {
     super.initState();
@@ -84,7 +85,7 @@ class SignMessageFormState extends State<SignMessageForm> {
           await Locator.instance.get<ApiCrypto>().signMessage(message, address);
       widget.signedMessage(signedResult);
     } catch (err) {
-      print('Error signing message $err');
+      print('${_localization.errorSigning} $err');
     }
   }
 
@@ -107,7 +108,7 @@ class SignMessageFormState extends State<SignMessageForm> {
         onAction: () async {
           await _validateAndSign(message!, address!);
         },
-        title: 'Enter your password',
+        title: _localization.enterYourPassword,
         imageName: 'import-wallet',
         theme: theme,
         context: context,
@@ -127,7 +128,7 @@ class SignMessageFormState extends State<SignMessageForm> {
     final theme = Theme.of(context);
     return TextField(
       decoration: InputDecoration(
-        hintText: 'Your message...',
+        hintText: _localization.yourMessage,
         errorText: _message.error,
       ),
       keyboardType: TextInputType.text,
@@ -177,7 +178,7 @@ class SignMessageFormState extends State<SignMessageForm> {
           SizedBox(height: 16),
           PaddedButton(
               padding: EdgeInsets.only(bottom: 8),
-              text: 'Sign message',
+              text: _localization.signMessage,
               isLoading: isLoading,
               type: ButtonType.primary,
               enabled: true,

@@ -1,6 +1,7 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
@@ -28,6 +29,9 @@ class AddressList extends StatefulWidget {
 class AddressListState extends State<AddressList> {
   String? currentAddress;
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
+
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
+
   @override
   void initState() {
     super.initState();
@@ -81,7 +85,7 @@ class AddressListState extends State<AddressList> {
     return Semantics(
         button: true,
         enabled: true,
-        label: 'Generated address',
+        label: _localization.generatedAddress,
         child: MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
@@ -153,7 +157,7 @@ class AddressListState extends State<AddressList> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Internal balance',
+                          _localization.internalBalance,
                           style: theme.textTheme.displaySmall,
                           textAlign: TextAlign.start,
                         ),
@@ -168,8 +172,7 @@ class AddressListState extends State<AddressList> {
                             ),
                             textStyle: theme.textTheme.bodyMedium,
                             height: 60,
-                            message:
-                                'The internal balance corresponds to the sum of all the change accounts available balance',
+                            message: _localization.internalBalanceHint,
                             child: MouseRegion(
                                 cursor: SystemMouseCursors.click,
                                 child: Icon(FontAwesomeIcons.circleQuestion,

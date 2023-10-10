@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
-import 'package:my_wit_wallet/util/enum_from_string.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
@@ -27,6 +27,15 @@ enum VTTsteps {
   Review,
 }
 
+Map<String, VTTsteps> _localizedVTTsteps(BuildContext context) {
+  AppLocalizations _localization = AppLocalizations.of(context)!;
+  return {
+    _localization.vttSendSteps('Transaction'): VTTsteps.Transaction,
+    _localization.vttSendSteps('MinerFee'): VTTsteps.MinerFee,
+    _localization.vttSendSteps('Review'): VTTsteps.Review,
+  };
+}
+
 class CreateVttScreenState extends State<CreateVttScreen>
     with TickerProviderStateMixin {
   GlobalKey<RecipientStepState> transactionFormState =
@@ -38,12 +47,14 @@ class CreateVttScreenState extends State<CreateVttScreen>
   Wallet? currentWallet;
   dynamic nextAction;
   dynamic nextStep;
-  List<VTTsteps> stepListItems = VTTsteps.values.toList();
-  VTTsteps stepSelectedItem = VTTsteps.Transaction;
+
   ValueTransferOutput? currentTxOutput;
   String? savedFeeAmount;
   FeeType? savedFeeType;
   ScrollController scrollController = ScrollController(keepScrollOffset: false);
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
+
+  String? selectedItem;
 
   @override
   void initState() {
@@ -72,11 +83,16 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   void goToNextStep() {
-    if (stepListItems.indexOf(stepSelectedItem) + 1 < stepListItems.length) {
+    setState(() {
+      setOngoingTransaction();
+    });
+    VTTsteps currentStep = _localizedVTTsteps(context)[selectedItem]!;
+    if (currentStep.index + 1 < VTTsteps.values.length) {
       scrollController.jumpTo(0.0);
       setState(() {
-        stepSelectedItem =
-            stepListItems[stepListItems.indexOf(stepSelectedItem) + 1];
+        selectedItem =
+            _localizedVTTsteps(context).keys.elementAt(currentStep.index + 1);
+        setOngoingTransaction();
       });
     }
   }
@@ -94,22 +110,25 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   bool _isNextStepAllow() {
-    bool isTransactionFormValid = stepSelectedItem == VTTsteps.Transaction &&
+    VTTsteps currentStep = _localizedVTTsteps(context)[selectedItem]!;
+    bool isTransactionFormValid = currentStep == VTTsteps.Transaction &&
         (transactionFormState.currentState != null &&
             transactionFormState.currentState!.validateForm(force: true));
-    bool isMinerFeeFormValid = stepSelectedItem == VTTsteps.MinerFee &&
+    bool isMinerFeeFormValid = currentStep == VTTsteps.MinerFee &&
         (minerFeeState.currentState != null &&
             minerFeeState.currentState!.validateForm(force: true));
     return (isTransactionFormValid |
         isMinerFeeFormValid |
-        (stepSelectedItem == VTTsteps.Review));
+        (currentStep == VTTsteps.Review));
   }
 
   List<Widget> _actions() {
     return [
       PaddedButton(
           padding: EdgeInsets.zero,
-          text: nextAction != null ? nextAction().label : 'Continue',
+          text: nextAction != null
+              ? nextAction().label
+              : _localization.continueLabel,
           type: ButtonType.primary,
           enabled: true,
           onPressed: () => {
@@ -142,59 +161,68 @@ class CreateVttScreenState extends State<CreateVttScreen>
     }
   }
 
-  Widget stepToBuild() {
-    if (stepSelectedItem == VTTsteps.Transaction) {
-      return RecipientStep(
-        key: transactionFormState,
-        ongoingOutput: currentTxOutput,
-        nextAction: _setNextAction,
-        goNext: () {
-          nextAction().action();
-          if (_isNextStepAllow()) goToNextStep();
-        },
-        currentWallet: currentWallet!,
-      );
-    } else if (stepSelectedItem == VTTsteps.MinerFee) {
-      return SelectMinerFeeStep(
-        key: minerFeeState,
-        savedFeeAmount: savedFeeAmount,
-        savedFeeType: savedFeeType,
-        nextAction: _setNextAction,
-        goNext: () {
-          nextAction().action();
-          if (_isNextStepAllow()) goToNextStep();
-        },
-        currentWallet: currentWallet!,
-      );
-    } else {
-      return ReviewStep(
-        nextAction: _setNextAction,
-        currentWallet: currentWallet!,
-      );
-    }
+  RecipientStep _recipientStep() {
+    return RecipientStep(
+      key: transactionFormState,
+      ongoingOutput: currentTxOutput,
+      nextAction: _setNextAction,
+      goNext: () {
+        nextAction().action();
+        if (_isNextStepAllow()) goToNextStep();
+      },
+      currentWallet: currentWallet!,
+    );
   }
 
-  Map<VTTsteps, String> vttSteps = {
-    VTTsteps.Transaction: 'Transaction',
-    VTTsteps.MinerFee: 'MinerFee',
-    VTTsteps.Review: 'Review'
-  };
+  SelectMinerFeeStep _selectMinerFeeStep() {
+    return SelectMinerFeeStep(
+      key: minerFeeState,
+      savedFeeAmount: savedFeeAmount,
+      savedFeeType: savedFeeType,
+      nextAction: _setNextAction,
+      goNext: () {
+        nextAction().action();
+        if (_isNextStepAllow()) goToNextStep();
+      },
+      currentWallet: currentWallet!,
+    );
+  }
+
+  ReviewStep _reviewStep() {
+    return ReviewStep(
+      nextAction: _setNextAction,
+      currentWallet: currentWallet!,
+    );
+  }
+
+  Widget stepToBuild() {
+    if (selectedItem == null) {
+      return _recipientStep();
+    }
+    VTTsteps currentStep = _localizedVTTsteps(context)[selectedItem]!;
+    if (currentStep == VTTsteps.Transaction) {
+      return _recipientStep();
+    } else if (currentStep == VTTsteps.MinerFee) {
+      return _selectMinerFeeStep();
+    } else {
+      return _reviewStep();
+    }
+  }
 
   Widget _buildSendVttForm() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         StepBar(
+            listItems: _localizedVTTsteps(context).keys.toList(),
+            selectedItem:
+                selectedItem ?? _localizedVTTsteps(context).keys.first,
             actionable: false,
-            selectedItem: vttSteps[stepSelectedItem]!,
-            listItems: vttSteps.values.toList(),
             onChanged: (item) => {
-                  setState(() => {
-                        stepSelectedItem =
-                            getEnumFromString(vttSteps, item ?? '')!
-                                as VTTsteps,
-                        setOngoingTransaction(),
-                      })
+                  setState(() {
+                    selectedItem = item;
+                    setOngoingTransaction();
+                  }),
                 }),
         SizedBox(height: 16),
         stepToBuild(),
@@ -246,6 +274,9 @@ class CreateVttScreenState extends State<CreateVttScreen>
 
   @override
   Widget build(BuildContext context) {
+    if (selectedItem == null) {
+      selectedItem = _localizedVTTsteps(context).keys.first;
+    }
     return BlocBuilder<VTTCreateBloc, VTTCreateState>(
         builder: (context, state) {
       return _dashboardBlocListener();

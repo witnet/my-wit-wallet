@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/stats.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/transactions_view.dart';
-import 'package:my_wit_wallet/util/enum_from_string.dart';
 import 'package:my_wit_wallet/widgets/step_bar.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -14,8 +13,21 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-enum DashboardStepBar { transactions, stats }
+enum DashboardViewSteps {
+  transactions,
+  stats,
+}
+
+Map<String, DashboardViewSteps> _localizedDashboardSteps(BuildContext context) {
+  AppLocalizations _localization = AppLocalizations.of(context)!;
+  return {
+    _localization.dashboardViewSteps('transactions'):
+        DashboardViewSteps.transactions,
+    _localization.dashboardViewSteps('stats'): DashboardViewSteps.stats,
+  };
+}
 
 class DashboardScreen extends StatefulWidget {
   static final route = '/dashboard';
@@ -38,8 +50,9 @@ class DashboardScreenState extends State<DashboardScreen>
   late Timer syncTimer;
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
   ScrollController scrollController = ScrollController(keepScrollOffset: true);
-  DashboardStepBar selectedItem = DashboardStepBar.transactions;
   ExplorerBloc? explorerBlock;
+
+  String? selectedItem;
 
   @override
   void initState() {
@@ -112,11 +125,6 @@ class DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  Map<DashboardStepBar, String> dashboardSteps = {
-    DashboardStepBar.transactions: 'Transactions',
-    DashboardStepBar.stats: 'Stats'
-  };
-
   void scrollToTop() {
     scrollController.jumpTo(0.0);
   }
@@ -126,12 +134,12 @@ class DashboardScreenState extends State<DashboardScreen>
         currentWallet: currentWallet!, scrollJumpToTop: scrollToTop);
   }
 
-  Widget buildMainDashboardContent(Enum selectedItem, ThemeData theme) {
-    if (selectedItem == DashboardStepBar.transactions) {
+  Widget buildMainDashboardContent(ThemeData theme) {
+    if (_localizedDashboardSteps(context)[selectedItem]! ==
+        DashboardViewSteps.transactions) {
       return buildTransactionsView();
-    } else {
-      return Stats(currentWallet: currentWallet!);
     }
+    return Stats(currentWallet: currentWallet!);
   }
 
   Widget _dashboardBuilder() {
@@ -145,16 +153,16 @@ class DashboardScreenState extends State<DashboardScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 StepBar(
+                    selectedItem: selectedItem ??
+                        _localizedDashboardSteps(context).keys.first,
+                    listItems: _localizedDashboardSteps(context).keys.toList(),
                     actionable: true,
-                    selectedItem: dashboardSteps[selectedItem]!,
-                    listItems: dashboardSteps.values.toList(),
-                    onChanged: (value) => {
-                          setState(() => selectedItem =
-                              getEnumFromString(dashboardSteps, value ?? '')!
-                                  as DashboardStepBar)
+                    onChanged: (item) => {
+                          scrollController.jumpTo(0.0),
+                          setState(() => selectedItem = item),
                         }),
                 SizedBox(height: 16),
-                buildMainDashboardContent(selectedItem, theme)
+                buildMainDashboardContent(theme)
               ],
             );
     });
@@ -162,6 +170,10 @@ class DashboardScreenState extends State<DashboardScreen>
 
   @override
   Widget build(BuildContext context) {
+    if (selectedItem == null) {
+      selectedItem = _localizedDashboardSteps(context).keys.first;
+    }
+
     return BlocConsumer<ExplorerBloc, ExplorerState>(
         builder: (BuildContext context, ExplorerState state) {
       return DashboardLayout(

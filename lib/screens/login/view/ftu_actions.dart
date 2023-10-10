@@ -6,6 +6,7 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FtuActions extends StatefulWidget {
   final List<Widget> mainComponents;
@@ -16,6 +17,8 @@ class FtuActions extends StatefulWidget {
 }
 
 class FtuActionsState extends State<FtuActions> with TickerProviderStateMixin {
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
+
   @override
   void initState() {
     super.initState();
@@ -31,12 +34,12 @@ class FtuActionsState extends State<FtuActions> with TickerProviderStateMixin {
       children: <Widget>[
         PaddedButton(
             padding: EdgeInsets.only(top: 8, bottom: 0),
-            text: 'Create new wallet',
+            text: _localization.createNewWalletLabel,
             type: ButtonType.primary,
             onPressed: () => _createNewWallet(context)),
         PaddedButton(
             padding: EdgeInsets.only(top: 8, bottom: 0),
-            text: 'Import wallet',
+            text: _localization.importWalletLabel,
             type: ButtonType.secondary,
             onPressed: () => _importWallet(context)),
       ],

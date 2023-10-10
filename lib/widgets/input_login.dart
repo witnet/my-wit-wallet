@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 
 class InputLogin extends StatefulWidget {
@@ -46,6 +47,8 @@ class _InputLoginState extends State<InputLogin> {
   bool showPassword = false;
   bool showPasswordFocus = false;
 
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
+
   void initState() {
     super.initState();
     if (widget.showPassFocusNode != null && this.mounted)
@@ -79,15 +82,15 @@ class _InputLoginState extends State<InputLogin> {
     return Container(
         child: Semantics(
       textField: true,
-      label: 'Enter your password',
+      label: _localization.inputYourPassword,
       child: TextFormField(
         decoration: InputDecoration(
-            hintText: widget.hint ?? 'Enter your password',
+            hintText: widget.hint ?? _localization.inputYourPassword,
             errorText: widget.errorText,
             prefixIcon:
                 widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
             suffixIcon: Semantics(
-              label: 'Show password',
+              label: _localization.showPassword,
               child: IconButton(
                 focusNode: widget.showPassFocusNode,
                 splashRadius: 1,

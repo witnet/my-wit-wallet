@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
@@ -51,6 +52,8 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   ApiCreateWallet createWalletApi = Locator.instance<ApiCreateWallet>();
   List<FocusNode> _formFocusElements = [_passFocusNode, _textFocusNode];
   ValidationUtils validationUtils = ValidationUtils();
+
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -130,10 +133,10 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     final theme = Theme.of(context);
     return TextField(
       decoration: InputDecoration(
-        hintText: 'Your Xprv key (starts with xprv...)',
+        hintText: _localization.xprvInputHint,
         suffixIcon: !Platform.isWindows && !Platform.isLinux
             ? Semantics(
-                label: 'Scan QR code',
+                label: _localization.scanQrCodeLabel,
                 child: IconButton(
                   splashRadius: 1,
                   focusNode: _scanQrFocusNode,
@@ -219,14 +222,14 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
 
   NavAction prev() {
     return NavAction(
-      label: 'Back',
+      label: _localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: 'Continue',
+      label: _localization.continueLabel,
       action: nextAction,
     );
   }
@@ -263,7 +266,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
 
   Widget _buildPasswordField() {
     return InputLogin(
-      hint: 'Password',
+      hint: _localization.passwordLabel,
       focusNode: _passFocusNode,
       textEditingController: _passController,
       obscureText: true,
@@ -315,26 +318,26 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            'Import wallet from an Xprv key',
+            _localization.importXprvHeader,
             style: theme.textTheme.titleLarge, //Textstyle
           ),
           SizedBox(
             height: 16,
           ),
           Text(
-            'Xprv is a key exchange format that encodes and protects your wallet with a password. Xprv keys look like a long sequence of apparently random letters and numbers, preceded by "xprv".',
+            _localization.importXprv01,
             style: theme.textTheme.bodyLarge, //Textstyle
           ),
           SizedBox(height: 8),
           Text(
-            'To import your wallet from an Xprv key encrypted with a password, you need to type the key itself and its password below:',
+            _localization.importXprv02,
             style: theme.textTheme.bodyLarge, //Textstyle
           ),
           SizedBox(
             height: 16,
           ),
           Text(
-            'Xprv origin',
+            _localization.xprvOrigin,
             style: theme.textTheme.titleSmall,
           ),
           SizedBox(height: 8),

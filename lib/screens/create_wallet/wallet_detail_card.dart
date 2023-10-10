@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
@@ -24,6 +25,8 @@ class WalletDetailCard extends StatefulWidget {
 
 class WalletDetailCardState extends State<WalletDetailCard>
     with TickerProviderStateMixin {
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
+
   void prevAction() {
     CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
@@ -43,14 +46,14 @@ class WalletDetailCardState extends State<WalletDetailCard>
 
   NavAction prev() {
     return NavAction(
-      label: 'Back',
+      label: _localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: 'Continue',
+      label: _localization.continueLabel,
       action: nextAction,
     );
   }
@@ -112,7 +115,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Name',
+            _localization.nameLabel,
             style: theme.textTheme.subtitle2,
           ),
           SizedBox(height: 8),
@@ -120,7 +123,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
             autofocus: true,
             style: theme.textTheme.bodyText1,
             decoration: InputDecoration(
-              hintText: 'My first million Wits',
+              hintText: _localization.walletNameHint,
               errorText: errorText,
             ),
             controller: _nameController,
@@ -148,21 +151,21 @@ class WalletDetailCardState extends State<WalletDetailCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Identify your wallet',
+          _localization.walletDetailHeader,
           style: theme.textTheme.titleLarge, //Textstyle
         ), //Text
         SizedBox(
           height: 16,
         ),
         Text(
-          'You can better keep track of your different wallets by giving each its own name and description.',
+          _localization.walletDetail01,
           style: theme.textTheme.bodyLarge, //Textstyle
         ), //Text
         SizedBox(
           height: 8,
         ), //SizedBox
         Text(
-          'Wallet names make it easy to quickly change from one wallet to another. Wallet descriptions can be more elaborate and rather describe the purpose of a wallet or any other metadata.',
+          _localization.walletDetail02,
           style: theme.textTheme.bodyLarge, //Textstyle
         ),
         SizedBox(
