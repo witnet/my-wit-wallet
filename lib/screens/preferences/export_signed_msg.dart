@@ -3,8 +3,7 @@ import 'dart:convert';
 import 'package:dart_date/dart_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:my_wit_wallet/util/extensions/int_extensions.dart';
-import 'package:my_wit_wallet/util/file_manager.dart';
+import 'package:my_wit_wallet/util/storage/path_provider_interface.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/dashed_rect.dart';
 import 'package:flutter_json_viewer/flutter_json_viewer.dart';
@@ -37,7 +36,7 @@ class ExportSignMessageState extends State<ExportSignMessage> {
   }
 
   Future<void> _exportJsonMessage() async {
-    await FileManager().writeAndOpenJsonFile(
+    await PathProviderInterface().writeAndOpenJsonFile(
         JsonEncoder.withIndent('  ').convert(widget.signedMessage),
         "witnetSignature${DateTime.now().timestamp}.json");
   }
