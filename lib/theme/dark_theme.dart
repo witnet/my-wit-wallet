@@ -40,7 +40,7 @@ TextTheme textTheme = TextTheme(
       fontFamily: 'Almarai',
       color: WitnetPallet.opacityWhite,
       fontSize: 16,
-      fontWeight: FontWeight.normal),
+      fontWeight: FontWeight.bold),
   titleSmall: TextStyle(
       fontFamily: 'Almarai',
       color: WitnetPallet.white,

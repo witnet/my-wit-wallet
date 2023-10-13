@@ -13,6 +13,7 @@ class DashedRect extends StatelessWidget {
   final bool blur;
   final bool showEye;
   final String text;
+  final Container? container;
   final VoidCallback? updateBlur;
   DashedRect(
       {this.color = Colors.black,
@@ -20,6 +21,7 @@ class DashedRect extends StatelessWidget {
       this.strokeWidth = 1.0,
       this.blur = false,
       this.showEye = false,
+      this.container,
       this.gap = 5.0,
       this.text = ''});
 
@@ -36,17 +38,20 @@ class DashedRect extends StatelessWidget {
         child: Column(children: [
           Padding(
               padding: EdgeInsets.all(16),
-              child: Text(
-                text,
-                style: blur
-                    ? extendedTheme.monoLargeText!.copyWith(
-                        foreground: Paint()
-                          ..style = PaintingStyle.fill
-                          ..color = extendedTheme.monoLargeText!.color!
-                          ..maskFilter = MaskFilter.blur(BlurStyle.normal, 6))
-                    : extendedTheme.monoLargeText,
-              )),
-          showEye
+              child: container != null
+                  ? container
+                  : Text(
+                      text,
+                      style: blur
+                          ? extendedTheme.monoLargeText!.copyWith(
+                              foreground: Paint()
+                                ..style = PaintingStyle.fill
+                                ..color = extendedTheme.monoLargeText!.color!
+                                ..maskFilter =
+                                    MaskFilter.blur(BlurStyle.normal, 6))
+                          : extendedTheme.monoLargeText,
+                    )),
+          showEye && container == null
               ? Padding(
                   padding: EdgeInsets.only(bottom: 16),
                   child: Align(

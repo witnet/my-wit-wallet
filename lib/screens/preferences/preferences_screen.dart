@@ -56,7 +56,6 @@ class _PreferencePageState extends State<PreferencePage> {
                       getEnumFromString(preferencesSteps, item ?? '')!
                           as ConfigSteps),
                 }),
-        SizedBox(height: 16),
         child
       ],
     );
