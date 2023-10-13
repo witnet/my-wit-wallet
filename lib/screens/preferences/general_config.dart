@@ -9,6 +9,7 @@ import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/custom_divider.dart';
 import 'package:my_wit_wallet/widgets/switch.dart';
 import 'package:my_wit_wallet/bloc/theme/theme_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,11 +23,6 @@ class GeneralConfig extends StatefulWidget {
   GeneralConfig({Key? key}) : super(key: key);
   @override
   State<StatefulWidget> createState() => GeneralConfigState();
-}
-
-enum ConfigSteps {
-  General,
-  Wallet,
 }
 
 class GeneralConfigState extends State<GeneralConfig> {
@@ -171,10 +167,11 @@ class GeneralConfigState extends State<GeneralConfig> {
   List<Widget> showAuthModeSettings(ThemeData theme) {
     if ((Platform.isAndroid || Platform.isIOS)) {
       return [
-        SizedBox(height: 16),
+        SizedBox(height: 8),
+        CustomDivider(),
         Text(
           'Enable login with biometrics',
-          style: theme.textTheme.titleSmall,
+          style: theme.textTheme.titleMedium,
         ),
         SizedBox(height: 16),
         biometricsAuth(theme, context),
@@ -191,28 +188,25 @@ class GeneralConfigState extends State<GeneralConfig> {
     return Padding(
         padding: EdgeInsets.only(left: 8, right: 8),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SizedBox(height: 16),
+          SizedBox(height: 32),
           Text(
             'Theme',
-            style: theme.textTheme.titleSmall,
+            style: theme.textTheme.titleMedium,
           ),
           SizedBox(height: 16),
           themeWidget(theme, context),
           ...showAuthModeSettings(theme),
+          CustomDivider(),
           Text(
             'Lock your wallet',
-            style: theme.textTheme.titleSmall,
+            style: theme.textTheme.titleMedium,
           ),
-          Container(
-            width: 150,
-            height: 80,
-            child: PaddedButton(
-                padding: EdgeInsets.only(bottom: 16, top: 16),
-                text: 'Lock wallet',
-                type: ButtonType.primary,
-                enabled: true,
-                onPressed: () => _logOut()),
-          ),
+          PaddedButton(
+              padding: EdgeInsets.only(bottom: 16, top: 16),
+              text: 'Lock wallet',
+              type: ButtonType.primary,
+              enabled: true,
+              onPressed: () => _logOut()),
           SizedBox(height: 16),
           Text(
             'Version $VERSION_NUMBER',
