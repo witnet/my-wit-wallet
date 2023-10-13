@@ -14,7 +14,17 @@ class FileManager {
   factory FileManager() => _instance ?? FileManager._internal();
 
   Future<String?> get _directoryPath async {
-    Directory directory = await getApplicationDocumentsDirectory();
+    Directory directory;
+
+    if (!Platform.isIOS) {
+      directory = Directory('/storage/emulated/0/Download');
+      if (!(await directory.exists()))
+        directory = await getDownloadsDirectory() ??
+            await getApplicationDocumentsDirectory();
+    } else {
+      directory = await getApplicationDocumentsDirectory();
+    }
+
     return directory.path;
   }
 
@@ -35,6 +45,7 @@ class FileManager {
     file.writeAsString(bytes);
 
     // opens the file
+    OpenFile.open('$path', type: 'application/json');
     OpenFile.open('$path/$name', type: 'application/json');
   }
 
