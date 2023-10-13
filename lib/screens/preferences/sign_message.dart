@@ -47,12 +47,12 @@ class SignMessageState extends State<SignMessage> {
       builder: (previous, current) {
         return ClosableView(closeSetting: widget.closeSetting, children: [
           Text(
-            'Sign message',
+            'Message Signing',
             style: theme.textTheme.titleLarge,
           ),
           SizedBox(height: 16),
           Text(
-              'Your Xprv key allows you to export and back up your wallet at any point after creating it.',
+              'Unlock the power of ownership with message signing. Prove the ownership of your address by adding your signature to a message.',
               style: theme.textTheme.bodyLarge),
           SizedBox(height: 16),
           signedMessage == null
