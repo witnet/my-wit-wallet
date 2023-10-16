@@ -139,18 +139,38 @@ class PathProviderInterface {
       if (!hasPermission) return;
     }
 
-    final path = await _directoryPath;
+    await writeJsonFile(bytes, name);
+
+    await openSavedFile(name);
+  }
+
+  Future<void> writeJsonFile(String bytes, String name) async {
+    String? path = await _directoryPath;
     // Create a file for the path of
     // device and file name with extension
     File file = File('$path/$name');
-    print("Save file");
 
     // Write the data in the file you have created
     file.writeAsString(bytes);
+    print("Saved file path: $path/$name");
+  }
 
-    // opens the file
-    OpenFile.open('$path');
-    OpenFile.open('$path/$name', type: 'application/json');
+  Future<void> openSavedFile(String fileName) async {
+    String? path = await _directoryPath;
+
+    if (Platform.isIOS || Platform.isMacOS) {
+      try {
+        // opens the file
+        await OpenFile.open('$path/$fileName', type: 'application/json');
+      } catch (err) {
+        print('Error opening json file: $err');
+        // opens the directory
+        await OpenFile.open('$path');
+      }
+    } else {
+      // opens the directory
+      await OpenFile.open('$path');
+    }
   }
 
   // requests storage permission

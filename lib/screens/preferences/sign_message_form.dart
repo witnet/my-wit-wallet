@@ -94,15 +94,11 @@ class SignMessageFormState extends State<SignMessageForm> {
   }
 
   Future<void> _validateAndSign(String? message, String? address) async {
-    setState(() {
-      isLoading = true;
-    });
+    setState(() => isLoading = true);
     if (validateForm(force: true)) {
       await _signMessage(message!, address!);
     }
-    setState(() {
-      isLoading = false;
-    });
+    setState(() => isLoading = false);
   }
 
   void _signAfterKeychainValidation(String? message, String? address) {

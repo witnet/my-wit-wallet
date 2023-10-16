@@ -24,6 +24,7 @@ class ExportSignMessage extends StatefulWidget {
 
 class ExportSignMessageState extends State<ExportSignMessage> {
   bool _showMessage = false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -36,9 +37,11 @@ class ExportSignMessageState extends State<ExportSignMessage> {
   }
 
   Future<void> _exportJsonMessage() async {
+    setState(() => isLoading = true);
     await PathProviderInterface().writeAndOpenJsonFile(
         JsonEncoder.withIndent('  ').convert(widget.signedMessage),
         "witnetSignature${DateTime.now().timestamp}.json");
+    setState(() => isLoading = false);
   }
 
   @override
