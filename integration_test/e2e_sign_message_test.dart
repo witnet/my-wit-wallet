@@ -14,7 +14,7 @@ bool walletsExist = false;
 String password = dotenv.env['PASSWORD'] ?? "password";
 String nodeXprv = dotenv.env['NODE_XPRV'] ?? '';
 
-Future<void> e2eExportXprvTest(WidgetTester tester) async {
+Future<void> e2eSignMessageTest(WidgetTester tester) async {
   await initializeTest(tester);
 
   /// Assess what is on the screen
@@ -58,18 +58,59 @@ Future<void> e2eExportXprvTest(WidgetTester tester) async {
   await tapButton(tester, "Continue");
 
   await tapButton(tester, FontAwesomeIcons.gear);
+
+  if (Platform.isIOS || Platform.isAndroid) {
+    if (tester.widget<Switch>(find.byType(Switch).at(1)).value == false) {
+      // Tap switch to authenticate with Biometrics
+      await tapButton(tester, Switch, index: 1);
+    }
+  }
+
   await tapButton(tester, "Wallet");
 
-  await tapButton(tester, "Export xprv");
+  // Scroll Sign message button into view
+  await scrollUntilVisible(tester, widgetByText("Sign message").last,
+      lastScroll: true);
 
-  // Scroll Save button into view
-  await scrollUntilVisible(tester, widgetByText("Copy Xprv").first,
+  await tapButton(tester, "Sign message");
+
+  // Select second address in the list
+  await tapButton(tester, Select, index: 0);
+  await tapButton(tester, "wit1zl7ty0lwr7atp5fu34azkgewhtfx2fl4wv69cw",
+      index: 2);
+
+  /// Enter Message to sign
+  await enterText(tester, TextField, "Message to be signed");
+  await tapButton(tester, "Sign message");
+
+  if (Platform.isIOS || Platform.isAndroid) {
+    // Show modal to verify password
+    expect(widgetByText('Enter your password'), findsWidgets);
+
+    // Enter password for verification and continue
+    await enterText(tester, TextFormField, password);
+    await tapButton(tester, "Continue");
+  }
+
+  // Scroll Copy JSON button into view
+  await scrollUntilVisible(tester, widgetByText("Copy JSON").first,
       lastScroll: true);
   await tester.pumpAndSettle();
-  await tapButton(tester, "Copy Xprv");
+  await tapButton(tester, "Copy JSON");
 
   ClipboardData? data = await Clipboard.getData('text/plain');
 
   /// Verify the imported wallet and the current address
   expect(data?.text, isNotNull);
+
+  // Scroll Close button into view
+  await scrollUntilVisible(
+      tester, widgetByIcon(FontAwesomeIcons.solidCircleXmark),
+      lastScroll: true);
+
+  // Close sign message config view
+  await tapButton(tester, FontAwesomeIcons.solidCircleXmark);
+
+  // Go back to wallet config options
+  expect(widgetByText('Export the Xprv key of my wallet'), findsWidgets);
 }

@@ -74,12 +74,12 @@ class WalletConfigState extends State<WalletConfig> {
               onPressed: () => _toggleSetting(WalletConfigActions.exportXprv)),
           CustomDivider(),
           Text(
-            'Sign message',
+            'Message Signing',
             style: theme.textTheme.titleMedium,
           ),
           SizedBox(height: 16),
           Text(
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus ante vel arcu pretium, a posuere risus fringilla. Quisque ut sapien et leo euismod tempus ut fringilla risus. ',
+              'Prove the ownership of your address by adding your signature to a message.',
               style: theme.textTheme.bodyLarge),
           PaddedButton(
               padding: EdgeInsets.only(bottom: 16, top: 16),
