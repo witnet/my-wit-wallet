@@ -79,7 +79,7 @@ class ExportSignMessageState extends State<ExportSignMessage> {
         padding: EdgeInsets.only(bottom: 16),
         onPressed: () async {
           await Clipboard.setData(
-              ClipboardData(text: widget.signedMessage.toString()));
+              ClipboardData(text: json.encode(widget.signedMessage)));
           if (await Clipboard.hasStrings()) {
             ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context)
