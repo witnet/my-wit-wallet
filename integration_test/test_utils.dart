@@ -1,10 +1,14 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_wit_wallet/main.dart' as myWitWallet;
+
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/select.dart';
+import 'package:my_wit_wallet/main.dart' as myWitWallet;
+
 
 bool walletsExist = false;
 int defaultDelay = int.parse(dotenv.env['DELAY'] ?? '100');
@@ -12,6 +16,15 @@ int initializeDelay = int.parse(dotenv.env['INIT_E2E_DELAY_IN_SECONDS'] ?? '5');
 String password = dotenv.env['PASSWORD'] ?? "password";
 String mnemonic = dotenv.env['MNEMONIC'] ??
     "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+
+/// The Node Xprv is derived from the mnemonic:
+/// "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon agent"
+String nodeXprv = dotenv.env['NODE_XPRV'] ??
+    'xprv1qrgqgjwqnprj4g74wjpgad6k7xa37qmxjk3nf5wakgka9d0hgmzvkqr88hgnklzs0x86x487nyr34uq7ujracm36wcgplftzsuaswe533ufnfx6r';
+String sheikahXprv = dotenv.env['SHEIKAH_XPRV'] ??
+    "xprv1yd5j548gfk6fc5an0n4r4mvp8kxq6pxcwynajfhc2evp6enm98fvxtawxr7z5z5yt0m83tlry8dzk8ygea2nk2nfqdlg76mn5e9k0x32ty0tewqe888cj6fap7e84s9zkgd5rkvjpdff4ylyx55xup6x3aqlwnq4wgl3mc0m5d8gphkpad7cr7ydt43c052pu4sec0kf4mtjye5l5lqu9m4vmdprh63w8l8vpxu6hrjrsh8lgsxs8t75pw4ppvr6tz86fydhxs0atgacfx29z35uavxy468h";
+String mwwXprv = dotenv.env['MWW_XPRV'] ??
+    "xprv1m9datmt8l4qyqa2nf7lxrw76vu3kyy63qndhtpjyezm7rjrlqrqjh23yks7zjwycud9k25g20rjqkl7uyfcvq6e246du73cl8hhcfa2xwm6cun5ma69jrtyyzjzm0nqwurwa8vg5pxhd9wxu2lgrpmwknsl3yk3t4qn5au4mnf33qpnk3gg7e093nkk0kqzhfkecg45jm0qsczellg6hll4nzuldckjvj6xku75gmhjc340jau26t634c98ke3a454mqjsxtvfs53f2464jfyhd605hqs0lu";
 
 Finder widgetByType(Type type) => find.byType(type);
 

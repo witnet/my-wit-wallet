@@ -22,4 +22,6 @@ extension StringExtension on String {
       .split(' ')
       .map((str) => str.capitalize())
       .join(' ');
+
+  bool toBoolean() => this == 'true' || this == 'True';
 }
