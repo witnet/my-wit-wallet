@@ -52,7 +52,7 @@ class SignMessageState extends State<SignMessage> {
           ),
           SizedBox(height: 16),
           Text(
-              'Unlock the power of ownership with message signing. Prove the ownership of your address by adding your signature to a message.',
+              'Prove your ownership with message signing. Securely verify your identity by adding your signature to a message.',
               style: theme.textTheme.bodyLarge),
           SizedBox(height: 16),
           signedMessage == null
