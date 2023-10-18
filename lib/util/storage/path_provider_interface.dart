@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io' as io;
-
+import 'package:my_wit_wallet/globals.dart' as globals;
 import 'package:path_provider/path_provider.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'dart:io';
@@ -75,7 +75,8 @@ class PathProviderInterface {
   }
 
   String getDbWalletsPath() {
-    return getFilePath('wallets', 'wit');
+    return getFilePath(
+        globals.testingActive ? 'test-wallets' : 'wallets', 'wit');
   }
 
   Future<bool> fileExists(String filename) async =>
