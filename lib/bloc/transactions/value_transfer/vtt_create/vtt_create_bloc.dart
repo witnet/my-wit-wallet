@@ -291,7 +291,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   void _setSelectedUtxos(BuildVttInputsParams params) {
     // Remove utxos used in pending transactions
     List<Utxo> filteredUtxos = filterUsedUtxos(
-        utxoList: utxos, pendingVtts: params.wallet.unconfirmedTransactions());
+        utxoList: utxos, pendingVtts: params.wallet.pendingTransactions());
 
     // Update the utxo pool
     filteredUtxoPool.clear();

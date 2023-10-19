@@ -179,6 +179,16 @@ class Wallet {
     return unconfirmedVtts;
   }
 
+  List<ValueTransferInfo> pendingTransactions() {
+    List<ValueTransferInfo> pendingVtts = [];
+    allTransactions().forEach((vtt) {
+      if (vtt.status == "pending") {
+        pendingVtts.add(vtt);
+      }
+    });
+    return pendingVtts;
+  }
+
   List<ValueTransferInfo> allTransactions() {
     Map<String, ValueTransferInfo> _vttMap = {};
     externalAccounts.forEach((key, account) {
