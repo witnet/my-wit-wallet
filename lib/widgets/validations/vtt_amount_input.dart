@@ -27,12 +27,14 @@ class VttAmountInput extends FormzInput<String, String?> {
   final bool allowZero;
   final bool allowValidation;
   final int? weightedAmount;
+  final int vttAmount;
 
   // Call super.pure to represent an unmodified form input.
   VttAmountInput.pure()
       : availableNanoWit = 0,
         allowZero = false,
         weightedAmount = null,
+        vttAmount = 0,
         allowValidation = false,
         super.pure('');
 
@@ -41,6 +43,7 @@ class VttAmountInput extends FormzInput<String, String?> {
       {required this.availableNanoWit,
       value = '',
       this.weightedAmount,
+      this.vttAmount = 0,
       this.allowZero = false,
       this.allowValidation = false})
       : super.dirty(value);
@@ -66,7 +69,7 @@ class VttAmountInput extends FormzInput<String, String?> {
     } else {
       nanoWitAmount = _witAmountToNanoWitNumber(value);
     }
-    return balance < nanoWitAmount;
+    return balance < (nanoWitAmount + this.vttAmount);
   }
 
   // Override validator to handle validating a given input value.

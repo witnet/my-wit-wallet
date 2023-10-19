@@ -86,6 +86,15 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     super.dispose();
   }
 
+  int get vttAmount => BlocProvider.of<VTTCreateBloc>(context)
+      .state
+      .vtTransaction
+      .body
+      .outputs
+      .first
+      .value
+      .toInt();
+
   int _minerFeeWitToNanoWitNumber() {
     num number = 0;
     try {
@@ -132,6 +141,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         allowValidation:
             validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
         availableNanoWit: balanceInfo.availableNanoWit,
+        vttAmount: vttAmount,
         value: amount,
         weightedAmount: _feeType == FeeType.Weighted ? weightedFeeAmount : null,
         allowZero: true);
@@ -193,6 +203,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     VttAmountInput _feePriority = VttAmountInput.dirty(
         value: value,
         allowValidation: true,
+        vttAmount: vttAmount,
         availableNanoWit: balanceInfo.availableNanoWit);
     String? errorText =
         _feePriority.validator(value, avoidWeightedAmountCheck: true);
