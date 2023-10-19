@@ -1,10 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_wit_wallet/screens/create_wallet/generate_mnemonic_card.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
-import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
-import 'test_utils.dart';
+part of 'test_utils.dart';
 
 Future<void> e2eCreateMnemonicTest(WidgetTester tester) async {
   await initializeTest(tester);
@@ -57,4 +51,5 @@ Future<void> e2eCreateMnemonicTest(WidgetTester tester) async {
     await enterText(tester, TextFormField, password, index: 1);
     await tapButton(tester, "Continue");
   }
+  await teardownTest();
 }

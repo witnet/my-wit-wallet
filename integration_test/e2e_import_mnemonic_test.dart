@@ -1,19 +1,4 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
-import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
-import 'test_utils.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-
-bool walletsExist = false;
-String password = dotenv.env['PASSWORD'] ?? "password";
-String mnemonic = dotenv.env['MNEMONIC'] ??
-    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+part of 'test_utils.dart';
 
 Future<void> e2eImportMnemonicTest(WidgetTester tester) async {
   await initializeTest(tester);
@@ -57,15 +42,22 @@ Future<void> e2eImportMnemonicTest(WidgetTester tester) async {
   await enterText(tester, TextField, "Test Wallet");
   await tapButton(tester, "Continue");
 
+  /// If the wallet database does not exist we need to enter the password.
+  if (!walletsExist) {
+    await enterText(tester, TextFormField, password, index: 0);
+    await enterText(tester, TextFormField, password, index: 1);
+    await tapButton(tester, "Continue");
+  }
+
   await tester.pumpAndSettle();
 
   /// Get the currentWallet loaded in the dashboard
   final DashboardScreenState dashboardScreenState =
       tester.state(widgetByType(DashboardScreen));
-  dashboardScreenState.currentWallet!.printDebug();
   Wallet? currentWallet = dashboardScreenState.currentWallet;
 
   /// Verify the imported wallet and the current address
   expect(currentWallet!.externalAccounts[0]!.address,
       "wit174la8pevl74hczcpfepgmt036zkmjen4hu8zzs");
+  await teardownTest();
 }

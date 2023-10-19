@@ -1,20 +1,4 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'test_utils.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
-import 'package:my_wit_wallet/widgets/select.dart';
-import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
-
-bool walletsExist = false;
-String password = dotenv.env['PASSWORD'] ?? "password";
-String xprv = dotenv.env['XPRV'] ??
-    "xprv12qq5w546kss07l3kw5ag44epc79ya78fvqtnq2q775qx3p8trgqsur443m4cj98p3eaz0k7h7ncn58yccp5kkufkc6ylflctfcyzk45z8fup6tq4uavtv7fsmkg43mmuvddfk5fcx087jqy7x0wjw5j2zc82hupl0acmtgtntjmh34zk7ewg7qy2e8qj60pjs5y4szfzydfc0fern29nvzedra4c8pucgtgrpzgfr8d3vp0yjdn2y8qk2fdjeacvs76k9zely0p8vz7fyvn269y0ksu039hj";
+part of 'test_utils.dart';
 
 Future<void> e2eImportXprvFromSheikahTest(WidgetTester tester) async {
   await initializeTest(tester);
@@ -54,8 +38,8 @@ Future<void> e2eImportXprvFromSheikahTest(WidgetTester tester) async {
   await tapButton(tester, Select, index: 0);
   await tapButton(tester, "Sheikah");
 
-  /// Enter Mnemonic
-  await enterText(tester, TextField, xprv, index: 0);
+  /// Enter Shiekah Compatible Encrypted Xprv
+  await enterText(tester, TextField, sheikahXprv, index: 0);
   await enterText(tester, TextField, password, index: 1);
   await tapButton(tester, "Continue");
 
@@ -73,10 +57,10 @@ Future<void> e2eImportXprvFromSheikahTest(WidgetTester tester) async {
   /// Get the currentWallet loaded in the dashboard
   final DashboardScreenState dashboardScreenState =
       tester.state(widgetByType(DashboardScreen));
-  dashboardScreenState.currentWallet!.printDebug();
   Wallet? currentWallet = dashboardScreenState.currentWallet;
 
   /// Verify the imported wallet and the current address
   expect(currentWallet!.externalAccounts[0]!.address,
       "wit174la8pevl74hczcpfepgmt036zkmjen4hu8zzs");
+  await teardownTest();
 }

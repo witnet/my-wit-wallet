@@ -7,7 +7,6 @@ import 'dart:io';
 
 import 'package:open_file/open_file.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:my_wit_wallet/globals.dart' as globals;
 
 enum Platforms { Linux, Macos, Windows, IOS, Android }
 
@@ -49,9 +48,6 @@ class PathProviderInterface {
     final path = await localPath;
     return io.File('$path${io.Platform.pathSeparator}$name.$extension');
   }
-
-  //Future<io.File> writeWalletListFile(Map<String, String> wallets) async {
-  //}
 
   Future<Map<String, dynamic>> readJsonFile(String name) async {
     io.File file = await localFile(name: name, extension: 'json');
