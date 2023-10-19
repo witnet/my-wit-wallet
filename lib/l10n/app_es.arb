@@ -262,4 +262,16 @@
   "txEmptyState": "¡Todavía no tienes transacciones!",
   "speedUp": "Acelerar",
   "speedUpTxTitle": "Acelerar transacción"
+  "updateAvailable": "Actualización disponible",
+  "newVersionAvailable": "Nueva versión disponible.",
+  "newVersion": "Nueva versión: {versionNumber}",
+  "later": "Más tarde",
+  "updateNow": "Actualiza ahora",
+  "updateToVersion": "Actualizar a la versión {versionNumber}",
+  "pleaseWait": "Por favor, espera...",
+  "downloading": "Descargando...",
+  "clickToInstall": "Haz clic para instalar.",
+  "readyToInstall": "Listo para instalar.",
+  "updateError": "Hubo un problema con la actualización. Por favor, inténtalo de nuevo.",
+  "errorTryAgain": "Error. Inténtalo de nuevo."
 }

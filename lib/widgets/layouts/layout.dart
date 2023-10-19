@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/auto_updater_overlay.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
@@ -330,8 +331,18 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     );
   }
 
-  Widget build(BuildContext context) {
+  Scaffold buildMainScaffold() {
     final theme = Theme.of(context);
+    return Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: theme.colorScheme.background,
+        body: buildOverlay(buildMainContent(context, theme)),
+        bottomNavigationBar: isPanelClose == null || isPanelClose
+            ? buildOverlay(bottomBar(), isBottomBar: true)
+            : null);
+  }
+
+  Widget build(BuildContext context) {
     final navigator = Navigator.of(context);
     return Shortcuts(
         shortcuts: <ShortcutActivator, Intent>{
@@ -378,13 +389,9 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                       },
                     ),
                   },
-                  child: Scaffold(
-                      resizeToAvoidBottomInset: true,
-                      backgroundColor: theme.colorScheme.background,
-                      body: buildOverlay(buildMainContent(context, theme)),
-                      bottomNavigationBar: isPanelClose == null || isPanelClose
-                          ? buildOverlay(bottomBar(), isBottomBar: true)
-                          : null)),
+                  child: Platform.isMacOS || Platform.isLinux
+                      ? AutoUpdate(child: buildMainScaffold())
+                      : buildMainScaffold()),
             )));
   }
 }
