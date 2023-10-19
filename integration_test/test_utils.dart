@@ -1,14 +1,31 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:my_wit_wallet/screens/create_wallet/generate_mnemonic_card.dart';
+import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
 import 'package:my_wit_wallet/widgets/select.dart';
 import 'package:my_wit_wallet/main.dart' as myWitWallet;
-
+import 'package:my_wit_wallet/globals.dart' as globals;
+part 'e2e_auth_preferences_test.dart';
+part 'e2e_export_xprv_test.dart';
+part 'e2e_import_mnemonic_test.dart';
+part 'e2e_show_node_stats.dart';
+part "e2e_mnemonic_test.dart";
+part 'e2e_re_establish_wallet.dart';
+part "e2e_import_xprv_test.dart";
+part 'e2e_import_xprv_from_sheikah_test.dart';
+part 'e2e_update_wallet_test.dart';
+part 'e2e_sign_message_test.dart';
 
 bool walletsExist = false;
 int defaultDelay = int.parse(dotenv.env['DELAY'] ?? '100');
@@ -37,6 +54,8 @@ Finder widgetByLabel(String label) => find.bySemanticsLabel(label);
 Future<void> initializeTest(WidgetTester tester) async {
   myWitWallet.main();
   await tester.pumpAndSettle();
+  String deleteStorageFlag = dotenv.env['DELETE_TEST_STORAGE'] ?? 'false';
+  globals.testingDeleteStorage = deleteStorageFlag.toBoolean();
   await tester.pumpAndSettle(Duration(seconds: initializeDelay));
 }
 
@@ -204,6 +223,19 @@ Future<bool> scrollUntilVisible(
   await tester.pumpAndSettle();
   if (delay) {
     await Future.delayed(Duration(milliseconds: milliseconds ?? defaultDelay));
+  }
+  return true;
+}
+
+Future<bool> teardownTest() async {
+  ApiDatabase apiDatabase = Locator.instance<ApiDatabase>();
+  if (globals.testingActive) {
+    if (globals.testingDeleteStorage) {
+      await apiDatabase.deleteAllWallets();
+      await apiDatabase.openDatabase();
+      globals.firstRun = false;
+    }
+    await apiDatabase.lockDatabase();
   }
   return true;
 }

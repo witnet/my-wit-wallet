@@ -10,14 +10,11 @@ import 'package:window_manager/window_manager.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
-import 'package:my_wit_wallet/globals.dart' as globals;
-import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
   Locator.setup();
   WidgetsFlutterBinding.ensureInitialized();
-  globals.firstRun = true;
 
   if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
     await windowManager.ensureInitialized();
@@ -35,16 +32,12 @@ void main() async {
       await windowManager.focus();
     });
   }
-  if (globals.testingActive) {
-    String deleteStorageFlag = dotenv.env['DELETE_TEST_STORAGE'] ?? 'false';
-    globals.testingDeleteStorage = deleteStorageFlag.toBoolean();
-  }
+
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   ApiDatabase apiDatabase = Locator.instance<ApiDatabase>();
   await apiDatabase.openDatabase();
-  if (globals.testingActive) await apiDatabase.lockDatabase();
 
   CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
   await cryptoIsolate.init();

@@ -1,21 +1,4 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
-import 'package:my_wit_wallet/widgets/select.dart';
-import 'test_utils.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
-
-bool walletsExist = false;
-String password = dotenv.env['PASSWORD'] ?? "password";
-String mnemonic = dotenv.env['MNEMONIC'] ??
-    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
-String nodeXprv = dotenv.env['NODE_XPRV'] ?? '';
+part of 'test_utils.dart';
 
 Future<void> e2eUpdateCurrentWalletTest(WidgetTester tester) async {
   await initializeTest(tester);
@@ -57,21 +40,28 @@ Future<void> e2eUpdateCurrentWalletTest(WidgetTester tester) async {
   await tapButton(tester, "Continue");
 
   /// Enter Wallet Name
-  await enterText(tester, TextField, "Test Wallet");
-  await tapButton(tester, "Continue");
+  await enterText(tester, TextField, "Test Node");
+  await tapButton(tester, "Continue", delay: true);
+
+  /// If the wallet database does not exist we need to enter the password.
+  if (!walletsExist) {
+    await enterText(tester, TextFormField, password, index: 0);
+    await enterText(tester, TextFormField, password, index: 1);
+    await tapButton(tester, "Continue");
+  }
+  await tester.pumpAndSettle();
 
   /// Get the currentWallet loaded in the dashboard
   final DashboardScreenState dashboardScreenState =
       tester.state(widgetByType(DashboardScreen));
-  await expectLater(dashboardScreenState.currentWallet!.id, 'dae88d1f');
-  dashboardScreenState.currentWallet!.printDebug();
+  await expectLater(dashboardScreenState.currentWallet!.id, 'ce389a1a');
   Wallet? currentWallet = dashboardScreenState.currentWallet;
 
   await tester.pumpAndSettle();
 
   /// Verify the imported wallet and the current address
   expectLater(currentWallet!.masterAccount!.address,
-      "wit1zl7ty0lwr7atp5fu34azkgewhtfx2fl4wv69cw");
+      "wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u");
 
   /// Dashboard
   /// Tap on the first PaddedButton on the screen, which is the identicon
@@ -102,7 +92,6 @@ Future<void> e2eUpdateCurrentWalletTest(WidgetTester tester) async {
   /// Get the currentWallet loaded in the dashboard
   final DashboardScreenState dashboardScreenState2 =
       tester.state(widgetByType(DashboardScreen));
-  dashboardScreenState2.currentWallet!.printDebug();
   Wallet? currentWallet2 = dashboardScreenState2.currentWallet;
 
   /// Verify the imported wallet and the current address
@@ -126,19 +115,19 @@ Future<void> e2eUpdateCurrentWalletTest(WidgetTester tester) async {
   await tester.pumpAndSettle();
 
   /// Select Node wallet from the wallets list
-  await tapButton(tester, "wit1zl7ty0lwr7atp5fu34azkgewhtfx2fl4wv69cw");
+  await tapButton(tester, "wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u");
 
   await tester.pumpAndSettle();
 
   final DashboardScreenState dashboardScreenState3 =
       tester.state(widgetByType(DashboardScreen));
-  await expectLater(dashboardScreenState3.currentWallet!.id, 'dae88d1f');
-  dashboardScreenState3.currentWallet!.printDebug();
+  await expectLater(dashboardScreenState3.currentWallet!.id, 'ce389a1a');
   Wallet? currentWallet3 = dashboardScreenState3.currentWallet;
 
   await tester.pumpAndSettle();
 
   /// Verify the imported wallet and the current address
   expectLater(currentWallet3!.masterAccount!.address,
-      "wit1zl7ty0lwr7atp5fu34azkgewhtfx2fl4wv69cw");
+      "wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u");
+  await teardownTest();
 }

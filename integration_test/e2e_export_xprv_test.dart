@@ -1,18 +1,4 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
-import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
-import 'package:my_wit_wallet/widgets/select.dart';
-import 'test_utils.dart';
-
-bool walletsExist = false;
-String password = dotenv.env['PASSWORD'] ?? "password";
-String nodeXprv = dotenv.env['NODE_XPRV'] ?? '';
+part of 'test_utils.dart';
 
 Future<void> e2eExportXprvTest(WidgetTester tester) async {
   await initializeTest(tester);
@@ -57,6 +43,15 @@ Future<void> e2eExportXprvTest(WidgetTester tester) async {
   await enterText(tester, TextField, "Test Wallet");
   await tapButton(tester, "Continue");
 
+  /// If the wallet database does not exist we need to enter the password.
+  if (!walletsExist) {
+    await enterText(tester, TextFormField, password, index: 0);
+    await enterText(tester, TextFormField, password, index: 1);
+    await tapButton(tester, "Continue");
+  }
+
+  await tester.pumpAndSettle();
+
   await tapButton(tester, FontAwesomeIcons.gear);
   await tapButton(tester, "Wallet");
 
@@ -72,4 +67,5 @@ Future<void> e2eExportXprvTest(WidgetTester tester) async {
 
   /// Verify the imported wallet and the current address
   expect(data?.text, isNotNull);
+  await teardownTest();
 }

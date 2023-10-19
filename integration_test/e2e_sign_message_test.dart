@@ -1,18 +1,4 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
-import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
-import 'package:my_wit_wallet/widgets/select.dart';
-import 'test_utils.dart';
-
-bool walletsExist = false;
-String password = dotenv.env['PASSWORD'] ?? "password";
-String nodeXprv = dotenv.env['NODE_XPRV'] ?? '';
+part of 'test_utils.dart';
 
 Future<void> e2eSignMessageTest(WidgetTester tester) async {
   await initializeTest(tester);
@@ -57,6 +43,15 @@ Future<void> e2eSignMessageTest(WidgetTester tester) async {
   await enterText(tester, TextField, "Test Wallet");
   await tapButton(tester, "Continue");
 
+  /// If the wallet database does not exist we need to enter the password.
+  if (!walletsExist) {
+    await enterText(tester, TextFormField, password, index: 0);
+    await enterText(tester, TextFormField, password, index: 1);
+    await tapButton(tester, "Continue");
+  }
+
+  await tester.pumpAndSettle();
+
   await tapButton(tester, FontAwesomeIcons.gear);
 
   if (Platform.isIOS || Platform.isAndroid) {
@@ -76,7 +71,7 @@ Future<void> e2eSignMessageTest(WidgetTester tester) async {
 
   // Select second address in the list
   await tapButton(tester, Select, index: 0);
-  await tapButton(tester, "wit1zl7ty0lwr7atp5fu34azkgewhtfx2fl4wv69cw",
+  await tapButton(tester, "wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u",
       index: 2);
 
   /// Enter Message to sign
@@ -113,4 +108,5 @@ Future<void> e2eSignMessageTest(WidgetTester tester) async {
 
   // Go back to wallet config options
   expect(widgetByText('Export the Xprv key of my wallet'), findsWidgets);
+  await teardownTest();
 }

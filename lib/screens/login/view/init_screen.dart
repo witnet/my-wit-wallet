@@ -8,7 +8,6 @@ import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/widgets/carousel.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
-import 'package:my_wit_wallet/globals.dart' as globals;
 
 class InitScreen extends StatefulWidget {
   static final route = '/';
@@ -51,13 +50,6 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
 
   Future<Widget> loadInitialScreen() async {
     ApiDatabase database = Locator.instance<ApiDatabase>();
-    if (globals.testingActive &&
-        globals.testingDeleteStorage &&
-        globals.firstRun) {
-      await database.deleteAllWallets();
-      await database.openDatabase();
-      globals.firstRun = false;
-    }
     WalletStorage storage = await database.loadWalletsDatabase();
 
     if (storage.wallets.isNotEmpty) {

@@ -1,17 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'e2e_mnemonic_test.dart';
-import 'e2e_import_mnemonic_test.dart';
-import 'e2e_re_establish_wallet.dart';
-import "e2e_import_xprv_test.dart";
-import "e2e_export_xprv_test.dart";
-import 'e2e_import_xprv_from_sheikah_test.dart';
-import 'e2e_auth_preferences_test.dart';
-import 'e2e_sign_message_test.dart';
-import 'e2e_update_wallet_test.dart';
-import 'e2e_show_node_stats.dart';
 import 'package:my_wit_wallet/globals.dart' as globals;
-
+import 'test_utils.dart';
 
 void main() async {
   globals.testingActive = true;
