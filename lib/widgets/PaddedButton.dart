@@ -8,6 +8,7 @@ enum ButtonType {
   primary,
   secondary,
   text,
+  small,
   horizontalIcon,
   verticalIcon,
   iconButton,
@@ -61,13 +62,6 @@ class PaddedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isPrimary = type == ButtonType.primary;
-    final isText = type == ButtonType.text;
-    final hasHorizontalIcon = type == ButtonType.horizontalIcon;
-    final hasVerticalIcon = type == ButtonType.verticalIcon;
-    final isIconButton = type == ButtonType.iconButton;
-    final isStepBarButton = type == ButtonType.stepbar;
-    final isBoxButton = type == ButtonType.boxButton;
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
 
@@ -84,6 +78,17 @@ class PaddedButton extends StatelessWidget {
         minimumSize: Size(double.infinity, 54),
       ),
       child: isLoading ? buildCircularProgress(context, theme) : Text(text),
+      onPressed: onPressed,
+    );
+
+    Widget smallButton = OutlinedButton(
+      style: ElevatedButton.styleFrom(padding: EdgeInsets.all(8)),
+      child: isLoading
+          ? buildCircularProgress(context, theme)
+          : Text(
+              text,
+              style: TextStyle(fontSize: 10),
+            ),
       onPressed: onPressed,
     );
 
@@ -184,22 +189,25 @@ class PaddedButton extends StatelessWidget {
     );
 
     Widget _getButtonByType() {
-      if (isPrimary) {
-        return primaryButton;
-      } else if (isText) {
-        return textButton;
-      } else if (hasVerticalIcon) {
-        return textButtonVerticalIcon;
-      } else if (hasHorizontalIcon) {
-        return textButtonHorizontalIcon;
-      } else if (isIconButton) {
-        return iconButton;
-      } else if (isStepBarButton) {
-        return stepBarButton;
-      } else if (isBoxButton) {
-        return containerButton;
-      } else {
-        return secondaryButton;
+      switch (type) {
+        case ButtonType.primary:
+          return primaryButton;
+        case ButtonType.secondary:
+          return secondaryButton;
+        case ButtonType.text:
+          return textButton;
+        case ButtonType.small:
+          return smallButton;
+        case ButtonType.iconButton:
+          return iconButton;
+        case ButtonType.horizontalIcon:
+          return textButtonHorizontalIcon;
+        case ButtonType.verticalIcon:
+          return textButtonVerticalIcon;
+        case ButtonType.boxButton:
+          return containerButton;
+        case ButtonType.stepbar:
+          return stepBarButton;
       }
     }
 

@@ -148,6 +148,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
 
   ReviewStep _reviewStep() {
     return ReviewStep(
+      originRoute: CreateVttScreen.route,
       nextAction: _setNextAction,
       currentWallet: currentWallet!,
     );

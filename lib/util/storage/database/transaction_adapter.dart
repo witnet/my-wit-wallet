@@ -100,6 +100,19 @@ class GeneralTransaction extends HashInfo {
               outputs: valueTransferInfo.outputs,
               weight: valueTransferInfo.weight,
               priority: valueTransferInfo.priority));
+
+  ValueTransferInfo toValueTransferInfo() => ValueTransferInfo(
+      blockHash: blockHash,
+      fee: fee,
+      inputs: vtt?.inputs ?? [],
+      outputs: vtt?.outputs ?? [],
+      priority: vtt?.priority ?? 0,
+      status: status,
+      txnEpoch: epoch,
+      txnHash: txnHash,
+      txnTime: txnTime,
+      type: type,
+      weight: vtt?.weight ?? 0);
 }
 
 class MintEntry {

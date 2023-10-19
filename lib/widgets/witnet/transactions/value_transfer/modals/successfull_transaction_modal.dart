@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
-import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
 import 'package:my_wit_wallet/widgets/info_element.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 
-void buildSuccessfullTransaction(
-    ThemeData theme, VTTCreateState state, BuildContext context) {
+void buildSuccessfullTransaction(ThemeData theme, VTTCreateState state,
+    BuildContext context, String originRoute) {
   return buildAlertDialog(
     context: context,
     actions: [
@@ -20,8 +19,7 @@ void buildSuccessfullTransaction(
           type: ButtonType.text,
           enabled: true,
           onPressed: () => {
-                Navigator.popUntil(
-                    context, ModalRoute.withName(CreateVttScreen.route)),
+                Navigator.popUntil(context, ModalRoute.withName(originRoute)),
                 ScaffoldMessenger.of(context).clearSnackBars(),
                 Navigator.pushReplacement(
                     context,

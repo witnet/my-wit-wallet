@@ -408,12 +408,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     Wallet wallet = database.walletStorage.currentWallet;
 
     /// get a list of any pending transactions
-    List<ValueTransferInfo> unconfirmedVtts = [];
-    wallet.allTransactions().forEach((vtt) {
-      if (vtt.status != "confirmed") {
-        unconfirmedVtts.add(vtt);
-      }
-    });
+    List<ValueTransferInfo> unconfirmedVtts = wallet.unconfirmedTransactions();
 
     if (wallet.walletType == WalletType.hd) {
       /// maintain gap limit for BIP39

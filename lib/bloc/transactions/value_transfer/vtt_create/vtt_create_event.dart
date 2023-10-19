@@ -9,8 +9,14 @@ class AddValueTransferOutputEvent extends VTTCreateEvent {
   final ValueTransferOutput output;
   final Wallet currentWallet;
   final bool merge;
+  final GeneralTransaction? speedUpTx;
+  final bool filteredUtxos;
   AddValueTransferOutputEvent(
-      {required this.output, required this.currentWallet, required this.merge});
+      {required this.output,
+      required this.currentWallet,
+      required this.merge,
+      this.speedUpTx,
+      this.filteredUtxos = true});
   @override
   List<Object?> get props => [output, currentWallet, merge];
 }
@@ -84,18 +90,23 @@ class ShowAuthPreferencesEvent extends VTTCreateEvent {}
 class SignTransactionEvent extends VTTCreateEvent {
   final VTTransactionBody vtTransactionBody;
   final Wallet currentWallet;
-  SignTransactionEvent(
-      {required this.currentWallet, required this.vtTransactionBody});
+  final GeneralTransaction? speedUpTx;
+  SignTransactionEvent({
+    required this.currentWallet,
+    required this.vtTransactionBody,
+    this.speedUpTx,
+  });
 
   @override
-  List<Object?> get props => [currentWallet, vtTransactionBody];
+  List<Object?> get props => [currentWallet, vtTransactionBody, speedUpTx];
 }
 
 class SendTransactionEvent extends VTTCreateEvent {
   final VTTransaction transaction;
   final Wallet currentWallet;
+  final GeneralTransaction? speedUpTx;
   SendTransactionEvent(
-      {required this.currentWallet, required this.transaction});
+      {required this.currentWallet, required this.transaction, this.speedUpTx});
   @override
   List<Object?> get props => [currentWallet, transaction];
 }

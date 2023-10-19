@@ -26,6 +26,7 @@ class TransactionsViewState extends State<TransactionsView>
   List<GeneralTransaction> transactions = [];
   int numberOfPages = 0;
   int currentPage = 0;
+  bool showPagination = true;
   @override
   void initState() {
     super.initState();
@@ -50,7 +51,7 @@ class TransactionsViewState extends State<TransactionsView>
   }
 
   Widget buildPagination(ExtendedTheme theme) {
-    if (numberOfPages > 1 && txDetails == null) {
+    if (numberOfPages > 1 && txDetails == null && showPagination) {
       return Container(
           width: numberOfPages < 4 ? 250 : null,
           alignment: Alignment.center,
@@ -91,19 +92,18 @@ class TransactionsViewState extends State<TransactionsView>
       child: Column(children: [
         TransactionsList(
           themeData: themeData,
+          showPagination: (bool value) => {
+            if (this.mounted)
+              {
+                setState(() {
+                  showPagination = value;
+                })
+              }
+          },
           setDetails: _setDetails,
           details: txDetails,
           transactions: transactions,
-          externalAddresses: widget.currentWallet.externalAccounts.values
-              .map((account) => account.address)
-              .toList(),
-          internalAddresses: widget.currentWallet.internalAccounts.values
-              .map((account) => account.address)
-              .toList(),
-          singleAddressAccount:
-              widget.currentWallet.walletType == WalletType.single
-                  ? widget.currentWallet.masterAccount
-                  : null,
+          currentWallet: widget.currentWallet,
         ),
         buildPagination(extendedTheme),
         transactions.length > 0 ? SizedBox(height: 24) : SizedBox(height: 16),

@@ -34,6 +34,7 @@ class ClosableView extends StatelessWidget {
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             SizedBox(height: 24),
             ...this.children,
+            SizedBox(height: 16),
           ])
         ]));
   }

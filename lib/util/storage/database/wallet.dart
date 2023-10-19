@@ -98,6 +98,24 @@ class Wallet {
     return _accounts;
   }
 
+  Future<void> deleteVtt(Wallet wallet, ValueTransferInfo vtt) async {
+    /// check the inputs for accounts in the wallet and remove the vtt
+    for (int i = 0; i < vtt.inputs.length; i++) {
+      Account? account = wallet.accountByAddress(vtt.inputs[i].address);
+      if (account != null) {
+        await account.deleteVtt(vtt);
+      }
+    }
+
+    /// check the outputs for accounts in the wallet and remove the vtt
+    for (int i = 0; i < vtt.outputs.length; i++) {
+      Account? account = wallet.accountByAddress(vtt.outputs[i].pkh.address);
+      if (account != null) {
+        await account.deleteVtt(vtt);
+      }
+    }
+  }
+
   Map<int, Account> orderAccountsByIndex(Map<int, Account> accountMap) {
     return Map.fromEntries(accountMap.entries.toList()
       ..sort((e1, e2) => e1.key.compareTo(e2.key)));
@@ -149,6 +167,16 @@ class Wallet {
     } else {
       return [];
     }
+  }
+
+  List<ValueTransferInfo> unconfirmedTransactions() {
+    List<ValueTransferInfo> unconfirmedVtts = [];
+    allTransactions().forEach((vtt) {
+      if (vtt.status != "confirmed") {
+        unconfirmedVtts.add(vtt);
+      }
+    });
+    return unconfirmedVtts;
   }
 
   List<ValueTransferInfo> allTransactions() {

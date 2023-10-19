@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/util/allow_biometrics.dart';
+import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/general_error_tx_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/sending_tx_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/signing_tx_modal.dart';
@@ -10,7 +11,6 @@ import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
-import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/info_element.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
@@ -20,9 +20,13 @@ typedef void VoidCallback(bool value);
 class ReviewStep extends StatefulWidget {
   final Function nextAction;
   final Wallet currentWallet;
+  final String originRoute;
+  final GeneralTransaction? speedUpTx;
   ReviewStep({
     required this.nextAction,
     required this.currentWallet,
+    required this.originRoute,
+    this.speedUpTx,
   });
 
   @override
@@ -66,12 +70,17 @@ class ReviewStepState extends State<ReviewStep>
     final vtt =
         BlocProvider.of<VTTCreateBloc>(context).state.vtTransaction.body;
     BlocProvider.of<VTTCreateBloc>(context).add(SignTransactionEvent(
-        currentWallet: widget.currentWallet, vtTransactionBody: vtt));
+      currentWallet: widget.currentWallet,
+      vtTransactionBody: vtt,
+      speedUpTx: widget.speedUpTx,
+    ));
   }
 
   void _sendTransaction(VTTransaction vtTransaction) {
     BlocProvider.of<VTTCreateBloc>(context).add(SendTransactionEvent(
-        currentWallet: widget.currentWallet, transaction: vtTransaction));
+        currentWallet: widget.currentWallet,
+        transaction: vtTransaction,
+        speedUpTx: widget.speedUpTx));
   }
 
   NavAction next() {
@@ -94,16 +103,16 @@ class ReviewStepState extends State<ReviewStep>
               theme: theme,
               context: context,
               onAction: () => _signTransaction(),
-              routeToRedirect: CreateVttScreen.route);
+              routeToRedirect: widget.originRoute);
         }
         if (state.vttCreateStatus == VTTCreateStatus.discarded) {
           buildTxGeneralExceptionModal(
               theme: theme,
               context: context,
+              originRoute: widget.originRoute,
               onAction: () => _sendTransaction(state.vtTransaction));
         } else if (state.vttCreateStatus == VTTCreateStatus.signing) {
-          Navigator.popUntil(
-              context, ModalRoute.withName(CreateVttScreen.route));
+          Navigator.popUntil(context, ModalRoute.withName(widget.originRoute));
           buildSigningTxModal(theme, context);
         } else if (state.vttCreateStatus == VTTCreateStatus.finished) {
           // Validate vtt weight to ensure confirmation
@@ -114,14 +123,15 @@ class ReviewStepState extends State<ReviewStep>
             buildTxGeneralExceptionModal(
                 theme: theme,
                 context: context,
+                originRoute: widget.originRoute,
                 onAction: () => _sendTransaction(state.vtTransaction));
           }
         } else if (state.vttCreateStatus == VTTCreateStatus.sending) {
-          Navigator.popUntil(
-              context, ModalRoute.withName(CreateVttScreen.route));
+          Navigator.popUntil(context, ModalRoute.withName(widget.originRoute));
           buildSendingTransactionModal(theme, context);
         } else if (state.vttCreateStatus == VTTCreateStatus.accepted) {
-          buildSuccessfullTransaction(theme, state, context);
+          buildSuccessfullTransaction(
+              theme, state, context, widget.originRoute);
         }
         return Padding(
             padding: EdgeInsets.only(left: 8, right: 8),

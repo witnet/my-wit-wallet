@@ -241,11 +241,13 @@ class DashboardLayoutState extends State<DashboardLayout>
                         setState(() {
                           isAddressCopied = true;
                         });
-                        Timer(Duration(milliseconds: 500), () {
-                          setState(() {
-                            isAddressCopied = false;
+                        if (this.mounted) {
+                          Timer(Duration(milliseconds: 500), () {
+                            setState(() {
+                              isAddressCopied = false;
+                            });
                           });
-                        });
+                        }
                       }
                     }
                   },

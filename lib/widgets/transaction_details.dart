@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
+import 'package:my_wit_wallet/widgets/closable_view.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/constants.dart';
@@ -8,7 +9,6 @@ import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/extensions/int_extensions.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/info_element.dart';
 
 typedef void VoidCallback();
@@ -107,77 +107,44 @@ class TransactionDetails extends StatelessWidget {
         transaction.txnType == TransactionType.value_transfer
             ? transaction.vtt!.outputs
             : transaction.mint!.outputs;
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      PaddedButton(
-          padding: EdgeInsets.all(0),
-          text: localization.backLabel,
-          onPressed: () => goToList(),
-          type: ButtonType.text),
-      SizedBox(height: 16),
-      Padding(
-          padding: EdgeInsets.only(left: 8, right: 8),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              localization.transactionDetails,
-              style: theme.textTheme.displaySmall,
-            ),
-            SizedBox(height: 24),
-            InfoElement(
-                label: localization.status,
-                text: transaction.status.capitalize(),
-                color: theme.textTheme.labelMedium?.color),
-            InfoElement(
-              label: localization.transactionId,
-              text: transaction.txnHash,
-              url: 'https://witnet.network/search/${transaction.txnHash}',
-            ),
-            InfoElement(
-                label: localization.epoch,
-                text: _isPendingTransaction(transaction.status)
-                    ? '_'
-                    : transaction.epoch.toString()),
-            InfoElement(
-                label: localization.type,
-                text: transaction.type.split('_').join(' ').toTitleCase()),
-            InfoElement(
-                label: transaction.txnType == TransactionType.value_transfer
-                    ? localization.feesPayed
-                    : localization.feesCollected,
-                text:
-                    '${transaction.fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
-            InfoElement(
-                label: localization.timestamp,
-                text: _isPendingTransaction(transaction.status)
-                    ? '_'
-                    : transaction.txnTime.formatDate()),
-            transaction.txnType == TransactionType.value_transfer
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                        Text(
-                          localization.inputs,
-                          style: theme.textTheme.displaySmall,
-                        ),
-                        SizedBox(height: 8),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: transaction.vtt!.inputs.length,
-                          itemBuilder: (context, index) {
-                            return _buildInput(
-                                theme,
-                                transaction.vtt!.inputs[index],
-                                index + 1 == transaction.vtt!.inputs.length);
-                          },
-                        ),
-                        SizedBox(height: 16),
-                      ])
-                : Container(),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    return ClosableView(closeSetting: goToList, children: [
+      Text(
+        localization.transactionDetails,
+        style: theme.textTheme.titleLarge,
+      ),
+      SizedBox(height: 24),
+      InfoElement(
+          label: localization.status,
+          text: transaction.status.capitalize(),
+          color: theme.textTheme.labelMedium?.color),
+      InfoElement(
+        label: localization.transactionId,
+        text: transaction.txnHash,
+        url: 'https://witnet.network/search/${transaction.txnHash}',
+      ),
+      InfoElement(
+          label: localization.epoch,
+          text: _isPendingTransaction(transaction.status)
+              ? '_'
+              : transaction.epoch.toString()),
+      InfoElement(
+          label: localization.type,
+          text: transaction.type.split('_').join(' ').toTitleCase()),
+      InfoElement(
+          label: transaction.txnType == TransactionType.value_transfer
+              ? localization.feesPayed
+              : localization.feesCollected,
+          text:
+              '${transaction.fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
+      InfoElement(
+          label: localization.timestamp,
+          text: _isPendingTransaction(transaction.status)
+              ? '_'
+              : transaction.txnTime.formatDate()),
+      transaction.txnType == TransactionType.value_transfer
+          ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
-                localization.outputs,
+                localization.inputs,
                 style: theme.textTheme.displaySmall,
               ),
               SizedBox(height: 8),
@@ -185,14 +152,32 @@ class TransactionDetails extends StatelessWidget {
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: outputs.length,
+                itemCount: transaction.vtt!.inputs.length,
                 itemBuilder: (context, index) {
-                  return _buildOutput(
-                      theme, outputs[index], index + 1 == outputs.length);
+                  return _buildInput(theme, transaction.vtt!.inputs[index],
+                      index + 1 == transaction.vtt!.inputs.length);
                 },
               ),
+              SizedBox(height: 16),
             ])
-          ])),
+          : Container(),
+      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          localization.outputs,
+          style: theme.textTheme.displaySmall,
+        ),
+        SizedBox(height: 8),
+        ListView.builder(
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: outputs.length,
+          itemBuilder: (context, index) {
+            return _buildOutput(
+                theme, outputs[index], index + 1 == outputs.length);
+          },
+        ),
+      ]),
     ]);
   }
 }

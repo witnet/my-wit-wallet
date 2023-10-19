@@ -1,6 +1,6 @@
 class NavAction {
   String label;
-  void action;
+  Function action;
 
   NavAction({
     required this.label,

@@ -8,10 +8,12 @@ import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 
-void buildTxGeneralExceptionModal(
-    {required ThemeData theme,
-    required BuildContext context,
-    required VoidCallback onAction}) {
+void buildTxGeneralExceptionModal({
+  required ThemeData theme,
+  required BuildContext context,
+  required VoidCallback onAction,
+  required String originRoute,
+}) {
   return buildAlertDialog(
       context: context,
       actions: [
@@ -21,8 +23,7 @@ void buildTxGeneralExceptionModal(
             type: ButtonType.text,
             enabled: true,
             onPressed: () => {
-                  Navigator.popUntil(
-                      context, ModalRoute.withName(CreateVttScreen.route)),
+                  Navigator.popUntil(context, ModalRoute.withName(originRoute)),
                   ScaffoldMessenger.of(context).clearSnackBars(),
                   Navigator.pushReplacement(
                       context,
