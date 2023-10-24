@@ -69,6 +69,6 @@ Future<void> e2eExportXprvTest(WidgetTester tester) async {
   ClipboardData? data = await Clipboard.getData('text/plain');
 
   /// Verify the imported wallet and the current address
-  expect(data?.text, isNotNull);
+  expect(data?.text, nodeXprv);
   await teardownTest();
 }

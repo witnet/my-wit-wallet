@@ -46,14 +46,16 @@ class ExportXprvState extends State<ExportXprv> {
     Wallet currentWallet =
         Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
     bool isSingleAddressWallet = currentWallet.walletType == WalletType.single;
-    String? singleAddressXprv = currentWallet.xprv;
-    if (isSingleAddressWallet) {
-      newXprv = singleAddressXprv;
-    }
+
     Widget verifyPassword = VerifyPassword(
         onXprvGenerated: (generatedXprv) => {
               widget.scrollController.jumpTo(0.0),
-              setState(() => xprv = generatedXprv)
+              setState(() => {
+                    if (isSingleAddressWallet)
+                      {newXprv = generatedXprv}
+                    else
+                      {xprv = generatedXprv}
+                  })
             });
     Widget encryptXprv = GenerateCompatibleXprv(
         xprv: xprv,
