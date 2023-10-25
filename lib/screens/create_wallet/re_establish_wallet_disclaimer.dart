@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -35,8 +35,6 @@ class ReEstablishWalletDisclaimerState
   bool isNextAllow = false;
   bool isCheckBoxFocus = false;
   FocusNode _checkBoxFocusNode = FocusNode();
-
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -98,20 +96,20 @@ class ReEstablishWalletDisclaimerState
       }
     } else {
       closeModal();
-      showErrorSnackBar(context, theme, _localization.errorReestablish);
+      showErrorSnackBar(context, theme, localization.errorReestablish);
     }
   }
 
   NavAction prev() {
     return NavAction(
-      label: _localization.backLabel,
+      label: localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: _localization.continueLabel,
+      label: localization.continueLabel,
       action: nextAction,
     );
   }
@@ -126,20 +124,20 @@ class ReEstablishWalletDisclaimerState
           PaddedButton(
               color: theme.textTheme.bodyLarge!.color,
               padding: EdgeInsets.all(8),
-              text: _localization.cancel,
+              text: localization.cancel,
               type: ButtonType.text,
               enabled: true,
               onPressed: () => {setState(() => closeModal())}),
           PaddedButton(
               color: extendedTheme.errorColor,
               padding: EdgeInsets.all(8),
-              text: _localization.reestablish,
+              text: localization.reestablish,
               type: ButtonType.text,
               enabled: true,
               onPressed: deleteStorageAndContinue)
         ],
         icon: FontAwesomeIcons.circleExclamation,
-        title: _localization.deleteStorageWarning,
+        title: localization.deleteStorageWarning,
         content: Column(mainAxisSize: MainAxisSize.min, children: [
           svgThemeImage(theme, name: 'general-warning', height: 100),
         ]));
@@ -152,12 +150,12 @@ class ReEstablishWalletDisclaimerState
         actions: [
           PaddedButton(
               padding: EdgeInsets.all(8),
-              text: _localization.continueLabel,
+              text: localization.continueLabel,
               type: ButtonType.text,
               enabled: true,
               onPressed: continueToNextStep)
         ],
-        title: _localization.reestablishSucess,
+        title: localization.reestablishSucess,
         content: Column(mainAxisSize: MainAxisSize.min, children: [
           svgThemeImage(theme, name: 'transaction-success', height: 100),
         ]));
@@ -189,22 +187,22 @@ class ReEstablishWalletDisclaimerState
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
-        Text(_localization.reestablishYourWallet, style: titleLarge),
+        Text(localization.reestablishYourWallet, style: titleLarge),
         SizedBox(height: 16),
-        Text(_localization.readCarefully, style: bodyLarge),
+        Text(localization.readCarefully, style: bodyLarge),
         SizedBox(height: 10),
-        Text(_localization.reestablishInstructions, style: bodyLarge),
+        Text(localization.reestablishInstructions, style: bodyLarge),
         SizedBox(height: 10),
-        Text(_localization.whatToDo, style: bodyLargeBold),
+        Text(localization.whatToDo, style: bodyLargeBold),
         SizedBox(height: 10),
-        buildOrderedListItem('1. ', _localization.reestablishSteps01, context),
+        buildOrderedListItem('1. ', localization.reestablishSteps01, context),
         SizedBox(height: 10),
-        buildOrderedListItem('2. ', _localization.reestablishSteps02, context),
+        buildOrderedListItem('2. ', localization.reestablishSteps02, context),
         LabeledCheckbox(
           focusNode: _checkBoxFocusNode,
           isFocus: isCheckBoxFocus,
           checked: isNextAllow,
-          label: _localization.walletSecurityConfirmLabel,
+          label: localization.walletSecurityConfirmLabel,
           onChanged: toggleCheckBox,
         ),
       ],

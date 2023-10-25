@@ -13,7 +13,6 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 enum DashboardViewSteps {
   transactions,
@@ -21,11 +20,10 @@ enum DashboardViewSteps {
 }
 
 Map<String, DashboardViewSteps> _localizedDashboardSteps(BuildContext context) {
-  AppLocalizations _localization = AppLocalizations.of(context)!;
   return {
-    _localization.dashboardViewSteps('transactions'):
+    localization.dashboardViewSteps('transactions'):
         DashboardViewSteps.transactions,
-    _localization.dashboardViewSteps('stats'): DashboardViewSteps.stats,
+    localization.dashboardViewSteps('stats'): DashboardViewSteps.stats,
   };
 }
 

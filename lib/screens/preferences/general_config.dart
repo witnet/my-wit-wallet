@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
@@ -33,8 +32,6 @@ class GeneralConfigState extends State<GeneralConfig> {
   bool _isThemeSwitchFocus = false;
   FocusNode _switchAuthModeFocusNode = FocusNode();
   bool _isAuthModeSwitchFocus = false;
-
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -91,8 +88,8 @@ class GeneralConfigState extends State<GeneralConfig> {
           focusNode: _switchThemeFocusNode,
           isFocused: _isThemeSwitchFocus,
           checked: displayDarkMode,
-          primaryLabel: _localization.darkMode,
-          secondaryLabel: _localization.lightMode,
+          primaryLabel: localization.darkMode,
+          secondaryLabel: localization.lightMode,
           onChanged: (value) => {
                 setState(() {
                   displayDarkMode = !displayDarkMode;
@@ -193,7 +190,7 @@ class GeneralConfigState extends State<GeneralConfig> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           SizedBox(height: 32),
           Text(
-            _localization.theme,
+            localization.theme,
             style: theme.textTheme.titleMedium,
           ),
           SizedBox(height: 16),
@@ -201,18 +198,18 @@ class GeneralConfigState extends State<GeneralConfig> {
           ...showAuthModeSettings(theme),
           CustomDivider(),
           Text(
-            _localization.lockYourWallet,
+            localization.lockYourWallet,
             style: theme.textTheme.titleMedium,
           ),
           PaddedButton(
               padding: EdgeInsets.only(bottom: 16, top: 16),
-              text: _localization.lockWalletLabel,
+              text: localization.lockWalletLabel,
               type: ButtonType.primary,
               enabled: true,
               onPressed: () => _logOut()),
           SizedBox(height: 16),
           Text(
-            _localization.versionNumber(VERSION_NUMBER),
+            localization.versionNumber(VERSION_NUMBER),
             style: theme.textTheme.titleSmall,
           )
         ]));

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/screens/preferences/export_xprv.dart';
 import 'package:my_wit_wallet/screens/preferences/sign_message.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/custom_divider.dart';
 
@@ -20,8 +20,6 @@ class WalletConfig extends StatefulWidget {
 
 class WalletConfigState extends State<WalletConfig> {
   WalletConfigActions? currentSetting;
-
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -62,28 +60,27 @@ class WalletConfigState extends State<WalletConfig> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           SizedBox(height: 32),
           Text(
-            _localization.walletConfigHeader,
+            localization.walletConfigHeader,
             style: theme.textTheme.titleMedium,
           ),
           SizedBox(height: 16),
-          Text(_localization.walletConfig01, style: theme.textTheme.bodyLarge),
+          Text(localization.walletConfig01, style: theme.textTheme.bodyLarge),
           PaddedButton(
               padding: EdgeInsets.only(bottom: 16, top: 16),
-              text: _localization.exportXprv,
+              text: localization.exportXprv,
               type: ButtonType.primary,
               enabled: true,
               onPressed: () => _toggleSetting(WalletConfigActions.exportXprv)),
           CustomDivider(),
           Text(
-            _localization.messageSigning,
+            localization.messageSigning,
             style: theme.textTheme.titleMedium,
           ),
           SizedBox(height: 16),
-          Text(_localization.messageSigning01,
-              style: theme.textTheme.bodyLarge),
+          Text(localization.messageSigning01, style: theme.textTheme.bodyLarge),
           PaddedButton(
               padding: EdgeInsets.only(bottom: 16, top: 16),
-              text: _localization.signMessage,
+              text: localization.signMessage,
               type: ButtonType.primary,
               enabled: true,
               onPressed: () => _toggleSetting(WalletConfigActions.signMsg)),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/login/view/ftu_actions.dart';
 import 'package:my_wit_wallet/screens/login/view/login_form.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
@@ -8,8 +9,6 @@ import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/widgets/carousel.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InitScreen extends StatefulWidget {
   static final route = '/';
@@ -21,8 +20,6 @@ class InitScreen extends StatefulWidget {
 }
 
 class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
-
   @override
   void initState() {
     super.initState();
@@ -41,13 +38,13 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
         child: witnetLogo(Theme.of(context)),
       ),
       Text(
-        _localization.welcome,
+        localization.welcome,
         style: theme.textTheme.displayLarge,
       ),
       Carousel(list: [
-        _localization.carouselMsg01,
-        _localization.carouselMsg02,
-        _localization.carouselMsg03,
+        localization.carouselMsg01,
+        localization.carouselMsg02,
+        localization.carouselMsg03,
       ])
     ];
   }

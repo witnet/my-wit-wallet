@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:formz/formz.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
@@ -47,8 +47,6 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
     _showPassFocusNode,
     _showPassConfirmFocusNode
   ];
-
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   void setPassword(String password, {bool? validate}) {
     setState(() {
@@ -132,7 +130,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          _localization.passwordDescription,
+          localization.passwordDescription,
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 16),
@@ -143,12 +141,12 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                _localization.passwordLabel,
+                localization.passwordLabel,
                 style: theme.textTheme.titleSmall,
               ),
               SizedBox(height: 8),
               InputLogin(
-                hint: _localization.passwordLabel,
+                hint: localization.passwordLabel,
                 focusNode: _passFocusNode,
                 errorText: _password.error,
                 showPassFocusNode: _showPassFocusNode,
@@ -166,12 +164,12 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
               ),
               SizedBox(height: 16),
               Text(
-                _localization.confirmPassword,
+                localization.confirmPassword,
                 style: theme.textTheme.titleSmall,
               ),
               SizedBox(height: 8),
               InputLogin(
-                hint: _localization.confirmPassword,
+                hint: localization.confirmPassword,
                 obscureText: true,
                 focusNode: _passConfirmFocusNode,
                 showPassFocusNode: _showPassConfirmFocusNode,
@@ -191,7 +189,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
               SizedBox(height: 16),
               PaddedButton(
                   padding: EdgeInsets.only(bottom: 8),
-                  text: _localization.generateXprv,
+                  text: localization.generateXprv,
                   type: ButtonType.primary,
                   isLoading: isLoading,
                   enabled: true,

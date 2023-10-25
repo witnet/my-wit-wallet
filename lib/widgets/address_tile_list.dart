@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddressTileList extends StatefulWidget {
   final double width;
@@ -23,8 +23,6 @@ class AddressTileListState extends State<AddressTileList> {
   bool addressesExist = false;
   bool addressSelected = false;
 
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
-
   @override
   void initState() {
     super.initState();
@@ -42,7 +40,7 @@ class AddressTileListState extends State<AddressTileList> {
           Padding(
             padding: EdgeInsets.only(right: 20.0),
             child: ElevatedButton(
-              child: new Text(_localization.createWalletLabel),
+              child: new Text(localization.createWalletLabel),
               onPressed: () {
                 Navigator.pushNamed(context, CreateWalletScreen.route);
               },

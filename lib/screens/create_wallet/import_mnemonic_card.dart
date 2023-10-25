@@ -1,4 +1,4 @@
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
@@ -30,22 +30,20 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
   final TextEditingController textController = TextEditingController();
   int numLines = 0;
 
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
-
   Widget _buildConfirmField() {
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          _localization.importMnemonicHeader,
+          localization.importMnemonicHeader,
           style: theme.textTheme.titleLarge, //Textstyle
         ), //Text
         SizedBox(
           height: 16,
         ),
         Text(
-          _localization.importMnemonic01,
+          localization.importMnemonic01,
           style: theme.textTheme.bodyLarge, //Textstyle
         ), //Text
         SizedBox(
@@ -92,14 +90,14 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
 
   NavAction prev() {
     return NavAction(
-      label: _localization.backLabel,
+      label: localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: _localization.continueLabel,
+      label: localization.continueLabel,
       action: nextAction,
     );
   }

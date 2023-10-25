@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:witnet/crypto.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
@@ -27,7 +27,6 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
   String mnemonic = '';
   final TextEditingController textController = TextEditingController();
   int numLines = 0;
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   void prevAction() {
     CreateWalletType type =
@@ -44,14 +43,14 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
 
   NavAction prev() {
     return NavAction(
-      label: _localization.backLabel,
+      label: localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: _localization.continueLabel,
+      label: localization.continueLabel,
       action: nextAction,
     );
   }
@@ -78,14 +77,14 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          _localization.confirmMnemonicHeader,
+          localization.confirmMnemonicHeader,
           style: theme.textTheme.titleLarge,
         ),
         SizedBox(
           height: 16,
         ),
         Text(
-          _localization.confirmMnemonic01,
+          localization.confirmMnemonic01,
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(

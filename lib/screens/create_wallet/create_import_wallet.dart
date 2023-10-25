@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,8 +36,6 @@ class Action {
 }
 
 class CreateImportWalletState extends State<CreateImportWallet> {
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
-
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
@@ -79,21 +77,21 @@ class CreateImportWalletState extends State<CreateImportWallet> {
 
   Action prev() {
     return Action(
-      label: _localization.backLabel,
+      label: localization.backLabel,
       action: prevAction,
     );
   }
 
   Action nextCreateAction() {
     return Action(
-      label: _localization.createNewWalletLabel,
+      label: localization.createNewWalletLabel,
       action: createWallet,
     );
   }
 
   Action nextImportAction() {
     return Action(
-      label: _localization.importWalletLabel,
+      label: localization.importWalletLabel,
       action: importWallet,
     );
   }
@@ -119,16 +117,16 @@ class CreateImportWalletState extends State<CreateImportWallet> {
                 name: 'create-or-import-wallet', height: 152)),
         SizedBox(height: 16),
         Text(
-          _localization.createImportWalletHeader,
+          localization.createImportWalletHeader,
           style: theme.textTheme.titleLarge,
         ),
         SizedBox(height: 16),
         Text(
-          _localization.createImportWallet01,
+          localization.createImportWallet01,
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 16),
-        Text(_localization.createImportWallet02,
+        Text(localization.createImportWallet02,
             style: theme.textTheme.bodyLarge)
       ],
     );

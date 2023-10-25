@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
@@ -29,8 +29,6 @@ class SelectImportedOption extends StatefulWidget {
 }
 
 class ImportedOptionState extends State<SelectImportedOption> {
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
-
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
@@ -79,21 +77,21 @@ class ImportedOptionState extends State<SelectImportedOption> {
 
   NavAction prev() {
     return NavAction(
-      label: _localization.backLabel,
+      label: localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction nextSeed() {
     return NavAction(
-      label: _localization.importMnemonicLabel,
+      label: localization.importMnemonicLabel,
       action: nextSeedAction,
     );
   }
 
   NavAction nextXprv() {
     return NavAction(
-      label: _localization.importXprvLabel,
+      label: localization.importXprvLabel,
       action: nextXprvAction,
     );
   }
@@ -117,16 +115,16 @@ class ImportedOptionState extends State<SelectImportedOption> {
         Center(child: svgThemeImage(theme, name: 'import-wallet', height: 152)),
         SizedBox(height: 16),
         Text(
-          _localization.selectImportOptionHeader,
+          localization.selectImportOptionHeader,
           style: theme.textTheme.titleLarge,
         ),
         SizedBox(height: 16),
         Text(
-          _localization.createImportWallet01,
+          localization.createImportWallet01,
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 16),
-        Text(_localization.createImportWallet02,
+        Text(localization.createImportWallet02,
             style: theme.textTheme.bodyLarge),
       ],
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
@@ -20,10 +20,9 @@ class ReEstablishWalletBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    AppLocalizations _localization = AppLocalizations.of(context)!;
 
     return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      Text(_localization.forgetPassword, textAlign: TextAlign.center),
+      Text(localization.forgetPassword, textAlign: TextAlign.center),
       SizedBox(height: 8),
       Container(
           width: 148,
@@ -32,7 +31,7 @@ class ReEstablishWalletBtn extends StatelessWidget {
             padding: EdgeInsets.all(0),
             color: extendedTheme.errorColor,
             onPressed: () => resetWallet(context),
-            text: _localization.reestablishWallet,
+            text: localization.reestablishWallet,
             type: ButtonType.text,
           ))
     ]);

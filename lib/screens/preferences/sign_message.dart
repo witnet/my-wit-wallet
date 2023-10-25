@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/screens/preferences/export_signed_msg.dart';
 import 'package:my_wit_wallet/screens/preferences/sign_message_form.dart';
 import 'package:my_wit_wallet/widgets/closable_view.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 typedef void VoidCallback();
 
@@ -41,8 +41,6 @@ class SignMessageState extends State<SignMessage> {
     });
   }
 
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -50,12 +48,11 @@ class SignMessageState extends State<SignMessage> {
       builder: (previous, current) {
         return ClosableView(closeSetting: widget.closeSetting, children: [
           Text(
-            _localization.messageSigning,
+            localization.messageSigning,
             style: theme.textTheme.titleLarge,
           ),
           SizedBox(height: 16),
-          Text(_localization.messageSigning01,
-              style: theme.textTheme.bodyLarge),
+          Text(localization.messageSigning01, style: theme.textTheme.bodyLarge),
           SizedBox(height: 16),
           signedMessage == null
               ? SignMessageForm(

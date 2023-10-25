@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
@@ -27,8 +27,6 @@ class DisclaimerCardState extends State<DisclaimerCard>
   bool isNextAllow = false;
   bool isCheckBoxFocus = false;
   FocusNode _checkBoxFocusNode = FocusNode();
-
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -74,14 +72,14 @@ class DisclaimerCardState extends State<DisclaimerCard>
 
   NavAction prev() {
     return NavAction(
-      label: _localization.backLabel,
+      label: localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: _localization.continueLabel,
+      label: localization.continueLabel,
       action: nextAction,
     );
   }
@@ -95,36 +93,36 @@ class DisclaimerCardState extends State<DisclaimerCard>
       mainAxisSize: MainAxisSize.max,
       children: [
         Text(
-          _localization.walletSecurityHeader,
+          localization.walletSecurityHeader,
           style: theme.textTheme.titleLarge!,
         ),
         SizedBox(
           height: 16,
         ),
         Text(
-          _localization.walletSecurity01,
+          localization.walletSecurity01,
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 10,
         ),
-        Text(_localization.walletSecurity02, style: theme.textTheme.bodyLarge),
+        Text(localization.walletSecurity02, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
         ),
-        Text(_localization.walletSecurity03, style: theme.textTheme.bodyLarge),
+        Text(localization.walletSecurity03, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
         ),
-        Text(_localization.walletSecurity04, style: theme.textTheme.bodyLarge),
+        Text(localization.walletSecurity04, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
         ),
-        Text(_localization.walletSecurity05, style: theme.textTheme.bodyLarge),
+        Text(localization.walletSecurity05, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
         ),
-        Text(_localization.walletSecurity06, style: theme.textTheme.bodyLarge),
+        Text(localization.walletSecurity06, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 10,
         ),
@@ -132,7 +130,7 @@ class DisclaimerCardState extends State<DisclaimerCard>
             focusNode: _checkBoxFocusNode,
             isFocus: isCheckBoxFocus,
             checked: isNextAllow,
-            label: _localization.walletSecurityConfirmLabel,
+            label: localization.walletSecurityConfirmLabel,
             onChanged: (value) => {
                   setState(() {
                     isNextAllow = !isNextAllow;

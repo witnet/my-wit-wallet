@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
@@ -11,13 +11,12 @@ import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 
 void buildSuccessfullTransaction(
     ThemeData theme, VTTCreateState state, BuildContext context) {
-  AppLocalizations _localization = AppLocalizations.of(context)!;
   return buildAlertDialog(
     context: context,
     actions: [
       PaddedButton(
           padding: EdgeInsets.all(8),
-          text: _localization.close,
+          text: localization.close,
           type: ButtonType.text,
           enabled: true,
           onPressed: () => {
@@ -34,13 +33,13 @@ void buildSuccessfullTransaction(
                         settings: RouteSettings(name: DashboardScreen.route)))
               })
     ],
-    title: _localization.txnSuccess,
+    title: localization.txnSuccess,
     content: Column(mainAxisSize: MainAxisSize.min, children: [
       svgThemeImage(theme, name: 'transaction-success', height: 100),
       SizedBox(height: 16),
       InfoElement(
         plainText: true,
-        label: _localization.txnCheckStatus,
+        label: localization.txnCheckStatus,
         text: state.vtTransaction.transactionID,
         url:
             'https://witnet.network/search/${state.vtTransaction.transactionID}',

@@ -4,6 +4,17 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/globals.dart' as globals;
+
+typedef String LocalizationCallback(String value);
+
+AppLocalizations localization =
+    AppLocalizations.of(globals.navigatorKey.currentContext!)!;
+
+Map<WalletType, String> walletTypeToLabel(BuildContext context) => {
+      WalletType.hd: AppLocalizations.of(context)!.walletTypeHDLabel,
+      WalletType.single: AppLocalizations.of(context)!.walletTypeNodeLabel,
+    };
 
 /// Explorer Settings
 const bool USE_EXPLORER_DEV = false;
@@ -65,6 +76,7 @@ Map<ImportOrigin, CreateWalletType> importOriginToXprvType = {
   ImportOrigin.fromSheikah: CreateWalletType.encryptedXprv,
   ImportOrigin.fromNode: CreateWalletType.xprv
 };
+
 Map<CreateWalletType, WalletType> xprvTypeToWalletType = {
   CreateWalletType.encryptedXprv: WalletType.hd,
   CreateWalletType.xprv: WalletType.single

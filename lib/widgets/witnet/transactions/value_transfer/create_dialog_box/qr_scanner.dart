@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 
 typedef void StringCallback(String value);
 
@@ -16,7 +16,6 @@ class QrScanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppLocalizations _localization = AppLocalizations.of(context)!;
     return Scaffold(
         backgroundColor: Colors.black,
         body: Builder(builder: (context) {
@@ -49,7 +48,7 @@ class QrScanner extends StatelessWidget {
                             ),
                             Padding(
                               padding: EdgeInsets.only(right: 16),
-                              child: Text(_localization.scanAqrCode,
+                              child: Text(localization.scanAqrCode,
                                   style: TextStyle(color: Colors.white)),
                             )
                           ],

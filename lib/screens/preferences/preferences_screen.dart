@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/preferences/general_config.dart';
 import 'package:my_wit_wallet/screens/preferences/wallet_config.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/step_bar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PreferencePage extends StatefulWidget {
   PreferencePage({Key? key}) : super(key: key);
@@ -18,10 +18,9 @@ enum ConfigSteps {
 }
 
 Map<String, ConfigSteps> _localizedConfigSteps(BuildContext context) {
-  AppLocalizations _localization = AppLocalizations.of(context)!;
   return {
-    _localization.preferenceTabs('general'): ConfigSteps.general,
-    _localization.preferenceTabs('wallet'): ConfigSteps.wallet,
+    localization.preferenceTabs('general'): ConfigSteps.general,
+    localization.preferenceTabs('wallet'): ConfigSteps.wallet,
   };
 }
 

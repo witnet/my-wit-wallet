@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
@@ -52,8 +51,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   ApiCreateWallet createWalletApi = Locator.instance<ApiCreateWallet>();
   List<FocusNode> _formFocusElements = [_passFocusNode, _textFocusNode];
   ValidationUtils validationUtils = ValidationUtils();
-
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -133,10 +130,10 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     final theme = Theme.of(context);
     return TextField(
       decoration: InputDecoration(
-        hintText: _localization.xprvInputHint,
+        hintText: localization.xprvInputHint,
         suffixIcon: !Platform.isWindows && !Platform.isLinux
             ? Semantics(
-                label: _localization.scanQrCodeLabel,
+                label: localization.scanQrCodeLabel,
                 child: IconButton(
                   splashRadius: 1,
                   focusNode: _scanQrFocusNode,
@@ -222,14 +219,14 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
 
   NavAction prev() {
     return NavAction(
-      label: _localization.backLabel,
+      label: localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: _localization.continueLabel,
+      label: localization.continueLabel,
       action: nextAction,
     );
   }
@@ -266,7 +263,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
 
   Widget _buildPasswordField() {
     return InputLogin(
-      hint: _localization.passwordLabel,
+      hint: localization.passwordLabel,
       focusNode: _passFocusNode,
       textEditingController: _passController,
       obscureText: true,
@@ -318,26 +315,26 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            _localization.importXprvHeader,
+            localization.importXprvHeader,
             style: theme.textTheme.titleLarge, //Textstyle
           ),
           SizedBox(
             height: 16,
           ),
           Text(
-            _localization.importXprv01,
+            localization.importXprv01,
             style: theme.textTheme.bodyLarge, //Textstyle
           ),
           SizedBox(height: 8),
           Text(
-            _localization.importXprv02,
+            localization.importXprv02,
             style: theme.textTheme.bodyLarge, //Textstyle
           ),
           SizedBox(
             height: 16,
           ),
           Text(
-            _localization.xprvOrigin,
+            localization.xprvOrigin,
             style: theme.textTheme.titleSmall,
           ),
           SizedBox(height: 8),

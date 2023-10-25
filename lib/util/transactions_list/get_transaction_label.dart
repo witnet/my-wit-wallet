@@ -1,6 +1,6 @@
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:witnet/explorer.dart';
 
 String getTransactionLabel(
@@ -10,8 +10,8 @@ String getTransactionLabel(
     Account? singleAddressAccount,
     BuildContext? context) {
   String label = '';
-  String _from = context != null ? AppLocalizations.of(context)!.from : "from";
-  String _to = context != null ? AppLocalizations.of(context)!.to : "to";
+  String _from = context != null ? localization.from : "from";
+  String _to = context != null ? localization.to : "to";
   inputs.forEach((element) {
     if (singleAddressAccount != null &&
         singleAddressAccount.address != element.address) {

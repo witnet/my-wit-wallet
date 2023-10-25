@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
-import 'package:my_wit_wallet/util/localization.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 
 typedef void BoolCallback(bool value);
