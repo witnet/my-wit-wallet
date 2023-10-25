@@ -69,7 +69,7 @@ class WalletConfigState extends State<WalletConfig> {
           Text(_localization.walletConfig01, style: theme.textTheme.bodyLarge),
           PaddedButton(
               padding: EdgeInsets.only(bottom: 16, top: 16),
-              text: _localization.walletConfig01,
+              text: _localization.exportXprv,
               type: ButtonType.primary,
               enabled: true,
               onPressed: () => _toggleSetting(WalletConfigActions.exportXprv)),

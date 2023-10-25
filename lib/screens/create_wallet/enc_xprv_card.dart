@@ -344,8 +344,8 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
           Select(
               selectedItem: _selectedOrigin,
               listItems: importOriginToXprvType.keys
-                  .map((label) =>
-                      SelectItem(label.name, importOriginToLabel[label] ?? ''))
+                  .map((label) => SelectItem(
+                      label.name, importOriginToLabel(context)[label] ?? ''))
                   .toList(),
               onChanged: (String? label) => {
                     clearForm(),

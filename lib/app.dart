@@ -14,6 +14,7 @@ import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
 import 'bloc/theme/theme_bloc.dart';
 import 'constants.dart' as CONSTANTS;
+import 'globals.dart' as globals;
 
 class MyWitWalletApp extends StatefulWidget {
   final WalletTheme initialTheme;
@@ -76,6 +77,7 @@ class _MyWitWalletState extends State<MyWitWalletApp> {
       routes: _routes,
       theme: state.themeData,
       onUnknownRoute: _defaultRoute,
+      navigatorKey: globals.navigatorKey,
     );
   }
 
