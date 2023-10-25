@@ -52,8 +52,9 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   ValidationUtils validationUtils = ValidationUtils();
   List<FocusNode> _formFocusElements() => [_minerFeeFocusNode];
   bool _connectionError = false;
-  EstimatedFeeOptions? _selectedFeeOption;
+  EstimatedFeeOptions? _selectedFeeOption = EstimatedFeeOptions.Medium;
 
+  /// Overrides
   @override
   void initState() {
     super.initState();
@@ -61,8 +62,18 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    _minerFeeOptionsNanoWit =
-        BlocProvider.of<VTTCreateBloc>(context).minerFeeOptions;
+    VTTCreateBloc vttCreateBloc = BlocProvider.of<VTTCreateBloc>(context);
+    _minerFeeOptionsNanoWit = vttCreateBloc.minerFeeOptions;
+
+    if (widget.savedFeeAmount != null) {
+      if (_minerFeeOptionsNanoWit.containsValue(widget.savedFeeAmount)) {
+        _selectedFeeOption = _minerFeeOptionsNanoWit.entries
+            .firstWhere((element) => element.value == widget.savedFeeAmount)
+            .key;
+      } else {
+        _selectedFeeOption = EstimatedFeeOptions.Custom;
+      }
+    }
     WidgetsBinding.instance.addPostFrameCallback(
         (_) => {widget.nextAction(next), _setSavedFeeData()});
   }
@@ -76,13 +87,16 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   }
 
   int _minerFeeWitToNanoWitNumber() {
+    num number = 0;
     try {
-      final number = num.parse(_minerFeeWit.value)
-          .standardizeWitUnits(
-              outputUnit: WitUnit.nanoWit, inputUnit: WitUnit.Wit)
-          .toBigInt()
-          .toInt();
-      return _minerFeeWit.value != '' ? number : 0;
+      if (num.tryParse(_minerFeeWit.value) != null) {
+        number = num.parse(_minerFeeWit.value)
+            .standardizeWitUnits(
+                outputUnit: WitUnit.nanoWit, inputUnit: WitUnit.Wit)
+            .toBigInt()
+            .toInt();
+      }
+      return number.toInt();
     } catch (e) {
       return 0;
     }
@@ -99,20 +113,21 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     }
   }
 
-  bool _isAbsoluteFee() {
-    return _feeType == FeeType.Absolute;
-  }
-
   void _setSavedFeeData() {
     if (widget.savedFeeType != null) {
-      _setFeeType(widget.savedFeeType);
+      _setFeeType(widget.savedFeeType ?? FeeType.Absolute);
       selectedIndex = widget.savedFeeType == FeeType.Absolute ? 0 : 1;
     }
-    String savedFee = _nanoWitFeeToWit(widget.savedFeeAmount ?? '1');
-    _minerFeeController.text = savedFee;
+    String savedFee = widget.savedFeeAmount ??
+        _minerFeeOptionsNanoWit[_selectedFeeOption] ??
+        _minerFeeWit.value;
+
     setState(() {
       setMinerFeeValue(savedFee, validate: false);
+      _minerFeeController.text = savedFee;
     });
+    _updateTxFee();
+    // BlocProvider.of<VTTCreateBloc>(context).updateFee(_feeType, int.parse(savedFee));
   }
 
   void setMinerFeeValue(String amount, {bool? validate}) {
@@ -125,18 +140,18 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         value: amount,
         weightedAmount: _feeType == FeeType.Weighted ? weightedFeeAmount : null,
         allowZero: true);
+    // _updateTxFee();
   }
 
   void _setFeeType(FeeType? type) {
-    setState(() {
-      _feeType = type == FeeType.Absolute ? type! : FeeType.Weighted;
-    });
+    setState(() => _feeType = type ?? FeeType.Absolute);
   }
 
   void _updateTxFee() {
-    if (_isAbsoluteFee()) {
+    if (_feeType == FeeType.Absolute) {
       _setAbsoluteFee();
-    } else {
+    }
+    if (_feeType == FeeType.Weighted) {
       _setWeightedFee();
     }
     validateForm(force: true);
@@ -151,22 +166,6 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
         feeType: FeeType.Weighted, feeNanoWit: _minerFeeWitToNanoWitNumber()));
   }
-
-  Map<String, EstimatedFeeOptions> localizedFeeOptions(BuildContext context) =>
-      {
-        localization.estimatedFeeOptions('stinky'): EstimatedFeeOptions.Stinky,
-        localization.estimatedFeeOptions('low'): EstimatedFeeOptions.Low,
-        localization.estimatedFeeOptions('medium'): EstimatedFeeOptions.Medium,
-        localization.estimatedFeeOptions('high'): EstimatedFeeOptions.High,
-        localization.estimatedFeeOptions('opulent'):
-            EstimatedFeeOptions.Opulent,
-        localization.estimatedFeeOptions('custom'): EstimatedFeeOptions.Custom,
-      };
-
-  Map<FeeType, String> localizedFeeTypeOptions(BuildContext context) => {
-        FeeType.Absolute: localization.feeTypeOptions('absolute'),
-        FeeType.Weighted: localization.feeTypeOptions('weighted'),
-      };
 
   bool formValidation() {
     return _minerFeeWit.isValid;
@@ -202,49 +201,47 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         availableNanoWit: balanceInfo.availableNanoWit);
     String? errorText =
         _feePriority.validator(value, avoidWeightedAmountCheck: true);
-    if (_selectedFeeOption != EstimatedFeeOptions.Custom) {
-      setMinerFeeValue(value);
-    }
+
     return ClickableBox(
       label: label,
-      isSelected: _selectedFeeOption == localizedFeeOptions(context)[label],
-      error: _selectedFeeOption != localizedFeeOptions(context)[label]
-          ? errorText
-          : null,
+      isSelected: label == localizedFeeOptions[_selectedFeeOption],
+      error:
+          label != localizedFeeOptions[_selectedFeeOption] ? errorText : null,
       value: value,
       content: [
         Expanded(
             flex: 1, child: Text(label, style: theme.textTheme.bodyMedium)),
         Expanded(
             flex: 0,
-            child: Text(
-                EstimatedFeeOptions.Custom !=
-                        localizedFeeOptions(context)[label]
-                    ? '$value ${WIT_UNIT[WitUnit.Wit]}'
-                    : '',
+            child: Text('$value ${WIT_UNIT[WitUnit.Wit]}',
                 style: theme.textTheme.bodyMedium)),
       ],
       onClick: (value) => {
-        _setFeeType(FeeType.Absolute),
         setState(() {
+          _selectedFeeOption = localizedFeeOptions.entries
+              .firstWhere((element) => element.value == label)
+              .key;
+          _setSavedFeeData();
           setMinerFeeValue(value);
           _minerFeeController.text = value;
-          _selectedFeeOption = localizedFeeOptions(context)[label]!;
+          _updateTxFee();
         }),
-        _updateTxFee(),
       },
     );
   }
 
   Widget _buildFeeOptionsButtonGroup(BuildContext context) {
+    // TODO:
     return ListView.builder(
       shrinkWrap: true,
       padding: EdgeInsets.zero,
       physics: NeverScrollableScrollPhysics(),
-      itemCount: _minerFeeOptionsNanoWit.length,
+      itemCount: localizedFeeOptions.length,
       itemBuilder: (context, index) {
-        String? fee = _minerFeeOptionsNanoWit.values.toList()[index];
-        String label = localizedFeeOptions(context).keys.toList()[index];
+        EstimatedFeeOptions currentFeeOption =
+            localizedFeeOptions.keys.toList()[index];
+        String? fee = _minerFeeOptionsNanoWit[currentFeeOption];
+        String label = localizedFeeOptions[currentFeeOption]!;
         return _buildFeeOptionButton(label, _nanoWitFeeToWit(fee ?? '1'));
       },
     );
@@ -277,6 +274,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                 widget.goNext();
               },
               onEditingComplete: () {
+                _setSavedFeeData();
                 _setAbsoluteFee();
               },
             ),
@@ -302,6 +300,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                           child: Icon(FontAwesomeIcons.circleQuestion,
                               size: 12, color: extendedTheme?.inputIconColor))),
                 ),
+                // TODO:
                 ToggleSwitch(
                   minWidth: 90.0,
                   inactiveBgColor: extendedTheme?.switchInactiveBg,
@@ -313,13 +312,13 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                   borderWidth: 1.0,
                   borderColor: [extendedTheme.switchBorderColor!],
                   totalSwitches: 2,
-                  labels: localizedFeeTypeOptions(context).values.toList(),
+                  labels: localizedFeeTypeOptions.values.toList(),
                   onToggle: (index) {
                     setState(() {
                       selectedIndex = index;
+                      _setFeeType(FeeType.values[index]);
+                      _updateTxFee();
                     });
-                    _setFeeType(FeeType.values[index]);
-                    _updateTxFee();
                   },
                 ),
               ],
@@ -332,9 +331,6 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
 
   @override
   Widget build(BuildContext context) {
-    if (_selectedFeeOption == null) {
-      _selectedFeeOption = localizedFeeOptions(context).values.first;
-    }
     final theme = Theme.of(context);
     return BlocListener<VTTCreateBloc, VTTCreateState>(
         listenWhen: (previousState, currentState) {

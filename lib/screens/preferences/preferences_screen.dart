@@ -17,18 +17,11 @@ enum ConfigSteps {
   wallet,
 }
 
-Map<String, ConfigSteps> _localizedConfigSteps(BuildContext context) {
-  return {
-    localization.preferenceTabs('general'): ConfigSteps.general,
-    localization.preferenceTabs('wallet'): ConfigSteps.wallet,
-  };
-}
-
 class _PreferencePageState extends State<PreferencePage> {
   ScrollController scrollController = ScrollController(keepScrollOffset: false);
 
-  String? selectedItem;
-
+  ConfigSteps currentStep = ConfigSteps.general;
+  String selectedItem = localizedConfigSteps[ConfigSteps.general]!;
   @override
   void initState() {
     super.initState();
@@ -41,14 +34,9 @@ class _PreferencePageState extends State<PreferencePage> {
 
   Widget _buildConfigView() {
     Widget view = GeneralConfig();
-    if (selectedItem == null) {
-      selectedItem = _localizedConfigSteps(context).keys.first;
+    if (localizedConfigSteps[ConfigSteps.general] == selectedItem) {
       view = GeneralConfig();
-    } else if (_localizedConfigSteps(context)[selectedItem]! ==
-        ConfigSteps.general) {
-      view = GeneralConfig();
-    } else if (_localizedConfigSteps(context)[selectedItem]! ==
-        ConfigSteps.wallet) {
+    } else if (localizedConfigSteps[ConfigSteps.wallet] == selectedItem) {
       view = WalletConfig(scrollController: scrollController);
     } else {
       return GeneralConfig();
@@ -58,13 +46,19 @@ class _PreferencePageState extends State<PreferencePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         StepBar(
-            selectedItem:
-                selectedItem ?? _localizedConfigSteps(context).keys.first,
-            listItems: _localizedConfigSteps(context).keys.toList(),
+            selectedItem: selectedItem,
+            listItems: localizedConfigSteps.values.toList(),
             actionable: true,
             onChanged: (item) => {
                   scrollController.jumpTo(0.0),
-                  setState(() => selectedItem = item),
+                  setState(() {
+                    selectedItem = localizedConfigSteps.entries
+                        .firstWhere((element) => element.value == item)
+                        .value;
+                    currentStep = localizedConfigSteps.entries
+                        .firstWhere((element) => element.value == item)
+                        .key;
+                  }),
                 }),
         SizedBox(height: 16),
         view,

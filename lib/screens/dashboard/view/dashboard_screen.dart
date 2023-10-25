@@ -19,14 +19,6 @@ enum DashboardViewSteps {
   stats,
 }
 
-Map<String, DashboardViewSteps> _localizedDashboardSteps(BuildContext context) {
-  return {
-    localization.dashboardViewSteps('transactions'):
-        DashboardViewSteps.transactions,
-    localization.dashboardViewSteps('stats'): DashboardViewSteps.stats,
-  };
-}
-
 class DashboardScreen extends StatefulWidget {
   static final route = '/dashboard';
   @override
@@ -49,8 +41,8 @@ class DashboardScreenState extends State<DashboardScreen>
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
   ScrollController scrollController = ScrollController(keepScrollOffset: true);
   ExplorerBloc? explorerBlock;
-
-  String? selectedItem;
+  String selectedItem =
+      localizedDashboardSteps[DashboardViewSteps.transactions]!;
 
   @override
   void initState() {
@@ -133,8 +125,8 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget buildMainDashboardContent(ThemeData theme) {
-    if (_localizedDashboardSteps(context)[selectedItem]! ==
-        DashboardViewSteps.transactions) {
+    if (localizedDashboardSteps[DashboardViewSteps.transactions]! ==
+        selectedItem) {
       return buildTransactionsView();
     }
     return Stats(currentWallet: currentWallet!);
@@ -151,13 +143,16 @@ class DashboardScreenState extends State<DashboardScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 StepBar(
-                    selectedItem: selectedItem ??
-                        _localizedDashboardSteps(context).keys.first,
-                    listItems: _localizedDashboardSteps(context).keys.toList(),
+                    selectedItem: selectedItem,
+                    listItems: localizedDashboardSteps.values.toList(),
                     actionable: true,
                     onChanged: (item) => {
                           scrollController.jumpTo(0.0),
-                          setState(() => selectedItem = item),
+                          setState(
+                            () => selectedItem = localizedDashboardSteps.entries
+                                .firstWhere((element) => element.value == item)
+                                .value,
+                          ),
                         }),
                 SizedBox(height: 16),
                 buildMainDashboardContent(theme)
@@ -168,10 +163,6 @@ class DashboardScreenState extends State<DashboardScreen>
 
   @override
   Widget build(BuildContext context) {
-    if (selectedItem == null) {
-      selectedItem = _localizedDashboardSteps(context).keys.first;
-    }
-
     return BlocConsumer<ExplorerBloc, ExplorerState>(
         builder: (BuildContext context, ExplorerState state) {
       return DashboardLayout(

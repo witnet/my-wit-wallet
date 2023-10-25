@@ -3,8 +3,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
+import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
+import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
+import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/globals.dart' as globals;
+import 'package:witnet/data_structures.dart';
 
 typedef String LocalizationCallback(String value);
 
@@ -15,6 +19,36 @@ Map<WalletType, String> walletTypeToLabel(BuildContext context) => {
       WalletType.hd: AppLocalizations.of(context)!.walletTypeHDLabel,
       WalletType.single: AppLocalizations.of(context)!.walletTypeNodeLabel,
     };
+
+Map<DashboardViewSteps, String> localizedDashboardSteps = {
+  DashboardViewSteps.transactions:
+      localization.dashboardViewSteps('transactions'),
+  DashboardViewSteps.stats: localization.dashboardViewSteps('stats'),
+};
+
+Map<VTTsteps, String> localizedVTTsteps = {
+  VTTsteps.Transaction: localization.vttSendSteps('Transaction'),
+  VTTsteps.MinerFee: localization.vttSendSteps('MinerFee'),
+  VTTsteps.Review: localization.vttSendSteps('Review'),
+};
+Map<EstimatedFeeOptions, String> localizedFeeOptions = {
+  EstimatedFeeOptions.Stinky: localization.estimatedFeeOptions('stinky'),
+  EstimatedFeeOptions.Low: localization.estimatedFeeOptions('low'),
+  EstimatedFeeOptions.Medium: localization.estimatedFeeOptions('medium'),
+  EstimatedFeeOptions.High: localization.estimatedFeeOptions('high'),
+  EstimatedFeeOptions.Opulent: localization.estimatedFeeOptions('opulent'),
+  EstimatedFeeOptions.Custom: localization.estimatedFeeOptions('custom'),
+};
+
+Map<FeeType, String> localizedFeeTypeOptions = {
+  FeeType.Absolute: localization.feeTypeOptions('absolute'),
+  FeeType.Weighted: localization.feeTypeOptions('weighted'),
+};
+
+Map<ConfigSteps, String> localizedConfigSteps = {
+  ConfigSteps.general: localization.preferenceTabs('general'),
+  ConfigSteps.wallet: localization.preferenceTabs('wallet'),
+};
 
 /// Explorer Settings
 const bool USE_EXPLORER_DEV = false;
@@ -59,7 +93,7 @@ Map<EstimatedFeeOptions, String?> DEFAULT_MINER_FEE_OPTIONS = {
   EstimatedFeeOptions.Medium: '0',
   EstimatedFeeOptions.High: '0',
   EstimatedFeeOptions.Opulent: '0',
-  EstimatedFeeOptions.Custom: null,
+  EstimatedFeeOptions.Custom: '1',
 };
 
 Map<ImportOrigin, String> importOriginToLabel(BuildContext context) {
