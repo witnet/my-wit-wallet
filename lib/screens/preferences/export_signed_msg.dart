@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dart_date/dart_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/storage/path_provider_interface.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/dashed_rect.dart';
@@ -63,7 +64,7 @@ class ExportSignMessageState extends State<ExportSignMessage> {
               }),
       SizedBox(height: 16),
       PaddedButton(
-        text: 'Export JSON',
+        text: localization.exportJson,
         type: ButtonType.primary,
         isLoading: false,
         padding: EdgeInsets.only(bottom: 8),
@@ -73,7 +74,7 @@ class ExportSignMessageState extends State<ExportSignMessage> {
       ),
       SizedBox(height: 8),
       PaddedButton(
-        text: 'Copy JSON',
+        text: localization.copyJson,
         type: ButtonType.secondary,
         isLoading: false,
         padding: EdgeInsets.only(bottom: 16),
@@ -83,7 +84,7 @@ class ExportSignMessageState extends State<ExportSignMessage> {
           if (await Clipboard.hasStrings()) {
             ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context)
-                .showSnackBar(buildCopiedSnackbar(theme, 'JSON copied!'));
+                .showSnackBar(buildCopiedSnackbar(theme, localization.jsonCopied));
           }
         },
       ),

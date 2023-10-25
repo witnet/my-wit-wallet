@@ -89,7 +89,7 @@ class ReviewStepState extends State<ReviewStep>
       builder: (context, state) {
         if (state.vttCreateStatus == VTTCreateStatus.needPasswordValidation) {
           unlockKeychainModal(
-              title: 'Enter your password to sign the transaction',
+              title: localization.enterYourPassword,
               imageName: 'signing-transaction',
               theme: theme,
               context: context,

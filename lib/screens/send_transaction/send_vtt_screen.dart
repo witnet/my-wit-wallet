@@ -27,14 +27,6 @@ enum VTTsteps {
   Review,
 }
 
-Map<String, VTTsteps> _localizedVTTsteps(BuildContext context) {
-  return {
-    localization.vttSendSteps('Transaction'): VTTsteps.Transaction,
-    localization.vttSendSteps('MinerFee'): VTTsteps.MinerFee,
-    localization.vttSendSteps('Review'): VTTsteps.Review,
-  };
-}
-
 class CreateVttScreenState extends State<CreateVttScreen>
     with TickerProviderStateMixin {
   GlobalKey<RecipientStepState> transactionFormState =
@@ -52,7 +44,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
   FeeType? savedFeeType;
   ScrollController scrollController = ScrollController(keepScrollOffset: false);
 
-  String? selectedItem;
+  String selectedItem = localizedVTTsteps[VTTsteps.Transaction]!;
 
   @override
   void initState() {
@@ -81,16 +73,11 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   void goToNextStep() {
-    setState(() {
-      setOngoingTransaction();
-    });
-    VTTsteps currentStep = _localizedVTTsteps(context)[selectedItem]!;
-    if (currentStep.index + 1 < VTTsteps.values.length) {
+    int currentStep = localizedVTTsteps.values.toList().indexOf(selectedItem);
+    if (currentStep + 1 < VTTsteps.values.length) {
       scrollController.jumpTo(0.0);
       setState(() {
-        selectedItem =
-            _localizedVTTsteps(context).keys.elementAt(currentStep.index + 1);
-        setOngoingTransaction();
+        selectedItem = localizedVTTsteps.values.elementAt(currentStep + 1);
       });
     }
   }
@@ -108,7 +95,9 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   bool _isNextStepAllow() {
-    VTTsteps currentStep = _localizedVTTsteps(context)[selectedItem]!;
+    VTTsteps currentStep = localizedVTTsteps.entries
+        .firstWhere((element) => element.value == selectedItem)
+        .key;
     bool isTransactionFormValid = currentStep == VTTsteps.Transaction &&
         (transactionFormState.currentState != null &&
             transactionFormState.currentState!.validateForm(force: true));
@@ -194,10 +183,9 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   Widget stepToBuild() {
-    if (selectedItem == null) {
-      return _recipientStep();
-    }
-    VTTsteps currentStep = _localizedVTTsteps(context)[selectedItem]!;
+    VTTsteps currentStep = localizedVTTsteps.entries
+        .firstWhere((element) => element.value == selectedItem)
+        .key;
     if (currentStep == VTTsteps.Transaction) {
       return _recipientStep();
     } else if (currentStep == VTTsteps.MinerFee) {
@@ -212,13 +200,14 @@ class CreateVttScreenState extends State<CreateVttScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         StepBar(
-            listItems: _localizedVTTsteps(context).keys.toList(),
-            selectedItem:
-                selectedItem ?? _localizedVTTsteps(context).keys.first,
+            listItems: localizedVTTsteps.values.toList(),
+            selectedItem: selectedItem,
             actionable: false,
             onChanged: (item) => {
                   setState(() {
-                    selectedItem = item;
+                    selectedItem = localizedVTTsteps.entries
+                        .firstWhere((element) => element.value == item)
+                        .value;
                     setOngoingTransaction();
                   }),
                 }),
@@ -272,9 +261,6 @@ class CreateVttScreenState extends State<CreateVttScreen>
 
   @override
   Widget build(BuildContext context) {
-    if (selectedItem == null) {
-      selectedItem = _localizedVTTsteps(context).keys.first;
-    }
     return BlocBuilder<VTTCreateBloc, VTTCreateState>(
         builder: (context, state) {
       return _dashboardBlocListener();
