@@ -181,7 +181,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
                         .value;
                   }),
                 }),
-        SizedBox(height: 16),
+        SizedBox(height: 24),
         stepToBuild(),
       ],
     );

@@ -167,7 +167,7 @@ class GeneralConfigState extends State<GeneralConfig> {
   List<Widget> showAuthModeSettings(ThemeData theme) {
     if ((Platform.isAndroid || Platform.isIOS)) {
       return [
-        SizedBox(height: 8),
+        SizedBox(height: 16),
         CustomDivider(),
         Text(
           localization.enableLoginWithBiometrics,
@@ -188,7 +188,7 @@ class GeneralConfigState extends State<GeneralConfig> {
     return Padding(
         padding: EdgeInsets.only(left: 8, right: 8),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SizedBox(height: 32),
+          SizedBox(height: 24),
           Text(
             localization.theme,
             style: theme.textTheme.titleMedium,
@@ -211,7 +211,8 @@ class GeneralConfigState extends State<GeneralConfig> {
           Text(
             localization.versionNumber(VERSION_NUMBER),
             style: theme.textTheme.titleSmall,
-          )
+          ),
+          SizedBox(height: 24),
         ]));
   }
 }

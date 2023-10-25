@@ -35,6 +35,11 @@ TextTheme textTheme = TextTheme(
       color: WitnetPallet.witnetGreen1,
       fontSize: 16,
       fontWeight: FontWeight.normal),
+  titleLarge: TextStyle(
+      fontFamily: 'Almarai',
+      color: WitnetPallet.darkGrey,
+      fontSize: 18,
+      fontWeight: FontWeight.bold),
   titleMedium: TextStyle(
       fontFamily: 'Almarai',
       color: WitnetPallet.darkGrey,

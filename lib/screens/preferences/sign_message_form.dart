@@ -177,7 +177,7 @@ class SignMessageFormState extends State<SignMessageForm> {
           _buildMessageInput(),
           SizedBox(height: 16),
           PaddedButton(
-              padding: EdgeInsets.only(bottom: 8),
+              padding: EdgeInsets.zero,
               text: localization.signMessage,
               isLoading: isLoading,
               type: ButtonType.primary,

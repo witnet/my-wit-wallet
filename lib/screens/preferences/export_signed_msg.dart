@@ -67,7 +67,7 @@ class ExportSignMessageState extends State<ExportSignMessage> {
         text: localization.exportJson,
         type: ButtonType.primary,
         isLoading: false,
-        padding: EdgeInsets.only(bottom: 8),
+        padding: EdgeInsets.zero,
         onPressed: () async {
           await _exportJsonMessage();
         },
@@ -77,7 +77,7 @@ class ExportSignMessageState extends State<ExportSignMessage> {
         text: localization.copyJson,
         type: ButtonType.secondary,
         isLoading: false,
-        padding: EdgeInsets.only(bottom: 16),
+        padding: EdgeInsets.zero,
         onPressed: () async {
           await Clipboard.setData(
               ClipboardData(text: json.encode(widget.signedMessage)));

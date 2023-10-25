@@ -61,6 +61,7 @@ class SignMessageState extends State<SignMessage> {
               : ExportSignMessage(
                   scrollController: widget.scrollController,
                   signedMessage: signedMessage!),
+          SizedBox(height: 24),
         ]);
       },
     );

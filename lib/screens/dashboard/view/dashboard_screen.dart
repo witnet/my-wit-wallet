@@ -154,7 +154,7 @@ class DashboardScreenState extends State<DashboardScreen>
                                 .value,
                           ),
                         }),
-                SizedBox(height: 16),
+                SizedBox(height: 24),
                 buildMainDashboardContent(theme)
               ],
             );

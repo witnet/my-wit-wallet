@@ -73,7 +73,10 @@ class AddressListState extends State<AddressList> {
     });
   }
 
-  Widget _buildAddressItem(Account account, ThemeData theme) {
+  Widget _buildAddressItem(
+      {required Account account,
+      required ThemeData theme,
+      bool isLastItem = false}) {
     ExtendedTheme extendedTheme = theme.extension<ExtendedTheme>()!;
     final isAddressSelected = account.address == currentAddress;
     final textStyle = isAddressSelected
@@ -89,11 +92,13 @@ class AddressListState extends State<AddressList> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: WitnetPallet.transparent,
-                    border: Border(
-                        bottom: BorderSide(
-                      color: extendedTheme.txBorderColor!,
-                      width: 1,
-                    )),
+                    border: !isLastItem
+                        ? Border(
+                            bottom: BorderSide(
+                            color: extendedTheme.txBorderColor!,
+                            width: 1,
+                          ))
+                        : null,
                   ),
                   child: Padding(
                     padding: EdgeInsets.all(16),
@@ -145,7 +150,7 @@ class AddressListState extends State<AddressList> {
         (account) => internalBalance += account.balance.availableNanoWit);
     return Container(
         child: Padding(
-            padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 70),
+            padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 80),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -218,11 +223,17 @@ class AddressListState extends State<AddressList> {
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: externalAccounts.length,
                     itemBuilder: (context, index) {
-                      return _buildAddressItem(externalAccounts[index], theme);
+                      return _buildAddressItem(
+                          account: externalAccounts[index],
+                          theme: theme,
+                          isLastItem: (externalAccounts.length - 1) == index);
                     },
                   )
-                : _buildAddressItem(widget.currentWallet.masterAccount!, theme),
-            SizedBox(height: 24),
+                : _buildAddressItem(
+                    account: widget.currentWallet.masterAccount!,
+                    theme: theme,
+                    isLastItem: true),
+            SizedBox(height: 16),
             widget.currentWallet.walletType == WalletType.hd
                 ? _internalAccountsBalance(theme)
                 : Container(),

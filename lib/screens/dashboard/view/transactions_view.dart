@@ -106,7 +106,7 @@ class TransactionsViewState extends State<TransactionsView>
                   : null,
         ),
         buildPagination(extendedTheme),
-        transactions.length > 0 ? SizedBox(height: 16) : SizedBox(height: 8),
+        transactions.length > 0 ? SizedBox(height: 24) : SizedBox(height: 16),
       ]),
     );
   }

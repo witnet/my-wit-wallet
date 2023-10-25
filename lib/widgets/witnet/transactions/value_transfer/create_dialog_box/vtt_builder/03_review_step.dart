@@ -145,6 +145,7 @@ class ReviewStepState extends State<ReviewStep>
                   isLastItem: true,
                   text:
                       '${fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
+              SizedBox(height: 16),
             ]));
       },
     );

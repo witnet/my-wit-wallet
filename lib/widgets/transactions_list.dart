@@ -119,7 +119,8 @@ class TransactionsListState extends State<TransactionsList> {
     }
   }
 
-  Widget _buildTransactionItem(GeneralTransaction transaction) {
+  Widget _buildTransactionItem(
+      {required GeneralTransaction transaction, bool isLastTx = false}) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
 
@@ -169,11 +170,13 @@ class TransactionsListState extends State<TransactionsList> {
                       margin: EdgeInsets.only(bottom: 8),
                       decoration: BoxDecoration(
                         color: WitnetPallet.transparent,
-                        border: Border(
-                            bottom: BorderSide(
-                          color: extendedTheme.txBorderColor!,
-                          width: 0.5,
-                        )),
+                        border: !isLastTx
+                            ? Border(
+                                bottom: BorderSide(
+                                color: extendedTheme.txBorderColor!,
+                                width: 0.5,
+                              ))
+                            : null,
                       ),
                       child: Padding(
                         padding: EdgeInsets.only(top: 16, bottom: 16),
@@ -234,7 +237,9 @@ class TransactionsListState extends State<TransactionsList> {
           scrollDirection: Axis.vertical,
           itemCount: widget.transactions.length,
           itemBuilder: (context, index) {
-            return _buildTransactionItem(widget.transactions[index]);
+            return _buildTransactionItem(
+                transaction: widget.transactions[index],
+                isLastTx: (widget.transactions.length - 1) == index);
           },
         );
       } else {

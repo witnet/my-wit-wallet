@@ -55,7 +55,7 @@ class DashedRect extends StatelessWidget {
               ? Padding(
                   padding: EdgeInsets.only(bottom: 16),
                   child: Align(
-                    alignment: Alignment.bottomCenter,
+                    alignment: Alignment.center,
                     child: PaddedButton(
                       padding: EdgeInsets.all(0),
                       color: extendedTheme.inputIconColor,
@@ -64,7 +64,7 @@ class DashedRect extends StatelessWidget {
                       icon: !blur
                           ? Icon(Icons.remove_red_eye)
                           : Icon(Icons.visibility_off),
-                      type: ButtonType.verticalIcon,
+                      type: ButtonType.iconButton,
                     ),
                   ))
               : SizedBox(height: 0),

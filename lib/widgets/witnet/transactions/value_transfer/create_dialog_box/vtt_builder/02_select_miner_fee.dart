@@ -245,7 +245,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     _minerFeeFocusNode.addListener(() => validateForm());
     if (_feeOption == EstimatedFeeOptions.Custom) {
       return Padding(
-          padding: EdgeInsets.only(left: 8, right: 8),
+          padding: EdgeInsets.only(left: 8, right: 8, bottom: 16),
           child: Column(children: [
             SizedBox(height: 8),
             InputAmount(
@@ -311,6 +311,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                     _updateTxFee();
                   },
                 ),
+                SizedBox(height: 8)
               ],
             ),
           ]));
@@ -353,7 +354,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                       style: theme.textTheme.titleSmall,
                     ))
               ]),
-              SizedBox(height: 8),
+              SizedBox(height: 16),
               _buildFeeOptionsButtonGroup(context),
               _buildCustomInput(context),
               if (_feeOption != EstimatedFeeOptions.Custom &&

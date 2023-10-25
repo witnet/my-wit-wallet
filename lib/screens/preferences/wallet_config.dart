@@ -58,7 +58,7 @@ class WalletConfigState extends State<WalletConfig> {
     return Padding(
         padding: EdgeInsets.only(left: 8, right: 8),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SizedBox(height: 32),
+          SizedBox(height: 24),
           Text(
             localization.walletConfigHeader,
             style: theme.textTheme.titleMedium,

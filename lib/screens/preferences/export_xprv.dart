@@ -74,12 +74,12 @@ class ExportXprvState extends State<ExportXprv> {
                   showXprv = !showXprv;
                 })
               }),
-      SizedBox(height: 32),
+      SizedBox(height: 16),
       PaddedButton(
         text: localization.copyXprvLabel,
         type: ButtonType.primary,
         isLoading: isLoading,
-        padding: EdgeInsets.only(bottom: 8),
+        padding: EdgeInsets.zero,
         onPressed: () async {
           Clipboard.setData(ClipboardData(text: newXprv ?? ''));
           await Clipboard.setData(ClipboardData(text: newXprv ?? ''));
@@ -130,6 +130,7 @@ class ExportXprvState extends State<ExportXprv> {
           Text(localization.walletConfig03, style: theme.textTheme.bodyLarge),
           SizedBox(height: 16),
           _exportWalletContent(context),
+          SizedBox(height: 24),
         ]);
       },
       buildWhen: (previous, current) {
