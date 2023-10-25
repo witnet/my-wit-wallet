@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/login/view/password_validate.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
@@ -13,7 +13,6 @@ Future<String?> unlockKeychainModal(
     required BuildContext context,
     required VoidCallback onAction,
     required String routeToRedirect}) {
-  AppLocalizations _localization = AppLocalizations.of(context)!;
   return Future.delayed(
       Duration.zero,
       () => showDialog<String>(
@@ -40,7 +39,7 @@ Future<String?> unlockKeychainModal(
                     bool valid = await apiDatabase.verifyPassword(password);
                     if (!valid) {
                       setState(() => _passwordInputErrorText =
-                          _localization.invalidPassword);
+                          localization.invalidPassword);
                     } else {
                       onAction();
                       Navigator.popUntil(
@@ -72,7 +71,7 @@ Future<String?> unlockKeychainModal(
                 actions: [
                   PaddedButton(
                       padding: EdgeInsets.only(right: 8),
-                      text: _localization.close,
+                      text: localization.close,
                       type: ButtonType.text,
                       color: theme.textTheme.bodyLarge!.color,
                       enabled: true,
@@ -83,7 +82,7 @@ Future<String?> unlockKeychainModal(
                           }),
                   PaddedButton(
                       padding: EdgeInsets.only(top: 0),
-                      text: _localization.continueLabel,
+                      text: localization.continueLabel,
                       type: ButtonType.text,
                       enabled: true,
                       onPressed: () =>

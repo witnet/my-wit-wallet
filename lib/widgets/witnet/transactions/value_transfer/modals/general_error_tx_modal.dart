@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
@@ -12,13 +12,12 @@ void buildTxGeneralExceptionModal(
     {required ThemeData theme,
     required BuildContext context,
     required VoidCallback onAction}) {
-  AppLocalizations _localization = AppLocalizations.of(context)!;
   return buildAlertDialog(
       context: context,
       actions: [
         PaddedButton(
             padding: EdgeInsets.all(8),
-            text: _localization.cancel,
+            text: localization.cancel,
             type: ButtonType.text,
             enabled: true,
             onPressed: () => {
@@ -36,7 +35,7 @@ void buildTxGeneralExceptionModal(
                 }),
         PaddedButton(
             padding: EdgeInsets.all(8),
-            text: _localization.tryAgain,
+            text: localization.tryAgain,
             type: ButtonType.text,
             enabled: true,
             onPressed: () => {
@@ -46,10 +45,10 @@ void buildTxGeneralExceptionModal(
                 })
       ],
       icon: FontAwesomeIcons.circleExclamation,
-      title: _localization.error,
+      title: localization.error,
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         svgThemeImage(theme, name: 'transaction-error', height: 100),
         SizedBox(height: 16),
-        Text(_localization.errorTransaction, style: theme.textTheme.bodyLarge)
+        Text(localization.errorTransaction, style: theme.textTheme.bodyLarge)
       ]));
 }

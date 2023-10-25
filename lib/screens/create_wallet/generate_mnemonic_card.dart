@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
@@ -28,8 +28,6 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
   String _language = 'English';
   int _radioWordCount = 12;
 
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
-
   Future<String> _genMnemonic() async {
     return await Locator.instance
         .get<ApiCrypto>()
@@ -43,21 +41,21 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          _localization.generateMnemonic01(_radioWordCount),
+          localization.generateMnemonic01(_radioWordCount),
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 8,
         ),
         Text(
-          _localization.generateMnemonic02,
+          localization.generateMnemonic02,
           style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 8,
         ),
         Text(
-          _localization.generateMnemonic03,
+          localization.generateMnemonic03,
           style: theme.textTheme.bodyLarge,
         ),
       ],
@@ -101,14 +99,14 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
 
   NavAction prev() {
     return NavAction(
-      label: _localization.backLabel,
+      label: localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: _localization.continueLabel,
+      label: localization.continueLabel,
       action: nextAction,
     );
   }
@@ -133,7 +131,7 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
     final deviceSize = MediaQuery.of(context).size;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(
-        _localization.generateMnemonicHeader,
+        localization.generateMnemonicHeader,
         style: theme.textTheme.titleLarge,
       ),
       SizedBox(

@@ -2,7 +2,6 @@ import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
@@ -54,8 +53,6 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   List<FocusNode> _formFocusElements() => [_minerFeeFocusNode];
   bool _connectionError = false;
   EstimatedFeeOptions? _selectedFeeOption;
-
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -157,18 +154,18 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
 
   Map<String, EstimatedFeeOptions> localizedFeeOptions(BuildContext context) =>
       {
-        _localization.estimatedFeeOptions('stinky'): EstimatedFeeOptions.Stinky,
-        _localization.estimatedFeeOptions('low'): EstimatedFeeOptions.Low,
-        _localization.estimatedFeeOptions('medium'): EstimatedFeeOptions.Medium,
-        _localization.estimatedFeeOptions('high'): EstimatedFeeOptions.High,
-        _localization.estimatedFeeOptions('opulent'):
+        localization.estimatedFeeOptions('stinky'): EstimatedFeeOptions.Stinky,
+        localization.estimatedFeeOptions('low'): EstimatedFeeOptions.Low,
+        localization.estimatedFeeOptions('medium'): EstimatedFeeOptions.Medium,
+        localization.estimatedFeeOptions('high'): EstimatedFeeOptions.High,
+        localization.estimatedFeeOptions('opulent'):
             EstimatedFeeOptions.Opulent,
-        _localization.estimatedFeeOptions('custom'): EstimatedFeeOptions.Custom,
+        localization.estimatedFeeOptions('custom'): EstimatedFeeOptions.Custom,
       };
 
   Map<FeeType, String> localizedFeeTypeOptions(BuildContext context) => {
-        FeeType.Absolute: _localization.feeTypeOptions('absolute'),
-        FeeType.Weighted: _localization.feeTypeOptions('weighted'),
+        FeeType.Absolute: localization.feeTypeOptions('absolute'),
+        FeeType.Weighted: localization.feeTypeOptions('weighted'),
       };
 
   bool formValidation() {
@@ -192,7 +189,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
 
   NavAction next() {
     return NavAction(
-      label: _localization.continueLabel,
+      label: localization.continueLabel,
       action: nextAction,
     );
   }
@@ -263,7 +260,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
           child: Column(children: [
             SizedBox(height: 8),
             InputAmount(
-              hint: _localization.minerFeeInputHint,
+              hint: localization.minerFeeInputHint,
               validator: (String? amount) => _minerFeeWit.error ?? null,
               errorText: _minerFeeWit.error ?? null,
               textEditingController: _minerFeeController,
@@ -299,7 +296,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                       ),
                       textStyle: theme.textTheme.bodyMedium,
                       height: 100,
-                      message: _localization.minerFeeHint,
+                      message: localization.minerFeeHint,
                       child: MouseRegion(
                           cursor: SystemMouseCursors.click,
                           child: Icon(FontAwesomeIcons.circleQuestion,
@@ -366,7 +363,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                 Padding(
                     padding: EdgeInsets.only(left: 8),
                     child: Text(
-                      _localization.chooseMinerFee,
+                      localization.chooseMinerFee,
                       style: theme.textTheme.titleSmall,
                     ))
               ]),

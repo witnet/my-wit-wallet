@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
@@ -25,8 +25,6 @@ class WalletDetailCard extends StatefulWidget {
 
 class WalletDetailCardState extends State<WalletDetailCard>
     with TickerProviderStateMixin {
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
-
   void prevAction() {
     CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
@@ -46,14 +44,14 @@ class WalletDetailCardState extends State<WalletDetailCard>
 
   NavAction prev() {
     return NavAction(
-      label: _localization.backLabel,
+      label: localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: _localization.continueLabel,
+      label: localization.continueLabel,
       action: nextAction,
     );
   }
@@ -115,7 +113,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            _localization.nameLabel,
+            localization.nameLabel,
             style: theme.textTheme.subtitle2,
           ),
           SizedBox(height: 8),
@@ -123,7 +121,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
             autofocus: true,
             style: theme.textTheme.bodyText1,
             decoration: InputDecoration(
-              hintText: _localization.walletNameHint,
+              hintText: localization.walletNameHint,
               errorText: errorText,
             ),
             controller: _nameController,
@@ -151,21 +149,21 @@ class WalletDetailCardState extends State<WalletDetailCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          _localization.walletDetailHeader,
+          localization.walletDetailHeader,
           style: theme.textTheme.titleLarge, //Textstyle
         ), //Text
         SizedBox(
           height: 16,
         ),
         Text(
-          _localization.walletDetail01,
+          localization.walletDetail01,
           style: theme.textTheme.bodyLarge, //Textstyle
         ), //Text
         SizedBox(
           height: 8,
         ), //SizedBox
         Text(
-          _localization.walletDetail02,
+          localization.walletDetail02,
           style: theme.textTheme.bodyLarge, //Textstyle
         ),
         SizedBox(

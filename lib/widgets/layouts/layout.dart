@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
@@ -53,8 +52,6 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
       ScrollController(keepScrollOffset: false);
   final panelController = PanelController();
 
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
-
   BlocListener<VTTCreateBloc, VTTCreateState> _vttListener(Widget child) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
@@ -65,7 +62,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
             theme,
-            _localization.connectionReestablished,
+            localization.connectionReestablished,
             extendedTheme.txValuePositiveColor,
             () => {
               if (mounted)
@@ -79,7 +76,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         if (state.vttCreateStatus == VTTCreateStatus.exception) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
-              theme, _localization.connectionIssue, theme.colorScheme.error));
+              theme, localization.connectionIssue, theme.colorScheme.error));
         }
       },
       child: child,
@@ -98,7 +95,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
             theme,
-            _localization.connectionReestablished,
+            localization.connectionReestablished,
             extendedTheme.txValuePositiveColor,
             () => {
               if (mounted)
@@ -112,7 +109,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         if (state.status == ExplorerStatus.error) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
-              theme, _localization.connectionIssue, theme.colorScheme.error));
+              theme, localization.connectionIssue, theme.colorScheme.error));
         }
       },
       child: child,
@@ -124,8 +121,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.id;
     return PaddedButton(
         padding: EdgeInsets.zero,
-        label: '${_localization.showWalletList} button',
-        text: _localization.showWalletList,
+        label: '${localization.showWalletList} button',
+        text: localization.showWalletList,
         type: ButtonType.iconButton,
         iconSize: 30,
         icon: Container(

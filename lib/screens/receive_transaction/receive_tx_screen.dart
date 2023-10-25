@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
@@ -33,8 +33,6 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
   bool isLoading = false;
   bool enableButton = true;
 
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
-
   @override
   void initState() {
     super.initState();
@@ -59,7 +57,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
     return [
       PaddedButton(
           padding: EdgeInsets.zero,
-          text: _localization.copyAddressLabel,
+          text: localization.copyAddressLabel,
           type: ButtonType.primary,
           enabled: enableButton,
           isLoading: isLoading,
@@ -69,7 +67,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
             if (await Clipboard.hasStrings()) {
               ScaffoldMessenger.of(context).clearSnackBars();
               ScaffoldMessenger.of(context).showSnackBar(buildCopiedSnackbar(
-                  theme, _localization.copyAddressConfirmed));
+                  theme, localization.copyAddressConfirmed));
             }
           }),
       BlocListener<ExplorerBloc, ExplorerState>(
@@ -111,7 +109,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
                     .add(SyncSingleAccountEvent(ExplorerStatus.singleSync, ac));
               },
               padding: EdgeInsets.only(top: 8),
-              text: _localization.genNewAddressLabel,
+              text: localization.genNewAddressLabel,
               type: ButtonType.secondary,
               enabled: state.status != ExplorerStatus.singleSync,
             );
@@ -152,7 +150,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _localization.generatedAddresses,
+                  localization.generatedAddresses,
                   style: theme.textTheme.displaySmall,
                   textAlign: TextAlign.start,
                 ),

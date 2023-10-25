@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
@@ -28,11 +28,10 @@ enum VTTsteps {
 }
 
 Map<String, VTTsteps> _localizedVTTsteps(BuildContext context) {
-  AppLocalizations _localization = AppLocalizations.of(context)!;
   return {
-    _localization.vttSendSteps('Transaction'): VTTsteps.Transaction,
-    _localization.vttSendSteps('MinerFee'): VTTsteps.MinerFee,
-    _localization.vttSendSteps('Review'): VTTsteps.Review,
+    localization.vttSendSteps('Transaction'): VTTsteps.Transaction,
+    localization.vttSendSteps('MinerFee'): VTTsteps.MinerFee,
+    localization.vttSendSteps('Review'): VTTsteps.Review,
   };
 }
 
@@ -52,7 +51,6 @@ class CreateVttScreenState extends State<CreateVttScreen>
   String? savedFeeAmount;
   FeeType? savedFeeType;
   ScrollController scrollController = ScrollController(keepScrollOffset: false);
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   String? selectedItem;
 
@@ -128,7 +126,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
           padding: EdgeInsets.zero,
           text: nextAction != null
               ? nextAction().label
-              : _localization.continueLabel,
+              : localization.continueLabel,
           type: ButtonType.primary,
           enabled: true,
           onPressed: () => {

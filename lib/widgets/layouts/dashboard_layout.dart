@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
@@ -63,8 +62,6 @@ class DashboardLayoutState extends State<DashboardLayout>
   bool isAddressCopied = false;
   bool isCopyAddressFocus = false;
   FocusNode _copyToClipboardFocusNode = FocusNode();
-
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -139,7 +136,7 @@ class DashboardLayoutState extends State<DashboardLayout>
       PaddedButton(
         color: getButtonColorByRoute(CreateVttScreen.route),
         padding: EdgeInsets.zero,
-        text: _localization.send,
+        text: localization.send,
         onPressed: currentRoute != CreateVttScreen.route
             ? _showCreateVTTDialog
             : () {},
@@ -154,7 +151,7 @@ class DashboardLayoutState extends State<DashboardLayout>
       PaddedButton(
         color: getButtonColorByRoute(DashboardScreen.route),
         padding: EdgeInsets.zero,
-        text: _localization.history,
+        text: localization.history,
         onPressed: currentRoute != DashboardScreen.route
             ? () => {
                   BlocProvider.of<VTTCreateBloc>(context)
@@ -177,7 +174,7 @@ class DashboardLayoutState extends State<DashboardLayout>
       PaddedButton(
         color: getButtonColorByRoute(ReceiveTransactionScreen.route),
         padding: EdgeInsets.zero,
-        text: _localization.receive,
+        text: localization.receive,
         onPressed: currentRoute != ReceiveTransactionScreen.route
             ? _showReceiveDialog
             : () {},
@@ -208,7 +205,7 @@ class DashboardLayoutState extends State<DashboardLayout>
         children: [
           SizedBox(height: 8),
           Semantics(
-              label: _localization.balance,
+              label: localization.balance,
               child: Text(
                 '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
                 textAlign: TextAlign.center,
@@ -218,7 +215,7 @@ class DashboardLayoutState extends State<DashboardLayout>
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Flexible(
                 child: Semantics(
-                    label: _localization.currentAddress,
+                    label: localization.currentAddress,
                     child: Text(
                       currentAccount.address.cropMiddle(18),
                       overflow: TextOverflow.ellipsis,
@@ -228,8 +225,8 @@ class DashboardLayoutState extends State<DashboardLayout>
             Flexible(
               child: PaddedButton(
                   padding: EdgeInsets.zero,
-                  label: _localization.copyAddressToClipboard,
-                  text: _localization.copyAddressToClipboard,
+                  label: localization.copyAddressToClipboard,
+                  text: localization.copyAddressToClipboard,
                   type: ButtonType.iconButton,
                   iconSize: 12,
                   onPressed: () async {
@@ -240,7 +237,7 @@ class DashboardLayoutState extends State<DashboardLayout>
                         ScaffoldMessenger.of(context).clearSnackBars();
                         ScaffoldMessenger.of(context).showSnackBar(
                             buildCopiedSnackbar(
-                                theme, _localization.addressCopied));
+                                theme, localization.addressCopied));
                         setState(() {
                           isAddressCopied = true;
                         });
@@ -281,8 +278,8 @@ class DashboardLayoutState extends State<DashboardLayout>
     return [
       PaddedButton(
           padding: EdgeInsets.zero,
-          label: _localization.settings,
-          text: _localization.settings,
+          label: localization.settings,
+          text: localization.settings,
           iconSize: 28,
           icon: Icon(FontAwesomeIcons.gear,
               size: 28, color: getButtonColorByRoute(PreferencePage.route)),

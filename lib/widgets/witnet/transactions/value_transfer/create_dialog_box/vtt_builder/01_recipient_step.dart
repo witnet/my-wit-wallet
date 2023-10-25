@@ -4,7 +4,6 @@ import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
@@ -55,8 +54,6 @@ class RecipientStepState extends State<RecipientStep>
   bool isScanQrFocused = false;
   ValidationUtils validationUtils = ValidationUtils();
   List<FocusNode> _formFocusElements() => [_addressFocusNode, _amountFocusNode];
-
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -156,7 +153,7 @@ class RecipientStepState extends State<RecipientStep>
     if (_connectionError) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
-          theme, _localization.connectionIssue, theme.colorScheme.error));
+          theme, localization.connectionIssue, theme.colorScheme.error));
     } else {
       ScaffoldMessenger.of(context).clearSnackBars();
     }
@@ -177,7 +174,7 @@ class RecipientStepState extends State<RecipientStep>
 
   NavAction next() {
     return NavAction(
-      label: _localization.continueLabel,
+      label: localization.continueLabel,
       action: nextAction,
     );
   }
@@ -194,14 +191,14 @@ class RecipientStepState extends State<RecipientStep>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                _localization.address,
+                localization.address,
                 style: theme.textTheme.titleSmall,
               ),
               SizedBox(height: 8),
               TextFormField(
                 style: theme.textTheme.bodyLarge,
                 decoration: InputDecoration(
-                  hintText: _localization.recipientAddress,
+                  hintText: localization.recipientAddress,
                   suffixIcon: !Platform.isWindows && !Platform.isLinux
                       ? IconButton(
                           focusNode: _scanQrFocusNode,
@@ -247,12 +244,12 @@ class RecipientStepState extends State<RecipientStep>
               ),
               SizedBox(height: 16),
               Text(
-                _localization.amount,
+                localization.amount,
                 style: theme.textTheme.titleSmall,
               ),
               SizedBox(height: 8),
               InputAmount(
-                hint: _localization.amount,
+                hint: localization.amount,
                 errorText: _amount.error,
                 textEditingController: _amountController,
                 focusNode: _amountFocusNode,

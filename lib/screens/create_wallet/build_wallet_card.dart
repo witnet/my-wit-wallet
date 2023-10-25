@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
@@ -47,7 +47,6 @@ class BuildWalletCardState extends State<BuildWalletCard>
   int currentAddressCount = 0;
   int currentTransactionCount = 0;
   static const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
-  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   void prevAction() {
     CreateWalletType type =
@@ -64,14 +63,14 @@ class BuildWalletCardState extends State<BuildWalletCard>
 
   NavAction prev() {
     return NavAction(
-      label: _localization.backLabel,
+      label: localization.backLabel,
       action: prevAction,
     );
   }
 
   NavAction next() {
     return NavAction(
-      label: _localization.continueLabel,
+      label: localization.continueLabel,
       action: nextAction,
     );
   }
@@ -130,7 +129,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(_localization.buildWalletHeader,
+          Text(localization.buildWalletHeader,
               style: theme.textTheme.titleLarge),
         ],
       ),
@@ -141,7 +140,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
         Expanded(
             flex: 1,
             child: Text(
-              _localization.buildWallet01,
+              localization.buildWallet01,
               style: theme.textTheme.bodyLarge,
             ))
       ]),
@@ -190,7 +189,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
     final theme = Theme.of(context);
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
-        theme, _localization.connectionIssue, theme.colorScheme.error));
+        theme, localization.connectionIssue, theme.colorScheme.error));
     Timer(Duration(seconds: 4), () {
       ScaffoldMessenger.of(context).clearSnackBars();
       Navigator.pushReplacementNamed(context, InitScreen.route);
@@ -254,7 +253,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
                         children: [
                           Row(
                             children: [
-                              Text(_localization.buildWalletBalance,
+                              Text(localization.buildWalletBalance,
                                   style: theme.textTheme.bodyLarge),
                               SizedBox(
                                 height: 8,
@@ -283,7 +282,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
               ),
               Row(
                 children: [
-                  Text(_localization.transactionsFound,
+                  Text(localization.transactionsFound,
                       style: theme.textTheme.bodyLarge!),
                   AutoSizeText(
                     '$currentTransactionCount',
@@ -296,7 +295,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
               Row(
                 children: [
                   AutoSizeText(
-                    _localization.exploredAddresses,
+                    localization.exploredAddresses,
                     maxLines: 2,
                     minFontSize: 16,
                   ),
@@ -315,7 +314,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
               Row(
                 children: [
                   Text(
-                    _localization.exploringAddress,
+                    localization.exploringAddress,
                     style: theme.textTheme.bodyLarge!,
                   ),
                   Expanded(
