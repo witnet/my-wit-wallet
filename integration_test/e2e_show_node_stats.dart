@@ -2,19 +2,21 @@ part of 'test_utils.dart';
 
 Future<void> e2eShowNodeStatsTest(WidgetTester tester) async {
   await initializeTest(tester);
+  AppLocalizations _localization =
+      AppLocalizations.of(navigatorKey.currentContext!)!;
 
   /// Assess what is on the screen
-  walletsExist = isTextOnScreen("Unlock wallet");
-  bool biometricsActive = isTextOnScreen("CANCEL");
+  walletsExist = isTextOnScreen(_localization.unlockWallet);
+  bool biometricsActive = isTextOnScreen(_localization.cancel);
 
   /// Cancel the Biometrics popup for linux
   if (walletsExist && biometricsActive && Platform.isAndroid) {
-    await tapButton(tester, "CANCEL");
+    await tapButton(tester, _localization.cancel);
   }
   if (walletsExist) {
     /// Login Screen
     await enterText(tester, TextFormField, password);
-    await tapButton(tester, "Unlock wallet");
+    await tapButton(tester, _localization.unlockWallet);
 
     /// Dashboard
     /// Tap on the first PaddedButton on the screen, which is the identicon
@@ -24,51 +26,51 @@ Future<void> e2eShowNodeStatsTest(WidgetTester tester) async {
   }
 
   /// Create or Import Wallet from mnemonic
-  await tapButton(tester, "Import wallet");
-  await tapButton(tester, "Import from secret security phrase");
+  await tapButton(tester, _localization.importWalletLabel);
+  await tapButton(tester, _localization.importMnemonicLabel);
 
   /// Wallet Security
   await scrollUntilVisible(
-      tester, widgetByLabel("I will be careful, I promise!"));
+      tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
   await tapButton(tester, LabeledCheckbox);
-  await tapButton(tester, "Continue");
+  await tapButton(tester, _localization.continueLabel);
 
   /// Enter Mnemonic
   await enterText(tester, TextField, mnemonic);
-  await tapButton(tester, "Continue");
+  await tapButton(tester, _localization.continueLabel);
 
   /// Enter Wallet Name
   await enterText(tester, TextField, "Test Wallet");
-  await tapButton(tester, "Continue");
+  await tapButton(tester, _localization.continueLabel);
 
   /// If the wallet database does not exist we need to enter the password.
   if (!walletsExist) {
     await enterText(tester, TextFormField, password, index: 0);
     await enterText(tester, TextFormField, password, index: 1);
-    await tapButton(tester, "Continue");
+    await tapButton(tester, _localization.continueLabel);
   }
   await tester.pumpAndSettle();
   await tapButton(tester, PaddedButton, index: 0);
   await tapButton(tester, FontAwesomeIcons.circlePlus);
 
-  await tapButton(tester, "Import wallet");
-  await tapButton(tester, "Import from Xprv key");
+  await tapButton(tester, _localization.importWalletLabel);
+  await tapButton(tester, _localization.importXprvLabel);
 
   /// Wallet Security
   await scrollUntilVisible(
-      tester, widgetByLabel("I will be careful, I promise!"));
+      tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
   await tapButton(tester, LabeledCheckbox);
-  await tapButton(tester, "Continue");
+  await tapButton(tester, _localization.continueLabel);
 
   /// Enter node Xprv
   await tapButton(tester, Select, index: 0);
-  await tapButton(tester, "Node");
+  await tapButton(tester, _localization.walletTypeNodeLabel);
   await enterText(tester, TextField, nodeXprv);
-  await tapButton(tester, "Continue");
+  await tapButton(tester, _localization.continueLabel);
 
   /// Enter Node Name
   await enterText(tester, TextField, "Test Node");
-  await tapButton(tester, "Continue");
+  await tapButton(tester, _localization.continueLabel);
 
   await tester.pumpAndSettle();
 
@@ -84,12 +86,12 @@ Future<void> e2eShowNodeStatsTest(WidgetTester tester) async {
   expectLater(currentWallet!.masterAccount!.address,
       "wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u");
 
-  await tapButton(tester, "Stats");
+  await tapButton(tester, _localization.dashboardViewSteps("stats"));
 
-  expect(find.text('Data requests solved'), findsWidgets);
-  expect(find.text('Blocks mined'), findsWidgets);
-  expect(find.text('Total fees payed'), findsWidgets);
-  expect(find.text('Total mining rewards'), findsWidgets);
+  expect(find.text(_localization.drSolved), findsWidgets);
+  expect(find.text(_localization.blocksMined), findsWidgets);
+  expect(find.text(_localization.totalFeesPaid), findsWidgets);
+  expect(find.text(_localization.totalMiningRewards), findsWidgets);
 
   /// Tap on the first PaddedButton on the screen, which is the identicon
   /// and brings up the wallet list.
@@ -110,6 +112,6 @@ Future<void> e2eShowNodeStatsTest(WidgetTester tester) async {
   await tester.pumpAndSettle();
 
   /// HD Wallets should not show Transactions/Blocks stepbar
-  expect(widgetByText('Stats'), findsNothing);
+  expect(widgetByText(_localization.dashboardViewSteps("stats")), findsNothing);
   await teardownTest();
 }

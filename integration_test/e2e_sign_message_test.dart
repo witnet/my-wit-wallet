@@ -2,19 +2,21 @@ part of 'test_utils.dart';
 
 Future<void> e2eSignMessageTest(WidgetTester tester) async {
   await initializeTest(tester);
+  AppLocalizations _localization =
+      AppLocalizations.of(navigatorKey.currentContext!)!;
 
   /// Assess what is on the screen
-  walletsExist = isTextOnScreen("Unlock wallet");
-  bool biometricsActive = isTextOnScreen("CANCEL");
+  walletsExist = isTextOnScreen(_localization.unlockWallet);
+  bool biometricsActive = isTextOnScreen(_localization.cancel);
 
   /// Cancel the Biometrics popup for linux
   if (walletsExist && biometricsActive && Platform.isAndroid) {
-    await tapButton(tester, "CANCEL");
+    await tapButton(tester, _localization.cancel);
   }
   if (walletsExist) {
     /// Login Screen
     await enterText(tester, TextFormField, password);
-    await tapButton(tester, "Unlock wallet");
+    await tapButton(tester, _localization.unlockWallet);
 
     /// Dashboard
     /// Tap on the first PaddedButton on the screen, which is the identicon
@@ -24,30 +26,30 @@ Future<void> e2eSignMessageTest(WidgetTester tester) async {
   }
 
   /// Create or Import Wallet
-  await tapButton(tester, "Import wallet");
-  await tapButton(tester, "Import from Xprv key");
+  await tapButton(tester, _localization.importWalletLabel);
+  await tapButton(tester, _localization.importXprvLabel);
 
   /// Wallet Security
   await scrollUntilVisible(
-      tester, widgetByLabel("I will be careful, I promise!"));
+      tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
   await tapButton(tester, LabeledCheckbox);
-  await tapButton(tester, "Continue");
+  await tapButton(tester, _localization.continueLabel);
 
   /// Enter node Xprv
   await tapButton(tester, Select, index: 0);
-  await tapButton(tester, "Node");
+  await tapButton(tester, _localization.walletTypeNodeLabel);
   await enterText(tester, TextField, nodeXprv);
-  await tapButton(tester, "Continue");
+  await tapButton(tester, _localization.continueLabel);
 
   /// Enter Wallet Name
   await enterText(tester, TextField, "Test Wallet");
-  await tapButton(tester, "Continue");
+  await tapButton(tester, _localization.continueLabel);
 
   /// If the wallet database does not exist we need to enter the password.
   if (!walletsExist) {
     await enterText(tester, TextFormField, password, index: 0);
     await enterText(tester, TextFormField, password, index: 1);
-    await tapButton(tester, "Continue");
+    await tapButton(tester, _localization.continueLabel);
   }
 
   await tester.pumpAndSettle();
@@ -61,13 +63,13 @@ Future<void> e2eSignMessageTest(WidgetTester tester) async {
     }
   }
 
-  await tapButton(tester, "Wallet");
+  await tapButton(tester, _localization.preferenceTabs("wallet"));
 
   // Scroll Sign message button into view
-  await scrollUntilVisible(tester, widgetByText("Sign message").last,
+  await scrollUntilVisible(tester, widgetByText(_localization.signMessage).last,
       lastScroll: true);
 
-  await tapButton(tester, "Sign message");
+  await tapButton(tester, _localization.signMessage);
 
   // Select second address in the list
   await tapButton(tester, Select, index: 0);
@@ -75,23 +77,23 @@ Future<void> e2eSignMessageTest(WidgetTester tester) async {
       index: 2);
 
   /// Enter Message to sign
-  await enterText(tester, TextField, "Message to be signed");
-  await tapButton(tester, "Sign message");
+  await enterText(tester, TextField, _localization.messageToBeSigned);
+  await tapButton(tester, _localization.signMessage);
 
   if (Platform.isIOS || Platform.isAndroid) {
     // Show modal to verify password
-    expect(widgetByText('Enter your password'), findsWidgets);
+    expect(widgetByText(_localization.enterYourPassword), findsWidgets);
 
     // Enter password for verification and continue
     await enterText(tester, TextFormField, password);
-    await tapButton(tester, "Continue");
+    await tapButton(tester, _localization.continueLabel);
   }
 
   // Scroll Copy JSON button into view
-  await scrollUntilVisible(tester, widgetByText("Copy JSON").first,
+  await scrollUntilVisible(tester, widgetByText(_localization.copyJson).first,
       lastScroll: true);
   await tester.pumpAndSettle();
-  await tapButton(tester, "Copy JSON");
+  await tapButton(tester, _localization.copyJson);
 
   ClipboardData? data = await Clipboard.getData('text/plain');
 
@@ -107,6 +109,6 @@ Future<void> e2eSignMessageTest(WidgetTester tester) async {
   await tapButton(tester, FontAwesomeIcons.solidCircleXmark);
 
   // Go back to wallet config options
-  expect(widgetByText('Export the Xprv key of my wallet'), findsWidgets);
+  expect(widgetByText(_localization.walletConfigHeader), findsWidgets);
   await teardownTest();
 }

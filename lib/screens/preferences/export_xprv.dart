@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
@@ -33,6 +34,8 @@ class ExportXprvState extends State<ExportXprv> {
   String? newXprv;
   bool showXprv = false;
   bool isLoading = false;
+
+  AppLocalizations get _localization => AppLocalizations.of(context)!;
 
   @override
   void initState() {
@@ -75,7 +78,7 @@ class ExportXprvState extends State<ExportXprv> {
               }),
       SizedBox(height: 32),
       PaddedButton(
-        text: 'Copy Xprv',
+        text: _localization.copyXprvLabel,
         type: ButtonType.primary,
         isLoading: isLoading,
         padding: EdgeInsets.only(bottom: 8),
@@ -84,8 +87,8 @@ class ExportXprvState extends State<ExportXprv> {
           await Clipboard.setData(ClipboardData(text: newXprv ?? ''));
           if (await Clipboard.hasStrings()) {
             ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context)
-                .showSnackBar(buildCopiedSnackbar(theme, 'Xprv copied!'));
+            ScaffoldMessenger.of(context).showSnackBar(
+                buildCopiedSnackbar(theme, _localization.copyXprvConfirmed));
           }
         },
       ),
@@ -117,22 +120,16 @@ class ExportXprvState extends State<ExportXprv> {
           Container(
             width: MediaQuery.of(context).size.width * 0.7,
             child: Text(
-              'Export the Xprv key of my wallet',
+              _localization.walletConfigHeader,
               style: theme.textTheme.titleLarge,
             ),
           ),
           SizedBox(height: 16),
-          Text(
-              'Your Xprv key allows you to export and back up your wallet at any point after creating it.',
-              style: theme.textTheme.bodyLarge),
+          Text(_localization.walletConfig01, style: theme.textTheme.bodyLarge),
           SizedBox(height: 8),
-          Text(
-              'Privacy-wise, your Xprv key is equivalent to a secret recovery phrase. Do not share it with anyone, and never store it in a file in your device or anywhere else electronically.',
-              style: theme.textTheme.bodyLarge),
+          Text(_localization.walletConfig02, style: theme.textTheme.bodyLarge),
           SizedBox(height: 8),
-          Text(
-              'Your Xprv key will be protected with the password below. When importing the Xprv on this or another app, you will be asked to type in that same password.',
-              style: theme.textTheme.bodyLarge),
+          Text(_localization.walletConfig03, style: theme.textTheme.bodyLarge),
           SizedBox(height: 16),
           _exportWalletContent(context),
         ]);

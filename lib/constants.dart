@@ -51,11 +51,15 @@ Map<EstimatedFeeOptions, String?> DEFAULT_MINER_FEE_OPTIONS = {
   EstimatedFeeOptions.Custom: null,
 };
 
-Map<ImportOrigin, String> importOriginToLabel = {
-  ImportOrigin.fromMyWitWallet: 'myWitWallet',
-  ImportOrigin.fromSheikah: 'Sheikah',
-  ImportOrigin.fromNode: 'Node'
-};
+Map<ImportOrigin, String> importOriginToLabel(BuildContext context) {
+  AppLocalizations _localization = AppLocalizations.of(context)!;
+  return {
+    ImportOrigin.fromMyWitWallet: 'myWitWallet',
+    ImportOrigin.fromSheikah: 'Sheikah',
+    ImportOrigin.fromNode: _localization.walletTypeNodeLabel
+  };
+}
+
 Map<ImportOrigin, CreateWalletType> importOriginToXprvType = {
   ImportOrigin.fromMyWitWallet: CreateWalletType.encryptedXprv,
   ImportOrigin.fromSheikah: CreateWalletType.encryptedXprv,

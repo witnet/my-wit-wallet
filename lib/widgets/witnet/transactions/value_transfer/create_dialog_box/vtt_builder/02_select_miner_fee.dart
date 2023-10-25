@@ -205,14 +205,13 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         availableNanoWit: balanceInfo.availableNanoWit);
     String? errorText =
         _feePriority.validator(value, avoidWeightedAmountCheck: true);
-    if (_selectedFeeOption != EstimatedFeeOptions.Custom &&
-        localizedFeeOptions(context) == label) {
+    if (_selectedFeeOption != EstimatedFeeOptions.Custom) {
       setMinerFeeValue(value);
     }
     return ClickableBox(
       label: label,
       isSelected: _selectedFeeOption == localizedFeeOptions(context)[label],
-      error: label != localizedFeeOptions(context)[_selectedFeeOption!]
+      error: _selectedFeeOption != localizedFeeOptions(context)[label]
           ? errorText
           : null,
       value: value,
@@ -222,7 +221,8 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         Expanded(
             flex: 0,
             child: Text(
-                EstimatedFeeOptions.Custom != localizedFeeOptions(context)[label]
+                EstimatedFeeOptions.Custom !=
+                        localizedFeeOptions(context)[label]
                     ? '$value ${WIT_UNIT[WitUnit.Wit]}'
                     : '',
                 style: theme.textTheme.bodyMedium)),
