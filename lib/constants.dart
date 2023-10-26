@@ -93,7 +93,7 @@ Map<EstimatedFeeOptions, String?> DEFAULT_MINER_FEE_OPTIONS = {
   EstimatedFeeOptions.Medium: '0',
   EstimatedFeeOptions.High: '0',
   EstimatedFeeOptions.Opulent: '0',
-  EstimatedFeeOptions.Custom: '1',
+  EstimatedFeeOptions.Custom: null,
 };
 
 Map<ImportOrigin, String> importOriginToLabel(BuildContext context) {
