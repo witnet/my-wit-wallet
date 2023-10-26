@@ -83,8 +83,8 @@ class ExportSignMessageState extends State<ExportSignMessage> {
               ClipboardData(text: json.encode(widget.signedMessage)));
           if (await Clipboard.hasStrings()) {
             ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context)
-                .showSnackBar(buildCopiedSnackbar(theme, localization.jsonCopied));
+            ScaffoldMessenger.of(context).showSnackBar(
+                buildCopiedSnackbar(theme, localization.jsonCopied));
           }
         },
       ),

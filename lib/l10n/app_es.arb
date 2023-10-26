@@ -5,6 +5,7 @@
   "authenticateWithBiometrics": "Autenticación biométrica",
   "backLabel": "Volver",
   "balance": "saldo",
+  "biometricsLabel": "Biométricas",
   "blocksMined": "Bloques extraídos",
   "buildWallet01": "Se están escaneando las diferentes direcciones de tu cartera en busca de transacciones y saldo existentes. Esto normalmente tomará menos de 1 minuto.",
   "buildWalletBalance": "Saldo:",

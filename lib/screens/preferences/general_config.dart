@@ -134,14 +134,14 @@ class GeneralConfigState extends State<GeneralConfig> {
             focusNode: _switchAuthModeFocusNode,
             isFocused: _isAuthModeSwitchFocus,
             checked: authWithBiometrics,
-            primaryLabel: 'Biometrics',
+            primaryLabel: localization.biometricsLabel,
             secondaryLabel: '',
             onChanged: (value) => {
                   if (!value)
                     {
                       unlockKeychainModal(
                           onAction: () => changeAuthMode(theme),
-                          title: 'Enter your password',
+                          title: localization.enterYourPassword,
                           imageName: 'import-wallet',
                           theme: theme,
                           context: context,
@@ -170,7 +170,7 @@ class GeneralConfigState extends State<GeneralConfig> {
         SizedBox(height: 8),
         CustomDivider(),
         Text(
-          'Enable login with biometrics',
+          localization.enableLoginWithBiometrics,
           style: theme.textTheme.titleMedium,
         ),
         SizedBox(height: 16),
