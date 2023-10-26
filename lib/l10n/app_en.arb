@@ -5,6 +5,7 @@
   "authenticateWithBiometrics": "Authenticate with biometrics",
   "backLabel": "Back",
   "balance": "balance",
+  "biometricsLabel": "biometrics",
   "blocksMined": "Blocks mined",
   "buildWallet01": "The different addresses in your wallet are being scanned for existing transactions and balance. This will normally take less than 1 minute.",
   "buildWalletBalance": "Balance:",
