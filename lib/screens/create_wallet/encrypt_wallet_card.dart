@@ -132,39 +132,6 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     super.dispose();
   }
 
-  List<Widget> buildLocalizedTextBlock(BuildContext context) {
-    final theme = Theme.of(context);
-    String? seedSource = Locator.instance.get<ApiCreateWallet>().seedSource;
-    Map<int, String> _encryptWalletTextLocalization(BuildContext context) => {
-          0: localization.encryptWalletHeader,
-          1: localization.encryptWallet01,
-          2: localization.encryptWallet02,
-          3: seedSource == "xprv"
-              ? localization.encryptWallet04
-              : localization.encryptWallet03(Locator.instance
-                  .get<ApiCreateWallet>()
-                  .seedData!
-                  .split(' ')
-                  .length),
-        };
-    List<Widget> _widgets = [];
-    List<String> _localizedText =
-        _encryptWalletTextLocalization(context).values.toList();
-
-    // for each item, add a text widget and a spacer SizedBox
-    // if it is the first item, set the text style for a header
-    _encryptWalletTextLocalization(context).forEach((key, value) {
-      _widgets.add(Text(
-        _localizedText[key],
-        style:
-            key == 0 ? theme.textTheme.titleLarge : theme.textTheme.bodyLarge,
-      ));
-      _widgets.add(SizedBox(height: 8));
-    });
-    _widgets.add(SizedBox(height: 8));
-    return _widgets;
-  }
-
   @override
   Widget build(BuildContext context) {
     _passConfirmFocusNode.addListener(() => validateForm());
@@ -176,7 +143,6 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ...buildLocalizedTextBlock(context),
         Text(
           localization.encryptWalletHeader,
           style: theme.textTheme.titleLarge,
