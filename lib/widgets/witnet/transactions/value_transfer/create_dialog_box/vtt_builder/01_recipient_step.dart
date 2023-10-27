@@ -57,6 +57,10 @@ class RecipientStepState extends State<RecipientStep>
 
   @override
   void initState() {
+    if (vttBloc.state.vtTransaction.body.outputs.length > 0) {
+      ongoingOutput = vttBloc.state.vtTransaction.body.outputs.first;
+      _setSavedTxData(ongoingOutput);
+    }
     super.initState();
     if (vttBloc.outputs.length > 0) {
       ongoingOutput = vttBloc.outputs.first;
