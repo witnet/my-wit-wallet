@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
-import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
+import 'package:my_wit_wallet/widgets/validations/fee_amount_input.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
@@ -19,14 +19,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class SelectMinerFeeStep extends StatefulWidget {
   final Function nextAction;
   final Wallet currentWallet;
-  final String? savedFeeAmount;
-  final FeeType? savedFeeType;
   final VoidCallback goNext;
 
   SelectMinerFeeStep({
     required Key? key,
-    required this.savedFeeAmount,
-    required this.savedFeeType,
     required this.currentWallet,
     required this.nextAction,
     required this.goNext,
@@ -43,7 +39,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   final _formKey = GlobalKey<FormState>();
   Map<EstimatedFeeOptions, String?> _minerFeeOptionsNanoWit =
       DEFAULT_MINER_FEE_OPTIONS;
-  VttAmountInput _minerFeeWit = VttAmountInput.pure();
+  FeeAmountInput _minerFeeWit = FeeAmountInput.pure();
   String? _errorFeeText;
   int selectedIndex = 0;
   FeeType _feeType = FeeType.Absolute;
@@ -52,7 +48,12 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   ValidationUtils validationUtils = ValidationUtils();
   List<FocusNode> _formFocusElements() => [_minerFeeFocusNode];
   bool _connectionError = false;
-  EstimatedFeeOptions? _selectedFeeOption = EstimatedFeeOptions.Medium;
+  EstimatedFeeOptions _feeOption = EstimatedFeeOptions.Medium;
+  String _savedFeeAmount = '1';
+  VTTCreateBloc get vttBloc => BlocProvider.of<VTTCreateBloc>(context);
+
+  int get vttAmount =>
+      vttBloc.state.vtTransaction.body.outputs.first.value.toInt();
 
   /// Overrides
   @override
@@ -62,20 +63,9 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    VTTCreateBloc vttCreateBloc = BlocProvider.of<VTTCreateBloc>(context);
-    _minerFeeOptionsNanoWit = vttCreateBloc.minerFeeOptions;
-
-    if (widget.savedFeeAmount != null) {
-      if (_minerFeeOptionsNanoWit.containsValue(widget.savedFeeAmount)) {
-        _selectedFeeOption = _minerFeeOptionsNanoWit.entries
-            .firstWhere((element) => element.value == widget.savedFeeAmount)
-            .key;
-      } else {
-        _selectedFeeOption = EstimatedFeeOptions.Custom;
-      }
-    }
-    WidgetsBinding.instance.addPostFrameCallback(
-        (_) => {widget.nextAction(next), _setSavedFeeData()});
+    _setSavedFeeData();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.nextAction(next));
   }
 
   @override
@@ -86,26 +76,14 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     super.dispose();
   }
 
-  int get vttAmount => BlocProvider.of<VTTCreateBloc>(context)
-      .state
-      .vtTransaction
-      .body
-      .outputs
-      .first
-      .value
-      .toInt();
-
   int _minerFeeWitToNanoWitNumber() {
-    num number = 0;
     try {
-      if (num.tryParse(_minerFeeWit.value) != null) {
-        number = num.parse(_minerFeeWit.value)
-            .standardizeWitUnits(
-                outputUnit: WitUnit.nanoWit, inputUnit: WitUnit.Wit)
-            .toBigInt()
-            .toInt();
-      }
-      return number.toInt();
+      final number = num.parse(_minerFeeWit.value)
+          .standardizeWitUnits(
+              outputUnit: WitUnit.nanoWit, inputUnit: WitUnit.Wit)
+          .toBigInt()
+          .toInt();
+      return _minerFeeWit.value != '' ? number : 0;
     } catch (e) {
       return 0;
     }
@@ -123,29 +101,30 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   }
 
   void _setSavedFeeData() {
-    if (widget.savedFeeType != null) {
-      _setFeeType(widget.savedFeeType);
-      selectedIndex = widget.savedFeeType == FeeType.Absolute ? 0 : 1;
-    }
-    String savedFee = _nanoWitFeeToWit(widget.savedFeeAmount ?? '1');
+    _minerFeeOptionsNanoWit = vttBloc.minerFeeOptions;
+    _feeOption = vttBloc.feeOption;
+    _feeType = vttBloc.feeType;
+    _savedFeeAmount = vttBloc.feeNanoWit.toString();
+    selectedIndex = _feeType == FeeType.Absolute ? 0 : 1;
+    String savedFee = _nanoWitFeeToWit(_savedFeeAmount);
     _minerFeeController.text = savedFee;
+
     setState(() {
       setMinerFeeValue(savedFee, validate: false);
     });
   }
 
   void setMinerFeeValue(String amount, {bool? validate}) {
-    int weightedFeeAmount = BlocProvider.of<VTTCreateBloc>(context)
-        .calculatedWeightedFee(_minerFeeWitToNanoWitNumber());
-    _minerFeeWit = VttAmountInput.dirty(
+    int weightedFeeAmount =
+        vttBloc.calculatedWeightedFee(_minerFeeWitToNanoWitNumber());
+    _minerFeeWit = FeeAmountInput.dirty(
         allowValidation:
             validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
         availableNanoWit: balanceInfo.availableNanoWit,
-        vttAmount: vttAmount,
         value: amount,
+        vttAmount: vttAmount,
         weightedAmount: _feeType == FeeType.Weighted ? weightedFeeAmount : null,
         allowZero: true);
-    // _updateTxFee();
   }
 
   void _setFeeType(FeeType? type) {
@@ -163,13 +142,17 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   }
 
   void _setAbsoluteFee() {
-    BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
-        feeType: FeeType.Absolute, feeNanoWit: _minerFeeWitToNanoWitNumber()));
+    vttBloc.add(UpdateFeeEvent(
+        feeType: FeeType.Absolute,
+        feeNanoWit: _minerFeeWitToNanoWitNumber(),
+        feeOption: _feeOption));
   }
 
   void _setWeightedFee() {
-    BlocProvider.of<VTTCreateBloc>(context).add(UpdateFeeEvent(
-        feeType: FeeType.Weighted, feeNanoWit: _minerFeeWitToNanoWitNumber()));
+    vttBloc.add(UpdateFeeEvent(
+        feeType: FeeType.Weighted,
+        feeNanoWit: _minerFeeWitToNanoWitNumber(),
+        feeOption: _feeOption));
   }
 
   bool formValidation() {
@@ -198,48 +181,49 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     );
   }
 
-  Widget _buildFeeOptionButton(String label, String value) {
+  Widget _buildFeeOptionButton(EstimatedFeeOptions label, String value) {
     final theme = Theme.of(context);
-    VttAmountInput _feePriority = VttAmountInput.dirty(
+    FeeAmountInput _feePriority = FeeAmountInput.dirty(
         value: value,
         allowValidation: true,
         vttAmount: vttAmount,
         availableNanoWit: balanceInfo.availableNanoWit);
     String? errorText =
         _feePriority.validator(value, avoidWeightedAmountCheck: true);
-
+    if (_feeOption != EstimatedFeeOptions.Custom && _feeOption == label) {
+      setMinerFeeValue(value);
+    }
     return ClickableBox(
-      label: label,
-      isSelected: label == localizedFeeOptions[_selectedFeeOption],
-      error:
-          label != localizedFeeOptions[_selectedFeeOption] ? errorText : null,
+      label: localizedFeeOptions[label],
+      isSelected: _feeOption == label,
+      error: label != EstimatedFeeOptions.Custom ? errorText : null,
       value: value,
       content: [
         Expanded(
-            flex: 1, child: Text(label, style: theme.textTheme.bodyMedium)),
+            flex: 1,
+            child: Text(localizedFeeOptions[label]!,
+                style: theme.textTheme.bodyMedium)),
         Expanded(
             flex: 0,
             child: Text(
-                label == localizedFeeOptions[EstimatedFeeOptions.Custom]
-                    ? ''
-                    : '$value ${WIT_UNIT[WitUnit.Wit]}',
+                label != EstimatedFeeOptions.Custom
+                    ? '$value ${WIT_UNIT[WitUnit.Wit]}'
+                    : '',
                 style: theme.textTheme.bodyMedium)),
       ],
       onClick: (value) => {
+        _setFeeType(FeeType.Absolute),
         setState(() {
-          _selectedFeeOption = localizedFeeOptions.entries
-              .firstWhere((element) => element.value == label)
-              .key;
           setMinerFeeValue(value);
           _minerFeeController.text = value;
-          _updateTxFee();
+          _feeOption = label;
         }),
+        _updateTxFee()
       },
     );
   }
 
   Widget _buildFeeOptionsButtonGroup(BuildContext context) {
-    // TODO:
     return ListView.builder(
       shrinkWrap: true,
       padding: EdgeInsets.zero,
@@ -249,8 +233,8 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         EstimatedFeeOptions currentFeeOption =
             localizedFeeOptions.keys.toList()[index];
         String? fee = _minerFeeOptionsNanoWit[currentFeeOption];
-        String label = localizedFeeOptions[currentFeeOption]!;
-        return _buildFeeOptionButton(label, _nanoWitFeeToWit(fee ?? '1'));
+        return _buildFeeOptionButton(
+            currentFeeOption, _nanoWitFeeToWit(fee ?? '1'));
       },
     );
   }
@@ -259,7 +243,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>();
     _minerFeeFocusNode.addListener(() => validateForm());
-    if (_selectedFeeOption == EstimatedFeeOptions.Custom) {
+    if (_feeOption == EstimatedFeeOptions.Custom) {
       return Padding(
           padding: EdgeInsets.only(left: 8, right: 8),
           child: Column(children: [
@@ -282,7 +266,6 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                 widget.goNext();
               },
               onEditingComplete: () {
-                _setSavedFeeData();
                 _setAbsoluteFee();
               },
             ),
@@ -308,7 +291,6 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                           child: Icon(FontAwesomeIcons.circleQuestion,
                               size: 12, color: extendedTheme?.inputIconColor))),
                 ),
-                // TODO:
                 ToggleSwitch(
                   minWidth: 90.0,
                   inactiveBgColor: extendedTheme?.switchInactiveBg,
@@ -324,9 +306,9 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                   onToggle: (index) {
                     setState(() {
                       selectedIndex = index;
-                      _setFeeType(FeeType.values[index]);
-                      _updateTxFee();
                     });
+                    _setFeeType(FeeType.values[index]);
+                    _updateTxFee();
                   },
                 ),
               ],
@@ -374,7 +356,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
               SizedBox(height: 8),
               _buildFeeOptionsButtonGroup(context),
               _buildCustomInput(context),
-              if (_selectedFeeOption != EstimatedFeeOptions.Custom &&
+              if (_feeOption != EstimatedFeeOptions.Custom &&
                   _errorFeeText != null)
                 Text(
                   _errorFeeText!,

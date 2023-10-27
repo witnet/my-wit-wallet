@@ -18,9 +18,11 @@ class AddValueTransferOutputEvent extends VTTCreateEvent {
 class UpdateFeeEvent extends VTTCreateEvent {
   final FeeType feeType;
   final int? feeNanoWit;
-  UpdateFeeEvent({required this.feeType, this.feeNanoWit});
+  final EstimatedFeeOptions feeOption;
+  UpdateFeeEvent(
+      {required this.feeType, this.feeNanoWit, required this.feeOption});
   @override
-  List<Object?> get props => [feeType, feeNanoWit];
+  List<Object?> get props => [feeType, feeNanoWit, feeOption];
 }
 
 class SetTimelockEvent extends VTTCreateEvent {

@@ -23,12 +23,10 @@ import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_
 class RecipientStep extends StatefulWidget {
   final Function nextAction;
   final Wallet currentWallet;
-  final ValueTransferOutput? ongoingOutput;
   final VoidCallback goNext;
 
   RecipientStep({
     required Key? key,
-    required this.ongoingOutput,
     required this.currentWallet,
     required this.nextAction,
     required this.goNext,
@@ -54,19 +52,24 @@ class RecipientStepState extends State<RecipientStep>
   bool isScanQrFocused = false;
   ValidationUtils validationUtils = ValidationUtils();
   List<FocusNode> _formFocusElements() => [_addressFocusNode, _amountFocusNode];
+  ValueTransferOutput? ongoingOutput;
+  VTTCreateBloc get vttBloc => BlocProvider.of<VTTCreateBloc>(context);
 
   @override
   void initState() {
     super.initState();
+    if (vttBloc.outputs.length > 0) {
+      ongoingOutput = vttBloc.outputs.first;
+      _setSavedTxData(ongoingOutput);
+    }
     _loadingController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
     _scanQrFocusNode.addListener(_handleFocus);
-    WidgetsBinding.instance.addPostFrameCallback((_) => {
-          widget.nextAction(next),
-          _setSavedTxData(),
-        });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => widget.nextAction(next),
+    );
   }
 
   @override
@@ -129,10 +132,10 @@ class RecipientStepState extends State<RecipientStep>
     });
   }
 
-  void _setSavedTxData() {
-    String? savedAddress = widget.ongoingOutput?.pkh.address;
+  void _setSavedTxData(ValueTransferOutput? ongoingOutput) {
+    String? savedAddress = ongoingOutput?.pkh.address;
     String? savedAmount =
-        widget.ongoingOutput?.value.toInt().standardizeWitUnits().toString();
+        ongoingOutput?.value.toInt().standardizeWitUnits().toString();
 
     if (savedAddress != null) {
       _addressController.text = savedAddress;
@@ -144,12 +147,11 @@ class RecipientStepState extends State<RecipientStep>
       setAmount(savedAmount, validate: false);
     }
 
-    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
+    vttBloc.add(ResetTransactionEvent());
   }
 
   void nextAction() {
     final theme = Theme.of(context);
-    final vttBloc = BlocProvider.of<VTTCreateBloc>(context);
     if (_connectionError) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(

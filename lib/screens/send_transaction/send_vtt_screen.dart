@@ -12,8 +12,6 @@ import 'package:my_wit_wallet/widgets/step_bar.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/01_recipient_step.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/02_select_miner_fee.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/03_review_step.dart';
-import 'package:witnet/data_structures.dart';
-import 'package:witnet/schema.dart';
 
 class CreateVttScreen extends StatefulWidget {
   static final route = '/create-vtt';
@@ -38,10 +36,6 @@ class CreateVttScreenState extends State<CreateVttScreen>
   Wallet? currentWallet;
   dynamic nextAction;
   dynamic nextStep;
-
-  ValueTransferOutput? currentTxOutput;
-  String? savedFeeAmount;
-  FeeType? savedFeeType;
   ScrollController scrollController = ScrollController(keepScrollOffset: false);
 
   String selectedItem = localizedVTTsteps[VTTsteps.Transaction]!;
@@ -128,30 +122,9 @@ class CreateVttScreenState extends State<CreateVttScreen>
     ];
   }
 
-  void setOngoingTransaction() {
-    VTTCreateBloc vttBloc = BlocProvider.of<VTTCreateBloc>(context);
-    try {
-      setState(() => {
-            currentTxOutput = vttBloc.state.vtTransaction.body.outputs.first,
-            savedFeeAmount = vttBloc.feeNanoWit.toString(),
-            savedFeeType = vttBloc.feeType,
-          });
-    } catch (err) {
-      // There is no saved transaction details
-      if (currentTxOutput != null) {
-        setState(() => {
-              currentTxOutput = null,
-              savedFeeType = null,
-              savedFeeAmount = null,
-            });
-      }
-    }
-  }
-
   RecipientStep _recipientStep() {
     return RecipientStep(
       key: transactionFormState,
-      ongoingOutput: currentTxOutput,
       nextAction: _setNextAction,
       goNext: () {
         nextAction().action();
@@ -164,8 +137,6 @@ class CreateVttScreenState extends State<CreateVttScreen>
   SelectMinerFeeStep _selectMinerFeeStep() {
     return SelectMinerFeeStep(
       key: minerFeeState,
-      savedFeeAmount: savedFeeAmount,
-      savedFeeType: savedFeeType,
       nextAction: _setNextAction,
       goNext: () {
         nextAction().action();
@@ -208,7 +179,6 @@ class CreateVttScreenState extends State<CreateVttScreen>
                     selectedItem = localizedVTTsteps.entries
                         .firstWhere((element) => element.value == item)
                         .value;
-                    setOngoingTransaction();
                   }),
                 }),
         SizedBox(height: 16),

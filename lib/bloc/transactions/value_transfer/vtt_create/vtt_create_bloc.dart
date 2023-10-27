@@ -75,6 +75,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   List<Utxo> selectedUtxos = [];
   UtxoPool utxoPool = UtxoPool();
   FeeType feeType = FeeType.Weighted;
+  EstimatedFeeOptions feeOption = EstimatedFeeOptions.Medium;
   int feeNanoWit = 0;
   num balanceNanoWit = 0;
   DateTime? selectedTimelock;
@@ -126,8 +127,12 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     }
   }
 
-  void updateFee(FeeType newFeeType, [int feeNanoWit = 0]) {
+  void updateFee(
+      {required FeeType newFeeType,
+      int feeNanoWit = 0,
+      EstimatedFeeOptions newFeeOption = EstimatedFeeOptions.Medium}) {
     feeType = newFeeType;
+    feeOption = newFeeOption;
     switch (feeType) {
       case FeeType.Absolute:
         this.feeNanoWit = feeNanoWit;
@@ -569,9 +574,12 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
 
   void _updateFeeEvent(UpdateFeeEvent event, Emitter<VTTCreateState> emit) {
     if (event.feeNanoWit != null) {
-      updateFee(event.feeType, event.feeNanoWit!);
+      updateFee(
+          newFeeType: event.feeType,
+          feeNanoWit: event.feeNanoWit!,
+          newFeeOption: event.feeOption);
     } else {
-      updateFee(event.feeType);
+      updateFee(newFeeType: event.feeType, newFeeOption: event.feeOption);
     }
   }
 

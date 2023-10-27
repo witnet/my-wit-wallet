@@ -1,6 +1,6 @@
-import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
+import 'package:my_wit_wallet/widgets/validations/amount_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 
 // Define input validation errors
@@ -22,33 +22,33 @@ Map<AmountInputError, String> errorMap = {
 };
 
 // Extend FormzInput and provide the input type and error type.
-class VttAmountInput extends FormzInput<String, String?> {
+class VttAmountInput extends AmountInput {
   final int availableNanoWit;
+  final int? weightedAmount;
   final bool allowZero;
   final bool allowValidation;
-  final int? weightedAmount;
-  final int vttAmount;
 
   // Call super.pure to represent an unmodified form input.
   VttAmountInput.pure()
       : availableNanoWit = 0,
         allowZero = false,
         weightedAmount = null,
-        vttAmount = 0,
         allowValidation = false,
-        super.pure('');
+        super.pure();
 
   // Call super.dirty to represent a modified form input.
   VttAmountInput.dirty(
       {required this.availableNanoWit,
       value = '',
       this.weightedAmount,
-      this.vttAmount = 0,
       this.allowZero = false,
       this.allowValidation = false})
-      : super.dirty(value);
+      : super.dirty(
+            value: value,
+            allowZero: allowZero,
+            allowValidation: allowValidation);
 
-  int _witAmountToNanoWitNumber(String amount) {
+  int witAmountToNanoWitNumber(String amount) {
     try {
       return num.parse(amount != '' ? amount : '0')
           .standardizeWitUnits(
@@ -61,50 +61,33 @@ class VttAmountInput extends FormzInput<String, String?> {
     }
   }
 
-  bool _notEnoughFunds({bool avoidWeightedAmountCheck = false}) {
-    int balance = this.availableNanoWit;
+  int getNanoWitAmount({bool avoidWeightedAmountCheck = false}) {
     int nanoWitAmount;
     if (!avoidWeightedAmountCheck) {
-      nanoWitAmount = this.weightedAmount ?? _witAmountToNanoWitNumber(value);
+      nanoWitAmount = this.weightedAmount ?? witAmountToNanoWitNumber(value);
     } else {
-      nanoWitAmount = _witAmountToNanoWitNumber(value);
+      nanoWitAmount = witAmountToNanoWitNumber(value);
     }
-    return balance < (nanoWitAmount + this.vttAmount);
+    return nanoWitAmount;
+  }
+
+  bool notEnoughFunds({bool avoidWeightedAmountCheck = false}) {
+    int nanoWitAmount =
+        getNanoWitAmount(avoidWeightedAmountCheck: avoidWeightedAmountCheck);
+    return this.availableNanoWit < nanoWitAmount;
   }
 
   // Override validator to handle validating a given input value.
   @override
   String? validator(String value, {bool avoidWeightedAmountCheck = false}) {
     final validationUtils = ValidationUtils(errorMap: errorMap);
-    if (!this.allowValidation) {
-      return null;
+    String? error = super
+        .validator(value, avoidWeightedAmountCheck: avoidWeightedAmountCheck);
+    if (error != null) {
+      return error;
     }
-    // Check if the amount input is empty
-    if (value.isEmpty)
-      return validationUtils.getErrorText(AmountInputError.empty);
-    // Check if the amount is a number
-    if (RegExp(r'[a-zA-Z]').hasMatch(value))
-      return validationUtils.getErrorText(AmountInputError.invalid);
-    // Check if the amount has decimals
-    if (value.contains('.')) {
-      // Check if the decimal amount is valid
-      if (value.split('.').length != 2 || value.split('.')[1].isEmpty)
-        return validationUtils.getErrorText(AmountInputError.invalid);
-      // Check if the amount has more than nine decimals
-      if (!RegExp(r'^\d+\.?\d{1,9}$').hasMatch(value))
-        return validationUtils.getErrorText(AmountInputError.decimals);
-    }
-    if (_notEnoughFunds(avoidWeightedAmountCheck: avoidWeightedAmountCheck))
+    if (notEnoughFunds(avoidWeightedAmountCheck: avoidWeightedAmountCheck))
       return validationUtils.getErrorText(AmountInputError.notEnough);
-    // Check if the amount is zero
-    if (value.isNotEmpty && !this.allowZero) {
-      try {
-        if (num.parse(value) == 0)
-          return validationUtils.getErrorText(AmountInputError.zero);
-      } catch (e) {
-        return validationUtils.getErrorText(AmountInputError.invalid);
-      }
-    }
     return null;
   }
 }
