@@ -20,12 +20,14 @@ class SelectMinerFeeStep extends StatefulWidget {
   final Function nextAction;
   final Wallet currentWallet;
   final VoidCallback goNext;
+  final int? minFee;
 
   SelectMinerFeeStep({
     required Key? key,
     required this.currentWallet,
     required this.nextAction,
     required this.goNext,
+    this.minFee,
   }) : super(key: key);
 
   @override
@@ -90,8 +92,10 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   }
 
   String _nanoWitFeeToWit(String fee) {
+    int nanoWitFee =
+        widget.minFee != null ? (int.parse(fee) + 1) : int.parse(fee);
     try {
-      return num.parse(fee)
+      return nanoWitFee
           .standardizeWitUnits(
               outputUnit: WitUnit.Wit, inputUnit: WitUnit.nanoWit)
           .toString();
@@ -123,6 +127,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         availableNanoWit: balanceInfo.availableNanoWit,
         value: amount,
         vttAmount: vttAmount,
+        minFee: widget.minFee,
         weightedAmount: _feeType == FeeType.Weighted ? weightedFeeAmount : null,
         allowZero: true);
   }
@@ -187,6 +192,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         value: value,
         allowValidation: true,
         vttAmount: vttAmount,
+        minFee: widget.minFee,
         availableNanoWit: balanceInfo.availableNanoWit);
     String? errorText =
         _feePriority.validator(value, avoidWeightedAmountCheck: true);
@@ -230,11 +236,10 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
       physics: NeverScrollableScrollPhysics(),
       itemCount: localizedFeeOptions.length,
       itemBuilder: (context, index) {
-        EstimatedFeeOptions currentFeeOption =
-            localizedFeeOptions.keys.toList()[index];
-        String? fee = _minerFeeOptionsNanoWit[currentFeeOption];
-        return _buildFeeOptionButton(
-            currentFeeOption, _nanoWitFeeToWit(fee ?? '1'));
+        String? fee = _minerFeeOptionsNanoWit.values.toList()[index];
+        EstimatedFeeOptions label =
+            _minerFeeOptionsNanoWit.keys.toList()[index];
+        return _buildFeeOptionButton(label, _nanoWitFeeToWit(fee ?? '1'));
       },
     );
   }

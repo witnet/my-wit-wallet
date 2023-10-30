@@ -80,8 +80,7 @@ class SpeedUpVttState extends State<SpeedUpVtt> {
           selectMinerFeeStep
               ? SelectMinerFeeStep(
                   key: minerFeeState,
-                  savedFeeAmount: null,
-                  savedFeeType: null,
+                  minFee: widget.speedUpTx.fee,
                   nextAction: _setNextAction,
                   goNext: goNext,
                   currentWallet: db.walletStorage.currentWallet,

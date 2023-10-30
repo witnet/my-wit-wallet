@@ -1,4 +1,13 @@
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
+import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
+import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
+
+enum FeeInputError { minFee }
+
+Map<FeeInputError, String> errorMap = {
+  FeeInputError.minFee: 'Fee should be higher than'
+};
 
 class FeeAmountInput extends VttAmountInput {
   final int availableNanoWit;
@@ -6,6 +15,7 @@ class FeeAmountInput extends VttAmountInput {
   final bool allowZero;
   final bool allowValidation;
   final int vttAmount;
+  final int? minFee;
 
   // Call super.pure to represent an unmodified form input.
   FeeAmountInput.pure()
@@ -13,6 +23,7 @@ class FeeAmountInput extends VttAmountInput {
         allowZero = false,
         weightedAmount = null,
         vttAmount = 0,
+        minFee = null,
         allowValidation = false,
         super.pure();
 
@@ -22,6 +33,7 @@ class FeeAmountInput extends VttAmountInput {
       value = '',
       this.weightedAmount,
       this.vttAmount = 0,
+      this.minFee,
       this.allowZero = false,
       this.allowValidation = false})
       : super.dirty(
@@ -42,10 +54,15 @@ class FeeAmountInput extends VttAmountInput {
   // Override validator to handle validating a given input value.
   @override
   String? validator(String value, {bool avoidWeightedAmountCheck = false}) {
+    final validationUtils = ValidationUtils(errorMap: errorMap);
     String? error = super
         .validator(value, avoidWeightedAmountCheck: avoidWeightedAmountCheck);
     if (error != null) {
       return error;
+    }
+    if (this.minFee != null &&
+        super.witAmountToNanoWitNumber(value) <= this.minFee!) {
+      return '${validationUtils.getErrorText(FeeInputError.minFee)} ${this.minFee!.standardizeWitUnits(outputUnit: WitUnit.Wit)} WIT';
     }
     return null;
   }

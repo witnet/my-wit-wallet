@@ -10,7 +10,7 @@ enum AmountInputError {
   invalid,
   zero,
   decimals,
-  invalidNumber
+  invalidNumber,
 }
 
 Map<AmountInputError, String> errorMap = {

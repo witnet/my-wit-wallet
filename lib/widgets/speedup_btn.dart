@@ -28,7 +28,6 @@ class SpeedUpBtnState extends State<SpeedUpBtn> {
   @override
   void initState() {
     super.initState();
-    _setVttWalletSource();
     _getPriorityEstimations();
   }
 
@@ -49,6 +48,7 @@ class SpeedUpBtnState extends State<SpeedUpBtn> {
 
   void addVttOutput() {
     _clearBuildVtt();
+    _setVttWalletSource();
     BlocProvider.of<VTTCreateBloc>(context).add(AddValueTransferOutputEvent(
         speedUpTx: widget.transaction,
         filteredUtxos: false,
