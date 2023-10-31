@@ -17,5 +17,6 @@ void main() async {
     testWidgets("Show node stats Test", e2eShowNodeStatsTest);
     testWidgets("Re-establish wallets", e2eReEstablishWallets);
     testWidgets("Import Xprv From Sheikah Test", e2eImportXprvFromSheikahTest);
+    testWidgets("Update theme color", e2eUpdateThemeColorTest);
   });
 }
