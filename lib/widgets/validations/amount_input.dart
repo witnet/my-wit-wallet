@@ -1,4 +1,5 @@
 import 'package:formz/formz.dart';
+import 'package:my_wit_wallet/util/get_localize_string.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 
 // Define input validation errors
@@ -12,11 +13,11 @@ enum AmountInputError {
 }
 
 Map<AmountInputError, String> errorMap = {
-  AmountInputError.empty: 'Please input an amount',
-  AmountInputError.notEnough: 'Not enough Funds',
-  AmountInputError.zero: 'Amount cannot be zero',
-  AmountInputError.invalid: 'Invalid amount',
-  AmountInputError.decimals: 'Only 9 decimal digits supported',
+  AmountInputError.empty: localization.validationEmpty,
+  AmountInputError.notEnough: localization.validationEnoughFunds,
+  AmountInputError.zero: localization.validationNoZero,
+  AmountInputError.invalid: localization.validationInvalidAmount,
+  AmountInputError.decimals: localization.validationDecimals,
 };
 
 // Extend FormzInput and provide the input type and error type.

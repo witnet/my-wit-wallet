@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/get_localize_string.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
 

@@ -5,6 +5,7 @@ import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/info_element.dart';
+import 'package:my_wit_wallet/util/get_localize_string.dart';
 
 typedef void VoidCallback(NavAction? value);
 

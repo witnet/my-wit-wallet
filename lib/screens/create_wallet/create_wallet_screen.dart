@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/get_localize_string.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_import_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/re_establish_wallet_disclaimer.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';

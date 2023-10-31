@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
-import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/get_localize_string.dart';
 import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/screens/preferences/general_config.dart';
 import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';

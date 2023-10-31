@@ -2,7 +2,7 @@ import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/get_localize_string.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/shared/locator.dart';

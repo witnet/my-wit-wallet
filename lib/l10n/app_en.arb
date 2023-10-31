@@ -258,5 +258,14 @@
   "whatToDo": "What to do?",
   "xprvInputHint": "Your Xprv key (starts with xprv...)",
   "xprvOrigin": "Xprv Origin",
-  "yourMessage": "Your message..."
+  "yourMessage": "Your message...",
+  "validationMinFee": "Fee should be higher than",
+  "validationEmpty": "Please enter an amount",
+  "validationEnoughFunds": "Not enough Funds",
+  "validationNoZero": "Amount cannot be zero",
+  "validationInvalidAmount": "Invalid amount",
+  "validationDecimals": "Only 9 decimal digits supported",
+  "txEmptyState": "You don't have transactions yet!",
+  "speedUp": "Speed up",
+  "speedUpTxTitle": "Speed up transaction"
 }

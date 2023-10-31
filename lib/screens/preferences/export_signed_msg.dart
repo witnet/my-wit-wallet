@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dart_date/dart_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/get_localize_string.dart';
 import 'package:my_wit_wallet/util/storage/path_provider_interface.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/dashed_rect.dart';

@@ -8,6 +8,7 @@ import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/successfull_transaction_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/unlock_keychain_modal.dart';
 import 'package:witnet/schema.dart';
+import 'package:my_wit_wallet/util/get_localize_string.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';

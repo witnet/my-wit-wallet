@@ -3,6 +3,7 @@ import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/widgets/closable_view.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
+import 'package:my_wit_wallet/util/get_localize_string.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';

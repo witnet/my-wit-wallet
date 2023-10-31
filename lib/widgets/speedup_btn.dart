@@ -3,6 +3,7 @@ import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_cr
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/util/get_localize_string.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
@@ -69,11 +70,8 @@ class SpeedUpBtnState extends State<SpeedUpBtn> {
   Widget build(BuildContext context) {
     return PaddedButton(
       padding: EdgeInsets.only(top: 8),
-      text: 'Speed up',
+      text: localization.speedUp,
       onPressed: () => {
-        print('send transaction'),
-        print(
-            'currentUtxos ${widget.transaction.vtt?.inputs.map((e) => e.input.outputPointer)}'),
         addVttOutput(),
         widget.speedUpTx(widget.transaction),
       },

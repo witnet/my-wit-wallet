@@ -2,11 +2,12 @@ import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
+import 'package:my_wit_wallet/util/get_localize_string.dart';
 
 enum FeeInputError { minFee }
 
 Map<FeeInputError, String> errorMap = {
-  FeeInputError.minFee: 'Fee should be higher than'
+  FeeInputError.minFee: localization.validationMinFee,
 };
 
 class FeeAmountInput extends VttAmountInput {

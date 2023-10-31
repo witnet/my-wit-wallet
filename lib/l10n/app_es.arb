@@ -252,5 +252,14 @@
   "whatToDo": "¿Qué hacer?",
   "xprvInputHint": "Tu clave Xprv (comienza con xprv...)",
   "xprvOrigin": "Origen de Xprv",
-  "yourMessage": "Tu mensaje..."
+  "yourMessage": "Tu mensaje...",
+  "validationMinFee": "La tarifa de minado tiene que ser mayor que",
+  "validationEmpty": "Por favor, ingrese una cantidad",
+  "validationEnoughFunds": "Fondos insuficientes",
+  "validationNoZero": "La cantidad no puede ser cero",
+  "validationInvalidAmount": "Cantidad inválida",
+  "validationDecimals": "Solo se admiten 9 dígitos decimales",
+  "txEmptyState": "¡Todavía no tienes transacciones!",
+  "speedUp": "Acelerar",
+  "speedUpTxTitle": "Acelerar transacción"
 }

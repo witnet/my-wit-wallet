@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/get_localize_string.dart';
 import 'package:my_wit_wallet/screens/login/view/ftu_actions.dart';
 import 'package:my_wit_wallet/screens/login/view/login_form.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';

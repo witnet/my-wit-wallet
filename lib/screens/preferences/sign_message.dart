@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/get_localize_string.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/screens/preferences/export_signed_msg.dart';
 import 'package:my_wit_wallet/screens/preferences/sign_message_form.dart';

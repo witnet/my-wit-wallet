@@ -7,13 +7,10 @@ import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/globals.dart' as globals;
+import 'package:my_wit_wallet/util/get_localize_string.dart';
 import 'package:witnet/data_structures.dart';
 
 typedef String LocalizationCallback(String value);
-
-AppLocalizations localization =
-    AppLocalizations.of(globals.navigatorKey.currentContext!)!;
 
 Map<WalletType, String> walletTypeToLabel(BuildContext context) => {
       WalletType.hd: AppLocalizations.of(context)!.walletTypeHDLabel,

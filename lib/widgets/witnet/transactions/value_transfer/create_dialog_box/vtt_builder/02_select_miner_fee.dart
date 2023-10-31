@@ -15,6 +15,7 @@ import 'package:my_wit_wallet/widgets/clickable_box.dart';
 import 'package:my_wit_wallet/widgets/input_amount.dart';
 import 'package:my_wit_wallet/widgets/toggle_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_wit_wallet/util/get_localize_string.dart';
 
 class SelectMinerFeeStep extends StatefulWidget {
   final Function nextAction;
