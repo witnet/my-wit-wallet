@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/screens/preferences/export_xprv.dart';
 import 'package:my_wit_wallet/screens/preferences/sign_message.dart';
-import 'package:my_wit_wallet/util/get_localize_string.dart';
+import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/custom_divider.dart';
 

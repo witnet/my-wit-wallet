@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_wit_wallet/util/get_localize_string.dart';
+import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 
 class AddressTileList extends StatefulWidget {

@@ -18,7 +18,7 @@ import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/input_amount.dart';
 import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
 import 'dart:io' show Platform;
-import 'package:my_wit_wallet/util/get_localize_string.dart';
+import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
 
 class RecipientStep extends StatefulWidget {

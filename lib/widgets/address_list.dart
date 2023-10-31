@@ -10,7 +10,7 @@ import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
-import 'package:my_wit_wallet/util/get_localize_string.dart';
+import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 

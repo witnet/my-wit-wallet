@@ -2,7 +2,7 @@ import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
-import 'package:my_wit_wallet/util/get_localize_string.dart';
+import 'package:my_wit_wallet/util/get_localization.dart';
 
 enum FeeInputError { minFee }
 

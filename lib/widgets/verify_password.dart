@@ -1,5 +1,5 @@
 import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
-import 'package:my_wit_wallet/util/get_localize_string.dart';
+import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';

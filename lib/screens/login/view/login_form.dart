@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_wit_wallet/util/get_localize_string.dart';
+import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/login/view/biometrics_autentication.dart';
 import 'package:my_wit_wallet/screens/login/view/re_establish_wallet_button.dart';
 import 'package:my_wit_wallet/util/allow_biometrics.dart';

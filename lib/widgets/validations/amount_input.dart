@@ -1,5 +1,5 @@
 import 'package:formz/formz.dart';
-import 'package:my_wit_wallet/util/get_localize_string.dart';
+import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 
 // Define input validation errors
