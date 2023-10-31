@@ -690,6 +690,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         isPrioritiesLoading = false;
       } catch (e) {
         print('Error getting priority estimations $e');
+        emit(state.copyWith(status: VTTCreateStatus.exception, message: '$e'));
         isPrioritiesLoading = false;
         rethrow;
       }
