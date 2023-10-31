@@ -57,6 +57,8 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
 
   int get vttAmount =>
       vttBloc.state.vtTransaction.body.outputs.first.value.toInt();
+  bool allowSetMinFeeValue(EstimatedFeeOptions label) =>
+      widget.minFee != null && label == EstimatedFeeOptions.Custom;
 
   /// Overrides
   @override
@@ -92,9 +94,9 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     }
   }
 
-  String _nanoWitFeeToWit(String fee) {
-    int nanoWitFee =
-        widget.minFee != null ? (int.parse(fee) + 1) : int.parse(fee);
+  String _nanoWitFeeToWit(String fee, {bool addMinFee = false}) {
+    int nanoWitFee = addMinFee ? widget.minFee! + 1 : int.parse(fee);
+
     try {
       return nanoWitFee
           .standardizeWitUnits(
@@ -111,7 +113,8 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     _feeType = vttBloc.feeType;
     _savedFeeAmount = vttBloc.feeNanoWit.toString();
     selectedIndex = _feeType == FeeType.Absolute ? 0 : 1;
-    String savedFee = _nanoWitFeeToWit(_savedFeeAmount);
+    String savedFee = _nanoWitFeeToWit(_savedFeeAmount,
+        addMinFee: allowSetMinFeeValue(_feeOption));
     _minerFeeController.text = savedFee;
 
     setState(() {
@@ -240,7 +243,10 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
         String? fee = _minerFeeOptionsNanoWit.values.toList()[index];
         EstimatedFeeOptions label =
             _minerFeeOptionsNanoWit.keys.toList()[index];
-        return _buildFeeOptionButton(label, _nanoWitFeeToWit(fee ?? '1'));
+        return _buildFeeOptionButton(
+            label,
+            _nanoWitFeeToWit(fee ?? '1',
+                addMinFee: allowSetMinFeeValue(label)));
       },
     );
   }

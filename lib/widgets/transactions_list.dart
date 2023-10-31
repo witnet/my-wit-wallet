@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
@@ -37,6 +39,8 @@ class TransactionsListState extends State<TransactionsList> {
   GeneralTransaction? transactionDetails;
   final ScrollController _scroller = ScrollController();
   GeneralTransaction? speedUpTransaction;
+  Wallet currentWallet =
+      Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
   dynamic nextAction;
   @override
   void initState() {
@@ -64,9 +68,25 @@ class TransactionsListState extends State<TransactionsList> {
     BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
   }
 
+  void _getPriorityEstimations() {
+    BlocProvider.of<VTTCreateBloc>(context).add(SetPriorityEstimationsEvent());
+  }
+
+  void _setVttWalletSource() {
+    BlocProvider.of<VTTCreateBloc>(context)
+        .add(AddSourceWalletsEvent(currentWallet: currentWallet));
+  }
+
+  void _prepareDataForSpeedUpTx() {
+    _clearBuildVtt();
+    _getPriorityEstimations();
+    _setVttWalletSource();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    bool setWalletForSpeedupTx = false;
     if (speedUpTransaction != null) {
       return SpeedUpVtt(
           speedUpTx: speedUpTransaction!,
@@ -92,8 +112,13 @@ class TransactionsListState extends State<TransactionsList> {
         scrollDirection: Axis.vertical,
         itemCount: widget.transactions.length,
         itemBuilder: (context, index) {
+          GeneralTransaction transaction = widget.transactions[index];
+          if (transaction.status == 'pending' && !setWalletForSpeedupTx) {
+            setWalletForSpeedupTx = true;
+            _prepareDataForSpeedUpTx();
+          }
           return TransactionsItem(
-              transaction: widget.transactions[index],
+              transaction: transaction,
               speedUpTx: setTxSpeedUpStatus,
               showDetails: widget.setDetails);
         },

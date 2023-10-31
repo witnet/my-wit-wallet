@@ -95,6 +95,7 @@ class DashboardLayoutState extends State<DashboardLayout>
   }
 
   Future<void> _showCreateVTTDialog() async {
+    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
     Navigator.push(
         context,
         CustomPageRoute(

@@ -29,7 +29,6 @@ class SpeedUpBtnState extends State<SpeedUpBtn> {
   @override
   void initState() {
     super.initState();
-    _getPriorityEstimations();
   }
 
   @override
@@ -38,18 +37,7 @@ class SpeedUpBtnState extends State<SpeedUpBtn> {
     super.dispose();
   }
 
-  void _getPriorityEstimations() {
-    BlocProvider.of<VTTCreateBloc>(context).add(SetPriorityEstimationsEvent());
-  }
-
-  void _setVttWalletSource() {
-    BlocProvider.of<VTTCreateBloc>(context)
-        .add(AddSourceWalletsEvent(currentWallet: currentWallet));
-  }
-
   void addVttOutput() {
-    _clearBuildVtt();
-    _setVttWalletSource();
     BlocProvider.of<VTTCreateBloc>(context).add(AddValueTransferOutputEvent(
         speedUpTx: widget.transaction,
         filteredUtxos: false,
@@ -60,10 +48,6 @@ class SpeedUpBtnState extends State<SpeedUpBtn> {
           'time_lock': 0
         }),
         merge: true));
-  }
-
-  void _clearBuildVtt() {
-    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
   }
 
   @override
