@@ -321,24 +321,25 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     }
   }
 
-  Future<Account> _updateAccountVttsFromExplorer(Account account) async {
+  Future<Account> _updateVttsFromExplorer(Account account) async {
     try {
       AddressValueTransfers vtts = await explorer.address(
           value: account.address, tab: 'value_transfers');
+      WalletStorage walletStorage = database.walletStorage;
 
       for (int i = 0; i < vtts.transactionHashes.length; i++) {
         String transactionId = vtts.transactionHashes[i];
-        ValueTransferInfo? vtt = database.walletStorage.getVtt(transactionId);
+        ValueTransferInfo? vtt = walletStorage.getVtt(transactionId);
 
         if (vtt != null) {
           /// this vtt.status check for "confirmed" is in the local database
           if (vtt.status != "confirmed") {
             ValueTransferInfo _vtt = await explorer.getVtt(transactionId);
-            await account.addVtt(_vtt);
+            walletStorage.setVtt(database.walletStorage.currentWallet.id, _vtt);
           }
         } else {
           ValueTransferInfo vtt = await explorer.getVtt(transactionId);
-          await account.addVtt(vtt);
+          walletStorage.setVtt(database.walletStorage.currentWallet.id, vtt);
         }
       }
 
@@ -388,7 +389,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<Account> updateAccountVttsAndBalance(Account account) async {
     try {
-      await _updateAccountVttsFromExplorer(account);
+      await _updateVttsFromExplorer(account);
       if (account.keyType == KeyType.master) {
         await _updateAccountMintsFromExplorer(account);
       }

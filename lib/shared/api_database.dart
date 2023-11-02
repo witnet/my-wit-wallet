@@ -349,8 +349,6 @@ class ApiDatabase {
   }
 
   Future<bool> updateVtt(String walletId, ValueTransferInfo vtt) async {
-    walletStorage.setVtt(walletId, vtt);
-
     return await _processIsolate(
         method: 'update', params: {'type': 'vtt', 'value': vtt.jsonMap()});
   }
