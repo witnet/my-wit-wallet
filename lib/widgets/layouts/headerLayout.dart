@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
@@ -10,8 +11,10 @@ class Customshape extends CustomClipper<Path> {
     double width = size.width;
 
     var path = Path();
-    path.lineTo(0, height - 50);
-    path.quadraticBezierTo(width / 2, height, width, height - 50);
+    double dividedNumber = size.width * 0.095;
+    path.lineTo(0, height - dividedNumber);
+    path.quadraticBezierTo(
+        width * 0.5, height + dividedNumber, width, height - dividedNumber);
     path.lineTo(width, 0);
     path.close();
     return path;
@@ -46,48 +49,64 @@ class HeaderLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     final theme = Theme.of(context);
-    return ClipPath(
-        clipper: Customshape(),
-        child: Container(
-            color: extendedTheme.headerBackgroundColor,
-            child: SafeArea(
-                child: Container(
-              height: dashboardActions != null
-                  ? DASHBOARD_HEADER_HEIGTH
-                  : HEADER_HEIGTH,
-              width: MediaQuery.of(context).size.width,
-              color: extendedTheme.headerBackgroundColor,
-              child: Column(children: [
-                Container(
-                    padding: navigationBarPadding(),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: navigationActions.length > 1
-                          ? MainAxisAlignment.spaceBetween
-                          : MainAxisAlignment.start,
-                      children: navigationActions,
-                    )),
-                Container(
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                      Flexible(
-                          child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                            minWidth: 50,
-                            maxWidth: dashboardActions != null
-                                ? MediaQuery.of(context).size.width * 0.9
-                                : MediaQuery.of(context).size.width * 0.3),
-                        child: Column(
-                          children: [
-                            dashboardActions != null
-                                ? dashboardActions!
-                                : witnetEyeIcon(theme, height: witnetLogoHeight)
-                          ],
-                        ),
-                      )),
-                    ])),
-              ]),
-            ))));
+    return Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+          colors: [
+            WitnetPallet.white,
+            WitnetPallet.white,
+            WitnetPallet.white,
+            WitnetPallet.white.withOpacity(0.7),
+            WitnetPallet.white.withOpacity(0.7),
+            WitnetPallet.white.withOpacity(0),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: [0, 0.2, 0.6, 0.7, 0.95, 1],
+        )),
+        child: ClipPath(
+            clipper: Customshape(),
+            child: Container(
+                color: extendedTheme.headerBackgroundColor,
+                child: SafeArea(
+                    child: Container(
+                  height: dashboardActions != null
+                      ? DASHBOARD_HEADER_HEIGTH
+                      : HEADER_HEIGTH,
+                  width: MediaQuery.of(context).size.width,
+                  color: extendedTheme.headerBackgroundColor,
+                  child: Column(children: [
+                    Container(
+                        padding: navigationBarPadding(),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: navigationActions.length > 1
+                              ? MainAxisAlignment.spaceBetween
+                              : MainAxisAlignment.start,
+                          children: navigationActions,
+                        )),
+                    Container(
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                          Flexible(
+                              child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                                minWidth: 50,
+                                maxWidth: dashboardActions != null
+                                    ? MediaQuery.of(context).size.width * 0.9
+                                    : MediaQuery.of(context).size.width * 0.3),
+                            child: Column(
+                              children: [
+                                dashboardActions != null
+                                    ? dashboardActions!
+                                    : witnetEyeIcon(theme,
+                                        height: witnetLogoHeight)
+                              ],
+                            ),
+                          )),
+                        ])),
+                  ]),
+                )))));
   }
 }

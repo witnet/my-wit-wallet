@@ -209,17 +209,15 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
       semanticChildCount: 1,
       slivers: [
         SliverAppBar(
-            floating: true,
             systemOverlayStyle: SystemUiOverlayStyle(
               statusBarColor: extendedTheme.headerBackgroundColor,
               statusBarIconBrightness: Brightness.light,
               statusBarBrightness: Brightness.dark,
             ),
-            snap: true,
             pinned: true,
             elevation: 0,
             automaticallyImplyLeading: false,
-            backgroundColor: Colors.transparent,
+            backgroundColor: WitnetPallet.white.withOpacity(0.0),
             expandedHeight: widget.dashboardActions != null
                 ? DASHBOARD_HEADER_HEIGTH
                 : HEADER_HEIGTH,
@@ -228,7 +226,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                 : HEADER_HEIGTH,
             flexibleSpace: headerLayout(context, theme)),
         SliverPadding(
-          padding: EdgeInsets.only(left: 16, right: 16),
+          padding: EdgeInsets.only(left: 16, right: 16, top: 24),
           sliver: SliverToBoxAdapter(
               child: Center(
             child: ConstrainedBox(

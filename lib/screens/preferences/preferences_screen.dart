@@ -60,7 +60,6 @@ class _PreferencePageState extends State<PreferencePage> {
                         .key;
                   }),
                 }),
-        SizedBox(height: 16),
         view,
       ],
     );
