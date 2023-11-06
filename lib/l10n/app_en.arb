@@ -267,7 +267,7 @@
   "validationDecimals": "Only 9 decimal digits supported",
   "txEmptyState": "You don't have transactions yet!",
   "speedUp": "Speed up",
-  "speedUpTxTitle": "Speed up transaction"
+  "speedUpTxTitle": "Speed up transaction",
   "updateAvailable": "Update available",
   "newVersionAvailable": "A new version of the app is available.",
   "newVersion": "New Version: {versionNumber}",

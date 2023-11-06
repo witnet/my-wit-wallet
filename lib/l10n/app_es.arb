@@ -261,7 +261,7 @@
   "validationDecimals": "Solo se admiten 9 dígitos decimales",
   "txEmptyState": "¡Todavía no tienes transacciones!",
   "speedUp": "Acelerar",
-  "speedUpTxTitle": "Acelerar transacción"
+  "speedUpTxTitle": "Acelerar transacción",
   "updateAvailable": "Actualización disponible",
   "newVersionAvailable": "Nueva versión disponible.",
   "newVersion": "Nueva versión: {versionNumber}",
