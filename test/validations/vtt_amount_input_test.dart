@@ -1,7 +1,10 @@
+import 'package:flutter/widgets.dart';
 import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
 import 'package:test/test.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   test('Decimal number has more than 9 digits', () async {
     String amount = '0.00000000001';
     VttAmountInput _amount = VttAmountInput.dirty(
