@@ -338,8 +338,8 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
             walletStorage.setVtt(database.walletStorage.currentWallet.id, _vtt);
           }
         } else {
-          ValueTransferInfo vtt = await explorer.getVtt(transactionId);
-          walletStorage.setVtt(database.walletStorage.currentWallet.id, vtt);
+          ValueTransferInfo _vtt = await explorer.getVtt(transactionId);
+          walletStorage.setVtt(database.walletStorage.currentWallet.id, _vtt);
         }
       }
 

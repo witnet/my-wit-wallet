@@ -65,6 +65,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     on<SignTransactionEvent>(_signTransactionEvent);
     on<SendTransactionEvent>(_sendVttTransactionEvent);
     on<UpdateFeeEvent>(_updateFeeEvent);
+    on<PrepareSpeedUpTxEvent>(_prepareSpeedUpTx);
     on<UpdateUtxoSelectionStrategyEvent>(_updateUtxoSelectionStrategyEvent);
     on<AddSourceWalletsEvent>(_addSourceWalletsEvent);
     on<SetPriorityEstimationsEvent>(_setPriorityEstimations);
@@ -392,7 +393,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
           // +1 to the outputs length to include for change address
           feeNanoWit = getFee(feeNanoWit);
           valueChangeNanoWit = (valuePaidNanoWit - valueOwedNanoWit);
-
           outputs.add(ValueTransferOutput.fromJson({
             'pkh': changeAccount?.address,
             'value': valueChangeNanoWit,
@@ -671,6 +671,22 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   void _updateUtxoSelectionStrategyEvent(
       UpdateUtxoSelectionStrategyEvent event, Emitter<VTTCreateState> emit) {
     utxoSelectionStrategy = event.strategy;
+  }
+
+  Future<void> _prepareSpeedUpTx(
+      PrepareSpeedUpTxEvent event, Emitter<VTTCreateState> emit) async {
+    _resetTransactionEvent(ResetTransactionEvent(), emit);
+    await _setPriorityEstimations(SetPriorityEstimationsEvent(), emit);
+    await _addSourceWalletsEvent(
+        AddSourceWalletsEvent(currentWallet: event.currentWallet), emit);
+    _addValueTransferOutputEvent(
+        AddValueTransferOutputEvent(
+            speedUpTx: event.speedUpTx,
+            filteredUtxos: false,
+            currentWallet: event.currentWallet,
+            output: event.output,
+            merge: true),
+        emit);
   }
 
   Future<void> _addSourceWalletsEvent(

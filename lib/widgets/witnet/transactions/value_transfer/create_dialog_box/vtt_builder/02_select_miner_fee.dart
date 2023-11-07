@@ -38,7 +38,6 @@ class SelectMinerFeeStep extends StatefulWidget {
 class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     with SingleTickerProviderStateMixin {
   late BalanceInfo balanceInfo = widget.currentWallet.balanceNanoWit();
-  late AnimationController _loadingController;
   final _formKey = GlobalKey<FormState>();
   Map<EstimatedFeeOptions, String?> _minerFeeOptionsNanoWit =
       DEFAULT_MINER_FEE_OPTIONS;
@@ -64,10 +63,6 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   @override
   void initState() {
     super.initState();
-    _loadingController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
     _setSavedFeeData();
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.nextAction(next));
@@ -75,7 +70,6 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
 
   @override
   void dispose() {
-    _loadingController.dispose();
     _minerFeeController.dispose();
     _minerFeeFocusNode.dispose();
     super.dispose();

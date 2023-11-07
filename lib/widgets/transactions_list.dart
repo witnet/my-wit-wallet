@@ -10,6 +10,7 @@ import 'package:my_wit_wallet/widgets/speed_up_tx.dart';
 import 'package:my_wit_wallet/widgets/transaction_details.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/widgets/transaction_item.dart';
+import 'package:witnet/schema.dart';
 
 typedef void VoidCallback(GeneralTransaction? value);
 typedef void ShowPaginationCallback(bool value);
@@ -54,6 +55,9 @@ class TransactionsListState extends State<TransactionsList> {
   }
 
   void setTxSpeedUpStatus(GeneralTransaction? speedUpTx) {
+    if (speedUpTx != null) {
+      _prepareSpeedUpTx(speedUpTx);
+    }
     setState(() {
       speedUpTransaction = speedUpTx;
     });
@@ -64,34 +68,26 @@ class TransactionsListState extends State<TransactionsList> {
     }
   }
 
-  void _clearBuildVtt() {
-    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
-  }
-
-  void _getPriorityEstimations() {
-    BlocProvider.of<VTTCreateBloc>(context).add(SetPriorityEstimationsEvent());
-  }
-
-  void _setVttWalletSource() {
-    BlocProvider.of<VTTCreateBloc>(context)
-        .add(AddSourceWalletsEvent(currentWallet: currentWallet));
-  }
-
-  void _prepareDataForSpeedUpTx() {
-    _clearBuildVtt();
-    _getPriorityEstimations();
-    _setVttWalletSource();
+  void _prepareSpeedUpTx(GeneralTransaction speedUpTx) {
+    BlocProvider.of<VTTCreateBloc>(context).add(PrepareSpeedUpTxEvent(
+        speedUpTx: speedUpTx,
+        filteredUtxos: false,
+        currentWallet: currentWallet,
+        output: ValueTransferOutput.fromJson({
+          'pkh': speedUpTx.vtt!.inputs.first.address,
+          'value': speedUpTx.vtt!.outputs.first.value.toInt(),
+          'time_lock': 0
+        }),
+        merge: true));
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    bool setWalletForSpeedupTx = false;
     if (speedUpTransaction != null) {
       return SpeedUpVtt(
           speedUpTx: speedUpTransaction!,
           closeSetting: () => {
-                _clearBuildVtt(),
                 setTxSpeedUpStatus(null),
               });
     }
@@ -113,10 +109,6 @@ class TransactionsListState extends State<TransactionsList> {
         itemCount: widget.transactions.length,
         itemBuilder: (context, index) {
           GeneralTransaction transaction = widget.transactions[index];
-          if (transaction.status == 'pending' && !setWalletForSpeedupTx) {
-            setWalletForSpeedupTx = true;
-            _prepareDataForSpeedUpTx();
-          }
           return TransactionsItem(
               transaction: transaction,
               speedUpTx: setTxSpeedUpStatus,

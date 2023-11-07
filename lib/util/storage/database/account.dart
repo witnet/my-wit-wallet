@@ -154,12 +154,11 @@ class Account extends _Account {
     }
   }
 
-  Future<bool> addVtt(ValueTransferInfo vtt) async {
+  Future<void> addVtt(ValueTransferInfo vtt) async {
     ApiDatabase database = Locator.instance<ApiDatabase>();
-    bool addedVtt = false;
     vtt.inputs.forEach((input) {
       if (input.address == address) {
-        if (!addedVtt) {
+        if (!vttHashes.contains(vtt.txnHash)) {
           vttHashes.add(vtt.txnHash);
           vtts.add(vtt);
         }
@@ -167,7 +166,7 @@ class Account extends _Account {
     });
     vtt.outputs.forEach((output) {
       if (output.pkh.address == address) {
-        if (!addedVtt) {
+        if (!vttHashes.contains(vtt.txnHash)) {
           vttHashes.add(vtt.txnHash);
           vtts.add(vtt);
         }
@@ -179,7 +178,6 @@ class Account extends _Account {
       await database.updateVtt(this.walletId, vtt);
     }
     await database.updateAccount(this);
-    return addedVtt;
   }
 
   Future<bool> deleteVtt(ValueTransferInfo vtt) async {

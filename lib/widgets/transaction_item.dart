@@ -109,7 +109,6 @@ class TransactionsItemState extends State<TransactionsItem> {
   Widget buildTransactionValue(label, transaction) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-
     if (label == localization.from) {
       return Text(
         ' + ${receiveValue(transaction).standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
@@ -133,11 +132,16 @@ class TransactionsItemState extends State<TransactionsItem> {
     }
   }
 
+  Widget buildSpeedUpBtn() {
+    return SpeedUpBtn(
+        speedUpTx: (GeneralTransaction tx) => widget.speedUpTx(tx),
+        transaction: widget.transaction);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-
     String label;
     String address;
     TransactionType txnType = widget.transaction.txnType;
@@ -152,12 +156,6 @@ class TransactionsItemState extends State<TransactionsItem> {
     } else {
       label = localization.from;
       address = 'Mint';
-    }
-
-    Widget buildSpeedUpBtn() {
-      return SpeedUpBtn(
-          speedUpTx: (GeneralTransaction tx) => widget.speedUpTx(tx),
-          transaction: widget.transaction);
     }
 
     return Semantics(

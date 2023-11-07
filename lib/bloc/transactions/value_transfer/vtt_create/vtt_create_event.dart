@@ -21,6 +21,22 @@ class AddValueTransferOutputEvent extends VTTCreateEvent {
   List<Object?> get props => [output, currentWallet, merge];
 }
 
+class PrepareSpeedUpTxEvent extends VTTCreateEvent {
+  final ValueTransferOutput output;
+  final Wallet currentWallet;
+  final bool merge;
+  final GeneralTransaction? speedUpTx;
+  final bool filteredUtxos;
+  PrepareSpeedUpTxEvent(
+      {required this.output,
+      required this.currentWallet,
+      required this.merge,
+      this.speedUpTx,
+      this.filteredUtxos = true});
+  @override
+  List<Object?> get props => [output, currentWallet, merge];
+}
+
 class UpdateFeeEvent extends VTTCreateEvent {
   final FeeType feeType;
   final int? feeNanoWit;
