@@ -172,11 +172,6 @@ class Account extends _Account {
         }
       }
     });
-    if (await database.getVtt(vtt.txnHash) == null) {
-      await database.addVtt(vtt);
-    } else {
-      await database.updateVtt(this.walletId, vtt);
-    }
     await database.updateAccount(this);
   }
 

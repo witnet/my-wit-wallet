@@ -361,6 +361,14 @@ class ApiDatabase {
         method: 'update', params: {'type': 'vtt', 'value': vtt.jsonMap()});
   }
 
+  Future<void> addOrUpdateVttInDB(ValueTransferInfo vtt) async {
+    if (await getVtt(vtt.txnHash) == null) {
+      await addVtt(vtt);
+    } else {
+      await updateVtt(walletStorage.currentWallet.id, vtt);
+    }
+  }
+
   Future<bool> updateMint(String walletId, MintEntry mint) async {
     return await _processIsolate(
         method: 'update', params: {'type': 'mint', 'value': mint.jsonMap()});
@@ -372,7 +380,6 @@ class ApiDatabase {
   }
 
   Future<bool> updateAccount(Account account) async {
-    // walletStorage.setAccount(account);
     return await _processIsolate(
         method: 'update',
         params: {'type': 'account', 'value': account.jsonMap()});

@@ -192,7 +192,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     ApiDatabase database = Locator.instance<ApiDatabase>();
     Wallet wallet = database.walletStorage.currentWallet;
 
-    Account account = await updateAccountVttsAndBalance(event.account);
+    Account account = await syncAccountVttsAndBalance(event.account);
     wallet.updateAccount(
       index: account.index,
       keyType: account.keyType,
@@ -325,7 +325,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     }
   }
 
-  Future<Account> _updateVttsFromExplorer(Account account) async {
+  Future<Account> _syncAccountVtts(Account account) async {
     try {
       AddressValueTransfers vtts = await explorer.address(
           value: account.address, tab: 'value_transfers');
@@ -340,10 +340,12 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           if (vtt.status != "confirmed") {
             ValueTransferInfo _vtt = await explorer.getVtt(transactionId);
             walletStorage.setVtt(database.walletStorage.currentWallet.id, _vtt);
+            database.addOrUpdateVttInDB(_vtt);
           }
         } else {
           ValueTransferInfo _vtt = await explorer.getVtt(transactionId);
           walletStorage.setVtt(database.walletStorage.currentWallet.id, _vtt);
+          database.addOrUpdateVttInDB(_vtt);
         }
       }
 
@@ -356,7 +358,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     }
   }
 
-  Future<Account> _updateAccountMintsFromExplorer(Account account) async {
+  Future<Account> _syncAccountMints(Account account) async {
     try {
       /// retrieve all Block Hashes
       final addressBlocks = await explorer.address(
@@ -391,11 +393,11 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     }
   }
 
-  Future<Account> updateAccountVttsAndBalance(Account account) async {
+  Future<Account> syncAccountVttsAndBalance(Account account) async {
     try {
-      await _updateVttsFromExplorer(account);
+      await _syncAccountVtts(account);
       if (account.keyType == KeyType.master) {
-        await _updateAccountMintsFromExplorer(account);
+        await _syncAccountMints(account);
       }
       await account.setBalance();
       database.walletStorage.wallets[account.walletId]!.setAccount(account);
@@ -406,11 +408,38 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     return account;
   }
 
+  Future<void> syncWalletStorage(
+      {required Map<String, List<Utxo>> utxos, required Wallet wallet}) async {
+    for (int addressIndex = 0; addressIndex < utxos.length; addressIndex++) {
+      String address = utxos.keys.toList()[addressIndex];
+      List<Utxo> utxoList = utxos[address] ?? [];
+      Account? account = wallet.accountByAddress(address);
+      if (account != null && !account.sameUtxoList(utxoList)) {
+        if (utxoList.isNotEmpty) {
+          account.utxos = utxoList;
+          account = await syncAccountVttsAndBalance(account);
+        } else {
+          account.utxos.clear();
+        }
+        wallet.updateAccount(
+          index: account.index,
+          keyType: account.keyType,
+          account: account,
+        );
+      }
+    }
+  }
+
+  _updateWalletList({required WalletStorage storage, required Wallet wallet}) {
+    storage.wallets[wallet.id] = wallet;
+  }
+
   Future<WalletStorage> syncWalletRoutine(
       SyncWalletEvent event, Emitter<ExplorerState> emit) async {
     /// get current wallet
     ApiDatabase database = Locator.instance<ApiDatabase>();
-    Wallet wallet = database.walletStorage.currentWallet;
+    WalletStorage storage = database.walletStorage;
+    Wallet wallet = storage.currentWallet;
 
     /// get a list of any pending transactions
     List<ValueTransferInfo> unconfirmedVtts = wallet.unconfirmedTransactions();
@@ -444,55 +473,22 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
             rethrow;
           }
 
-          /// loop over the explorer response
-          /// which is Map<String, List<Utxo>> key = address
-          Map<String, Account> updatedAccounts = {};
-
-          for (int addressIndex = 0;
-              addressIndex < _utxos.length;
-              addressIndex++) {
-            String address = _utxos.keys.toList()[addressIndex];
-            List<Utxo> utxoList = _utxos[address] ?? [];
-            Account? account = wallet.accountByAddress(address);
-            if (account != null && !account.sameUtxoList(utxoList)) {
-              if (utxoList.isNotEmpty) {
-                account.utxos = utxoList;
-                account = await updateAccountVttsAndBalance(account);
-              } else {
-                account.utxos.clear();
-              }
-              updatedAccounts[account.address] = account;
-              await wallet.updateAccount(
-                  index: account.index,
-                  keyType: account.keyType,
-                  account: account);
-            }
-          }
-          database.walletStorage.wallets[wallet.id] = wallet;
+          await syncWalletStorage(utxos: _utxos, wallet: wallet);
+          _updateWalletList(storage: storage, wallet: wallet);
         }
       } catch (err) {
         print('Error updating UTXOs $err');
         rethrow;
       }
     } else if (wallet.walletType == WalletType.single) {
-      await _updateDBStatsFromExplorer(
-          currentWallet: wallet, database: database);
-
       List<Utxo> utxoList = await Locator.instance<ApiExplorer>()
           .utxos(address: wallet.masterAccount!.address);
-      Account account = wallet.masterAccount!;
 
-      if (!wallet.masterAccount!.sameUtxoList(utxoList)) {
-        if (utxoList.isNotEmpty) {
-          account.utxos = utxoList;
-          account = await updateAccountVttsAndBalance(account);
-        } else {
-          account.utxos.clear();
-        }
-        wallet.updateAccount(
-            index: account.index, keyType: account.keyType, account: account);
-      }
-      database.walletStorage.wallets[wallet.id] = wallet;
+      await _updateDBStatsFromExplorer(
+          currentWallet: wallet, database: database);
+      await syncWalletStorage(
+          utxos: {wallet.masterAccount!.address: utxoList}, wallet: wallet);
+      _updateWalletList(storage: storage, wallet: wallet);
     }
 
     for (int i = 0; i < unconfirmedVtts.length; i++) {
@@ -531,6 +527,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     await database.updateCurrentWallet(
         currentWalletId: wallet.id,
         isHdWallet: wallet.walletType == WalletType.hd);
-    return database.walletStorage;
+    return storage;
   }
 }
