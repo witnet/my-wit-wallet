@@ -67,6 +67,9 @@ jobs:
       - name: Flutter Doctor
         run: flutter doctor
 
+      - name: Run unit tests
+        run: flutter test
+
       - name: Binary
         run: flutter build windows
 
@@ -95,6 +98,9 @@ jobs:
       - name: Flutter Doctor
         run: flutter doctor
 
+      - name: Run unit tests
+        run: flutter test
+
       - name: Binary
         run: flutter build linux --release
 
@@ -122,6 +128,9 @@ jobs:
 
       - name: Flutter Doctor
         run: flutter doctor
+
+      - name: Run unit tests
+        run: flutter test
 
       - name: Binary
         run: flutter build macos --debug
@@ -162,6 +171,9 @@ jobs:
       - name: Flutter Doctor
         run: flutter doctor
 
+      - name: Run unit tests
+        run: flutter test
+
       - name: Binary
         run: flutter build appbundle --debug
 
@@ -192,6 +204,9 @@ jobs:
 
       - name: Flutter Doctor
         run: flutter doctor
+      
+      - name: Run unit tests
+        run: flutter test
 
       - name: Binary
         run: flutter build ios --release --no-codesign
