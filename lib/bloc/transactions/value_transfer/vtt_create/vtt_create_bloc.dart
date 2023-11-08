@@ -624,27 +624,15 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       await database.addVtt(vti);
 
       /// update the accounts transaction list
-
       /// the inputs
+
+      List<String> accountUpdates = [];
+
       for (int i = 0; i < _inputUtxoList.length; i++) {
         InputUtxo inputUtxo = _inputUtxoList[i];
-        Account account = database.walletStorage.currentWallet
-            .accountByAddress(inputUtxo.address)!;
-        account.vttHashes.add(event.transaction.transactionID);
-        account.vtts.add(vti);
-        await database.walletStorage.currentWallet.updateAccount(
-          index: account.index,
-          keyType: account.keyType,
-          account: account,
-        );
-      }
-
-      /// check outputs for accounts and update them
-      for (int i = 0; i < outputs.length; i++) {
-        ValueTransferOutput output = outputs[i];
-        Account? account = database.walletStorage.currentWallet
-            .accountByAddress(output.pkh.address);
-        if (account != null) {
+        if (!accountUpdates.contains(inputUtxo.address)) {
+          Account account = database.walletStorage.currentWallet
+              .accountByAddress(inputUtxo.address)!;
           account.vttHashes.add(event.transaction.transactionID);
           account.vtts.add(vti);
           await database.walletStorage.currentWallet.updateAccount(
@@ -652,6 +640,25 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
             keyType: account.keyType,
             account: account,
           );
+          accountUpdates.add(account.address);
+        }
+      }
+
+      /// check outputs for accounts and update them
+      for (int i = 0; i < outputs.length; i++) {
+        ValueTransferOutput output = outputs[i];
+        if (!accountUpdates.contains(output.pkh.address)) {
+          Account? account = database.walletStorage.currentWallet
+              .accountByAddress(output.pkh.address);
+          if (account != null) {
+            account.vttHashes.add(event.transaction.transactionID);
+            account.vtts.add(vti);
+            await database.walletStorage.currentWallet.updateAccount(
+              index: account.index,
+              keyType: account.keyType,
+              account: account,
+            );
+          }
         }
       }
       if (event.speedUpTx != null) {

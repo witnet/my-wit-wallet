@@ -56,11 +56,9 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
     ApiDatabase database = Locator.instance<ApiDatabase>();
     WalletStorage storage = await database.loadWalletsDatabase();
     if (storage.wallets.isNotEmpty) {
-      logger.log('There are wallets stored!');
       // There are wallets stored
       return LoginForm(mainComponents: mainComponents());
     } else {
-      logger.log('Empty wallet storage!');
       // No wallets stored yet
       return FtuActions(mainComponents: mainComponents());
     }

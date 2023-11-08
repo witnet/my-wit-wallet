@@ -351,4 +351,8 @@ class DatabaseService {
   Future<MintEntry?> getMint(params) async {
     return await mintRepository.getTransaction(params["hash"], _database);
   }
+
+  Future<Account?> getAccount(params) async {
+    return await accountRepository.getAccount(params["address"], _database);
+  }
 }

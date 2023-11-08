@@ -66,6 +66,19 @@ class AccountRepository extends _AccountRepository {
     }
   }
 
+  Future<Account?> getAccount(
+      String address, DatabaseClient databaseClient) async {
+    try {
+      dynamic accountDbJson = await _store.record(address).get(databaseClient);
+
+      Account accountEntry = Account.fromJson(accountDbJson);
+
+      return accountEntry;
+    } catch (e) {
+      return null;
+    }
+  }
+
   @override
   Future<List<Account>> getAccounts(DatabaseClient databaseClient) async {
     final List<RecordSnapshot<dynamic, dynamic>> snapshots =

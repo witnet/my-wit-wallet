@@ -317,6 +317,16 @@ class ApiDatabase {
     }
   }
 
+  Future<Account?> getAccount(String hash) async {
+    try {
+      return await _processIsolate(
+          method: 'getAccount', params: {"hash": hash});
+    } catch (err) {
+      print('Error getting account info:: $err');
+      return null;
+    }
+  }
+
   Future<MintEntry?> getMint(String hash) async {
     try {
       return await _processIsolate(method: 'getMint', params: {"hash": hash});
@@ -339,7 +349,6 @@ class ApiDatabase {
     final result = await _processIsolate(method: 'loadWallets');
     if (result.runtimeType == WalletStorage) {
       WalletStorage storage = result;
-      logger.log('Number of wallets stored: ${storage.wallets.length}');
       walletStorage = storage;
     } else {
       // db isolate can return a DBException
