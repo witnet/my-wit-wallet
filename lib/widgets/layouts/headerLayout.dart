@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/constants.dart';
-import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
@@ -53,12 +52,12 @@ class HeaderLayout extends StatelessWidget {
         decoration: BoxDecoration(
             gradient: LinearGradient(
           colors: [
-            WitnetPallet.white,
-            WitnetPallet.white,
-            WitnetPallet.white,
-            WitnetPallet.white.withOpacity(0.7),
-            WitnetPallet.white.withOpacity(0.7),
-            WitnetPallet.white.withOpacity(0),
+            theme.colorScheme.background,
+            theme.colorScheme.background,
+            theme.colorScheme.background,
+            theme.colorScheme.background.withOpacity(0.7),
+            theme.colorScheme.background.withOpacity(0.7),
+            theme.colorScheme.background.withOpacity(0),
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,

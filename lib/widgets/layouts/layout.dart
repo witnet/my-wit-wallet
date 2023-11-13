@@ -217,7 +217,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             pinned: true,
             elevation: 0,
             automaticallyImplyLeading: false,
-            backgroundColor: WitnetPallet.white.withOpacity(0.0),
+            backgroundColor: theme.colorScheme.background.withOpacity(0.0),
             expandedHeight: widget.dashboardActions != null
                 ? DASHBOARD_HEADER_HEIGTH
                 : HEADER_HEIGTH,
