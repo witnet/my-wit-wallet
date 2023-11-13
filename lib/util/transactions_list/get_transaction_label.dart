@@ -12,6 +12,9 @@ String getTransactionLabel(
   String label = '';
   String _from = context != null ? localization.from : "from";
   String _to = context != null ? localization.to : "to";
+  if (inputs.length < 1) {
+    return _from;
+  }
   inputs.forEach((element) {
     if (singleAddressAccount != null &&
         singleAddressAccount.address != element.address) {
