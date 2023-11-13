@@ -53,6 +53,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   ScrollController defaultScrollController =
       ScrollController(keepScrollOffset: false);
   final panelController = PanelController();
+  bool get isUpdateCheckerEnabled => Platform.isMacOS || Platform.isLinux;
 
   BlocListener<VTTCreateBloc, VTTCreateState> _vttListener(Widget child) {
     final theme = Theme.of(context);
@@ -389,7 +390,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                       },
                     ),
                   },
-                  child: Platform.isMacOS || Platform.isLinux
+                  child: isUpdateCheckerEnabled
                       ? AutoUpdate(child: buildMainScaffold())
                       : buildMainScaffold()),
             )));

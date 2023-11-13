@@ -136,3 +136,11 @@ const Map<String, Locale> SUPPORTED_LOCALES = {
 };
 
 const String APP_TITLE = "myWitWallet";
+const String WINDOWS_FILE_NAME = "myWitWallet-windows.zip";
+const String MACOS_FILE_NAME = "myWitWallet.dmg";
+const String LINUX_FILE_NAME = "myWitWallet-linux.tar.gz";
+const String DEFAULT_FILE_NAME = "myWitWallet.zip";
+const String LATEST_RELEASE_URL =
+    "https://api.github.com/repos/witnet/my-wit-wallet/releases/latest";
+const String DOWNLOAD_BASE_URL =
+    "https://github.com/witnet/my-wit-wallet/releases/download";

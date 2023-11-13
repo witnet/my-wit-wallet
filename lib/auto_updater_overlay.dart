@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
@@ -23,29 +21,13 @@ class AutoUpdate extends StatefulWidget {
 }
 
 class AutoUpdateState extends State<AutoUpdate> {
-  var show = true;
-  var elevated = false;
-
-  TextEditingController titleController =
-      TextEditingController(text: "Update Available");
-  TextEditingController subtitleController =
-      TextEditingController(text: "New version available");
-
   @override
   void dispose() {
-    titleController.dispose();
-    subtitleController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
-    titleController.addListener(() {
-      setState(() {});
-    });
-    subtitleController.addListener(() {
-      setState(() {});
-    });
     super.initState();
   }
 
@@ -54,20 +36,19 @@ class AutoUpdateState extends State<AutoUpdate> {
     return UpdatWindowManager(
       getLatestVersion: () async {
         final data = await http.get(Uri.parse(
-          "https://api.github.com/repos/witnet/my-wit-wallet/releases/latest",
+          LATEST_RELEASE_URL,
         ));
 
         // Return the tag name, which is always a semantically versioned string.
         return jsonDecode(data.body)["tag_name"];
       },
       getBinaryUrl: (version) async {
-        print('version $version');
-        return "https://github.com/witnet/my-wit-wallet/releases/download/$version/$fileName";
+        return "$DOWNLOAD_BASE_URL/$version/$fileName";
       },
       appName: "myWitWallet", // This is used to name the downloaded files.
       getChangelog: (_, __) async {
         final data = await http.get(Uri.parse(
-          "https://api.github.com/repos/witnet/my-wit-wallet/releases/latest",
+          LATEST_RELEASE_URL,
         ));
         return jsonDecode(data.body)["body"];
       },
@@ -199,21 +180,21 @@ String get fileName {
   switch (Platform.operatingSystem) {
     case 'windows':
       {
-        return 'myWitWallet-windows.zip';
+        return WINDOWS_FILE_NAME;
       }
 
     case 'macos':
       {
-        return 'myWitWallet.dmg';
+        return MACOS_FILE_NAME;
       }
 
     case 'linux':
       {
-        return 'myWitWallet-linux.tar.gz';
+        return LINUX_FILE_NAME;
       }
     default:
       {
-        return 'zip';
+        return DEFAULT_FILE_NAME;
       }
   }
 }

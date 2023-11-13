@@ -354,7 +354,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       bool containsChangeAddress = false;
       int changeIndex = 0;
       int outIdx = 0;
-      print('outputs 0 :: ${outputs.map((e) => e.value)}');
       outputs.forEach((element) {
         if (element.pkh.address == changeAccount?.address) {
           /// check if a change address is already in the outputs
