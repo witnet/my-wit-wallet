@@ -1,3 +1,4 @@
+import 'package:my_wit_wallet/bloc/transactions/transaction_builder.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,8 @@ import 'package:my_wit_wallet/widgets/validations/fee_amount_input.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/storage/database/balance_info.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
@@ -17,19 +20,19 @@ import 'package:my_wit_wallet/widgets/toggle_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 
+GlobalKey<SelectMinerFeeStepState> minerFeeState =
+    GlobalKey<SelectMinerFeeStepState>();
+
 class SelectMinerFeeStep extends StatefulWidget {
   final Function nextAction;
-  final Wallet currentWallet;
   final VoidCallback goNext;
   final int? minFee;
 
   SelectMinerFeeStep({
-    required Key? key,
-    required this.currentWallet,
     required this.nextAction,
     required this.goNext,
     this.minFee,
-  }) : super(key: key);
+  }) : super(key: minerFeeState);
 
   @override
   State<StatefulWidget> createState() => SelectMinerFeeStepState();
@@ -37,7 +40,9 @@ class SelectMinerFeeStep extends StatefulWidget {
 
 class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     with SingleTickerProviderStateMixin {
-  late BalanceInfo balanceInfo = widget.currentWallet.balanceNanoWit();
+  Wallet get wallet =>
+      Locator.instance<ApiDatabase>().walletStorage.currentWallet;
+  late BalanceInfo balanceInfo = wallet.balanceNanoWit();
   final _formKey = GlobalKey<FormState>();
   Map<EstimatedFeeOptions, String?> _minerFeeOptionsNanoWit =
       DEFAULT_MINER_FEE_OPTIONS;
@@ -53,9 +58,18 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   EstimatedFeeOptions _feeOption = EstimatedFeeOptions.Medium;
   String _savedFeeAmount = '1';
   VTTCreateBloc get vttBloc => BlocProvider.of<VTTCreateBloc>(context);
+  VttBuilder get vttBuilder =>
+      BlocProvider.of<VTTCreateBloc>(context).vttBuilder;
+  int get vttAmount {
+    if (vttBuilder.speedUpTx != null) {
+      return vttBuilder.speedUpTx!.vtt!.outputs.first.value.toInt();
+    }
+    if (vttBuilder.outputs.isNotEmpty) {
+      return vttBuilder.outputs.first.value.toInt();
+    }
+    return 0;
+  }
 
-  int get vttAmount =>
-      vttBloc.state.vtTransaction.body.outputs.first.value.toInt();
   bool allowSetMinFeeValue(EstimatedFeeOptions label) =>
       widget.minFee != null && label == EstimatedFeeOptions.Custom;
 
@@ -102,10 +116,10 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   }
 
   void _setSavedFeeData() {
-    _minerFeeOptionsNanoWit = vttBloc.minerFeeOptions;
-    _feeOption = vttBloc.feeOption;
-    _feeType = vttBloc.feeType;
-    _savedFeeAmount = vttBloc.feeNanoWit.toString();
+    _minerFeeOptionsNanoWit = vttBuilder.minerFeeOptions;
+    _feeOption = vttBuilder.feeOption;
+    _feeType = vttBuilder.feeType;
+    _savedFeeAmount = vttBuilder.feeNanoWit.toString();
     selectedIndex = _feeType == FeeType.Absolute ? 0 : 1;
     String savedFee = _nanoWitFeeToWit(_savedFeeAmount,
         addMinFee: allowSetMinFeeValue(_feeOption));
@@ -117,8 +131,11 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   }
 
   void setMinerFeeValue(String amount, {bool? validate}) {
-    int weightedFeeAmount =
-        vttBloc.calculatedWeightedFee(_minerFeeWitToNanoWitNumber());
+    int? weightedFeeAmount;
+    if (vttBuilder.feeType == FeeType.Weighted) {
+      weightedFeeAmount =
+          vttBuilder.calculatedWeightedFee(_minerFeeWitToNanoWitNumber());
+    }
     _minerFeeWit = FeeAmountInput.dirty(
         allowValidation:
             validate ?? validationUtils.isFormUnFocus(_formFocusElements()),

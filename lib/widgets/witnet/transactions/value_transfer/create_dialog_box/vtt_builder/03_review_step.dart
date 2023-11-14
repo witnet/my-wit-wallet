@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/bloc/transactions/transaction_builder.dart';
 import 'package:my_wit_wallet/util/allow_biometrics.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/general_error_tx_modal.dart';
@@ -12,6 +13,8 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/info_element.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
@@ -20,12 +23,10 @@ typedef void VoidCallback(bool value);
 
 class ReviewStep extends StatefulWidget {
   final Function nextAction;
-  final Wallet currentWallet;
   final String originRoute;
   final GeneralTransaction? speedUpTx;
   ReviewStep({
     required this.nextAction,
-    required this.currentWallet,
     required this.originRoute,
     this.speedUpTx,
   });
@@ -36,8 +37,11 @@ class ReviewStep extends StatefulWidget {
 
 class ReviewStepState extends State<ReviewStep>
     with SingleTickerProviderStateMixin {
+  Wallet get wallet =>
+      Locator.instance<ApiDatabase>().walletStorage.currentWallet;
   late AnimationController _loadingController;
-
+  VttBuilder get vttBuilder =>
+      BlocProvider.of<VTTCreateBloc>(context).vttBuilder;
   @override
   void initState() {
     super.initState();
@@ -68,20 +72,11 @@ class ReviewStepState extends State<ReviewStep>
   }
 
   void _signTransaction() {
-    final vtt =
-        BlocProvider.of<VTTCreateBloc>(context).state.vtTransaction.body;
-    BlocProvider.of<VTTCreateBloc>(context).add(SignTransactionEvent(
-      currentWallet: widget.currentWallet,
-      vtTransactionBody: vtt,
-      speedUpTx: widget.speedUpTx,
-    ));
+    BlocProvider.of<VTTCreateBloc>(context).add(SignTransactionEvent());
   }
 
   void _sendTransaction(VTTransaction vtTransaction) {
-    BlocProvider.of<VTTCreateBloc>(context).add(SendTransactionEvent(
-        currentWallet: widget.currentWallet,
-        transaction: vtTransaction,
-        speedUpTx: widget.speedUpTx));
+    BlocProvider.of<VTTCreateBloc>(context).add(SendTransactionEvent());
   }
 
   NavAction next() {
@@ -94,7 +89,7 @@ class ReviewStepState extends State<ReviewStep>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    int fee = BlocProvider.of<VTTCreateBloc>(context).getFee();
+    int fee = vttBuilder.getFee();
     return BlocBuilder<VTTCreateBloc, VTTCreateState>(
       builder: (context, state) {
         if (state.vttCreateStatus == VTTCreateStatus.needPasswordValidation) {
@@ -131,8 +126,8 @@ class ReviewStepState extends State<ReviewStep>
           Navigator.popUntil(context, ModalRoute.withName(widget.originRoute));
           buildSendingTransactionModal(theme, context);
         } else if (state.vttCreateStatus == VTTCreateStatus.accepted) {
-          buildSuccessfullTransaction(
-              theme, state, context, widget.originRoute);
+          BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
+          buildSuccessfulTransaction(theme, state, widget.originRoute);
         }
         return Padding(
             padding: EdgeInsets.only(left: 8, right: 8),

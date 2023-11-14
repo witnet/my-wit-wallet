@@ -69,11 +69,10 @@ class AddUtxosEvent extends VTTCreateEvent {
   List<Object?> get props => [utxos];
 }
 
-class AddSourceWalletsEvent extends VTTCreateEvent {
-  final Wallet currentWallet;
-  AddSourceWalletsEvent({required this.currentWallet});
+class InitializeTransactionEvent extends VTTCreateEvent {
+  InitializeTransactionEvent();
   @override
-  List<Object?> get props => [currentWallet];
+  List<Object?> get props => [];
 }
 
 class SetPriorityEstimationsEvent extends VTTCreateEvent {
@@ -104,27 +103,20 @@ class ValidateTransactionEvent extends VTTCreateEvent {}
 class ShowAuthPreferencesEvent extends VTTCreateEvent {}
 
 class SignTransactionEvent extends VTTCreateEvent {
-  final VTTransactionBody vtTransactionBody;
-  final Wallet currentWallet;
   final GeneralTransaction? speedUpTx;
   SignTransactionEvent({
-    required this.currentWallet,
-    required this.vtTransactionBody,
     this.speedUpTx,
   });
 
   @override
-  List<Object?> get props => [currentWallet, vtTransactionBody, speedUpTx];
+  List<Object?> get props => [speedUpTx];
 }
 
 class SendTransactionEvent extends VTTCreateEvent {
-  final VTTransaction transaction;
-  final Wallet currentWallet;
-  final GeneralTransaction? speedUpTx;
-  SendTransactionEvent(
-      {required this.currentWallet, required this.transaction, this.speedUpTx});
+  SendTransactionEvent();
+
   @override
-  List<Object?> get props => [currentWallet, transaction];
+  List<Object?> get props => [];
 }
 
 class ResetTransactionEvent extends VTTCreateEvent {}

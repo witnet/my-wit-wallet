@@ -218,6 +218,10 @@ class Account extends _Account {
         address == other.address;
   }
 
+  static Account? fromDatabase(ApiDatabase database, String address) {
+    return database.walletStorage.currentWallet.accountByAddress(address);
+  }
+
   @override
   int get hashCode => hash4(walletName.hashCode, address.hashCode,
       vttHashes.hashCode, utxos.hashCode);

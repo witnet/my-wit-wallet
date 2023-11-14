@@ -30,8 +30,6 @@ class CreateVttScreenState extends State<CreateVttScreen>
     with TickerProviderStateMixin {
   GlobalKey<RecipientStepState> transactionFormState =
       GlobalKey<RecipientStepState>();
-  GlobalKey<SelectMinerFeeStepState> minerFeeState =
-      GlobalKey<SelectMinerFeeStepState>();
   late AnimationController _loadingController;
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
   Wallet? currentWallet;
@@ -50,7 +48,6 @@ class CreateVttScreenState extends State<CreateVttScreen>
     );
     _loadingController.forward();
     _getCurrentWallet();
-    _getPriorityEstimations();
   }
 
   @override
@@ -80,13 +77,8 @@ class CreateVttScreenState extends State<CreateVttScreen>
   void _getCurrentWallet() {
     setState(() {
       currentWallet = database.walletStorage.currentWallet;
-      BlocProvider.of<VTTCreateBloc>(context)
-          .add(AddSourceWalletsEvent(currentWallet: currentWallet!));
+      BlocProvider.of<VTTCreateBloc>(context).add(InitializeTransactionEvent());
     });
-  }
-
-  void _getPriorityEstimations() {
-    BlocProvider.of<VTTCreateBloc>(context).add(SetPriorityEstimationsEvent());
   }
 
   bool _isNextStepAllow() {
@@ -137,13 +129,11 @@ class CreateVttScreenState extends State<CreateVttScreen>
 
   SelectMinerFeeStep _selectMinerFeeStep() {
     return SelectMinerFeeStep(
-      key: minerFeeState,
       nextAction: _setNextAction,
       goNext: () {
         nextAction().action();
         if (_isNextStepAllow()) goToNextStep();
       },
-      currentWallet: currentWallet!,
     );
   }
 
@@ -151,7 +141,6 @@ class CreateVttScreenState extends State<CreateVttScreen>
     return ReviewStep(
       originRoute: CreateVttScreen.route,
       nextAction: _setNextAction,
-      currentWallet: currentWallet!,
     );
   }
 

@@ -1,16 +1,17 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/widgets/validations/address_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
 import 'package:witnet/schema.dart';
+import 'package:my_wit_wallet/bloc/transactions/transaction_builder.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/util/storage/database/balance_info.dart';
@@ -55,12 +56,14 @@ class RecipientStepState extends State<RecipientStep>
   List<FocusNode> _formFocusElements() => [_addressFocusNode, _amountFocusNode];
   ValueTransferOutput? ongoingOutput;
   VTTCreateBloc get vttBloc => BlocProvider.of<VTTCreateBloc>(context);
+  VttBuilder get vttBuilder =>
+      BlocProvider.of<VTTCreateBloc>(context).vttBuilder;
 
   @override
   void initState() {
     super.initState();
-    if (vttBloc.outputs.length > 0) {
-      ongoingOutput = vttBloc.outputs.first;
+    if (vttBuilder.outputs.length > 0) {
+      ongoingOutput = vttBuilder.outputs.first;
       _setSavedTxData(ongoingOutput);
     }
     _loadingController = AnimationController(

@@ -7,9 +7,12 @@ import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
 import 'package:my_wit_wallet/widgets/info_element.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
+import 'package:my_wit_wallet/globals.dart' as globals;
 
-void buildSuccessfullTransaction(ThemeData theme, VTTCreateState state,
-    BuildContext context, String originRoute) {
+void buildSuccessfulTransaction(
+    ThemeData theme, VTTCreateState state, String originRoute) {
+  BuildContext context = globals.navigatorKey.currentContext!;
+
   return buildAlertDialog(
     context: context,
     actions: [

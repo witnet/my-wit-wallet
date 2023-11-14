@@ -15,6 +15,7 @@ import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
+import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 
 import 'account.dart';
 import 'balance_info.dart';
@@ -77,6 +78,9 @@ class Wallet {
   Map<int, Account> externalAccounts = {};
   Map<int, Account> internalAccounts = {};
   Account? masterAccount;
+  Account? changeAccount;
+
+  bool get isHd => this.walletType == WalletType.hd;
 
   Map<String, Account> accountMap(KeyType keyType) {
     Map<String, Account> _accounts = {};
@@ -98,10 +102,10 @@ class Wallet {
     return _accounts;
   }
 
-  Future<void> deleteVtt(Wallet wallet, ValueTransferInfo vtt) async {
+  Future<void> deleteVtt(ValueTransferInfo vtt) async {
     /// check the inputs for accounts in the wallet and remove the vtt
     for (int i = 0; i < vtt.inputs.length; i++) {
-      Account? account = wallet.accountByAddress(vtt.inputs[i].address);
+      Account? account = this.accountByAddress(vtt.inputs[i].address);
       if (account != null) {
         await account.deleteVtt(vtt);
       }
@@ -109,7 +113,7 @@ class Wallet {
 
     /// check the outputs for accounts in the wallet and remove the vtt
     for (int i = 0; i < vtt.outputs.length; i++) {
-      Account? account = wallet.accountByAddress(vtt.outputs[i].pkh.address);
+      Account? account = this.accountByAddress(vtt.outputs[i].pkh.address);
       if (account != null) {
         await account.deleteVtt(vtt);
       }
@@ -355,20 +359,8 @@ class Wallet {
     }
   }
 
-  BalanceInfo balanceNanoWit() {
-    List<Utxo> _utxos = [];
-
-    internalAccounts.forEach((address, account) {
-      _utxos.addAll(account.utxos);
-    });
-    externalAccounts.forEach((address, account) {
-      _utxos.addAll(account.utxos);
-    });
-    if (masterAccount != null) {
-      _utxos.addAll(masterAccount!.utxos);
-    }
-    return BalanceInfo.fromUtxoList(_utxos);
-  }
+  BalanceInfo balanceNanoWit() =>
+      BalanceInfo.fromUtxoList(utxoMap().keys.toList());
 
   Future<Account> generateKey({
     required int index,
@@ -649,6 +641,118 @@ class Wallet {
       default:
         break;
     }
+  }
+
+  Map<Utxo, String> utxoMap([bool includeTimeLocked = true]) {
+    Map<Utxo, String> _utxoMap = {};
+
+    void updateMapByAccount(Account account) {
+      account.utxos.forEach((utxo) {
+        if (includeTimeLocked) {
+          _utxoMap[utxo] = account.address;
+        } else {
+          if (!utxoLocked(utxo)) {
+            _utxoMap[utxo] = account.address;
+          }
+        }
+      });
+    }
+
+    internalAccounts.forEach((address, account) {
+      updateMapByAccount(account);
+    });
+    externalAccounts.forEach((address, account) {
+      updateMapByAccount(account);
+    });
+    if (masterAccount != null) {
+      updateMapByAccount(masterAccount!);
+    }
+
+    return _utxoMap;
+  }
+
+  bool utxoLocked(Utxo utxo) {
+    if (utxo.timelock > 0) {
+      int _ts = utxo.timelock * 1000;
+      DateTime _timelock = DateTime.fromMillisecondsSinceEpoch(_ts);
+      int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
+      if (_timelock.millisecondsSinceEpoch > currentTimestamp) return true;
+      return false;
+    }
+    return false;
+  }
+
+  List<InputUtxo> inputUtxos(List<Utxo> selectedUtxos) {
+    List<InputUtxo> _inputs = [];
+
+    /// loop through utxos
+    for (int i = 0; i < selectedUtxos.length; i++) {
+      Utxo currentUtxo = selectedUtxos.elementAt(i);
+
+      /// loop though every external account
+      externalAccounts.forEach((index, account) {
+        if (account.utxos.contains(currentUtxo)) {
+          _inputs.add(InputUtxo(
+              address: account.address,
+              input: currentUtxo.toInput(),
+              value: currentUtxo.value));
+        }
+      });
+
+      /// loop though every internal account
+      internalAccounts.forEach((index, account) {
+        if (account.utxos.contains(currentUtxo)) {
+          _inputs.add(InputUtxo(
+              address: account.address,
+              input: currentUtxo.toInput(),
+              value: currentUtxo.value));
+        }
+      });
+
+      if (walletType == WalletType.single && masterAccount != null) {
+        _inputs.add(InputUtxo(
+            address: masterAccount!.address,
+            input: currentUtxo.toInput(),
+            value: currentUtxo.value));
+      }
+    }
+
+    return _inputs;
+  }
+
+  Future<Account> getChangeAccount() async {
+    /// get the internal account that will be used for any change
+    bool changeAccountSet = false;
+
+    if (walletType == WalletType.hd) {
+      for (int i = 0; i < internalAccounts.keys.length; i++) {
+        if (!changeAccountSet) {
+          Account account = internalAccounts[i]!;
+          if (account.vttHashes.isEmpty) {
+            changeAccount = account;
+            changeAccountSet = true;
+          } else if (account.vtts.length == 1 &&
+              account.vtts[0].status == "pending") {
+            changeAccount = account;
+            changeAccountSet = true;
+          }
+        }
+      }
+
+      /// did we run out of change addresses?
+      if (!changeAccountSet) {
+        ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
+        changeAccount = await apiCrypto.generateAccount(
+          this,
+          KeyType.internal,
+          internalAccounts.keys.length,
+        );
+      }
+    } else {
+      /// master node
+      changeAccount = masterAccount!;
+    }
+    return changeAccount!;
   }
 
   void printDebug() {
