@@ -12,8 +12,6 @@ import 'package:my_wit_wallet/bloc/explorer/api_explorer.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
-import 'package:my_wit_wallet/util/filter_utxos.dart';
-import 'package:my_wit_wallet/util/get_utxos_match_inputs.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
@@ -188,8 +186,8 @@ class VttBuilder {
 
   List<Utxo> _setSelectedUtxos(BuildVttInputsParams params) {
     selectedUtxos = [];
-    List<Utxo> filteredUtxos = filterUsedUtxos(
-        utxoList: utxoList, pendingVtts: wallet.pendingTransactions());
+    List<Utxo> filteredUtxos =
+        utxoList.filterPending(pendingVtts: wallet.pendingTransactions());
     UtxoPool filteredUtxoPool = UtxoPool();
     // Update the utxo pool
     filteredUtxoPool.clear();
@@ -203,8 +201,8 @@ class VttBuilder {
       speedUpTx!.vtt!.inputs.forEach((e) => rest -= e.value);
 
       // Get used utxos from speedUpTx inputs
-      List<Utxo> usedUtxos = getUtxosMatchInputs(
-          utxoList: utxoList, inputs: speedUpTx!.vtt!.inputs);
+      List<Utxo> usedUtxos =
+          utxoList.matchInputs(inputs: speedUpTx!.vtt!.inputs);
 
       if (rest > 0) {
         selectedUtxos = [

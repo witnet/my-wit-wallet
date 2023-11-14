@@ -2,9 +2,9 @@ import 'dart:core';
 
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/extensions/utxo_list_extenstions.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/util/utxo_list_to_string.dart';
 import 'package:quiver/core.dart';
 
 import 'package:witnet/data_structures.dart';
@@ -93,7 +93,7 @@ class Account extends _Account {
   }
 
   bool updateUtxos(List<Utxo> newUtxos) {
-    if (!isTheSameList(utxos, newUtxos)) {
+    if (!utxos.sameList(newUtxos)) {
       if (newUtxos.isNotEmpty) {
         utxos.clear();
         utxos.addAll(newUtxos);
@@ -126,7 +126,7 @@ class Account extends _Account {
     if (currentLength == newLength) {
       utxoList.forEach((element) {
         bool containsUtxo =
-            rawJsonUtxosList(this.utxos).contains(element.toRawJson());
+            this.utxos.rawJsonList().contains(element.toRawJson());
         if (!containsUtxo) {
           isSameList = false;
         }
@@ -225,21 +225,4 @@ class Account extends _Account {
   @override
   int get hashCode => hash4(walletName.hashCode, address.hashCode,
       vttHashes.hashCode, utxos.hashCode);
-}
-
-bool isTheSameList(List<Utxo> a, List<Utxo> b) {
-  int currentLength = a.length;
-  int newLength = b.length;
-  bool isSameList = true;
-  if (currentLength == newLength) {
-    b.forEach((element) {
-      bool containsUtxo = rawJsonUtxosList(a).contains(element.toRawJson());
-      if (!containsUtxo) {
-        isSameList = false;
-      }
-    });
-  } else {
-    isSameList = false;
-  }
-  return isSameList;
 }
