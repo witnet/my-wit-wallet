@@ -29,8 +29,7 @@ class SpeedUpVtt extends StatefulWidget {
 class SpeedUpVttState extends State<SpeedUpVtt> {
   Map<String, dynamic>? signedMessage;
   ApiDatabase db = Locator.instance.get<ApiDatabase>();
-  GlobalKey<SelectMinerFeeStepState> minerFeeState =
-      GlobalKey<SelectMinerFeeStepState>();
+
   dynamic nextAction;
   bool selectMinerFeeStep = true;
   get isMinerFeeValid =>
@@ -80,17 +79,14 @@ class SpeedUpVttState extends State<SpeedUpVtt> {
             SizedBox(height: 24),
             selectMinerFeeStep
                 ? SelectMinerFeeStep(
-                    key: minerFeeState,
                     minFee: widget.speedUpTx.fee,
                     nextAction: _setNextAction,
                     goNext: goNext,
-                    currentWallet: db.walletStorage.currentWallet,
                   )
                 : ReviewStep(
                     originRoute: DashboardScreen.route,
                     nextAction: _setNextAction,
                     speedUpTx: widget.speedUpTx,
-                    currentWallet: db.walletStorage.currentWallet,
                   ),
             SizedBox(height: 16),
             PaddedButton(

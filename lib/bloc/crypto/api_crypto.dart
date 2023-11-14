@@ -1,4 +1,5 @@
 import 'dart:isolate';
+import 'package:my_wit_wallet/util/extensions/utxo_list_extenstions.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/witnet.dart';
@@ -6,7 +7,6 @@ import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/util/utxo_list_to_string.dart';
 import 'crypto_bloc.dart';
 
 enum SeedSource { mnemonic, xprv, encryptedXprv }
@@ -135,8 +135,7 @@ class ApiCrypto {
       if (currentWallet.walletType == WalletType.hd) {
         /// loop though every external account
         currentWallet.externalAccounts.forEach((index, account) {
-          if (rawJsonUtxosList(account.utxos)
-              .contains(currentUtxo.toRawJson())) {
+          if (account.utxos.rawJsonList().contains(currentUtxo.toRawJson())) {
             if (_signers.containsKey(currentWallet.xprv)) {
               _signers[currentWallet.xprv]!.add(account.path);
             } else {
@@ -147,8 +146,7 @@ class ApiCrypto {
 
         /// loop though every internal account
         currentWallet.internalAccounts.forEach((index, account) {
-          if (rawJsonUtxosList(account.utxos)
-              .contains(currentUtxo.toRawJson())) {
+          if (account.utxos.rawJsonList().contains(currentUtxo.toRawJson())) {
             if (_signers.containsKey(currentWallet.xprv)) {
               _signers[currentWallet.xprv]!.add(account.path);
             } else {
