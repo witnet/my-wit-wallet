@@ -74,7 +74,7 @@ class TransactionsListState extends State<TransactionsList> {
         filteredUtxos: false,
         currentWallet: currentWallet,
         output: ValueTransferOutput.fromJson({
-          'pkh': speedUpTx.vtt!.inputs.first.address,
+          'pkh': speedUpTx.vtt!.outputs.first.pkh.address,
           'value': speedUpTx.vtt!.outputs.first.value.toInt(),
           'time_lock': 0
         }),
