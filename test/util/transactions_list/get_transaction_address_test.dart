@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:my_wit_wallet/util/transactions_list/get_transaction_address.dart';
 import 'package:test/test.dart';
 import 'package:witnet/explorer.dart';
@@ -5,6 +6,7 @@ import 'package:witnet/schema.dart';
 import 'package:witnet/witnet.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   String tolabel = 'to';
   String fromlabel = 'from';
   List<InputUtxo> inputs = [
