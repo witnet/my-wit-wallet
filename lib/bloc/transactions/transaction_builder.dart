@@ -328,9 +328,6 @@ class VttBuilder {
         wallet,
         bytesToHex(VTTransactionBody(inputs: inputs, outputs: outputs).hash),
       );
-      var tx = VTTransaction(
-          body: VTTransactionBody(inputs: inputs, outputs: outputs),
-          signatures: signatures);
       return VTTransaction(
           body: VTTransactionBody(inputs: inputs, outputs: outputs),
           signatures: signatures);
