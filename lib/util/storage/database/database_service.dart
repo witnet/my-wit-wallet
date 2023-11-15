@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:my_wit_wallet/util/storage/database/get_account_mints_map.dart';
+import 'package:my_wit_wallet/util/storage/database/get_account_vtts_map.dart';
 import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:sembast/sembast_io.dart';
@@ -263,34 +265,34 @@ class DatabaseService {
       }
 
       if (wallets.isNotEmpty) {
+        Map<String, List<ValueTransferInfo>> accountVttMap =
+            getAccountVttsMap(transactions);
+        Map<String, List<MintEntry>> accountMintMap = getAccountMintsMap(mints);
+
         /// Process by account
         for (int i = 0; i < accounts.length; i++) {
           String _walletId = accounts[i].walletId;
           String _address = accounts[i].address;
-          for (int j = 0; j < transactions.length; j++) {
-            /// add the transaction if it is for this account
-            if (transactions[j].containsAddress(_address)) {
-              accounts[i].vtts.add(transactions[j]);
-            }
-          }
 
+          /// add the transaction if it is for this account
+          if (accountVttMap[_address] != null) {
+            accounts[i].vtts.addAll(accountVttMap[_address]!);
+          }
           if (accounts[i].keyType == KeyType.master) {
-            for (int j = 0; j < mints.length; j++) {
-              /// add the transaction if it is for this account
-              if (mints[j].containsAddress(_address)) {
-                accounts[i].mints.add(mints[j]);
-              }
+            // add the transaction if it is for this account
+            if (accountMintMap[_address] != null) {
+              accounts[i].mints.addAll(accountMintMap[_address]!);
+            }
+            try {
               // Load saved node account stats
-              try {
-                final AccountStats? accountStats = await statsRepository
-                    .getStatsByAddress(_database, accounts[i].address);
-                if (accountStats != null) {
-                  walletMap[accounts[i].walletId]!
-                      .setMasterAccountStats(accountStats);
-                }
-              } catch (e) {
-                return DBException(code: e.hashCode, message: '$e');
+              final AccountStats? accountStats = await statsRepository
+                  .getStatsByAddress(_database, accounts[i].address);
+              if (accountStats != null) {
+                walletMap[accounts[i].walletId]!
+                    .setMasterAccountStats(accountStats);
               }
+            } catch (e) {
+              return DBException(code: e.hashCode, message: '$e');
             }
           }
           try {
