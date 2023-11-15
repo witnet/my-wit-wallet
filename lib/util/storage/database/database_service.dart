@@ -40,10 +40,6 @@ class DBException {
     required this.code,
     required this.message,
   });
-
-  @override
-  String toString() =>
-      '$this{"DBException": {"code": $code, "message": $message}}';
 }
 
 class DatabaseService {
@@ -240,7 +236,7 @@ class DatabaseService {
     }
   }
 
-  Future<WalletStorage> loadWallets() async {
+  Future<dynamic> loadWallets() async {
     /// Get all Wallets
 
     try {
@@ -285,17 +281,24 @@ class DatabaseService {
                 accounts[i].mints.add(mints[j]);
               }
               // Load saved node account stats
-              final AccountStats? accountStats = await statsRepository
-                  .getStatsByAddress(_database, accounts[i].address);
-              if (accountStats != null) {
-                walletMap[accounts[i].walletId]!
-                    .setMasterAccountStats(accountStats);
+              try {
+                final AccountStats? accountStats = await statsRepository
+                    .getStatsByAddress(_database, accounts[i].address);
+                if (accountStats != null) {
+                  walletMap[accounts[i].walletId]!
+                      .setMasterAccountStats(accountStats);
+                }
+              } catch (e) {
+                return DBException(code: e.hashCode, message: '$e');
               }
             }
           }
-
-          /// Set the account balance since the transactions are set.
-          await accounts[i].setBalance();
+          try {
+            /// Set the account balance since the transactions are set.
+            await accounts[i].setBalance();
+          } catch (e) {
+            return DBException(code: e.hashCode, message: '$e');
+          }
 
           /// Add the account to the wallet
           if (walletMap[_walletId] != null) {
@@ -318,11 +321,9 @@ class DatabaseService {
       _walletStorage.setAccounts(accountMap);
       _walletStorage.setTransactions(vttMap);
       _walletStorage.setMints(mintMap);
-
       return _walletStorage;
     } catch (e) {
-      print(e);
-      return WalletStorage(wallets: {});
+      return DBException(code: e.hashCode, message: '$e');
     }
   }
 

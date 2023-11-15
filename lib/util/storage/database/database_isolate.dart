@@ -6,7 +6,6 @@ import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 
 import 'account.dart';
 import 'database_service.dart';
@@ -239,8 +238,7 @@ Future<void> _getAllWallets(
   SendPort port,
   Map<String, dynamic> params,
 ) async {
-  WalletStorage walletStorage = await dbService.loadWallets();
-  port.send(walletStorage);
+  port.send(await dbService.loadWallets());
 }
 
 Future<void> _getKeychain(

@@ -56,6 +56,7 @@ dependencies:
   local_auth: ^2.1.7
   flutter_json_viewer: ^1.0.1
   updat: ^1.2.0+1
+  logger: ^2.0.2+1
 
 flutter_icons:
   android: true

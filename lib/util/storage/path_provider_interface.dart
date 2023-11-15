@@ -114,7 +114,7 @@ class PathProviderInterface {
     return files;
   }
 
-  Future<String?> get _directoryPath async {
+  Future<String?> get directoryPath async {
     Directory directory;
 
     if (!Platform.isIOS) {
@@ -127,6 +127,34 @@ class PathProviderInterface {
     }
 
     return directory.path;
+  }
+
+  Future<String?> get logsDirectoryPath async {
+    Directory directory;
+    if (Platform.isAndroid) {
+      directory = Directory('/storage/emulated/0/Download');
+      if (!(await directory.exists()))
+        directory = await getDownloadsDirectory() ??
+            await getApplicationDocumentsDirectory();
+    } else {
+      directory = await getApplicationDocumentsDirectory();
+    }
+
+    return directory.path;
+  }
+
+  Future<String> createFolderInDocuments(String folderName) async {
+    final String? _logsDirectory = await logsDirectoryPath;
+    final Directory _documentsFolder =
+        Directory('$_logsDirectory/$folderName/');
+
+    if (await _documentsFolder.exists()) {
+      return _documentsFolder.path;
+    } else {
+      final Directory _appDocumentsNewFolder =
+          await _documentsFolder.create(recursive: true);
+      return _appDocumentsNewFolder.path;
+    }
   }
 
   Future<void> writeAndOpenJsonFile(String bytes, String name) async {
@@ -142,7 +170,7 @@ class PathProviderInterface {
   }
 
   Future<void> writeJsonFile(String bytes, String name) async {
-    String? path = await _directoryPath;
+    String? path = await directoryPath;
     // Create a file for the path of
     // device and file name with extension
     File file = File('$path/$name');
@@ -153,7 +181,7 @@ class PathProviderInterface {
   }
 
   Future<void> openSavedFile(String fileName) async {
-    String? path = await _directoryPath;
+    String? path = await directoryPath;
 
     if (Platform.isIOS || Platform.isMacOS) {
       try {

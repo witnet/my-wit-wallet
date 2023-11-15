@@ -2,6 +2,7 @@ import 'dart:isolate';
 import 'package:my_wit_wallet/util/account_preferences.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/database/stats.dart';
+import 'package:my_wit_wallet/util/storage/log.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/util/storage/database/database_isolate.dart';
 import 'package:my_wit_wallet/util/storage/database/database_service.dart';
@@ -33,6 +34,7 @@ class ApiDatabase {
   bool walletsLoaded = false;
 
   DatabaseIsolate get databaseIsolate => Locator.instance<DatabaseIsolate>();
+  DebugLogger get logger => Locator.instance<DebugLogger>();
   PathProviderInterface interface = PathProviderInterface();
 
   Future<dynamic> _processIsolate(
@@ -44,12 +46,14 @@ class ApiDatabase {
         await Future.delayed(Duration(milliseconds: 1));
       } while (databaseIsolate.loading);
     }
+
     final ReceivePort response = ReceivePort();
     databaseIsolate.send(
         method: method, params: params ?? {}, port: response.sendPort);
     return await response.first.then((value) {
       if (value.runtimeType == DBException) {
-        throw value;
+        DBException exception = value;
+        logger.log('Error in $method: ${exception.message}');
       }
       return value;
     });
@@ -230,7 +234,6 @@ class ApiDatabase {
           'fileExists': fileExists
         },
       );
-
       assert(response != null);
       return true;
     } on DBException {
@@ -332,13 +335,15 @@ class ApiDatabase {
   }
 
   Future<WalletStorage> loadWalletsDatabase() async {
-    try {
-      /// Get all Wallets
-      walletStorage = await _processIsolate(method: 'loadWallets');
-      return walletStorage;
-    } catch (e) {
-      rethrow;
+    /// Get all Wallets
+    final result = await _processIsolate(method: 'loadWallets');
+    if (result.runtimeType == WalletStorage) {
+      walletStorage = result;
+    } else {
+      // db isolate can return a DBException
+      walletStorage = WalletStorage(wallets: {});
     }
+    return walletStorage;
   }
 
   Future<bool> updateWallet(Wallet wallet) async {
