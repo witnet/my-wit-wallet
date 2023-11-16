@@ -25,7 +25,7 @@ class FileOutput extends LogOutput {
 
   Future<File> getDirectoryForLogRecord() async {
     final String? logsPath =
-        await interface.createFolderInDocuments('myWitWallet');
+        await interface.createFolderInDocuments('myWitWalletLogs');
     return File('$logsPath/myWitWalletLogs.txt');
   }
 
