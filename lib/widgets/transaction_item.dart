@@ -227,7 +227,8 @@ class TransactionsItemState extends State<TransactionsItem> {
                                 )),
                               ],
                             ),
-                            widget.transaction.status == 'pending'
+                            widget.transaction.status == 'pending' &&
+                                    label == localization.to
                                 ? buildSpeedUpBtn()
                                 : Container(),
                           ],
