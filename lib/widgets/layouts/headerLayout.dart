@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/util/get_window_width.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
@@ -10,10 +11,12 @@ class Customshape extends CustomClipper<Path> {
     double width = size.width;
 
     var path = Path();
-    double dividedNumber = size.width * 0.095;
-    path.lineTo(0, height - dividedNumber);
+    double r = windowWidth * 0.08;
+    // Avoid too curvy shape in wide screens
+    double curveHeight = r > 90 ? 90 : r;
+    path.lineTo(0, height - curveHeight);
     path.quadraticBezierTo(
-        width * 0.5, height + dividedNumber, width, height - dividedNumber);
+        width * 0.5, height + curveHeight, width, height - curveHeight);
     path.lineTo(width, 0);
     path.close();
     return path;
