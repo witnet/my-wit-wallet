@@ -57,11 +57,10 @@ class ReviewStepState extends State<ReviewStep>
   }
 
   void nextAction() async {
+    BlocProvider.of<VTTCreateBloc>(context).add(SetBuildingEvent());
     // Sign transaction
     if (await showBiometrics()) {
-      setState(() {
-        BlocProvider.of<VTTCreateBloc>(context).add(ShowAuthPreferencesEvent());
-      });
+      BlocProvider.of<VTTCreateBloc>(context).add(ShowAuthPreferencesEvent());
     } else {
       _signTransaction();
     }
@@ -95,70 +94,78 @@ class ReviewStepState extends State<ReviewStep>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     int fee = BlocProvider.of<VTTCreateBloc>(context).getFee();
-    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
-      builder: (context, state) {
-        if (state.vttCreateStatus == VTTCreateStatus.needPasswordValidation) {
-          unlockKeychainModal(
-              title: localization.enterYourPassword,
-              imageName: 'signing-transaction',
-              theme: theme,
-              context: context,
-              onAction: () => _signTransaction(),
-              routeToRedirect: widget.originRoute);
-        }
-        if (state.vttCreateStatus == VTTCreateStatus.discarded) {
-          buildTxGeneralExceptionModal(
-              theme: theme,
-              context: context,
-              originRoute: widget.originRoute,
-              onAction: () => _sendTransaction(state.vtTransaction));
-        } else if (state.vttCreateStatus == VTTCreateStatus.signing) {
-          Navigator.popUntil(context, ModalRoute.withName(widget.originRoute));
-          buildSigningTxModal(theme, context);
-        } else if (state.vttCreateStatus == VTTCreateStatus.finished) {
-          // Validate vtt weight to ensure confirmation
-          if (state.vtTransaction.weight <= MAX_VT_WEIGHT) {
-            // Send transaction after signed
-            _sendTransaction(state.vtTransaction);
-          } else {
+    return BlocListener<VTTCreateBloc, VTTCreateState>(
+        listenWhen: (VTTCreateState prevState, VTTCreateState state) => true,
+        listener: (context, state) {
+          if (state.vttCreateStatus == VTTCreateStatus.needPasswordValidation) {
+            unlockKeychainModal(
+                title: localization.enterYourPassword,
+                imageName: 'signing-transaction',
+                theme: theme,
+                context: context,
+                onAction: () => _signTransaction(),
+                routeToRedirect: widget.originRoute);
+          }
+          if (state.vttCreateStatus == VTTCreateStatus.discarded) {
             buildTxGeneralExceptionModal(
                 theme: theme,
                 context: context,
                 originRoute: widget.originRoute,
                 onAction: () => _sendTransaction(state.vtTransaction));
+          } else if (state.vttCreateStatus == VTTCreateStatus.signing) {
+            Navigator.popUntil(
+                context, ModalRoute.withName(widget.originRoute));
+            buildSigningTxModal(theme, context);
+          } else if (state.vttCreateStatus == VTTCreateStatus.finished) {
+            // Validate vtt weight to ensure confirmation
+            if (state.vtTransaction.weight <= MAX_VT_WEIGHT) {
+              // Send transaction after signed
+              _sendTransaction(state.vtTransaction);
+            } else {
+              buildTxGeneralExceptionModal(
+                  theme: theme,
+                  context: context,
+                  originRoute: widget.originRoute,
+                  onAction: () => _sendTransaction(state.vtTransaction));
+            }
+          } else if (state.vttCreateStatus == VTTCreateStatus.sending) {
+            Navigator.popUntil(
+                context, ModalRoute.withName(widget.originRoute));
+            buildSendingTransactionModal(theme, context);
+          } else if (state.vttCreateStatus == VTTCreateStatus.accepted) {
+            buildSuccessfullTransaction(
+                theme, state, context, widget.originRoute);
           }
-        } else if (state.vttCreateStatus == VTTCreateStatus.sending) {
-          Navigator.popUntil(context, ModalRoute.withName(widget.originRoute));
-          buildSendingTransactionModal(theme, context);
-        } else if (state.vttCreateStatus == VTTCreateStatus.accepted) {
-          buildSuccessfullTransaction(
-              theme, state, context, widget.originRoute);
-        }
-        return Padding(
-            padding: EdgeInsets.only(left: 8, right: 8),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                localization.txnDetails,
-                style: theme.textTheme.displaySmall,
-              ),
-              SizedBox(height: 24),
-              InfoElement(
-                  label: localization.to,
-                  text: state.vtTransaction.body.outputs.first.pkh.address),
-              InfoElement(
-                label: localization.amount,
-                text:
-                    '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
-              ),
-              InfoElement(
-                  label: localization.fee,
-                  isLastItem: true,
-                  text:
-                      '${fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
-              SizedBox(height: 16),
-            ]));
-      },
-    );
+        },
+        child: BlocBuilder<VTTCreateBloc, VTTCreateState>(
+          builder: (context, state) {
+            return Padding(
+                padding: EdgeInsets.only(left: 8, right: 8),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        localization.txnDetails,
+                        style: theme.textTheme.displaySmall,
+                      ),
+                      SizedBox(height: 24),
+                      InfoElement(
+                          label: localization.to,
+                          text: state
+                              .vtTransaction.body.outputs.first.pkh.address),
+                      InfoElement(
+                        label: localization.amount,
+                        text:
+                            '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
+                      ),
+                      InfoElement(
+                          label: localization.fee,
+                          isLastItem: true,
+                          text:
+                              '${fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
+                      SizedBox(height: 16),
+                    ]));
+          },
+        ));
   }
 }

@@ -54,6 +54,12 @@ class SetTimelockEvent extends VTTCreateEvent {
   List<Object?> get props => [dateTime];
 }
 
+class SetBuildingEvent extends VTTCreateEvent {
+  SetBuildingEvent();
+  @override
+  List<Object?> get props => [];
+}
+
 class UpdateUtxoSelectionStrategyEvent extends VTTCreateEvent {
   final UtxoSelectionStrategy strategy;
   final List<Utxo>? utxos;

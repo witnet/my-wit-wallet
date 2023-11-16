@@ -65,6 +65,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     on<SignTransactionEvent>(_signTransactionEvent);
     on<SendTransactionEvent>(_sendVttTransactionEvent);
     on<UpdateFeeEvent>(_updateFeeEvent);
+    on<SetBuildingEvent>(_setBuildingStatus);
     on<PrepareSpeedUpTxEvent>(_prepareSpeedUpTx);
     on<UpdateUtxoSelectionStrategyEvent>(_updateUtxoSelectionStrategyEvent);
     on<AddSourceWalletsEvent>(_addSourceWalletsEvent);
@@ -449,6 +450,14 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       speedUpTx: event.speedUpTx,
     );
     setEstimatedWeightedFees();
+    emit(
+      state.copyWith(
+          inputs: inputs, outputs: outputs, status: VTTCreateStatus.building),
+    );
+  }
+
+  void _setBuildingStatus(
+      SetBuildingEvent event, Emitter<VTTCreateState> emit) {
     emit(
       state.copyWith(
           inputs: inputs, outputs: outputs, status: VTTCreateStatus.building),
