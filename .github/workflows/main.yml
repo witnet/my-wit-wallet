@@ -72,7 +72,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           architecture: x64
-          flutter-version: '3.13.9'
+          flutter-version: '3.13.8'
           channel: 'stable'
           cache: true
 
@@ -119,7 +119,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           architecture: x64
-          flutter-version: '3.13.9'
+          flutter-version: '3.13.8'
           channel: 'stable'
           cache: true
 
@@ -220,7 +220,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           architecture: x64
-          flutter-version: '3.13.9'
+          flutter-version: '3.13.8'
           channel: 'stable'
           cache: true
 
@@ -306,7 +306,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           architecture: x64
-          flutter-version: '3.13.9'
+          flutter-version: '3.13.8'
           channel: 'stable'
           cache: true
 
