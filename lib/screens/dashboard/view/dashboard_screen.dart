@@ -80,8 +80,9 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   void _syncWallet(String walletId, {bool force = false}) {
-    BlocProvider.of<ExplorerBloc>(context).add(SyncWalletEvent(
-        ExplorerStatus.dataloading, database.walletStorage.wallets[walletId]!,
+    ExplorerBloc explorerBloc = BlocProvider.of<ExplorerBloc>(context);
+    explorerBloc.add(SyncWalletEvent(
+        explorerBloc.state.status, database.walletStorage.wallets[walletId]!,
         force: force));
   }
 

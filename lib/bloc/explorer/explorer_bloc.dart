@@ -144,7 +144,9 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
   Future<void> _singleSyncEvent(
       SyncWalletEvent event, Emitter<ExplorerState> emit) async {
     try {
-      add(DataLoadingEvent(ExplorerStatus.dataloading));
+      if (event.status != ExplorerStatus.error) {
+        add(DataLoadingEvent(ExplorerStatus.dataloading));
+      }
       add(DataLoadedEvent(
           ExplorerStatus.dataloaded, await syncWalletRoutine(event, emit)));
     } catch (e) {
@@ -165,7 +167,9 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       // Create a periodic stream for syncing the wallet
       syncWalletStream =
           Stream.periodic(Duration(seconds: SYNC_TIMER_IN_SECONDS), (_) {
-        add(DataLoadingEvent(ExplorerStatus.dataloading));
+        if (event.status != ExplorerStatus.error) {
+          add(DataLoadingEvent(ExplorerStatus.dataloading));
+        }
         return syncWalletRoutine(event, emit);
       }).asyncMap((event) async => await event);
       if (syncWalletSubscription != null) syncWalletSubscription!.cancel();
@@ -177,7 +181,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   void setError(error) {
     print('Error syncing the wallet $error');
-    if (syncWalletStream.isBroadcast) add(SyncErrorEvent(ExplorerStatus.error));
+    add(SyncErrorEvent(ExplorerStatus.error));
   }
 
   Future<void> _syncSingleAccount(
