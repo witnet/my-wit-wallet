@@ -116,6 +116,6 @@ msix_config:
   publisher_display_name: Witnet Foundation
   publisher: CN=<REAL_CN>
   identity_name: WitnetFoundation.myWitWallet
-  msix_version: 0.1.9.0
+  msix_version: 0.2.0.0
   logo_path: .\assets\icon\icon.png
   msstore_appId: 9PN09DKWPL57
