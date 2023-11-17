@@ -48,7 +48,7 @@ jobs:
 
       - name: Archive build
         run: |
-          Move-Item '.\build\windows\runner\Release' '.\myWitWallet'
+          Move-Item '.\build\windows\x64\runner\Release' '.\myWitWallet'
           Compress-Archive -Path '.\myWitWallet' -DestinationPath '.\myWitWallet-windows.zip' -Force
 
       - name: Compile MSIX
