@@ -25,6 +25,10 @@ jobs:
       - name: Setup Microsoft Store Developer CLI
         uses: microsoft/setup-msstore-cli@v1
 
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
       - name: Configure Microsoft Store Developer CLI
         run: |
           (Get-Content pubspec.yaml).replace('<REAL_CN>', "${{ secrets.CN }}") | Set-Content pubspec.yaml
