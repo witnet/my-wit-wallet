@@ -48,14 +48,14 @@ jobs:
 
       - name: Archive build
         run: |
-          Move-Item '.\build\windows\x64\runner\Release' '.\myWitWallet'
+          Copy-Item '.\build\windows\x64\runner\Release' '.\myWitWallet' -Recurse
           Compress-Archive -Path '.\myWitWallet' -DestinationPath '.\myWitWallet-windows.zip' -Force
 
       - name: Compile MSIX
         run: msstore package
 
       - name: Release on Microsoft Store
-        run: msstore publish ".\myWitWallet" -v
+        run: msstore publish ".\build\windows\x64\runner\Release" -v
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
