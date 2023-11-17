@@ -5,6 +5,7 @@ import 'package:my_wit_wallet/screens/login/view/ftu_actions.dart';
 import 'package:my_wit_wallet/screens/login/view/login_form.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
+import 'package:my_wit_wallet/util/storage/log.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/widgets/carousel.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
@@ -30,6 +31,8 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  DebugLogger get logger => Locator.instance<DebugLogger>();
+
   List<Widget> mainComponents() {
     final theme = Theme.of(context);
     return [
@@ -53,9 +56,11 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
     ApiDatabase database = Locator.instance<ApiDatabase>();
     WalletStorage storage = await database.loadWalletsDatabase();
     if (storage.wallets.isNotEmpty) {
+      logger.log('There are wallets stored!');
       // There are wallets stored
       return LoginForm(mainComponents: mainComponents());
     } else {
+      logger.log('Empty wallet storage!');
       // No wallets stored yet
       return FtuActions(mainComponents: mainComponents());
     }

@@ -338,9 +338,12 @@ class ApiDatabase {
     /// Get all Wallets
     final result = await _processIsolate(method: 'loadWallets');
     if (result.runtimeType == WalletStorage) {
-      walletStorage = result;
+      WalletStorage storage = result;
+      logger.log('Number of wallets stored: ${storage.wallets.length}');
+      walletStorage = storage;
     } else {
       // db isolate can return a DBException
+      logger.log('There was a DBException loading the wallets');
       walletStorage = WalletStorage(wallets: {});
     }
     return walletStorage;
