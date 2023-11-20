@@ -52,7 +52,7 @@ PODS:
     - GTMSessionFetcher/Core (< 3.0, >= 1.1)
     - MLImage (= 1.0.0-beta4)
     - MLKitCommon (~> 9.0)
-  - mobile_scanner (3.2.0):
+  - mobile_scanner (3.5.2):
     - Flutter
     - GoogleMLKit/BarcodeScanning (~> 4.0.0)
   - MTBBarcodeScanner (5.0.11)
@@ -66,7 +66,7 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - "permission_handler (5.1.0+2)":
+  - permission_handler_apple (9.1.1):
     - Flutter
   - PromisesObjC (2.2.0)
   - qr_code_scanner (0.2.0):
@@ -85,7 +85,7 @@ DEPENDENCIES:
   - mobile_scanner (from `.symlinks/plugins/mobile_scanner/ios`)
   - open_file (from `.symlinks/plugins/open_file/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
-  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
@@ -119,8 +119,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/open_file/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
-  permission_handler:
-    :path: ".symlinks/plugins/permission_handler/ios"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
   qr_code_scanner:
     :path: ".symlinks/plugins/qr_code_scanner/ios"
   shared_preferences_foundation:
@@ -142,16 +142,16 @@ SPEC CHECKSUMS:
   MLKitBarcodeScanning: 04e264482c5f3810cb89ebc134ef6b61e67db505
   MLKitCommon: c1b791c3e667091918d91bda4bba69a91011e390
   MLKitVision: 8baa5f46ee3352614169b85250574fde38c36f49
-  mobile_scanner: 47056db0c04027ea5f41a716385542da28574662
+  mobile_scanner: 5090a13b7a35fc1c25b0d97e18e84f271a6eb605
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
-  permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
+  permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
   PromisesObjC: 09985d6d70fbe7878040aa746d78236e6946d2ef
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
-  shared_preferences_foundation: e2dae3258e06f44cc55f49d42024fd8dd03c590c
-  url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
+  shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
+  url_launcher_ios: bf5ce03e0e2088bad9cc378ea97fa0ed5b49673b
 
 PODFILE CHECKSUM: 3118be2ea3b7322e964cfa22fa42faa4e39f6c5c
 
