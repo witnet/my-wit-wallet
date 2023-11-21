@@ -42,7 +42,7 @@ class SpeedUpBtnState extends State<SpeedUpBtn> {
       onPressed: () => {
         widget.speedUpTx(widget.transaction),
       },
-      type: ButtonType.small,
+      type: ButtonType.primary,
     );
   }
 }

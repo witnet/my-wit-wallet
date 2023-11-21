@@ -11,7 +11,6 @@ import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/transactions_list/get_transaction_address.dart';
 import 'package:my_wit_wallet/util/transactions_list/get_transaction_label.dart';
-import 'package:my_wit_wallet/widgets/speedup_btn.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/extensions/int_extensions.dart';
@@ -20,13 +19,9 @@ typedef void GeneralTransactionCallback(GeneralTransaction? value);
 
 class TransactionsItem extends StatefulWidget {
   final GeneralTransaction transaction;
-  final GeneralTransactionCallback speedUpTx;
   final GeneralTransactionCallback showDetails;
   TransactionsItem(
-      {Key? key,
-      required this.transaction,
-      required this.speedUpTx,
-      required this.showDetails})
+      {Key? key, required this.transaction, required this.showDetails})
       : super(key: key);
 
   @override
@@ -133,12 +128,6 @@ class TransactionsItemState extends State<TransactionsItem> {
     }
   }
 
-  Widget buildSpeedUpBtn() {
-    return SpeedUpBtn(
-        speedUpTx: (GeneralTransaction tx) => widget.speedUpTx(tx),
-        transaction: widget.transaction);
-  }
-
   Widget buildTransactionStatus(ThemeData theme) {
     String transactionStatus = widget.transaction.status;
     String localizedtxnStatus = localization.txnStatus(transactionStatus);
@@ -213,47 +202,37 @@ class TransactionsItemState extends State<TransactionsItem> {
                       ),
                       child: Padding(
                         padding: EdgeInsets.only(top: 16, bottom: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                      buildTransactionValue(
-                                          label, widget.transaction),
-                                    ])),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Expanded(
-                                    child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      label.capitalize(),
-                                      style: theme.textTheme.bodyMedium,
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      address,
-                                      overflow: TextOverflow.fade,
-                                      style: extendedTheme.monoSmallText!
-                                          .copyWith(
-                                              color: theme
-                                                  .textTheme.bodyMedium!.color),
-                                    ),
-                                  ],
-                                )),
-                              ],
+                            Expanded(
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                  buildTransactionValue(
+                                      label, widget.transaction),
+                                ])),
+                            SizedBox(
+                              width: 8,
                             ),
-                            widget.transaction.status == 'pending' &&
-                                    label == localization.to
-                                ? buildSpeedUpBtn()
-                                : Container(),
+                            Expanded(
+                                child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  label.capitalize(),
+                                  style: theme.textTheme.bodyMedium,
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  address,
+                                  overflow: TextOverflow.fade,
+                                  style: extendedTheme.monoSmallText!.copyWith(
+                                      color: theme.textTheme.bodyMedium!.color),
+                                ),
+                              ],
+                            )),
                           ],
                         ),
                       ),

@@ -95,6 +95,8 @@ class TransactionsListState extends State<TransactionsList> {
     if (widget.details != null) {
       return TransactionDetails(
         transaction: widget.details!,
+        currentWallet: currentWallet,
+        speedUpTx: setTxSpeedUpStatus,
         goToList: () => widget.setDetails(null),
       );
     }
@@ -110,9 +112,7 @@ class TransactionsListState extends State<TransactionsList> {
         itemBuilder: (context, index) {
           GeneralTransaction transaction = widget.transactions[index];
           return TransactionsItem(
-              transaction: transaction,
-              speedUpTx: setTxSpeedUpStatus,
-              showDetails: widget.setDetails);
+              transaction: transaction, showDetails: widget.setDetails);
         },
       );
     } else {

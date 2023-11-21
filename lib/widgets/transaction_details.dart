@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/util/transactions_list/get_transaction_label.dart';
 import 'package:my_wit_wallet/widgets/closable_view.dart';
+import 'package:my_wit_wallet/widgets/speedup_btn.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
@@ -16,12 +20,34 @@ typedef void VoidCallback();
 
 class TransactionDetails extends StatelessWidget {
   final GeneralTransaction transaction;
+  final GeneralTransactionCallback speedUpTx;
   final VoidCallback goToList;
+  final Wallet currentWallet;
 
   const TransactionDetails({
+    required this.currentWallet,
     required this.transaction,
+    required this.speedUpTx,
     required this.goToList,
   });
+
+  List<String> get externalAddresses {
+    return currentWallet.externalAccounts.values
+        .map((account) => account.address)
+        .toList();
+  }
+
+  List<String> get internalAddresses {
+    return currentWallet.internalAccounts.values
+        .map((account) => account.address)
+        .toList();
+  }
+
+  Account? get singleAddressAccount {
+    return currentWallet.walletType == WalletType.single
+        ? currentWallet.masterAccount
+        : null;
+  }
 
   Widget _buildOutput(
       ThemeData theme, ValueTransferOutput output, bool isLastOutput) {
@@ -102,8 +128,19 @@ class TransactionDetails extends StatelessWidget {
     return status.toLowerCase() == "pending";
   }
 
+  Widget buildSpeedUpBtn() {
+    return SpeedUpBtn(
+        speedUpTx: (GeneralTransaction tx) => speedUpTx(tx),
+        transaction: transaction);
+  }
+
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    String label = '';
+    if (transaction.txnType == TransactionType.value_transfer) {
+      label = getTransactionLabel(externalAddresses, internalAddresses,
+          transaction.vtt!.inputs, singleAddressAccount, context);
+    }
     List<ValueTransferOutput> outputs =
         transaction.txnType == TransactionType.value_transfer
             ? transaction.vtt!.outputs
@@ -179,6 +216,10 @@ class TransactionDetails extends StatelessWidget {
           },
         ),
       ]),
+      SizedBox(height: 8),
+      transaction.status == 'pending' && label == localization.to
+          ? buildSpeedUpBtn()
+          : Container(),
     ]);
   }
 }
