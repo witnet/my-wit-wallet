@@ -13,6 +13,7 @@ import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/animated_numeric_text.dart';
 import 'package:my_wit_wallet/widgets/auto_size_text.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
@@ -292,22 +293,24 @@ class BuildWalletCardState extends State<BuildWalletCard>
                   )
                 ],
               ),
-              Row(
-                children: [
-                  AutoSizeText(
-                    localization.exploredAddresses,
-                    maxLines: 2,
-                    minFontSize: 16,
-                  ),
-                  AnimatedIntegerText(
-                      initialValue: currentAddressCount,
-                      // TODO:targetValue: addressCount,
-                      targetValue: currentAddressCount,
-                      curve: Interval(0, .5, curve: Curves.easeOut),
-                      controller: _balanceController,
-                      style: theme.textTheme.headlineSmall!)
-                ],
-              ),
+              if (Locator.instance<ApiCreateWallet>().walletType ==
+                  WalletType.hd)
+                Row(
+                  children: [
+                    AutoSizeText(
+                      localization.exploredAddresses,
+                      maxLines: 2,
+                      minFontSize: 16,
+                    ),
+                    AnimatedIntegerText(
+                        initialValue: currentAddressCount,
+                        // TODO:targetValue: addressCount,
+                        targetValue: currentAddressCount,
+                        curve: Interval(0, .5, curve: Curves.easeOut),
+                        controller: _balanceController,
+                        style: theme.textTheme.headlineSmall!)
+                  ],
+                ),
               SizedBox(
                 height: 20,
               ),

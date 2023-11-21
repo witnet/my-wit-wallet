@@ -94,6 +94,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
             _wallet,
             externalIndex,
             KeyType.external,
+            emit,
           );
         } catch (e) {
           _deleteWallet(_wallet);
@@ -138,6 +139,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
             _wallet,
             internalIndex,
             KeyType.internal,
+            emit,
           );
         } catch (e) {
           _deleteWallet(_wallet);
@@ -172,11 +174,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       if (externalAccounts[0]!.address != '') {}
     } else if (_wallet.walletType == WalletType.single) {
       try {
-        _account = await _initAccount(
-          _wallet,
-          0,
-          KeyType.master,
-        );
+        _account = await _initAccount(_wallet, 0, KeyType.master, emit);
         _wallet.masterAccount = _account;
 
         balance = balance + _account.balance;
@@ -275,11 +273,15 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   }
 
   Future<Account> _initAccount(
-      Wallet wallet, int index, KeyType keyType) async {
+    Wallet wallet,
+    int index,
+    KeyType keyType,
+    Emitter<CryptoState> emit,
+  ) async {
     try {
       Account account = await _generateAccount(wallet, index, keyType);
       account = await _syncAccount(account);
-      account = await _syncVtts(account);
+      account = await _syncVtts(account, emit);
       if (account.keyType == KeyType.master) {
         account = await _syncMints(account);
       }
@@ -292,13 +294,46 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     }
   }
 
-  Future<Account> _syncVtts(Account account) async {
+  Future<Account> _syncVtts(Account account, Emitter<CryptoState> emit) async {
     try {
+      int availableNanoWit = 0;
+      int lockedNanoWit = 0;
       for (int i = 0; i < account.vttHashes.length; i++) {
         String _hash = account.vttHashes.elementAt(i);
         ValueTransferInfo? valueTransferInfo =
             await _vttGetThroughBlockExplorer.get(_hash);
         if (valueTransferInfo != null) {
+          if (account.keyType == KeyType.master) {
+            // check if the transaction hash is in the Uxto list.
+            if (account.utxos
+                    .where(
+                      (utxo) =>
+                          utxo.outputPointer.transactionId.hex ==
+                          valueTransferInfo.txnHash,
+                    )
+                    .toList()
+                    .length >
+                0) {
+              // check for timelock and add the value
+              int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
+              valueTransferInfo.outputs.forEach((output) {
+                if (output.pkh.address == account.address) {
+                  if (output.timeLock * 1000 > currentTimestamp) {
+                    lockedNanoWit += output.value.toInt();
+                  } else {
+                    availableNanoWit += output.value.toInt();
+                  }
+                }
+              });
+            }
+            emit(CryptoInitializingWalletState(
+              message: '${account.address}',
+              availableNanoWit: availableNanoWit,
+              lockedNanoWit: lockedNanoWit,
+              transactionCount: i,
+              addressCount: 1,
+            ));
+          }
           account.vtts.add(valueTransferInfo);
         }
       }
