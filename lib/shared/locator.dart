@@ -19,18 +19,21 @@ class Locator {
 
     /// check if things are already registered, if they are skip it.
     /// if they are already registered it is because of end-to-end testing.
-    if (!_i.isRegistered<ApiTheme>()) {
-      _i.registerSingleton<ApiTheme>(ApiTheme.instance());
-      _i.registerSingleton<DebugLogger>(DebugLogger());
-      _i.registerSingleton<ApiDatabase>(ApiDatabase());
-      _i.registerSingleton<ApiExplorer>(ApiExplorer());
-      _i.registerSingleton<ApiPreferences>(ApiPreferences());
-      _i.registerSingleton<ApiCreateWallet>(ApiCreateWallet());
-      _i.registerSingleton<ApiCrypto>(ApiCrypto());
-      _i.registerSingleton<CryptoIsolate>(CryptoIsolate.instance());
-      _i.registerSingleton<DatabaseIsolate>(DatabaseIsolate.instance());
-      _i.registerSingleton<VttGetThroughBlockExplorer>(
-          VttGetThroughBlockExplorer());
+    register(ApiTheme.instance());
+    register(DebugLogger());
+    register(ApiDatabase());
+    register(ApiExplorer());
+    register(ApiPreferences());
+    register(ApiCreateWallet());
+    register(ApiCrypto());
+    register(CryptoIsolate.instance());
+    register(DatabaseIsolate.instance());
+    register(VttGetThroughBlockExplorer());
+  }
+
+  void register<T extends Object>(T constructor) {
+    if (!_i.isRegistered<T>()) {
+      _i.registerSingleton<T>(constructor);
     }
   }
 
