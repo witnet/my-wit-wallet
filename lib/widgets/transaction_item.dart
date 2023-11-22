@@ -1,3 +1,4 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -138,6 +139,37 @@ class TransactionsItemState extends State<TransactionsItem> {
         transaction: widget.transaction);
   }
 
+  Widget buildTransactionStatus(ThemeData theme) {
+    String transactionStatus = widget.transaction.status;
+    String localizedtxnStatus = localization.txnStatus(transactionStatus);
+    String txnTime = widget.transaction.txnTime.formatDuration(context);
+    List<Widget> pendingStatus = [];
+    String transacionStatusCopy = txnTime;
+
+    if (transactionStatus != "confirmed") {
+      transacionStatusCopy = "$localizedtxnStatus $txnTime";
+      if (transactionStatus == "pending") {
+        pendingStatus = [
+          Icon(FontAwesomeIcons.clock,
+              size: 10, color: theme.textTheme.bodySmall!.color),
+          SizedBox(width: 4)
+        ];
+      }
+    }
+
+    return Row(
+      children: [
+        ...pendingStatus,
+        Text(
+          transacionStatusCopy,
+          textAlign: TextAlign.start,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.bodySmall,
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -145,8 +177,6 @@ class TransactionsItemState extends State<TransactionsItem> {
     String label;
     String address;
     TransactionType txnType = widget.transaction.txnType;
-    String txnStatus = localization.txnStatus(widget.transaction.status);
-    String txnTime = widget.transaction.txnTime.formatDuration(context);
 
     if (txnType == TransactionType.value_transfer) {
       label = getTransactionLabel(externalAddresses, internalAddresses,
@@ -170,14 +200,7 @@ class TransactionsItemState extends State<TransactionsItem> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.transaction.status != "confirmed"
-                          ? "$txnStatus $txnTime"
-                          : txnTime,
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodySmall,
-                    ),
+                    buildTransactionStatus(theme),
                     Container(
                       margin: EdgeInsets.only(bottom: 8),
                       decoration: BoxDecoration(
