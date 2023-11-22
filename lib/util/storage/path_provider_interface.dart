@@ -159,11 +159,6 @@ class PathProviderInterface {
 
   Future<void> writeAndOpenJsonFile(String bytes, String name) async {
     globals.biometricsAuthInProgress = true;
-    if (Platform.isAndroid || Platform.isIOS) {
-      bool hasPermission = await _requestWritePermission();
-      if (!hasPermission) return;
-    }
-
     await writeJsonFile(bytes, name);
 
     await openSavedFile(name);
