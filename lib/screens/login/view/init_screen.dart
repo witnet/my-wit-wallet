@@ -5,7 +5,6 @@ import 'package:my_wit_wallet/screens/login/view/ftu_actions.dart';
 import 'package:my_wit_wallet/screens/login/view/login_form.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
-import 'package:my_wit_wallet/util/storage/log.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/widgets/carousel.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
@@ -30,8 +29,6 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
   void dispose() {
     super.dispose();
   }
-
-  DebugLogger get logger => Locator.instance<DebugLogger>();
 
   List<Widget> mainComponents() {
     final theme = Theme.of(context);

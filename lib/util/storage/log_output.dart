@@ -17,10 +17,8 @@ class FileOutput extends LogOutput {
 
   @override
   Future<void> init() async {
-    _sink = (await getDirectoryForLogRecord()).openWrite(
-      mode: overrideExisting ? FileMode.writeOnly : FileMode.writeOnlyAppend,
-      encoding: encoding,
-    );
+    await Future.delayed(Duration(seconds: 5));
+    await setSink();
   }
 
   Future<File> getDirectoryForLogRecord() async {
@@ -29,8 +27,21 @@ class FileOutput extends LogOutput {
     return File('$logsPath/myWitWalletLogs.txt');
   }
 
+  Future<void> setSink() async {
+    File file = await getDirectoryForLogRecord();
+    if (_sink == null) {
+      _sink = file.openWrite(
+        mode: overrideExisting ? FileMode.writeOnly : FileMode.writeOnlyAppend,
+        encoding: encoding,
+      );
+    }
+  }
+
   @override
-  void output(OutputEvent event) {
+  void output(OutputEvent event) async {
+    if (_sink == null) {
+      await setSink();
+    }
     _sink?.writeAll(event.lines, '\n');
   }
 
