@@ -9,6 +9,8 @@ enum ClickableBoxTheme {
   BgColor,
 }
 
+enum ClickableBoxStatus { Default, Selected, Disabled }
+
 class ClickableBox extends StatelessWidget {
   final bool isSelected;
   final String? error;
@@ -26,10 +28,12 @@ class ClickableBox extends StatelessWidget {
     this.label,
   });
 
-  Map<ClickableBoxTheme, Color> errorTheme(ExtendedTheme theme) {
+  Map<ClickableBoxTheme, Color> disabledTheme(ExtendedTheme theme) {
     return {
-      ClickableBoxTheme.BorderColor: theme.errorColor!,
-      ClickableBoxTheme.BgColor: theme.inactiveClickableBoxBgColor!,
+      ClickableBoxTheme.BorderColor:
+          theme.inactiveClickableBoxBorderColor!.withOpacity(0.5),
+      ClickableBoxTheme.BgColor:
+          theme.inactiveClickableBoxBgColor!.withOpacity(0.5),
     };
   }
 
@@ -47,19 +51,32 @@ class ClickableBox extends StatelessWidget {
     };
   }
 
-  Map<ClickableBoxTheme, Color> localTheme(ExtendedTheme theme) {
+  ClickableBoxStatus get buttonState {
     if (error != null) {
-      return errorTheme(theme);
+      return ClickableBoxStatus.Disabled;
     }
-    return isSelected ? selectedTheme(theme) : defaultTheme(theme);
+    if (isSelected) {
+      return ClickableBoxStatus.Selected;
+    } else {
+      return ClickableBoxStatus.Default;
+    }
   }
 
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  Map<ClickableBoxTheme, Color> localTheme(ExtendedTheme theme) {
+    if (buttonState == ClickableBoxStatus.Disabled) {
+      return disabledTheme(theme);
+    }
+    return buttonState == ClickableBoxStatus.Selected
+        ? selectedTheme(theme)
+        : defaultTheme(theme);
+  }
+
+  Widget buildPaddedBoxButton(ThemeData theme) {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       PaddedButton(
         padding: EdgeInsets.zero,
+        enabled: error == null,
         autofocus: isSelected,
         label: label,
         text: 'wallet',
@@ -78,16 +95,16 @@ class ClickableBox extends StatelessWidget {
             ),
           ),
           margin: EdgeInsets.all(8),
-          child: Row(children: content),
+          child: buttonState == ClickableBoxStatus.Disabled
+              ? Opacity(opacity: 0.5, child: Row(children: content))
+              : Row(children: content),
         ),
       ),
-      if (error != null)
-        Padding(
-          padding: EdgeInsets.only(left: 8, bottom: 8),
-          child: Text(error!,
-              style: theme.inputDecorationTheme.errorStyle
-                  ?.copyWith(fontSize: 12)),
-        ),
     ]);
+  }
+
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return buildPaddedBoxButton(theme);
   }
 }

@@ -65,6 +65,17 @@ class PaddedButton extends StatelessWidget {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
 
+    Color overlayColor() {
+      if (!enabled) {
+        return theme.colorScheme.background.withOpacity(0);
+      }
+      if (darkBackground) {
+        return extendedTheme.darkBgFocusColor!;
+      } else {
+        return extendedTheme.focusBg!;
+      }
+    }
+
     Widget primaryButton = ElevatedButton(
       style: ElevatedButton.styleFrom(
         minimumSize: Size(double.infinity, 54),
@@ -162,15 +173,15 @@ class PaddedButton extends StatelessWidget {
     );
 
     Widget stepBarButton = TextButton(
-      style: theme.textButtonTheme.style!.copyWith(
-          overlayColor: MaterialStateProperty.all(extendedTheme.focusBg)),
+      style: theme.textButtonTheme.style!
+          .copyWith(overlayColor: MaterialStateProperty.all(overlayColor())),
       child: Text(
         text,
         style: color != null
             ? TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: color)
             : theme.textTheme.labelMedium,
       ),
-      onPressed: onPressed,
+      onPressed: !enabled ? null : onPressed,
     );
 
     Widget containerButton = TextButton(
@@ -178,14 +189,12 @@ class PaddedButton extends StatelessWidget {
       style: theme.textButtonTheme.style?.copyWith(
           padding: MaterialStateProperty.all(EdgeInsets.zero),
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          overlayColor: MaterialStateProperty.all(darkBackground
-              ? extendedTheme.darkBgFocusColor
-              : extendedTheme.focusBg)),
+          overlayColor: MaterialStateProperty.all(overlayColor())),
       child: Semantics(
           label: label,
           excludeSemantics: true,
           child: container ?? Container()),
-      onPressed: onPressed,
+      onPressed: !enabled ? null : onPressed,
     );
 
     Widget _getButtonByType() {
