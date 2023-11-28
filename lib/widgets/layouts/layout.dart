@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -332,15 +333,18 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     );
   }
 
-  Scaffold buildMainScaffold() {
+  WillPopScope buildMainScaffold() {
     final theme = Theme.of(context);
-    return Scaffold(
-        resizeToAvoidBottomInset: true,
-        backgroundColor: theme.colorScheme.background,
-        body: buildOverlay(buildMainContent(context, theme)),
-        bottomNavigationBar: isPanelClose == null || isPanelClose
-            ? buildOverlay(bottomBar(), isBottomBar: true)
-            : null);
+    return WillPopScope(
+        // Prevents the page from being popped by the system
+        onWillPop: () async => false,
+        child: Scaffold(
+            resizeToAvoidBottomInset: true,
+            backgroundColor: theme.colorScheme.background,
+            body: buildOverlay(buildMainContent(context, theme)),
+            bottomNavigationBar: isPanelClose == null || isPanelClose
+                ? buildOverlay(bottomBar(), isBottomBar: true)
+                : null));
   }
 
   Widget build(BuildContext context) {
@@ -360,7 +364,9 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             actions: {
               GoBackIntent: CallbackAction<GoBackIntent>(
                 onInvoke: (GoBackIntent intent) => {
-                  if (navigator.canPop())
+                  if (navigator.canPop() &&
+                      ModalRoute.of(context)!.settings.name! !=
+                          InitScreen.route)
                     {
                       navigator.pop(),
                       if (panelController.isPanelOpen) {panelController.close()}

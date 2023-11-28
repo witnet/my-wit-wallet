@@ -300,12 +300,12 @@ class DashboardLayoutState extends State<DashboardLayout>
       listenWhen: (previous, current) {
         if (previous.status != LoginStatus.LoggedOut &&
             current.status == LoginStatus.LoggedOut) {
-          Navigator.push(
-              context,
+          Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
                   maintainState: false,
                   builder: (context) => InitScreen(),
-                  settings: RouteSettings(name: InitScreen.route)));
+                  settings: RouteSettings(name: InitScreen.route)),
+              (Route<dynamic> route) => route.isFirst);
         }
         return true;
       },
