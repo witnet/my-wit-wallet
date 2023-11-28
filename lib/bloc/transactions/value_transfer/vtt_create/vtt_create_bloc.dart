@@ -337,7 +337,9 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     }
   }
 
-  void buildTxInputs(BuildVttInputsParams params) {
+  void buildTxInputs(
+    BuildVttInputsParams params,
+  ) {
     _setSelectedUtxos(params);
     _addInputs();
   }
@@ -345,75 +347,64 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   void buildTransactionBody(Wallet wallet, {GeneralTransaction? speedUpTx}) {
     int valueOwedNanoWit = 0;
     int valueChangeNanoWit = 0;
-    int balanceNanoWit = wallet.balanceNanoWit().availableNanoWit;
     WalletType walletType = wallet.walletType;
     // Reset tx value paid
     valuePaidNanoWit = 0;
 
-    try {
-      /// calculate value owed
-      bool containsChangeAddress = false;
-      int changeIndex = 0;
-      int outIdx = 0;
-      outputs.forEach((element) {
-        if (element.pkh.address == changeAccount?.address) {
-          /// check if a change address is already in the outputs
-          containsChangeAddress = true;
-          changeIndex = outIdx;
-        }
-        outIdx += 1;
-      });
-
-      if (containsChangeAddress && walletType != WalletType.single) {
-        outputs.removeAt(changeIndex);
+    /// calculate value owed
+    bool containsChangeAddress = false;
+    int changeIndex = 0;
+    int outIdx = 0;
+    outputs.forEach((element) {
+      if (element.pkh.address == changeAccount?.address) {
+        /// check if a change address is already in the outputs
+        containsChangeAddress = true;
+        changeIndex = outIdx;
       }
-      outputs.forEach((element) {
-        valueOwedNanoWit += element.value.toInt();
-      });
+      outIdx += 1;
+    });
 
-      /// sets the fee weighted and absolute
+    if (containsChangeAddress && walletType != WalletType.single) {
+      outputs.removeAt(changeIndex);
+    }
+    outputs.forEach((element) {
+      valueOwedNanoWit += element.value.toInt();
+    });
+
+    /// sets the fee weighted and absolute
+    feeNanoWit = getFee();
+    valueOwedNanoWit += feeNanoWit;
+
+    buildTxInputs(BuildVttInputsParams(
+        txValueNanoWit: valueOwedNanoWit,
+        wallet: wallet,
+        speedUpTx: speedUpTx));
+
+    if (feeType == FeeType.Weighted) {
+      /// calculate change
+      valueChangeNanoWit = (valuePaidNanoWit - valueOwedNanoWit);
+
+      if (valueChangeNanoWit > 0) {
+        // add change
+        // +1 to the outputs length to include for change address
+        feeNanoWit = getFee(feeNanoWit);
+        valueChangeNanoWit = (valuePaidNanoWit - valueOwedNanoWit);
+        outputs.add(ValueTransferOutput.fromJson({
+          'pkh': changeAccount?.address,
+          'value': valueChangeNanoWit,
+          'time_lock': 0,
+        }));
+      }
+    } else {
       feeNanoWit = getFee();
-      valueOwedNanoWit += feeNanoWit;
-
-      /// compare to balance
-      if (balanceNanoWit < valueOwedNanoWit) {
-        /// TODO:: throw insufficient funds exception
-      } else {
-        buildTxInputs(BuildVttInputsParams(
-            txValueNanoWit: valueOwedNanoWit,
-            wallet: wallet,
-            speedUpTx: speedUpTx));
+      valueChangeNanoWit = (valuePaidNanoWit - valueOwedNanoWit);
+      if (valueChangeNanoWit > 0) {
+        outputs.add(ValueTransferOutput.fromJson({
+          'pkh': changeAccount?.address,
+          'value': valueChangeNanoWit,
+          'time_lock': 0,
+        }));
       }
-
-      if (feeType == FeeType.Weighted) {
-        /// calculate change
-        valueChangeNanoWit = (valuePaidNanoWit - valueOwedNanoWit);
-
-        if (valueChangeNanoWit > 0) {
-          // add change
-          // +1 to the outputs length to include for change address
-          feeNanoWit = getFee(feeNanoWit);
-          valueChangeNanoWit = (valuePaidNanoWit - valueOwedNanoWit);
-          outputs.add(ValueTransferOutput.fromJson({
-            'pkh': changeAccount?.address,
-            'value': valueChangeNanoWit,
-            'time_lock': 0,
-          }));
-        }
-      } else {
-        feeNanoWit = getFee();
-        valueChangeNanoWit = (valuePaidNanoWit - valueOwedNanoWit);
-        if (valueChangeNanoWit > 0) {
-          outputs.add(ValueTransferOutput.fromJson({
-            'pkh': changeAccount?.address,
-            'value': valueChangeNanoWit,
-            'time_lock': 0,
-          }));
-        }
-      }
-    } catch (e) {
-      print('Error vtt in buildTransactionBody $e');
-      rethrow;
     }
   }
 
@@ -445,14 +436,23 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     } catch (e) {
       print('Error building transaction $e');
     }
-    buildTransactionBody(
-      event.currentWallet,
-      speedUpTx: event.speedUpTx,
-    );
+    try {
+      buildTransactionBody(
+        event.currentWallet,
+        speedUpTx: event.speedUpTx,
+      );
+    } catch (err) {
+      emit(state.copyWith(
+          status: VTTCreateStatus.insufficientFunds,
+          message: INSUFFICIENT_FUNDS_ERROR));
+    }
     setEstimatedWeightedFees();
     emit(
       state.copyWith(
-          inputs: inputs, outputs: outputs, status: VTTCreateStatus.building),
+          inputs: inputs,
+          outputs: outputs,
+          status: VTTCreateStatus.building,
+          message: null),
     );
   }
 
@@ -579,7 +579,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   /// sign the transaction
   Future<void> _signTransactionEvent(
       SignTransactionEvent event, Emitter<VTTCreateState> emit) async {
-    emit(state.copyWith(status: VTTCreateStatus.signing));
+    emit(state.copyWith(status: VTTCreateStatus.signing, message: null));
     try {
       VTTransaction vtTransaction = await _signTransaction(
         currentWallet: event.currentWallet,
@@ -600,7 +600,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   /// send the transaction to the explorer
   Future<void> _sendVttTransactionEvent(
       SendTransactionEvent event, Emitter<VTTCreateState> emit) async {
-    emit(state.copyWith(status: VTTCreateStatus.sending));
+    emit(state.copyWith(status: VTTCreateStatus.sending, message: null));
     ApiDatabase database = Locator.instance.get<ApiDatabase>();
     bool transactionAccepted =
         await _sendTransaction(Transaction(valueTransfer: event.transaction));
@@ -665,11 +665,11 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         await deleteVtt(database.walletStorage.currentWallet,
             event.speedUpTx!.toValueTransferInfo());
       }
-      emit(state.copyWith(status: VTTCreateStatus.accepted));
+      emit(state.copyWith(status: VTTCreateStatus.accepted, message: null));
       await Locator.instance<ApiDatabase>().getWalletStorage(true);
       await database.updateCurrentWallet();
     } else {
-      emit(state.copyWith(status: VTTCreateStatus.discarded));
+      emit(state.copyWith(status: VTTCreateStatus.discarded, message: null));
     }
   }
 
@@ -709,7 +709,10 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       AddSourceWalletsEvent event, Emitter<VTTCreateState> emit) async {
     await setWallet(event.currentWallet);
     emit(state.copyWith(
-        inputs: inputs, outputs: outputs, status: VTTCreateStatus.building));
+        inputs: inputs,
+        outputs: outputs,
+        status: VTTCreateStatus.building,
+        message: null));
   }
 
   Future<void> _setPriorityEstimations(
@@ -739,7 +742,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     timelockSet = false;
     feeNanoWit = 1;
     feeOption = EstimatedFeeOptions.Medium;
-    emit(state.copyWith(status: VTTCreateStatus.initial));
+    emit(state.copyWith(status: VTTCreateStatus.initial, message: null));
   }
 
   void _validateTransactionEvent(
@@ -756,7 +759,10 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     int feeValueNanoWit = feeNanoWit;
     if (utxoValueNanoWit <= (outputValueNanoWit + feeValueNanoWit)) {
       emit(state.copyWith(
-          inputs: inputs, outputs: outputs, status: VTTCreateStatus.building));
+          inputs: inputs,
+          outputs: outputs,
+          status: VTTCreateStatus.building,
+          message: null));
     } else {
       emit(state.copyWith(
           status: VTTCreateStatus.exception, message: 'Insufficient Funds'));

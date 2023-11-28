@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
@@ -10,6 +11,7 @@ import 'package:my_wit_wallet/widgets/speed_up_tx.dart';
 import 'package:my_wit_wallet/widgets/transaction_details.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/widgets/transaction_item.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/general_error_modal.dart';
 import 'package:witnet/schema.dart';
 
 typedef void VoidCallback(GeneralTransaction? value);
@@ -85,11 +87,24 @@ class TransactionsListState extends State<TransactionsList> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     if (speedUpTransaction != null) {
-      return SpeedUpVtt(
-          speedUpTx: speedUpTransaction!,
-          closeSetting: () => {
-                setTxSpeedUpStatus(null),
-              });
+      return BlocListener<VTTCreateBloc, VTTCreateState>(
+          listener: (BuildContext context, VTTCreateState state) {
+            if (state.vttCreateStatus == VTTCreateStatus.insufficientFunds) {
+              ScaffoldMessenger.of(context).clearSnackBars();
+              buildGeneralExceptionModal(
+                  theme: theme,
+                  context: context,
+                  error: localization.insufficientFunds,
+                  message: localization.insufficientUtxosAvailable,
+                  originRouteName: DashboardScreen.route,
+                  originRoute: DashboardScreen());
+            }
+          },
+          child: SpeedUpVtt(
+              speedUpTx: speedUpTransaction!,
+              closeSetting: () => {
+                    setTxSpeedUpStatus(null),
+                  }));
     }
 
     if (widget.details != null) {

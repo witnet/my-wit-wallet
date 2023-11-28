@@ -62,7 +62,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     return BlocListener<VTTCreateBloc, VTTCreateState>(
       listenWhen: (previousState, currentState) {
         if (showTxConnectionReEstablish(
-            previousState.vttCreateStatus, currentState.vttCreateStatus)) {
+            previousState.vttCreateStatus, currentState.vttCreateStatus,
+            message: previousState.message)) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
             theme,

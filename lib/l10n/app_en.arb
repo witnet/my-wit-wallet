@@ -279,5 +279,7 @@
   "clickToInstall": "Click to install",
   "readyToInstall": "Ready to install",
   "updateError": "There was an issue with the update. Please try again.",
-  "errorTryAgain": "Error. Try Again."
+  "errorTryAgain": "Error. Try Again.",
+  "insufficientFunds": "Insufficient funds",
+  "insufficientUtxosAvailable": "Wait untill the pending transactions are confirmed or try creating a transaction with a smaller amount."
 }
