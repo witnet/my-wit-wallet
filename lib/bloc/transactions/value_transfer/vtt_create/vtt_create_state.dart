@@ -3,6 +3,7 @@ part of 'vtt_create_bloc.dart';
 enum VTTCreateStatus {
   initial,
   needPasswordValidation,
+  insufficientFunds,
   building,
   busy,
   signing,

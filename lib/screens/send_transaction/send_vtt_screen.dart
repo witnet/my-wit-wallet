@@ -15,6 +15,7 @@ import 'package:my_wit_wallet/widgets/step_bar.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/01_recipient_step.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/02_select_miner_fee.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/03_review_step.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/general_error_modal.dart';
 
 class CreateVttScreen extends StatefulWidget {
   static final route = '/create-vtt';
@@ -39,6 +40,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
   Wallet? currentWallet;
   dynamic nextAction;
   dynamic nextStep;
+  bool _insufficientUtxos = false;
   ScrollController scrollController = ScrollController(keepScrollOffset: false);
 
   String selectedItem = localizedVTTsteps[VTTsteps.Transaction]!;
@@ -161,6 +163,9 @@ class CreateVttScreenState extends State<CreateVttScreen>
     VTTsteps currentStep = localizedVTTsteps.entries
         .firstWhere((element) => element.value == selectedItem)
         .key;
+    if (_insufficientUtxos) {
+      return _recipientStep();
+    }
     if (currentStep == VTTsteps.Transaction) {
       return _recipientStep();
     } else if (currentStep == VTTsteps.MinerFee) {
@@ -221,8 +226,24 @@ class CreateVttScreenState extends State<CreateVttScreen>
   }
 
   BlocListener _vttCreateBlocListener() {
+    final theme = Theme.of(context);
     return BlocListener<VTTCreateBloc, VTTCreateState>(
-      listener: (BuildContext context, VTTCreateState state) {},
+      listener: (BuildContext context, VTTCreateState state) {
+        if (state.vttCreateStatus == VTTCreateStatus.insufficientFunds) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          buildGeneralExceptionModal(
+            theme: theme,
+            context: context,
+            error: localization.insufficientFunds,
+            message: localization.insufficientUtxosAvailable,
+            originRouteName: CreateVttScreen.route,
+            originRoute: CreateVttScreen(),
+          );
+          setState(() {
+            _insufficientUtxos = true;
+          });
+        }
+      },
       child: _vttCreateBlocBuilder(),
     );
   }

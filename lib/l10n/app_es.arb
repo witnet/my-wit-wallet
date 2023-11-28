@@ -273,5 +273,7 @@
   "clickToInstall": "Haz clic para instalar.",
   "readyToInstall": "Listo para instalar.",
   "updateError": "Hubo un problema con la actualización. Por favor, inténtalo de nuevo.",
-  "errorTryAgain": "Error. Inténtalo de nuevo."
+  "errorTryAgain": "Error. Inténtalo de nuevo.",
+  "insufficientFunds": "Fondos insuficientes",
+  "insufficientUtxosAvailable": "Espera a la confirmación de las transacciones pendientes o crea una transacción con una cantidad más pequeña."
 }
