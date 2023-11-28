@@ -6,7 +6,6 @@ import 'package:path_provider_platform_interface/path_provider_platform_interfac
 import 'dart:io';
 
 import 'package:open_file/open_file.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 enum Platforms { Linux, Macos, Windows, IOS, Android }
 
@@ -191,11 +190,5 @@ class PathProviderInterface {
       // opens the directory
       await OpenFile.open('$path');
     }
-  }
-
-  // requests storage permission
-  Future<bool> _requestWritePermission() async {
-    await Permission.storage.request();
-    return await Permission.storage.request().isGranted;
   }
 }
