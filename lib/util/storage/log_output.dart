@@ -24,7 +24,7 @@ class FileOutput extends LogOutput {
   Future<File> getDirectoryForLogRecord() async {
     final String? logsPath =
         await interface.createFolderInDocuments('myWitWalletLogs');
-    return File('$logsPath/myWitWalletLogs.txt');
+    return File('${logsPath}myWitWalletLogs.txt');
   }
 
   Future<void> setSink() async {
