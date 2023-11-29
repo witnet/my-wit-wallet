@@ -65,10 +65,10 @@ platform :ios do
   ############ ? Production(AppStore) Lane ############
   desc "Push a new production build to AppStore"
   lane :production do
-    pilot(
+    deliver(
+      submit_for_review: true,
       api_key_path: './key.json',
       ipa: '../build/ios/ipa/myWitWallet.ipa',
-      skip_waiting_for_build_processing: true
     )
   end
 
