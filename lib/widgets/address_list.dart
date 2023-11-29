@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -154,7 +156,8 @@ class AddressListState extends State<AddressList> {
                 top: 16,
                 left: 16,
                 right: 16,
-                bottom: widget.currentWallet.walletType == WalletType.hd
+                bottom: widget.currentWallet.walletType == WalletType.hd &&
+                        Platform.isAndroid
                     ? 120
                     : 80),
             child: Row(

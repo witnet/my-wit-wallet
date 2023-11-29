@@ -229,7 +229,11 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                 : HEADER_HEIGTH,
             flexibleSpace: headerLayout(context, theme)),
         SliverPadding(
-          padding: EdgeInsets.only(left: 16, right: 16, top: 24),
+          padding: EdgeInsets.only(
+              left: 16,
+              right: 16,
+              top: 24,
+              bottom: Platform.isAndroid ? 24 : 0),
           sliver: SliverToBoxAdapter(
               child: Center(
             child: ConstrainedBox(
