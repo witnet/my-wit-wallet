@@ -71,6 +71,7 @@ platform :ios do
       automatic_release: true,
       api_key_path: './key.json',
       metadata_path: './metadata',
+      overwrite_screenshots: true,
       ipa: '../build/ios/ipa/myWitWallet.ipa',
       precheck_include_in_app_purchases: false,
     )
