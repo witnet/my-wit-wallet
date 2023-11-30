@@ -40,7 +40,7 @@ platform :ios do
 
     # ! Echo bigger number + 1
     biggerBN = latestTestFlightBN > latestAppStoreBN ? latestTestFlightBN : latestAppStoreBN
-    UI.message "Please use VersionCode: #{biggerBN+4}"
+    UI.message "Please use VersionCode: #{biggerBN+5}"
   end
 
   ############ ? Prepare CI Lane ############
@@ -74,6 +74,9 @@ platform :ios do
       metadata_path: './metadata',
       ipa: '../build/ios/ipa/myWitWallet.ipa',
       precheck_include_in_app_purchases: false,
+      submission_information : {
+        add_id_uses_idfa: false
+      }
     )
   end
 
