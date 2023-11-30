@@ -67,13 +67,12 @@ platform :ios do
   lane :production do
     deliver(
       force: true,
-      skip_metadata: true,
-      skip_screenshots: true,
       submit_for_review: true,
       automatic_release: true,
       api_key_path: './key.json',
+      metadata_path: './metadata',1
       ipa: '../build/ios/ipa/myWitWallet.ipa',
-      precheck_include_in_app_purchases: false
+      precheck_include_in_app_purchases: false,
     )
   end
 

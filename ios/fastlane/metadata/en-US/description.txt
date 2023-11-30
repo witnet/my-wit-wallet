@@ -1,0 +1,14 @@
+Discover the convenience and security of myWitWallet, the ultimate non-custodial mobile wallet app for managing and safeguarding your Wit coins. Say goodbye to long hours of waiting for your wallet to synchronize—myWitWallet features instant synchronization, ensuring you can access your funds and transact seamlessly.
+
+Witnet is a decentralized oracle network that connects smart contracts with real-world data, revolutionizing the trustless application landscape. Empower yourself with the ability to securely store and transact with your Wit coins through myWitWallet, without compromising on speed or security.
+
+Key Features:
+
+1. Robust Security Measures: Rest easy knowing that your Wit coins are protected by industry-leading security protocols. myWitWallet employs advanced encryption techniques to safeguard your assets against unauthorized access.
+2. Intuitive User Interface: Experience a user-friendly interface that simplifies managing your Wit coins, catering to both beginners and experienced users. Seamlessly navigate through the app's intuitive design.
+3. Instant Synchronization: No more waiting for hours for your wallet to be synchronized! With myWitWallet's instant synchronization feature, you can access your funds and start transacting immediately.
+4. Seamless Transactions: Send, receive, and track your Wit transactions effortlessly. myWitWallet ensures swift and reliable transfers, allowing you to actively participate in the Witnet network.
+5. Multi-Device Accessibility: Access your myWitWallet across various devices, including smartphones and tablets. Enjoy a synchronized experience that seamlessly adapts to your preferred platform.
+6. Backup and Recovery Options: Safeguard your funds with secure backup and recovery features. With myWitWallet, you can create encrypted backups and restore your Sheikah wallet hassle-free.
+
+Download myWitWallet now and embark on a secure and fast journey in the Witnet ecosystem, where decentralized trust meets the world of real-time data integration.

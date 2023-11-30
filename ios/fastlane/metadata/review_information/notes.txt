@@ -1,0 +1,1 @@
+You can directly create a fresh wallet from within the app and try the functionality.
