@@ -40,7 +40,7 @@ platform :ios do
 
     # ! Echo bigger number + 1
     biggerBN = latestTestFlightBN > latestAppStoreBN ? latestTestFlightBN : latestAppStoreBN
-    UI.message "Please use VersionCode: #{biggerBN+7}"
+    UI.message "Please use VersionCode: #{biggerBN+8}"
   end
 
   ############ ? Prepare CI Lane ############
