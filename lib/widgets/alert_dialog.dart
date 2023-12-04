@@ -21,7 +21,13 @@ buildAlertDialog({
                 style: theme.textTheme.displayMedium,
               ),
               backgroundColor: theme.colorScheme.background,
-              icon: Icon(icon, size: 24, color: color ?? null),
+              surfaceTintColor: theme.colorScheme.background,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              icon: icon != null
+                  ? Icon(icon, size: 24, color: color ?? null)
+                  : null,
+              actionsPadding: EdgeInsets.only(bottom: 16, right: 16, top: 0),
               content: content,
               actions: actions,
             ),

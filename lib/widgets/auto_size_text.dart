@@ -180,7 +180,7 @@ class AutoSizeText extends StatefulWidget {
   /// This property also affects [minFontSize], [maxFontSize] and [presetFontSizes].
   ///
   /// The value given to the constructor as textScaleFactor. If null, will
-  /// use the [MediaQueryData.textScaleFactor] obtained from the ambient
+  /// use the [MediaQueryData.textScaler] obtained from the ambient
   /// [MediaQuery], or 1.0 if there is no [MediaQuery] in scope.
   final double? textScaleFactor;
 
@@ -311,7 +311,7 @@ class AutoSizeTextState extends State<AutoSizeText> {
     );
 
     final userScale =
-        widget.textScaleFactor ?? MediaQuery.textScaleFactorOf(context);
+        widget.textScaleFactor ?? MediaQuery.textScalerOf(context).scale(1);
 
     int left;
     int right;
@@ -375,7 +375,7 @@ class AutoSizeTextState extends State<AutoSizeText> {
         ),
         textAlign: widget.textAlign ?? TextAlign.left,
         textDirection: widget.textDirection ?? TextDirection.ltr,
-        textScaleFactor: scale,
+        textScaler: TextScaler.linear(scale),
         maxLines: words.length,
         locale: widget.locale,
         strutStyle: widget.strutStyle,
@@ -393,7 +393,7 @@ class AutoSizeTextState extends State<AutoSizeText> {
       text: text,
       textAlign: widget.textAlign ?? TextAlign.left,
       textDirection: widget.textDirection ?? TextDirection.ltr,
-      textScaleFactor: scale,
+      textScaler: TextScaler.linear(scale),
       maxLines: maxLines,
       locale: widget.locale,
       strutStyle: widget.strutStyle,
@@ -418,7 +418,7 @@ class AutoSizeTextState extends State<AutoSizeText> {
         locale: widget.locale,
         softWrap: widget.softWrap,
         overflow: widget.overflow,
-        textScaleFactor: 1,
+        textScaler: TextScaler.linear(1),
         maxLines: maxLines,
         semanticsLabel: widget.semanticsLabel,
       );
@@ -433,7 +433,7 @@ class AutoSizeTextState extends State<AutoSizeText> {
         locale: widget.locale,
         softWrap: widget.softWrap,
         overflow: widget.overflow,
-        textScaleFactor: fontSize / style.fontSize!,
+        textScaler: TextScaler.linear(fontSize / style.fontSize!),
         maxLines: maxLines,
         semanticsLabel: widget.semanticsLabel,
       );

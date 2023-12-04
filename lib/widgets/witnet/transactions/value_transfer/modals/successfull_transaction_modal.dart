@@ -14,7 +14,7 @@ void buildSuccessfullTransaction(ThemeData theme, VTTCreateState state,
     context: context,
     actions: [
       PaddedButton(
-          padding: EdgeInsets.all(8),
+          padding: EdgeInsets.zero,
           text: localization.close,
           type: ButtonType.text,
           enabled: true,
@@ -33,6 +33,7 @@ void buildSuccessfullTransaction(ThemeData theme, VTTCreateState state,
     ],
     title: localization.txnSuccess,
     content: Column(mainAxisSize: MainAxisSize.min, children: [
+      SizedBox(height: 16),
       svgThemeImage(theme, name: 'transaction-success', height: 100),
       SizedBox(height: 16),
       InfoElement(

@@ -13,66 +13,92 @@ Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
   displayLarge: TextStyle(
       fontFamily: 'Almarai',
+      height: 1.15,
+      letterSpacing: 0,
       color: WitnetPallet.opacityWhite,
       fontSize: 24,
       fontWeight: FontWeight.bold),
   displayMedium: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.white,
       fontSize: 18,
       fontWeight: FontWeight.bold),
   displaySmall: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.white,
       fontSize: 16,
       fontWeight: FontWeight.bold),
   headlineMedium: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.white,
       fontSize: 24,
       fontWeight: FontWeight.normal),
   headlineSmall: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.white,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   titleLarge: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.opacityWhite,
       fontSize: 18,
       fontWeight: FontWeight.bold),
   titleMedium: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.opacityWhite,
       fontSize: 16,
       fontWeight: FontWeight.bold),
   titleSmall: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.white,
       fontSize: 14,
       fontWeight: FontWeight.bold),
   bodyLarge: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.opacityWhite,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   bodyMedium: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.opacityWhite,
       fontSize: 14,
       fontWeight: FontWeight.normal),
   bodySmall: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.opacityWhite,
       fontSize: 12,
       fontWeight: FontWeight.normal),
   labelLarge: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.opacityWhite,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   labelMedium: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.white,
       fontSize: 16,
       fontWeight: FontWeight.normal),
@@ -125,12 +151,11 @@ TooltipThemeData tooltipTheme = TooltipThemeData(
       color: WitnetPallet.lightGrey,
     ),
     textStyle: TextStyle(color: WitnetPallet.lightGrey));
-ButtonThemeData buttonTheme = ButtonThemeData(
-  buttonColor: WitnetPallet.opacityWitnetGreen,
-);
 TextButtonThemeData textButtonTheme = TextButtonThemeData(
   style: TextButton.styleFrom(
     foregroundColor: WitnetPallet.white,
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8))),
     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     textStyle: const TextStyle(
       fontFamily: 'Almarai',
@@ -180,6 +205,8 @@ IconThemeData iconTheme = IconThemeData(
   color: WitnetPallet.opacityWhite,
   size: 16,
 );
+ButtonThemeData buttonThemeData = ButtonThemeData(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)));
 IconThemeData primaryIconTheme = IconThemeData(
   color: WitnetPallet.opacityWhite,
   size: 24,
@@ -204,7 +231,7 @@ Color getColorPrimary(Set<MaterialState> states) {
   if (states.any(activeStates.contains)) {
     return WitnetPallet.witnetGreen1;
   }
-  return WitnetPallet.opacityWhite2;
+  return WitnetPallet.lightGrey;
 }
 
 Color getColorSecondary(Set<MaterialState> states) {
@@ -251,5 +278,5 @@ ThemeData darkTheme = ThemeData(
     cardTheme: cardTheme,
     textTheme: textTheme,
     inputDecorationTheme: inputDecorationTheme,
-    colorScheme:
-        ColorScheme.dark().copyWith(background: WitnetPallet.darkBlue2));
+    colorScheme: ColorScheme.dark().copyWith(
+        background: WitnetPallet.darkBlue2, outline: WitnetPallet.transparent));

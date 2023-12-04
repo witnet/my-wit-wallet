@@ -8,6 +8,7 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/widgets/select.dart';
@@ -135,14 +136,10 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
         suffixIcon: !Platform.isWindows && !Platform.isLinux
             ? Semantics(
                 label: localization.scanQrCodeLabel,
-                child: IconButton(
-                  splashRadius: 1,
+                child: SuffixIcon(
                   focusNode: _scanQrFocusNode,
-                  color: isScanQrFocused
-                      ? theme.textSelectionTheme.cursorColor
-                      : theme
-                          .inputDecorationTheme.enabledBorder?.borderSide.color,
-                  icon: Icon(FontAwesomeIcons.qrcode),
+                  isFocus: isScanQrFocused,
+                  icon: FontAwesomeIcons.qrcode,
                   onPressed: () => {
                     Navigator.push(
                         context,

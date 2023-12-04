@@ -219,7 +219,9 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             ),
             pinned: true,
             elevation: 0,
+            surfaceTintColor: theme.colorScheme.background.withOpacity(0.0),
             automaticallyImplyLeading: false,
+            scrolledUnderElevation: 0,
             backgroundColor: theme.colorScheme.background.withOpacity(0.0),
             expandedHeight: widget.dashboardActions != null
                 ? DASHBOARD_HEADER_HEIGTH
@@ -302,32 +304,36 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   }
 
   Widget bottomBar() {
-    return BottomAppBar(
-      notchMargin: 8,
-      elevation: 0,
-      child: Padding(
-        padding: EdgeInsets.only(
-            left: 16, right: 16, bottom: widget.actions.length > 0 ? 16 : 0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minWidth: 100,
-                  maxWidth: 600,
-                ),
-                child: Column(
-                    mainAxisSize: MainAxisSize.max, children: widget.actions),
-              ),
-            )
-          ],
-        ),
-      ),
-      color: Colors.transparent,
-    );
+    return BottomSheet(
+        onClosing: () => {},
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                bottom: widget.actions.length > 0 ? 16 : 0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minWidth: 100,
+                      maxWidth: 600,
+                    ),
+                    child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: widget.actions),
+                  ),
+                )
+              ],
+            ),
+          );
+        });
   }
 
   Widget buildOverlay(Widget child, {bool isBottomBar = false}) {
@@ -337,16 +343,17 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     );
   }
 
-  WillPopScope buildMainScaffold() {
+  PopScope buildMainScaffold() {
     final theme = Theme.of(context);
-    return WillPopScope(
+    return PopScope(
         // Prevents the page from being popped by the system
-        onWillPop: () async => false,
+        canPop: false,
         child: Scaffold(
             resizeToAvoidBottomInset: true,
             backgroundColor: theme.colorScheme.background,
             body: buildOverlay(buildMainContent(context, theme)),
-            bottomNavigationBar: isPanelClose == null || isPanelClose
+            bottomNavigationBar: (isPanelClose == null || isPanelClose) &&
+                    widget.actions.length > 0
                 ? buildOverlay(bottomBar(), isBottomBar: true)
                 : null));
   }
@@ -373,7 +380,9 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                           InitScreen.route)
                     {
                       navigator.pop(),
-                      if (panelController.isPanelOpen) {panelController.close()}
+                      if (panelController.isAttached &&
+                          panelController.isPanelOpen)
+                        {panelController.close()}
                     }
                 },
               )

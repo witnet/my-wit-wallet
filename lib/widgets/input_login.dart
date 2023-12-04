@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
-import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
 
 class InputLogin extends StatefulWidget {
   InputLogin(
@@ -63,20 +63,8 @@ class _InputLoginState extends State<InputLogin> {
     });
   }
 
-  handleShowPass() {
-    return IconButton(
-      icon: showPassword
-          ? Icon(Icons.remove_red_eye, size: 20)
-          : Icon(Icons.visibility_off, size: 20),
-      onPressed: () {
-        setState(() => showPassword = !showPassword);
-      },
-    );
-  }
-
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     return Container(
         child: Semantics(
       textField: true,
@@ -89,22 +77,17 @@ class _InputLoginState extends State<InputLogin> {
                 widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
             suffixIcon: Semantics(
               label: localization.showPassword,
-              child: IconButton(
-                focusNode: widget.showPassFocusNode,
-                splashRadius: 1,
-                padding: const EdgeInsets.all(2),
-                color: (widget.showPassFocusNode != null &&
-                        widget.showPassFocusNode!.hasFocus)
-                    ? theme.textSelectionTheme.cursorColor
-                    : extendedTheme.inputIconColor,
-                iconSize: theme.iconTheme.size,
-                icon: showPassword
-                    ? Icon(Icons.remove_red_eye)
-                    : Icon(Icons.visibility_off),
-                onPressed: () {
-                  setState(() => showPassword = !showPassword);
-                },
-              ),
+              child: SuffixIcon(
+                  iconSize: theme.iconTheme.size,
+                  icon: showPassword
+                      ? Icons.remove_red_eye
+                      : Icons.visibility_off,
+                  focusNode: widget.showPassFocusNode ?? FocusNode(),
+                  onPressed: () {
+                    setState(() => showPassword = !showPassword);
+                  },
+                  isFocus: (widget.showPassFocusNode != null &&
+                      widget.showPassFocusNode!.hasFocus)),
             )),
         minLines: 1,
         style: theme.textTheme.bodyLarge,

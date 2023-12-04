@@ -9,6 +9,7 @@ void buildSigningTxModal(ThemeData theme, BuildContext context) {
       actions: [],
       title: localization.txnSigning,
       content: Column(mainAxisSize: MainAxisSize.min, children: [
+        SizedBox(height: 16),
         svgThemeImage(theme, name: 'signing-transaction', height: 100),
         SizedBox(height: 16),
         Text(localization.txnSigning01, style: theme.textTheme.bodyLarge)

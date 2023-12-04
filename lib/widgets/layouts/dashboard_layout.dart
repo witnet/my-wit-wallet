@@ -205,7 +205,6 @@ class DashboardLayoutState extends State<DashboardLayout>
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: 8),
           Semantics(
               label: localization.balance,
               child: Text(
@@ -361,8 +360,8 @@ class DashboardLayoutState extends State<DashboardLayout>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
+      canPop: false,
       child: _authBuilder(),
     );
   }

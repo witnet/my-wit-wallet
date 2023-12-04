@@ -31,6 +31,7 @@ class CustomSwitch extends StatelessWidget {
           )),
       Container(
           color: isFocused ? extendedTheme.focusBg : null,
+          padding: EdgeInsets.all(8),
           child: Switch(
             focusNode: focusNode,
             // This bool value toggles the switch.

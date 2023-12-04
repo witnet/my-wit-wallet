@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
+import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/widgets/validations/address_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
@@ -183,6 +184,7 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   _buildForm(BuildContext context, ThemeData theme) {
+    final theme = Theme.of(context);
     _addressFocusNode.addListener(() => validateForm());
     _amountFocusNode.addListener(() => validateForm());
     return Form(
@@ -203,10 +205,7 @@ class RecipientStepState extends State<RecipientStep>
                 decoration: InputDecoration(
                   hintText: localization.recipientAddress,
                   suffixIcon: !Platform.isWindows && !Platform.isLinux
-                      ? IconButton(
-                          focusNode: _scanQrFocusNode,
-                          splashRadius: 1,
-                          icon: Icon(FontAwesomeIcons.qrcode),
+                      ? SuffixIcon(
                           onPressed: () => {
                                 Navigator.push(
                                     context,
@@ -224,10 +223,9 @@ class RecipientStepState extends State<RecipientStep>
                                                   setAddress(value)
                                                 })))
                               },
-                          color: isScanQrFocused
-                              ? theme.textSelectionTheme.cursorColor
-                              : theme.inputDecorationTheme.enabledBorder
-                                  ?.borderSide.color)
+                          icon: FontAwesomeIcons.qrcode,
+                          isFocus: isScanQrFocused,
+                          focusNode: _scanQrFocusNode)
                       : null,
                   errorText: _address.error,
                 ),

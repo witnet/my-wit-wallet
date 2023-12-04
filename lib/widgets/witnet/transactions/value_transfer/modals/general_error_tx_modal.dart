@@ -35,7 +35,7 @@ void buildTxGeneralExceptionModal({
                           settings: RouteSettings(name: DashboardScreen.route)))
                 }),
         PaddedButton(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.zero,
             text: localization.tryAgain,
             type: ButtonType.text,
             enabled: true,
@@ -48,6 +48,7 @@ void buildTxGeneralExceptionModal({
       icon: FontAwesomeIcons.circleExclamation,
       title: localization.error,
       content: Column(mainAxisSize: MainAxisSize.min, children: [
+        SizedBox(height: 16),
         svgThemeImage(theme, name: 'transaction-error', height: 100),
         SizedBox(height: 16),
         Text(localization.errorTransaction, style: theme.textTheme.bodyLarge)

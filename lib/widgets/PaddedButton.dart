@@ -140,8 +140,8 @@ class PaddedButton extends StatelessWidget {
     );
 
     Widget iconButton = SizedBox(
-        height: iconSize + 20,
-        width: iconSize + 20,
+        height: iconSize + 22,
+        width: iconSize + 22,
         child: TextButton(
           style: color != null
               ? theme.textButtonTheme.style?.copyWith(

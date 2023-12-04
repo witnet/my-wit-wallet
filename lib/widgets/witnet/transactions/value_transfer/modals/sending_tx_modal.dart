@@ -9,6 +9,7 @@ void buildSendingTransactionModal(ThemeData theme, BuildContext context) {
       actions: [],
       title: localization.txnSending,
       content: Column(mainAxisSize: MainAxisSize.min, children: [
+        SizedBox(height: 16),
         svgThemeImage(theme, name: 'sending-transaction', height: 100),
         SizedBox(height: 16),
         Text(localization.txnSending01, style: theme.textTheme.bodyLarge)

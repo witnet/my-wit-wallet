@@ -25,7 +25,7 @@ class ReEstablishWalletBtn extends StatelessWidget {
       Text(localization.forgetPassword, textAlign: TextAlign.center),
       SizedBox(height: 8),
       Container(
-          width: 148,
+          width: 150,
           child: PaddedButton(
             fontSize: 14,
             padding: EdgeInsets.all(0),

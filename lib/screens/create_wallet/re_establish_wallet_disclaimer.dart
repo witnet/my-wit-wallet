@@ -123,14 +123,14 @@ class ReEstablishWalletDisclaimerState
         actions: [
           PaddedButton(
               color: theme.textTheme.bodyLarge!.color,
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.zero,
               text: localization.cancel,
               type: ButtonType.text,
               enabled: true,
               onPressed: () => {setState(() => closeModal())}),
           PaddedButton(
               color: extendedTheme.errorColor,
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.zero,
               text: localization.reestablish,
               type: ButtonType.text,
               enabled: true,
@@ -139,6 +139,7 @@ class ReEstablishWalletDisclaimerState
         icon: FontAwesomeIcons.circleExclamation,
         title: localization.deleteStorageWarning,
         content: Column(mainAxisSize: MainAxisSize.min, children: [
+          SizedBox(height: 16),
           svgThemeImage(theme, name: 'general-warning', height: 100),
         ]));
   }
@@ -157,6 +158,7 @@ class ReEstablishWalletDisclaimerState
         ],
         title: localization.reestablishSucess,
         content: Column(mainAxisSize: MainAxisSize.min, children: [
+          SizedBox(height: 16),
           svgThemeImage(theme, name: 'transaction-success', height: 100),
         ]));
   }

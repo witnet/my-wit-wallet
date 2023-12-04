@@ -58,7 +58,11 @@ Future<String?> unlockKeychainModal(
                   style: theme.textTheme.displayMedium,
                 ),
                 backgroundColor: theme.colorScheme.background,
+                surfaceTintColor: theme.colorScheme.background,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
                 content: Column(mainAxisSize: MainAxisSize.min, children: [
+                  SizedBox(height: 8),
                   svgThemeImage(theme, name: imageName, height: 100),
                   SizedBox(height: 16),
                   PasswordValidation(
@@ -68,9 +72,10 @@ Future<String?> unlockKeychainModal(
                     passwordInputErrorText: _passwordInputErrorText,
                   )
                 ]),
+                actionsPadding: EdgeInsets.only(bottom: 16, right: 16, top: 0),
                 actions: [
                   PaddedButton(
-                      padding: EdgeInsets.only(right: 8),
+                      padding: EdgeInsets.zero,
                       text: localization.close,
                       type: ButtonType.text,
                       color: theme.textTheme.bodyLarge!.color,
@@ -81,7 +86,7 @@ Future<String?> unlockKeychainModal(
                             ScaffoldMessenger.of(context).clearSnackBars(),
                           }),
                   PaddedButton(
-                      padding: EdgeInsets.only(top: 0),
+                      padding: EdgeInsets.zero,
                       text: localization.continueLabel,
                       type: ButtonType.text,
                       enabled: true,

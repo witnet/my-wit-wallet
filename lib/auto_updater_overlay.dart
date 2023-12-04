@@ -141,6 +141,8 @@ void customDialog({
     context: context,
     builder: (context) => AlertDialog(
       scrollable: true,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8))),
       title: Flex(
         direction: Axis.vertical,
         children: [

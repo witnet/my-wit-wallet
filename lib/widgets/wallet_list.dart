@@ -129,45 +129,55 @@ class WalletListState extends State<WalletList> {
     String walletId = walletIdName.id;
     final isSelectedWallet = walletId == selectedWallet?.id;
     Wallet? currentWallet = database.walletStorage.wallets[walletId];
-    bool isHdWallet = currentWallet!.walletType == WalletType.hd;
-    String? balance =
-        currentWallet.balanceNanoWit().availableNanoWit.toString();
-    String currentWalletAccount;
-    if (database.walletStorage.currentAddressList != null &&
-        database.walletStorage.currentAddressList![walletId] != null) {
-      currentWalletAccount =
-          database.walletStorage.currentAddressList![walletId];
-    } else {
-      currentWalletAccount = isHdWallet ? '0/0' : 'm';
-    }
 
-    Map<int, Account>? accountsList = isHdWallet
-        ? currentWallet.externalAccounts
-        : {0: currentWallet.masterAccount!};
-    int currentAccountIndex = currentWalletAccount.contains("/")
-        ? int.parse(currentWalletAccount.split('/').last)
-        : 0;
-    String? address = accountsList[currentAccountIndex]?.address.toString();
-    return SelectWalletBox(
-      walletId: walletId,
-      walletType: database.walletStorage.wallets[walletId]!.walletType,
-      label: database.walletStorage.wallets[walletId]!.name,
-      isSelected: isSelectedWallet,
-      walletName: database.walletStorage.wallets[walletId]!.name,
-      balance: num.parse(balance)
-          .standardizeWitUnits(
-              inputUnit: WitUnit.nanoWit, outputUnit: WitUnit.Wit)
-          .formatWithCommaSeparator(),
-      address: address ?? '',
-      onChanged: (walletId) => {
-        setState(() {
-          selectedWallet = database.walletStorage.wallets[walletId]!;
-        }),
-        BlocProvider.of<DashboardBloc>(context).add(DashboardUpdateWalletEvent(
-            currentWallet: selectedWallet,
-            currentAddress: selectedAccount!.address))
-      },
-    );
+    bool isHdWallet = currentWallet!.walletType == WalletType.hd;
+    bool hasBuildError = isHdWallet
+        ? currentWallet.externalAccounts.length < 1
+        : currentWallet.masterAccount == null;
+    if (!hasBuildError) {
+      String? balance =
+          currentWallet.balanceNanoWit().availableNanoWit.toString();
+      String currentWalletAccount;
+      if (database.walletStorage.currentAddressList != null &&
+          database.walletStorage.currentAddressList![walletId] != null) {
+        currentWalletAccount =
+            database.walletStorage.currentAddressList![walletId];
+      } else {
+        currentWalletAccount = isHdWallet ? '0/0' : 'm';
+      }
+
+      Map<int, Account>? accountsList = isHdWallet
+          ? currentWallet.externalAccounts
+          : {0: currentWallet.masterAccount!};
+      int currentAccountIndex = currentWalletAccount.contains("/")
+          ? int.parse(currentWalletAccount.split('/').last)
+          : 0;
+      String? address = accountsList[currentAccountIndex]?.address.toString();
+
+      return SelectWalletBox(
+        walletId: walletId,
+        walletType: database.walletStorage.wallets[walletId]!.walletType,
+        label: database.walletStorage.wallets[walletId]!.name,
+        isSelected: isSelectedWallet,
+        walletName: database.walletStorage.wallets[walletId]!.name,
+        balance: num.parse(balance)
+            .standardizeWitUnits(
+                inputUnit: WitUnit.nanoWit, outputUnit: WitUnit.Wit)
+            .formatWithCommaSeparator(),
+        address: address ?? '',
+        onChanged: (walletId) => {
+          setState(() {
+            selectedWallet = database.walletStorage.wallets[walletId]!;
+          }),
+          BlocProvider.of<DashboardBloc>(context).add(
+              DashboardUpdateWalletEvent(
+                  currentWallet: selectedWallet,
+                  currentAddress: selectedAccount!.address))
+        },
+      );
+    } else {
+      return Container();
+    }
   }
 
   @override

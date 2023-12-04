@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
+import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
 
 typedef void StringCallback(String value);
 
@@ -38,14 +39,15 @@ class QrScanner extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(
-                              icon: Icon(FontAwesomeIcons.arrowLeft, size: 18),
-                              color: Colors.white,
-                              onPressed: () {
-                                Navigator.pushReplacementNamed(
-                                    context, currentRoute);
-                              },
-                            ),
+                            SuffixIcon(
+                                onPressed: () {
+                                  Navigator.pushReplacementNamed(
+                                      context, currentRoute);
+                                },
+                                color: Colors.white,
+                                icon: FontAwesomeIcons.arrowLeft,
+                                isFocus: false,
+                                focusNode: FocusNode()),
                             Padding(
                               padding: EdgeInsets.only(right: 16),
                               child: Text(localization.scanAqrCode,

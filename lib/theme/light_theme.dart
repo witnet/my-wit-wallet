@@ -12,66 +12,92 @@ Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
   displayLarge: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.darkGrey,
       fontSize: 24,
       fontWeight: FontWeight.bold),
   displayMedium: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.darkGrey,
       fontSize: 18,
       fontWeight: FontWeight.bold),
   displaySmall: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.darkGrey,
       fontSize: 16,
       fontWeight: FontWeight.bold),
   headlineMedium: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.witnetGreen1,
       fontSize: 24,
       fontWeight: FontWeight.normal),
   headlineSmall: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.witnetGreen1,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   titleLarge: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.darkGrey,
       fontSize: 18,
       fontWeight: FontWeight.bold),
   titleMedium: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.darkGrey,
       fontSize: 16,
       fontWeight: FontWeight.bold),
   titleSmall: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.darkGrey,
       fontSize: 14,
       fontWeight: FontWeight.bold),
   bodyLarge: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.darkGrey,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   bodyMedium: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.darkGrey,
       fontSize: 14,
       fontWeight: FontWeight.normal),
   bodySmall: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.darkGrey,
       fontSize: 12,
       fontWeight: FontWeight.normal),
   labelLarge: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.white,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   labelMedium: TextStyle(
       fontFamily: 'Almarai',
+      letterSpacing: 0,
+      height: 1.15,
       color: WitnetPallet.witnetGreen1,
       fontSize: 16,
       fontWeight: FontWeight.normal),
@@ -138,6 +164,8 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
     foregroundColor: WitnetPallet.witnetGreen1,
     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     splashFactory: NoSplash.splashFactory,
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8))),
     textStyle: const TextStyle(
       fontFamily: 'Almarai',
       fontSize: 16,
@@ -239,4 +267,5 @@ ThemeData lightTheme = ThemeData(
     cardTheme: cardTheme,
     textTheme: textTheme,
     inputDecorationTheme: inputDecorationTheme,
-    colorScheme: ColorScheme.light().copyWith(background: WitnetPallet.white));
+    colorScheme: ColorScheme.light().copyWith(
+        background: WitnetPallet.white, outline: WitnetPallet.transparent));
