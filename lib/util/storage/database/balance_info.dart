@@ -3,8 +3,8 @@ import 'package:witnet/constants.dart';
 import 'package:witnet/data_structures.dart';
 
 class BalanceInfo {
-  late final int availableNanoWit;
-  late final int lockedNanoWit;
+  int availableNanoWit;
+  int lockedNanoWit;
   List<Utxo> availableUtxos;
   List<Utxo> lockedUtxos;
   BalanceInfo({
@@ -14,6 +14,10 @@ class BalanceInfo {
     required this.lockedUtxos,
   })  : this.availableNanoWit = availableNanoWIT,
         this.lockedNanoWit = lockedNanoWIT;
+
+  factory BalanceInfo.zero() {
+    return BalanceInfo(availableUtxos: [], lockedUtxos: []);
+  }
 
   factory BalanceInfo.fromUtxoList(List<Utxo> utxos) {
     int _lockedNanoWit = 0;

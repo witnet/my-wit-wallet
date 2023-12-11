@@ -45,6 +45,10 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   VttGetThroughBlockExplorer _vttGetThroughBlockExplorer =
       Locator.instance.get<VttGetThroughBlockExplorer>();
 
+  Wallet get wallet => db.walletStorage.currentWallet;
+  BalanceInfo balance = BalanceInfo.zero();
+  int transactionCount = 0;
+  int addressCount = 0;
   CryptoBloc(initialState) : super(initialState) {
     on<CryptoInitializeWalletEvent>(_cryptoInitializeWalletEvent);
     on<CryptoInitWalletDoneEvent>(_cryptoInitWalletDoneEvent);
@@ -55,22 +59,22 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   Future<void> _cryptoInitializeWalletEvent(
       CryptoInitializeWalletEvent event, Emitter<CryptoState> emit) async {
     /// setup default default structure for database and unlock it
+    balance = BalanceInfo.zero();
+    transactionCount = 0;
+    addressCount = 0;
     emit(
       CryptoInitializingWalletState(
         message: 'Initializing wallet...',
-        availableNanoWit: 0,
-        lockedNanoWit: 0,
-        transactionCount: 0,
-        addressCount: 0,
+        balanceInfo: balance,
+        transactionCount: transactionCount,
+        addressCount: addressCount,
       ),
     );
     Wallet _wallet = await _initializeWallet(event: event);
     Map<int, Account> externalAccounts = {};
     Map<int, Account> internalAccounts = {};
 
-    int totalTransactions = 0;
     int bufferTime = EXPLORER_DELAY_MS;
-    BalanceInfo balance = BalanceInfo(availableUtxos: [], lockedUtxos: []);
     Account? _account;
 
     /// Account discovery
@@ -102,24 +106,22 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
           return;
         }
 
-        totalTransactions += _account.vttHashes.length;
         _wallet.externalAccounts[externalIndex] = _account;
-        balance = balance + _account.balance;
 
         /// yield a state with the current account for ui display
         /// pass the wallet but not the password since we are already logged in
         emit(CryptoInitializingWalletState(
           message: '${_account.address}',
-          availableNanoWit: balance.availableNanoWit,
-          lockedNanoWit: balance.lockedNanoWit,
-          transactionCount: totalTransactions,
-          addressCount: externalIndex,
+          balanceInfo: balance,
+          transactionCount: transactionCount,
+          addressCount: addressCount,
         ));
 
         /// if the account has 0 past transactions, increase the gap counter
         /// add the account
         externalAccounts[externalIndex] = _account;
         externalIndex += 1;
+        addressCount += 1;
         if (_account.vttHashes.length == 0) {
           externalGapCount += 1;
         }
@@ -148,17 +150,14 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
         }
 
         _wallet.internalAccounts[internalIndex] = _account;
-        totalTransactions += _account.vttHashes.length;
-        balance = balance + _account.balance;
 
         /// yield a state with the current account for ui display
 
         emit(CryptoInitializingWalletState(
           message: '${_account.address}',
-          availableNanoWit: balance.availableNanoWit,
-          lockedNanoWit: balance.lockedNanoWit,
-          transactionCount: totalTransactions,
-          addressCount: externalIndex + internalIndex,
+          balanceInfo: balance,
+          transactionCount: transactionCount,
+          addressCount: addressCount,
         ));
 
         /// if the account has 0 past transactions, increase the gap counter
@@ -169,6 +168,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
         /// add the account
         internalAccounts[internalIndex] = _account;
         internalIndex += 1;
+        addressCount += 1;
       }
 
       if (externalAccounts[0]!.address != '') {}
@@ -177,13 +177,11 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
         _account = await _initAccount(_wallet, 0, KeyType.master, emit);
         _wallet.masterAccount = _account;
 
-        balance = balance + _account.balance;
         emit(CryptoInitializingWalletState(
           message: '${_account.address}',
-          availableNanoWit: balance.availableNanoWit,
-          lockedNanoWit: balance.lockedNanoWit,
-          transactionCount: _account.vttHashes.length,
-          addressCount: 1,
+          balanceInfo: balance,
+          transactionCount: transactionCount,
+          addressCount: addressCount,
         ));
       } catch (e) {
         _deleteWallet(_wallet);
@@ -285,7 +283,6 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       if (account.keyType == KeyType.master) {
         account = await _syncMints(account);
       }
-      await account.setBalance();
       await db.addAccount(account);
       return account;
     } catch (e) {
@@ -296,46 +293,26 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
 
   Future<Account> _syncVtts(Account account, Emitter<CryptoState> emit) async {
     try {
-      int availableNanoWit = 0;
-      int lockedNanoWit = 0;
       for (int i = 0; i < account.vttHashes.length; i++) {
         String _hash = account.vttHashes.elementAt(i);
         ValueTransferInfo? valueTransferInfo =
             await _vttGetThroughBlockExplorer.get(_hash);
         if (valueTransferInfo != null) {
-          if (account.keyType == KeyType.master) {
-            // check if the transaction hash is in the Uxto list.
-            if (account.utxos
-                    .where(
-                      (utxo) =>
-                          utxo.outputPointer.transactionId.hex ==
-                          valueTransferInfo.txnHash,
-                    )
-                    .toList()
-                    .length >
-                0) {
-              // check for timelock and add the value
-              int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
-              valueTransferInfo.outputs.forEach((output) {
-                if (output.pkh.address == account.address) {
-                  if (output.timeLock * 1000 > currentTimestamp) {
-                    lockedNanoWit += output.value.toInt();
-                  } else {
-                    availableNanoWit += output.value.toInt();
-                  }
-                }
-              });
-            }
-            emit(CryptoInitializingWalletState(
-              message: '${account.address}',
-              availableNanoWit: availableNanoWit,
-              lockedNanoWit: lockedNanoWit,
-              transactionCount: i,
-              addressCount: 1,
-            ));
-          }
           account.vtts.add(valueTransferInfo);
+          Hash txnHash = Hash.fromString(valueTransferInfo.txnHash);
+          if (account.utxosByTransactionId.containsKey(txnHash)) {
+            balance += BalanceInfo.fromUtxoList(
+              account.utxosByTransactionId[txnHash]!,
+            );
+          }
         }
+        transactionCount += 1;
+        emit(CryptoInitializingWalletState(
+          message: '${account.address}',
+          balanceInfo: balance,
+          transactionCount: transactionCount,
+          addressCount: addressCount,
+        ));
       }
       return account;
     } catch (e) {
@@ -382,8 +359,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
           addressValueTransfers.transactionHashes.map((e) => e));
       final List<Utxo> _utxos =
           await apiExplorer.utxos(address: account.address);
-      account.utxos.addAll(_utxos);
-      await account.setBalance();
+      account.updateUtxos(_utxos);
       return account;
     } catch (e) {
       print('Error syncing the account: ${account.address} $e');

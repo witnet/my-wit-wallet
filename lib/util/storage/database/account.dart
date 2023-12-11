@@ -9,6 +9,8 @@ import 'package:quiver/core.dart';
 
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
+import 'package:witnet/schema.dart' as Schema;
+
 import 'balance_info.dart';
 
 abstract class _Account {
@@ -46,6 +48,8 @@ class Account extends _Account {
   final String walletName;
   final String path;
 
+  Map<Schema.Hash, List<Utxo>> utxosByTransactionId = {};
+
   int get index => pathToIndex(5, path);
 
   KeyType get keyType {
@@ -79,27 +83,29 @@ class Account extends _Account {
       account.mintHashes = [];
     }
 
-    account.utxos = _utxos;
+    account.updateUtxos(_utxos);
     return account;
   }
 
-  Future<bool> setBalance() async {
-    try {
-      this.balance;
-      return true;
-    } catch (e) {
-      return false;
+  void _addUtxo(Utxo utxo) {
+    utxos.add(utxo);
+    Schema.Hash transactionId = utxo.outputPointer.transactionId;
+    if (utxosByTransactionId.containsKey(transactionId)) {
+      utxosByTransactionId[transactionId]!.add(utxo);
+    } else {
+      utxosByTransactionId[transactionId] = [utxo];
     }
+  }
+
+  void _clearUtxos() {
+    utxos.clear();
+    utxosByTransactionId.clear();
   }
 
   bool updateUtxos(List<Utxo> newUtxos) {
     if (!isTheSameList(utxos, newUtxos)) {
-      if (newUtxos.isNotEmpty) {
-        utxos.clear();
-        utxos.addAll(newUtxos);
-      } else {
-        utxos.clear();
-      }
+      _clearUtxos();
+      newUtxos.forEach((Utxo utxo) => _addUtxo(utxo));
     }
     return true;
   }

@@ -47,16 +47,8 @@ class Wallet {
     required this.externalAccounts,
     required this.internalAccounts,
     this.lastSynced = -1,
-  }) {
-    this.id = '00000000';
-    this.externalAccounts.forEach((key, Account account) {
-      account.setBalance();
-    });
-
-    this.internalAccounts.forEach((key, Account account) {
-      account.setBalance();
-    });
-  }
+    this.id = "00000000",
+  });
 
   final WalletType walletType;
   late String id;
