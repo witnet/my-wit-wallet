@@ -49,6 +49,9 @@ class BuildWalletCardState extends State<BuildWalletCard>
   int currentTransactionCount = 0;
   static const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
+  bool get isHdWallet =>
+      Locator.instance<ApiCreateWallet>().walletType == WalletType.hd;
+
   void prevAction() {
     CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
@@ -171,7 +174,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
       _balanceController.reset();
       _balanceController.forward();
       previousBalance = balance;
-      balance = state.availableNanoWit;
+      balance = state.balanceInfo.availableNanoWit;
       currentAddressCount = state.addressCount;
       currentTransactionCount = state.transactionCount;
     });
@@ -232,7 +235,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
                   theme: theme,
                   addressCount: state.addressCount,
                   startingBalance: previousBalance,
-                  balanceNanoWit: state.availableNanoWit,
+                  balanceNanoWit: state.balanceInfo.availableNanoWit,
                   transactionCount: state.transactionCount,
                   message: state.message),
               SizedBox(
@@ -293,8 +296,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
                   )
                 ],
               ),
-              if (Locator.instance<ApiCreateWallet>().walletType ==
-                  WalletType.hd)
+              if (isHdWallet)
                 Row(
                   children: [
                     AutoSizeText(

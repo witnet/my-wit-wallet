@@ -179,8 +179,6 @@ class ApiExplorer {
           rethrow;
         }
       }
-
-      account.setBalance();
     } catch (e) {
       print('Error updating account vtts and balance $e');
       rethrow;

@@ -399,7 +399,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       if (account.keyType == KeyType.master) {
         await _syncAccountMints(account);
       }
-      await account.setBalance();
       database.walletStorage.wallets[account.walletId]!.setAccount(account);
     } catch (e) {
       print('Error updating account vtts and balance $e');
@@ -416,7 +415,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       Account? account = wallet.accountByAddress(address);
       if (account != null && !account.sameUtxoList(utxoList)) {
         if (utxoList.isNotEmpty) {
-          account.utxos = utxoList;
+          account.updateUtxos(utxoList);
           account = await syncAccountVttsAndBalance(account);
         } else {
           account.utxos.clear();

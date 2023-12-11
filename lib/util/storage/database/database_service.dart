@@ -295,12 +295,6 @@ class DatabaseService {
               return DBException(code: e.hashCode, message: '$e');
             }
           }
-          try {
-            /// Set the account balance since the transactions are set.
-            await accounts[i].setBalance();
-          } catch (e) {
-            return DBException(code: e.hashCode, message: '$e');
-          }
 
           /// Add the account to the wallet
           if (walletMap[_walletId] != null) {
