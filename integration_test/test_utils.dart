@@ -217,15 +217,7 @@ Future<bool> scrollUntilVisible(
   // take last because the tab bar up top is also a Scrollable
   bool? lastScroll,
 }) async {
-  Finder? lastScrollFinder;
-  if (lastScroll == true) {
-    lastScrollFinder = find.byType(Scrollable).last;
-  }
-
-  await tester.scrollUntilVisible(finder, -100.0,
-      duration: Duration(milliseconds: 500),
-      maxScrolls: 200,
-      scrollable: lastScrollFinder ?? null);
+  await tester.ensureVisible(finder);
   await tester.pumpAndSettle();
   if (delay) {
     await Future.delayed(Duration(milliseconds: milliseconds ?? defaultDelay));
@@ -246,5 +238,4 @@ Future<bool> teardownTest() async {
   return true;
 }
 
-bool isTextOnScreen(String text) =>
-    !find.text(text).toString().startsWith('zero widgets with text "$text"');
+bool isTextOnScreen(String text) => find.text(text).hasFound;

@@ -46,6 +46,11 @@ Future<void> e2eReEstablishWallets(WidgetTester tester) async {
   }
 
   await tapButton(tester, FontAwesomeIcons.gear);
+  await scrollUntilVisible(
+    tester,
+    widgetByText(_localization.lockWalletLabel),
+    lastScroll: true,
+  );
   await tapButton(tester, _localization.lockWalletLabel,
       delay: true, milliseconds: 1000);
   await scrollUntilVisible(
@@ -63,7 +68,6 @@ Future<void> e2eReEstablishWallets(WidgetTester tester) async {
   await tapButton(tester, _localization.continueLabel);
   await tapButton(tester, _localization.reestablish);
   await tapButton(tester, _localization.continueLabel, index: 1);
-  bool isStorageDeleted = isTextOnScreen(_localization.createNewWalletLabel);
-  expect(isStorageDeleted, true);
+  expect(widgetByText(_localization.createNewWalletLabel), findsOneWidget);
   await teardownTest();
 }

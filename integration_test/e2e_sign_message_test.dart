@@ -78,6 +78,9 @@ Future<void> e2eSignMessageTest(WidgetTester tester) async {
 
   /// Enter Message to sign
   await enterText(tester, TextField, _localization.messageToBeSigned);
+  // Scroll Sign message button into view
+  await scrollUntilVisible(tester, widgetByText(_localization.signMessage).last,
+      lastScroll: true);
   await tapButton(tester, _localization.signMessage);
 
   if (Platform.isIOS || Platform.isAndroid) {
