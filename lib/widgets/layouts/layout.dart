@@ -243,9 +243,15 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                 minWidth: 100,
                 maxWidth: 600,
               ),
-              child: _vttListener(_explorerListerner(Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: widget.widgetList))),
+              child: _vttListener(_explorerListerner(
+                  Column(mainAxisSize: MainAxisSize.max, children: [
+                ...widget.widgetList,
+                SizedBox(
+                  height: MediaQuery.of(context).viewPadding.bottom > 0
+                      ? MediaQuery.of(context).viewPadding.bottom
+                      : 0,
+                )
+              ]))),
             ),
           )),
         ),
@@ -325,9 +331,14 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                       minWidth: 100,
                       maxWidth: 600,
                     ),
-                    child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: widget.actions),
+                    child: Column(mainAxisSize: MainAxisSize.max, children: [
+                      ...widget.actions,
+                      SizedBox(
+                        height: MediaQuery.of(context).viewPadding.bottom > 0
+                            ? MediaQuery.of(context).viewPadding.bottom
+                            : 0,
+                      )
+                    ]),
                   ),
                 )
               ],

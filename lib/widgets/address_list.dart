@@ -152,14 +152,7 @@ class AddressListState extends State<AddressList> {
         (account) => internalBalance += account.balance.availableNanoWit);
     return Container(
         child: Padding(
-            padding: EdgeInsets.only(
-                top: 16,
-                left: 16,
-                right: 16,
-                bottom: widget.currentWallet.walletType == WalletType.hd &&
-                        Platform.isAndroid
-                    ? 120
-                    : 80),
+            padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 80),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
