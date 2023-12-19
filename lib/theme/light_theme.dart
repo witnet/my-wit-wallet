@@ -106,6 +106,11 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.white,
   filled: true,
   errorStyle: TextStyle(color: WitnetPallet.darkRed),
+  errorBorder: OutlineInputBorder(
+    borderSide: BorderSide(
+        color: WitnetPallet.darkRed, width: 1.0, style: BorderStyle.solid),
+    borderRadius: BorderRadius.circular(4),
+  ),
   helperStyle: TextStyle(color: WitnetPallet.darkGrey),
   helperMaxLines: 1,
   errorMaxLines: 1,
