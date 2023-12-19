@@ -129,6 +129,11 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
         style: BorderStyle.solid),
     borderRadius: BorderRadius.circular(4),
   ),
+  errorBorder: OutlineInputBorder(
+    borderSide: BorderSide(
+        color: WitnetPallet.brightRed, width: 1.0, style: BorderStyle.solid),
+    borderRadius: BorderRadius.circular(4),
+  ),
   focusedErrorBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.brightRed, width: 1.0, style: BorderStyle.solid),
@@ -279,4 +284,6 @@ ThemeData darkTheme = ThemeData(
     textTheme: textTheme,
     inputDecorationTheme: inputDecorationTheme,
     colorScheme: ColorScheme.dark().copyWith(
-        background: WitnetPallet.darkBlue2, outline: WitnetPallet.transparent));
+        background: WitnetPallet.darkBlue2,
+        outline: WitnetPallet.transparent,
+        error: WitnetPallet.brightRed));

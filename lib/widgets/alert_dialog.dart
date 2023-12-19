@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/theme/colors.dart';
 
 buildAlertDialog({
   required BuildContext context,
@@ -25,7 +26,8 @@ buildAlertDialog({
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8))),
               icon: icon != null
-                  ? Icon(icon, size: 24, color: color ?? null)
+                  ? Icon(icon,
+                      size: 24, color: color ?? WitnetPallet.witnetGreen1)
                   : null,
               actionsPadding: EdgeInsets.only(bottom: 16, right: 16, top: 0),
               content: content,
