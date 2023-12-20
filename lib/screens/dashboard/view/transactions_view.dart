@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
@@ -105,7 +107,8 @@ class TransactionsViewState extends State<TransactionsView>
           transactions: transactions,
           currentWallet: widget.currentWallet,
         ),
-        buildPagination(extendedTheme)
+        buildPagination(extendedTheme),
+        SizedBox(height: Platform.isIOS ? 16 : 0),
       ]),
     );
   }
