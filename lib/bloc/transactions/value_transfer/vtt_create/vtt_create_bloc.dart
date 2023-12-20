@@ -158,37 +158,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     }
   }
 
-  bool addOutput(ValueTransferOutput output, [bool merge = true]) {
-    try {
-      if (merge) {
-        // check to see if the address is already in the list.
-        if (receivers.contains(output.pkh)) {
-          // if the address is in the list add the value instead of
-          // generating a new output
-          outputs[receivers.indexOf(output.pkh.address)].value += output.value;
-          if (selectedTimelock != null) {
-            outputs[receivers.indexOf(output.pkh.address)].timeLock =
-                (selectedTimelock!.millisecondsSinceEpoch * 100) as Int64;
-          }
-        } else {
-          receivers.add(output.pkh.address);
-          outputs.add(output);
-        }
-      } else {
-        // if merge is false then add an additional output.
-        receivers.add(output.pkh.address);
-        outputs.add(output);
-      }
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  void setSelectionStrategy(UtxoSelectionStrategy strategy) {
-    utxoSelectionStrategy = strategy;
-  }
-
   void _setUtxo(Utxo utxo) {
     if (utxo.timelock > 0) {
       int _ts = utxo.timelock * 1000;
@@ -500,42 +469,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       print('Error signing transaction $e');
       rethrow;
     }
-  }
-
-  Map<String, List<String>> buildSignerMap() {
-    Map<String, List<String>> _signers = {};
-
-    /// loop through utxos
-    for (int i = 0; i < selectedUtxos.length; i++) {
-      Utxo currentUtxo = selectedUtxos.elementAt(i);
-
-      Wallet currentWallet =
-          Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
-
-      /// loop though every external account
-      currentWallet.externalAccounts.forEach((index, account) {
-        if (account.utxos.contains(currentUtxo)) {
-          if (_signers.containsKey(currentWallet.xprv)) {
-            _signers[currentWallet.xprv]!.add(account.path);
-          } else {
-            _signers[currentWallet.xprv!] = [account.path];
-          }
-        }
-      });
-
-      /// loop though every internal account
-      currentWallet.internalAccounts.forEach((index, account) {
-        if (account.utxos.contains(currentUtxo)) {
-          if (_signers.containsKey(currentWallet.xprv)) {
-            _signers[currentWallet.xprv]!.add(account.path);
-          } else {
-            _signers[currentWallet.xprv!] = [account.path];
-          }
-        }
-      });
-    }
-
-    return _signers;
   }
 
   List<InputUtxo> _buildInputUtxoList() {
