@@ -123,7 +123,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     return (txWeight * multiplier).round();
   }
 
-  void setEstimatedWeightedFees() {
+  void _setEstimatedWeightedFees() {
     if (prioritiesEstimate != null) {
       minerFeeOptions[EstimatedFeeOptions.Stinky] =
           calculatedWeightedFee(prioritiesEstimate!.vttStinky.priority)
@@ -142,7 +142,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     }
   }
 
-  void updateFee(
+  void _updateFee(
       {required FeeType newFeeType,
       int feeNanoWit = 0,
       EstimatedFeeOptions newFeeOption = EstimatedFeeOptions.Medium}) {
@@ -233,7 +233,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     return wallet;
   }
 
-  Future<void> setWallet(Wallet? newWalletStorage) async {
+  Future<void> _setWallet(Wallet? newWalletStorage) async {
     if (newWalletStorage != null) {
       utxos.clear();
       this.currentWallet = await _setWalletBalance(newWalletStorage);
@@ -337,14 +337,14 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     }
   }
 
-  void buildTxInputs(
+  void _buildTxInputs(
     BuildVttInputsParams params,
   ) {
     _setSelectedUtxos(params);
     _addInputs();
   }
 
-  void buildTransactionBody(Wallet wallet, {GeneralTransaction? speedUpTx}) {
+  void _buildTransactionBody(Wallet wallet, {GeneralTransaction? speedUpTx}) {
     int valueOwedNanoWit = 0;
     int valueChangeNanoWit = 0;
     WalletType walletType = wallet.walletType;
@@ -375,7 +375,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     feeNanoWit = getFee();
     valueOwedNanoWit += feeNanoWit;
 
-    buildTxInputs(BuildVttInputsParams(
+    _buildTxInputs(BuildVttInputsParams(
         txValueNanoWit: valueOwedNanoWit,
         wallet: wallet,
         speedUpTx: speedUpTx));
@@ -437,7 +437,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       print('Error building transaction $e');
     }
     try {
-      buildTransactionBody(
+      _buildTransactionBody(
         event.currentWallet,
         speedUpTx: event.speedUpTx,
       );
@@ -446,7 +446,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
           status: VTTCreateStatus.insufficientFunds,
           message: INSUFFICIENT_FUNDS_ERROR));
     }
-    setEstimatedWeightedFees();
+    _setEstimatedWeightedFees();
     emit(
       state.copyWith(
           inputs: inputs,
@@ -483,7 +483,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     Wallet walletStorage = currentWallet;
     ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
     try {
-      buildTransactionBody(
+      _buildTransactionBody(
         currentWallet,
         speedUpTx: speedUpTx,
       );
@@ -538,7 +538,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     return _signers;
   }
 
-  List<InputUtxo> buildInputUtxoList() {
+  List<InputUtxo> _buildInputUtxoList() {
     List<InputUtxo> _inputs = [];
 
     /// loop through utxos
@@ -606,7 +606,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         await _sendTransaction(Transaction(valueTransfer: event.transaction));
     if (transactionAccepted) {
       /// add pending transaction
-      List<InputUtxo> _inputUtxoList = buildInputUtxoList();
+      List<InputUtxo> _inputUtxoList = _buildInputUtxoList();
       ValueTransferInfo vti = ValueTransferInfo(
           blockHash: '',
           fee: feeNanoWit,
@@ -675,12 +675,12 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
 
   void _updateFeeEvent(UpdateFeeEvent event, Emitter<VTTCreateState> emit) {
     if (event.feeNanoWit != null) {
-      updateFee(
+      _updateFee(
           newFeeType: event.feeType,
           feeNanoWit: event.feeNanoWit!,
           newFeeOption: event.feeOption);
     } else {
-      updateFee(newFeeType: event.feeType, newFeeOption: event.feeOption);
+      _updateFee(newFeeType: event.feeType, newFeeOption: event.feeOption);
     }
   }
 
@@ -707,7 +707,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
 
   Future<void> _addSourceWalletsEvent(
       AddSourceWalletsEvent event, Emitter<VTTCreateState> emit) async {
-    await setWallet(event.currentWallet);
+    await _setWallet(event.currentWallet);
     emit(state.copyWith(
         inputs: inputs,
         outputs: outputs,
