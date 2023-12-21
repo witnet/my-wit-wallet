@@ -1,1 +1,11 @@
+1.0.1
 
+Fixes
+
+- Show insufficient funds error when selecting inputs
+- Avoid initial syncronization getting stuck
+
+Changes
+
+- Update UI to support Material3
+- Add syncronization status when syncing transactions
