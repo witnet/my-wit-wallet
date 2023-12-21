@@ -1,1 +1,10 @@
-You can directly create a fresh wallet from within the app and try the functionality.
+Simply go to 'Import Wallet > Import from secret recovery phrase', then enter the following 12 words when requested to do so:
+`salmon task infant acid omit mandate lunar fence patient fee attend sea`
+
+This account has been funded with some initial balance so that you can try to send to a different address such as `wit1jp8ka57txg2uhl5rzseqp4d5cg7hhhlq4ldq9f`.
+
+If you are logged in, to delete your account you can follow the steps:
+
+1. Click on the settings icon in the top right corner of the application.
+2. Click the 'Lock Wallet' button to log out
+3. Click 'Re-establish wallet' below the login input and follow the steps to restore your wallet.
