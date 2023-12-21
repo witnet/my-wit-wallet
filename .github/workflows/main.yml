@@ -326,7 +326,7 @@ jobs:
 
       - name: Flutter Doctor
         run: |
-          flutter --disable-telemetry
+          flutter --disable-analytics
           flutter doctor
 
       - name: Install Project Dependencies
