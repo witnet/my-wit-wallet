@@ -6,6 +6,7 @@ import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/sembast.dart';
 import 'package:witnet/explorer.dart';
+import 'dart:convert';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/account_repository.dart';
@@ -90,11 +91,11 @@ class DatabaseService {
     } else {
       mode = DatabaseMode.create;
     }
-    _dbService._database = await dbFactory.openDatabase(
-      _dbService._dbConfig!.path,
-      version: 2,
-      mode: mode,
-    );
+    _dbService._database = await dbFactory
+        .openDatabase(_dbService._dbConfig!.path, version: 3, mode: mode,
+            onVersionChanged: (db, oldVersion, newVersion) async {
+      await migrateDB(db);
+    });
   }
 
   Future<bool> add(dynamic item) async {
@@ -145,13 +146,13 @@ class DatabaseService {
           await walletRepository.deleteWallet(item.id, _database);
           break;
         case ValueTransferInfo:
-          await vttRepository.deleteTransaction(item.txnHash, _database);
+          await vttRepository.deleteTransaction(item.hash, _database);
           break;
         case Account:
           await accountRepository.deleteAccount(item.address, _database);
           break;
         case MintEntry:
-          await mintRepository.deleteTransaction(item.txnHash, _database);
+          await mintRepository.deleteTransaction(item.hash, _database);
           break;
         case AccountStats:
           await statsRepository.deleteStats(item.address, _database);
@@ -238,6 +239,22 @@ class DatabaseService {
     }
   }
 
+  Future<dynamic> migrateDB(db) async {
+    /// Get all Transactions
+    final List<ValueTransferInfo> transactions =
+        await vttRepository.getAllTransactions(db);
+
+    for (int i = 0; i < transactions.length; i++) {
+      ValueTransferInfo _vtt = transactions[i];
+      // Force transactions to be re-synced
+      final convertedTx = ValueTransferInfo.fromDBJson({
+        ...json.decode(_vtt.toRawJson()),
+        'status': 'TxStatusLabel.unknown'
+      });
+      await vttRepository.updateTransaction(convertedTx, db);
+    }
+  }
+
   Future<dynamic> loadWallets() async {
     /// Get all Wallets
 
@@ -305,7 +322,7 @@ class DatabaseService {
           accountMap[account.address] = account;
         });
         transactions.forEach((vtt) {
-          vttMap[vtt.txnHash] = vtt;
+          vttMap[vtt.hash] = vtt;
         });
         mints.forEach((mint) {
           mintMap[mint.blockHash] = mint;

@@ -14,6 +14,7 @@ import 'package:my_wit_wallet/util/transactions_list/get_transaction_label.dart'
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/extensions/int_extensions.dart';
+import 'package:witnet/explorer.dart';
 
 typedef void GeneralTransactionCallback(GeneralTransaction? value);
 
@@ -65,7 +66,7 @@ class TransactionsItemState extends State<TransactionsItem> {
 
   int receiveValue(GeneralTransaction vti) {
     int nanoWitvalue = 0;
-    if (vti.txnType == TransactionType.value_transfer) {
+    if (vti.type == TransactionType.value_transfer) {
       vti.vtt!.outputs.forEach((element) {
         if ((externalAddresses.contains(element.pkh.address) ||
             internalAddresses.contains(element.pkh.address))) {
@@ -91,12 +92,16 @@ class TransactionsItemState extends State<TransactionsItem> {
   }
 
   int sendValue(GeneralTransaction vti) {
-    if (vti.txnType == TransactionType.value_transfer) {
-      bool isInternalTx =
-          externalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
-              internalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
-              singleAddressAccount?.address == vti.vtt!.outputs[0].pkh.address;
-      return isInternalTx ? vti.fee : vti.vtt!.outputs[0].value.toInt();
+    if (vti.type == TransactionType.value_transfer) {
+      if (vti.vtt!.outputs.length > 0) {
+        bool isInternalTx = externalAddresses
+                .contains(vti.vtt!.outputs[0].pkh.address) ||
+            internalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
+            singleAddressAccount?.address == vti.vtt!.outputs[0].pkh.address;
+        return isInternalTx ? vti.fee : vti.vtt!.outputs[0].value.toInt();
+      } else {
+        return 0;
+      }
     } else {
       return 0;
     }
@@ -129,15 +134,15 @@ class TransactionsItemState extends State<TransactionsItem> {
   }
 
   Widget buildTransactionStatus(ThemeData theme) {
-    String transactionStatus = widget.transaction.status;
-    String localizedtxnStatus = localization.txnStatus(transactionStatus);
+    TxStatusLabel transactionStatus = widget.transaction.status;
+    String localizedtxnStatus = localization.txnStatus(transactionStatus.name);
     String txnTime = widget.transaction.txnTime.formatDuration(context);
     List<Widget> pendingStatus = [];
     String transacionStatusCopy = txnTime;
 
-    if (transactionStatus != "confirmed") {
+    if (transactionStatus != TxStatusLabel.confirmed) {
       transacionStatusCopy = "$localizedtxnStatus $txnTime";
-      if (transactionStatus == "pending") {
+      if (transactionStatus == TxStatusLabel.pending) {
         pendingStatus = [
           Icon(FontAwesomeIcons.clock,
               size: 10, color: theme.textTheme.bodySmall!.color),
@@ -165,9 +170,9 @@ class TransactionsItemState extends State<TransactionsItem> {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     String label;
     String address;
-    TransactionType txnType = widget.transaction.txnType;
+    TransactionType type = widget.transaction.type;
 
-    if (txnType == TransactionType.value_transfer) {
+    if (type == TransactionType.value_transfer) {
       label = getTransactionLabel(externalAddresses, internalAddresses,
           widget.transaction.vtt!.inputs, singleAddressAccount, context);
       address = getTransactionAddress(label, widget.transaction.vtt!.inputs,

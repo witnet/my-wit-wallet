@@ -88,7 +88,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           .get<ApiExplorer>()
           .address(value: event.address, tab: event.tab);
       emit(ExplorerState.dataLoaded(
-          data: resp.jsonMap(), query: ExplorerQuery.address));
+          data: resp.data.jsonMap(), query: ExplorerQuery.address));
     } catch (err) {
       emit(ExplorerState.error());
       rethrow;
@@ -207,7 +207,8 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     emit(ExplorerState.synced(database.walletStorage));
   }
 
-  Future<dynamic> _getStatsByAddress(String address, String tab) async {
+  Future<PaginatedRequest<dynamic>> _getStatsByAddress(
+      String address, String tab) async {
     try {
       return await Locator.instance
           .get<ApiExplorer>()
@@ -243,8 +244,8 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     try {
       final result =
           await _getStatsByAddress(address, MasterAccountStats.blocks.name);
-      if (result.runtimeType != AddressBlocks && result['error'] != null) {
-        print('Error getting address blocks: ${result['error']}');
+      if (result.runtimeType != AddressBlocks && result.data['error'] != null) {
+        print('Error getting address blocks: ${result.data['error']}');
         return null;
       }
       return result as AddressBlocks?;
@@ -259,12 +260,12 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     try {
       final result = await _getStatsByAddress(
           address, MasterAccountStats.data_requests_solved.name);
-      if (result.runtimeType != AddressDataRequestsSolved &&
-          result['error'] != null) {
-        print('Error getting data requests solved: ${result['error']}');
+      if (result.data.runtimeType != AddressDataRequestsSolved) {
+        print(
+            'Error getting data requests solved for address: ${result.data.address}');
         return null;
       }
-      return result as AddressDataRequestsSolved?;
+      return result.data as AddressDataRequestsSolved?;
     } catch (err) {
       print('Error getting data requests solved: $err');
       rethrow;
@@ -292,7 +293,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         totalBlocksMined: blocks.length,
         totalFeesPayed: feesPayed ?? 0,
         totalRewards: totalRewards ?? 0,
-        totalDrSolved: dataRequestsSolved?.numDataRequestsSolved ?? 0);
+        totalDrSolved: dataRequestsSolved?.dataRequestsSolved.length ?? 0);
   }
 
   Future<void> _updateDBStatsFromExplorer(
@@ -327,30 +328,27 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<Account> _syncAccountVtts(Account account) async {
     try {
-      AddressValueTransfers vtts = await explorer.address(
-          value: account.address, tab: 'value_transfers');
+      AddressValueTransfers vtts = (await explorer.address(
+              value: account.address, tab: 'value_transfers'))
+          .data;
       WalletStorage walletStorage = database.walletStorage;
-
-      for (int i = 0; i < vtts.transactionHashes.length; i++) {
-        String transactionId = vtts.transactionHashes[i];
-        ValueTransferInfo? vtt = walletStorage.getVtt(transactionId);
-
+      for (int i = 0; i < vtts.addressValueTransfers.length; i++) {
+        AddressValueTransferInfo newVtt = vtts.addressValueTransfers[i];
+        ValueTransferInfo? vtt = walletStorage.getVtt(newVtt.hash);
         if (vtt != null) {
-          /// this vtt.status check for "confirmed" is in the local database
-          if (vtt.status != "confirmed") {
-            ValueTransferInfo _vtt = await explorer.getVtt(transactionId);
+          if (vtt.status != TxStatusLabel.confirmed) {
+            ValueTransferInfo _vtt = await explorer.getVtt(newVtt.hash);
             walletStorage.setVtt(database.walletStorage.currentWallet.id, _vtt);
             database.addOrUpdateVttInDB(_vtt);
           }
         } else {
-          ValueTransferInfo _vtt = await explorer.getVtt(transactionId);
+          ValueTransferInfo _vtt = await explorer.getVtt(newVtt.hash);
           walletStorage.setVtt(database.walletStorage.currentWallet.id, _vtt);
           database.addOrUpdateVttInDB(_vtt);
         }
       }
-
       account.vttHashes.clear();
-      account.vttHashes.addAll(vtts.transactionHashes);
+      account.vttHashes.addAll(vtts.addressValueTransfers.map((e) => e.hash));
       return account;
     } catch (e) {
       print('Error updating vtts from explorer: $e');
@@ -361,12 +359,14 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
   Future<Account> _syncAccountMints(Account account) async {
     try {
       /// retrieve all Block Hashes
-      final addressBlocks = await explorer.address(
-          value: account.address, tab: 'blocks') as AddressBlocks;
+      final addressBlocks = (await explorer.address(
+              value: account.address,
+              tab: 'blocks') as PaginatedRequest<AddressBlocks>)
+          .data;
 
       /// check if the list of transaction is already in the database
       for (int i = 0; i < addressBlocks.blocks.length; i++) {
-        String blockHash = addressBlocks.blocks[i].blockID;
+        String blockHash = addressBlocks.blocks[i].hash;
         MintEntry? mintEntry = database.walletStorage.getMint(blockHash);
         BlockInfo blockInfo = addressBlocks.blocks.elementAt(i);
 
@@ -384,7 +384,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
       account.mintHashes.clear();
       account.mintHashes
-          .addAll(addressBlocks.blocks.map((block) => block.blockID));
+          .addAll(addressBlocks.blocks.map((block) => block.hash));
 
       return account;
     } catch (e) {
@@ -442,7 +442,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
     /// get a list of any pending transactions
     List<ValueTransferInfo> unconfirmedVtts = wallet.unconfirmedTransactions();
-
     if (wallet.walletType == WalletType.hd) {
       /// maintain gap limit for BIP39
       await wallet.ensureGapLimit();
@@ -471,7 +470,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
             print('Error getting UTXOs from the explorer $err');
             rethrow;
           }
-
           await syncWalletStorage(utxos: _utxos, wallet: wallet);
           _updateWalletList(storage: storage, wallet: wallet);
         }
@@ -493,7 +491,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     for (int i = 0; i < unconfirmedVtts.length; i++) {
       ValueTransferInfo _vtt = unconfirmedVtts[i];
       try {
-        ValueTransferInfo vtt = await explorer.getVtt(_vtt.txnHash);
+        ValueTransferInfo vtt = await explorer.getVtt(_vtt.hash);
         if (_vtt.status != vtt.status) {
           await database.updateVtt(wallet.id, vtt);
         }
@@ -502,17 +500,16 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         /// and the vtt has an unknown hash
 
         /// check the inputs for accounts in the wallet and remove the vtt
-        for (int i = 0; i < _vtt.inputs.length; i++) {
-          Account? account = wallet.accountByAddress(_vtt.inputs[i].address);
+        for (int i = 0; i < _vtt.inputAddresses.length; i++) {
+          Account? account = wallet.accountByAddress(_vtt.inputAddresses[i]);
           if (account != null) {
             await account.deleteVtt(_vtt);
           }
         }
 
         /// check the outputs for accounts in the wallet and remove the vtt
-        for (int i = 0; i < _vtt.outputs.length; i++) {
-          Account? account =
-              wallet.accountByAddress(_vtt.outputs[i].pkh.address);
+        for (int i = 0; i < _vtt.outputAddresses.length; i++) {
+          Account? account = wallet.accountByAddress(_vtt.outputAddresses[i]);
           if (account != null) {
             await account.deleteVtt(_vtt);
           }
@@ -526,6 +523,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     await database.updateCurrentWallet(
         currentWalletId: wallet.id,
         isHdWallet: wallet.walletType == WalletType.hd);
+    print('FINISH SYNC');
     return storage;
   }
 }

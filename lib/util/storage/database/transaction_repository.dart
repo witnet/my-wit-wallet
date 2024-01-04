@@ -42,11 +42,12 @@ class VttRepository extends _TransactionRepository {
     final snapshots = await _store.find(databaseClient);
     try {
       List<ValueTransferInfo> transactions = snapshots
-          .map((snapshot) => ValueTransferInfo.fromDbJson(
+          .map((snapshot) => ValueTransferInfo.fromJson(
               snapshot.value as Map<String, dynamic>))
           .toList(growable: false);
       return transactions;
     } catch (e) {
+      print('Error getting all transactions $e');
       return [];
     }
   }
@@ -57,7 +58,7 @@ class VttRepository extends _TransactionRepository {
     try {
       assert(transaction.runtimeType == ValueTransferInfo);
       await _store
-          .record(transaction.txnHash)
+          .record(transaction.hash)
           .add(databaseClient, transaction.jsonMap());
       return true;
     } catch (e) {
@@ -71,11 +72,11 @@ class VttRepository extends _TransactionRepository {
     try {
       assert(transaction.runtimeType == ValueTransferInfo);
       await _store
-          .record(transaction.txnHash)
+          .record(transaction.hash)
           .update(databaseClient, transaction.jsonMap());
       return true;
     } catch (e) {
-      print(e);
+      print('Error updating transaction $e');
       return false;
     }
   }
@@ -87,7 +88,7 @@ class VttRepository extends _TransactionRepository {
           await _store.record(txHash).get(databaseClient);
 
       ValueTransferInfo valueTransferInfo =
-          ValueTransferInfo.fromDbJson(valueTransferInfoDbJson);
+          ValueTransferInfo.fromJson(valueTransferInfoDbJson);
 
       return valueTransferInfo;
     } catch (e) {
@@ -184,6 +185,7 @@ class MintRepository extends _TransactionRepository {
           .toList(growable: false);
       return transactions;
     } catch (e) {
+      print('Error getting mint transactions $e');
       return [];
     }
   }

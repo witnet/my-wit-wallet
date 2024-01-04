@@ -299,7 +299,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
             await _vttGetThroughBlockExplorer.get(_hash);
         if (valueTransferInfo != null) {
           account.vtts.add(valueTransferInfo);
-          Hash txnHash = Hash.fromString(valueTransferInfo.txnHash);
+          Hash txnHash = Hash.fromString(valueTransferInfo.hash);
           if (account.utxosByTransactionId.containsKey(txnHash)) {
             balance += BalanceInfo.fromUtxoList(
               account.utxosByTransactionId[txnHash]!,
@@ -325,19 +325,20 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     try {
       /// retrieve any Block Hashes
       final addressBlocks = await apiExplorer.address(
-          value: account.address, tab: 'blocks') as AddressBlocks;
+          value: account.address,
+          tab: 'blocks') as PaginatedRequest<AddressBlocks>;
 
       /// retrieve each block
-      for (int i = 0; i < addressBlocks.blocks.length; i++) {
-        BlockInfo blockInfo = addressBlocks.blocks.elementAt(i);
-        String _hash = blockInfo.blockID;
+      for (int i = 0; i < addressBlocks.data.blocks.length; i++) {
+        BlockInfo blockInfo = addressBlocks.data.blocks.elementAt(i);
+        String _hash = blockInfo.hash;
         var result = await apiExplorer.hash(_hash);
 
         /// create a MintEntry from the BlockInfo and MintInfo
         BlockDetails blockDetails = result as BlockDetails;
         MintEntry mintEntry = MintEntry.fromBlockMintInfo(
           blockInfo,
-          blockDetails.mintInfo,
+          blockDetails,
         );
         account.mintHashes.add(mintEntry.blockHash);
         account.mints.add(mintEntry);
@@ -354,9 +355,9 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     try {
       final addressValueTransfers = await apiExplorer.address(
           value: account.address,
-          tab: 'value_transfers') as AddressValueTransfers;
+          tab: 'value_transfers') as PaginatedRequest<AddressValueTransfers>;
       account.vttHashes = List<String>.from(
-          addressValueTransfers.transactionHashes.map((e) => e));
+          addressValueTransfers.data.addressValueTransfers.map((e) => e.hash));
       final List<Utxo> _utxos =
           await apiExplorer.utxos(address: account.address);
       account.updateUtxos(_utxos);

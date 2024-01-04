@@ -47,8 +47,16 @@ class Wallet {
     required this.externalAccounts,
     required this.internalAccounts,
     this.lastSynced = -1,
-    this.id = "00000000",
-  });
+  }) {
+    this.id = '00000000';
+    this.externalAccounts.forEach((key, Account account) {
+      account.balance;
+    });
+
+    this.internalAccounts.forEach((key, Account account) {
+      account.balance;
+    });
+  }
 
   final WalletType walletType;
   late String id;
@@ -92,16 +100,16 @@ class Wallet {
 
   Future<void> deleteVtt(Wallet wallet, ValueTransferInfo vtt) async {
     /// check the inputs for accounts in the wallet and remove the vtt
-    for (int i = 0; i < vtt.inputs.length; i++) {
-      Account? account = wallet.accountByAddress(vtt.inputs[i].address);
+    for (int i = 0; i < vtt.inputAddresses.length; i++) {
+      Account? account = wallet.accountByAddress(vtt.inputAddresses[i]);
       if (account != null) {
         await account.deleteVtt(vtt);
       }
     }
 
     /// check the outputs for accounts in the wallet and remove the vtt
-    for (int i = 0; i < vtt.outputs.length; i++) {
-      Account? account = wallet.accountByAddress(vtt.outputs[i].pkh.address);
+    for (int i = 0; i < vtt.outputAddresses.length; i++) {
+      Account? account = wallet.accountByAddress(vtt.outputAddresses[i]);
       if (account != null) {
         await account.deleteVtt(vtt);
       }
@@ -164,7 +172,7 @@ class Wallet {
   List<ValueTransferInfo> unconfirmedTransactions() {
     List<ValueTransferInfo> unconfirmedVtts = [];
     allTransactions().forEach((vtt) {
-      if (vtt.status != "confirmed") {
+      if (vtt.status != TxStatusLabel.confirmed) {
         unconfirmedVtts.add(vtt);
       }
     });
@@ -185,21 +193,20 @@ class Wallet {
     Map<String, ValueTransferInfo> _vttMap = {};
     externalAccounts.forEach((key, account) {
       account.vtts.forEach((vtt) {
-        if (vtt.status != 'unknown hash') _vttMap[vtt.txnHash] = vtt;
+        if (vtt.status != TxStatusLabel.reverted) _vttMap[vtt.hash] = vtt;
       });
     });
     internalAccounts.forEach((key, account) {
       account.vtts.forEach((vtt) {
-        if (vtt.status != 'unknown hash') _vttMap[vtt.txnHash] = vtt;
+        if (vtt.status != TxStatusLabel.reverted) _vttMap[vtt.hash] = vtt;
       });
     });
 
     if (walletType == WalletType.single) {
       masterAccount!.vtts.forEach((vtt) {
-        if (vtt.status != 'unknown hash') _vttMap[vtt.txnHash] = vtt;
+        if (vtt.status != TxStatusLabel.reverted) _vttMap[vtt.hash] = vtt;
       });
     }
-
     return _vttMap.values.toList()
       ..sort((t1, t2) => t2.txnTime.compareTo(t1.txnTime));
   }
@@ -512,7 +519,6 @@ class Wallet {
       masterAccount: null,
       masterAccountStats: null,
     );
-
     _wallet.id = _id;
     return _wallet;
   }

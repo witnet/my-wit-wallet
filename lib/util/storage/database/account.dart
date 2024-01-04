@@ -162,18 +162,18 @@ class Account extends _Account {
 
   Future<void> addVtt(ValueTransferInfo vtt) async {
     ApiDatabase database = Locator.instance<ApiDatabase>();
-    vtt.inputs.forEach((input) {
+    vtt.inputUtxos.forEach((input) {
       if (input.address == address) {
-        if (!vttHashes.contains(vtt.txnHash)) {
-          vttHashes.add(vtt.txnHash);
+        if (!vttHashes.contains(vtt.hash)) {
+          vttHashes.add(vtt.hash);
           vtts.add(vtt);
         }
       }
     });
     vtt.outputs.forEach((output) {
       if (output.pkh.address == address) {
-        if (!vttHashes.contains(vtt.txnHash)) {
-          vttHashes.add(vtt.txnHash);
+        if (!vttHashes.contains(vtt.hash)) {
+          vttHashes.add(vtt.hash);
           vtts.add(vtt);
         }
       }
@@ -184,8 +184,8 @@ class Account extends _Account {
   Future<bool> deleteVtt(ValueTransferInfo vtt) async {
     ApiDatabase database = Locator.instance<ApiDatabase>();
     try {
-      vttHashes.removeWhere((hash) => hash == vtt.txnHash);
-      vtts.removeWhere((_vtt) => _vtt.txnHash == vtt.txnHash);
+      vttHashes.removeWhere((hash) => hash == vtt.hash);
+      vtts.removeWhere((_vtt) => _vtt.hash == vtt.hash);
       await database.updateAccount(this);
     } catch (e) {
       return false;

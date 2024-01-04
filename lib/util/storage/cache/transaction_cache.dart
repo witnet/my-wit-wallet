@@ -43,7 +43,7 @@ class TransactionCache {
   }
 
   void addVtt(ValueTransferInfo vti) {
-    transactions[vti.txnHash] = vti;
+    transactions[vti.hash] = vti;
   }
 
   Future<Map<String, dynamic>> getValue(String key) async {

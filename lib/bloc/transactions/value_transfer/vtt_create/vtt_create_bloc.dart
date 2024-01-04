@@ -483,7 +483,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         if (account.utxos.contains(currentUtxo)) {
           _inputs.add(InputUtxo(
               address: account.address,
-              input: currentUtxo.toInput(),
+              inputUtxo: currentUtxo.toInput().outputPointer.toString(),
               value: currentUtxo.value));
         }
       });
@@ -493,7 +493,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         if (account.utxos.contains(currentUtxo)) {
           _inputs.add(InputUtxo(
               address: account.address,
-              input: currentUtxo.toInput(),
+              inputUtxo: currentUtxo.toInput().outputPointer.toString(),
               value: currentUtxo.value));
         }
       });
@@ -502,7 +502,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
           currentWallet.masterAccount != null) {
         _inputs.add(InputUtxo(
             address: currentWallet.masterAccount!.address,
-            input: currentUtxo.toInput(),
+            inputUtxo: currentUtxo.toInput().outputPointer.toString(),
             value: currentUtxo.value));
       }
     }
@@ -540,17 +540,29 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     if (transactionAccepted) {
       /// add pending transaction
       List<InputUtxo> _inputUtxoList = _buildInputUtxoList();
+      //FIX: update schema
       ValueTransferInfo vti = ValueTransferInfo(
-          blockHash: '',
+          block: '0',
+          confirmed: false,
+          reverted: false,
+          inputsMerged: [],
+          timelocks: outputs.map((e) => e.timeLock.toInt()).toList(),
           fee: feeNanoWit,
-          inputs: _inputUtxoList,
+          inputAddresses: _inputUtxoList.map((e) => e.address).toList(),
+          outputAddresses: outputs.map((e) => e.pkh.address).toList(),
+          inputUtxos: _inputUtxoList,
           outputs: outputs,
+          outputValues: outputs.map((e) => e.value.toInt()).toList(),
           priority: 1,
-          status: 'pending',
-          txnEpoch: -1,
-          txnHash: event.transaction.transactionID,
-          txnTime: DateTime.now().millisecondsSinceEpoch,
-          type: 'ValueTransfer',
+          status: TxStatusLabel.pending,
+          value: outputs[0].value.toInt(),
+          epoch: -1,
+          utxos: [],
+          utxosMerged: [],
+          trueOutputAddresses: [],
+          changeOutputAddresses: [],
+          hash: event.transaction.transactionID,
+          timestamp: DateTime.now().millisecondsSinceEpoch,
           weight: event.transaction.weight);
 
       /// add pending tx to database

@@ -281,5 +281,11 @@
   "updateError": "There was an issue with the update. Please try again.",
   "errorTryAgain": "Error. Try Again.",
   "insufficientFunds": "Insufficient funds",
-  "insufficientUtxosAvailable": "Wait untill the pending transactions are confirmed or try creating a transaction with a smaller amount."
+  "insufficientUtxosAvailable": "Wait untill the pending transactions are confirmed or try creating a transaction with a smaller amount.",
+  "dataRequestTxn": "Data Request",
+  "valueTransferTxn": "Value Transfer",
+  "mintTxn": "Mint",
+  "confirmed": "Confirmed",
+  "pending": "Pending",
+  "reverted": "Reverted"
 }

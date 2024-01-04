@@ -17,7 +17,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           DashboardState(
               currentWalletId: defaultWallet.id,
               currentAddress: defaultAccount.address,
-              currentVttId: defaulVtt.txnHash,
+              currentVttId: defaulVtt.hash,
               status: DashboardStatus.Ready),
         ) {
     on<DashboardLoadEvent>(_dashboardLoadEvent);
@@ -29,7 +29,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   get initialState => DashboardState(
       currentWalletId: defaultWallet.id,
       currentAddress: defaultAccount.address,
-      currentVttId: defaulVtt.txnHash,
+      currentVttId: defaulVtt.hash,
       status: DashboardStatus.Ready);
 
   Future<void> _dashboardLoadEvent(
@@ -39,7 +39,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     emit(DashboardState(
         currentWalletId: event.currentWalletId ?? defaultWallet.id,
         currentAddress: event.currentAddress ?? defaultAccount.address,
-        currentVttId: event.currentVttId ?? defaulVtt.txnHash,
+        currentVttId: event.currentVttId ?? defaulVtt.hash,
         status: DashboardStatus.Ready));
   }
 
@@ -49,7 +49,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     emit(DashboardState(
         currentWalletId: event.currentWalletId ?? defaultWallet.id,
         currentAddress: event.currentAddress ?? defaultAccount.address,
-        currentVttId: event.currentVttId ?? defaulVtt.txnHash,
+        currentVttId: event.currentVttId ?? defaulVtt.hash,
         status: DashboardStatus.Ready));
   }
 
@@ -63,7 +63,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     emit(DashboardState(
         currentWalletId: event.currentWallet?.id ?? defaultWallet.id,
         currentAddress: event.currentAddress ?? defaultAccount.address,
-        currentVttId: event.currentVttId ?? defaulVtt.txnHash,
+        currentVttId: event.currentVttId ?? defaulVtt.hash,
         status: DashboardStatus.Ready));
   }
 
@@ -72,7 +72,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     emit(DashboardState(
         currentWalletId: event.currentWalletId ?? defaultWallet.id,
         currentAddress: event.currentAddress ?? defaultAccount.address,
-        currentVttId: event.currentVttId ?? defaulVtt.txnHash,
+        currentVttId: event.currentVttId ?? defaulVtt.hash,
         status: DashboardStatus.Ready));
   }
 

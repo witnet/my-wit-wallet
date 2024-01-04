@@ -49,20 +49,45 @@ class TransactionDetails extends StatelessWidget {
         : null;
   }
 
+  String transactionType(TransactionType status) {
+    switch (status) {
+      case TransactionType.value_transfer:
+        return localization.valueTransferTxn;
+      case TransactionType.mint:
+        return localization.mintTxn;
+      case TransactionType.data_request:
+        return localization.dataRequestTxn;
+    }
+  }
+
+  String transactionStatus(TxStatusLabel status) {
+    switch (status) {
+      case TxStatusLabel.confirmed:
+        return localization.confirmed;
+      case TxStatusLabel.pending:
+        return localization.pending;
+      case TxStatusLabel.reverted:
+        return localization.reverted;
+      case TxStatusLabel.unknown:
+        return 'Loading...';
+    }
+  }
+
   Widget _buildOutput(
       ThemeData theme, ValueTransferOutput output, bool isLastOutput) {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     Widget timelock = SizedBox(height: 0);
-    if (output.timeLock != 0) {
-      timelock = Expanded(
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-            Text(output.timeLock.toInt().formatDate(),
-                style: theme.textTheme.bodySmall)
-          ]));
-    }
+    // FIXME: new API does not make accesible the timelock field
+    // if (output.timeLock != 0) {
+    //   timelock = Expanded(
+    //       child: Column(
+    //           crossAxisAlignment: CrossAxisAlignment.end,
+    //           mainAxisAlignment: MainAxisAlignment.end,
+    //           children: [
+    //         Text(output.timeLock.toInt().formatDate(),
+    //             style: theme.textTheme.bodySmall)
+    //       ]));
+    // }
     return Container(
         padding: EdgeInsets.only(top: 16, bottom: 16),
         decoration: BoxDecoration(
@@ -124,8 +149,8 @@ class TransactionDetails extends StatelessWidget {
         ));
   }
 
-  bool _isPendingTransaction(String status) {
-    return status.toLowerCase() == "pending";
+  bool _isPendingTransaction(TxStatusLabel status) {
+    return status == TxStatusLabel.pending;
   }
 
   Widget buildSpeedUpBtn() {
@@ -137,12 +162,12 @@ class TransactionDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     String label = '';
-    if (transaction.txnType == TransactionType.value_transfer) {
+    if (transaction.type == TransactionType.value_transfer) {
       label = getTransactionLabel(externalAddresses, internalAddresses,
           transaction.vtt!.inputs, singleAddressAccount, context);
     }
     List<ValueTransferOutput> outputs =
-        transaction.txnType == TransactionType.value_transfer
+        transaction.type == TransactionType.value_transfer
             ? transaction.vtt!.outputs
             : transaction.mint!.outputs;
     return ClosableView(closeSetting: goToList, children: [
@@ -153,7 +178,7 @@ class TransactionDetails extends StatelessWidget {
       SizedBox(height: 24),
       InfoElement(
           label: localization.status,
-          text: transaction.status.capitalize(),
+          text: transactionStatus(transaction.status),
           color: theme.textTheme.labelMedium?.color),
       InfoElement(
         label: localization.transactionId,
@@ -166,10 +191,9 @@ class TransactionDetails extends StatelessWidget {
               ? '_'
               : transaction.epoch.toString()),
       InfoElement(
-          label: localization.type,
-          text: transaction.type.split('_').join(' ').toTitleCase()),
+          label: localization.type, text: transactionType(transaction.type)),
       InfoElement(
-          label: transaction.txnType == TransactionType.value_transfer
+          label: transaction.type == TransactionType.value_transfer
               ? localization.feesPayed
               : localization.feesCollected,
           text:
@@ -179,7 +203,7 @@ class TransactionDetails extends StatelessWidget {
           text: _isPendingTransaction(transaction.status)
               ? '_'
               : transaction.txnTime.formatDate()),
-      transaction.txnType == TransactionType.value_transfer
+      transaction.type == TransactionType.value_transfer
           ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
                 localization.inputs,
@@ -217,7 +241,7 @@ class TransactionDetails extends StatelessWidget {
         ),
       ]),
       SizedBox(height: 8),
-      transaction.status == 'pending' && label == localization.to
+      transaction.status == TxStatusLabel.pending && label == localization.to
           ? buildSpeedUpBtn()
           : Container(),
     ]);

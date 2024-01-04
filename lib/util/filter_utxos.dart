@@ -9,8 +9,9 @@ List<Utxo> filterUsedUtxos(
   List<OutputPointer> outputPointers = [];
 
   for (int i = 0; i < pendingVtts.length; i++) {
-    pendingVtts[i].inputs.forEach((InputUtxo input) {
-      outputPointers.add(input.input.outputPointer);
+    pendingVtts[i].inputAddresses.forEach((String inputAddress) {
+      //FIX: get output pointer from new value trasnfer schema
+      // outputPointers.add(input.input.outputPointer);
     });
   }
 

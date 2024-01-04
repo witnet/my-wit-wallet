@@ -1,8 +1,6 @@
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
 
-enum TransactionType { mint, value_transfer }
-
 class MintData {
   final List<ValueTransferOutput> outputs;
   final int timestamp;
@@ -27,21 +25,28 @@ class MintData {
 
 class VttData {
   final List<InputUtxo> inputs;
+  final List<String> inputAddresses;
   final List<ValueTransferOutput> outputs;
+  final List<String> outputAddresses;
   final int weight;
   final int priority;
+  final bool confirmed;
+  final bool reverted;
 
   VttData(
       {required this.inputs,
+      required this.inputAddresses,
       required this.outputs,
+      required this.outputAddresses,
       required this.weight,
+      required this.confirmed,
+      required this.reverted,
       required this.priority});
 }
 
 class GeneralTransaction extends HashInfo {
   MintData? mint;
   VttData? vtt;
-  final TransactionType txnType;
   final int fee;
   final int? epoch;
 
@@ -52,7 +57,6 @@ class GeneralTransaction extends HashInfo {
       required hash,
       required status,
       required time,
-      required this.txnType,
       required type,
       this.mint,
       this.vtt})
@@ -72,7 +76,6 @@ class GeneralTransaction extends HashInfo {
           status: mintEntry.status,
           time: mintEntry.timestamp,
           type: mintEntry.type,
-          txnType: TransactionType.mint,
           mint: MintData(
               commitCount: mintEntry.commitCount,
               outputs: mintEntry.outputs,
@@ -87,32 +90,49 @@ class GeneralTransaction extends HashInfo {
           ValueTransferInfo valueTransferInfo) =>
       GeneralTransaction(
           blockHash: valueTransferInfo.blockHash,
-          epoch: valueTransferInfo.txnEpoch,
+          epoch: valueTransferInfo.epoch,
           fee: valueTransferInfo.fee,
-          hash: valueTransferInfo.txnHash,
+          hash: valueTransferInfo.hash,
           status: valueTransferInfo.status,
-          time: valueTransferInfo.txnTime,
+          time: valueTransferInfo.timestamp,
           type: valueTransferInfo.type,
-          txnType: TransactionType.value_transfer,
           mint: null,
           vtt: VttData(
-              inputs: valueTransferInfo.inputs,
+              inputs: valueTransferInfo.inputUtxos,
+              inputAddresses: valueTransferInfo.inputAddresses,
+              confirmed: valueTransferInfo.confirmed,
+              reverted: valueTransferInfo.reverted,
               outputs: valueTransferInfo.outputs,
+              outputAddresses: valueTransferInfo.outputAddresses,
               weight: valueTransferInfo.weight,
               priority: valueTransferInfo.priority));
 
   ValueTransferInfo toValueTransferInfo() => ValueTransferInfo(
-      blockHash: blockHash,
-      fee: fee,
-      inputs: vtt?.inputs ?? [],
-      outputs: vtt?.outputs ?? [],
-      priority: vtt?.priority ?? 0,
-      status: status,
-      txnEpoch: epoch,
-      txnHash: txnHash,
-      txnTime: txnTime,
-      type: type,
-      weight: vtt?.weight ?? 0);
+        block: blockHash,
+        fee: fee,
+        inputUtxos: vtt?.inputs ?? [],
+        outputs: vtt?.outputs ?? [],
+        priority: vtt?.priority ?? 0,
+        status: status,
+        epoch: epoch ?? 0,
+        hash: txnHash,
+        timestamp: txnTime,
+        weight: vtt?.weight ?? 0,
+        confirmed: vtt?.confirmed ?? false,
+        reverted: vtt?.reverted ?? false,
+        inputAddresses: vtt?.inputAddresses ?? [],
+        outputAddresses: vtt?.outputAddresses ?? [],
+        value: 0,
+        inputsMerged: [],
+        outputValues: [],
+        timelocks: [],
+        utxos: [],
+        utxosMerged: [],
+        trueOutputAddresses: [],
+        changeOutputAddresses: [],
+        trueValue: 0,
+        changeValue: 0,
+      );
 }
 
 class MintEntry {
@@ -131,6 +151,8 @@ class MintEntry {
     required this.tallyCount,
     required this.status,
     required this.type,
+    required this.confirmed,
+    required this.reverted,
   });
   final String blockHash;
   final List<ValueTransferOutput> outputs;
@@ -143,8 +165,10 @@ class MintEntry {
   final int commitCount;
   final int revealCount;
   final int tallyCount;
-  final String status;
-  final String type;
+  final TxStatusLabel status;
+  final TransactionType type;
+  final bool confirmed;
+  final bool reverted;
 
   bool containsAddress(String address) {
     bool response = false;
@@ -167,31 +191,38 @@ class MintEntry {
         "commit_count": commitCount,
         "reveal_count": revealCount,
         "tally_count": tallyCount,
-        "status": status,
-        "type": type,
+        'confirmed': confirmed,
+        'reverted': reverted,
+        "status": status.toString(),
+        "type": type.toString(),
       };
 
-  factory MintEntry.fromJson(Map<String, dynamic> json) => MintEntry(
-        blockHash: json["block_hash"],
-        outputs: List<ValueTransferOutput>.from(
-            json["outputs"].map((x) => ValueTransferOutput.fromJson(x))),
-        timestamp: json["timestamp"],
-        epoch: json["epoch"],
-        reward: json["reward"],
-        fees: json["fees"],
-        valueTransferCount: json["vtt_count"],
-        dataRequestCount: json["drt_count"],
-        commitCount: json["commit_count"],
-        revealCount: json["reveal_count"],
-        tallyCount: json["tally_count"],
-        status: json["status"],
-        type: json["type"],
-      );
+  factory MintEntry.fromJson(Map<String, dynamic> json) {
+    return MintEntry(
+      blockHash: json["block_hash"],
+      outputs: List<ValueTransferOutput>.from(
+          json["outputs"].map((x) => ValueTransferOutput.fromJson(x))),
+      timestamp: json["timestamp"],
+      epoch: json["epoch"],
+      reward: json["reward"],
+      fees: json["fees"],
+      valueTransferCount: json["vtt_count"],
+      dataRequestCount: json["drt_count"],
+      commitCount: json["commit_count"],
+      revealCount: json["reveal_count"],
+      tallyCount: json["tally_count"],
+      confirmed: json['confirmed'] ?? false,
+      reverted: json['reverted'] ?? false,
+      status: TransactionStatus.fromJson(json).status,
+      type: TransactionType.mint,
+    );
+  }
 
-  factory MintEntry.fromBlockMintInfo(BlockInfo blockInfo, MintInfo mintInfo) =>
+  factory MintEntry.fromBlockMintInfo(
+          BlockInfo blockInfo, BlockDetails blockDetails) =>
       MintEntry(
-        blockHash: mintInfo.blockHash,
-        outputs: mintInfo.outputs,
+        blockHash: blockDetails.mintInfo.blockHash,
+        outputs: blockDetails.mintInfo.outputs,
         timestamp: blockInfo.timestamp,
         epoch: blockInfo.epoch,
         reward: blockInfo.reward,
@@ -201,7 +232,12 @@ class MintEntry {
         commitCount: blockInfo.commitCount,
         revealCount: blockInfo.revealCount,
         tallyCount: blockInfo.tallyCount,
-        status: mintInfo.status,
-        type: mintInfo.type,
+        status: TransactionStatus.fromJson({
+          'confirmed': blockDetails.confirmed,
+          'reverted': blockDetails.reverted
+        }).status,
+        type: TransactionType.mint,
+        confirmed: blockDetails.confirmed,
+        reverted: blockDetails.reverted,
       );
 }

@@ -145,8 +145,7 @@ Future<void> _addRecord(
       value = await dbService.add(Wallet.fromJson(params['value']));
       break;
     case 'vtt':
-      value =
-          await dbService.add(ValueTransferInfo.fromDbJson(params['value']));
+      value = await dbService.add(ValueTransferInfo.fromJson(params['value']));
       break;
     case 'account':
       value = await dbService.add(Account.fromJson(params['value']));
@@ -176,7 +175,7 @@ Future<void> _deleteRecord(
       break;
     case 'vtt':
       value =
-          await dbService.delete(ValueTransferInfo.fromDbJson(params['value']));
+          await dbService.delete(ValueTransferInfo.fromJson(params['value']));
       break;
     case 'account':
       value = await dbService.delete(Account.fromJson(params['value']));
@@ -212,7 +211,7 @@ Future<void> _updateRecord(
       break;
     case 'vtt':
       value =
-          await dbService.update(ValueTransferInfo.fromDbJson(params['value']));
+          await dbService.update(ValueTransferInfo.fromJson(params['value']));
       break;
     case 'account':
       value = await dbService.update(Account.fromJson(params['value']));

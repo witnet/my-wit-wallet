@@ -371,7 +371,7 @@ class ApiDatabase {
   }
 
   Future<void> addOrUpdateVttInDB(ValueTransferInfo vtt) async {
-    if (await getVtt(vtt.txnHash) == null) {
+    if (await getVtt(vtt.hash) == null) {
       await addVtt(vtt);
     } else {
       await updateVtt(walletStorage.currentWallet.id, vtt);

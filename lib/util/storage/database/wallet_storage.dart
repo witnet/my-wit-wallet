@@ -21,18 +21,31 @@ final defaultWallet = Wallet(
 final defaultAccount = Account(address: '', walletName: '', path: '');
 
 final defaulVtt = ValueTransferInfo(
-    blockHash:
-        '0000000000000000000000000000000000000000000000000000000000000000',
-    fee: 0,
-    inputs: [],
-    outputs: [],
-    priority: 0,
-    status: 'pending',
-    txnEpoch: 0,
-    txnHash: '0000000000000000000000000000000000000000000000000000000000000000',
-    txnTime: 0,
-    type: 'valueTransfer',
-    weight: 0);
+  confirmed: false,
+  reverted: false,
+  block: '0',
+  epoch: 0,
+  timestamp: 0,
+  value: 0,
+  hash: '0000000000000000000000000000000000000000000000000000000000000000',
+  fee: 0,
+  priority: 0,
+  weight: 0,
+  inputAddresses: [],
+  outputAddresses: [],
+  inputUtxos: [],
+  inputsMerged: [],
+  outputValues: [],
+  timelocks: [],
+  utxos: [],
+  utxosMerged: [],
+  trueOutputAddresses: [],
+  changeOutputAddresses: [],
+  status: TxStatusLabel.pending,
+  trueValue: 0,
+  changeValue: 0,
+  outputs: [],
+);
 
 /// DbWallet formats the wallet for the database
 class WalletStorage {

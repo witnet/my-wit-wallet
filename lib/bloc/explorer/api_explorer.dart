@@ -37,7 +37,7 @@ class ApiExplorer {
   Future<dynamic> hash(String value, [bool simple = true]) async {
     try {
       await delay();
-      return await client.hash(value, simple);
+      return await client.hash(value: value, simple: simple, findAll: true);
     } on ExplorerException {
       rethrow;
     }
@@ -47,15 +47,6 @@ class ApiExplorer {
     try {
       await delay();
       return await client.home();
-    } on ExplorerException {
-      rethrow;
-    }
-  }
-
-  Future<Network> network() async {
-    try {
-      await delay();
-      return await client.network();
     } on ExplorerException {
       rethrow;
     }
@@ -71,37 +62,12 @@ class ApiExplorer {
     }
   }
 
-  Future<dynamic> pending() async {
+  Future<PaginatedRequest<dynamic>> address(
+      {required String value, required String tab}) async {
     try {
       await delay();
-      return await client.mempool();
-    } on ExplorerException {
-      rethrow;
-    }
-  }
-
-  Future<dynamic> richList({int start = 0, int stop = 1000}) async {
-    try {
-      await delay();
-      return await client.richList(start: start, stop: stop);
-    } on ExplorerException {
-      rethrow;
-    }
-  }
-
-  Future<dynamic> address({required String value, required String tab}) async {
-    try {
-      await delay();
-      return await client.address(value: value, tab: tab);
-    } on ExplorerException {
-      rethrow;
-    }
-  }
-
-  Future<Blockchain> blockchain({int block = -100}) async {
-    try {
-      await delay();
-      return await client.blockchain(block: block);
+      return await client.address(value: value, tab: tab, findAll: true)
+          as PaginatedRequest<dynamic>;
     } on ExplorerException {
       rethrow;
     }
@@ -164,7 +130,7 @@ class ApiExplorer {
       AddressValueTransfers vtts = await getValueTransferHashes(account);
 
       List<String> vttsToUpdate = [];
-      vttsToUpdate.addAll(vtts.transactionHashes);
+      vttsToUpdate.addAll(vtts.addressValueTransfers.map((e) => e.hash));
 
       List<String> vttsInDb = [];
 
@@ -223,7 +189,7 @@ class ApiExplorer {
   /// get the list of value transfer hashes from the explorer for a given address.
   Future<AddressValueTransfers> getValueTransferHashes(Account account) async {
     AddressValueTransfers vtts =
-        await address(value: account.address, tab: 'value_transfers');
+        (await address(value: account.address, tab: 'value_transfers')).data;
     return vtts;
   }
 
@@ -234,14 +200,14 @@ class ApiExplorer {
   }
 
   Future<MintEntry> getMint(BlockInfo blockInfo) async {
-    String _hash = blockInfo.blockID;
+    String _hash = blockInfo.hash;
     var result = await Locator.instance.get<ApiExplorer>().hash(_hash);
 
     /// create a MintEntry from the BlockInfo and MintInfo
     BlockDetails blockDetails = result as BlockDetails;
     MintEntry mintEntry = MintEntry.fromBlockMintInfo(
       blockInfo,
-      blockDetails.mintInfo,
+      blockDetails,
     );
     return mintEntry;
   }
