@@ -5,6 +5,7 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/dashed_rect.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
@@ -91,6 +92,7 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
 
   void nextAction() {
     Locator.instance.get<ApiCreateWallet>().setSeed(mnemonic, 'mnemonic');
+    Locator.instance.get<ApiCreateWallet>().setWalletType(WalletType.hd);
     CreateWalletType type =
         BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
     BlocProvider.of<CreateWalletBloc>(context)
