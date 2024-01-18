@@ -3,6 +3,8 @@ import 'package:my_wit_wallet/util/storage/path_provider_interface.dart';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:permission_handler/permission_handler.dart';
+
 /// Writes the log output to a file.
 class FileOutput extends LogOutput {
   final bool overrideExisting;
@@ -30,10 +32,14 @@ class FileOutput extends LogOutput {
   Future<void> setSink() async {
     File file = await getDirectoryForLogRecord();
     if (_sink == null) {
-      _sink = file.openWrite(
-        mode: overrideExisting ? FileMode.writeOnly : FileMode.writeOnlyAppend,
-        encoding: encoding,
-      );
+      final status = await interface.requestExternalStoragePermission();
+      if (status.isGranted || status.isProvisional) {
+        _sink = file.openWrite(
+          mode:
+              overrideExisting ? FileMode.writeOnly : FileMode.writeOnlyAppend,
+          encoding: encoding,
+        );
+      }
     }
   }
 

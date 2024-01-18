@@ -4,6 +4,7 @@ import 'package:my_wit_wallet/globals.dart' as globals;
 import 'package:path_provider/path_provider.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'dart:io';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:open_file/open_file.dart';
 
@@ -174,6 +175,18 @@ class PathProviderInterface {
     print("Saved file path: $path/$name");
   }
 
+  Future<PermissionStatus> requestExternalStoragePermission() async {
+    if (Platform.isAndroid || Platform.isIOS) {
+      final status = await Permission.storage.status;
+      if (status.isDenied) {
+        await Permission.storage.request();
+      }
+      return status;
+    } else {
+      return PermissionStatus.granted;
+    }
+  }
+
   Future<void> openSavedFile(String fileName) async {
     String? path = await directoryPath;
 
@@ -186,9 +199,13 @@ class PathProviderInterface {
         // opens the directory
         await OpenFile.open('$path');
       }
-    } else {
-      // opens the directory
-      await OpenFile.open('$path');
+    } else if (Platform.isAndroid) {
+      final status = await requestExternalStoragePermission();
+      if (status.isGranted || status.isProvisional) {
+        // opens the directory
+        await OpenFile.open('$path');
+      }
     }
+    await OpenFile.open('$path');
   }
 }
