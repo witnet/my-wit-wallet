@@ -6,11 +6,15 @@ publish_to: 'none'
 version: 0.0.0+0
 
 environment:
-  sdk: ">=2.15.0 <3.0.0"
+  sdk: '>=3.0.0 <4.0.0'
 
 dev_dependencies:
   msix: ^3.16.1
   test: ^1.21.4
+
+dependency_overrides:
+  path: ^1.9.0
+  web: ^0.4.0
 
 dependencies:
   flutter:
@@ -39,16 +43,16 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   sliding_up_panel: ^2.0.0+1
   decimal: 2.3.3
-  witnet: 0.2.9
+  witnet: 0.3.0
   path_provider: ^2.0.8
   permission_handler: ^11.0.1
-  open_file: ^3.2.1
+  open_file: ^3.3.2
   qr_flutter: ^4.1.0
   window_manager: ^0.3.6
   url_launcher: ^6.1.14
   flutter_dotenv: ^5.1.0
   qr_code_scanner: ^1.0.1
-  mobile_scanner: ^3.4.1
+  mobile_scanner: 3.5.5
   formz: ^0.6.1
   flutter_hooks: ^0.20.2
   flutter_svg: ^2.0.7
