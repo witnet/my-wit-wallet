@@ -61,10 +61,11 @@ Future<void> e2eExportXprvTest(WidgetTester tester) async {
 
   await enterText(tester, TextFormField, password, index: 0);
 
-  await scrollUntilVisible(tester, widgetByText("Verify").first,
+  await scrollUntilVisible(
+      tester, widgetByText(_localization.verifyLabel).first,
       lastScroll: true);
 
-  await tapButton(tester, "Verify");
+  await tapButton(tester, _localization.verifyLabel);
 
   // Scroll Save button into view
   await scrollUntilVisible(
