@@ -387,7 +387,7 @@ jobs:
           path: ./build/ios/ipa/myWitWallet.ipa
 
   Release:
-    needs: [Windows, Linux, MacOs, Android, IOS]
+    needs: [Linux, MacOs, Android]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -407,12 +407,10 @@ jobs:
       - name: Organize Releases
         run: |
           cd release
-          mv windows/* .
           mv linux/* .
           mv macos/* .
           mv android/* .
-          mv ios/* .
-          rm -rf windows linux macos android ios
+          rm -rf linux macos android
 
       - name: Publish Github Release
         uses: ncipollo/release-action@v1
