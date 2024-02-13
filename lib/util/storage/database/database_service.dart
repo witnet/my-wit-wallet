@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:my_wit_wallet/util/storage/database/address_book_repository.dart';
 import 'package:my_wit_wallet/util/storage/database/get_account_mints_map.dart';
 import 'package:my_wit_wallet/util/storage/database/get_account_vtts_map.dart';
 import 'package:my_wit_wallet/util/storage/database/stats.dart';
@@ -57,6 +58,7 @@ class DatabaseService {
   AccountRepository accountRepository = AccountRepository();
   MintRepository mintRepository = MintRepository();
   StatsRepository statsRepository = StatsRepository();
+  AddressBookRepository addressBookRepository = AddressBookRepository();
 
   KeyChain keyChain = KeyChain();
 
@@ -115,6 +117,9 @@ class DatabaseService {
         case AccountStats:
           await statsRepository.insertStats(item, _database);
           break;
+        case AddressBookEntry:
+          await addressBookRepository.insertAddressBookEntry(item, _database);
+          break;
         default:
           return false;
       }
@@ -156,6 +161,8 @@ class DatabaseService {
         case AccountStats:
           await statsRepository.deleteStats(item.address, _database);
           break;
+        case AddressBookEntry:
+          await addressBookRepository.deleteAddressBookEntry(item, _database);
         default:
           return false;
       }
@@ -183,6 +190,8 @@ class DatabaseService {
         case AccountStats:
           await statsRepository.updateStats(item, _database);
           break;
+        case AddressBookEntry:
+          await addressBookRepository.updateAddressBookEntry(item, _database);
         default:
           return false;
       }
@@ -260,6 +269,8 @@ class DatabaseService {
       Map<String, Account> accountMap = {};
       Map<String, ValueTransferInfo> vttMap = {};
       Map<String, MintEntry> mintMap = {};
+      List<AddressBookEntry> addressBook =
+          await addressBookRepository.getEntries(_database);
       for (int i = 0; i < wallets.length; i++) {
         walletMap[wallets[i].id] = wallets[i];
       }
@@ -314,6 +325,7 @@ class DatabaseService {
 
       /// Load current wallet and address from preferences
       WalletStorage _walletStorage = WalletStorage(wallets: walletMap);
+      _walletStorage.setAddressBookEntries(addressBook);
       _walletStorage.setAccounts(accountMap);
       _walletStorage.setTransactions(vttMap);
       _walletStorage.setMints(mintMap);
@@ -348,5 +360,10 @@ class DatabaseService {
 
   Future<Account?> getAccount(params) async {
     return await accountRepository.getAccount(params["address"], _database);
+  }
+
+  Future<AddressBookEntry?> getAddressBookEntry(params) async {
+    return await addressBookRepository.getAddressBookEntry(
+        params["address"], _database);
   }
 }

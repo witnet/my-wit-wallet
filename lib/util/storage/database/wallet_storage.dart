@@ -1,3 +1,4 @@
+import 'package:my_wit_wallet/util/storage/database/address_book_repository.dart';
 import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
@@ -51,6 +52,9 @@ class WalletStorage {
 
   //<block_id, MintEntry>
   Map<String, MintEntry> _mints = {};
+
+  //<address, name>
+  Map<String, String> _addressBook = {};
 
   // WalletType type;
   String? _currentWalletId;
@@ -124,6 +128,16 @@ class WalletStorage {
 
   void setMint(String walletId, MintEntry mint) {
     wallets[walletId]!.setTransaction(mint);
+  }
+
+  void setAddressBookEntry(AddressBookEntry addressBookEntry) {
+    _addressBook[addressBookEntry.address] = addressBookEntry.name;
+  }
+
+  void setAddressBookEntries(List<AddressBookEntry> entries) {
+    entries.forEach((element) {
+      setAddressBookEntry(element);
+    });
   }
 
   void setAccount(Account account) {

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 
+import 'package:my_wit_wallet/util/storage/database/address_book_repository.dart';
 import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:witnet/explorer.dart';
@@ -16,6 +17,7 @@ Map<String, Function(DatabaseService, SendPort, Map<String, dynamic>)>
   'configure': _configure,
   'delete': _deleteRecord,
   'deleteDatabase': _deleteDatabase,
+  'getAddressBookEntry': _getAddressBookEntry,
   'getKeychain': _getKeychain,
   'getStatsByAddress': _getStatsByAddress,
   'getVtt': _getVtt,
@@ -157,6 +159,9 @@ Future<void> _addRecord(
     case 'stats':
       value = await dbService.add(AccountStats.fromJson(params['value']));
       break;
+    case 'address_book_entry':
+      value = await dbService.add(AddressBookEntry.fromJson(params['value']));
+      break;
     default:
       value = false;
       break;
@@ -184,6 +189,9 @@ Future<void> _deleteRecord(
     case 'stats':
       value = await dbService.delete(AccountStats.fromJson(params['value']));
       break;
+    case 'address_book_entry':
+      value =
+          await dbService.delete(AddressBookEntry.fromJson(params['value']));
     default:
       value = false;
       break;
@@ -219,6 +227,10 @@ Future<void> _updateRecord(
       break;
     case 'stats':
       value = await dbService.update(AccountStats.fromJson(params['value']));
+      break;
+    case 'address_book_entry':
+      value =
+          await dbService.update(AddressBookEntry.fromJson(params['value']));
       break;
     default:
       value = false;
@@ -276,4 +288,14 @@ Future<void> _getMint(
 ) async {
   MintEntry? mint = await dbService.getMint(params);
   port.send(mint);
+}
+
+Future<void> _getAddressBookEntry(
+  DatabaseService dbService,
+  SendPort port,
+  Map<String, dynamic> params,
+) async {
+  AddressBookEntry? addressBookEntry =
+      await dbService.getAddressBookEntry(params);
+  port.send(addressBookEntry);
 }
