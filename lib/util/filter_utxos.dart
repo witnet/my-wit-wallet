@@ -1,23 +1,21 @@
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
-import 'package:witnet/schema.dart';
 
 List<Utxo> filterUsedUtxos(
     {required List<Utxo> utxoList,
     required List<ValueTransferInfo> pendingVtts}) {
   List<Utxo> filteredUtxos = [];
-  List<OutputPointer> outputPointers = [];
+  List<String> outputPointers = [];
 
   for (int i = 0; i < pendingVtts.length; i++) {
-    pendingVtts[i].inputAddresses.forEach((String inputAddress) {
-      //FIX: get output pointer from new value trasnfer schema
-      // outputPointers.add(input.input.outputPointer);
+    pendingVtts[i].inputUtxos.forEach((InputUtxo input) {
+      outputPointers.add(input.inputUtxo);
     });
   }
 
   for (int i = 0; i < utxoList.length; i++) {
     Utxo currentUtxo = utxoList[i];
-    if (!outputPointers.contains(currentUtxo.outputPointer)) {
+    if (!outputPointers.contains(currentUtxo.outputPointer.toString())) {
       filteredUtxos.add(currentUtxo);
     }
   }

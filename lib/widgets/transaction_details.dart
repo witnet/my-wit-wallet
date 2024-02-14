@@ -64,6 +64,8 @@ class TransactionDetails extends StatelessWidget {
     switch (status) {
       case TxStatusLabel.confirmed:
         return localization.confirmed;
+      case TxStatusLabel.mined:
+        return localization.mined;
       case TxStatusLabel.pending:
         return localization.pending;
       case TxStatusLabel.reverted:

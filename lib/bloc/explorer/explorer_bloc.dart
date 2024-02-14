@@ -337,14 +337,19 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         ValueTransferInfo? vtt = walletStorage.getVtt(newVtt.hash);
         if (vtt != null) {
           if (vtt.status != TxStatusLabel.confirmed) {
-            ValueTransferInfo _vtt = await explorer.getVtt(newVtt.hash);
+            ValueTransferInfo? _vtt = await explorer.getVtt(newVtt.hash);
+            if (_vtt != null) {
+              walletStorage.setVtt(
+                  database.walletStorage.currentWallet.id, _vtt);
+              database.addOrUpdateVttInDB(_vtt);
+            }
+          }
+        } else {
+          ValueTransferInfo? _vtt = await explorer.getVtt(newVtt.hash);
+          if (_vtt != null) {
             walletStorage.setVtt(database.walletStorage.currentWallet.id, _vtt);
             database.addOrUpdateVttInDB(_vtt);
           }
-        } else {
-          ValueTransferInfo _vtt = await explorer.getVtt(newVtt.hash);
-          walletStorage.setVtt(database.walletStorage.currentWallet.id, _vtt);
-          database.addOrUpdateVttInDB(_vtt);
         }
       }
       account.vttHashes.clear();
@@ -491,8 +496,8 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     for (int i = 0; i < unconfirmedVtts.length; i++) {
       ValueTransferInfo _vtt = unconfirmedVtts[i];
       try {
-        ValueTransferInfo vtt = await explorer.getVtt(_vtt.hash);
-        if (_vtt.status != vtt.status) {
+        ValueTransferInfo? vtt = await explorer.getVtt(_vtt.txnHash);
+        if (vtt != null && _vtt.status != vtt.status) {
           await database.updateVtt(wallet.id, vtt);
         }
       } catch (e) {
@@ -523,7 +528,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     await database.updateCurrentWallet(
         currentWalletId: wallet.id,
         isHdWallet: wallet.walletType == WalletType.hd);
-    print('FINISH SYNC');
     return storage;
   }
 }

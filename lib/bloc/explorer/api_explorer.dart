@@ -138,8 +138,8 @@ class ApiExplorer {
 
       for (int i = 0; i < vttsToUpdate.length; i++) {
         try {
-          ValueTransferInfo vtt = await getVtt(vttsToUpdate[i]);
-          await db.addVtt(vtt);
+          ValueTransferInfo? vtt = await getVtt(vttsToUpdate[i]);
+          if (vtt != null) await db.addVtt(vtt);
         } catch (e) {
           print('Error adding vtt to database $e');
           rethrow;
@@ -194,9 +194,9 @@ class ApiExplorer {
   }
 
   /// get the ValueTransferInfo from the explorer for a given transaction ID.
-  Future<ValueTransferInfo> getVtt(String transactionId) async {
+  Future<ValueTransferInfo?> getVtt(String transactionId) async {
     var result = await hash(transactionId);
-    return result as ValueTransferInfo;
+    return result as ValueTransferInfo?;
   }
 
   Future<MintEntry> getMint(BlockInfo blockInfo) async {

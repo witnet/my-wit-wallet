@@ -108,7 +108,8 @@ class GeneralTransaction extends HashInfo {
               priority: valueTransferInfo.priority));
 
   ValueTransferInfo toValueTransferInfo() => ValueTransferInfo(
-        block: blockHash,
+        block: blockHash ??
+            '0000000000000000000000000000000000000000000000000000000000000000',
         fee: fee,
         inputUtxos: vtt?.inputs ?? [],
         outputs: vtt?.outputs ?? [],

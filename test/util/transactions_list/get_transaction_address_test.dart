@@ -12,23 +12,20 @@ void main() {
   List<InputUtxo> inputs = [
     InputUtxo(
         address: 'wit1zl7ty0lwr7atp5fu34azkgewhtfx2fl4wv69cw',
-        input: Input(
-            outputPointer: OutputPointer.fromString(
-                '59e4dc54077871e71875a4b840da67c23659d89d41eaad85cdb9a5d552254b5d:9')),
+        inputUtxo:
+            '59e4dc54077871e71875a4b840da67c23659d89d41eaad85cdb9a5d552254b5d:9',
         value: 10180697116),
   ];
   List<InputUtxo> severalInputs = [
     InputUtxo(
         address: 'wit1zl7ty0lwr7atp5fu34azkgewhtfx2fl4wv69cw',
-        input: Input(
-            outputPointer: OutputPointer.fromString(
-                '59e4dc54077871e71875a4b840da67c23659d89d41eaad85cdb9a5d552254b5d:9')),
+        inputUtxo:
+            '59e4dc54077871e71875a4b840da67c23659d89d41eaad85cdb9a5d552254b5d:9',
         value: 10180697116),
     InputUtxo(
         address: 'wit2zl7ty0lwr7atp5fu34azkgewhtfx2fl4wv69cw',
-        input: Input(
-            outputPointer: OutputPointer.fromString(
-                '59e4dc54077871e71875a4b840da67c23659d89d41eaad85cdb9a5d552254b5d:9')),
+        inputUtxo:
+            '59e4dc54077871e71875a4b840da67c23659d89d41eaad85cdb9a5d552254b5d:9',
         value: 10180697116)
   ];
   List<ValueTransferOutput> outputs = [

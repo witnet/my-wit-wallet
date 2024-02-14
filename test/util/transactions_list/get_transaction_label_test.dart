@@ -2,7 +2,6 @@ import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/transactions_list/get_transaction_label.dart';
 import 'package:test/test.dart';
 import 'package:witnet/explorer.dart';
-import 'package:witnet/schema.dart';
 
 void main() {
   List<String> externalAddresses = [
@@ -22,9 +21,8 @@ void main() {
   List<InputUtxo> inputs = [
     InputUtxo(
         address: 'wit1zl7ty0lwr7atp5fu34azkgewhtfx2fl4wv69cw',
-        input: Input(
-            outputPointer: OutputPointer.fromString(
-                '59e4dc54077871e71875a4b840da67c23659d89d41eaad85cdb9a5d552254b5d:9')),
+        inputUtxo:
+            '59e4dc54077871e71875a4b840da67c23659d89d41eaad85cdb9a5d552254b5d:9',
         value: 10180697116),
   ];
 

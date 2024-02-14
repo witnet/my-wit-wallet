@@ -182,7 +182,7 @@ class Wallet {
   List<ValueTransferInfo> pendingTransactions() {
     List<ValueTransferInfo> pendingVtts = [];
     allTransactions().forEach((vtt) {
-      if (vtt.status == "pending") {
+      if (vtt.status == TxStatusLabel.pending) {
         pendingVtts.add(vtt);
       }
     });

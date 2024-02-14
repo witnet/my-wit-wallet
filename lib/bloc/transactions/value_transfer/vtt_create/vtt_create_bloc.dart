@@ -18,6 +18,7 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'dart:convert';
 
 part 'vtt_create_event.dart';
 part 'vtt_create_state.dart';
@@ -36,9 +37,10 @@ Future<bool> _sendTransaction(Transaction transaction) async {
   try {
     var resp =
         await Locator.instance.get<ApiExplorer>().sendTransaction(transaction);
-    return resp['result'];
+    return resp['result'] != null ? true : false;
   } catch (e) {
-    print('Error sending transaction: $transaction $e');
+    print(
+        'Error sending transaction: ${json.encode(transaction.jsonMap(asHex: true))} $e');
     return false;
   }
 }
