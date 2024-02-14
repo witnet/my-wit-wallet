@@ -109,4 +109,21 @@ class KeyChain {
     }
     return true;
   }
+
+  factory KeyChain.fromEncodedRecord(String encodedKey) {
+    KeyChain _keychain = KeyChain();
+    _keychain.keyHash = encodedKey;
+    return _keychain;
+  }
+
+  Future<bool> setEncodedKey(
+      String encodedKey, DatabaseClient databaseClient) async {
+    try {
+      this.keyHash = encodedKey;
+      await _store.record('keychain').add(databaseClient, encodedKey);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
 }

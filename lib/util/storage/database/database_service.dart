@@ -324,10 +324,15 @@ class DatabaseService {
   }
 
   Future<String?> getKey() async {
-    if (unlocked) {
-      return keyChain.getKey(_database);
-    } else {
-      return null;
+    return keyChain.getKey(_database);
+  }
+
+  Future<bool> setEncodedKeychain(String encodedKeychain) async {
+    try {
+      bool success = await keyChain.setEncodedKey(encodedKeychain, _database);
+      return success;
+    } catch (e) {
+      return false;
     }
   }
 
