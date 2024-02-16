@@ -80,7 +80,7 @@ Future<bool> tapButton(
     case String:
       finder = widgetByText(value);
       break;
-    case IconDataSolid:
+    case IconData:
       finder = widgetByIcon(value);
       break;
     case PaddedButton:

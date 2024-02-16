@@ -364,33 +364,34 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
   Future<Account> _syncAccountMints(Account account) async {
     try {
       /// retrieve all Block Hashes
-      final addressBlocks = (await explorer.address(
+      AddressBlocks? addressBlocks = (await explorer.address(
               value: account.address,
-              tab: 'blocks') as PaginatedRequest<AddressBlocks>)
+              tab: 'blocks') as PaginatedRequest<AddressBlocks?>)
           .data;
 
-      /// check if the list of transaction is already in the database
-      for (int i = 0; i < addressBlocks.blocks.length; i++) {
-        String blockHash = addressBlocks.blocks[i].hash;
-        MintEntry? mintEntry = database.walletStorage.getMint(blockHash);
-        BlockInfo blockInfo = addressBlocks.blocks.elementAt(i);
+      if (addressBlocks != null) {
+        /// check if the list of transaction is already in the database
+        for (int i = 0; i < addressBlocks.blocks.length; i++) {
+          String blockHash = addressBlocks.blocks[i].hash;
+          MintEntry? mintEntry = database.walletStorage.getMint(blockHash);
+          BlockInfo blockInfo = addressBlocks.blocks.elementAt(i);
 
-        if (mintEntry != null) {
-          /// this mintEntry.status check for "confirmed" is in the local database
-          if (mintEntry.status != "confirmed") {
+          if (mintEntry != null) {
+            /// this mintEntry.status check for "confirmed" is in the local database
+            if (mintEntry.status != TxStatusLabel.confirmed) {
+              MintEntry mintEntry = await explorer.getMint(blockInfo);
+              await account.addMint(mintEntry);
+            }
+          } else {
             MintEntry mintEntry = await explorer.getMint(blockInfo);
             await account.addMint(mintEntry);
           }
-        } else {
-          MintEntry mintEntry = await explorer.getMint(blockInfo);
-          await account.addMint(mintEntry);
         }
+
+        account.mintHashes.clear();
+        account.mintHashes
+            .addAll(addressBlocks.blocks.map((block) => block.hash));
       }
-
-      account.mintHashes.clear();
-      account.mintHashes
-          .addAll(addressBlocks.blocks.map((block) => block.hash));
-
       return account;
     } catch (e) {
       print('Error syncing mints $e');

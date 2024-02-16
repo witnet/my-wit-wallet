@@ -326,23 +326,24 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       /// retrieve any Block Hashes
       final addressBlocks = await apiExplorer.address(
           value: account.address,
-          tab: 'blocks') as PaginatedRequest<AddressBlocks>;
+          tab: 'blocks') as PaginatedRequest<AddressBlocks?>;
+      if (addressBlocks.data != null) {
+        /// retrieve each block
+        for (int i = 0; i < addressBlocks.data!.blocks.length; i++) {
+          BlockInfo blockInfo = addressBlocks.data!.blocks.elementAt(i);
+          String _hash = blockInfo.hash;
+          var result = await apiExplorer.hash(_hash);
 
-      /// retrieve each block
-      for (int i = 0; i < addressBlocks.data.blocks.length; i++) {
-        BlockInfo blockInfo = addressBlocks.data.blocks.elementAt(i);
-        String _hash = blockInfo.hash;
-        var result = await apiExplorer.hash(_hash);
-
-        /// create a MintEntry from the BlockInfo and MintInfo
-        BlockDetails blockDetails = result as BlockDetails;
-        MintEntry mintEntry = MintEntry.fromBlockMintInfo(
-          blockInfo,
-          blockDetails,
-        );
-        account.mintHashes.add(mintEntry.blockHash);
-        account.mints.add(mintEntry);
-        await db.addMint(mintEntry);
+          /// create a MintEntry from the BlockInfo and MintInfo
+          BlockDetails blockDetails = result as BlockDetails;
+          MintEntry mintEntry = MintEntry.fromBlockMintInfo(
+            blockInfo,
+            blockDetails,
+          );
+          account.mintHashes.add(mintEntry.blockHash);
+          account.mints.add(mintEntry);
+          await db.addMint(mintEntry);
+        }
       }
       return account;
     } catch (e) {
