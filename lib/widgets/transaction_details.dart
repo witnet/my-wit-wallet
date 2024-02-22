@@ -11,7 +11,6 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
-import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/extensions/int_extensions.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:my_wit_wallet/widgets/info_element.dart';
