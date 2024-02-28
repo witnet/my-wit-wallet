@@ -6,7 +6,6 @@ import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/sembast.dart';
 import 'package:witnet/explorer.dart';
-import 'dart:convert';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/account_repository.dart';
@@ -246,12 +245,7 @@ class DatabaseService {
 
     for (int i = 0; i < transactions.length; i++) {
       ValueTransferInfo _vtt = transactions[i];
-      // Force transactions to be re-synced
-      final convertedTx = ValueTransferInfo.fromDBJson({
-        ...json.decode(_vtt.toRawJson()),
-        'status': 'TxStatusLabel.unknown'
-      });
-      await vttRepository.updateTransaction(convertedTx, db);
+      await vttRepository.updateTransaction(_vtt, db);
     }
   }
 
