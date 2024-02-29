@@ -242,3 +242,184 @@ class MintEntry {
         reverted: blockDetails.reverted,
       );
 }
+
+extension InputUtxoAdapter on InputUtxo {
+  static InputUtxo fromDBJson(Map<String, dynamic> json) => InputUtxo(
+      address: json["pkh"],
+      inputUtxo: json["output_pointer"],
+      value: json["value"]);
+
+  static InputUtxo fromJson(Map<String, dynamic> json) {
+    bool dbJson = json["pkh"] != null;
+    if (dbJson) {
+      return fromDBJson(json);
+    } else {
+      return InputUtxo.fromJson(json);
+    }
+  }
+}
+
+// TODO: it is not used, delete if not necessary
+extension AddressBlocksAdapter on AddressBlocks {
+  static AddressBlocks fromDBJson(List<dynamic> data) {
+    return AddressBlocks(
+      address: data[0]['address'],
+      blocks: List<BlockInfo>.from(
+          data.map((blockInfo) => BlockInfo.fromJson(blockInfo))),
+    );
+  }
+
+  static AddressBlocks fromJson(List<dynamic> data) {
+    bool dbJson = data[0]['miner'] == null;
+    if (dbJson) {
+      return fromDBJson(data);
+    } else {
+      return AddressBlocks.fromJson(data);
+    }
+  }
+}
+
+extension ValueTransferAdapter on ValueTransferInfo {
+  static ValueTransferInfo fromJson(Map<String, dynamic> data) {
+    bool dbJson = data["epoch"] == null;
+    if (dbJson) {
+      print('------FROM DB JSON--------');
+      return fromDBJson(data);
+    } else {
+      print('------FROM EXPLORER JSON------');
+      return ValueTransferInfo.fromJson(data);
+    }
+  }
+
+  static ValueTransferInfo fromDBJson(Map<String, dynamic> data) {
+    List<String> outputAddresses = getOrDefault(data).outputAddresses;
+    List<int> outputValues = getOrDefault(data).outputValues;
+    List<ValueTransferOutput> outputs = [];
+    if (data['outputs'] != null) {
+      data['outputs'].forEach((element) {
+        Address address = Address.fromAddress(element['pkh']);
+
+        outputs.add(ValueTransferOutput(
+            pkh: address.publicKeyHash!,
+            timeLock: element['time_lock'],
+            value: element['value']));
+      });
+    } else {
+      for (int i = 0; i < outputValues.length; i++) {
+        ValueTransferOutput vto = ValueTransferOutput(
+          value: outputValues[i],
+          pkh: Address.fromAddress(outputAddresses[i]).publicKeyHash!,
+          timeLock: 0,
+        );
+        outputs.add(vto);
+      }
+    }
+    return ValueTransferInfo(
+        epoch: data["txn_epoch"],
+        timestamp: data["txn_time"],
+        hash: data["txn_hash"],
+        block: data["block_hash"],
+        inputUtxos: List<InputUtxo>.from(
+            data["inputs"].map((x) => InputUtxoAdapter.fromJson(x))),
+        fee: data["fee"],
+        priority: data["priority"],
+        weight: data["weight"],
+        status: TransactionStatus.fromJson(data).status,
+        outputs: outputs,
+        value: getOrDefault(data).value,
+        confirmed: getOrDefault(data).confirmed,
+        reverted: getOrDefault(data).reverted,
+        inputAddresses: getOrDefault(data).inputAddresses,
+        inputsMerged: getOrDefault(data).inputsMerged,
+        outputAddresses: getOrDefault(data).outputAddresses,
+        outputValues: getOrDefault(data).outputValues,
+        timelocks: getOrDefault(data).timelocks,
+        utxos: getOrDefault(data).utxos,
+        utxosMerged: getOrDefault(data).utxosMerged,
+        trueOutputAddresses: getOrDefault(data).trueOutputAddresses,
+        changeOutputAddresses: getOrDefault(data).outputAddresses,
+        trueValue: getOrDefault(data).trueValue,
+        changeValue: getOrDefault(data).changeValue);
+  }
+}
+
+class NullableFields {
+  final int? value;
+  final bool confirmed;
+  final bool reverted;
+  final List<String> inputAddresses;
+  final List<InputMerged> inputsMerged;
+  final List<String> outputAddresses;
+  final List<int> outputValues;
+  final List<int> timelocks;
+  final List<TransactionUtxo> utxos;
+  final List<TransactionUtxo> utxosMerged;
+  final List<String> trueOutputAddresses;
+  final List<String> changeOutputAddresses;
+  final int? trueValue;
+  final int? changeValue;
+  NullableFields(
+      {required this.changeOutputAddresses,
+      required this.changeValue,
+      required this.confirmed,
+      required this.inputAddresses,
+      required this.inputsMerged,
+      required this.outputAddresses,
+      required this.outputValues,
+      required this.reverted,
+      required this.timelocks,
+      required this.trueOutputAddresses,
+      required this.trueValue,
+      required this.utxos,
+      required this.utxosMerged,
+      required this.value});
+}
+
+NullableFields getOrDefault(Map<String, dynamic> data) {
+  print('-----get or default-----');
+  return NullableFields(
+    value: data["value"] ?? null,
+    confirmed: data["confirmed"] ??
+        TransactionStatus.fromJson(data).status == TxStatusLabel.confirmed,
+    reverted: data["reverted"] ??
+        TransactionStatus.fromJson(data).status == TxStatusLabel.reverted,
+    inputAddresses: data["input_addresses"] != null
+        ? List<String>.from(data["input_addresses"])
+        : List<String>.from(data["inputs"].map((input) {
+            print('inout address:: ${input}');
+            return input['pkh'];
+          }).toList()),
+    inputsMerged: data["inputs_merged"] != null
+        ? List<InputMerged>.from(
+            data["inputs_merged"].map((x) => InputMerged.fromJson(x)))
+        : [],
+    outputAddresses: data["output_addresses"] != null
+        ? List<String>.from(data["output_addresses"])
+        : List<String>.from(
+            data["outputs"].map((output) => output['pkh']).toList()),
+    outputValues: data["output_values"] != null
+        ? List<int>.from(data["output_values"])
+        : List<int>.from(
+            data["outputs"].map((output) => output['value']).toList()),
+    timelocks: data["timelocks"] != null
+        ? List<int>.from(data["timelocks"])
+        : List<int>.from(
+            data["outputs"].map((output) => output['time_lock']).toList()),
+    utxos: data["utxos"] != null
+        ? List<TransactionUtxo>.from(data["utxos"]
+            .map((e) => TransactionUtxo.fromJson(Map<String, dynamic>.from(e))))
+        : [],
+    utxosMerged: data["utxos_merged"] != null
+        ? List<TransactionUtxo>.from(data["utxos_merged"]
+            .map((e) => TransactionUtxo.fromJson(Map<String, dynamic>.from(e))))
+        : [],
+    trueOutputAddresses: data["true_output_addresses"] != null
+        ? List<String>.from(data["true_output_addresses"])
+        : [],
+    changeOutputAddresses: data["change_output_addresses"] != null
+        ? List<String>.from(data["change_output_addresses"])
+        : [],
+    trueValue: data["true_value"],
+    changeValue: data["change_value"],
+  );
+}

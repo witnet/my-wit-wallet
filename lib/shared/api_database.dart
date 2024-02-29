@@ -11,7 +11,7 @@ import 'package:my_wit_wallet/util/storage/path_provider_interface.dart';
 
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
-import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
+import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'locator.dart';
 
 class DatabaseException {

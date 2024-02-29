@@ -2,7 +2,7 @@ import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
-import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
+import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 

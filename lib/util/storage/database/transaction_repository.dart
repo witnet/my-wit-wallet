@@ -1,4 +1,4 @@
-import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
+import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:sembast/sembast.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
@@ -42,7 +42,7 @@ class VttRepository extends _TransactionRepository {
     final snapshots = await _store.find(databaseClient);
     try {
       List<ValueTransferInfo> transactions = snapshots
-          .map((snapshot) => ValueTransferInfo.fromJson(
+          .map((snapshot) => ValueTransferAdapter.fromJson(
               snapshot.value as Map<String, dynamic>))
           .toList(growable: false);
       return transactions;
@@ -88,7 +88,7 @@ class VttRepository extends _TransactionRepository {
           await _store.record(txHash).get(databaseClient);
 
       ValueTransferInfo valueTransferInfo =
-          ValueTransferInfo.fromJson(valueTransferInfoDbJson);
+          ValueTransferAdapter.fromJson(valueTransferInfoDbJson);
 
       return valueTransferInfo;
     } catch (e) {

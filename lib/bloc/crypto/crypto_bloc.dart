@@ -6,7 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/util/storage/cache/implementations/vtt_get_through_block_explorer.dart';
-import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
+import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/constants.dart';
 import 'package:witnet/crypto.dart';

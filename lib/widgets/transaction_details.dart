@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
-import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
+import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/transactions_list/get_transaction_label.dart';
 import 'package:my_wit_wallet/widgets/closable_view.dart';

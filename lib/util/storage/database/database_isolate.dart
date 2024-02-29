@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:isolate';
 
 import 'package:my_wit_wallet/util/storage/database/stats.dart';
-import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
+import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 
@@ -145,7 +145,8 @@ Future<void> _addRecord(
       value = await dbService.add(Wallet.fromJson(params['value']));
       break;
     case 'vtt':
-      value = await dbService.add(ValueTransferInfo.fromJson(params['value']));
+      value =
+          await dbService.add(ValueTransferAdapter.fromJson(params['value']));
       break;
     case 'account':
       value = await dbService.add(Account.fromJson(params['value']));
@@ -174,8 +175,8 @@ Future<void> _deleteRecord(
       value = await dbService.delete(Wallet.fromJson(params['value']));
       break;
     case 'vtt':
-      value =
-          await dbService.delete(ValueTransferInfo.fromJson(params['value']));
+      value = await dbService
+          .delete(ValueTransferAdapter.fromJson(params['value']));
       break;
     case 'account':
       value = await dbService.delete(Account.fromJson(params['value']));
@@ -210,8 +211,8 @@ Future<void> _updateRecord(
       value = await dbService.update(MintEntry.fromJson(params['value']));
       break;
     case 'vtt':
-      value =
-          await dbService.update(ValueTransferInfo.fromJson(params['value']));
+      value = await dbService
+          .update(ValueTransferAdapter.fromJson(params['value']));
       break;
     case 'account':
       value = await dbService.update(Account.fromJson(params['value']));

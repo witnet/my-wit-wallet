@@ -6,7 +6,7 @@ import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/allow_biometrics.dart';
 import 'package:my_wit_wallet/util/filter_utxos.dart';
 import 'package:my_wit_wallet/util/get_utxos_match_inputs.dart';
-import 'package:my_wit_wallet/util/storage/database/transaction_adapter.dart';
+import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:witnet/constants.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
