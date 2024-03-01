@@ -75,7 +75,7 @@ class TransactionsListState extends State<TransactionsList> {
         speedUpTx: speedUpTx,
         filteredUtxos: false,
         currentWallet: currentWallet,
-        //FIXME: add timelock
+        //TODO(#505): Support timelocks
         output: ValueTransferOutput.fromJson({
           'pkh': speedUpTx.vtt!.outputs.first.pkh.address,
           'value': speedUpTx.vtt!.outputs.first.value.toInt(),

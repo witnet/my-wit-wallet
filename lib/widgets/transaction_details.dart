@@ -78,7 +78,7 @@ class TransactionDetails extends StatelessWidget {
       ThemeData theme, ValueTransferOutput output, bool isLastOutput) {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     Widget timelock = SizedBox(height: 0);
-    // FIXME: support timelocks
+     //TODO(#505): Support timelocks
     // if (output.timeLock != 0) {
     //   timelock = Expanded(
     //       child: Column(
