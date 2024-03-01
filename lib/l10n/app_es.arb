@@ -280,6 +280,7 @@
   "valueTransferTxn": "Value Transfer",
   "mintTxn": "Mint",
   "confirmed": "Confirmada",
+  "mined": "Minada",
   "pending": "Pendiente",
   "reverted": "Revertida"
 }
