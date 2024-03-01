@@ -18,7 +18,6 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
-import 'dart:convert';
 
 part 'vtt_create_event.dart';
 part 'vtt_create_state.dart';
@@ -40,7 +39,7 @@ Future<bool> _sendTransaction(Transaction transaction) async {
     return resp['result'] != null ? true : false;
   } catch (e) {
     print(
-        'Error sending transaction: ${json.encode(transaction.jsonMap(asHex: true))} $e');
+        'Error sending transaction: ${transaction.toRawJson(asHex: true)} $e');
     return false;
   }
 }
@@ -540,9 +539,8 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     bool transactionAccepted =
         await _sendTransaction(Transaction(valueTransfer: event.transaction));
     if (transactionAccepted) {
-      /// add pending transaction
+      /// Adds pending transaction
       List<InputUtxo> _inputUtxoList = _buildInputUtxoList();
-      //FIX: update schema
       ValueTransferInfo vti = ValueTransferInfo(
           block: '0',
           confirmed: false,

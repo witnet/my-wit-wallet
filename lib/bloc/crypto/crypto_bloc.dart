@@ -332,10 +332,10 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
         for (int i = 0; i < addressBlocks.data!.blocks.length; i++) {
           BlockInfo blockInfo = addressBlocks.data!.blocks.elementAt(i);
           String _hash = blockInfo.hash;
-          var result = await apiExplorer.hash(_hash);
 
-          /// create a MintEntry from the BlockInfo and MintInfo
-          BlockDetails blockDetails = result as BlockDetails;
+          /// Creates a MintEntry from the BlockInfo and MintInfo
+          BlockDetails blockDetails =
+              await apiExplorer.hash(_hash) as BlockDetails;
           MintEntry mintEntry = MintEntry.fromBlockMintInfo(
             blockInfo,
             blockDetails,

@@ -195,8 +195,7 @@ class ApiExplorer {
 
   /// get the ValueTransferInfo from the explorer for a given transaction ID.
   Future<ValueTransferInfo?> getVtt(String transactionId) async {
-    var result = await hash(transactionId);
-    return result as ValueTransferInfo?;
+    return await hash(transactionId) as ValueTransferInfo?;
   }
 
   Future<MintEntry> getMint(BlockInfo blockInfo) async {

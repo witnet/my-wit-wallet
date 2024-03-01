@@ -92,19 +92,15 @@ class TransactionsItemState extends State<TransactionsItem> {
   }
 
   int sendValue(GeneralTransaction vti) {
-    if (vti.type == TransactionType.value_transfer) {
-      if (vti.vtt!.outputs.length > 0) {
-        bool isInternalTx = externalAddresses
-                .contains(vti.vtt!.outputs[0].pkh.address) ||
-            internalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
-            singleAddressAccount?.address == vti.vtt!.outputs[0].pkh.address;
-        return isInternalTx ? vti.fee : vti.vtt!.outputs[0].value.toInt();
-      } else {
-        return 0;
-      }
-    } else {
+    if (vti.type != TransactionType.value_transfer ||
+        vti.vtt!.outputs.length <= 0) {
       return 0;
     }
+    bool isInternalTx =
+        externalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
+            internalAddresses.contains(vti.vtt!.outputs[0].pkh.address) ||
+            singleAddressAccount?.address == vti.vtt!.outputs[0].pkh.address;
+    return isInternalTx ? vti.fee : vti.vtt!.outputs[0].value.toInt();
   }
 
   Widget buildTransactionValue(label, transaction) {
