@@ -283,10 +283,8 @@ extension ValueTransferAdapter on ValueTransferInfo {
   static ValueTransferInfo fromJson(Map<String, dynamic> data) {
     bool dbJson = data["epoch"] == null;
     if (dbJson) {
-      print('------FROM DB JSON--------');
       return fromDBJson(data);
     } else {
-      print('------FROM EXPLORER JSON------');
       return ValueTransferInfo.fromJson(data);
     }
   }
@@ -376,7 +374,6 @@ class NullableFields {
 }
 
 NullableFields getOrDefault(Map<String, dynamic> data) {
-  print('-----get or default-----');
   return NullableFields(
     value: data["value"] ?? null,
     confirmed: data["confirmed"] ??
@@ -386,7 +383,6 @@ NullableFields getOrDefault(Map<String, dynamic> data) {
     inputAddresses: data["input_addresses"] != null
         ? List<String>.from(data["input_addresses"])
         : List<String>.from(data["inputs"].map((input) {
-            print('inout address:: ${input}');
             return input['pkh'];
           }).toList()),
     inputsMerged: data["inputs_merged"] != null
