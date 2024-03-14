@@ -90,10 +90,13 @@ class DatabaseService {
     } else {
       mode = DatabaseMode.create;
     }
-    _dbService._database = await dbFactory
-        .openDatabase(_dbService._dbConfig!.path, version: 3, mode: mode,
-            onVersionChanged: (db, oldVersion, newVersion) async {
-      await migrateDB(db);
+    _dbService._database = await dbFactory.openDatabase(
+        _dbService._dbConfig!.path,
+        version: DB_VERSION,
+        mode: mode, onVersionChanged: (db, oldVersion, newVersion) async {
+      if (newVersion == DB_VERSION_TO_MIGRATE) {
+        await migrateDB(db);
+      }
     });
   }
 

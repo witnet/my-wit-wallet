@@ -134,6 +134,8 @@ const Map<String, Locale> SUPPORTED_LOCALES = {
   "en": const Locale("en"),
   // "es": const Locale("es"),
 };
+const int DB_VERSION = 3;
+const int DB_VERSION_TO_MIGRATE = 3;
 const String INSUFFICIENT_FUNDS_ERROR = "Insufficient funds";
 const String APP_TITLE = "myWitWallet";
 const String WINDOWS_FILE_NAME = "myWitWallet-windows.zip";
