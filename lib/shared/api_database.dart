@@ -406,4 +406,71 @@ class ApiDatabase {
       return walletStorage;
     }
   }
+
+  Future<bool> loadOptimizeDbFile() async {
+    await openDatabase();
+    await loadWalletsDatabase();
+    WalletStorage _walletStorage = walletStorage;
+    Map<String, ValueTransferInfo> allVTTs = {};
+    List<MintEntry> allMints = [];
+    List<Wallet> allWallets = [];
+    List<Account> allAccounts = [];
+    List<AccountStats> allStats = [];
+    String? _encodedKeychain = await _processIsolate(method: 'getKeychain');
+    // Wallets
+    for (int wIdx = 0; wIdx < _walletStorage.wallets.length; wIdx++) {
+      var _wallet = _walletStorage.wallets.values.elementAt(wIdx);
+      if (_wallet.masterAccountStats != null) {
+        allStats.add(_wallet.masterAccountStats!);
+      }
+      // Accounts
+      var _accounts = _wallet.allAccounts();
+      allWallets.add(_wallet);
+      for (int aIdx = 0; aIdx < _accounts.length; aIdx++) {
+        Account _account = _accounts.values.elementAt(aIdx);
+        allAccounts.add(_account);
+        // VTTs
+        for (int vIdx = 0; vIdx < _account.vtts.length; vIdx++) {
+          if (allVTTs.containsKey(_account.vtts[vIdx].txnHash) == false) {
+            allVTTs[_account.vtts[vIdx].txnHash] = _account.vtts[vIdx];
+          }
+        }
+        // Mints
+        for (int mIdx = 0; mIdx < _account.mints.length; mIdx++) {
+          allMints.add(_account.mints[mIdx]);
+        }
+      }
+    }
+
+    await deleteAllWallets();
+    await openDatabase();
+    await loadWalletsDatabase();
+
+    if (_encodedKeychain != null) {
+      await _processIsolate(
+        method: 'add',
+        params: {'type': 'keychain', 'value': _encodedKeychain},
+      );
+    }
+
+    for (int wIdx = 0; wIdx < allWallets.length; wIdx++) {
+      await addWallet(allWallets[wIdx]);
+    }
+    for (int sIdx = 0; sIdx < allStats.length; sIdx++) {
+      await addStats(allStats[sIdx]);
+    }
+    for (int aIdx = 0; aIdx < allAccounts.length; aIdx++) {
+      await addAccount(allAccounts[aIdx]);
+    }
+    for (int vIdx = 0; vIdx < allVTTs.values.length; vIdx++) {
+      ValueTransferInfo _vtt = allVTTs.values.elementAt(vIdx);
+      await addVtt(_vtt);
+    }
+    for (int mIdx = 0; mIdx < allMints.length; mIdx++) {
+      await addMint(allMints[mIdx]);
+    }
+
+    await loadWalletsDatabase();
+    return true;
+  }
 }

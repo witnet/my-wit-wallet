@@ -141,6 +141,9 @@ Future<void> _addRecord(
 ) async {
   bool value;
   switch (params['type']) {
+    case 'keychain':
+      value = await dbService.setEncodedKeychain(params['value']);
+      break;
     case 'wallet':
       value = await dbService.add(Wallet.fromJson(params['value']));
       break;
@@ -247,8 +250,8 @@ Future<void> _getKeychain(
   SendPort port,
   Map<String, dynamic> params,
 ) async {
-  await dbService.getKey();
-  port.send(dbService.keyChain.keyHash);
+  String? value = await dbService.getKey();
+  port.send(value);
 }
 
 Future<void> _getVtt(
