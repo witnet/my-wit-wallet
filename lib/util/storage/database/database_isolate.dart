@@ -130,7 +130,8 @@ Future<void> _configure(
   SendPort port,
   Map<String, dynamic> params,
 ) async {
-  await dbService.configure(params['path'], params['fileExists']);
+  await dbService.configure(
+      params['path'], params['fileExists'], params['apiVersion']);
   port.send({'unlocked': true});
 }
 

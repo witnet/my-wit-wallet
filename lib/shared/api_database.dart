@@ -1,4 +1,5 @@
 import 'dart:isolate';
+import 'package:my_wit_wallet/bloc/explorer/api_explorer.dart';
 import 'package:my_wit_wallet/util/account_preferences.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/database/stats.dart';
@@ -35,6 +36,7 @@ class ApiDatabase {
 
   DatabaseIsolate get databaseIsolate => Locator.instance<DatabaseIsolate>();
   DebugLogger get logger => Locator.instance<DebugLogger>();
+  ApiExplorer get explorer => Locator.instance<ApiExplorer>();
   PathProviderInterface interface = PathProviderInterface();
 
   Future<dynamic> _processIsolate(
@@ -226,11 +228,13 @@ class ApiDatabase {
   Future<bool> openDatabase() async {
     await interface.init();
     var fileExists = await interface.fileExists(interface.getDbWalletsPath());
+    String? version = await explorer.getVersion();
     try {
       var response = await _processIsolate(
         method: 'configure',
         params: {
           'path': interface.getDbWalletsPath(),
+          'apiVersion': version,
           'fileExists': fileExists
         },
       );

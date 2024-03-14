@@ -43,7 +43,8 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   sliding_up_panel: ^2.0.0+1
   decimal: 2.3.3
-  witnet: 0.4.1
+  witnet: 
+    path: ../witnet.dart
   path_provider: ^2.0.8
   permission_handler: ^11.0.1
   open_file: ^3.3.2

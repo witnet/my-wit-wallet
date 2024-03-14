@@ -52,6 +52,15 @@ class ApiExplorer {
     }
   }
 
+  Future<String?> getVersion() async {
+    try {
+      await delay();
+      return await client.version();
+    } on ExplorerException {
+      rethrow;
+    }
+  }
+
   Future<Status> getStatus() async {
     try {
       await delay();

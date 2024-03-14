@@ -73,7 +73,8 @@ class DatabaseService {
     _dbConfig = null;
   }
 
-  Future<void> configure(String path, bool fileExists) async {
+  Future<void> configure(
+      String path, bool fileExists, String? apiVersion) async {
     if (_dbConfig == null) {
       _dbConfig = _DBConfiguration(
         path: path,
@@ -92,7 +93,7 @@ class DatabaseService {
     }
     _dbService._database = await dbFactory.openDatabase(
         _dbService._dbConfig!.path,
-        version: DB_VERSION,
+        version: apiVersion == API_VERSION ? DB_VERSION : DB_PREV_VERSION,
         mode: mode, onVersionChanged: (db, oldVersion, newVersion) async {
       if (newVersion == DB_VERSION_TO_MIGRATE) {
         await migrateDB(db);
