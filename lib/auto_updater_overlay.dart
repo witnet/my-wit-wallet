@@ -137,9 +137,12 @@ void customDialog({
   required Future<void> Function() launchInstaller,
   required void Function() dismissUpdate,
 }) {
+  final theme = Theme.of(context);
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
+      backgroundColor: theme.dialogBackgroundColor,
+      surfaceTintColor: Colors.transparent,
       scrollable: true,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8))),
