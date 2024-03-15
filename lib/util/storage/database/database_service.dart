@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:my_wit_wallet/util/storage/database/check_version_compatibility.dart';
 import 'package:my_wit_wallet/util/storage/database/get_account_mints_map.dart';
 import 'package:my_wit_wallet/util/storage/database/get_account_vtts_map.dart';
 import 'package:my_wit_wallet/util/storage/database/stats.dart';
@@ -91,9 +92,12 @@ class DatabaseService {
     } else {
       mode = DatabaseMode.create;
     }
+    bool allowDBMigration = checkVersionCompatibility(
+        apiVersion: apiVersion, compatibleVersion: COMPATIBLE_API_VERSION);
+
     _dbService._database = await dbFactory.openDatabase(
         _dbService._dbConfig!.path,
-        version: apiVersion == API_VERSION ? DB_VERSION : DB_PREV_VERSION,
+        version: allowDBMigration ? DB_VERSION : DB_PREV_VERSION,
         mode: mode, onVersionChanged: (db, oldVersion, newVersion) async {
       if (newVersion == DB_VERSION_TO_MIGRATE) {
         await migrateDB(db);
