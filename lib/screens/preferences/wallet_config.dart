@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/screens/preferences/edit_wallet.dart';
 import 'package:my_wit_wallet/screens/preferences/export_xprv.dart';
 import 'package:my_wit_wallet/screens/preferences/sign_message.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
@@ -59,6 +60,7 @@ class WalletConfigState extends State<WalletConfig> {
         padding: EdgeInsets.only(left: 8, right: 8),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           SizedBox(height: 24),
+          EditWalletDetails(),
           Text(
             localization.walletConfigHeader,
             style: theme.textTheme.titleMedium,
