@@ -57,7 +57,7 @@ jobs:
         run: msstore package
 
       - name: Release on Microsoft Store
-        run: msstore publish -i .\build\windows\x64\runner\Release -v
+        run: msstore publish -i .\build\windows\x64\runner\Release -v || true
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
