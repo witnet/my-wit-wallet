@@ -378,7 +378,7 @@ jobs:
 
       - name: Release on App-Store
         working-directory: ios
-        run: if [[ "${{github.ref_name}}" == *"dev"* ]]; then bundle exec fastlane beta; else bundle exec fastlane production; fi;
+        run: if [[ "${{github.ref_name}}" == *"dev"* ]]; then bundle exec fastlane beta; else (bundle exec fastlane production 2>&1 | grep -v "A relationship value is not acceptable for the current resource state. - The specified pre-release build could not be added." || true); fi;
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
