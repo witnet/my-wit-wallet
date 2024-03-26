@@ -124,14 +124,3 @@ class BlockchainQueryEvent extends ExplorerEvent {
 class TapiQueryEvent extends ExplorerEvent {
   TapiQueryEvent(ExplorerStatus status) : super(status);
 }
-
-class VTTransactionPostEvent extends ExplorerEvent {
-  final VTTransaction vtTransaction;
-  VTTransactionPostEvent(
-    ExplorerStatus status,
-    this.vtTransaction,
-  ) : super(status);
-
-  @override
-  List<Object> get props => [vtTransaction];
-}

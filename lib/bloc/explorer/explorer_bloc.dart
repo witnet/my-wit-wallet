@@ -13,7 +13,6 @@ import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/constants.dart';
-import 'package:witnet/schema.dart';
 
 part 'explorer_event.dart';
 
@@ -39,7 +38,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     on<HashQueryEvent>(_hashQueryEvent);
     on<StatusQueryEvent>(_statusQueryEvent);
     on<AddressQueryEvent>(_addressQueryEvent);
-    on<VTTransactionPostEvent>(_vtTransactionPostEvent);
     on<UtxoQueryEvent>(_utxoQueryEvent);
     on<SyncWalletEvent>(_syncWalletEvent);
     on<CancelSyncWalletEvent>(_cancelSyncEvent);
@@ -89,20 +87,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           .address(value: event.address, tab: event.tab);
       emit(ExplorerState.dataLoaded(
           data: resp.data.jsonMap(), query: ExplorerQuery.address));
-    } catch (err) {
-      emit(ExplorerState.error());
-      rethrow;
-    }
-  }
-
-  Future<void> _vtTransactionPostEvent(
-      VTTransactionPostEvent event, Emitter<ExplorerState> emit) async {
-    try {
-      var resp = await Locator.instance
-          .get<ApiExplorer>()
-          .sendVtTransaction(event.vtTransaction);
-
-      emit(ExplorerState.dataLoaded(query: ExplorerQuery.sendVtt, data: resp));
     } catch (err) {
       emit(ExplorerState.error());
       rethrow;

@@ -161,18 +161,6 @@ class ApiExplorer {
     return account;
   }
 
-  /// Send a Value Transfer Transaction
-  Future<dynamic> sendVtTransaction(VTTransaction transaction) async {
-    try {
-      await delay();
-      return await client.send(transaction: {
-        'transaction': {'ValueTransfer': transaction.jsonMap(asHex: true)}
-      });
-    } catch (e) {
-      rethrow;
-    }
-  }
-
   /// Send a Generic Transaction
   Future<dynamic> sendTransaction(Transaction transaction) async {
     try {
