@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:isolate';
 import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
@@ -7,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/util/storage/cache/implementations/vtt_get_through_block_explorer.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
+import 'package:my_wit_wallet/util/storage/log.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/constants.dart';
 import 'package:witnet/crypto.dart';
@@ -34,8 +34,7 @@ Future<dynamic> isolateRunner(
   ReceivePort response = ReceivePort();
 
   /// send the request
-  Locator.instance<CryptoIsolate>()
-      .send(method: method, params: params, port: response.sendPort);
+  Locator.instance<CryptoIsolate>().send(method: method, params: params);
   return await response.first;
 }
 
