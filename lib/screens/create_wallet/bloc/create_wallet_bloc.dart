@@ -235,8 +235,7 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
       ReceivePort resp = ReceivePort();
       cryptoIsolate.send(
           method: 'initializeWallet',
-          params: {'walletName': '', 'seed': event.xprv, 'seedSource': 'xprv'},
-          port: resp.sendPort);
+          params: {'walletName': '', 'seed': event.xprv, 'seedSource': 'xprv'});
 
       Wallet wallet = await resp.first.then((value) {
         return value['wallet'] as Wallet;
@@ -254,19 +253,12 @@ class CreateWalletBloc extends Bloc<CreateWalletEvent, CreateWalletState> {
     emit(state.copyWith(status: CreateWalletStatus.Loading));
     try {
       CryptoIsolate cryptoIsolate = Locator.instance<CryptoIsolate>();
-      ReceivePort resp = ReceivePort();
-      cryptoIsolate.send(
-          method: 'initializeWallet',
-          params: {
-            'walletType': 'hd',
-            'walletName': '_loading',
-            'seed': event.xprv,
-            'seedSource': 'encryptedXprv',
-            'password': event.password
-          },
-          port: resp.sendPort);
-      await resp.first.then((value) {
-        return value;
+      await cryptoIsolate.send(method: 'initializeWallet', params: {
+        'walletType': 'hd',
+        'walletName': '_loading',
+        'seed': event.xprv,
+        'seedSource': 'encryptedXprv',
+        'password': event.password
       });
 
       emit(state.copyWith(

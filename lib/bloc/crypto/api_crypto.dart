@@ -1,4 +1,3 @@
-import 'dart:isolate';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/witnet.dart';
@@ -40,19 +39,12 @@ class ApiCrypto {
   Future<String> generateMnemonic(int wordCount, String language) async {
     try {
       CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
-      var receivePort = ReceivePort();
-      cryptoIsolate.send(
-          method: 'generateMnemonic',
-          params: {
-            'wordCount': wordCount,
-            'language': language,
-          },
-          port: receivePort.sendPort);
-      return await receivePort.first.then((value) {
-        return value;
+      return await cryptoIsolate.send(method: 'generateMnemonic', params: {
+        'wordCount': wordCount,
+        'language': language,
       });
     } catch (e) {
-      print('Error $e');
+      print('Error in generate Mnemonic $e');
       rethrow;
     }
   }
@@ -64,21 +56,11 @@ class ApiCrypto {
         return wallet.masterAccount!;
       }
       CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
-      final receivePort = ReceivePort();
-      cryptoIsolate.send(
-        method: 'generateKey',
-        params: {
-          'keyType': keyType.name,
-          'external_keychain': wallet.externalXpub,
-          'internal_keychain': wallet.internalXpub,
-          'index': index
-        },
-        port: receivePort.sendPort,
-      );
-      Xpub xpub = await receivePort.first.then((value) {
-        var val = value as Map<String, dynamic>;
-        var _xpub = val['xpub'];
-        return _xpub;
+      Xpub xpub = await cryptoIsolate.send(method: 'generateKey', params: {
+        'keyType': keyType.name,
+        'external_keychain': wallet.externalXpub,
+        'internal_keychain': wallet.internalXpub,
+        'index': index
       });
       Account _account = Account(
           walletName: wallet.name, address: xpub.address, path: xpub.path!);
@@ -92,27 +74,16 @@ class ApiCrypto {
   Future<Wallet> initializeWallet() async {
     try {
       CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
-
-      final receivePort = ReceivePort();
-
-      cryptoIsolate.send(
-          method: 'initializeWallet',
-          params: {
-            'walletName': walletName,
-            'walletType': walletType != null ? walletType!.name : null,
-            'seedSource': seedSource,
-            'seed': seed,
-            'password': password,
-          },
-          port: receivePort.sendPort);
-      clearInitialWalletData();
-      Wallet dbWallet = await receivePort.first.then((value) {
-        var val = value as Map<String, dynamic>;
-        var _wallet = val['wallet'];
-        return _wallet;
+      Wallet wallet =
+          await cryptoIsolate.send(method: 'initializeWallet', params: {
+        'walletName': walletName,
+        'walletType': walletType != null ? walletType!.name : null,
+        'seedSource': seedSource,
+        'seed': seed,
+        'password': password,
       });
-
-      return dbWallet;
+      clearInitialWalletData();
+      return wallet;
     } catch (e) {
       rethrow;
     }
@@ -165,51 +136,33 @@ class ApiCrypto {
         }
       }
     }
-    final receivePort = ReceivePort();
+    print('SIGNERS >> $_signers');
     CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
-    cryptoIsolate.send(
+    List<KeyedSignature> signatures = await cryptoIsolate.send(
         method: 'signTransaction',
         params: {
           'password': key,
           'signers': _signers,
           'transaction_id': transactionId
-        },
-        port: receivePort.sendPort);
-
-    List<KeyedSignature> signatures = await receivePort.first.then((value) {
-      return value as List<KeyedSignature>;
-    });
+        });
+    print('signTransaction >> $signatures');
     return signatures;
   }
 
   Future<String> hashPassword({required String password}) async {
-    final receivePort = ReceivePort();
     CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
-    cryptoIsolate.send(
-        method: 'hashPassword',
-        params: {
-          'password': password,
-        },
-        port: receivePort.sendPort);
-    Map<String, String> response =
-        await receivePort.first.then((value) => value as Map<String, String>);
-    return response['hash']!;
+    return await cryptoIsolate.send(method: 'hashPassword', params: {
+      'password': password,
+    });
   }
 
   Future<String> encryptXprv(
       {required String xprv, required String password}) async {
-    final receivePort = ReceivePort();
     CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
-    cryptoIsolate.send(
-        method: 'encryptXprv',
-        params: {
-          'xprv': xprv,
-          'password': password,
-        },
-        port: receivePort.sendPort);
-    Map<String, String> passwordHash =
-        await receivePort.first.then((value) => value as Map<String, String>);
-    return passwordHash['xprv']!;
+    return await cryptoIsolate.send(method: 'encryptXprv', params: {
+      'xprv': xprv,
+      'password': password,
+    });
   }
 
   Future<String> verifiedXprv({required String xprv}) async {
@@ -225,18 +178,12 @@ class ApiCrypto {
 
   Future<String> decryptXprv(
       {required String xprv, required String password}) async {
-    final receivePort = ReceivePort();
     CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
-    cryptoIsolate.send(
-        method: 'decryptXprv',
-        params: {
-          'xprv': xprv,
-          'password': password,
-        },
-        port: receivePort.sendPort);
+    final response = await cryptoIsolate.send(method: 'decryptXprv', params: {
+      'xprv': xprv,
+      'password': password,
+    }) as Map<String, String>;
 
-    Map<String, String> response =
-        await receivePort.first.then((value) => value as Map<String, String>);
     if (response.containsKey('xprv')) {
       return response['xprv']!;
     } else {
@@ -246,32 +193,20 @@ class ApiCrypto {
 
   Future<bool> verifySheikahXprv(
       {required String xprv, required String password}) async {
-    final receivePort = ReceivePort();
     CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
-    cryptoIsolate.send(
-        method: 'decryptXprv',
-        params: {
-          'xprv': xprv,
-          'password': password,
-        },
-        port: receivePort.sendPort);
-    bool valid = await receivePort.first.then((value) => value as bool);
-    return valid;
+    return await cryptoIsolate.send(method: 'decryptXprv', params: {
+      'xprv': xprv,
+      'password': password,
+    });
   }
 
   Future<bool> verifyLocalXprv(
       {required String xprv, required String password}) async {
-    final receivePort = ReceivePort();
     CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
-    cryptoIsolate.send(
-        method: 'decryptXprv',
-        params: {
-          'xprv': xprv,
-          'password': password,
-        },
-        port: receivePort.sendPort);
-    bool valid = await receivePort.first.then((value) => value as bool);
-    return valid;
+    return await cryptoIsolate.send(method: 'decryptXprv', params: {
+      'xprv': xprv,
+      'password': password,
+    });
   }
 
   Future<Map<String, dynamic>> signMessage(
@@ -287,18 +222,11 @@ class ApiCrypto {
       currentWallet.xprv!: _account!.path,
     };
 
-    final receivePort = ReceivePort();
     CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
-    cryptoIsolate.send(
-        method: 'signMessage',
-        params: {
-          'password': key,
-          'signer': _signer,
-          'message': message,
-        },
-        port: receivePort.sendPort);
-    var signedMessage = await receivePort.first.then((value) => value);
-
-    return signedMessage;
+    return await cryptoIsolate.send(method: 'signMessage', params: {
+      'password': key,
+      'signer': _signer,
+      'message': message,
+    });
   }
 }
