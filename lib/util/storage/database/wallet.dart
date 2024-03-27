@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'dart:isolate';
 
 import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
@@ -161,7 +160,8 @@ class Wallet {
     List<MintEntry> allMints = [];
     if (walletType == WalletType.single && masterAccount!.mints.length > 0) {
       masterAccount!.mints.forEach((MintEntry mint) {
-        if (mint.status != 'unknown hash') allMints.add(mint);
+        if (mint.status != TxStatusLabel.reverted &&
+            mint.status != TxStatusLabel.unknown) allMints.add(mint);
       });
       return allMints;
     } else {
@@ -373,19 +373,13 @@ class Wallet {
     required int index,
     KeyType keyType = KeyType.external,
   }) async {
-    ReceivePort response = ReceivePort();
     // send the request
-    Locator.instance<CryptoIsolate>().send(
-        method: 'generateKey',
-        params: {
-          'external_keychain': externalXpub,
-          'internal_keychain': internalXpub,
-          'index': index,
-          'keyType': keyType.name
-        },
-        port: response.sendPort);
-    var xpub = await response.first.then((value) {
-      return value['xpub'] as Xpub;
+    Xpub xpub = await Locator.instance<CryptoIsolate>()
+        .send(method: 'generateKey', params: {
+      'external_keychain': externalXpub,
+      'internal_keychain': internalXpub,
+      'index': index,
+      'keyType': keyType.name
     });
     Account _account =
         Account(walletName: name, address: xpub.address, path: xpub.path!);

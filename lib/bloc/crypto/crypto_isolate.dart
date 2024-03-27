@@ -6,36 +6,27 @@ class CryptoIsolate {
   CryptoIsolate._internal();
 
   factory CryptoIsolate.instance() => _cryptoIsolate;
-
-  late Isolate isolate;
-  late SendPort sendPort;
-  late ReceivePort receivePort;
+  DebugLogger get logger => Locator.instance<DebugLogger>();
   bool initialized = false;
 
   CryptoIsolate();
 
-  Future<void> init() async {
-    if (!initialized) {
-      receivePort = ReceivePort();
-      isolate = await Isolate.spawn(_cryptIso, receivePort.sendPort);
-      sendPort = await receivePort.first as SendPort;
-      initialized = true;
+  Future<dynamic> send(
+      {required String method, required Map<String, dynamic> params}) async {
+    FutureOr<dynamic> isolateFunction() {
+      return _methodMap[method]!(params);
     }
-  }
 
-  void send(
-      {required String method,
-      required Map<String, dynamic> params,
-      required SendPort port}) {
     try {
-      sendPort.send(['$method?${json.encode(params)}', port]);
-    } catch (e) {
-      print('Error in method :: ${method.toString()}');
+      return await Isolate.run(isolateFunction);
+    } catch (err) {
+      logger.log('Error in cryptoIsolate method: $method : $err');
+      rethrow;
     }
   }
 }
 
-Map<String, Function(SendPort, Map<String, dynamic>)> _methodMap = {
+Map<String, Function(Map<String, dynamic>)> _methodMap = {
   'generateMnemonic': _generateMnemonic,
   'initializeWallet': _initializeWallet,
   'generateKey': _generateKey,
@@ -49,87 +40,67 @@ Map<String, Function(SendPort, Map<String, dynamic>)> _methodMap = {
   'verifyLocalXprv': _verifyLocalXprv,
 };
 
-void _cryptIso(SendPort sendPort) async {
-  // Stopwatch mainTimer = new Stopwatch()..start();
-  ReceivePort receivePort = ReceivePort();
-  // tell whoever created us what port they can reach us
-  sendPort.send(receivePort.sendPort);
-  // listen for messages
-  await for (var msg in receivePort) {
-    var data = msg[0] as String;
-    SendPort port = msg[1];
-    var method = data.split('?')[0];
-    var params = json.decode(data.split('?')[1]);
-    _methodMap[method]!(port, params);
-  }
-  receivePort.close();
+String _generateMnemonic(Map<String, dynamic> params) {
+  return generateMnemonic(
+      wordCount: params['wordCount'], language: params['language']);
 }
 
-void _generateMnemonic(SendPort port, Map<String, dynamic> params) async {
-  try {
-    String mnemonic = generateMnemonic(
-        wordCount: params['wordCount'], language: params['language']);
-    port.send(mnemonic);
-  } catch (e) {
-    print('Error generating mnemonics :: $e');
-  }
-}
-
-Future<void> _initializeWallet(
-    SendPort port, Map<String, dynamic> params) async {
-  Wallet? wallet;
+Future<Wallet> _initializeWallet(Map<String, dynamic> params) async {
   bool isHdWallet = params['walletType'] == "hd";
   switch (params['seedSource']) {
     case 'mnemonic':
-      wallet = await Wallet.fromMnemonic(
-          walletType: isHdWallet ? WalletType.hd : WalletType.single,
-          name: params['walletName'],
-          mnemonic: params['seed'],
-          password: params['password']);
-      break;
+      try {
+        return await Wallet.fromMnemonic(
+            walletType: isHdWallet ? WalletType.hd : WalletType.single,
+            name: params['walletName'],
+            mnemonic: params['seed'],
+            password: params['password']);
+      } catch (e) {
+        throw 'Error initializingWallet from mnemonic : $e';
+      }
     case 'xprv':
-      wallet = await Wallet.fromXprvStr(
-          walletType: isHdWallet ? WalletType.hd : WalletType.single,
-          name: params['walletName'],
-          xprv: params['seed'],
-          password: params['password']);
-      break;
+      try {
+        return await Wallet.fromXprvStr(
+            walletType: isHdWallet ? WalletType.hd : WalletType.single,
+            name: params['walletName'],
+            xprv: params['seed'],
+            password: params['password']);
+      } catch (e) {
+        throw 'Error initializingWallet from xprv : $e';
+      }
     case 'encryptedXprv':
       try {
-        wallet = await Wallet.fromEncryptedXprv(
+        return await Wallet.fromEncryptedXprv(
           walletType: isHdWallet ? WalletType.hd : WalletType.single,
           name: params['walletName'],
           xprv: params['seed'],
           password: params['password'],
         );
       } catch (e) {
-        port.send({'error': e});
+        throw 'Error initializingWallet from encrypted xprv : $e';
       }
-      break;
-  }
-  port.send({'wallet': wallet});
-}
-
-void _generateKey(SendPort port, Map<String, dynamic> params) {
-  try {
-    int index = params['index'];
-    String keytype = params['keyType'];
-    if (keytype.endsWith('external')) {
-      Xpub _xpub = Xpub.fromXpub(params['external_keychain']);
-      port.send({'xpub': _xpub / index});
-    } else if (keytype.endsWith('internal')) {
-      Xpub _xpub = Xpub.fromXpub(params['internal_keychain']);
-      port.send({'xpub': _xpub / index});
-    } else if (keytype.endsWith('master')) {
-      Xpub _xpub = Xpub.fromXpub(params['internal_keychain']);
-      port.send({'xpub': _xpub / index});
-    }
-  } catch (err) {
-    port.send('Error generating the key $err');
+    default:
+      throw 'Error initializingWallet: seedSource not supported';
   }
 }
 
-Future<void> _generateKeys(SendPort port, Map<String, dynamic> params) async {
+Xpub _generateKey(Map<String, dynamic> params) {
+  int index = params['index'];
+  String keytype = params['keyType'];
+  if (keytype.endsWith('external')) {
+    Xpub _xpub = Xpub.fromXpub(params['external_keychain']);
+    return _xpub / index;
+  } else if (keytype.endsWith('internal')) {
+    Xpub _xpub = Xpub.fromXpub(params['internal_keychain']);
+    return _xpub / index;
+  } else if (keytype.endsWith('master')) {
+    Xpub _xpub = Xpub.fromXpub(params['internal_keychain']);
+    return _xpub / index;
+  }
+  throw 'Error genereting key: key type is not supported';
+}
+
+Future<Wallet> _generateKeys(Map<String, dynamic> params) async {
   Wallet dbWallet = params['wallet'];
   int _from = params['from'];
   int _to = params['to'];
@@ -137,7 +108,7 @@ Future<void> _generateKeys(SendPort port, Map<String, dynamic> params) async {
   for (int i = _from; i <= _to; i++) {
     await dbWallet.generateKey(index: i, keyType: params['keyType']);
   }
-  port.send({'wallet': dbWallet});
+  return dbWallet;
 }
 
 /// _signTranstion
@@ -147,173 +118,150 @@ Future<void> _generateKeys(SendPort port, Map<String, dynamic> params) async {
 /// 'password' [String] used to decrypt the xprv
 /// 'signers' [List] List<String> contains the paths of the signers
 /// 'transaction_id' [String] the hash of the transaction.
-Future<void> _signTransaction(
-    SendPort port, Map<String, dynamic> params) async {
+Future<dynamic> _signTransaction(Map<String, dynamic> params) async {
   String password = params['password'];
   Map<String, dynamic> signers = params['signers'];
   String transactionId = params['transaction_id'];
-  String errorMsg = '';
+  // storage for signatures
+  List<KeyedSignature> signatures = [];
 
-  try {
-    // storage for signatures
-    List<KeyedSignature> signatures = [];
+  Map<String, KeyedSignature> _sigMap = {};
+  signers.forEach((encryptedXprv, paths) {
+    Xprv masterXprv = Xprv.fromEncryptedXprv(encryptedXprv, password);
 
-    Map<String, KeyedSignature> _sigMap = {};
-    signers.forEach((encryptedXprv, paths) {
-      Xprv masterXprv = Xprv.fromEncryptedXprv(encryptedXprv, password);
+    paths.forEach((path) {
+      /// ['M','3h','4919h','0h','0', ...]
+      /// index 4 is the external[0] or internal[1] key path
+      Xprv signer;
+      if (path.contains("/")) {
+        List<String> indexedPath = path.split('/');
+        assert(indexedPath.length == 6, 'Path does not derive a valid Wallet');
 
-      paths.forEach((path) {
-        /// ['M','3h','4919h','0h','0', ...]
-        /// index 4 is the external[0] or internal[1] key path
-        Xprv signer;
-        if (path.contains("/")) {
-          List<String> indexedPath = path.split('/');
-          assert(
-              indexedPath.length == 6, 'Path does not derive a valid Wallet');
+        // get external xprv
+        Xprv externalXprv = masterXprv /
+            KEYPATH_PURPOSE /
+            KEYPATH_COIN_TYPE /
+            KEYPATH_ACCOUNT /
+            EXTERNAL_KEYCHAIN;
 
-          // get external xprv
-          Xprv externalXprv = masterXprv /
-              KEYPATH_PURPOSE /
-              KEYPATH_COIN_TYPE /
-              KEYPATH_ACCOUNT /
-              EXTERNAL_KEYCHAIN;
+        // get internal xprv
+        Xprv internalXprv = masterXprv /
+            KEYPATH_PURPOSE /
+            KEYPATH_COIN_TYPE /
+            KEYPATH_ACCOUNT /
+            INTERNAL_KEYCHAIN;
 
-          // get internal xprv
-          Xprv internalXprv = masterXprv /
-              KEYPATH_PURPOSE /
-              KEYPATH_COIN_TYPE /
-              KEYPATH_ACCOUNT /
-              INTERNAL_KEYCHAIN;
-
-          if (indexedPath.elementAt(4) == '0') {
-            signer = externalXprv / int.parse(indexedPath.last);
-          } else {
-            assert(indexedPath.elementAt(4) == '1');
-            signer = internalXprv / int.parse(indexedPath.last);
-          }
+        if (indexedPath.elementAt(4) == '0') {
+          signer = externalXprv / int.parse(indexedPath.last);
         } else {
-          /// master key
-          assert(path == "m", "Invalid master path");
-          signer = masterXprv;
+          assert(indexedPath.elementAt(4) == '1');
+          signer = internalXprv / int.parse(indexedPath.last);
         }
+      } else {
+        /// master key
+        assert(path == "m", "Invalid master path");
+        signer = masterXprv;
+      }
 
-        String address = signer.address.address;
-        if (_sigMap.containsKey(address)) {
-          signatures.add(_sigMap[address]!);
-        } else {
-          KeyedSignature signature =
-              signer.address.signHash(transactionId, signer.privateKey);
-          _sigMap[address] = signature;
-          signatures.add(_sigMap[address]!);
-        }
-      });
+      String address = signer.address.address;
+      if (_sigMap.containsKey(address)) {
+        signatures.add(_sigMap[address]!);
+      } else {
+        KeyedSignature signature =
+            signer.address.signHash(transactionId, signer.privateKey);
+        _sigMap[address] = signature;
+        signatures.add(_sigMap[address]!);
+      }
     });
+  });
 
-    List<KeyedSignature> sigMap = [];
-    signatures.forEach((element) {
-      sigMap.add(element);
-    });
-    port.send(sigMap);
-  } catch (e) {
-    errorMsg = e.toString();
-  }
-  port.send(errorMsg);
+  List<KeyedSignature> sigMap = [];
+  signatures.forEach((element) {
+    sigMap.add(element);
+  });
+  return sigMap;
 }
 
-Future<void> _signMessage(SendPort port, Map<String, dynamic> params) async {
+Future<Map<String, dynamic>> _signMessage(Map<String, dynamic> params) async {
   String password = params["password"];
   Map<String, dynamic> signerMap = params['signer'];
 
   Map<String, dynamic> signedMessage = {};
   String address;
   String message = params['message'];
-  String errorMsg = '';
-  try {
-    assert(signerMap.length == 1);
-    String encryptedXprv = signerMap.keys.first;
-    String path = signerMap[encryptedXprv];
-    Xprv masterXprv = Xprv.fromEncryptedXprv(encryptedXprv, password);
+  assert(signerMap.length == 1);
+  String encryptedXprv = signerMap.keys.first;
+  String path = signerMap[encryptedXprv];
+  Xprv masterXprv = Xprv.fromEncryptedXprv(encryptedXprv, password);
+  Xprv signer;
 
-    Xprv signer;
-
-    if (path.contains("/")) {
-      List<String> indexedPath = path.split('/');
-      assert(indexedPath.length == 6, 'Path does not derive a valid Wallet');
-      if (indexedPath.elementAt(4) == '0') {
-        signer = masterXprv /
-            KEYPATH_PURPOSE /
-            KEYPATH_COIN_TYPE /
-            KEYPATH_ACCOUNT /
-            EXTERNAL_KEYCHAIN /
-            int.parse(indexedPath.last);
-      } else {
-        assert(indexedPath.elementAt(4) == '1');
-        signer = masterXprv /
-            KEYPATH_PURPOSE /
-            KEYPATH_COIN_TYPE /
-            KEYPATH_ACCOUNT /
-            INTERNAL_KEYCHAIN /
-            int.parse(indexedPath.last);
-      }
+  if (path.contains("/")) {
+    List<String> indexedPath = path.split('/');
+    assert(indexedPath.length == 6, 'Path does not derive a valid Wallet');
+    if (indexedPath.elementAt(4) == '0') {
+      signer = masterXprv /
+          KEYPATH_PURPOSE /
+          KEYPATH_COIN_TYPE /
+          KEYPATH_ACCOUNT /
+          EXTERNAL_KEYCHAIN /
+          int.parse(indexedPath.last);
     } else {
-      assert(path == "m", "Invalid master path");
-      signer = masterXprv;
+      assert(indexedPath.elementAt(4) == '1');
+      signer = masterXprv /
+          KEYPATH_PURPOSE /
+          KEYPATH_COIN_TYPE /
+          KEYPATH_ACCOUNT /
+          INTERNAL_KEYCHAIN /
+          int.parse(indexedPath.last);
     }
-
-    address = signer.address.address;
-    KeyedSignature signature = signer.address.signHash(
-        bytesToHex(sha256(data: Uint8List.fromList(message.codeUnits))),
-        signer.privateKey);
-
-    String _formatBytes(List<int> data) =>
-        "0x${bytesToHex(Uint8List.fromList(data))}";
-
-    signedMessage["address"] = address;
-    signedMessage["message"] = message;
-    signedMessage["public_key"] = _formatBytes(signature.publicKey.publicKey);
-    signedMessage["signature"] =
-        _formatBytes(signature.signature.secp256k1.der);
-
-    port.send(signedMessage);
-  } catch (e) {
-    errorMsg = e.toString();
+  } else {
+    assert(path == "m", "Invalid master path");
+    signer = masterXprv;
   }
-  port.send(errorMsg);
+
+  address = signer.address.address;
+  KeyedSignature signature = signer.address.signHash(
+      bytesToHex(sha256(data: Uint8List.fromList(message.codeUnits))),
+      signer.privateKey);
+
+  String _formatBytes(List<int> data) =>
+      "0x${bytesToHex(Uint8List.fromList(data))}";
+
+  signedMessage["address"] = address;
+  signedMessage["message"] = message;
+  signedMessage["public_key"] = _formatBytes(signature.publicKey.publicKey);
+  signedMessage["signature"] = _formatBytes(signature.signature.secp256k1.der);
+  return signedMessage;
 }
 
-void _hashPassword(SendPort port, Map<String, dynamic> params) {
-  String passwordHash = Password.hash(params['password']);
-  port.send({"hash": passwordHash});
+String _hashPassword(Map<String, dynamic> params) {
+  return Password.hash(params['password']);
 }
 
-void _encryptXprv(SendPort port, Map<String, dynamic> params) {
+String _encryptXprv(Map<String, dynamic> params) {
   Xprv _xprv = Xprv.fromXprv(params['xprv']);
-  port.send({"xprv": _xprv.toEncryptedXprv(password: params['password'])});
+  return _xprv.toEncryptedXprv(password: params['password']);
 }
 
-void _decryptXprv(SendPort port, Map<String, dynamic> params) {
-  try {
-    Xprv _xprv = Xprv.fromEncryptedXprv(params['xprv'], params['password']);
-    port.send({"xprv": _xprv.toSlip32()});
-  } catch (e) {
-    port.send({"error": e});
-  }
+String _decryptXprv(Map<String, dynamic> params) {
+  Xprv _xprv = Xprv.fromEncryptedXprv(params['xprv'], params['password']);
+  return _xprv.toSlip32();
 }
 
-void _verifySheikahXprv(SendPort port, Map<String, dynamic> params) {
+bool _verifySheikahXprv(Map<String, dynamic> params) {
   try {
     Xprv.fromEncryptedXprv(params['xprv'], params['password']);
-    port.send(true);
+    return true;
   } catch (e) {
-    port.send(false);
+    return false;
   }
 }
 
-void _verifyLocalXprv(SendPort port, Map<String, dynamic> params) {
+bool _verifyLocalXprv(Map<String, dynamic> params) {
   try {
     Xprv.fromEncryptedXprv(params['xprv'], Password.hash(params['password']));
-    port.send(true);
+    return true;
   } catch (e) {
-    port.send(false);
+    return false;
   }
 }

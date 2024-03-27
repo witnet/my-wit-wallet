@@ -1,5 +1,3 @@
-import 'dart:isolate';
-
 import 'package:witnet/constants.dart';
 import 'package:witnet/witnet.dart';
 import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
@@ -59,33 +57,23 @@ class Wallet {
 
   Future<Xpub> generateKey(
       {required int index, KeyType keyType = KeyType.external}) async {
-    ReceivePort response = ReceivePort();
-    // initialize the crypto isolate if not already done so
-
-    await Locator.instance<CryptoIsolate>().init();
-    // send the request
-
-    Locator.instance<CryptoIsolate>().send(
-        method: 'generateKey',
-        params: {
-          'external_keychain': externalXpub.toSlip32(),
-          'internal_keychain': internalXpub.toSlip32(),
-          'index': index,
-          'keyType': keyType.toString()
-        },
-        port: response.sendPort);
-    var resp = await response.first.then((value) {
-      return value['xpub'] as Xpub;
+    Xpub xpub = await Locator.instance<CryptoIsolate>()
+        .send(method: 'generateKey', params: {
+      'external_keychain': externalXpub.toSlip32(),
+      'internal_keychain': internalXpub.toSlip32(),
+      'index': index,
+      'keyType': keyType.toString()
     });
+
     switch (keyType) {
       case KeyType.external:
-        externalKeys[index] = resp;
+        externalKeys[index] = xpub;
         break;
       case KeyType.internal:
-        internalKeys[index] = resp;
+        internalKeys[index] = xpub;
         break;
     }
-    return resp;
+    return xpub;
   }
 
   Future<Xpub> getXpub({required int index, required KeyType keyType}) async {

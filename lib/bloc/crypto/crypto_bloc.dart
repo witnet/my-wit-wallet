@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:isolate';
 import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
@@ -8,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/util/storage/cache/implementations/vtt_get_through_block_explorer.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:witnet/data_structures.dart';
+import 'package:my_wit_wallet/util/storage/log.dart';
 import 'package:witnet/constants.dart';
 import 'package:witnet/crypto.dart';
 import 'package:witnet/explorer.dart';
@@ -28,16 +28,6 @@ import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 part 'crypto_event.dart';
 part 'crypto_state.dart';
 part 'crypto_isolate.dart';
-
-Future<dynamic> isolateRunner(
-    String method, Map<String, dynamic> params) async {
-  ReceivePort response = ReceivePort();
-
-  /// send the request
-  Locator.instance<CryptoIsolate>()
-      .send(method: method, params: params, port: response.sendPort);
-  return await response.first;
-}
 
 class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   ApiExplorer apiExplorer = Locator.instance.get<ApiExplorer>();
