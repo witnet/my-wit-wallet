@@ -3,7 +3,6 @@ import 'package:my_wit_wallet/util/transactions_list/get_transaction_address.dar
 import 'package:test/test.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
-import 'package:witnet/witnet.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
