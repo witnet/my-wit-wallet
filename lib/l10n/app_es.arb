@@ -286,6 +286,7 @@
   "advancedSettings": "Configuración avanzada",
   "timelock": "bloqueo temporizado",
   "setTimelock": "fijar bloqueo horario",
+  "timelockTooltip": "El beneficiario no podrá gastar las monedas antes de esa fecha y hora.",
   "hour": "Hora",
   "minutes": "Minutos",
   "datePickerHintText": "Seleccionar fecha",

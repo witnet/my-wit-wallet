@@ -24,6 +24,7 @@ import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
 import 'dart:io' show Platform;
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 
 class RecipientStep extends StatefulWidget {
   final Function nextAction;
@@ -221,12 +222,27 @@ class RecipientStepState extends State<RecipientStep>
 
   _buildCalendarDialogButton(BuildContext context) {
     final theme = Theme.of(context);
+    ExtendedTheme extendedTheme = theme.extension<ExtendedTheme>()!;
     Column timelockWidget = Column(
       children: [
         SizedBox(height: 15),
-        Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [Text("Time-lock", style: theme.textTheme.titleSmall)]),
+        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+          Text(localization.timelock, style: theme.textTheme.titleSmall),
+          SizedBox(width: 4),
+          Tooltip(
+              margin: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: theme.colorScheme.background,
+              ),
+              textStyle: theme.textTheme.bodyMedium,
+              height: 60,
+              message: localization.timelockTooltip,
+              child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Icon(FontAwesomeIcons.circleQuestion,
+                      size: 12, color: extendedTheme.inputIconColor)))
+        ]),
         SizedBox(
           height: 6,
         ),
@@ -237,13 +253,15 @@ class RecipientStepState extends State<RecipientStep>
               onPressed: _setTimeLock,
               child: Row(
                 children: [
-                  Text('${timelockSet ? _formatTimeLock() : "Set Timelock"}'),
+                  Text(
+                      '${timelockSet ? _formatTimeLock() : localization.setTimelock}'),
                   timelockSet ? Container() : SizedBox(width: 10),
-                  timelockSet ? Container() : Icon(FontAwesomeIcons.calendar),
+                  timelockSet
+                      ? Container()
+                      : Icon(FontAwesomeIcons.calendar, size: 10),
                 ],
               ),
             ),
-            //SizedBox(width: 10),
             timelockSet
                 ? IconButton(
                     onPressed: () =>
