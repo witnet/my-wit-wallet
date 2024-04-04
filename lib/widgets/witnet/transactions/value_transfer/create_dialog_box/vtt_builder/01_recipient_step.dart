@@ -226,30 +226,33 @@ class RecipientStepState extends State<RecipientStep>
     Column timelockWidget = Column(
       children: [
         SizedBox(height: 15),
-        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Text(localization.timelock, style: theme.textTheme.titleSmall),
-          SizedBox(width: 4),
-          Tooltip(
-              margin: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: theme.colorScheme.background,
-              ),
-              textStyle: theme.textTheme.bodyMedium,
-              height: 60,
-              message: localization.timelockTooltip,
-              child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: Icon(FontAwesomeIcons.circleQuestion,
-                      size: 12, color: extendedTheme.inputIconColor)))
-        ]),
+        Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(localization.timelock, style: theme.textTheme.titleSmall),
+              SizedBox(width: 8),
+              Tooltip(
+                  margin: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: theme.colorScheme.background,
+                  ),
+                  textStyle: theme.textTheme.bodyMedium,
+                  height: 60,
+                  message: localization.timelockTooltip,
+                  child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: Icon(FontAwesomeIcons.circleQuestion,
+                          size: 12, color: extendedTheme.inputIconColor)))
+            ]),
         SizedBox(
-          height: 6,
+          height: 8,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            TextButton(
+            ElevatedButton(
               onPressed: _setTimeLock,
               child: Row(
                 children: [
@@ -258,7 +261,7 @@ class RecipientStepState extends State<RecipientStep>
                   timelockSet ? Container() : SizedBox(width: 10),
                   timelockSet
                       ? Container()
-                      : Icon(FontAwesomeIcons.calendar, size: 10),
+                      : Icon(FontAwesomeIcons.calendar, size: 14),
                 ],
               ),
             ),
