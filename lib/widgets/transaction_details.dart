@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
@@ -78,17 +79,25 @@ class TransactionDetails extends StatelessWidget {
       ThemeData theme, ValueTransferOutput output, bool isLastOutput) {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     Widget timelock = SizedBox(height: 0);
-    //TODO(#505): Support timelocks
-    // if (output.timeLock != 0) {
-    //   timelock = Expanded(
-    //       child: Column(
-    //           crossAxisAlignment: CrossAxisAlignment.end,
-    //           mainAxisAlignment: MainAxisAlignment.end,
-    //           children: [
-    //         Text(output.timeLock.toInt().formatDate(),
-    //             style: theme.textTheme.bodySmall)
-    //       ]));
-    // }
+    if (output.timeLock != 0) {
+      timelock = Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(DateTime.now().millisecondsSinceEpoch ~/ 1000 <
+                    output.timeLock.toInt()
+                ? FontAwesomeIcons.lock
+                : FontAwesomeIcons.unlock),
+            SizedBox(
+              width: 8,
+            ),
+            Text(
+              output.timeLock.toInt().formatDate(),
+              style: theme.textTheme.bodySmall,
+            ),
+          ]);
+    }
+    //
     return Container(
         padding: EdgeInsets.only(top: 16, bottom: 16),
         decoration: BoxDecoration(
@@ -114,11 +123,11 @@ class TransactionDetails extends StatelessWidget {
                   Text(
                       '${output.value.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
                       style: theme.textTheme.labelMedium),
+                  SizedBox(height: 8),
+                  output.timeLock.toInt() > 0 ? timelock : Container()
                 ],
               ),
             ),
-            SizedBox(width: 8),
-            timelock,
           ],
         ));
   }

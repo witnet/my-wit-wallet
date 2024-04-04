@@ -1,6 +1,8 @@
 import 'package:formz/formz.dart';
+import 'package:intl/intl.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
+import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +13,7 @@ import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/widgets/validations/address_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/timelock_picker.dart';
 import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
@@ -57,6 +60,12 @@ class RecipientStepState extends State<RecipientStep>
   ValueTransferOutput? ongoingOutput;
   VTTCreateBloc get vttBloc => BlocProvider.of<VTTCreateBloc>(context);
 
+  bool showAdvancedSettings = false;
+  bool timelockSet = false;
+  int _currIndex = 0;
+  DateTime currentTime = DateTime.now();
+  DateTime? timelockValue;
+  DateTime? calendarValue;
   @override
   void initState() {
     super.initState();
@@ -170,7 +179,7 @@ class RecipientStepState extends State<RecipientStep>
                 .standardizeWitUnits(
                     inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)
                 .toString()),
-            'time_lock': 0
+            'time_lock': timelockSet ? dateTimeToTimelock(calendarValue) : 0,
           }),
           merge: true));
     }
@@ -181,6 +190,106 @@ class RecipientStepState extends State<RecipientStep>
       label: localization.continueLabel,
       action: nextAction,
     );
+  }
+
+  void _setTimeLock() async {
+    final DateTime? value = await showTimelockPicker(context: context);
+    if (value == null) {
+      setState(() {
+        calendarValue = null;
+        timelockSet = false;
+      });
+    } else {
+      setState(() {
+        calendarValue = value;
+        timelockSet = true;
+        _currIndex = _currIndex == 0 ? 1 : 0;
+      });
+    }
+  }
+
+  void _clearTimeLock() async {
+    setState(() {
+      calendarValue = null;
+      timelockSet = false;
+      _currIndex = _currIndex == 0 ? 1 : 0;
+    });
+  }
+
+  String _formatTimeLock() =>
+      DateFormat('h:mm a E, MMM dd yyyy ').format(calendarValue!);
+
+  _buildCalendarDialogButton(BuildContext context) {
+    final theme = Theme.of(context);
+    Column timelockWidget = Column(
+      children: [
+        SizedBox(height: 15),
+        Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [Text("Time-lock", style: theme.textTheme.titleSmall)]),
+        SizedBox(
+          height: 6,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            TextButton(
+              onPressed: _setTimeLock,
+              child: Row(
+                children: [
+                  Text('${timelockSet ? _formatTimeLock() : "Set Timelock"}'),
+                  timelockSet ? Container() : SizedBox(width: 10),
+                  timelockSet ? Container() : Icon(FontAwesomeIcons.calendar),
+                ],
+              ),
+            ),
+            //SizedBox(width: 10),
+            timelockSet
+                ? IconButton(
+                    onPressed: () =>
+                        timelockSet ? _clearTimeLock() : _setTimeLock(),
+                    icon: Icon(
+                      FontAwesomeIcons.trashCan,
+                      color: Colors.red,
+                    ))
+                : Container()
+          ],
+        ),
+      ],
+    );
+
+    return Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      showAdvancedSettings = !showAdvancedSettings;
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      Text("Advanced Settings"),
+                      SizedBox(width: 10),
+                      Icon(
+                        showAdvancedSettings
+                            ? FontAwesomeIcons.caretDown
+                            : FontAwesomeIcons.caretUp,
+                        color: WitnetPallet.witnetGreen1,
+                        size: 15,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            showAdvancedSettings ? timelockWidget : Container()
+          ],
+        ));
   }
 
   _buildForm(BuildContext context, ThemeData theme) {
@@ -267,6 +376,7 @@ class RecipientStepState extends State<RecipientStep>
                   widget.goNext();
                 },
               ),
+              _buildCalendarDialogButton(context),
               SizedBox(height: 16),
             ],
           )),

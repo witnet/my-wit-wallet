@@ -6,8 +6,10 @@ import 'colors.dart';
 Brightness brightness = Brightness.light;
 MaterialColor primarySwatch = createMaterialColor(WitnetPallet.witnetGreen1);
 Color primaryColor = WitnetPallet.witnetGreen1;
-TextSelectionThemeData textSelectionTheme =
-    TextSelectionThemeData(cursorColor: WitnetPallet.witnetGreen1);
+TextSelectionThemeData textSelectionTheme = TextSelectionThemeData(
+  cursorColor: WitnetPallet.witnetGreen1,
+  selectionColor: WitnetPallet.witnetGreen1,
+);
 Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
   displayLarge: TextStyle(
@@ -255,6 +257,90 @@ PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(
         },
 );
 
+TimePickerThemeData timePickerTheme = TimePickerThemeData(
+  backgroundColor: WitnetPallet.white,
+  cancelButtonStyle: textButtonTheme.style,
+  confirmButtonStyle: textButtonTheme.style,
+
+  /// day period
+  dayPeriodBorderSide: BorderSide(color: WitnetPallet.darkBlue2, width: 1),
+  dayPeriodColor: stateColor(WitnetPallet.darkBlue2, WitnetPallet.white),
+  dayPeriodShape: RoundedRectangleBorder(
+      side: BorderSide(color: WitnetPallet.witnetGreen1, width: 5),
+      borderRadius: BorderRadius.all(Radius.circular(4))),
+  dayPeriodTextColor: stateColor(WitnetPallet.white, WitnetPallet.darkGrey),
+  dayPeriodTextStyle: textTheme.bodyMedium,
+
+  /// dial
+  dialBackgroundColor: WitnetPallet.transparentGrey,
+  dialHandColor: WitnetPallet.witnetGreen1,
+  dialTextColor: stateColor(WitnetPallet.white, WitnetPallet.darkGrey),
+  dialTextStyle: textTheme.bodyMedium,
+  elevation: 0,
+  entryModeIconColor: WitnetPallet.witnetGreen1,
+  helpTextStyle: textTheme.titleLarge,
+
+  /// hour minute
+  hourMinuteColor:
+      stateColor(WitnetPallet.opacityWitnetGreen3, WitnetPallet.transparent),
+  hourMinuteShape: RoundedRectangleBorder(
+    side: BorderSide(
+        color: stateColor(WitnetPallet.witnetGreen1, WitnetPallet.darkGrey),
+        width: 0),
+    borderRadius: BorderRadius.all(Radius.circular(4)),
+  ),
+  hourMinuteTextColor: WitnetPallet.darkGrey,
+  hourMinuteTextStyle: textTheme.titleLarge,
+  inputDecorationTheme: inputDecorationTheme.copyWith(
+    outlineBorder: BorderSide(
+      color: stateColor(WitnetPallet.witnetGreen1, WitnetPallet.darkGrey),
+    ),
+    focusColor: WitnetPallet.witnetGreen1,
+    hoverColor: WitnetPallet.opacityWitnetGreen3,
+  ),
+
+  padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 15),
+  shape: RoundedRectangleBorder(
+    side: BorderSide.none,
+    borderRadius: BorderRadius.all(Radius.circular(10)),
+  ),
+);
+
+DatePickerThemeData datePickerTheme = DatePickerThemeData(
+  backgroundColor: WitnetPallet.white,
+  elevation: 0,
+  shadowColor: WitnetPallet.darkGrey,
+  surfaceTintColor: WitnetPallet.darkBlue2,
+  shape: RoundedRectangleBorder(
+    side: BorderSide.none,
+    borderRadius: BorderRadius.all(Radius.circular(10)),
+  ),
+  headerBackgroundColor: WitnetPallet.darkBlue2,
+  headerForegroundColor: WitnetPallet.witnetGreen1,
+  headerHelpStyle: textTheme.titleLarge!.copyWith(color: WitnetPallet.white),
+  weekdayStyle: TextStyle(color: WitnetPallet.darkGrey),
+  dayStyle: TextStyle(color: WitnetPallet.white),
+  dayForegroundColor: stateColor(WitnetPallet.white, WitnetPallet.darkGrey),
+  dayBackgroundColor:
+      stateColor(WitnetPallet.witnetGreen1, WitnetPallet.transparent),
+  dayOverlayColor: stateColor(
+      WitnetPallet.opacitywitnetGreen2, WitnetPallet.opacitywitnetGreen2),
+  todayForegroundColor:
+      stateColor(WitnetPallet.white, WitnetPallet.witnetGreen1),
+  todayBackgroundColor:
+      stateColor(WitnetPallet.witnetGreen1, WitnetPallet.white),
+  yearStyle: textTheme.bodyMedium!.copyWith(decoration: TextDecoration.none),
+  yearForegroundColor: stateColor(WitnetPallet.white, WitnetPallet.darkGrey),
+  yearBackgroundColor:
+      stateColor(WitnetPallet.opacitywitnetGreen2, WitnetPallet.transparent),
+  yearOverlayColor: stateColor(
+      WitnetPallet.opacitywitnetGreen2, WitnetPallet.opacitywitnetGreen2),
+  dividerColor: WitnetPallet.transparent,
+  inputDecorationTheme: inputDecorationTheme,
+  cancelButtonStyle: textButtonTheme.style,
+  confirmButtonStyle: textButtonTheme.style,
+);
+
 ThemeData lightTheme = ThemeData(
     pageTransitionsTheme: pageTransitionsTheme,
     progressIndicatorTheme: progressIndicatorTheme,
@@ -271,6 +357,8 @@ ThemeData lightTheme = ThemeData(
     outlinedButtonTheme: outlinedButtonTheme,
     cardTheme: cardTheme,
     textTheme: textTheme,
+    datePickerTheme: datePickerTheme,
+    timePickerTheme: timePickerTheme,
     inputDecorationTheme: inputDecorationTheme,
     colorScheme: ColorScheme.light().copyWith(
         background: WitnetPallet.white, outline: WitnetPallet.transparent));

@@ -288,5 +288,16 @@
   "confirmed": "Confirmed",
   "mined": "Mined",
   "pending": "Pending",
-  "reverted": "Reverted"
+  "reverted": "Reverted",
+  "advancedSettings": "Advanced Settings",
+  "timelock": "Time-lock",
+  "setTimelock": "Set Time-lock",
+  "hour": "Hour",
+  "minutes": "Minutes",
+  "datePickerHintText": "Select date",
+  "datePickerFormatError": "Invalid date format",
+  "datePickerInvalid": "Invalid date",
+  "timePickerHintText": "Set Time",
+  "timePickerInvalid": "Invalid time",
+  "confirm": "Confirm"
 }

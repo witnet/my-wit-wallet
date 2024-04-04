@@ -282,5 +282,16 @@
   "confirmed": "Confirmada",
   "mined": "Minada",
   "pending": "Pendiente",
-  "reverted": "Revertida"
+  "reverted": "Revertida",
+  "advancedSettings": "Configuración avanzada",
+  "timelock": "bloqueo temporizado",
+  "setTimelock": "fijar bloqueo horario",
+  "hour": "Hora",
+  "minutes": "Minutos",
+  "datePickerHintText": "Seleccionar fecha",
+  "datePickerFormatError": "Formato de fecha no válido",
+  "datePickerInvalid": "Fecha no válida",
+  "timePickerHintText": "Hora fijada",
+  "timePickerInvalid": "tiempo inválido",
+  "confirm": "confirmar"
 }
