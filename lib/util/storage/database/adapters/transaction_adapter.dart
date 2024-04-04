@@ -126,7 +126,8 @@ class GeneralTransaction extends HashInfo {
         value: 0,
         inputsMerged: [],
         outputValues: [],
-        timelocks: [],
+        timelocks: List.generate(vtt!.outputs.length,
+            (index) => vtt!.outputs[index].timeLock.toInt()),
         utxos: [],
         utxosMerged: [],
         trueOutputAddresses: [],
@@ -307,7 +308,7 @@ extension ValueTransferAdapter on ValueTransferInfo {
         ValueTransferOutput vto = ValueTransferOutput(
           value: outputValues[i],
           pkh: Address.fromAddress(outputAddresses[i]).publicKeyHash!,
-          timeLock: 0,
+          timeLock: getOrDefault(data).timelocks[i],
         );
         outputs.add(vto);
       }

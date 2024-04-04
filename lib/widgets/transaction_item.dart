@@ -64,6 +64,18 @@ class TransactionsItemState extends State<TransactionsItem> {
     super.dispose();
   }
 
+  int lockedValue(GeneralTransaction gt) {
+    int amountLocked = 0;
+    if (gt.type == TransactionType.value_transfer) {
+      gt.vtt!.outputs.forEach((element) {
+        if (element.timeLock > DateTime.now().millisecondsSinceEpoch ~/ 1000) {
+          amountLocked += element.value.toInt();
+        }
+      });
+    }
+    return amountLocked;
+  }
+
   int receiveValue(GeneralTransaction vti) {
     int nanoWitvalue = 0;
     if (vti.type == TransactionType.value_transfer) {
@@ -106,24 +118,32 @@ class TransactionsItemState extends State<TransactionsItem> {
   Widget buildTransactionValue(label, transaction) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
+    int _lockedWit = lockedValue(transaction);
     if (label == localization.from) {
       return Text(
         ' + ${receiveValue(transaction).standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
-        style: theme.textTheme.bodyLarge
-            ?.copyWith(color: extendedTheme.txValuePositiveColor),
+        style: theme.textTheme.bodyLarge?.copyWith(
+            color: _lockedWit > 0
+                ? WitnetPallet.darkGrey
+                : extendedTheme.txValuePositiveColor),
         overflow: TextOverflow.ellipsis,
       );
     } else if (sendValue(transaction).standardizeWitUnits().toString() != '0') {
       return Text(
         ' - ${sendValue(transaction).standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
-        style: theme.textTheme.bodyLarge
-            ?.copyWith(color: extendedTheme.txValueNegativeColor),
+        style: theme.textTheme.bodyLarge?.copyWith(
+            color: _lockedWit > 0
+                ? WitnetPallet.darkGrey
+                : extendedTheme.txValueNegativeColor),
         overflow: TextOverflow.ellipsis,
       );
     } else {
       return Text(
         '${sendValue(transaction).standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
-        style: theme.textTheme.bodyLarge,
+        style: theme.textTheme.bodyLarge!.copyWith(
+            color: _lockedWit > 0
+                ? WitnetPallet.mediumGrey
+                : theme.textTheme.bodyLarge!.color),
         overflow: TextOverflow.ellipsis,
       );
     }
@@ -177,7 +197,7 @@ class TransactionsItemState extends State<TransactionsItem> {
       label = localization.from;
       address = 'Mint';
     }
-
+    int _lockedWit = lockedValue(widget.transaction);
     return Semantics(
         button: true,
         enabled: true,
@@ -211,8 +231,19 @@ class TransactionsItemState extends State<TransactionsItem> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                  buildTransactionValue(
-                                      label, widget.transaction),
+                                  Row(
+                                    children: [
+                                      _lockedWit > 0
+                                          ? Icon(FontAwesomeIcons.lock,
+                                              size: 11)
+                                          : Container(),
+                                      _lockedWit > 0
+                                          ? SizedBox(width: 10)
+                                          : Container(),
+                                      buildTransactionValue(
+                                          label, widget.transaction),
+                                    ],
+                                  ),
                                 ])),
                             SizedBox(
                               width: 8,

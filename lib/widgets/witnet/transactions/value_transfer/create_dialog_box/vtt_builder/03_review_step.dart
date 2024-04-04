@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:my_wit_wallet/util/allow_biometrics.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/general_error_tx_modal.dart';
@@ -139,6 +140,8 @@ class ReviewStepState extends State<ReviewStep>
         },
         child: BlocBuilder<VTTCreateBloc, VTTCreateState>(
           builder: (context, state) {
+            bool timelockSet =
+                state.vtTransaction.body.outputs[0].timeLock != 0;
             return Padding(
                 padding: EdgeInsets.only(left: 8, right: 8),
                 child: Column(
@@ -158,6 +161,11 @@ class ReviewStepState extends State<ReviewStep>
                         text:
                             '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
                       ),
+                      _timelock(state),
+                      if (timelockSet)
+                        SizedBox(
+                          height: 16,
+                        ),
                       InfoElement(
                           label: localization.fee,
                           isLastItem: true,
@@ -168,4 +176,18 @@ class ReviewStepState extends State<ReviewStep>
           },
         ));
   }
+}
+
+Widget _timelock(state) {
+  if (state.vtTransaction.body.outputs[0].timeLock != 0) {
+    int timestamp = state.vtTransaction.body.outputs[0].timeLock.toInt() * 1000;
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    return InfoElement(
+        label: localization.timelock,
+        isLastItem: true,
+        text: '${DateFormat("h:mm a E, MMM dd yyyy ").format(dateTime)}');
+  }
+  return SizedBox(
+    height: 0,
+  );
 }
