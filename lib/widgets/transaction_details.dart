@@ -81,13 +81,15 @@ class TransactionDetails extends StatelessWidget {
     Widget timelock = SizedBox(height: 0);
     if (output.timeLock != 0) {
       timelock = Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(DateTime.now().millisecondsSinceEpoch ~/ 1000 <
-                    output.timeLock.toInt()
-                ? FontAwesomeIcons.lock
-                : FontAwesomeIcons.unlock),
+            Icon(
+                DateTime.now().millisecondsSinceEpoch ~/ 1000 <
+                        output.timeLock.toInt()
+                    ? FontAwesomeIcons.lock
+                    : FontAwesomeIcons.unlock,
+                size: 10),
             SizedBox(
               width: 8,
             ),
