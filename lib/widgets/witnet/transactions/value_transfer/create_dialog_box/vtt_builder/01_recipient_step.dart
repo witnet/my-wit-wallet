@@ -298,8 +298,8 @@ class RecipientStepState extends State<RecipientStep>
                       SizedBox(width: 10),
                       Icon(
                         showAdvancedSettings
-                            ? FontAwesomeIcons.caretDown
-                            : FontAwesomeIcons.caretUp,
+                            ? FontAwesomeIcons.caretUp
+                            : FontAwesomeIcons.caretDown,
                         color: WitnetPallet.witnetGreen1,
                         size: 15,
                       ),
