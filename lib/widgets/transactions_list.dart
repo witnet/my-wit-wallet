@@ -75,11 +75,10 @@ class TransactionsListState extends State<TransactionsList> {
         speedUpTx: speedUpTx,
         filteredUtxos: false,
         currentWallet: currentWallet,
-        //TODO(#505): Support timelocks
         output: ValueTransferOutput.fromJson({
           'pkh': speedUpTx.vtt!.outputs.first.pkh.address,
           'value': speedUpTx.vtt!.outputs.first.value.toInt(),
-          'time_lock': 0
+          'time_lock': speedUpTx.vtt!.outputs.first.timeLock.toInt(),
         }),
         merge: true));
   }
