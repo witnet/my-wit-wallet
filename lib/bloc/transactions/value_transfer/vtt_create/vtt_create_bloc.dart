@@ -392,7 +392,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
               event.output.value;
           if (selectedTimelock != null) {
             outputs[receivers.indexOf(event.output.pkh.address)].timeLock =
-                (selectedTimelock!.millisecondsSinceEpoch * 100) as Int64;
+                (selectedTimelock!.millisecondsSinceEpoch * 1000) as Int64;
           }
         } else {
           receivers.add(event.output.pkh.address);
