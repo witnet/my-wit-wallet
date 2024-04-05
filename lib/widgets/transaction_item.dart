@@ -124,7 +124,7 @@ class TransactionsItemState extends State<TransactionsItem> {
         ' + ${receiveValue(transaction).standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
         style: theme.textTheme.bodyLarge?.copyWith(
             color: _lockedWit > 0
-                ? WitnetPallet.darkGrey
+                ? WitnetPallet.mediumGrey
                 : extendedTheme.txValuePositiveColor),
         overflow: TextOverflow.ellipsis,
       );
@@ -133,7 +133,7 @@ class TransactionsItemState extends State<TransactionsItem> {
         ' - ${sendValue(transaction).standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
         style: theme.textTheme.bodyLarge?.copyWith(
             color: _lockedWit > 0
-                ? WitnetPallet.darkGrey
+                ? WitnetPallet.mediumGrey
                 : extendedTheme.txValueNegativeColor),
         overflow: TextOverflow.ellipsis,
       );
