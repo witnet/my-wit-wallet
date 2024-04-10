@@ -114,7 +114,8 @@ class DataLoadingEvent extends ExplorerEvent {
 }
 
 class SyncErrorEvent extends ExplorerEvent {
-  SyncErrorEvent(ExplorerStatus status) : super(status);
+  final String? message;
+  SyncErrorEvent(ExplorerStatus status, this.message) : super(status);
 }
 
 class BlockchainQueryEvent extends ExplorerEvent {

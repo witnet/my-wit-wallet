@@ -193,7 +193,10 @@ class BuildWalletCardState extends State<BuildWalletCard>
     final theme = Theme.of(context);
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
-        theme, localization.connectionIssue, theme.colorScheme.error));
+        theme: theme,
+        text: localization.cryptoException,
+        log: state.message,
+        color: theme.colorScheme.error));
     Timer(Duration(seconds: 4), () {
       ScaffoldMessenger.of(context).clearSnackBars();
       Navigator.pushReplacementNamed(context, InitScreen.route);

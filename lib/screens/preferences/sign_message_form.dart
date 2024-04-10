@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
@@ -13,6 +15,7 @@ import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/select.dart';
 import 'package:my_wit_wallet/widgets/validations/message_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/general_error_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/unlock_keychain_modal.dart';
 
 typedef void VoidCallback(Map<String, dynamic> signedMessage);
@@ -85,8 +88,24 @@ class SignMessageFormState extends State<SignMessageForm> {
           await Locator.instance.get<ApiCrypto>().signMessage(message, address);
       widget.signedMessage(signedResult);
     } catch (err) {
+      showSnackBar(err.toString());
       print('${localization.errorSigning} $err');
     }
+  }
+
+  void showSnackBar(String message) {
+    final theme = Theme.of(context);
+    ScaffoldMessenger.of(context).clearSnackBars();
+    buildGeneralExceptionModal(
+      theme: theme,
+      context: context,
+      error: localization.signMessageError,
+      message: localization.signMessageError,
+      errorMessage: message,
+      iconName: 'general-warning',
+      originRouteName: PreferencePage.route,
+      originRoute: PreferencePage(),
+    );
   }
 
   Future<bool> checkBiometricsAuth() async {

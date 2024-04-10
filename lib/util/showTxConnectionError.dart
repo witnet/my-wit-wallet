@@ -7,8 +7,8 @@ bool showTxConnectionReEstablish(
   if (message != null && message.contains(INSUFFICIENT_FUNDS_ERROR)) {
     return false;
   }
-  return prevStatus == VTTCreateStatus.exception &&
-      currentStatus != VTTCreateStatus.exception &&
+  return prevStatus == VTTCreateStatus.explorerException &&
+      currentStatus != VTTCreateStatus.explorerException &&
       currentStatus != VTTCreateStatus.busy &&
       currentStatus != VTTCreateStatus.initial;
 }

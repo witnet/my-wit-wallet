@@ -13,6 +13,7 @@ enum VTTCreateStatus {
   recipientSet,
   inputSet,
   exception,
+  explorerException,
   discarded,
 }
 

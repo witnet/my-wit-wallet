@@ -54,6 +54,7 @@ class RecipientStepState extends State<RecipientStep>
   final _addressController = TextEditingController();
   final _addressFocusNode = FocusNode();
   bool _connectionError = false;
+  String? errorMessage;
   FocusNode _scanQrFocusNode = FocusNode();
   bool isScanQrFocused = false;
   ValidationUtils validationUtils = ValidationUtils();
@@ -167,7 +168,10 @@ class RecipientStepState extends State<RecipientStep>
     if (_connectionError) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
-          theme, localization.connectionIssue, theme.colorScheme.error));
+          theme: theme,
+          text: localization.vttException,
+          log: errorMessage,
+          color: theme.colorScheme.error));
     } else {
       ScaffoldMessenger.of(context).clearSnackBars();
     }
@@ -413,6 +417,7 @@ class RecipientStepState extends State<RecipientStep>
             previousState.vttCreateStatus, currentState.vttCreateStatus)) {
           setState(() {
             _connectionError = false;
+            errorMessage = null;
           });
         }
         return true;
@@ -421,6 +426,7 @@ class RecipientStepState extends State<RecipientStep>
         if (state.vttCreateStatus == VTTCreateStatus.exception) {
           setState(() {
             _connectionError = true;
+            errorMessage = state.message;
           });
         }
       },

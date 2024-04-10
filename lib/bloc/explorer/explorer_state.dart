@@ -4,9 +4,11 @@ class ExplorerState extends Equatable {
   const ExplorerState._(
       {this.status = ExplorerStatus.unknown,
       this.data = const {},
+      this.errorMessage,
       this.walletStorage});
   final Map<String, dynamic> data;
   final ExplorerStatus status;
+  final String? errorMessage;
   final WalletStorage? walletStorage;
 
   const ExplorerState.unknown() : this._();
@@ -26,7 +28,8 @@ class ExplorerState extends Equatable {
 
   const ExplorerState.ready() : this._(status: ExplorerStatus.ready);
 
-  const ExplorerState.error() : this._(status: ExplorerStatus.error);
+  const ExplorerState.error({required String message})
+      : this._(status: ExplorerStatus.error, errorMessage: message);
   @override
   List<Object> get props => [status];
 }

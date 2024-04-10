@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
+import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +16,7 @@ import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/layouts/listen_fourth_button.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/widgets/wallet_type_label.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/general_error_modal.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
@@ -66,10 +68,10 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             message: previousState.message)) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
-            theme,
-            localization.connectionReestablished,
-            extendedTheme.txValuePositiveColor,
-            () => {
+            theme: theme,
+            text: localization.connectionReestablished,
+            color: extendedTheme.txValuePositiveColor,
+            action: () => {
               if (mounted)
                 {ScaffoldMessenger.of(context).hideCurrentMaterialBanner()}
             },
@@ -78,10 +80,25 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         return true;
       },
       listener: (context, state) {
-        if (state.vttCreateStatus == VTTCreateStatus.exception) {
+        if (state.vttCreateStatus == VTTCreateStatus.explorerException) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
-              theme, localization.connectionIssue, theme.colorScheme.error));
+              theme: theme,
+              text: localization.connectionIssue,
+              log: state.message,
+              color: theme.colorScheme.error));
+        } else if (state.vttCreateStatus == VTTCreateStatus.exception) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          buildGeneralExceptionModal(
+            theme: theme,
+            context: context,
+            error: localization.vttException,
+            message: localization.vttException,
+            errorMessage: state.message,
+            iconName: 'general-warning',
+            originRouteName: CreateVttScreen.route,
+            originRoute: CreateVttScreen(),
+          );
         }
       },
       child: child,
@@ -99,10 +116,10 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             currentState.status != ExplorerStatus.unknown) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
-            theme,
-            localization.connectionReestablished,
-            extendedTheme.txValuePositiveColor,
-            () => {
+            theme: theme,
+            text: localization.connectionReestablished,
+            color: extendedTheme.txValuePositiveColor,
+            action: () => {
               if (mounted)
                 {ScaffoldMessenger.of(context).hideCurrentMaterialBanner()}
             },
@@ -114,7 +131,10 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         if (state.status == ExplorerStatus.error) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
-              theme, localization.connectionIssue, theme.colorScheme.error));
+              theme: theme,
+              text: localization.connectionIssue,
+              log: state.errorMessage,
+              color: theme.colorScheme.error));
         }
       },
       child: child,

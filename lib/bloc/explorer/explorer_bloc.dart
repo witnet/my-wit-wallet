@@ -57,7 +57,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           .hash(event.value, event.utxos);
       emit(ExplorerState.dataLoaded(data: resp, query: ExplorerQuery.hash));
     } catch (err) {
-      emit(ExplorerState.error());
+      emit(ExplorerState.error(message: 'HashQueryEvent error: $err'));
       rethrow;
     }
   }
@@ -71,10 +71,11 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         emit(ExplorerState.dataLoaded(
             data: resp.jsonMap(), query: ExplorerQuery.status));
       } else {
-        emit(ExplorerState.error());
+        emit(
+            ExplorerState.error(message: 'Explorer backend seems not healthy'));
       }
     } catch (err) {
-      emit(ExplorerState.error());
+      emit(ExplorerState.error(message: 'StatusQueryEvent error: $err'));
       rethrow;
     }
   }
@@ -88,7 +89,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       emit(ExplorerState.dataLoaded(
           data: resp.data.jsonMap(), query: ExplorerQuery.address));
     } catch (err) {
-      emit(ExplorerState.error());
+      emit(ExplorerState.error(message: 'AddressQueryEvent error: $err'));
       rethrow;
     }
   }
@@ -108,7 +109,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           query: ExplorerQuery.utxos, data: {'utxos': utxoList}));
     } catch (e) {
       print('Error loading utxos $e');
-      emit(ExplorerState.error());
+      emit(ExplorerState.error(message: 'UtxoQueryEvent error: $e'));
       rethrow;
     }
   }
@@ -121,8 +122,8 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     emit(ExplorerState.dataLoading());
   }
 
-  void _emitSyncError(_, emit) {
-    emit(ExplorerState.error());
+  void _emitSyncError(event, emit) {
+    emit(ExplorerState.error(message: event.message));
   }
 
   Future<void> _singleSyncEvent(
@@ -165,7 +166,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   void setError(error) {
     print('Error syncing the wallet $error');
-    add(SyncErrorEvent(ExplorerStatus.error));
+    add(SyncErrorEvent(ExplorerStatus.error, error));
   }
 
   Future<void> _syncSingleAccount(
