@@ -375,4 +375,4 @@ ThemeData darkTheme = ThemeData(
     colorScheme: ColorScheme.dark().copyWith(
         background: WitnetPallet.darkBlue2,
         outline: WitnetPallet.transparent,
-        error: WitnetPallet.brightRed));
+        error: WitnetPallet.darkRed));
