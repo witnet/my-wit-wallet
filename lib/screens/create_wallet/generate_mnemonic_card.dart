@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
@@ -9,6 +11,7 @@ import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/dashed_rect.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
+import 'package:my_wit_wallet/widgets/snack_bars.dart';
 
 typedef void VoidCallback(NavAction? value);
 
@@ -29,10 +32,21 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
   String _language = 'English';
   int _radioWordCount = 12;
 
-  Future<String> _genMnemonic() async {
-    return await Locator.instance
-        .get<ApiCrypto>()
-        .generateMnemonic(_radioWordCount, _language);
+  Future<String?> _genMnemonic() async {
+    final theme = Theme.of(context);
+    try {
+      return await Locator.instance
+          .get<ApiCrypto>()
+          .generateMnemonic(_radioWordCount, _language);
+    } catch (err) {
+      showErrorSnackBarWithTimeout(
+        context: context,
+        theme: theme,
+        text: 'Error generating mnemonics',
+        log: '$err',
+      );
+      return null;
+    }
   }
 
   Widget _buildInfoTextScrollBox(Size deviceSize) {

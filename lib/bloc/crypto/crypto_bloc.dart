@@ -92,7 +92,9 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
           );
         } catch (e) {
           _deleteWallet(_wallet);
-          print('Error initializing external accounts $e');
+          add(CryptoExceptionEvent(
+              message: 'Error initializing external accounts:: $e'));
+          print('Error initializing external accounts:: $e');
           return;
         }
 
@@ -136,6 +138,8 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
         } catch (e) {
           _deleteWallet(_wallet);
           print('Error initializing internal accounts $e');
+          add(CryptoExceptionEvent(
+              message: 'Error initializing internal accounts:: $e'));
           return;
         }
 
@@ -176,6 +180,8 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       } catch (e) {
         _deleteWallet(_wallet);
         print('Error initializing single account $e');
+        add(CryptoExceptionEvent(
+            message: 'Error initializing single account:: $e'));
         return;
       }
     }
@@ -214,8 +220,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   void _cryptoExceptionEvent(
       CryptoExceptionEvent event, Emitter<CryptoState> emit) {
     emit(CryptoExceptionState(
-      code: event.code,
-      message: event.message,
+      errorMessage: event.message,
     ));
   }
 
@@ -256,6 +261,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
           await apiCrypto.generateAccount(wallet, keyType, index);
       return account;
     } catch (e) {
+      add(CryptoExceptionEvent(message: 'Error generating account:: $e'));
       rethrow;
     }
   }
@@ -276,7 +282,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       await db.addAccount(account);
       return account;
     } catch (e) {
-      add(CryptoExceptionEvent(code: 404, message: 'ConnectionError '));
+      add(CryptoExceptionEvent(message: 'Error initializing the account:: $e'));
       rethrow;
     }
   }
@@ -306,7 +312,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       }
       return account;
     } catch (e) {
-      print('Error syncing vtts $e');
+      add(CryptoExceptionEvent(message: 'Error syncing vtts:: $e'));
       rethrow;
     }
   }
@@ -337,7 +343,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       }
       return account;
     } catch (e) {
-      print('Error syncing mints $e');
+      add(CryptoExceptionEvent(message: 'Error syncing mints:: $e'));
       rethrow;
     }
   }
@@ -354,7 +360,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       account.updateUtxos(_utxos);
       return account;
     } catch (e) {
-      print('Error syncing the account: ${account.address} $e');
+      add(CryptoExceptionEvent(message: 'Error syncing the account:: $e'));
       rethrow;
     }
   }

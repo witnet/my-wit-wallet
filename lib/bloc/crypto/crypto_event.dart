@@ -52,9 +52,8 @@ class CryptoInitWalletDoneEvent extends CryptoEvent {
 }
 
 class CryptoExceptionEvent extends CryptoEvent {
-  CryptoExceptionEvent({required this.code, required this.message});
-  final int code;
+  CryptoExceptionEvent({required this.message});
   final String message;
   @override
-  List<Object> get props => [code, message];
+  List<Object> get props => [message];
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -22,19 +24,39 @@ SnackBar buildCopiedSnackbar(ThemeData theme, String text) {
   );
 }
 
-showErrorSnackBar(BuildContext context, ThemeData theme, String text,
-    [String? log]) {
+showErrorSnackBar({
+  required BuildContext context,
+  required ThemeData theme,
+  required String text,
+  String? log,
+  bool showDismiss = true,
+}) {
   ScaffoldMessenger.of(context).clearSnackBars();
   ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
     theme: theme,
     text: text,
     log: log,
     color: theme.colorScheme.error,
-    action: () => {
-      if (context.mounted)
-        {ScaffoldMessenger.of(context).hideCurrentMaterialBanner()}
-    },
+    action: showDismiss
+        ? () => {
+              if (context.mounted)
+                {ScaffoldMessenger.of(context).hideCurrentMaterialBanner()}
+            }
+        : null,
   ));
+}
+
+showErrorSnackBarWithTimeout({
+  required BuildContext context,
+  required ThemeData theme,
+  required String text,
+  String? log,
+}) {
+  showErrorSnackBar(
+      context: context, theme: theme, text: text, log: log, showDismiss: false);
+  Timer(Duration(seconds: 4), () {
+    ScaffoldMessenger.of(context).clearSnackBars();
+  });
 }
 
 SnackBar buildErrorSnackbar(

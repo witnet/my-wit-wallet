@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
@@ -141,6 +142,31 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     );
   }
 
+  void showSnackBar(CryptoExceptionState state) {
+    final theme = Theme.of(context);
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
+        theme: theme,
+        text: localization.cryptoException,
+        log: state.errorMessage,
+        color: theme.colorScheme.error));
+    Timer(Duration(seconds: 4), () {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      Navigator.pushReplacementNamed(context, InitScreen.route);
+    });
+  }
+
+  BlocListener<CryptoBloc, CryptoState> _cryptoListener(Widget child) {
+    return BlocListener<CryptoBloc, CryptoState>(
+      listener: (BuildContext context, CryptoState state) {
+        if (state.runtimeType == CryptoExceptionState) {
+          showSnackBar(state as CryptoExceptionState);
+        }
+      },
+      child: child,
+    );
+  }
+
   Widget showWalletList(BuildContext context) {
     String walletId =
         Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.id;
@@ -264,7 +290,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                 minWidth: 100,
                 maxWidth: 600,
               ),
-              child: _vttListener(_explorerListerner(
+              child: _cryptoListener(_vttListener(_explorerListerner(
                   Column(mainAxisSize: MainAxisSize.max, children: [
                 ...widget.widgetList,
                 SizedBox(
@@ -272,7 +298,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                       ? MediaQuery.of(context).viewPadding.bottom
                       : 0,
                 )
-              ]))),
+              ])))),
             ),
           )),
         ),

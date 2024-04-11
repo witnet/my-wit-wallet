@@ -195,7 +195,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
     ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
         theme: theme,
         text: localization.cryptoException,
-        log: state.message,
+        log: state.errorMessage,
         color: theme.colorScheme.error));
     Timer(Duration(seconds: 4), () {
       ScaffoldMessenger.of(context).clearSnackBars();

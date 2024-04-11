@@ -13,7 +13,6 @@ class CryptoReadyState extends CryptoState {
 
 class CryptoInitializingWalletState extends CryptoState {
   final String message;
-
   final BalanceInfo balanceInfo;
   final int transactionCount;
   final int addressCount;
@@ -54,11 +53,10 @@ class CryptoLoadedState extends CryptoState {
 }
 
 class CryptoExceptionState extends CryptoState {
-  CryptoExceptionState({required this.code, required this.message});
+  CryptoExceptionState({required this.errorMessage});
 
-  final int code;
-  final String message;
+  final String errorMessage;
 
   @override
-  List<Object> get props => [code, message];
+  List<Object> get props => [errorMessage];
 }

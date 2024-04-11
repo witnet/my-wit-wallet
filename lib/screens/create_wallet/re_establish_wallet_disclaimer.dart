@@ -91,12 +91,16 @@ class ReEstablishWalletDisclaimerState
         showStorageDeletedMessage();
       } else {
         closeModal();
-        showErrorSnackBar(context, theme,
-            'There was an error re-establishing myWitWallet, please try again!');
+        showErrorSnackBar(
+            context: context,
+            theme: theme,
+            text:
+                'There was an error re-establishing myWitWallet, please try again!');
       }
     } else {
       closeModal();
-      showErrorSnackBar(context, theme, localization.errorReestablish);
+      showErrorSnackBar(
+          context: context, theme: theme, text: localization.errorReestablish);
     }
   }
 
