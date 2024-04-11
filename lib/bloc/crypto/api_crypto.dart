@@ -177,16 +177,10 @@ class ApiCrypto {
   Future<String> decryptXprv(
       {required String xprv, required String password}) async {
     CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
-    final response = await cryptoIsolate.send(method: 'decryptXprv', params: {
+    return await cryptoIsolate.send(method: 'decryptXprv', params: {
       'xprv': xprv,
       'password': password,
-    }) as Map<String, String>;
-
-    if (response.containsKey('xprv')) {
-      return response['xprv']!;
-    } else {
-      return response['error']!;
-    }
+    });
   }
 
   Future<bool> verifySheikahXprv(
