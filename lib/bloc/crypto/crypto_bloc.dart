@@ -37,6 +37,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
 
   Wallet get wallet => db.walletStorage.currentWallet;
   BalanceInfo balance = BalanceInfo.zero();
+  bool syncronizationInProgress = false;
   int transactionCount = 0;
   int addressCount = 0;
   CryptoBloc(initialState) : super(initialState) {
@@ -48,7 +49,11 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
 
   Future<void> _cryptoInitializeWalletEvent(
       CryptoInitializeWalletEvent event, Emitter<CryptoState> emit) async {
-    /// setup default default structure for database and unlock it
+    if (syncronizationInProgress) {
+      return;
+    }
+    syncronizationInProgress = true;
+
     balance = BalanceInfo.zero();
     transactionCount = 0;
     addressCount = 0;
@@ -191,6 +196,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
         currentWalletId: _wallet.id,
         isHdWallet: _wallet.walletType == WalletType.hd,
         isNewWallet: true);
+    syncronizationInProgress = false;
     add(CryptoInitWalletDoneEvent(
       wallet: _wallet,
       password: event.password,
