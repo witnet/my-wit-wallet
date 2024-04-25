@@ -59,7 +59,7 @@ class Wallet {
 
   final WalletType walletType;
   late String id;
-  final String name;
+  String name;
   late List<String?> txHashes;
   late String? xprv;
   late String? externalXpub;
