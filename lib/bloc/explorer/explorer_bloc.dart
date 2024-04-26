@@ -166,7 +166,11 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   void setError(error) {
     print('Error syncing the wallet $error');
-    add(SyncErrorEvent(ExplorerStatus.error, error));
+    dynamic errorMessage = error;
+    if (errorMessage.runtimeType == ExplorerException) {
+      errorMessage = (errorMessage as ExplorerException).message;
+    }
+    add(SyncErrorEvent(ExplorerStatus.error, errorMessage));
   }
 
   Future<void> _syncSingleAccount(
