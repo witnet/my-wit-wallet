@@ -1,7 +1,7 @@
 import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
-import 'package:my_wit_wallet/theme/colors.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -221,6 +221,8 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   _buildCalendarDialogButton(BuildContext context) {
+    final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Padding(
         padding: const EdgeInsets.only(top: 20),
         child: Column(
@@ -242,7 +244,7 @@ class RecipientStepState extends State<RecipientStep>
                         showAdvancedSettings
                             ? FontAwesomeIcons.minus
                             : FontAwesomeIcons.plus,
-                        color: WitnetPallet.witnetGreen1,
+                        color: extendedTheme.headerTextColor,
                         size: 15,
                       ),
                     ],
