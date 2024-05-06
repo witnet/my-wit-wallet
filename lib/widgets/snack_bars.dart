@@ -108,8 +108,7 @@ SnackBar buildErrorSnackbar(
                             type: ButtonType.iconButton,
                             iconSize: 10,
                             onPressed: () async {
-                              await Clipboard.setData(
-                                  ClipboardData(text: text));
+                              await Clipboard.setData(ClipboardData(text: log));
                             },
                             icon: Icon(
                               FontAwesomeIcons.copy,
