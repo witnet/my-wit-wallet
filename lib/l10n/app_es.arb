@@ -297,5 +297,6 @@
   "datePickerInvalid": "Fecha no válida",
   "timePickerHintText": "Hora fijada",
   "timePickerInvalid": "tiempo inválido",
-  "confirm": "confirmar"
+  "confirm": "Confirmar",
+  "addTimelockLabel": "Añadir Timelock (Opcional)"
 }

@@ -41,6 +41,7 @@ class PaddedButton extends StatelessWidget {
       required this.type,
       this.label,
       this.container,
+      this.attachedIcon = false,
       this.iconSize = 16,
       this.darkBackground = false,
       this.autofocus});
@@ -54,6 +55,7 @@ class PaddedButton extends StatelessWidget {
   final Widget icon;
   final VoidCallback onPressed;
   final String? label;
+  final bool attachedIcon;
   final Widget? container;
   final bool? autofocus;
   final double iconSize;
@@ -76,11 +78,22 @@ class PaddedButton extends StatelessWidget {
       }
     }
 
+    Widget child = attachedIcon
+        ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+                Text(text),
+                Padding(padding: EdgeInsets.only(left: 8)),
+                icon,
+              ])
+        : Text(text);
+
     Widget primaryButton = ElevatedButton(
       style: ElevatedButton.styleFrom(
         minimumSize: Size(double.infinity, 54),
       ),
-      child: isLoading ? buildCircularProgress(context, theme) : Text(text),
+      child: isLoading ? buildCircularProgress(context, theme) : child,
       onPressed: enabled ? onPressed : null,
     );
 

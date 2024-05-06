@@ -303,5 +303,6 @@
   "datePickerInvalid": "Invalid date",
   "timePickerHintText": "Set Time",
   "timePickerInvalid": "Invalid time",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "addTimelockLabel": "Add Timelock (Optional)"
 }

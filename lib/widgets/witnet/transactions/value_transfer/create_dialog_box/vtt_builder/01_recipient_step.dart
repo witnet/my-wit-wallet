@@ -1,5 +1,4 @@
 import 'package:formz/formz.dart';
-import 'package:intl/intl.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
@@ -13,6 +12,7 @@ import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/widgets/validations/address_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/timelock_input.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/timelock_picker.dart';
 import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
@@ -24,7 +24,6 @@ import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
 import 'dart:io' show Platform;
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
-import 'package:my_wit_wallet/theme/extended_theme.dart';
 
 class RecipientStep extends StatefulWidget {
   final Function nextAction;
@@ -221,74 +220,13 @@ class RecipientStepState extends State<RecipientStep>
     });
   }
 
-  String _formatTimeLock() =>
-      DateFormat('h:mm a E, MMM dd yyyy ').format(calendarValue!);
-
   _buildCalendarDialogButton(BuildContext context) {
-    final theme = Theme.of(context);
-    ExtendedTheme extendedTheme = theme.extension<ExtendedTheme>()!;
-    Column timelockWidget = Column(
-      children: [
-        SizedBox(height: 15),
-        Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(localization.timelock, style: theme.textTheme.titleSmall),
-              SizedBox(width: 8),
-              Tooltip(
-                  margin: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: theme.colorScheme.background,
-                  ),
-                  textStyle: theme.textTheme.bodyMedium,
-                  height: 60,
-                  message: localization.timelockTooltip,
-                  child: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: Icon(FontAwesomeIcons.circleQuestion,
-                          size: 12, color: extendedTheme.inputIconColor)))
-            ]),
-        SizedBox(
-          height: 8,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            ElevatedButton(
-              onPressed: _setTimeLock,
-              child: Row(
-                children: [
-                  Text(
-                      '${timelockSet ? _formatTimeLock() : localization.setTimelock}'),
-                  timelockSet ? Container() : SizedBox(width: 10),
-                  timelockSet
-                      ? Container()
-                      : Icon(FontAwesomeIcons.calendar, size: 14),
-                ],
-              ),
-            ),
-            timelockSet
-                ? IconButton(
-                    onPressed: () =>
-                        timelockSet ? _clearTimeLock() : _setTimeLock(),
-                    icon: Icon(
-                      FontAwesomeIcons.trashCan,
-                      color: Colors.red,
-                    ))
-                : Container()
-          ],
-        ),
-      ],
-    );
-
     return Padding(
         padding: const EdgeInsets.only(top: 20),
         child: Column(
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 TextButton(
                   onPressed: () {
@@ -298,12 +236,12 @@ class RecipientStepState extends State<RecipientStep>
                   },
                   child: Row(
                     children: [
-                      Text("Advanced Settings"),
+                      Text(localization.addTimelockLabel),
                       SizedBox(width: 10),
                       Icon(
                         showAdvancedSettings
-                            ? FontAwesomeIcons.caretUp
-                            : FontAwesomeIcons.caretDown,
+                            ? FontAwesomeIcons.minus
+                            : FontAwesomeIcons.plus,
                         color: WitnetPallet.witnetGreen1,
                         size: 15,
                       ),
@@ -312,7 +250,15 @@ class RecipientStepState extends State<RecipientStep>
                 ),
               ],
             ),
-            showAdvancedSettings ? timelockWidget : Container()
+            showAdvancedSettings
+                ? Padding(
+                    padding: EdgeInsets.only(left: 8, right: 8),
+                    child: TimelockInput(
+                        timelockSet: timelockSet,
+                        onSelectedDate: _setTimeLock,
+                        onClearTimelock: _clearTimeLock,
+                        calendarValue: calendarValue))
+                : Container()
           ],
         ));
   }
@@ -324,87 +270,92 @@ class RecipientStepState extends State<RecipientStep>
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.disabled,
-      child: Padding(
-          padding: EdgeInsets.only(left: 8, right: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                localization.address,
-                style: theme.textTheme.titleSmall,
-              ),
-              SizedBox(height: 8),
-              TextFormField(
-                style: theme.textTheme.bodyLarge,
-                decoration: InputDecoration(
-                  hintText: localization.recipientAddress,
-                  suffixIcon: !Platform.isWindows && !Platform.isLinux
-                      ? SuffixIcon(
-                          onPressed: () => {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => QrScanner(
-                                            currentRoute: CreateVttScreen.route,
-                                            onChanged: (String value) => {
-                                                  Navigator.popUntil(
-                                                      context,
-                                                      ModalRoute.withName(
-                                                          CreateVttScreen
-                                                              .route)),
-                                                  _addressController.text =
-                                                      value,
-                                                  setAddress(value)
-                                                })))
-                              },
-                          icon: FontAwesomeIcons.qrcode,
-                          isFocus: isScanQrFocused,
-                          focusNode: _scanQrFocusNode)
-                      : null,
-                  errorText: _address.error,
+      child: Column(children: [
+        Padding(
+            padding: EdgeInsets.only(left: 8, right: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  localization.address,
+                  style: theme.textTheme.titleSmall,
                 ),
-                controller: _addressController,
-                focusNode: _addressFocusNode,
-                keyboardType: TextInputType.text,
-                inputFormatters: [WitAddressFormatter()],
-                onChanged: (String value) {
-                  setAddress(value);
-                },
-                onFieldSubmitted: (String value) {
-                  _amountFocusNode.requestFocus();
-                },
-                onTap: () {
-                  _addressFocusNode.requestFocus();
-                },
-              ),
-              SizedBox(height: 16),
-              Text(
-                localization.amount,
-                style: theme.textTheme.titleSmall,
-              ),
-              SizedBox(height: 8),
-              InputAmount(
-                hint: localization.amount,
-                errorText: _amount.error,
-                textEditingController: _amountController,
-                focusNode: _amountFocusNode,
-                keyboardType: TextInputType.number,
-                onChanged: (String value) {
-                  setAmount(value);
-                },
-                onTap: () {
-                  _amountFocusNode.requestFocus();
-                },
-                onFieldSubmitted: (String value) {
-                  // hide keyboard
-                  FocusManager.instance.primaryFocus?.unfocus();
-                  widget.goNext();
-                },
-              ),
-              _buildCalendarDialogButton(context),
-              SizedBox(height: 16),
-            ],
-          )),
+                SizedBox(height: 8),
+                TextFormField(
+                  style: theme.textTheme.bodyLarge,
+                  decoration: InputDecoration(
+                    hintText: localization.recipientAddress,
+                    suffixIcon: !Platform.isWindows && !Platform.isLinux
+                        ? SuffixIcon(
+                            onPressed: () => {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => QrScanner(
+                                              currentRoute:
+                                                  CreateVttScreen.route,
+                                              onChanged: (String value) => {
+                                                    Navigator.popUntil(
+                                                        context,
+                                                        ModalRoute.withName(
+                                                            CreateVttScreen
+                                                                .route)),
+                                                    _addressController.text =
+                                                        value,
+                                                    setAddress(value)
+                                                  })))
+                                },
+                            icon: FontAwesomeIcons.qrcode,
+                            isFocus: isScanQrFocused,
+                            focusNode: _scanQrFocusNode)
+                        : null,
+                    errorText: _address.error,
+                  ),
+                  controller: _addressController,
+                  focusNode: _addressFocusNode,
+                  keyboardType: TextInputType.text,
+                  inputFormatters: [WitAddressFormatter()],
+                  onChanged: (String value) {
+                    setAddress(value);
+                  },
+                  onFieldSubmitted: (String value) {
+                    _amountFocusNode.requestFocus();
+                  },
+                  onTap: () {
+                    _addressFocusNode.requestFocus();
+                  },
+                ),
+                SizedBox(height: 16),
+                Text(
+                  localization.amount,
+                  style: theme.textTheme.titleSmall,
+                ),
+                SizedBox(height: 8),
+                InputAmount(
+                  hint: localization.amount,
+                  errorText: _amount.error,
+                  textEditingController: _amountController,
+                  focusNode: _amountFocusNode,
+                  keyboardType: TextInputType.number,
+                  onChanged: (String value) {
+                    setAmount(value);
+                  },
+                  onTap: () {
+                    _amountFocusNode.requestFocus();
+                  },
+                  onFieldSubmitted: (String value) {
+                    // hide keyboard
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    widget.goNext();
+                  },
+                ),
+              ],
+            )),
+        Column(children: [
+          _buildCalendarDialogButton(context),
+          SizedBox(height: 16),
+        ]),
+      ]),
     );
   }
 
