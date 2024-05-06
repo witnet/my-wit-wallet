@@ -73,8 +73,8 @@ class TimelockInput extends StatelessWidget {
                     flex: 1,
                     child: PaddedButton(
                       padding: EdgeInsets.zero,
-                      label: 'Clear Timelock',
-                      text: 'Clear Timelock',
+                      label: localization.clearTimelockLabel,
+                      text: localization.clearTimelockLabel,
                       type: ButtonType.iconButton,
                       color: theme.inputDecorationTheme.errorStyle?.color,
                       iconSize: 12,

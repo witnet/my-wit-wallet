@@ -298,5 +298,6 @@
   "timePickerHintText": "Hora fijada",
   "timePickerInvalid": "tiempo inválido",
   "confirm": "Confirmar",
-  "addTimelockLabel": "Añadir Timelock (Opcional)"
+  "addTimelockLabel": "Añadir Timelock (Opcional)",
+  "clearTimelockLabel": "Borrar Timelock"
 }
