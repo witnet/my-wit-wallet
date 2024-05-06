@@ -423,7 +423,8 @@ class RecipientStepState extends State<RecipientStep>
         return true;
       },
       listener: (context, state) {
-        if (state.vttCreateStatus == VTTCreateStatus.exception) {
+        if (state.vttCreateStatus == VTTCreateStatus.exception ||
+            state.vttCreateStatus == VTTCreateStatus.explorerException) {
           setState(() {
             _connectionError = true;
             errorMessage = state.message;
