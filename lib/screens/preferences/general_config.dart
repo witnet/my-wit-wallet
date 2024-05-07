@@ -1,10 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
-import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
-import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
-import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
+import 'package:my_wit_wallet/screens/preferences/logout.dart';
 import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
@@ -155,16 +152,6 @@ class GeneralConfigState extends State<GeneralConfig> {
                 }));
   }
 
-  //Log out
-  void _logOut() {
-    BlocProvider.of<ExplorerBloc>(context)
-        .add(CancelSyncWalletEvent(ExplorerStatus.unknown));
-    BlocProvider.of<DashboardBloc>(context).add(DashboardResetEvent());
-    BlocProvider.of<CryptoBloc>(context).add(CryptoReadyEvent());
-    Navigator.of(context).popUntil((route) => route.isFirst);
-    BlocProvider.of<LoginBloc>(context).add(LoginLogoutEvent());
-  }
-
   List<Widget> showAuthModeSettings(ThemeData theme) {
     if ((Platform.isAndroid || Platform.isIOS)) {
       return [
@@ -207,7 +194,7 @@ class GeneralConfigState extends State<GeneralConfig> {
               text: localization.lockWalletLabel,
               type: ButtonType.primary,
               enabled: true,
-              onPressed: () => _logOut()),
+              onPressed: () => logout(context)),
           SizedBox(height: 16),
           Text(
             localization.versionNumber(VERSION_NUMBER),

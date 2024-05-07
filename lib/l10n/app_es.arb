@@ -299,5 +299,11 @@
   "timePickerInvalid": "tiempo inválido",
   "confirm": "Confirmar",
   "addTimelockLabel": "Añadir Timelock (Opcional)",
-  "clearTimelockLabel": "Borrar Timelock"
+  "clearTimelockLabel": "Borrar Timelock",
+  "deleteWallet": "Eliminar wallet",
+  "delete": "Eliminar",
+  "deleteWallet01": "Hacer clic en \"Eliminar\" resultará en la eliminación permanente de los datos de tu wallet actual. Si procedes, deberás importar la wallet nuevamente para acceder a tus fondos.",
+  "errorDeletingWallet": "¡Hubo un error al eliminar la wallet, por favor inténtalo de nuevo!",
+  "deleteWalletWarning": "¡Tu wallet está a punto de ser eliminada permanentemente!",
+  "deleteWalletSuccess": "¡Los datos de tu wallet han sido eliminados exitosamente!"
 }
