@@ -371,7 +371,7 @@ jobs:
         run: |
           bundle exec fastlane vcode
           export VCODE=$(bundle exec fastlane vcode | grep -o 'VersionCode: [0-9]*$' | grep -o '[0-9]*$')
-          gsed -i "s/0.0.0+0/${{github.ref_name}}+$VCODE/g" ../pubspec.yaml
+          gsed -i "s/0.0.0+0/1.1.2.1+1/g" ../pubspec.yaml
 
       - name: Binary(ipa)
         run: flutter build ipa --release --export-options-plist=./ios/export_options.plist
