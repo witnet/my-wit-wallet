@@ -24,6 +24,7 @@ import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
 import 'dart:io' show Platform;
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
+import 'package:witnet/utils.dart';
 
 class RecipientStep extends StatefulWidget {
   final Function nextAction;
@@ -60,6 +61,8 @@ class RecipientStepState extends State<RecipientStep>
   List<FocusNode> _formFocusElements() => [_addressFocusNode, _amountFocusNode];
   ValueTransferOutput? ongoingOutput;
   VTTCreateBloc get vttBloc => BlocProvider.of<VTTCreateBloc>(context);
+  String get maxAmountWit =>
+      nanoWitToWit(balanceInfo.availableNanoWit).toString();
 
   bool showAdvancedSettings = false;
   bool timelockSet = false;
@@ -341,6 +344,10 @@ class RecipientStepState extends State<RecipientStep>
                   keyboardType: TextInputType.number,
                   onChanged: (String value) {
                     setAmount(value);
+                  },
+                  onSuffixTap: () => {
+                    setAmount(maxAmountWit),
+                    _amountController.text = maxAmountWit,
                   },
                   onTap: () {
                     _amountFocusNode.requestFocus();

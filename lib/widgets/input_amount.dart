@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 
 class InputAmount extends StatefulWidget {
   InputAmount({
@@ -20,6 +21,7 @@ class InputAmount extends StatefulWidget {
     this.onFieldSubmitted,
     this.onTapOutside,
     this.onTap,
+    this.onSuffixTap,
   });
   final IconData? prefixIcon;
   final FocusNode? focusNode;
@@ -34,6 +36,7 @@ class InputAmount extends StatefulWidget {
   final StringCallback? onFieldSubmitted;
   final PointerDownCallback? onTapOutside;
   final BlankCallback? onTap;
+  final BlankCallback? onSuffixTap;
   @override
   _InputAmountState createState() => _InputAmountState();
 }
@@ -53,6 +56,16 @@ class _InputAmountState extends State<InputAmount> {
           prefixIcon:
               widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
           suffixText: WIT_UNIT[WitUnit.Wit],
+          suffixIcon: widget.onSuffixTap != null
+              ? Semantics(
+                  label: localization.showPassword,
+                  child: PaddedButton(
+                      padding: EdgeInsets.zero,
+                      text: 'Max',
+                      onPressed: widget.onSuffixTap ?? () {},
+                      type: ButtonType.text),
+                )
+              : null,
         ),
         minLines: 1,
         keyboardType: Platform.isIOS

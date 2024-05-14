@@ -159,7 +159,7 @@ class ReviewStepState extends State<ReviewStep>
                       InfoElement(
                         label: localization.amount,
                         text:
-                            '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
+                            '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits(truncate: -1).formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
                       ),
                       _timelock(state),
                       if (timelockSet)
