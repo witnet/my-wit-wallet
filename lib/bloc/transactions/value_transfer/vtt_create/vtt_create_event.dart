@@ -105,8 +105,6 @@ class AddValueTransferInputEvent extends VTTCreateEvent {
 
 class BuildTransactionEvent extends VTTCreateEvent {}
 
-class ValidateTransactionEvent extends VTTCreateEvent {}
-
 class ShowAuthPreferencesEvent extends VTTCreateEvent {}
 
 class SignTransactionEvent extends VTTCreateEvent {

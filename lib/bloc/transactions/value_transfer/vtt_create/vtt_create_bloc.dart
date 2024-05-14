@@ -72,7 +72,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     on<AddSourceWalletsEvent>(_addSourceWalletsEvent);
     on<SetPriorityEstimationsEvent>(_setPriorityEstimations);
     on<ResetTransactionEvent>(_resetTransactionEvent);
-    on<ValidateTransactionEvent>(_validateTransactionEvent);
     on<ShowAuthPreferencesEvent>(_showPasswordValidationModal);
   }
 
@@ -689,29 +688,5 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     feeNanoWit = 1;
     feeOption = EstimatedFeeOptions.Medium;
     emit(state.copyWith(status: VTTCreateStatus.initial, message: null));
-  }
-
-  void _validateTransactionEvent(
-      ValidateTransactionEvent event, Emitter<VTTCreateState> emit) {
-    /// ensure that the wallet has sufficient funds
-    int utxoValueNanoWit = selectedUtxos
-        .map((Utxo utxo) => utxo.value)
-        .toList()
-        .reduce((value, element) => value + element);
-    int outputValueNanoWit = outputs
-        .map((ValueTransferOutput output) => output.value.toInt())
-        .toList()
-        .reduce((value, element) => value + element);
-    int feeValueNanoWit = feeNanoWit;
-    if (utxoValueNanoWit <= (outputValueNanoWit + feeValueNanoWit)) {
-      emit(state.copyWith(
-          inputs: inputs,
-          outputs: outputs,
-          status: VTTCreateStatus.building,
-          message: null));
-    } else {
-      emit(state.copyWith(
-          status: VTTCreateStatus.exception, message: 'Insufficient Funds'));
-    }
   }
 }
