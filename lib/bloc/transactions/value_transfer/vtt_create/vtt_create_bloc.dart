@@ -90,7 +90,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   UtxoPool filteredUtxoPool = UtxoPool();
   FeeType feeType = FeeType.Absolute;
   EstimatedFeeOptions feeOption = EstimatedFeeOptions.Medium;
-  int feeNanoWit = 1;
+  int feeNanoWit = 0;
   num balanceNanoWit = 0;
   DateTime? selectedTimelock;
   bool timelockSet = false;
@@ -685,7 +685,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     receivers.clear();
     selectedTimelock = null;
     timelockSet = false;
-    feeNanoWit = 1;
+    feeNanoWit = 0;
     feeOption = EstimatedFeeOptions.Medium;
     emit(state.copyWith(status: VTTCreateStatus.initial, message: null));
   }
