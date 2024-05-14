@@ -129,7 +129,7 @@ class DeleteSingleWalletState extends State<DeleteSingleWallet> {
               enabled: true,
               onPressed: () => logout(context))
         ],
-        title: localization.deleteWalletSucess,
+        title: localization.deleteWalletSuccess,
         content: Column(mainAxisSize: MainAxisSize.min, children: [
           SizedBox(height: 16),
           svgThemeImage(theme, name: 'transaction-success', height: 100),
