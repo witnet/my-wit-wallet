@@ -10,8 +10,8 @@ jobs:
     runs-on: windows-2022
     environment: Windows
     steps:
-      - name: Clone
-        uses: actions/checkout@v3
+      - name: Checkout Repo
+        uses: actions/checkout@v4
 
       - name: Create .env
         run: Copy-Item ".\.env.example" -Destination ".\.env"
@@ -27,7 +27,7 @@ jobs:
       - name: Setup Microsoft Store Developer CLI
         uses: microsoft/setup-msstore-cli@v1
 
-      - uses: actions/setup-dotnet@v3
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
@@ -60,7 +60,7 @@ jobs:
         run: msstore publish -i .\build\windows\x64\runner\Release -v || true
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: windows
           path: .\myWitWallet-windows.zip
@@ -68,8 +68,8 @@ jobs:
   Linux:
     runs-on: ubuntu-22.04
     steps:
-      - name: Clone
-        uses: actions/checkout@v3
+      - name: Checkout Repo
+        uses: actions/checkout@v4
 
       - name: Create .env
         run: cp ./.env.example ./.env
@@ -106,7 +106,7 @@ jobs:
           tar czvf myWitWallet-linux.tar.gz ./myWitWallet
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: linux
           path: ./myWitWallet-linux.tar.gz
@@ -115,8 +115,8 @@ jobs:
     environment: Macos
     runs-on: macos-latest
     steps:
-      - name: Clone
-        uses: actions/checkout@v3
+      - name: Checkout Repo
+        uses: actions/checkout@v4
 
       - name: Create .env
         run: cp ./.env.example ./.env
@@ -207,7 +207,7 @@ jobs:
           xcrun stapler validate ./myWitWallet.dmg
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: macos
           path: ./myWitWallet.dmg
@@ -231,7 +231,7 @@ jobs:
           cache: true
 
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '11'
@@ -281,7 +281,7 @@ jobs:
         run: flutter build apk --release
 
       - name: Run Tests
-        uses: maierj/fastlane-action@v3.0.0
+        uses: maierj/fastlane-action@v3.1.0
         with:
           lane: 'test'
           subdirectory: 'android'
@@ -294,7 +294,7 @@ jobs:
         run: mv ./build/app/outputs/flutter-apk/app-release.apk ./myWitWallet.apk
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: android
           path: ./myWitWallet.apk
@@ -303,8 +303,8 @@ jobs:
     runs-on: macos-latest
     environment: IOS
     steps:
-      - name: Clone
-        uses: actions/checkout@v3
+      - name: Checkout Repo
+        uses: actions/checkout@v4
 
       - name: Create .env
         run: cp ./.env.example ./.env
@@ -381,7 +381,7 @@ jobs:
         run: if [[ "${{github.ref_name}}" == *"dev"* ]]; then bundle exec fastlane beta; else (bundle exec fastlane production 2>&1 | grep -v "A relationship value is not acceptable for the current resource state. - The specified pre-release build could not be added." || true); fi;
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ios
           path: ./build/ios/ipa/myWitWallet.ipa
@@ -392,10 +392,11 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repo
+        uses: actions/checkout@v4
 
       # Download All Artifacts
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           path: release/
 
