@@ -114,12 +114,12 @@ class WalletDetailCardState extends State<WalletDetailCard>
         children: [
           Text(
             localization.nameLabel,
-            style: theme.textTheme.subtitle2,
+            style: theme.textTheme.bodySmall,
           ),
           SizedBox(height: 8),
           TextField(
             autofocus: true,
-            style: theme.textTheme.bodyText1,
+            style: theme.textTheme.bodyMedium,
             decoration: InputDecoration(
               hintText: localization.walletNameHint,
               errorText: errorText,
