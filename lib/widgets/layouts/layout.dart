@@ -58,6 +58,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
       ScrollController(keepScrollOffset: false);
   final panelController = PanelController();
   bool get isUpdateCheckerEnabled => Platform.isMacOS || Platform.isLinux;
+  bool get isDashboard => widget.dashboardActions != null;
 
   BlocListener<VTTCreateBloc, VTTCreateState> _vttListener(Widget child) {
     final theme = Theme.of(context);
@@ -270,12 +271,10 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             automaticallyImplyLeading: false,
             scrolledUnderElevation: 0,
             backgroundColor: theme.colorScheme.surface.withOpacity(0.0),
-            expandedHeight: widget.dashboardActions != null
-                ? DASHBOARD_HEADER_HEIGTH
-                : HEADER_HEIGTH,
-            toolbarHeight: widget.dashboardActions != null
-                ? DASHBOARD_HEADER_HEIGTH
-                : HEADER_HEIGTH,
+            expandedHeight:
+                isDashboard ? DASHBOARD_HEADER_HEIGTH : HEADER_HEIGTH,
+            toolbarHeight:
+                isDashboard ? DASHBOARD_HEADER_HEIGTH : HEADER_HEIGTH,
             flexibleSpace: headerLayout(context, theme)),
         SliverPadding(
           padding: EdgeInsets.only(
@@ -356,6 +355,48 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     }
   }
 
+  Widget bottomBar2() {
+    return BottomAppBar(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        height: 60,
+        color: Colors.cyan.shade400,
+        notchMargin: 5,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            IconButton(
+              icon: const Icon(
+                Icons.menu,
+                color: Colors.black,
+              ),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.search,
+                color: Colors.black,
+              ),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.print,
+                color: Colors.black,
+              ),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.people,
+                color: Colors.black,
+              ),
+              onPressed: () {},
+            ),
+          ],
+        ));
+  }
+
   Widget bottomBar() {
     return BottomSheet(
         onClosing: () => {},
@@ -410,9 +451,9 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             resizeToAvoidBottomInset: true,
             backgroundColor: theme.colorScheme.surface,
             body: buildOverlay(buildMainContent(context, theme)),
-            bottomNavigationBar: (isPanelClose == null || isPanelClose) &&
-                    widget.actions.length > 0
-                ? buildOverlay(bottomBar(), isBottomBar: true)
+            bottomNavigationBar: (isPanelClose == null || isPanelClose)
+                ? buildOverlay(isDashboard ? bottomBar2() : bottomBar(),
+                    isBottomBar: true)
                 : null));
   }
 

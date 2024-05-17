@@ -349,7 +349,7 @@ class DashboardLayoutState extends State<DashboardLayout>
                 height: 80,
               ),
           ],
-          actions: widget.actions,
+          actions: [],
           slidingPanel: _walletList,
         );
       }),

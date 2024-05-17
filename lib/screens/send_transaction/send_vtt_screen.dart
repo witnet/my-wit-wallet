@@ -194,6 +194,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
         SizedBox(height: 24),
         stepToBuild(),
         SizedBox(height: Platform.isAndroid ? 24 : 0),
+        ..._actions(),
       ],
     );
   }
@@ -221,7 +222,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
       return DashboardLayout(
         scrollController: scrollController,
         dashboardChild: _vttCreateBlocListener(),
-        actions: _actions(),
+        actions: [],
       );
     });
   }
