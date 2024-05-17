@@ -146,6 +146,8 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
               text: selectedAccount!.address,
             ),
             SizedBox(height: 24),
+            ..._actions(),
+            SizedBox(height: 24),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -181,7 +183,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
       builder: (BuildContext context, DashboardState state) {
         return DashboardLayout(
           dashboardChild: _buildReceiveTransactionScreen(),
-          actions: _actions(),
+          actions: [],
         );
       },
     );
