@@ -69,7 +69,7 @@ class PaddedButton extends StatelessWidget {
 
     Color overlayColor() {
       if (!enabled) {
-        return theme.colorScheme.background.withOpacity(0);
+        return theme.colorScheme.surface.withOpacity(0);
       }
       if (darkBackground) {
         return extendedTheme.darkBgFocusColor!;
