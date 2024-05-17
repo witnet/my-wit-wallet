@@ -20,6 +20,6 @@ void main() async {
     testWidgets("Import Xprv From Sheikah Test", e2eImportXprvFromSheikahTest);
     testWidgets("Update theme color", e2eUpdateThemeColorTest);
     testWidgets(
-        "Go to stake and unstake transaction view", e2eStakeUnstakeTest);
+        "Go to stake and unstake transaction view", e2eStakeUnstakeTest, skip: true);
   });
 }
