@@ -373,6 +373,6 @@ ThemeData darkTheme = ThemeData(
     textTheme: textTheme,
     inputDecorationTheme: inputDecorationTheme,
     colorScheme: ColorScheme.dark().copyWith(
-        background: WitnetPallet.darkBlue2,
+        surface: WitnetPallet.darkBlue2,
         outline: WitnetPallet.transparent,
         error: WitnetPallet.darkRed));
