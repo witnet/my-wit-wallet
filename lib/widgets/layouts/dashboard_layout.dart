@@ -126,30 +126,20 @@ class DashboardLayoutState extends State<DashboardLayout>
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     return currentRoute() == route
-        ? extendedTheme.headerDashboardActiveButton
-        : extendedTheme.headerTextColor;
+        ? extendedTheme.bottomDashboardActiveButton
+        : extendedTheme.inputIconColor;
   }
 
-  Widget _buildDashboardActions() {
+  bool isActiveRoute(route) {
+    return currentRoute() == route;
+  }
+
+  Widget _buildBottomNavigation() {
     final theme = Theme.of(context);
-    final double iconHeight = 40;
+    final double mainIconHeight = 40;
+    final double iconHeight = 20;
     String currentRoute = ModalRoute.of(context)!.settings.name!;
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      PaddedButton(
-        color: getButtonColorByRoute(CreateVttScreen.route),
-        padding: EdgeInsets.zero,
-        text: localization.send,
-        onPressed: currentRoute != CreateVttScreen.route
-            ? _showCreateVTTDialog
-            : () {},
-        icon: Container(
-            height: 40,
-            child: Icon(
-              FontAwesomeIcons.locationArrow,
-              size: 18,
-            )),
-        type: ButtonType.verticalIcon,
-      ),
       PaddedButton(
         color: getButtonColorByRoute(DashboardScreen.route),
         padding: EdgeInsets.zero,
@@ -170,25 +160,96 @@ class DashboardLayoutState extends State<DashboardLayout>
                               RouteSettings(name: DashboardScreen.route))),
                 }
             : () {},
-        icon: witnetEyeIcon(theme, height: iconHeight),
-        type: ButtonType.verticalIcon,
+        icon: witnetEyeIcon(theme, height: mainIconHeight),
+        type: ButtonType.iconButton,
       ),
+      SizedBox(width: 16),
+      // PaddedButton(
+      //   color: getButtonColorByRoute(CreateVttScreen.route),
+      //   padding: EdgeInsets.zero,
+      //   text: localization.send,
+      //   onPressed: currentRoute != CreateVttScreen.route
+      //       ? _showCreateVTTDialog
+      //       : () {},
+      //   icon: Container(
+      //       height: 40,
+      //       child: Icon(
+      //         FontAwesomeIcons.locationArrow,
+      //         size: 18,
+      //       )),
+      //   type: ButtonType.iconButton,
+      // ),
+      // PaddedButton(
+      //   color: getButtonColorByRoute(ReceiveTransactionScreen.route),
+      //   padding: EdgeInsets.zero,
+      //   text: localization.receive,
+      //   onPressed: currentRoute != ReceiveTransactionScreen.route
+      //       ? _showReceiveDialog
+      //       : () {},
+      //   icon: Container(
+      //       height: 40,
+      //       child: Transform.rotate(
+      //           angle: 90 * math.pi / 90,
+      //           child: Icon(
+      //             FontAwesomeIcons.locationArrow,
+      //             size: 18,
+      //           ))),
+      //   type: ButtonType.iconButton,
+      // ),
+      // SizedBox(width: 16),
       PaddedButton(
-        color: getButtonColorByRoute(ReceiveTransactionScreen.route),
+        color: getButtonColorByRoute(CreateVttScreen.route),
         padding: EdgeInsets.zero,
-        text: localization.receive,
-        onPressed: currentRoute != ReceiveTransactionScreen.route
-            ? _showReceiveDialog
+        text: localization.history,
+        onPressed: currentRoute != CreateVttScreen.route
+            ? () => {
+                  BlocProvider.of<VTTCreateBloc>(context)
+                      .add(ResetTransactionEvent()),
+                  ScaffoldMessenger.of(context).clearSnackBars(),
+                  Navigator.push(
+                      context,
+                      CustomPageRoute(
+                          builder: (BuildContext context) {
+                            return CreateVttScreen();
+                          },
+                          maintainState: false,
+                          settings:
+                              RouteSettings(name: CreateVttScreen.route))),
+                }
             : () {},
-        icon: Container(
-            height: 40,
-            child: Transform.rotate(
-                angle: 90 * math.pi / 90,
-                child: Icon(
-                  FontAwesomeIcons.locationArrow,
-                  size: 18,
-                ))),
-        type: ButtonType.verticalIcon,
+        // TODO: add current stake route
+        icon: isActiveRoute(CreateVttScreen.route)
+            ? svgThemeImage(theme,
+                name: 'send-receive-active', height: iconHeight)
+            : svgThemeImage(theme, name: 'send-receive', height: iconHeight),
+        type: ButtonType.iconButton,
+      ),
+      SizedBox(width: 16),
+      PaddedButton(
+        color: getButtonColorByRoute(CreateVttScreen.route),
+        padding: EdgeInsets.zero,
+        text: localization.history,
+        onPressed: currentRoute != CreateVttScreen.route
+            ? () => {
+                  BlocProvider.of<VTTCreateBloc>(context)
+                      .add(ResetTransactionEvent()),
+                  ScaffoldMessenger.of(context).clearSnackBars(),
+                  Navigator.push(
+                      context,
+                      CustomPageRoute(
+                          builder: (BuildContext context) {
+                            return CreateVttScreen();
+                          },
+                          maintainState: false,
+                          settings:
+                              RouteSettings(name: CreateVttScreen.route))),
+                }
+            : () {},
+        // TODO: add current stake route
+        icon: isActiveRoute(CreateVttScreen.route)
+            ? svgThemeImage(theme, name: 'stake-active', height: iconHeight)
+            : svgThemeImage(theme, name: 'stake', height: iconHeight),
+        type: ButtonType.iconButton,
       ),
     ]);
   }
@@ -270,13 +331,11 @@ class DashboardLayoutState extends State<DashboardLayout>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _buildBalanceDisplay(),
-        SizedBox(height: 8),
-        _buildDashboardActions(),
       ],
     );
   }
 
-  List<Widget> _navigationActions() {
+  List<Widget> _topNavigationActions() {
     String currentRoute = ModalRoute.of(context)!.settings.name!;
     return [
       PaddedButton(
@@ -342,8 +401,9 @@ class DashboardLayoutState extends State<DashboardLayout>
         }
         return Layout(
           scrollController: widget.scrollController,
-          navigationActions: _navigationActions(),
+          topNavigation: _topNavigationActions(),
           dashboardActions: _buildDashboardHeader(),
+          bottomNavigation: _buildBottomNavigation(),
           widgetList: [
             _body,
             if (widget.actions.length > 0)

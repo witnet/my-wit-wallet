@@ -159,7 +159,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
             biometricsOrPassword = BiometricsAutentication();
           }
           return Layout(
-            navigationActions: [],
+            topNavigation: [],
             widgetList: [
               ...widget.mainComponents,
               SizedBox(height: 16),
