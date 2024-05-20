@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:my_wit_wallet/globals.dart' as globals;
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
@@ -11,18 +12,12 @@ import 'package:my_wit_wallet/auto_updater_overlay.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/layouts/listen_fourth_button.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
-import 'package:my_wit_wallet/widgets/wallet_type_label.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/general_error_modal.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:my_wit_wallet/shared/api_database.dart';
-import 'package:my_wit_wallet/shared/locator.dart';
-import 'package:my_wit_wallet/theme/colors.dart';
-import 'package:my_wit_wallet/widgets/identicon.dart';
 import 'package:my_wit_wallet/widgets/layouts/headerLayout.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/app_lifecycle_overlay.dart';
@@ -54,11 +49,11 @@ class Layout extends StatefulWidget {
   LayoutState createState() => LayoutState();
 }
 
+final panelController = PanelController();
+
 class LayoutState extends State<Layout> with TickerProviderStateMixin {
-  var isPanelClose;
   ScrollController defaultScrollController =
       ScrollController(keepScrollOffset: false);
-  final panelController = PanelController();
   bool get isUpdateCheckerEnabled => Platform.isMacOS || Platform.isLinux;
   bool get isDashboard => widget.dashboardActions != null;
 
@@ -170,43 +165,6 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     );
   }
 
-  Widget showWalletList(BuildContext context) {
-    String walletId =
-        Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.id;
-    return PaddedButton(
-        padding: EdgeInsets.zero,
-        label: '${localization.showWalletList} button',
-        text: localization.showWalletList,
-        type: ButtonType.iconButton,
-        iconSize: 30,
-        icon: Container(
-          color: WitnetPallet.white,
-          width: 28,
-          height: 28,
-          child: Identicon(seed: walletId, size: 8),
-        ),
-        onPressed: () => {
-              if (panelController.isPanelOpen)
-                {
-                  panelController.close(),
-                  Timer(Duration(milliseconds: 300), () {
-                    setState(() {
-                      isPanelClose = true;
-                    });
-                  }),
-                }
-              else
-                {
-                  // If keyboard is open hide keyboard
-                  FocusScope.of(context).unfocus(),
-                  panelController.open(),
-                  setState(() {
-                    isPanelClose = panelController.isPanelClosed;
-                  })
-                }
-            });
-  }
-
   void hidePanelOnMobileIfKeyboard() {
     if ((Platform.isAndroid || Platform.isIOS) &&
         FocusScope.of(context).isFirstFocus &&
@@ -232,18 +190,11 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(8), topRight: Radius.circular(8)),
           panel: widget.slidingPanel,
+          onPanelClosed: () => Timer(Duration(milliseconds: 300),
+              () => setState(() => Panel().setCloseState())),
           body: GestureDetector(
               excludeFromSemantics: true,
-              onTap: () {
-                if (panelController.isPanelOpen) {
-                  panelController.close();
-                  Timer(Duration(milliseconds: 300), () {
-                    setState(() {
-                      isPanelClose = true;
-                    });
-                  });
-                }
-              },
+              onTap: () => Panel().close(),
               child: Padding(
                   child: _buildMainLayout(context, theme, true),
                   padding: EdgeInsets.only(
@@ -308,8 +259,6 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   }
 
   Widget headerLayout(context, theme) {
-    final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
     if (widget.slidingPanel == null) {
       return Container(
           child: HeaderLayout(
@@ -317,41 +266,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         dashboardActions: widget.dashboardActions,
       ));
     } else {
-      Wallet wallet =
-          Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
       return HeaderLayout(
-        navigationActions: [
-          showWalletList(context),
-          Expanded(
-              child: Padding(
-                  padding: EdgeInsets.only(left: 24, right: 24),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Tooltip(
-                          margin: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: extendedTheme.tooltipBgColor,
-                          ),
-                          height: 50,
-                          richMessage: TextSpan(
-                            text: wallet.name,
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                          child: Text(wallet.name,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  color: extendedTheme.headerTextColor,
-                                  fontSize: 16))),
-                      SizedBox(
-                          height:
-                              wallet.walletType == WalletType.single ? 8 : 0),
-                      WalletTypeLabel(label: wallet.walletType),
-                    ],
-                  ))),
-          ...widget.topNavigation
-        ],
+        navigationActions: [...widget.topNavigation],
         dashboardActions: widget.dashboardActions,
       );
     }
@@ -421,10 +337,11 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             resizeToAvoidBottomInset: true,
             backgroundColor: theme.colorScheme.surface,
             body: buildOverlay(buildMainContent(context, theme)),
-            bottomNavigationBar: (isPanelClose == null || isPanelClose)
-                ? buildOverlay(isDashboard ? bottomBar2() : bottomBar(),
-                    isBottomBar: true)
-                : null));
+            bottomNavigationBar:
+                (globals.isPanelClose == null || globals.isPanelClose!)
+                    ? buildOverlay(isDashboard ? bottomBar2() : bottomBar(),
+                        isBottomBar: true)
+                    : null));
   }
 
   Widget build(BuildContext context) {
