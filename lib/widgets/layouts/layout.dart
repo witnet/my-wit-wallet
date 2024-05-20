@@ -35,14 +35,16 @@ class Layout extends StatefulWidget {
   final ScrollController? scrollController;
   final List<Widget> widgetList;
   final List<Widget> actions;
-  final List<Widget> navigationActions;
+  final List<Widget> topNavigation;
   final Widget? slidingPanel;
   final Widget? dashboardActions;
+  final Widget? bottomNavigation;
 
   const Layout({
     required this.widgetList,
     required this.actions,
-    required this.navigationActions,
+    required this.topNavigation,
+    this.bottomNavigation,
     this.dashboardActions,
     this.slidingPanel,
     this.scrollController,
@@ -293,8 +295,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                   Column(mainAxisSize: MainAxisSize.max, children: [
                 ...widget.widgetList,
                 SizedBox(
-                  height: MediaQuery.of(context).viewPadding.bottom > 0
-                      ? MediaQuery.of(context).viewPadding.bottom
+                  height: MediaQuery.of(context).padding.bottom > 0
+                      ? MediaQuery.of(context).padding.bottom
                       : 0,
                 )
               ])))),
@@ -311,7 +313,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     if (widget.slidingPanel == null) {
       return Container(
           child: HeaderLayout(
-        navigationActions: widget.navigationActions,
+        navigationActions: widget.topNavigation,
         dashboardActions: widget.dashboardActions,
       ));
     } else {
@@ -348,7 +350,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                       WalletTypeLabel(label: wallet.walletType),
                     ],
                   ))),
-          ...widget.navigationActions
+          ...widget.topNavigation
         ],
         dashboardActions: widget.dashboardActions,
       );
@@ -356,45 +358,13 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   }
 
   Widget bottomBar2() {
+    final theme = Theme.of(context);
     return BottomAppBar(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         height: 60,
-        color: Colors.cyan.shade400,
+        color: theme.colorScheme.surface,
         notchMargin: 5,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            IconButton(
-              icon: const Icon(
-                Icons.menu,
-                color: Colors.black,
-              ),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(
-                Icons.search,
-                color: Colors.black,
-              ),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(
-                Icons.print,
-                color: Colors.black,
-              ),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(
-                Icons.people,
-                color: Colors.black,
-              ),
-              onPressed: () {},
-            ),
-          ],
-        ));
+        child: widget.bottomNavigation);
   }
 
   Widget bottomBar() {

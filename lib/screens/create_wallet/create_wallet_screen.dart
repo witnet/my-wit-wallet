@@ -107,7 +107,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   Widget build(BuildContext context) {
     return Layout(
       scrollController: scrollController,
-      navigationActions: _navigationActions(),
+      topNavigation: _navigationActions(),
       widgetList: [
         _formCards(),
         SizedBox(

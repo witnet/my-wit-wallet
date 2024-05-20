@@ -5,8 +5,8 @@ class WitnetPallet {
   static const black = Color.fromARGB(255, 40, 40, 40);
   static const lightGrey = Color.fromARGB(255, 193, 196, 198);
   static const mediumGrey = Color.fromRGBO(101, 101, 101, 1);
-  static const darkGrey = Color.fromARGB(255, 50, 50, 50);
-  static const white = Color.fromARGB(255, 240, 243, 245);
+  static const darkGrey = Color.fromRGBO(50, 50, 50, 1);
+  static const white = Color.fromRGBO(240, 243, 245, 1);
   static const witnetGreen1 = Color.fromARGB(255, 80, 186, 177);
   static const darkBlue1 = Color.fromARGB(255, 13, 45, 67);
   static const darkBlue2 = Color.fromARGB(255, 2, 29, 48);
