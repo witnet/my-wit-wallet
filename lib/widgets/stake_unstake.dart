@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
-import 'package:my_wit_wallet/screens/receive_transaction/receive_tx_screen.dart';
-import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
+import 'package:my_wit_wallet/screens/stake/stake_screen.dart';
+import 'package:my_wit_wallet/screens/unstake/unstake_screen.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
@@ -13,34 +13,35 @@ import 'package:flutter/material.dart';
 
 typedef void VoidCallback();
 
-class SendReceiveButtons extends StatelessWidget {
-  SendReceiveButtons({Key? key}) : super(key: key);
+class StakeUnstakeButtons extends StatelessWidget {
+  StakeUnstakeButtons({Key? key}) : super(key: key);
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    Future<void> _showCreateVTTDialog() async {
+
+    Future<void> _goToStakeScreen() async {
       BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
       Navigator.push(
           context,
           CustomPageRoute(
               builder: (BuildContext context) {
-                return CreateVttScreen();
+                return StakeScreen();
               },
               maintainState: false,
-              settings: RouteSettings(name: CreateVttScreen.route)));
+              settings: RouteSettings(name: StakeScreen.route)));
     }
 
-    Future<void> _showReceiveDialog() async {
+    Future<void> _goToUnstakeScreen() async {
       BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
       Navigator.push(
           context,
           CustomPageRoute(
               builder: (BuildContext context) {
-                return ReceiveTransactionScreen();
+                return UnstakeScreen();
               },
               maintainState: false,
-              settings: RouteSettings(name: ReceiveTransactionScreen.route)));
+              settings: RouteSettings(name: UnstakeScreen.route)));
     }
 
     return Column(
@@ -51,9 +52,9 @@ class SendReceiveButtons extends StatelessWidget {
           PaddedButton(
             color: extendedTheme.inputIconColor,
             padding: EdgeInsets.zero,
-            text: localization.send,
-            onPressed: currentRoute(context) != CreateVttScreen.route
-                ? _showCreateVTTDialog
+            text: localization.stake,
+            onPressed: currentRoute(context) != StakeScreen.route
+                ? _goToStakeScreen
                 : () {},
             icon: Container(
                 height: 40,
@@ -69,9 +70,9 @@ class SendReceiveButtons extends StatelessWidget {
           PaddedButton(
             color: extendedTheme.inputIconColor,
             padding: EdgeInsets.zero,
-            text: localization.receive,
-            onPressed: currentRoute != ReceiveTransactionScreen.route
-                ? _showReceiveDialog
+            text: localization.unstake,
+            onPressed: currentRoute != UnstakeScreen.route
+                ? _goToUnstakeScreen
                 : () {},
             icon: Container(
                 height: 40,
