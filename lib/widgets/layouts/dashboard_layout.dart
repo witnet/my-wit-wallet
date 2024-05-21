@@ -69,8 +69,6 @@ class DashboardLayoutState extends State<DashboardLayout>
     super.dispose();
   }
 
-  String? currentScreen() => currentRoute(context);
-
   _handleFocus() {
     setState(() {
       isCopyAddressFocus = _copyToClipboardFocusNode.hasFocus;
@@ -156,7 +154,6 @@ class DashboardLayoutState extends State<DashboardLayout>
               children: <Widget>[],
             );
         }
-        print('¿¿¿¿¿¿¿¿¿ Panel content type ${_panelContent.runtimeType}');
         return Layout(
           scrollController: widget.scrollController,
           topNavigation: TopNavigation(
