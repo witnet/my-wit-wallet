@@ -3,52 +3,55 @@ import 'colors.dart';
 
 @immutable
 class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
-  const ExtendedTheme(
-      {required this.selectBackgroundColor,
-      required this.selectedTextColor,
-      required this.dropdownBackgroundColor,
-      required this.dropdownTextColor,
-      required this.bottomDashboardActiveButton,
-      required this.headerBackgroundColor,
-      required this.headerTextColor,
-      required this.headerActiveTextColor,
-      required this.walletListBackgroundColor,
-      required this.walletActiveItemBackgroundColor,
-      required this.walletActiveItemBorderColor,
-      required this.walletItemBorderColor,
-      required this.inputIconColor,
-      required this.txBorderColor,
-      required this.txValuePositiveColor,
-      required this.txValueNegativeColor,
-      required this.stepBarActiveColor,
-      required this.stepBarActionableColor,
-      required this.stepBarColor,
-      required this.switchActiveBg,
-      required this.switchActiveFg,
-      required this.switchInactiveBg,
-      required this.switchInactiveFg,
-      required this.switchBorderColor,
-      required this.dialogBackground,
-      required this.copiedSnackbarBg,
-      required this.copiedSnackbarText,
-      required this.monoSmallText,
-      required this.monoRegularText,
-      required this.monoMediumText,
-      required this.monoLargeText,
-      required this.errorColor,
-      required this.activeClickableBoxBgColor,
-      required this.activeClickableBoxBorderColor,
-      required this.inactiveClickableBoxBgColor,
-      required this.inactiveClickableBoxBorderColor,
-      required this.numberPaginatiorSelectedBg,
-      required this.numberPaginatiorUnselectedFg,
-      required this.darkBgFocusColor,
-      required this.focusBg,
-      required this.tooltipBgColor,
-      required this.hdWalletTypeBgColor,
-      required this.singleWalletBgColor,
-      required this.warningColor,
-      required this.backgroundBox});
+  const ExtendedTheme({
+    required this.selectBackgroundColor,
+    required this.selectedTextColor,
+    required this.dropdownBackgroundColor,
+    required this.dropdownTextColor,
+    required this.bottomDashboardActiveButton,
+    required this.headerBackgroundColor,
+    required this.headerTextColor,
+    required this.headerActiveTextColor,
+    required this.walletListBackgroundColor,
+    required this.walletActiveItemBackgroundColor,
+    required this.walletActiveItemBorderColor,
+    required this.walletItemBorderColor,
+    required this.inputIconColor,
+    required this.txBorderColor,
+    required this.txValuePositiveColor,
+    required this.txValueNegativeColor,
+    required this.stepBarActiveColor,
+    required this.stepBarActionableColor,
+    required this.stepBarColor,
+    required this.switchActiveBg,
+    required this.switchActiveFg,
+    required this.switchInactiveBg,
+    required this.switchInactiveFg,
+    required this.switchBorderColor,
+    required this.dialogBackground,
+    required this.copiedSnackbarBg,
+    required this.copiedSnackbarText,
+    required this.monoSmallText,
+    required this.monoRegularText,
+    required this.monoMediumText,
+    required this.monoLargeText,
+    required this.errorColor,
+    required this.activeClickableBoxBgColor,
+    required this.activeClickableBoxBorderColor,
+    required this.inactiveClickableBoxBgColor,
+    required this.inactiveClickableBoxBorderColor,
+    required this.numberPaginatiorSelectedBg,
+    required this.numberPaginatiorUnselectedFg,
+    required this.darkBgFocusColor,
+    required this.focusBg,
+    required this.tooltipBgColor,
+    required this.hdWalletTypeBgColor,
+    required this.singleWalletBgColor,
+    required this.warningColor,
+    required this.backgroundBox,
+    required this.regularPanelText,
+    required this.mediumPanelText,
+  });
   final Color? selectBackgroundColor;
   final Color? selectedTextColor;
   final Color? dropdownBackgroundColor;
@@ -94,6 +97,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? singleWalletBgColor;
   final Color? warningColor;
   final Color? backgroundBox;
+  final TextStyle? regularPanelText;
+  final TextStyle? mediumPanelText;
   @override
   ExtendedTheme copyWith(
       {Color? selectBackgroundColor,
@@ -138,6 +143,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       Color? singleWalletBgColor,
       Color? warningColor,
       Color? backgroundBox,
+      TextStyle? regularPanelText,
+      TextStyle? mediumPanelText,
       r}) {
     return ExtendedTheme(
         selectBackgroundColor:
@@ -200,7 +207,9 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         hdWalletTypeBgColor: hdWalletTypeBgColor ?? this.hdWalletTypeBgColor,
         singleWalletBgColor: singleWalletBgColor ?? this.singleWalletBgColor,
         warningColor: warningColor ?? this.warningColor,
-        backgroundBox: backgroundBox ?? this.backgroundBox);
+        backgroundBox: backgroundBox ?? this.backgroundBox,
+        regularPanelText: regularPanelText ?? this.regularPanelText,
+        mediumPanelText: mediumPanelText ?? this.mediumPanelText);
   }
 
   // Controls how the properties change on theme changes
@@ -279,7 +288,9 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         hdWalletTypeBgColor: Color.lerp(hdWalletTypeBgColor, other.hdWalletTypeBgColor, t),
         singleWalletBgColor: Color.lerp(singleWalletBgColor, other.singleWalletBgColor, t),
         warningColor: Color.lerp(warningColor, other.warningColor, t),
-        backgroundBox: Color.lerp(backgroundBox, other.backgroundBox, t));
+        backgroundBox: Color.lerp(backgroundBox, other.backgroundBox, t),
+        regularPanelText: TextStyle.lerp(regularPanelText, other.regularPanelText, t),
+        mediumPanelText: TextStyle.lerp(mediumPanelText, other.mediumPanelText, t));
   }
 
   // the light theme
@@ -345,6 +356,16 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         fontWeight: FontWeight.w700,
         color: WitnetPallet.darkGrey,
         fontSize: 18),
+    regularPanelText: TextStyle(
+        fontFamily: 'Almarai',
+        fontWeight: FontWeight.w400,
+        color: WitnetPallet.white,
+        fontSize: 16),
+    mediumPanelText: TextStyle(
+        fontFamily: 'Almarai',
+        fontWeight: FontWeight.w700,
+        color: WitnetPallet.white,
+        fontSize: 16),
   );
   // the dark theme
   static const dark = ExtendedTheme(
@@ -409,5 +430,15 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         fontWeight: FontWeight.w700,
         color: WitnetPallet.white,
         fontSize: 18),
+    regularPanelText: TextStyle(
+        fontFamily: 'Almarai',
+        fontWeight: FontWeight.w400,
+        color: WitnetPallet.white,
+        fontSize: 16),
+    mediumPanelText: TextStyle(
+        fontFamily: 'Almarai',
+        fontWeight: FontWeight.w700,
+        color: WitnetPallet.white,
+        fontSize: 16),
   );
 }

@@ -313,5 +313,7 @@
   "deleteWalletWarning": "Your wallet is about to be permanently deleted!",
   "deleteWalletSuccess": "Your wallet data has been successfully deleted!",
   "stake": "Stake",
-  "unstake": "Unstake"
+  "unstake": "Unstake",
+  "available": "Available",
+  "locked": "Locked"
 }
