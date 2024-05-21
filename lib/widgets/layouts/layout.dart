@@ -191,10 +191,10 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
               topLeft: Radius.circular(8), topRight: Radius.circular(8)),
           panel: widget.slidingPanel,
           onPanelClosed: () => Timer(Duration(milliseconds: 300),
-              () => setState(() => Panel().setCloseState())),
+              () => setState(() => PanelUtils().setCloseState())),
           body: GestureDetector(
               excludeFromSemantics: true,
-              onTap: () => Panel().close(),
+              onTap: () => PanelUtils().close(),
               child: Padding(
                   child: _buildMainLayout(context, theme, true),
                   padding: EdgeInsets.only(

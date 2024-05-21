@@ -3,7 +3,7 @@ import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/widgets/wallet_list.dart';
 import 'package:my_wit_wallet/globals.dart' as globals;
 
-class Panel {
+class PanelUtils {
   Widget panelContent = WalletList();
 
   void setContent(Widget content) {
@@ -11,7 +11,6 @@ class Panel {
   }
 
   Widget getContent() {
-    print('panel content ${panelContent.runtimeType}');
     return panelContent;
   }
 
