@@ -7,6 +7,7 @@ import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/balance.dart';
+import 'package:my_wit_wallet/widgets/balance_details.dart';
 import 'package:my_wit_wallet/widgets/bottom_navigation.dart';
 import 'package:my_wit_wallet/widgets/send_receive.dart';
 import 'package:my_wit_wallet/widgets/stake_unstake.dart';
@@ -78,7 +79,14 @@ class DashboardLayoutState extends State<DashboardLayout>
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Balance(panel: panel, currentWallet: currentWallet),
+        Balance(
+            onShowBalanceDetails: () => {
+                  setState(() {
+                    panel.toggle(BalanceDetails(
+                        balance: currentWallet.balanceNanoWit()));
+                  })
+                },
+            currentWallet: currentWallet),
       ],
     );
   }
