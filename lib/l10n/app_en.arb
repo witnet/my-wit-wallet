@@ -311,5 +311,7 @@
   "deleteWallet01": "Clicking \"Delete\" will result in the permanent deletion of your current wallet data. If you proceed, you'll need to import the wallet again to access your funds.",
   "errorDeletingWallet": "There was an error deleting the wallet, please try again!",
   "deleteWalletWarning": "Your wallet is about to be permanently deleted!",
-  "deleteWalletSuccess": "Your wallet data has been successfully deleted!"
+  "deleteWalletSuccess": "Your wallet data has been successfully deleted!",
+  "stake": "Stake",
+  "unstake": "Unstake"
 }

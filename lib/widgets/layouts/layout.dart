@@ -57,6 +57,13 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   bool get isUpdateCheckerEnabled => Platform.isMacOS || Platform.isLinux;
   bool get isDashboard => widget.dashboardActions != null;
 
+  @override
+  void initState() {
+    super.initState();
+    print('INIT STATE');
+    PanelUtils().setCloseState();
+  }
+
   BlocListener<VTTCreateBloc, VTTCreateState> _vttListener(Widget child) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
@@ -190,8 +197,10 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(8), topRight: Radius.circular(8)),
           panel: widget.slidingPanel,
-          onPanelClosed: () => Timer(Duration(milliseconds: 300),
-              () => setState(() => PanelUtils().setCloseState())),
+          onPanelClosed: () => {
+                Timer(Duration(milliseconds: 300),
+                    () => setState(() => PanelUtils().setCloseState()))
+              },
           body: GestureDetector(
               excludeFromSemantics: true,
               onTap: () => PanelUtils().close(),

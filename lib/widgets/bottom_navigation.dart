@@ -14,8 +14,11 @@ typedef void VoidCallback();
 
 class BottomNavigation extends StatelessWidget {
   BottomNavigation(
-      {required this.onSendReceiveAction, required this.currentScreen});
+      {required this.currentScreen,
+      required this.onSendReceiveAction,
+      required this.onStakeUnstakeAction});
   final VoidCallback onSendReceiveAction;
+  final VoidCallback onStakeUnstakeAction;
   final String currentScreen;
 
   @override
@@ -68,22 +71,7 @@ class BottomNavigation extends StatelessWidget {
             getNavigationColor(context: context, route: CreateVttScreen.route),
         padding: EdgeInsets.zero,
         text: localization.history,
-        onPressed: currentScreen != CreateVttScreen.route
-            ? () => {
-                  BlocProvider.of<VTTCreateBloc>(context)
-                      .add(ResetTransactionEvent()),
-                  ScaffoldMessenger.of(context).clearSnackBars(),
-                  Navigator.push(
-                      context,
-                      CustomPageRoute(
-                          builder: (BuildContext context) {
-                            return CreateVttScreen();
-                          },
-                          maintainState: false,
-                          settings:
-                              RouteSettings(name: CreateVttScreen.route))),
-                }
-            : () {},
+        onPressed: onStakeUnstakeAction,
         // TODO: add current stake route
         icon: isActiveRoute(context, CreateVttScreen.route)
             ? svgThemeImage(theme, name: 'stake-active', height: iconHeight)

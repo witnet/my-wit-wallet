@@ -9,6 +9,7 @@ import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/balance.dart';
 import 'package:my_wit_wallet/widgets/bottom_navigation.dart';
 import 'package:my_wit_wallet/widgets/send_receive.dart';
+import 'package:my_wit_wallet/widgets/stake_unstake.dart';
 import 'package:my_wit_wallet/widgets/top_navigation.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
@@ -137,12 +138,17 @@ class DashboardLayoutState extends State<DashboardLayout>
               .getNavigationActions(context),
           dashboardActions: _buildDashboardHeader(),
           bottomNavigation: BottomNavigation(
+              currentScreen: currentRoute(context),
               onSendReceiveAction: () => {
                     setState(() {
                       panel.toggle(SendReceiveButtons());
                     })
                   },
-              currentScreen: currentRoute(context)),
+              onStakeUnstakeAction: () => {
+                    setState(() {
+                      panel.toggle(StakeUnstakeButtons());
+                    })
+                  }),
           widgetList: [
             _body,
             if (widget.actions.length > 0)
