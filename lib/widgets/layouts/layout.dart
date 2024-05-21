@@ -60,7 +60,6 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    print('INIT STATE');
     PanelUtils().setCloseState();
   }
 
