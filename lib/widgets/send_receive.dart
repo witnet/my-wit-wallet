@@ -1,14 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/receive_transaction/receive_tx_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 typedef void VoidCallback();
@@ -50,17 +49,14 @@ class SendReceiveButtons extends StatelessWidget {
           SizedBox(height: 32),
           PaddedButton(
             color: extendedTheme.inputIconColor,
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.only(left: 16, right: 16),
             text: localization.send,
             onPressed: currentRoute(context) != CreateVttScreen.route
                 ? _showCreateVTTDialog
                 : () {},
             icon: Container(
                 height: 40,
-                child: Icon(
-                  FontAwesomeIcons.locationArrow,
-                  size: 18,
-                )),
+                child: svgThemeImage(theme, name: 'send-icon', height: 18)),
             type: ButtonType.horizontalIcon,
             alignment: MainAxisAlignment.start,
             iconPosition: IconPosition.left,
@@ -68,19 +64,14 @@ class SendReceiveButtons extends StatelessWidget {
           SizedBox(width: 16),
           PaddedButton(
             color: extendedTheme.inputIconColor,
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.only(left: 16, right: 16),
             text: localization.receive,
             onPressed: currentRoute != ReceiveTransactionScreen.route
                 ? _showReceiveDialog
                 : () {},
             icon: Container(
                 height: 40,
-                child: Transform.rotate(
-                    angle: 90 * math.pi / 90,
-                    child: Icon(
-                      FontAwesomeIcons.locationArrow,
-                      size: 18,
-                    ))),
+                child: svgThemeImage(theme, name: 'receive-icon', height: 18)),
             type: ButtonType.horizontalIcon,
             alignment: MainAxisAlignment.start,
             iconPosition: IconPosition.left,

@@ -4,6 +4,7 @@ import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_cr
 import 'package:my_wit_wallet/screens/stake/stake_screen.dart';
 import 'package:my_wit_wallet/screens/unstake/unstake_screen.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
@@ -51,17 +52,14 @@ class StakeUnstakeButtons extends StatelessWidget {
           SizedBox(height: 32),
           PaddedButton(
             color: extendedTheme.inputIconColor,
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.only(left: 16, right: 16),
             text: localization.stake,
             onPressed: currentRoute(context) != StakeScreen.route
                 ? _goToStakeScreen
                 : () {},
             icon: Container(
                 height: 40,
-                child: Icon(
-                  FontAwesomeIcons.locationArrow,
-                  size: 18,
-                )),
+                child: svgThemeImage(theme, name: 'stake-icon', height: 18)),
             type: ButtonType.horizontalIcon,
             alignment: MainAxisAlignment.start,
             iconPosition: IconPosition.left,
@@ -69,19 +67,14 @@ class StakeUnstakeButtons extends StatelessWidget {
           SizedBox(width: 16),
           PaddedButton(
             color: extendedTheme.inputIconColor,
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.only(left: 16, right: 16),
             text: localization.unstake,
             onPressed: currentRoute != UnstakeScreen.route
                 ? _goToUnstakeScreen
                 : () {},
             icon: Container(
                 height: 40,
-                child: Transform.rotate(
-                    angle: 90 * math.pi / 90,
-                    child: Icon(
-                      FontAwesomeIcons.locationArrow,
-                      size: 18,
-                    ))),
+                child: svgThemeImage(theme, name: 'unstake-icon', height: 24)),
             type: ButtonType.horizontalIcon,
             alignment: MainAxisAlignment.start,
             iconPosition: IconPosition.left,
