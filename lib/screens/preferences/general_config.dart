@@ -200,7 +200,6 @@ class GeneralConfigState extends State<GeneralConfig> {
             localization.versionNumber(VERSION_NUMBER),
             style: theme.textTheme.titleSmall,
           ),
-          SizedBox(height: 24),
         ]));
   }
 }
