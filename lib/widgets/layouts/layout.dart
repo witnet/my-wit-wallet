@@ -56,6 +56,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
       ScrollController(keepScrollOffset: false);
   bool get isUpdateCheckerEnabled => Platform.isMacOS || Platform.isLinux;
   bool get isDashboard => widget.dashboardActions != null;
+  bool get isBottomBar =>
+      (globals.isPanelClose == null || globals.isPanelClose!);
 
   @override
   void initState() {
@@ -206,7 +208,9 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
               child: Padding(
                   child: _buildMainLayout(context, theme, true),
                   padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom))));
+                      bottom: MediaQuery.of(context).viewInsets.bottom +
+                          kBottomNavigationBarHeight +
+                          24))));
     }
   }
 
@@ -238,11 +242,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                 isDashboard ? DASHBOARD_HEADER_HEIGTH : HEADER_HEIGTH,
             flexibleSpace: headerLayout(context, theme)),
         SliverPadding(
-          padding: EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 24,
-              bottom: Platform.isAndroid ? 24 : 0),
+          padding: EdgeInsets.only(left: 16, right: 16, top: 24),
           sliver: SliverToBoxAdapter(
               child: Center(
             child: ConstrainedBox(
@@ -253,11 +253,6 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
               child: _cryptoListener(_vttListener(_explorerListerner(
                   Column(mainAxisSize: MainAxisSize.max, children: [
                 ...widget.widgetList,
-                SizedBox(
-                  height: MediaQuery.of(context).padding.bottom > 0
-                      ? MediaQuery.of(context).padding.bottom
-                      : 0,
-                )
               ])))),
             ),
           )),
@@ -281,7 +276,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     }
   }
 
-  Widget bottomBar2() {
+  Widget dashboardBottomBar() {
     final theme = Theme.of(context);
     return BottomAppBar(
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -345,11 +340,10 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             resizeToAvoidBottomInset: true,
             backgroundColor: theme.colorScheme.surface,
             body: buildOverlay(buildMainContent(context, theme)),
-            bottomNavigationBar:
-                (globals.isPanelClose == null || globals.isPanelClose!)
-                    ? buildOverlay(isDashboard ? bottomBar2() : bottomBar(),
-                        isBottomBar: true)
-                    : null));
+            bottomNavigationBar: isBottomBar
+                ? buildOverlay(isDashboard ? dashboardBottomBar() : bottomBar(),
+                    isBottomBar: true)
+                : null));
   }
 
   Widget build(BuildContext context) {
