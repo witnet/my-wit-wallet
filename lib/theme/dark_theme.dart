@@ -253,8 +253,8 @@ Color getColorSecondary(Set<MaterialState> states) {
 
 SwitchThemeData switchTheme = SwitchThemeData(
   thumbColor: MaterialStateProperty.resolveWith(getColorPrimary),
-  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
   trackColor: MaterialStateProperty.resolveWith(getColorSecondary),
+  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
   splashRadius: 1,
 );
 
@@ -355,8 +355,18 @@ DatePickerThemeData datePickerTheme = DatePickerThemeData(
   confirmButtonStyle: textButtonTheme.style,
 );
 
+SliderThemeData sliderTheme = SliderThemeData(
+  showValueIndicator: ShowValueIndicator.always,
+  valueIndicatorColor: WitnetPallet.witnetGreen1,
+  thumbColor: WitnetPallet.witnetGreen1,
+  activeTrackColor: WitnetPallet.witnetGreen1,
+  inactiveTrackColor: WitnetPallet.opacityWitnetGreen,
+  overlayColor: WitnetPallet.opacityWitnetGreen3,
+);
+
 ThemeData darkTheme = ThemeData(
     pageTransitionsTheme: pageTransitionsTheme,
+    sliderTheme: sliderTheme,
     primaryColor: primaryColor,
     switchTheme: switchTheme,
     checkboxTheme: checkboxTheme,
