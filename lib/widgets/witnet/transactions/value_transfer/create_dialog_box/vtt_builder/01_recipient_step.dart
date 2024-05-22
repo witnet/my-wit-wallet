@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
+import 'package:my_wit_wallet/widgets/input_slider.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/widgets/validations/address_input.dart';
@@ -343,6 +344,40 @@ class RecipientStepState extends State<RecipientStep>
                   focusNode: _amountFocusNode,
                   keyboardType: TextInputType.number,
                   onChanged: (String value) {
+                    setAmount(value);
+                  },
+                  onSuffixTap: () => {
+                    setAmount(maxAmountWit),
+                    _amountController.text = maxAmountWit,
+                  },
+                  onTap: () {
+                    _amountFocusNode.requestFocus();
+                  },
+                  onFieldSubmitted: (String value) {
+                    // hide keyboard
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    widget.goNext();
+                  },
+                ),
+                // Input slider
+                SizedBox(height: 8),
+                Text(
+                  'Stake amount',
+                  style: theme.textTheme.titleSmall,
+                ),
+                SizedBox(height: 8),
+                InputSlider(
+                  hint: localization.amount,
+                  minAmount: 0.0,
+                  maxAmount: balanceInfo.availableNanoWit
+                      .standardizeWitUnits(truncate: -1)
+                      .toDouble(),
+                  errorText: _amount.error,
+                  textEditingController: _amountController,
+                  focusNode: _amountFocusNode,
+                  keyboardType: TextInputType.number,
+                  onChanged: (String value) {
+                    _amountController.text = value;
                     setAmount(value);
                   },
                   onSuffixTap: () => {

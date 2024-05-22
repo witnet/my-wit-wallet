@@ -340,9 +340,18 @@ DatePickerThemeData datePickerTheme = DatePickerThemeData(
   cancelButtonStyle: textButtonTheme.style,
   confirmButtonStyle: textButtonTheme.style,
 );
+SliderThemeData sliderTheme = SliderThemeData(
+  showValueIndicator: ShowValueIndicator.always,
+  valueIndicatorColor: WitnetPallet.witnetGreen1,
+  thumbColor: WitnetPallet.witnetGreen1,
+  activeTrackColor: WitnetPallet.witnetGreen1,
+  inactiveTrackColor: WitnetPallet.lightGrey,
+  overlayColor: WitnetPallet.opacityWitnetGreen3,
+);
 
 ThemeData lightTheme = ThemeData(
     pageTransitionsTheme: pageTransitionsTheme,
+    sliderTheme: sliderTheme,
     progressIndicatorTheme: progressIndicatorTheme,
     primaryColor: primaryColor,
     switchTheme: switchTheme,
