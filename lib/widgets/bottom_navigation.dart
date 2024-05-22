@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
+import 'package:my_wit_wallet/screens/receive_transaction/receive_tx_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
+import 'package:my_wit_wallet/screens/stake/stake_screen.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/get_navigation_color.dart';
@@ -29,8 +31,8 @@ class BottomNavigation extends StatelessWidget {
 
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       PaddedButton(
-        color:
-            getNavigationColor(context: context, route: DashboardScreen.route),
+        color: getNavigationColor(
+            context: context, routesList: [DashboardScreen.route]),
         padding: EdgeInsets.zero,
         text: localization.history,
         onPressed: currentScreen != DashboardScreen.route
@@ -54,12 +56,15 @@ class BottomNavigation extends StatelessWidget {
       ),
       SizedBox(width: 16),
       PaddedButton(
-        color:
-            getNavigationColor(context: context, route: CreateVttScreen.route),
+        color: getNavigationColor(context: context, routesList: [
+          CreateVttScreen.route,
+          ReceiveTransactionScreen.route
+        ]),
         padding: EdgeInsets.zero,
         text: localization.history,
         onPressed: onSendReceiveAction,
-        icon: isActiveRoute(context, CreateVttScreen.route)
+        icon: isActiveRoute(context,
+                [CreateVttScreen.route, ReceiveTransactionScreen.route])
             ? svgThemeImage(theme,
                 name: 'send-receive-active', height: iconHeight)
             : svgThemeImage(theme, name: 'send-receive', height: iconHeight),
@@ -67,13 +72,13 @@ class BottomNavigation extends StatelessWidget {
       ),
       SizedBox(width: 16),
       PaddedButton(
-        color:
-            getNavigationColor(context: context, route: CreateVttScreen.route),
+        color: getNavigationColor(
+            context: context, routesList: [StakeScreen.route]),
         padding: EdgeInsets.zero,
         text: localization.history,
         onPressed: onStakeUnstakeAction,
         // TODO: add current stake route
-        icon: isActiveRoute(context, CreateVttScreen.route)
+        icon: isActiveRoute(context, [StakeScreen.route])
             ? svgThemeImage(theme, name: 'stake-active', height: iconHeight)
             : svgThemeImage(theme, name: 'stake', height: iconHeight),
         type: ButtonType.iconButton,
