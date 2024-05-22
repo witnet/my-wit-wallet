@@ -93,8 +93,8 @@ class TopNavigation extends StatelessWidget {
           icon: Icon(FontAwesomeIcons.gear,
               size: 28,
               color: getNavigationColor(
-                  context: context, route: PreferencePage.route)),
-          onPressed: !isActiveRoute(context, PreferencePage.route)
+                  context: context, routesList: [PreferencePage.route])),
+          onPressed: !isActiveRoute(context, [PreferencePage.route])
               ? () => _goToSettings(context)
               : () {},
           type: ButtonType.iconButton)
