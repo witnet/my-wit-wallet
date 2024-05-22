@@ -108,7 +108,6 @@ class TransactionsViewState extends State<TransactionsView>
           currentWallet: widget.currentWallet,
         ),
         buildPagination(extendedTheme),
-        SizedBox(height: Platform.isAndroid ? 0 : 16),
       ]),
     );
   }

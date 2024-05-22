@@ -104,7 +104,6 @@ class WalletConfigState extends State<WalletConfig> {
               enabled: true,
               onPressed: () =>
                   _toggleSetting(WalletConfigActions.deleteWallet)),
-          SizedBox(height: 16),
         ]));
   }
 

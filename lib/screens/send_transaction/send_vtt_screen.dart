@@ -192,7 +192,7 @@ class CreateVttScreenState extends State<CreateVttScreen>
                 }),
         SizedBox(height: 24),
         stepToBuild(),
-        SizedBox(height: Platform.isAndroid ? 24 : 0),
+        SizedBox(height: 24),
         ..._actions(),
       ],
     );
