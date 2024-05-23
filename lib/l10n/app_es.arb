@@ -233,6 +233,22 @@
       }
     }
   },
+  "stakeSteps": "{currentStepIndex, select, Transaction{Transaction} MinerFee{Miner Fee} Review{Review} other{unused}}",
+  "@stakeSteps": {
+    "placeholders": {
+      "currentStepIndex": {
+        "type": "String"
+      }
+    }
+  },
+  "unstakeSteps": "{currentStepIndex, select, Transaction{Transaction} MinerFee{Miner Fee} Review{Review} other{unused}}",
+  "@unstakeSteps": {
+    "placeholders": {
+      "currentStepIndex": {
+        "type": "String"
+      }
+    }
+  },
   "walletConfig01": "Tu clave Xprv te permite exportar y hacer una copia de seguridad de tu cartera en cualquier momento después de crearla.",
   "walletConfig02": "En términos de privacidad, tu clave Xprv es equivalente a una frase de recuperación secreta. No la compartas con nadie y nunca la almacenes en un archivo en tu dispositivo ni en ningún otro lugar electrónico.",
   "walletConfig03": "Tu clave Xprv estará protegida con la contraseña a continuación. Al importar la clave Xprv en esta u otra aplicación, se te pedirá que escribas esa misma contraseña.",
@@ -309,5 +325,9 @@
   "stake": "Stake",
   "unstake": "Unstake",
   "available": "Disponible",
-  "locked": "Bloqueado"
+  "locked": "Bloqueado",
+  "withdrawalAddress": "Withdrawal address",
+  "authorization": "Autorización del nodo",
+  "autorizationTooltip": "Autorización del nodo para realizar staking",
+  "authorizationInputHint": "Autorización del nodo..."
 }

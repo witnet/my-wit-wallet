@@ -225,11 +225,6 @@
     }
   },
   "vttSendSteps": "{currentStepIndex, select, Transaction{Transaction} MinerFee{Miner Fee} Review{Review} other{unused}}",
-
-
-
-
-
   "@vttSendSteps": {
     "placeholders": {
       "currentStepIndex": {
@@ -237,8 +232,22 @@
       }
     }
   },
-
-
+  "stakeSteps": "{currentStepIndex, select, Transaction{Stake} MinerFee{Miner Fee} Review{Review} other{unused}}",
+  "@stakeSteps": {
+    "placeholders": {
+      "currentStepIndex": {
+        "type": "String"
+      }
+    }
+  },
+  "unstakeSteps": "{currentStepIndex, select, Transaction{Unstake} MinerFee{Miner Fee} Review{Review} other{unused}}",
+  "@unstakeSteps": {
+    "placeholders": {
+      "currentStepIndex": {
+        "type": "String"
+      }
+    }
+  },
   "walletConfig01": "Your Xprv key allows you to export and back up your wallet at any point after creating it.",
   "walletConfig02": "Privacy-wise, your Xprv key is equivalent to a secret recovery phrase. Do not share it with anyone, and never store it in a file in your device or anywhere else electronically.",
   "walletConfig03": "Your Xprv key will be protected with the password below. When importing the Xprv on this or another app, you will be asked to type in that same password.",
@@ -315,5 +324,9 @@
   "stake": "Stake",
   "unstake": "Unstake",
   "available": "Available",
-  "locked": "Locked"
+  "locked": "Locked",
+  "withdrawalAddress": "Withdrawal address",
+  "authorization": "Node authorization",
+  "autorizationTooltip": "Node authorization to stake",
+  "authorizationInputHint": "Node authorization..."
 }
