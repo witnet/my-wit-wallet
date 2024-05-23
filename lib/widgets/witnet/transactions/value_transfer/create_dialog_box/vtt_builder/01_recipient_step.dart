@@ -1,6 +1,5 @@
 import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/constants.dart';
-import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
 import 'package:my_wit_wallet/widgets/input_slider.dart';
+import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/widgets/validations/address_input.dart';
+import 'package:my_wit_wallet/widgets/validations/authorization_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/timelock_input.dart';
@@ -31,12 +32,16 @@ class RecipientStep extends StatefulWidget {
   final Function nextAction;
   final Wallet currentWallet;
   final VoidCallback goNext;
+  final TransactionType transactionType;
+  final String routeName;
 
   RecipientStep({
     required Key? key,
     required this.currentWallet,
     required this.nextAction,
     required this.goNext,
+    required this.transactionType,
+    required this.routeName,
   }) : super(key: key);
 
   @override
@@ -50,20 +55,30 @@ class RecipientStepState extends State<RecipientStep>
   final _formKey = GlobalKey<FormState>();
   AddressInput _address = AddressInput.pure();
   VttAmountInput _amount = VttAmountInput.pure();
+  AuthorizationInput _authorization = AuthorizationInput.pure();
   final _amountController = TextEditingController();
   final _amountFocusNode = FocusNode();
   final _addressController = TextEditingController();
   final _addressFocusNode = FocusNode();
+  final _authorizationController = TextEditingController();
+  final _authorizationFocusNode = FocusNode();
   bool _connectionError = false;
   String? errorMessage;
   FocusNode _scanQrFocusNode = FocusNode();
   bool isScanQrFocused = false;
   ValidationUtils validationUtils = ValidationUtils();
-  List<FocusNode> _formFocusElements() => [_addressFocusNode, _amountFocusNode];
+  List<FocusNode> _formFocusElements() => isVttTransaction
+      ? [_addressFocusNode, _amountFocusNode]
+      : [_addressFocusNode, _amountFocusNode, _authorizationFocusNode];
   ValueTransferOutput? ongoingOutput;
   VTTCreateBloc get vttBloc => BlocProvider.of<VTTCreateBloc>(context);
   String get maxAmountWit =>
       nanoWitToWit(balanceInfo.availableNanoWit).toString();
+  bool get showAuthorization => widget.transactionType == TransactionType.Stake;
+  bool get isVttTransaction => widget.transactionType == TransactionType.Vtt;
+  bool get showStakeAmountInput =>
+      widget.transactionType == TransactionType.Stake ||
+      widget.transactionType == TransactionType.Unstake;
 
   bool showAdvancedSettings = false;
   bool timelockSet = false;
@@ -118,13 +133,20 @@ class RecipientStepState extends State<RecipientStep>
       _amount,
       _address,
     ];
-    return Formz.validate(validInputs);
+    final stakeValidInputs = <FormzInput>[
+      ...validInputs,
+      _authorization,
+    ];
+    return Formz.validate(showAuthorization ? validInputs : stakeValidInputs);
   }
 
   bool validateForm({force = false}) {
     if (force) {
       setAddress(_address.value, validate: true);
       setAmount(_amount.value, validate: true);
+      if (showAuthorization) {
+        setAutorization(_authorization.value, validate: true);
+      }
     }
     return formValidation() && !_connectionError;
   }
@@ -142,6 +164,15 @@ class RecipientStepState extends State<RecipientStep>
     setState(() {
       _amount = VttAmountInput.dirty(
           availableNanoWit: balanceInfo.availableNanoWit,
+          allowValidation:
+              validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
+          value: value);
+    });
+  }
+
+  void setAutorization(String value, {bool? validate}) {
+    setState(() {
+      _authorization = AuthorizationInput.dirty(
           allowValidation:
               validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
           value: value);
@@ -269,6 +300,266 @@ class RecipientStepState extends State<RecipientStep>
         ));
   }
 
+  List<Widget> _buildVttInputAmount(ThemeData theme) {
+    return [
+      SizedBox(height: 16),
+      Text(
+        localization.amount,
+        style: theme.textTheme.titleSmall,
+      ),
+      SizedBox(height: 8),
+      InputAmount(
+        hint: localization.amount,
+        errorText: _amount.error,
+        textEditingController: _amountController,
+        focusNode: _amountFocusNode,
+        keyboardType: TextInputType.number,
+        onChanged: (String value) {
+          setAmount(value);
+        },
+        onSuffixTap: () => {
+          setAmount(maxAmountWit),
+          _amountController.text = maxAmountWit,
+        },
+        onTap: () {
+          _amountFocusNode.requestFocus();
+        },
+        onFieldSubmitted: (String value) {
+          // hide keyboard
+          FocusManager.instance.primaryFocus?.unfocus();
+          widget.goNext();
+        },
+      ),
+    ];
+  }
+
+  List<Widget> _buildStakeInputAmount(ThemeData theme) {
+    return [
+      SizedBox(height: 16),
+      Text(
+        localization.amount,
+        style: theme.textTheme.titleSmall,
+      ),
+      SizedBox(height: 8),
+      InputSlider(
+        hint: localization.amount,
+        minAmount: 0.0,
+        maxAmount: balanceInfo.availableNanoWit
+            .standardizeWitUnits(truncate: -1)
+            .toDouble(),
+        errorText: _amount.error,
+        textEditingController: _amountController,
+        focusNode: _amountFocusNode,
+        keyboardType: TextInputType.number,
+        onChanged: (String value) {
+          _amountController.text = value;
+          setAmount(value);
+        },
+        onSuffixTap: () => {
+          setAmount(maxAmountWit),
+          _amountController.text = maxAmountWit,
+        },
+        onTap: () {
+          _amountFocusNode.requestFocus();
+        },
+        onFieldSubmitted: (String value) {
+          // hide keyboard
+          FocusManager.instance.primaryFocus?.unfocus();
+          widget.goNext();
+        },
+      )
+    ];
+  }
+
+  List<Widget> _buildAuthorizationInput(ThemeData theme) {
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+    return [
+      SizedBox(height: 16),
+      Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(localization.authorization, style: theme.textTheme.titleSmall),
+            SizedBox(width: 8),
+            Tooltip(
+                margin: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: theme.colorScheme.surface,
+                ),
+                textStyle: theme.textTheme.bodyMedium,
+                height: 60,
+                message: localization.autorizationTooltip,
+                child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Icon(FontAwesomeIcons.circleQuestion,
+                        size: 12, color: extendedTheme.inputIconColor)))
+          ]),
+      SizedBox(height: 8),
+      TextField(
+        decoration: InputDecoration(
+          hintText: localization.authorizationInputHint,
+          suffixIcon: !Platform.isWindows && !Platform.isLinux
+              ? Semantics(
+                  label: localization.scanQrCodeLabel,
+                  child: SuffixIcon(
+                    focusNode: _scanQrFocusNode,
+                    isFocus: isScanQrFocused,
+                    icon: FontAwesomeIcons.qrcode,
+                    onPressed: () => {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => QrScanner(
+                                  currentRoute: widget.routeName,
+                                  onChanged: (String value) => {
+                                        Navigator.popUntil(
+                                            context,
+                                            ModalRoute.withName(
+                                                widget.routeName)),
+                                        _authorizationController.text = value,
+                                        setAddress(value)
+                                      })))
+                    },
+                  ))
+              : null,
+          errorText: _authorization.error,
+        ),
+        keyboardType: TextInputType.text,
+        textInputAction: TextInputAction.go,
+        focusNode: _authorizationFocusNode,
+        style: theme.textTheme.displayMedium,
+        maxLines: 3,
+        controller: _authorizationController,
+        onSubmitted: (value) async {
+          _amountFocusNode.requestFocus();
+        },
+        onChanged: (String value) async {
+          setAutorization(_authorizationController.value.text);
+        },
+        onTap: () {
+          _authorizationFocusNode.requestFocus();
+        },
+      )
+    ];
+  }
+
+  List<Widget> _buildWithdrawalAddressInput(ThemeData theme) {
+    return [
+      Text(
+        localization.withdrawalAddress,
+        style: theme.textTheme.titleSmall,
+      ),
+      SizedBox(height: 8),
+      TextFormField(
+        style: theme.textTheme.bodyLarge,
+        decoration: InputDecoration(
+          hintText: localization.withdrawalAddress,
+          suffixIcon: !Platform.isWindows && !Platform.isLinux
+              ? SuffixIcon(
+                  onPressed: () => {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => QrScanner(
+                                    currentRoute: widget.routeName,
+                                    onChanged: (String value) => {
+                                          Navigator.popUntil(
+                                              context,
+                                              ModalRoute.withName(
+                                                  widget.routeName)),
+                                          _addressController.text = value,
+                                          setAddress(value)
+                                        })))
+                      },
+                  icon: FontAwesomeIcons.qrcode,
+                  isFocus: isScanQrFocused,
+                  focusNode: _scanQrFocusNode)
+              : null,
+          errorText: _address.error,
+        ),
+        controller: _addressController,
+        focusNode: _addressFocusNode,
+        keyboardType: TextInputType.text,
+        inputFormatters: [WitAddressFormatter()],
+        onChanged: (String value) {
+          setAddress(value);
+        },
+        onFieldSubmitted: (String value) {
+          showAuthorization
+              ? _authorizationFocusNode.requestFocus()
+              : _amountFocusNode.requestFocus();
+        },
+        onTap: () {
+          _addressFocusNode.requestFocus();
+        },
+      ),
+    ];
+  }
+
+  List<Widget> _buildReceiverAddressInput(ThemeData theme) {
+    return [
+      Text(
+        localization.address,
+        style: theme.textTheme.titleSmall,
+      ),
+      SizedBox(height: 8),
+      TextFormField(
+        style: theme.textTheme.bodyLarge,
+        decoration: InputDecoration(
+          hintText: localization.recipientAddress,
+          suffixIcon: !Platform.isWindows && !Platform.isLinux
+              ? SuffixIcon(
+                  onPressed: () => {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => QrScanner(
+                                    currentRoute: widget.routeName,
+                                    onChanged: (String value) => {
+                                          Navigator.popUntil(
+                                              context,
+                                              ModalRoute.withName(
+                                                  widget.routeName)),
+                                          _addressController.text = value,
+                                          setAddress(value)
+                                        })))
+                      },
+                  icon: FontAwesomeIcons.qrcode,
+                  isFocus: isScanQrFocused,
+                  focusNode: _scanQrFocusNode)
+              : null,
+          errorText: _address.error,
+        ),
+        controller: _addressController,
+        focusNode: _addressFocusNode,
+        keyboardType: TextInputType.text,
+        inputFormatters: [WitAddressFormatter()],
+        onChanged: (String value) {
+          setAddress(value);
+        },
+        onFieldSubmitted: (String value) {
+          _amountFocusNode.requestFocus();
+        },
+        onTap: () {
+          _addressFocusNode.requestFocus();
+        },
+      ),
+    ];
+  }
+
+  List<Widget> _buildAmountInput(ThemeData theme) {
+    return showStakeAmountInput
+        ? _buildStakeInputAmount(theme)
+        : _buildVttInputAmount(theme);
+  }
+
+  List<Widget> _buildAddressInput(ThemeData theme) {
+    return showStakeAmountInput
+        ? _buildWithdrawalAddressInput(theme)
+        : _buildReceiverAddressInput(theme);
+  }
+
   _buildForm(BuildContext context, ThemeData theme) {
     final theme = Theme.of(context);
     _addressFocusNode.addListener(() => validateForm());
@@ -282,123 +573,17 @@ class RecipientStepState extends State<RecipientStep>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  localization.address,
-                  style: theme.textTheme.titleSmall,
-                ),
-                SizedBox(height: 8),
-                TextFormField(
-                  style: theme.textTheme.bodyLarge,
-                  decoration: InputDecoration(
-                    hintText: localization.recipientAddress,
-                    suffixIcon: !Platform.isWindows && !Platform.isLinux
-                        ? SuffixIcon(
-                            onPressed: () => {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => QrScanner(
-                                              currentRoute:
-                                                  CreateVttScreen.route,
-                                              onChanged: (String value) => {
-                                                    Navigator.popUntil(
-                                                        context,
-                                                        ModalRoute.withName(
-                                                            CreateVttScreen
-                                                                .route)),
-                                                    _addressController.text =
-                                                        value,
-                                                    setAddress(value)
-                                                  })))
-                                },
-                            icon: FontAwesomeIcons.qrcode,
-                            isFocus: isScanQrFocused,
-                            focusNode: _scanQrFocusNode)
-                        : null,
-                    errorText: _address.error,
-                  ),
-                  controller: _addressController,
-                  focusNode: _addressFocusNode,
-                  keyboardType: TextInputType.text,
-                  inputFormatters: [WitAddressFormatter()],
-                  onChanged: (String value) {
-                    setAddress(value);
-                  },
-                  onFieldSubmitted: (String value) {
-                    _amountFocusNode.requestFocus();
-                  },
-                  onTap: () {
-                    _addressFocusNode.requestFocus();
-                  },
-                ),
-                SizedBox(height: 16),
-                Text(
-                  localization.amount,
-                  style: theme.textTheme.titleSmall,
-                ),
-                SizedBox(height: 8),
-                InputAmount(
-                  hint: localization.amount,
-                  errorText: _amount.error,
-                  textEditingController: _amountController,
-                  focusNode: _amountFocusNode,
-                  keyboardType: TextInputType.number,
-                  onChanged: (String value) {
-                    setAmount(value);
-                  },
-                  onSuffixTap: () => {
-                    setAmount(maxAmountWit),
-                    _amountController.text = maxAmountWit,
-                  },
-                  onTap: () {
-                    _amountFocusNode.requestFocus();
-                  },
-                  onFieldSubmitted: (String value) {
-                    // hide keyboard
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    widget.goNext();
-                  },
-                ),
-                // Input slider
-                SizedBox(height: 8),
-                Text(
-                  'Stake amount',
-                  style: theme.textTheme.titleSmall,
-                ),
-                SizedBox(height: 8),
-                InputSlider(
-                  hint: localization.amount,
-                  minAmount: 0.0,
-                  maxAmount: balanceInfo.availableNanoWit
-                      .standardizeWitUnits(truncate: -1)
-                      .toDouble(),
-                  errorText: _amount.error,
-                  textEditingController: _amountController,
-                  focusNode: _amountFocusNode,
-                  keyboardType: TextInputType.number,
-                  onChanged: (String value) {
-                    _amountController.text = value;
-                    setAmount(value);
-                  },
-                  onSuffixTap: () => {
-                    setAmount(maxAmountWit),
-                    _amountController.text = maxAmountWit,
-                  },
-                  onTap: () {
-                    _amountFocusNode.requestFocus();
-                  },
-                  onFieldSubmitted: (String value) {
-                    // hide keyboard
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    widget.goNext();
-                  },
-                ),
+                ..._buildAddressInput(theme),
+                if (showAuthorization) ..._buildAuthorizationInput(theme),
+                ..._buildAmountInput(theme),
               ],
             )),
-        Column(children: [
-          _buildCalendarDialogButton(context),
-          SizedBox(height: 16),
-        ]),
+        isVttTransaction
+            ? Column(children: [
+                _buildCalendarDialogButton(context),
+                SizedBox(height: 16),
+              ])
+            : Container(),
       ]),
     );
   }
