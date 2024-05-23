@@ -53,6 +53,7 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
     TransactionType.Unstake: localizedUnstakeSteps[TxSteps.Transaction]!,
     TransactionType.Vtt: localizedVTTsteps[TxSteps.Transaction]!,
   };
+
   Map<dynamic, String> getLocalizedStepByTxType(
       {required TransactionType transactionType}) {
     switch (transactionType) {
