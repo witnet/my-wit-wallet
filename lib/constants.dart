@@ -5,11 +5,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
-import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
-import 'package:my_wit_wallet/screens/stake/stake_screen.dart';
-import 'package:my_wit_wallet/screens/unstake/unstake_screen.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
+import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
 import 'package:witnet/data_structures.dart';
 
 typedef String LocalizationCallback(String value);
@@ -25,19 +23,19 @@ Map<DashboardViewSteps, String> localizedDashboardSteps = {
   DashboardViewSteps.stats: localization.dashboardViewSteps('stats'),
 };
 
-Map<VTTsteps, String> localizedVTTsteps = {
-  VTTsteps.Transaction: localization.vttSendSteps('Transaction'),
-  VTTsteps.MinerFee: localization.vttSendSteps('MinerFee'),
-  VTTsteps.Review: localization.vttSendSteps('Review'),
+Map<TxSteps, String> localizedVTTsteps = {
+  TxSteps.Transaction: localization.vttSendSteps('Transaction'),
+  TxSteps.MinerFee: localization.vttSendSteps('MinerFee'),
+  TxSteps.Review: localization.vttSendSteps('Review'),
 };
-Map<StakeSteps, String> localizedStakeSteps = {
-  StakeSteps.Transaction: localization.vttSendSteps('Transaction'),
-  StakeSteps.MinerFee: localization.vttSendSteps('MinerFee'),
-  StakeSteps.Review: localization.vttSendSteps('Review'),
+Map<TxSteps, String> localizedStakeSteps = {
+  TxSteps.Transaction: localization.vttSendSteps('Transaction'),
+  TxSteps.MinerFee: localization.vttSendSteps('MinerFee'),
+  TxSteps.Review: localization.vttSendSteps('Review'),
 };
-Map<UnstakeSteps, String> localizedUnstakeSteps = {
-  UnstakeSteps.Transaction: localization.vttSendSteps('Transaction'),
-  UnstakeSteps.Review: localization.vttSendSteps('Review'),
+Map<TxSteps, String> localizedUnstakeSteps = {
+  TxSteps.Transaction: localization.vttSendSteps('Transaction'),
+  TxSteps.Review: localization.vttSendSteps('Review'),
 };
 Map<EstimatedFeeOptions, String> localizedFeeOptions = {
   EstimatedFeeOptions.Stinky: localization.estimatedFeeOptions('stinky'),

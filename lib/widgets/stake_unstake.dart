@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/stake/stake_screen.dart';
 import 'package:my_wit_wallet/screens/unstake/unstake_screen.dart';
@@ -9,7 +8,6 @@ import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 typedef void VoidCallback();
