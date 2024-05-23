@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart'
-    show Color, MaterialColor, MaterialState, MaterialStateColor;
+    show Color, MaterialColor, WidgetState, WidgetStateColor;
 
 class WitnetPallet {
   static const black = Color.fromARGB(255, 40, 40, 40);
@@ -48,7 +48,7 @@ MaterialColor createMaterialColor(Color color) {
   return MaterialColor(color.value, swatch);
 }
 
-MaterialStateColor stateColor(Color selectedColor, Color defaultColor) {
-  return MaterialStateColor.resolveWith((states) =>
-      states.contains(MaterialState.selected) ? selectedColor : defaultColor);
+WidgetStateColor stateColor(Color selectedColor, Color defaultColor) {
+  return WidgetStateColor.resolveWith((states) =>
+      states.contains(WidgetState.selected) ? selectedColor : defaultColor);
 }

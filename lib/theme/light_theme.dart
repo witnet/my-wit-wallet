@@ -206,32 +206,28 @@ IconThemeData primaryIconTheme = IconThemeData(
 );
 CheckboxThemeData checkboxTheme = CheckboxThemeData(
   splashRadius: 0,
-  side: MaterialStateBorderSide.resolveWith(
+  side: WidgetStateBorderSide.resolveWith(
       (_) => const BorderSide(width: 2, color: WitnetPallet.witnetGreen1)),
-  fillColor: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
-    if (states.contains(MaterialState.selected)) {
+  fillColor: WidgetStateProperty.resolveWith((Set<WidgetState> states) {
+    if (states.contains(WidgetState.selected)) {
       return WitnetPallet.witnetGreen1;
     }
     return WitnetPallet.transparent;
   }),
-  checkColor: MaterialStateProperty.all(WitnetPallet.white),
-  overlayColor: MaterialStateProperty.all(WitnetPallet.white),
+  checkColor: WidgetStateProperty.all(WitnetPallet.white),
+  overlayColor: WidgetStateProperty.all(WitnetPallet.white),
 );
 
-Color getColorPrimary(Set<MaterialState> states) {
-  const Set<MaterialState> activeStates = <MaterialState>{
-    MaterialState.selected
-  };
+Color getColorPrimary(Set<WidgetState> states) {
+  const Set<WidgetState> activeStates = <WidgetState>{WidgetState.selected};
   if (states.any(activeStates.contains)) {
     return Color.fromARGB(126, 193, 196, 198);
   }
   return Color.fromARGB(126, 193, 196, 198);
 }
 
-Color getColorSecondary(Set<MaterialState> states) {
-  const Set<MaterialState> activeStates = <MaterialState>{
-    MaterialState.selected
-  };
+Color getColorSecondary(Set<WidgetState> states) {
+  const Set<WidgetState> activeStates = <WidgetState>{WidgetState.selected};
   if (states.any(activeStates.contains)) {
     return WitnetPallet.witnetGreen1;
   }
@@ -239,9 +235,9 @@ Color getColorSecondary(Set<MaterialState> states) {
 }
 
 SwitchThemeData switchTheme = SwitchThemeData(
-  thumbColor: MaterialStateProperty.resolveWith(getColorPrimary),
+  thumbColor: WidgetStateProperty.resolveWith(getColorPrimary),
   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-  trackColor: MaterialStateProperty.resolveWith(getColorSecondary),
+  trackColor: WidgetStateProperty.resolveWith(getColorSecondary),
   splashRadius: 1,
 );
 
