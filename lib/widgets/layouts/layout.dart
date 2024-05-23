@@ -266,10 +266,10 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             ),
             pinned: true,
             elevation: 0,
-            surfaceTintColor: theme.colorScheme.background.withOpacity(0.0),
+            surfaceTintColor: theme.colorScheme.surface.withOpacity(0.0),
             automaticallyImplyLeading: false,
             scrolledUnderElevation: 0,
-            backgroundColor: theme.colorScheme.background.withOpacity(0.0),
+            backgroundColor: theme.colorScheme.surface.withOpacity(0.0),
             expandedHeight: widget.dashboardActions != null
                 ? DASHBOARD_HEADER_HEIGTH
                 : HEADER_HEIGTH,
@@ -408,7 +408,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         canPop: false,
         child: Scaffold(
             resizeToAvoidBottomInset: true,
-            backgroundColor: theme.colorScheme.background,
+            backgroundColor: theme.colorScheme.surface,
             body: buildOverlay(buildMainContent(context, theme)),
             bottomNavigationBar: (isPanelClose == null || isPanelClose) &&
                     widget.actions.length > 0
