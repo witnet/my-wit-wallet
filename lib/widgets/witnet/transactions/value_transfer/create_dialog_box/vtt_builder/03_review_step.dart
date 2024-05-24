@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:my_wit_wallet/util/allow_biometrics.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
+import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/general_error_tx_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/sending_tx_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/signing_tx_modal.dart';
@@ -24,10 +25,12 @@ class ReviewStep extends StatefulWidget {
   final Wallet currentWallet;
   final String originRoute;
   final GeneralTransaction? speedUpTx;
+  final TransactionType transactionType;
   ReviewStep({
     required this.nextAction,
     required this.currentWallet,
     required this.originRoute,
+    required this.transactionType,
     this.speedUpTx,
   });
 
@@ -38,6 +41,8 @@ class ReviewStep extends StatefulWidget {
 class ReviewStepState extends State<ReviewStep>
     with SingleTickerProviderStateMixin {
   late AnimationController _loadingController;
+  bool get showFeeInfo => widget.transactionType != TransactionType.Unstake;
+  bool get isVttTransaction => widget.transactionType == TransactionType.Vtt;
 
   @override
   void initState() {
@@ -94,7 +99,6 @@ class ReviewStepState extends State<ReviewStep>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    int fee = BlocProvider.of<VTTCreateBloc>(context).getFee();
     return BlocListener<VTTCreateBloc, VTTCreateState>(
         listenWhen: (VTTCreateState prevState, VTTCreateState state) => true,
         listener: (context, state) {
@@ -153,7 +157,9 @@ class ReviewStepState extends State<ReviewStep>
                       ),
                       SizedBox(height: 24),
                       InfoElement(
-                          label: localization.to,
+                          label: isVttTransaction
+                              ? localization.to
+                              : localization.withdrawalAddress,
                           text: state
                               .vtTransaction.body.outputs.first.pkh.address),
                       InfoElement(
@@ -166,16 +172,23 @@ class ReviewStepState extends State<ReviewStep>
                         SizedBox(
                           height: 16,
                         ),
-                      InfoElement(
-                          label: localization.fee,
-                          isLastItem: true,
-                          text:
-                              '${fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
-                      SizedBox(height: 16),
+                      if (showFeeInfo) ..._buildTransactionFeeInfo(context),
                     ]));
           },
         ));
   }
+}
+
+List<Widget> _buildTransactionFeeInfo(BuildContext context) {
+  int fee = BlocProvider.of<VTTCreateBloc>(context).getFee();
+  return [
+    InfoElement(
+        label: localization.fee,
+        isLastItem: true,
+        text:
+            '${fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
+    SizedBox(height: 16),
+  ];
 }
 
 Widget _timelock(state) {
