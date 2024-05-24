@@ -329,5 +329,7 @@
   "withdrawalAddress": "Withdrawal address",
   "authorization": "Autorización del nodo",
   "autorizationTooltip": "Autorización del nodo para realizar staking",
-  "authorizationInputHint": "Autorización del nodo..."
+  "authorizationInputHint": "Autorización del nodo...",
+  "stakeTxnSuccess": "¡Transacción de stake enviada con éxito!",
+  "unstakeTxnSuccess": "¡Transacción de unstake enviada con éxito!"
 }

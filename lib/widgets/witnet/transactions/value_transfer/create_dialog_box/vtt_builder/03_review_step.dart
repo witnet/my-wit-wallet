@@ -96,6 +96,10 @@ class ReviewStepState extends State<ReviewStep>
     );
   }
 
+  String getAmountValue(VTTCreateState state) {
+    return '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits(truncate: -1).formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -139,7 +143,12 @@ class ReviewStepState extends State<ReviewStep>
             buildSendingTransactionModal(theme, context);
           } else if (state.vttCreateStatus == VTTCreateStatus.accepted) {
             buildSuccessfullTransaction(
-                theme, state, context, widget.originRoute);
+                theme: theme,
+                state: state,
+                context: context,
+                routeName: widget.originRoute,
+                amountValue: getAmountValue(state),
+                transactionType: widget.transactionType);
           }
         },
         child: BlocBuilder<VTTCreateBloc, VTTCreateState>(
@@ -164,8 +173,7 @@ class ReviewStepState extends State<ReviewStep>
                               .vtTransaction.body.outputs.first.pkh.address),
                       InfoElement(
                         label: localization.amount,
-                        text:
-                            '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits(truncate: -1).formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
+                        text: getAmountValue(state),
                       ),
                       _timelock(state),
                       if (timelockSet)

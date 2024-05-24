@@ -328,5 +328,7 @@
   "withdrawalAddress": "Withdrawal address",
   "authorization": "Node authorization",
   "autorizationTooltip": "Node authorization to stake",
-  "authorizationInputHint": "Node authorization..."
+  "authorizationInputHint": "Node authorization...",
+  "stakeTxnSuccess": "Stake transaction succesfully sent!",
+  "unstakeTxnSuccess": "Unstake transaction succesfully sent!"
 }

@@ -7,9 +7,26 @@ import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
 import 'package:my_wit_wallet/widgets/info_element.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
+import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
 
-void buildSuccessfullTransaction(ThemeData theme, VTTCreateState state,
-    BuildContext context, String originRoute) {
+String getTitleByTxType(TransactionType transactionType) {
+  switch (transactionType) {
+    case TransactionType.Vtt:
+      return localization.txnSuccess;
+    case TransactionType.Stake:
+      return localization.stakeTxnSuccess;
+    case TransactionType.Unstake:
+      return localization.unstakeTxnSuccess;
+  }
+}
+
+void buildSuccessfullTransaction(
+    {required ThemeData theme,
+    required VTTCreateState state,
+    required BuildContext context,
+    required String routeName,
+    required String amountValue,
+    required TransactionType transactionType}) {
   return buildAlertDialog(
     context: context,
     actions: [
@@ -19,7 +36,7 @@ void buildSuccessfullTransaction(ThemeData theme, VTTCreateState state,
           type: ButtonType.text,
           enabled: true,
           onPressed: () => {
-                Navigator.popUntil(context, ModalRoute.withName(originRoute)),
+                Navigator.popUntil(context, ModalRoute.withName(routeName)),
                 ScaffoldMessenger.of(context).clearSnackBars(),
                 Navigator.pushReplacement(
                     context,
@@ -31,7 +48,7 @@ void buildSuccessfullTransaction(ThemeData theme, VTTCreateState state,
                         settings: RouteSettings(name: DashboardScreen.route)))
               })
     ],
-    title: localization.txnSuccess,
+    title: getTitleByTxType(transactionType),
     content: Column(mainAxisSize: MainAxisSize.min, children: [
       SizedBox(height: 16),
       svgThemeImage(theme, name: 'transaction-success', height: 100),
