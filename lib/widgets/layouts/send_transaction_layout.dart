@@ -188,6 +188,7 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
   ReviewStep _reviewStep() {
     return ReviewStep(
       originRoute: widget.routeName,
+      transactionType: widget.transactionType,
       nextAction: _setNextAction,
       currentWallet: currentWallet!,
     );
