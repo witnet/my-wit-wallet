@@ -201,6 +201,11 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     } else {
       // Hide panel if the mobile keyboard is open
       hidePanelOnMobileIfKeyboard();
+      double bottomBarPadding = showBottomBar
+          ? MediaQuery.of(context).viewInsets.bottom +
+              kBottomNavigationBarHeight +
+              DEFAULT_BOTTOM_PADDING
+          : DEFAULT_BOTTOM_PADDING;
       return SlidingUpPanel(
           controller: panelController,
           color: extendedTheme.walletListBackgroundColor!,
