@@ -4,6 +4,7 @@ import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/util/is_desktop_size.dart';
 import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/balance.dart';
@@ -87,8 +88,24 @@ class DashboardLayoutState extends State<DashboardLayout>
                   })
                 },
             currentWallet: currentWallet),
+        if (isDesktopSize) ...[SizedBox(height: 24), _buildBottomNavigation()]
       ],
     );
+  }
+
+  Widget _buildBottomNavigation() {
+    return BottomNavigation(
+        currentScreen: currentRoute(context),
+        onSendReceiveAction: () => {
+              setState(() {
+                panel.toggle(SendReceiveButtons());
+              })
+            },
+        onStakeUnstakeAction: () => {
+              setState(() {
+                panel.toggle(StakeUnstakeButtons());
+              })
+            });
   }
 
   Widget _authBuilder() {
@@ -145,18 +162,7 @@ class DashboardLayoutState extends State<DashboardLayout>
                   currentWallet: currentWallet)
               .getNavigationActions(context),
           dashboardActions: _buildDashboardHeader(),
-          bottomNavigation: BottomNavigation(
-              currentScreen: currentRoute(context),
-              onSendReceiveAction: () => {
-                    setState(() {
-                      panel.toggle(SendReceiveButtons());
-                    })
-                  },
-              onStakeUnstakeAction: () => {
-                    setState(() {
-                      panel.toggle(StakeUnstakeButtons());
-                    })
-                  }),
+          bottomNavigation: isDesktopSize ? null : _buildBottomNavigation(),
           widgetList: [
             _body,
             if (widget.actions.length > 0)
