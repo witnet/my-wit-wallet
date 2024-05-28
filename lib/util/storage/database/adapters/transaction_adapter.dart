@@ -1,5 +1,138 @@
+import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:witnet/explorer.dart';
 import 'package:witnet/schema.dart';
+import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart'
+    as layout;
+
+class BuildTransaction {
+  final VTTransaction? vtTransaction;
+  final StakeTransaction? stakeTransaction;
+  final UnstakeTransaction? unstakeTransaction;
+  BuildTransaction(
+      {this.vtTransaction, this.stakeTransaction, this.unstakeTransaction});
+
+  dynamic get(layout.TransactionType txType) {
+    switch (txType) {
+      case layout.TransactionType.Vtt:
+        return this.vtTransaction;
+      case layout.TransactionType.Stake:
+        return this.stakeTransaction;
+      case layout.TransactionType.Unstake:
+        return this.unstakeTransaction;
+      default:
+        return this.vtTransaction;
+    }
+  }
+
+  dynamic getKey(layout.TransactionType txType) {
+    switch (txType) {
+      case layout.TransactionType.Vtt:
+        return 'vtTransaction';
+      case layout.TransactionType.Stake:
+        return 'stakeTransaction';
+      case layout.TransactionType.Unstake:
+        return 'unstakeTransaction';
+      default:
+        return 'vtTransaction';
+    }
+  }
+
+  String getAmount(layout.TransactionType txType) {
+    switch (txType) {
+      case layout.TransactionType.Vtt:
+        return this
+                .vtTransaction
+                ?.body
+                .outputs
+                .first
+                .value
+                .toInt()
+                .standardizeWitUnits(truncate: -1)
+                .formatWithCommaSeparator() ??
+            '';
+      case layout.TransactionType.Stake:
+        return this
+                .stakeTransaction
+                ?.body
+                .output
+                .value
+                .toInt()
+                .standardizeWitUnits(truncate: -1)
+                .formatWithCommaSeparator() ??
+            '';
+      case layout.TransactionType.Unstake:
+        return this
+                .unstakeTransaction
+                ?.body
+                .withdrawal
+                .value
+                .toInt()
+                .standardizeWitUnits(truncate: -1)
+                .formatWithCommaSeparator() ??
+            '';
+      default:
+        return this
+                .vtTransaction
+                ?.body
+                .outputs
+                .first
+                .value
+                .toInt()
+                .standardizeWitUnits(truncate: -1)
+                .formatWithCommaSeparator() ??
+            '';
+    }
+  }
+
+  dynamic getAddress(layout.TransactionType txType) {
+    switch (txType) {
+      case layout.TransactionType.Vtt:
+        return 'vtTransaction';
+      case layout.TransactionType.Stake:
+        return 'stakeTransaction';
+      case layout.TransactionType.Unstake:
+        return 'unstakeTransaction';
+      default:
+        return 'vtTransaction';
+    }
+  }
+
+  dynamic getWeight(layout.TransactionType txType) {
+    switch (txType) {
+      case layout.TransactionType.Vtt:
+        return this.vtTransaction?.weight ?? '';
+      case layout.TransactionType.Stake:
+        return this.stakeTransaction?.weight ?? '';
+      case layout.TransactionType.Unstake:
+        return this.unstakeTransaction?.weight ?? '';
+      default:
+        return this.vtTransaction?.weight ?? '';
+    }
+  }
+
+  String getTransactionID(layout.TransactionType txType) {
+    switch (txType) {
+      case layout.TransactionType.Vtt:
+        return this.vtTransaction?.transactionID ?? '';
+      case layout.TransactionType.Stake:
+        return this.stakeTransaction?.transactionID ?? '';
+      case layout.TransactionType.Unstake:
+        return this.unstakeTransaction?.transactionID ?? '';
+      default:
+        return this.vtTransaction?.transactionID ?? '';
+    }
+  }
+}
+
+class TransactionBody {
+  final VTTransactionBody? vtTransactionBody;
+  final StakeBody? stakeTransactionBody;
+  final UnstakeBody? unstakeTransactionBody;
+  TransactionBody(
+      {this.vtTransactionBody,
+      this.stakeTransactionBody,
+      this.unstakeTransactionBody});
+}
 
 class MintData {
   final List<ValueTransferOutput> outputs;
@@ -45,6 +178,9 @@ class VttData {
 }
 
 class GeneralTransaction extends HashInfo {
+  //* TODO: show stake and unstake transactions in transactions list create db
+  // StakeData? stake;
+  // UnstakeData? unstake;
   MintData? mint;
   VttData? vtt;
   final int fee;

@@ -56,9 +56,10 @@ void buildSuccessfullTransaction(
       InfoElement(
         plainText: true,
         label: localization.txnCheckStatus,
-        text: state.vtTransaction.transactionID,
+        //* TODO: get transaction id depending on the transaction type
+        text: state.transaction.getTransactionID(state.transactionType),
         url:
-            'https://witnet.network/search/${state.vtTransaction.transactionID}',
+            'https://witnet.network/search/${state.transaction.getTransactionID(state.transactionType)}',
       )
     ]),
   );

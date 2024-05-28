@@ -54,8 +54,13 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   String _savedFeeAmount = '1';
   VTTCreateBloc get vttBloc => BlocProvider.of<VTTCreateBloc>(context);
 
-  int get vttAmount =>
-      vttBloc.state.vtTransaction.body.outputs.first.value.toInt();
+  int? get vttAmount => vttBloc.state.transaction
+      .get(vttBloc.state.transactionType)
+      .body
+      .outputs
+      .first
+      .value
+      .toInt();
   bool allowSetMinFeeValue(EstimatedFeeOptions label) =>
       widget.minFee != null && label == EstimatedFeeOptions.Custom;
 
@@ -124,7 +129,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
             validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
         availableNanoWit: balanceInfo.availableNanoWit,
         value: amount,
-        vttAmount: vttAmount,
+        vttAmount: vttAmount ?? 0,
         minFee: widget.minFee,
         weightedAmount: _feeType == FeeType.Weighted ? weightedFeeAmount : null,
         allowZero: true);
@@ -189,7 +194,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     FeeAmountInput _feePriority = FeeAmountInput.dirty(
         value: value,
         allowValidation: true,
-        vttAmount: vttAmount,
+        vttAmount: vttAmount ?? 0,
         minFee: widget.minFee,
         availableNanoWit: balanceInfo.availableNanoWit);
     String? errorText =
