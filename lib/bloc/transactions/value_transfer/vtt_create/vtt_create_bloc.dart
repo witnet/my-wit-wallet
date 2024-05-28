@@ -87,6 +87,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     on<UpdateUtxoSelectionStrategyEvent>(_updateUtxoSelectionStrategyEvent);
     on<AddSourceWalletsEvent>(_addSourceWalletsEvent);
     on<SetPriorityEstimationsEvent>(_setPriorityEstimations);
+    on<SetTransactionTypeEvent>(_setTransactionType);
     on<ResetTransactionEvent>(_resetTransactionEvent);
     on<ShowAuthPreferencesEvent>(_showPasswordValidationModal);
   }
@@ -419,8 +420,9 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     }
   }
 
-  _setTransactionType({required layout.TransactionType txType}) {
-    this.transactionType = txType;
+  _setTransactionType(
+      SetTransactionTypeEvent event, Emitter<VTTCreateState> emit) {
+    this.transactionType = event.transactionType;
   }
 
   _clearTransactionType({required layout.TransactionType txType}) {
@@ -594,8 +596,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       SignTransactionEvent event, Emitter<VTTCreateState> emit) async {
     emit(state.copyWith(status: VTTCreateStatus.signing, message: null));
     try {
-      BuildTransaction transaction;
-      //* TODO: sign correct transaction depending on transaction type
       BuildTransaction buildTransaction = await _signTransaction(
         currentWallet: event.currentWallet,
         speedUpTx: event.speedUpTx,
@@ -783,6 +783,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     timelockSet = false;
     feeNanoWit = 0;
     feeOption = EstimatedFeeOptions.Medium;
+    transactionType = layout.TransactionType.Vtt;
     emit(state.copyWith(status: VTTCreateStatus.initial, message: null));
   }
 }

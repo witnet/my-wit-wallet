@@ -88,6 +88,13 @@ class SetPriorityEstimationsEvent extends VTTCreateEvent {
   List<Object?> get props => [];
 }
 
+class SetTransactionTypeEvent extends VTTCreateEvent {
+  final layout.TransactionType transactionType;
+  SetTransactionTypeEvent({required this.transactionType});
+  @override
+  List<Object?> get props => [transactionType];
+}
+
 class ValidRecipientAddressEvent extends VTTCreateEvent {
   final String address;
   ValidRecipientAddressEvent({required this.address});

@@ -118,6 +118,8 @@ class RecipientStepState extends State<RecipientStep>
     _addressFocusNode.dispose();
     _amountController.dispose();
     _amountFocusNode.dispose();
+    _authorizationController.dispose();
+    _authorizationFocusNode.dispose();
     super.dispose();
   }
 
@@ -149,7 +151,7 @@ class RecipientStepState extends State<RecipientStep>
       ...validInputs,
       _authorization,
     ];
-    return Formz.validate(showAuthorization ? validInputs : stakeValidInputs);
+    return Formz.validate(showAuthorization ? stakeValidInputs : validInputs);
   }
 
   bool validateForm({force = false}) {
