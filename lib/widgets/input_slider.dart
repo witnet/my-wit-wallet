@@ -53,8 +53,13 @@ class _InputSliderState extends State<InputSlider> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     String? inputValue = widget.textEditingController?.text;
-    double sliderValue =
-        inputValue != null && inputValue != '' ? double.parse(inputValue) : 0;
+    double sliderValue = 0;
+    try {
+      sliderValue =
+          inputValue != null && inputValue != '' ? double.parse(inputValue) : 0;
+    } catch (err) {
+      print('Error parsing sliderValue $inputValue');
+    }
     return Column(children: [
       Container(
         child: TextFormField(
