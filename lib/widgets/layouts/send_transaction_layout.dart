@@ -86,6 +86,7 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
     selectedItem = selectedItemByTxType[widget.transactionType]!;
     _loadingController.forward();
     _getCurrentWallet();
+    _setTransactionType();
     _getPriorityEstimations();
   }
 
@@ -119,6 +120,11 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
       BlocProvider.of<VTTCreateBloc>(context)
           .add(AddSourceWalletsEvent(currentWallet: currentWallet!));
     });
+  }
+
+  void _setTransactionType() {
+    BlocProvider.of<VTTCreateBloc>(context)
+        .add(SetTransactionTypeEvent(transactionType: widget.transactionType));
   }
 
   void _getPriorityEstimations() {

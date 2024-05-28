@@ -28,6 +28,12 @@ class AuthorizationInput extends FormzInput<String, String?> {
       return null;
     }
     try {
+      if (value != null) {
+        if (value.isEmpty) {
+          return validationUtils
+              .getErrorText(AuthorizationError.invalidAuthorization);
+        }
+      }
       if (decriptedXprv != null) {
         return null;
       } else {
