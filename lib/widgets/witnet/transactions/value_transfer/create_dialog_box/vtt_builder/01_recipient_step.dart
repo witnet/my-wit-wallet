@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
@@ -6,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
+import 'package:my_wit_wallet/util/storage/scanned_content.dart';
 import 'package:my_wit_wallet/widgets/input_slider.dart';
 import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
@@ -20,24 +23,24 @@ import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/util/storage/database/balance_info.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/input_amount.dart';
 import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
 import 'dart:io' show Platform;
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
 import 'package:witnet/utils.dart';
+import 'package:my_wit_wallet/util/storage/database/account.dart';
 
 class RecipientStep extends StatefulWidget {
   final Function nextAction;
-  final Wallet currentWallet;
+  final WalletStorage walletStorage;
   final VoidCallback goNext;
   final TransactionType transactionType;
   final String routeName;
 
   RecipientStep({
     required Key? key,
-    required this.currentWallet,
+    required this.walletStorage,
     required this.nextAction,
     required this.goNext,
     required this.transactionType,
@@ -50,7 +53,9 @@ class RecipientStep extends StatefulWidget {
 
 class RecipientStepState extends State<RecipientStep>
     with SingleTickerProviderStateMixin {
-  late BalanceInfo balanceInfo = widget.currentWallet.balanceNanoWit();
+  late BalanceInfo balanceInfo =
+      widget.walletStorage.currentWallet.balanceNanoWit();
+  late Account currentAccount = widget.walletStorage.currentAccount;
   late AnimationController _loadingController;
   final _formKey = GlobalKey<FormState>();
   AddressInput _address = AddressInput.pure();
@@ -80,6 +85,8 @@ class RecipientStepState extends State<RecipientStep>
       widget.transactionType == TransactionType.Stake ||
       widget.transactionType == TransactionType.Unstake;
 
+  ScannedContent scannedContent = ScannedContent();
+
   bool showAdvancedSettings = false;
   bool timelockSet = false;
   int _currIndex = 0;
@@ -89,6 +96,12 @@ class RecipientStepState extends State<RecipientStep>
   @override
   void initState() {
     super.initState();
+    if (scannedContent.scannedContent != null) {
+      if (isVttTransaction)
+        _handleQrAddressResults(scannedContent.scannedContent!);
+      if (showAuthorization)
+        _handleQrAuthorizationResults(scannedContent.scannedContent!);
+    }
     if (vttBloc.outputs.length > 0) {
       ongoingOutput = vttBloc.outputs.first;
       _setSavedTxData(ongoingOutput);
@@ -114,6 +127,16 @@ class RecipientStepState extends State<RecipientStep>
     _authorizationController.dispose();
     _authorizationFocusNode.dispose();
     super.dispose();
+  }
+
+  _handleQrAddressResults(String value) {
+    _addressController.text = value;
+    setAddress(value);
+  }
+
+  _handleQrAuthorizationResults(String value) {
+    _authorizationController.text = value;
+    setAuthorization(value);
   }
 
   _handleFocus() {
@@ -147,7 +170,7 @@ class RecipientStepState extends State<RecipientStep>
       setAddress(_address.value, validate: true);
       setAmount(_amount.value, validate: true);
       if (showAuthorization) {
-        setAutorization(_authorization.value, validate: true);
+        setAuthorization(_authorization.value, validate: true);
       }
     }
     return formValidation() && !_connectionError;
@@ -172,7 +195,7 @@ class RecipientStepState extends State<RecipientStep>
     });
   }
 
-  void setAutorization(String value, {bool? validate}) {
+  void setAuthorization(String value, {bool? validate}) {
     setState(() {
       _authorization = AuthorizationInput.dirty(
           allowValidation:
@@ -213,7 +236,7 @@ class RecipientStepState extends State<RecipientStep>
     }
     if (validateForm(force: true)) {
       vttBloc.add(AddValueTransferOutputEvent(
-          currentWallet: widget.currentWallet,
+          currentWallet: widget.walletStorage.currentWallet,
           output: ValueTransferOutput.fromJson({
             'pkh': _address.value,
             'value': int.parse(_amountToNumber()
@@ -414,14 +437,7 @@ class RecipientStepState extends State<RecipientStep>
                           MaterialPageRoute(
                               builder: (context) => QrScanner(
                                   currentRoute: widget.routeName,
-                                  onChanged: (String value) => {
-                                        Navigator.popUntil(
-                                            context,
-                                            ModalRoute.withName(
-                                                widget.routeName)),
-                                        _authorizationController.text = value,
-                                        setAddress(value)
-                                      })))
+                                  onChanged: (_value) => {})))
                     },
                   ))
               : null,
@@ -437,7 +453,7 @@ class RecipientStepState extends State<RecipientStep>
           _amountFocusNode.requestFocus();
         },
         onChanged: (String value) async {
-          setAutorization(_authorizationController.value.text);
+          setAuthorization(_authorizationController.value.text);
         },
         onTap: () {
           _authorizationFocusNode.requestFocus();
@@ -459,22 +475,18 @@ class RecipientStepState extends State<RecipientStep>
           hintText: localization.withdrawalAddress,
           suffixIcon: !Platform.isWindows && !Platform.isLinux
               ? SuffixIcon(
-                  onPressed: () => {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => QrScanner(
-                                    currentRoute: widget.routeName,
-                                    onChanged: (String value) => {
-                                          Navigator.popUntil(
-                                              context,
-                                              ModalRoute.withName(
-                                                  widget.routeName)),
-                                          _addressController.text = value,
-                                          setAddress(value)
-                                        })))
-                      },
-                  icon: FontAwesomeIcons.qrcode,
+                  iconSize: 16,
+                  onPressed: () async {
+                    await Clipboard.setData(
+                        ClipboardData(text: _addressController.text));
+                    if (await Clipboard.hasStrings()) {
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          buildCopiedSnackbar(
+                              theme, localization.copyAddressConfirmed));
+                    }
+                  },
+                  icon: FontAwesomeIcons.copy,
                   isFocus: isScanQrFocused,
                   focusNode: _scanQrFocusNode)
               : null,
@@ -513,19 +525,10 @@ class RecipientStepState extends State<RecipientStep>
           suffixIcon: !Platform.isWindows && !Platform.isLinux
               ? SuffixIcon(
                   onPressed: () => {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => QrScanner(
-                                    currentRoute: widget.routeName,
-                                    onChanged: (String value) => {
-                                          Navigator.popUntil(
-                                              context,
-                                              ModalRoute.withName(
-                                                  widget.routeName)),
-                                          _addressController.text = value,
-                                          setAddress(value)
-                                        })))
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => QrScanner(
+                                currentRoute: widget.routeName,
+                                onChanged: (_value) => {})))
                       },
                   icon: FontAwesomeIcons.qrcode,
                   isFocus: isScanQrFocused,

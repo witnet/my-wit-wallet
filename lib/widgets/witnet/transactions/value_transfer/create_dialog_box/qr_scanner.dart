@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
+import 'package:my_wit_wallet/util/storage/scanned_content.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
 
 typedef void StringCallback(String value);
 
 class QrScanner extends StatelessWidget {
+  static final route = '/scan';
   final StringCallback onChanged;
   final String currentRoute;
   const QrScanner({
@@ -17,6 +19,7 @@ class QrScanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScannedContent scannedContent = ScannedContent();
     return Scaffold(
         backgroundColor: Colors.black,
         body: Builder(builder: (context) {
@@ -26,6 +29,9 @@ class QrScanner extends StatelessWidget {
                 final List<Barcode> barcodes = capture.barcodes;
                 for (final barcode in barcodes) {
                   onChanged(barcode.rawValue ?? '');
+                  scannedContent.setScannedContent(barcode.rawValue ?? '');
+                  Navigator.popUntil(
+                      context, ModalRoute.withName(this.currentRoute));
                 }
               },
             ),
@@ -41,8 +47,8 @@ class QrScanner extends StatelessWidget {
                           children: [
                             SuffixIcon(
                                 onPressed: () {
-                                  Navigator.pushReplacementNamed(
-                                      context, currentRoute);
+                                  Navigator.popUntil(context,
+                                      ModalRoute.withName(this.currentRoute));
                                 },
                                 color: Colors.white,
                                 icon: FontAwesomeIcons.arrowLeft,
