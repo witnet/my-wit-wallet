@@ -425,10 +425,6 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     this.transactionType = event.transactionType;
   }
 
-  _clearTransactionType({required layout.TransactionType txType}) {
-    this.transactionType = layout.TransactionType.Vtt;
-  }
-
   /// add a [ValueTransferOutput] to the [VTTransaction].
   void _addValueTransferOutputEvent(
       AddValueTransferOutputEvent event, Emitter<VTTCreateState> emit) {
