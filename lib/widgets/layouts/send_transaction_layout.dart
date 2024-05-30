@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
+import 'package:my_wit_wallet/screens/stake/stake_screen.dart';
+import 'package:my_wit_wallet/screens/unstake/unstake_screen.dart';
+import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/is_active_route.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/step_bar.dart';
@@ -41,7 +46,7 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
       GlobalKey<SelectMinerFeeStepState>();
   late AnimationController _loadingController;
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
-  Wallet? currentWallet;
+  WalletStorage? walletStorage;
   dynamic nextAction;
   dynamic nextStep;
   bool _insufficientUtxos = false;
@@ -116,9 +121,10 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
 
   void _getCurrentWallet() {
     setState(() {
-      currentWallet = database.walletStorage.currentWallet;
-      BlocProvider.of<VTTCreateBloc>(context)
-          .add(AddSourceWalletsEvent(currentWallet: currentWallet!));
+      walletStorage = database.walletStorage;
+
+      BlocProvider.of<VTTCreateBloc>(context).add(
+          AddSourceWalletsEvent(currentWallet: walletStorage!.currentWallet));
     });
   }
 
@@ -175,7 +181,7 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
         nextAction().action();
         if (_isNextStepAllow()) goToNextStep();
       },
-      currentWallet: currentWallet!,
+      walletStorage: walletStorage!,
     );
   }
 
@@ -187,7 +193,7 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
         nextAction().action();
         if (_isNextStepAllow()) goToNextStep();
       },
-      currentWallet: currentWallet!,
+      currentWallet: walletStorage!.currentWallet,
     );
   }
 
@@ -196,7 +202,7 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
       originRoute: widget.routeName,
       transactionType: widget.transactionType,
       nextAction: _setNextAction,
-      currentWallet: currentWallet!,
+      currentWallet: walletStorage!.currentWallet,
     );
   }
 

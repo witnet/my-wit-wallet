@@ -16,7 +16,6 @@ import 'package:my_wit_wallet/widgets/top_navigation.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/wallet_list.dart';
 
