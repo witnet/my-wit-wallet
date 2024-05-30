@@ -227,8 +227,13 @@ class ApiDatabase {
 
   Future<bool> openDatabase() async {
     await interface.init();
+    String? version;
     var fileExists = await interface.fileExists(interface.getDbWalletsPath());
-    String? version = await explorer.getVersion();
+    try {
+      version = await explorer.getVersion();
+    } catch (err) {
+      print('Error getting api version $err');
+    }
     try {
       var response = await _processIsolate(
         method: 'configure',
