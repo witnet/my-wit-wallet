@@ -24,6 +24,40 @@ class BuildTransaction {
     }
   }
 
+  bool hasOutput(layout.TransactionType txType) {
+    switch (txType) {
+      case layout.TransactionType.Vtt:
+        return this.vtTransaction != null &&
+            this.vtTransaction!.body.outputs.length > 0;
+      case layout.TransactionType.Stake:
+        return this.stakeTransaction != null &&
+            this.stakeTransaction!.body.output.key.jsonMap()['withdrawer'] !=
+                'wit1q08n42';
+      case layout.TransactionType.Unstake:
+        return this.unstakeTransaction != null &&
+            this.unstakeTransaction!.body.withdrawal.pkh.address !=
+                'wit1q08n42';
+      default:
+        return this.vtTransaction != null &&
+            this.vtTransaction!.body.outputs.length > 0;
+    }
+  }
+
+  dynamic getBody(layout.TransactionType txType) {
+    switch (txType) {
+      case layout.TransactionType.Vtt:
+        return TransactionBody(vtTransactionBody: this.vtTransaction?.body);
+      case layout.TransactionType.Stake:
+        return TransactionBody(
+            stakeTransactionBody: this.stakeTransaction?.body);
+      case layout.TransactionType.Unstake:
+        return TransactionBody(
+            unstakeTransactionBody: this.unstakeTransaction?.body);
+      default:
+        return TransactionBody(vtTransactionBody: this.vtTransaction?.body);
+    }
+  }
+
   dynamic getKey(layout.TransactionType txType) {
     switch (txType) {
       case layout.TransactionType.Vtt:
@@ -34,6 +68,32 @@ class BuildTransaction {
         return 'unstakeTransaction';
       default:
         return 'vtTransaction';
+    }
+  }
+
+  int getNanoWitAmount(layout.TransactionType txType) {
+    switch (txType) {
+      case layout.TransactionType.Vtt:
+        return this.vtTransaction?.body.outputs.first.value.toInt() ?? 0;
+      case layout.TransactionType.Stake:
+        return this.stakeTransaction?.body.output.value.toInt() ?? 0;
+      case layout.TransactionType.Unstake:
+        return this.unstakeTransaction?.body.withdrawal.value.toInt() ?? 0;
+      default:
+        return this.vtTransaction?.body.outputs.first.value.toInt() ?? 0;
+    }
+  }
+
+  String? getAuthorization(layout.TransactionType txType) {
+    switch (txType) {
+      case layout.TransactionType.Vtt:
+        return null;
+      case layout.TransactionType.Stake:
+        return this.stakeTransaction?.body.output.authorization.toString();
+      case layout.TransactionType.Unstake:
+        return null;
+      default:
+        return null;
     }
   }
 
@@ -87,13 +147,13 @@ class BuildTransaction {
   dynamic getAddress(layout.TransactionType txType) {
     switch (txType) {
       case layout.TransactionType.Vtt:
-        return 'vtTransaction';
+        return this.vtTransaction?.body.outputs[0].pkh.address;
       case layout.TransactionType.Stake:
-        return 'stakeTransaction';
+        return this.stakeTransaction?.body.output.key.withdrawer.address;
       case layout.TransactionType.Unstake:
-        return 'unstakeTransaction';
+        return this.unstakeTransaction?.body.withdrawal.pkh.address;
       default:
-        return 'vtTransaction';
+        return this.vtTransaction?.body.outputs[0].pkh.address;
     }
   }
 
@@ -107,6 +167,19 @@ class BuildTransaction {
         return this.unstakeTransaction?.weight ?? '';
       default:
         return this.vtTransaction?.weight ?? '';
+    }
+  }
+
+  bool hasTimelock(layout.TransactionType txType) {
+    switch (txType) {
+      case layout.TransactionType.Vtt:
+        return this.vtTransaction?.body.outputs[0].timeLock != 0;
+      case layout.TransactionType.Stake:
+        return false;
+      case layout.TransactionType.Unstake:
+        return false;
+      default:
+        return this.vtTransaction?.body.outputs[0].timeLock != 0;
     }
   }
 

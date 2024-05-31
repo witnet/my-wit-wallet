@@ -73,12 +73,11 @@ class ReviewStepState extends State<ReviewStep>
   }
 
   void _signTransaction() {
-    final vtt = createVttBloc.state.transaction
-        .get(createVttBloc.state.transactionType)
-        ?.body;
+    final vttBody = createVttBloc.state.transaction
+        .getBody(createVttBloc.state.transactionType);
     BlocProvider.of<VTTCreateBloc>(context).add(SignTransactionEvent(
       currentWallet: widget.currentWallet,
-      transactionBody: TransactionBody(vtTransactionBody: vtt),
+      transactionBody: vttBody,
       speedUpTx: widget.speedUpTx,
     ));
   }
@@ -127,7 +126,6 @@ class ReviewStepState extends State<ReviewStep>
                 context, ModalRoute.withName(widget.originRoute));
             buildSigningTxModal(theme, context);
           } else if (state.vttCreateStatus == VTTCreateStatus.finished) {
-            //* TODO: get transaciton weight depending on transactionType
             // Validate vtt weight to ensure confirmation
             if (state.transaction.get(state.transactionType) != null &&
                 state.transaction.getWeight(state.transactionType) <=
@@ -157,12 +155,10 @@ class ReviewStepState extends State<ReviewStep>
         },
         child: BlocBuilder<VTTCreateBloc, VTTCreateState>(
           builder: (context, state) {
-            bool timelockSet = state.transaction
-                    .get(state.transactionType)
-                    ?.body
-                    .outputs[0]
-                    .timeLock !=
-                0;
+            bool hasTimelock =
+                state.transaction.hasTimelock(state.transactionType);
+            String address =
+                state.transaction.getAddress(state.transactionType);
             return Padding(
                 padding: EdgeInsets.only(left: 8, right: 8),
                 child: Column(
@@ -177,20 +173,13 @@ class ReviewStepState extends State<ReviewStep>
                           label: isVttTransaction
                               ? localization.to
                               : localization.withdrawalAddress,
-                          text: state.transaction
-                                  .get(state.transactionType)
-                                  ?.body
-                                  .outputs
-                                  .first
-                                  .pkh
-                                  .address ??
-                              ''),
+                          text: address),
                       InfoElement(
                         label: localization.amount,
                         text: getAmountValue(state),
                       ),
                       _timelock(state),
-                      if (timelockSet)
+                      if (hasTimelock)
                         SizedBox(
                           height: 16,
                         ),
@@ -214,7 +203,7 @@ List<Widget> _buildTransactionFeeInfo(BuildContext context) {
 }
 
 Widget _timelock(VTTCreateState state) {
-  if (state.transaction.vtTransaction?.body.outputs[0].timeLock != 0) {
+  if (state.transaction.hasTimelock(state.transactionType)) {
     int timestamp =
         state.transaction.vtTransaction?.body.outputs[0].timeLock.toInt() ??
             0 * 1000;

@@ -163,7 +163,9 @@ class ApiExplorer {
 
   /// Send a Generic Transaction
   Future<dynamic> sendTransaction(Transaction transaction) async {
+    print('...........Sending transaction..........');
     try {
+      print('Transaction to send: ${transaction.jsonMap(asHex: true)}');
       await delay();
       return await client.send(transaction: transaction.jsonMap(asHex: true));
     } catch (e) {
