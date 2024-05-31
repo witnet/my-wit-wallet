@@ -32,6 +32,7 @@ Map<String, Function(Map<String, dynamic>)> _methodMap = {
   'generateKey': _generateKey,
   'generateKeys': _generateKeys,
   'signTransaction': _signTransaction,
+  'signUnstakeBody': _signUnstakeBody,
   'signMessage': _signMessage,
   'hashPassword': _hashPassword,
   'encryptXprv': _encryptXprv,
@@ -118,6 +119,7 @@ Future<Wallet> _generateKeys(Map<String, dynamic> params) async {
 /// 'password' [String] used to decrypt the xprv
 /// 'signers' [List] List<String> contains the paths of the signers
 /// 'transaction_id' [String] the hash of the transaction.
+
 Future<dynamic> _signTransaction(Map<String, dynamic> params) async {
   String password = params['password'];
   Map<String, dynamic> signers = params['signers'];
@@ -180,6 +182,45 @@ Future<dynamic> _signTransaction(Map<String, dynamic> params) async {
     sigMap.add(element);
   });
   return sigMap;
+}
+
+Future<KeyedSignature> _signUnstakeBody(Map<String, dynamic> params) async {
+  String password = params["password"];
+  Map<String, dynamic> signerMap = params['signer'];
+  Uint8List message = params['message'];
+  assert(signerMap.length == 1);
+  String encryptedXprv = signerMap.keys.first;
+  String path = signerMap[encryptedXprv];
+  Xprv masterXprv = Xprv.fromEncryptedXprv(encryptedXprv, password);
+  Xprv signer;
+
+  if (path.contains("/")) {
+    List<String> indexedPath = path.split('/');
+    assert(indexedPath.length == 6, 'Path does not derive a valid Wallet');
+    if (indexedPath.elementAt(4) == '0') {
+      signer = masterXprv /
+          KEYPATH_PURPOSE /
+          KEYPATH_COIN_TYPE /
+          KEYPATH_ACCOUNT /
+          EXTERNAL_KEYCHAIN /
+          int.parse(indexedPath.last);
+    } else {
+      assert(indexedPath.elementAt(4) == '1');
+      signer = masterXprv /
+          KEYPATH_PURPOSE /
+          KEYPATH_COIN_TYPE /
+          KEYPATH_ACCOUNT /
+          INTERNAL_KEYCHAIN /
+          int.parse(indexedPath.last);
+    }
+  } else {
+    assert(path == "m", "Invalid master path");
+    signer = masterXprv;
+  }
+
+  KeyedSignature signature = signer.address
+      .signHash(bytesToHex(sha256(data: message)), signer.privateKey);
+  return signature;
 }
 
 Future<Map<String, dynamic>> _signMessage(Map<String, dynamic> params) async {

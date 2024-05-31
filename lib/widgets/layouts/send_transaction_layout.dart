@@ -87,7 +87,9 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
     _loadingController.forward();
     _getCurrentWallet();
     _setTransactionType();
-    _getPriorityEstimations();
+    if (widget.transactionType != TransactionType.Unstake) {
+      _getPriorityEstimations();
+    }
   }
 
   @override
@@ -106,7 +108,7 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
 
   void goToNextStep() {
     int currentStep = localizedSteps.values.toList().indexOf(selectedItem!);
-    if (currentStep + 1 < localizedVTTsteps.values.length) {
+    if (currentStep + 1 < localizedSteps.values.length) {
       scrollController.jumpTo(0.0);
       setState(() {
         selectedItem = localizedSteps.values.elementAt(currentStep + 1);

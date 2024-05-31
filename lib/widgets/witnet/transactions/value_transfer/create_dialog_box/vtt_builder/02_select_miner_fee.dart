@@ -54,13 +54,8 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   String _savedFeeAmount = '1';
   VTTCreateBloc get vttBloc => BlocProvider.of<VTTCreateBloc>(context);
 
-  int? get vttAmount => vttBloc.state.transaction
-      .get(vttBloc.state.transactionType)
-      .body
-      .outputs
-      .first
-      .value
-      .toInt();
+  int? get vttAmount =>
+      vttBloc.state.transaction.getNanoWitAmount(vttBloc.state.transactionType);
   bool allowSetMinFeeValue(EstimatedFeeOptions label) =>
       widget.minFee != null && label == EstimatedFeeOptions.Custom;
 

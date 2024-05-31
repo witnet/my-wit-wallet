@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
+import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:my_wit_wallet/util/get_header_heigth.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:flutter/services.dart';
@@ -107,7 +108,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             message: localization.vttException,
             errorMessage: state.message,
             iconName: 'general-warning',
-            originRouteName: CreateVttScreen.route,
+            originRouteName: currentRoute(context),
             originRoute: CreateVttScreen(),
           );
         }
