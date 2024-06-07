@@ -70,9 +70,9 @@ class SpeedUpVttState extends State<SpeedUpVtt> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
+    return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (previous, current) {
-        if (current.vttCreateStatus != VTTCreateStatus.initial) {
+        if (current.transactionStatus != TransactionStatus.initial) {
           return ClosableView(closeSetting: widget.closeSetting, children: [
             Text(
               localization.speedUpTxTitle,

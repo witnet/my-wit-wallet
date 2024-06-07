@@ -22,7 +22,7 @@ String getTitleByTxType(TransactionType transactionType) {
 
 void buildSuccessfullTransaction(
     {required ThemeData theme,
-    required VTTCreateState state,
+    required TransactionState state,
     required BuildContext context,
     required String routeName,
     required String amountValue,

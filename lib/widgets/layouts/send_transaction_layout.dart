@@ -120,18 +120,19 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
     setState(() {
       walletStorage = database.walletStorage;
 
-      BlocProvider.of<VTTCreateBloc>(context).add(
+      BlocProvider.of<TransactionBloc>(context).add(
           AddSourceWalletsEvent(currentWallet: walletStorage!.currentWallet));
     });
   }
 
   void _setTransactionType() {
-    BlocProvider.of<VTTCreateBloc>(context)
+    BlocProvider.of<TransactionBloc>(context)
         .add(SetTransactionTypeEvent(transactionType: widget.transactionType));
   }
 
   void _getPriorityEstimations() {
-    BlocProvider.of<VTTCreateBloc>(context).add(SetPriorityEstimationsEvent());
+    BlocProvider.of<TransactionBloc>(context)
+        .add(SetPriorityEstimationsEvent());
   }
 
   bool _isNextStepAllow() {
@@ -245,7 +246,7 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
   BlocListener _dashboardBlocListener() {
     return BlocListener<DashboardBloc, DashboardState>(
       listener: (BuildContext context, DashboardState state) {
-        BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
+        BlocProvider.of<TransactionBloc>(context).add(ResetTransactionEvent());
         Navigator.pushReplacement(
             context,
             CustomPageRoute(
@@ -267,17 +268,17 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
         builder: (BuildContext context, DashboardState state) {
       return DashboardLayout(
         scrollController: scrollController,
-        dashboardChild: _vttCreateBlocListener(),
+        dashboardChild: _transactionBlocListener(),
         actions: [],
       );
     });
   }
 
-  BlocListener _vttCreateBlocListener() {
+  BlocListener _transactionBlocListener() {
     final theme = Theme.of(context);
-    return BlocListener<VTTCreateBloc, VTTCreateState>(
-      listener: (BuildContext context, VTTCreateState state) {
-        if (state.vttCreateStatus == VTTCreateStatus.insufficientFunds) {
+    return BlocListener<TransactionBloc, TransactionState>(
+      listener: (BuildContext context, TransactionState state) {
+        if (state.transactionStatus == TransactionStatus.insufficientFunds) {
           ScaffoldMessenger.of(context).clearSnackBars();
           buildGeneralExceptionModal(
             theme: theme,
@@ -294,20 +295,20 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
           });
         }
       },
-      child: _vttCreateBlocBuilder(),
+      child: _transactionBlocBuilder(),
     );
   }
 
-  BlocBuilder _vttCreateBlocBuilder() {
-    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
-        builder: (BuildContext context, VTTCreateState state) {
+  BlocBuilder _transactionBlocBuilder() {
+    return BlocBuilder<TransactionBloc, TransactionState>(
+        builder: (BuildContext context, TransactionState state) {
       return _buildSendVttForm();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
+    return BlocBuilder<TransactionBloc, TransactionState>(
         builder: (context, state) {
       return _dashboardBlocListener();
     });

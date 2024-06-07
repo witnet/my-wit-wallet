@@ -42,7 +42,8 @@ class ReviewStepState extends State<ReviewStep>
   late AnimationController _loadingController;
   bool get showFeeInfo => widget.transactionType != TransactionType.Unstake;
   bool get isVttTransaction => widget.transactionType == TransactionType.Vtt;
-  VTTCreateBloc get createVttBloc => BlocProvider.of<VTTCreateBloc>(context);
+  TransactionBloc get createVttBloc =>
+      BlocProvider.of<TransactionBloc>(context);
 
   @override
   void initState() {
@@ -63,10 +64,10 @@ class ReviewStepState extends State<ReviewStep>
   }
 
   void nextAction() async {
-    BlocProvider.of<VTTCreateBloc>(context).add(SetBuildingEvent());
+    BlocProvider.of<TransactionBloc>(context).add(SetBuildingEvent());
     // Sign transaction
     if (await showBiometrics()) {
-      BlocProvider.of<VTTCreateBloc>(context).add(ShowAuthPreferencesEvent());
+      BlocProvider.of<TransactionBloc>(context).add(ShowAuthPreferencesEvent());
     } else {
       _signTransaction();
     }
@@ -75,7 +76,7 @@ class ReviewStepState extends State<ReviewStep>
   void _signTransaction() {
     final vttBody = createVttBloc.state.transaction
         .getBody(createVttBloc.state.transactionType);
-    BlocProvider.of<VTTCreateBloc>(context).add(SignTransactionEvent(
+    BlocProvider.of<TransactionBloc>(context).add(SignTransactionEvent(
       currentWallet: widget.currentWallet,
       transactionBody: vttBody,
       speedUpTx: widget.speedUpTx,
@@ -83,7 +84,7 @@ class ReviewStepState extends State<ReviewStep>
   }
 
   void _sendTransaction(BuildTransaction transaction) {
-    BlocProvider.of<VTTCreateBloc>(context).add(SendTransactionEvent(
+    BlocProvider.of<TransactionBloc>(context).add(SendTransactionEvent(
         currentWallet: widget.currentWallet,
         transaction: transaction,
         speedUpTx: widget.speedUpTx));
@@ -96,17 +97,19 @@ class ReviewStepState extends State<ReviewStep>
     );
   }
 
-  String getAmountValue(VTTCreateState state) {
+  String getAmountValue(TransactionState state) {
     return '${state.transaction.getAmount(state.transactionType)} ${WIT_UNIT[WitUnit.Wit]}';
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocListener<VTTCreateBloc, VTTCreateState>(
-        listenWhen: (VTTCreateState prevState, VTTCreateState state) => true,
+    return BlocListener<TransactionBloc, TransactionState>(
+        listenWhen: (TransactionState prevState, TransactionState state) =>
+            true,
         listener: (context, state) {
-          if (state.vttCreateStatus == VTTCreateStatus.needPasswordValidation) {
+          if (state.transactionStatus ==
+              TransactionStatus.needPasswordValidation) {
             unlockKeychainModal(
                 title: localization.enterYourPassword,
                 imageName: 'signing-transaction',
@@ -115,17 +118,17 @@ class ReviewStepState extends State<ReviewStep>
                 onAction: () => _signTransaction(),
                 routeToRedirect: widget.originRoute);
           }
-          if (state.vttCreateStatus == VTTCreateStatus.discarded) {
+          if (state.transactionStatus == TransactionStatus.discarded) {
             buildTxGeneralExceptionModal(
                 theme: theme,
                 context: context,
                 originRoute: widget.originRoute,
                 onAction: () => _sendTransaction(state.transaction));
-          } else if (state.vttCreateStatus == VTTCreateStatus.signing) {
+          } else if (state.transactionStatus == TransactionStatus.signing) {
             Navigator.popUntil(
                 context, ModalRoute.withName(widget.originRoute));
             buildSigningTxModal(theme, context);
-          } else if (state.vttCreateStatus == VTTCreateStatus.finished) {
+          } else if (state.transactionStatus == TransactionStatus.finished) {
             // Validate vtt weight to ensure confirmation
             if (state.transaction.get(state.transactionType) != null &&
                 state.transaction.getWeight(state.transactionType) <=
@@ -139,11 +142,11 @@ class ReviewStepState extends State<ReviewStep>
                   originRoute: widget.originRoute,
                   onAction: () => _sendTransaction(state.transaction));
             }
-          } else if (state.vttCreateStatus == VTTCreateStatus.sending) {
+          } else if (state.transactionStatus == TransactionStatus.sending) {
             Navigator.popUntil(
                 context, ModalRoute.withName(widget.originRoute));
             buildSendingTransactionModal(theme, context);
-          } else if (state.vttCreateStatus == VTTCreateStatus.accepted) {
+          } else if (state.transactionStatus == TransactionStatus.accepted) {
             buildSuccessfullTransaction(
                 theme: theme,
                 state: state,
@@ -153,7 +156,7 @@ class ReviewStepState extends State<ReviewStep>
                 transactionType: widget.transactionType);
           }
         },
-        child: BlocBuilder<VTTCreateBloc, VTTCreateState>(
+        child: BlocBuilder<TransactionBloc, TransactionState>(
           builder: (context, state) {
             bool hasTimelock =
                 state.transaction.hasTimelock(state.transactionType);
@@ -191,7 +194,7 @@ class ReviewStepState extends State<ReviewStep>
 }
 
 List<Widget> _buildTransactionFeeInfo(BuildContext context) {
-  int fee = BlocProvider.of<VTTCreateBloc>(context).getFee();
+  int fee = BlocProvider.of<TransactionBloc>(context).getFee();
   return [
     InfoElement(
         label: localization.fee,
@@ -202,7 +205,7 @@ List<Widget> _buildTransactionFeeInfo(BuildContext context) {
   ];
 }
 
-Widget _timelock(VTTCreateState state) {
+Widget _timelock(TransactionState state) {
   if (state.transaction.hasTimelock(state.transactionType)) {
     int timestamp =
         state.transaction.vtTransaction?.body.outputs[0].timeLock.toInt() ??

@@ -27,7 +27,7 @@ class TopNavigation extends StatelessWidget {
   final VoidCallback onShowWalletList;
 
   Future<void> _goToSettings(BuildContext context) async {
-    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
+    BlocProvider.of<TransactionBloc>(context).add(ResetTransactionEvent());
     Navigator.push(
         context,
         CustomPageRoute(

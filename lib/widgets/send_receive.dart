@@ -19,7 +19,7 @@ class SendReceiveButtons extends StatelessWidget {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     Future<void> _showCreateVTTDialog() async {
-      BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
+      BlocProvider.of<TransactionBloc>(context).add(ResetTransactionEvent());
       Navigator.push(
           context,
           CustomPageRoute(
@@ -31,7 +31,7 @@ class SendReceiveButtons extends StatelessWidget {
     }
 
     Future<void> _showReceiveDialog() async {
-      BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
+      BlocProvider.of<TransactionBloc>(context).add(ResetTransactionEvent());
       Navigator.push(
           context,
           CustomPageRoute(
