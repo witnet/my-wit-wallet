@@ -20,7 +20,7 @@ class StakeUnstakeButtons extends StatelessWidget {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
 
     Future<void> _goToStakeScreen() async {
-      BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
+      BlocProvider.of<TransactionBloc>(context).add(ResetTransactionEvent());
       Navigator.push(
           context,
           CustomPageRoute(
@@ -32,7 +32,7 @@ class StakeUnstakeButtons extends StatelessWidget {
     }
 
     Future<void> _goToUnstakeScreen() async {
-      BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
+      BlocProvider.of<TransactionBloc>(context).add(ResetTransactionEvent());
       Navigator.push(
           context,
           CustomPageRoute(

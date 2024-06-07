@@ -70,13 +70,13 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     PanelUtils().setCloseState();
   }
 
-  BlocListener<VTTCreateBloc, VTTCreateState> _vttListener(Widget child) {
+  BlocListener<TransactionBloc, TransactionState> _vttListener(Widget child) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    return BlocListener<VTTCreateBloc, VTTCreateState>(
+    return BlocListener<TransactionBloc, TransactionState>(
       listenWhen: (previousState, currentState) {
         if (showTxConnectionReEstablish(
-            previousState.vttCreateStatus, currentState.vttCreateStatus,
+            previousState.transactionStatus, currentState.transactionStatus,
             message: previousState.message)) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
@@ -92,14 +92,14 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         return true;
       },
       listener: (context, state) {
-        if (state.vttCreateStatus == VTTCreateStatus.explorerException) {
+        if (state.transactionStatus == TransactionStatus.explorerException) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
               theme: theme,
               text: localization.connectionIssue,
               log: state.message,
               color: theme.colorScheme.error));
-        } else if (state.vttCreateStatus == VTTCreateStatus.exception) {
+        } else if (state.transactionStatus == TransactionStatus.exception) {
           ScaffoldMessenger.of(context).clearSnackBars();
           buildGeneralExceptionModal(
             theme: theme,
