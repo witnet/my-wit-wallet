@@ -71,7 +71,7 @@ class TransactionsListState extends State<TransactionsList> {
   }
 
   void _prepareSpeedUpTx(GeneralTransaction speedUpTx) {
-    BlocProvider.of<VTTCreateBloc>(context).add(PrepareSpeedUpTxEvent(
+    BlocProvider.of<TransactionBloc>(context).add(PrepareSpeedUpTxEvent(
         speedUpTx: speedUpTx,
         filteredUtxos: false,
         currentWallet: currentWallet,
@@ -87,9 +87,10 @@ class TransactionsListState extends State<TransactionsList> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     if (speedUpTransaction != null) {
-      return BlocListener<VTTCreateBloc, VTTCreateState>(
-          listener: (BuildContext context, VTTCreateState state) {
-            if (state.vttCreateStatus == VTTCreateStatus.insufficientFunds) {
+      return BlocListener<TransactionBloc, TransactionState>(
+          listener: (BuildContext context, TransactionState state) {
+            if (state.transactionStatus ==
+                TransactionStatus.insufficientFunds) {
               ScaffoldMessenger.of(context).clearSnackBars();
               buildGeneralExceptionModal(
                   theme: theme,

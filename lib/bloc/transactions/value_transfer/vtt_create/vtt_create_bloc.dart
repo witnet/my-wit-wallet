@@ -51,15 +51,15 @@ Future<bool> _sendTransaction(Transaction transaction) async {
   }
 }
 
-class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
-  /// Create new [VTTCreateBloc].
+class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
+  /// Create new [TransactionBloc].
   ///
   /// extends [Bloc]
   /// [on((event, emit) => null)]
-  /// to map [VTTCreateEvent] To [VTTCreateState]
-  VTTCreateBloc()
+  /// to map [TransactionEvent] To [TransactionState]
+  TransactionBloc()
       : super(
-          VTTCreateState(
+          TransactionState(
             transaction: BuildTransaction(
                 vtTransaction: VTTransaction(
                   body: VTTransactionBody(inputs: [], outputs: []),
@@ -74,7 +74,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
                     signature: null)),
             message: null,
             transactionType: layout.TransactionType.Vtt,
-            vttCreateStatus: VTTCreateStatus.initial,
+            transactionStatus: TransactionStatus.initial,
           ),
         ) {
     on<AddValueTransferOutputEvent>(_addOutputEvent);
@@ -135,9 +135,9 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   }
 
   Future<void> _showPasswordValidationModal(
-      ShowAuthPreferencesEvent event, Emitter<VTTCreateState> emit) async {
+      ShowAuthPreferencesEvent event, Emitter<TransactionState> emit) async {
     if (await showBiometrics()) {
-      emit(state.copyWith(status: VTTCreateStatus.needPasswordValidation));
+      emit(state.copyWith(status: TransactionStatus.needPasswordValidation));
     }
   }
 
@@ -452,7 +452,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   }
 
   _setTransactionType(
-      SetTransactionTypeEvent event, Emitter<VTTCreateState> emit) {
+      SetTransactionTypeEvent event, Emitter<TransactionState> emit) {
     this.transactionType = event.transactionType;
     emit(state.copyWith(transactionType: event.transactionType));
   }
@@ -518,12 +518,12 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     }
   }
 
-  void _addOutputEvent(dynamic event, Emitter<VTTCreateState> emit) {
-    emit(state.copyWith(status: VTTCreateStatus.busy));
+  void _addOutputEvent(dynamic event, Emitter<TransactionState> emit) {
+    emit(state.copyWith(status: TransactionStatus.busy));
     try {
       _buildTransactionOutputs(txType: this.transactionType, event: event);
     } catch (e) {
-      emit(state.copyWith(status: VTTCreateStatus.exception, message: '$e'));
+      emit(state.copyWith(status: TransactionStatus.exception, message: '$e'));
       print('Error buildTransactionOutputs $e');
     }
     if (this.transactionType != layout.TransactionType.Unstake) {
@@ -537,7 +537,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       } catch (err) {
         print('Error building transaction body $err');
         emit(state.copyWith(
-            status: VTTCreateStatus.insufficientFunds,
+            status: TransactionStatus.insufficientFunds,
             message: INSUFFICIENT_FUNDS_ERROR));
       }
       _setEstimatedWeightedFees();
@@ -550,26 +550,27 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
           change: change,
           operator: unstakeOutput?.pkh,
           withdrawal: unstakeOutput,
-          status: VTTCreateStatus.building,
+          status: TransactionStatus.building,
           message: null),
     );
   }
 
   void _setBuildingStatus(
-      SetBuildingEvent event, Emitter<VTTCreateState> emit) {
+      SetBuildingEvent event, Emitter<TransactionState> emit) {
     emit(
       state.copyWith(
-          inputs: inputs, outputs: outputs, status: VTTCreateStatus.building),
+          inputs: inputs, outputs: outputs, status: TransactionStatus.building),
     );
   }
 
   /// set the timelock for the current [ValueTransferOutput].
-  void _setTimeLockEvent(SetTimelockEvent event, Emitter<VTTCreateState> emit) {
+  void _setTimeLockEvent(
+      SetTimelockEvent event, Emitter<TransactionState> emit) {
     selectedTimelock = event.dateTime;
     timelockSet = true;
     emit(
       state.copyWith(
-          inputs: inputs, outputs: outputs, status: VTTCreateStatus.building),
+          inputs: inputs, outputs: outputs, status: TransactionStatus.building),
     );
   }
 
@@ -669,31 +670,31 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
 
   /// sign the transaction
   Future<void> _signTransactionEvent(
-      SignTransactionEvent event, Emitter<VTTCreateState> emit) async {
-    emit(state.copyWith(status: VTTCreateStatus.signing, message: null));
+      SignTransactionEvent event, Emitter<TransactionState> emit) async {
+    emit(state.copyWith(status: TransactionStatus.signing, message: null));
     try {
       BuildTransaction buildTransaction = await _signTransaction(
         currentWallet: event.currentWallet,
         speedUpTx: event.speedUpTx,
       );
-      emit(VTTCreateState(
+      emit(TransactionState(
         transaction: buildTransaction,
         transactionType: this.transactionType,
-        vttCreateStatus: VTTCreateStatus.finished,
+        transactionStatus: TransactionStatus.finished,
         message: null,
       ));
     } catch (e) {
       print('Error signing the transaction :: $e');
-      emit(state.copyWith(status: VTTCreateStatus.exception, message: '$e'));
+      emit(state.copyWith(status: TransactionStatus.exception, message: '$e'));
       rethrow;
     }
   }
 
   /// send the transaction to the explorer
   Future<void> _sendVttTransactionEvent(
-      SendTransactionEvent event, Emitter<VTTCreateState> emit) async {
+      SendTransactionEvent event, Emitter<TransactionState> emit) async {
     bool transactionAccepted = false;
-    emit(state.copyWith(status: VTTCreateStatus.sending, message: null));
+    emit(state.copyWith(status: TransactionStatus.sending, message: null));
     ApiDatabase database = Locator.instance.get<ApiDatabase>();
     dynamic transactionBuilt = event.transaction.get(this.transactionType);
     Transaction transactionToSend;
@@ -781,15 +782,15 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
         await deleteVtt(database.walletStorage.currentWallet,
             event.speedUpTx!.toValueTransferInfo());
       }
-      emit(state.copyWith(status: VTTCreateStatus.accepted, message: null));
+      emit(state.copyWith(status: TransactionStatus.accepted, message: null));
       await Locator.instance<ApiDatabase>().getWalletStorage(true);
       await database.updateCurrentWallet();
     } else {
-      emit(state.copyWith(status: VTTCreateStatus.discarded, message: null));
+      emit(state.copyWith(status: TransactionStatus.discarded, message: null));
     }
   }
 
-  void _updateFeeEvent(UpdateFeeEvent event, Emitter<VTTCreateState> emit) {
+  void _updateFeeEvent(UpdateFeeEvent event, Emitter<TransactionState> emit) {
     if (event.feeNanoWit != null) {
       _updateFee(
           newFeeType: event.feeType,
@@ -801,12 +802,12 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   }
 
   void _updateUtxoSelectionStrategyEvent(
-      UpdateUtxoSelectionStrategyEvent event, Emitter<VTTCreateState> emit) {
+      UpdateUtxoSelectionStrategyEvent event, Emitter<TransactionState> emit) {
     utxoSelectionStrategy = event.strategy;
   }
 
   Future<void> _prepareSpeedUpTx(
-      PrepareSpeedUpTxEvent event, Emitter<VTTCreateState> emit) async {
+      PrepareSpeedUpTxEvent event, Emitter<TransactionState> emit) async {
     _resetTransactionEvent(ResetTransactionEvent(), emit);
     await _setPriorityEstimations(SetPriorityEstimationsEvent(), emit);
     await _addSourceWalletsEvent(
@@ -822,17 +823,17 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   }
 
   Future<void> _addSourceWalletsEvent(
-      AddSourceWalletsEvent event, Emitter<VTTCreateState> emit) async {
+      AddSourceWalletsEvent event, Emitter<TransactionState> emit) async {
     await _setWallet(event.currentWallet);
     emit(state.copyWith(
         inputs: inputs,
         outputs: outputs,
-        status: VTTCreateStatus.building,
+        status: TransactionStatus.building,
         message: null));
   }
 
   Future<void> _setPriorityEstimations(
-      SetPriorityEstimationsEvent event, Emitter<VTTCreateState> emit) async {
+      SetPriorityEstimationsEvent event, Emitter<TransactionState> emit) async {
     if (!isPrioritiesLoading) {
       isPrioritiesLoading = true;
       try {
@@ -842,7 +843,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       } catch (e) {
         print('Error getting priority estimations $e');
         emit(state.copyWith(
-            status: VTTCreateStatus.explorerException, message: '$e'));
+            status: TransactionStatus.explorerException, message: '$e'));
         isPrioritiesLoading = false;
         rethrow;
       }
@@ -850,7 +851,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   }
 
   void _resetTransactionEvent(
-      ResetTransactionEvent event, Emitter<VTTCreateState> emit) {
+      ResetTransactionEvent event, Emitter<TransactionState> emit) {
     scannedContent.clearScannedContent();
     selectedUtxos.clear();
     inputs.clear();
@@ -865,7 +866,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
     feeNanoWit = 0;
     feeOption = EstimatedFeeOptions.Medium;
     emit(state.copyWith(
-        status: VTTCreateStatus.initial,
+        status: TransactionStatus.initial,
         message: null,
         inputs: [],
         outputs: [],

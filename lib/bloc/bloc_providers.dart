@@ -45,8 +45,8 @@ List<BlocProvider> getProviders(
         create: (BuildContext context) => ExplorerBloc(ExplorerState.ready())),
 
     /// BlocCreateVTT is the logic behind value transfer transaction construction.
-    BlocProvider<VTTCreateBloc>(
-      create: (BuildContext context) => VTTCreateBloc(),
+    BlocProvider<TransactionBloc>(
+      create: (BuildContext context) => TransactionBloc(),
     ),
 
     /// BlocDashboard manages the ui for the main dashboard

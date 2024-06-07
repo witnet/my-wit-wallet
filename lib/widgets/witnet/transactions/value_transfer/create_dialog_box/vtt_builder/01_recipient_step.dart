@@ -76,7 +76,7 @@ class RecipientStepState extends State<RecipientStep>
       ? [_addressFocusNode, _amountFocusNode]
       : [_addressFocusNode, _amountFocusNode, _authorizationFocusNode];
   ValueTransferOutput? ongoingOutput;
-  VTTCreateBloc get vttBloc => BlocProvider.of<VTTCreateBloc>(context);
+  TransactionBloc get vttBloc => BlocProvider.of<TransactionBloc>(context);
   String get maxAmountWit =>
       nanoWitToWit(balanceInfo.availableNanoWit).toString();
   bool get showTimelockInput => isVttTransaction;
@@ -645,10 +645,10 @@ class RecipientStepState extends State<RecipientStep>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocListener<VTTCreateBloc, VTTCreateState>(
+    return BlocListener<TransactionBloc, TransactionState>(
       listenWhen: (previousState, currentState) {
         if (showTxConnectionReEstablish(
-            previousState.vttCreateStatus, currentState.vttCreateStatus)) {
+            previousState.transactionStatus, currentState.transactionStatus)) {
           setState(() {
             _connectionError = false;
             errorMessage = null;
@@ -657,8 +657,8 @@ class RecipientStepState extends State<RecipientStep>
         return true;
       },
       listener: (context, state) {
-        if (state.vttCreateStatus == VTTCreateStatus.exception ||
-            state.vttCreateStatus == VTTCreateStatus.explorerException) {
+        if (state.transactionStatus == TransactionStatus.exception ||
+            state.transactionStatus == TransactionStatus.explorerException) {
           setState(() {
             _connectionError = true;
             errorMessage = state.message;

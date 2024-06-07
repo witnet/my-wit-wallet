@@ -1,6 +1,6 @@
 part of 'vtt_create_bloc.dart';
 
-enum VTTCreateStatus {
+enum TransactionStatus {
   initial,
   needPasswordValidation,
   insufficientFunds,
@@ -17,18 +17,18 @@ enum VTTCreateStatus {
   discarded,
 }
 
-class VTTCreateState extends Equatable {
-  VTTCreateState(
+class TransactionState extends Equatable {
+  TransactionState(
       {required this.transaction,
       required this.transactionType,
-      required this.vttCreateStatus,
+      required this.transactionStatus,
       required this.message});
 
-  final VTTCreateStatus vttCreateStatus;
+  final TransactionStatus transactionStatus;
   final BuildTransaction transaction;
   final layout.TransactionType transactionType;
   final String? message;
-  VTTCreateState copyWith({
+  TransactionState copyWith({
     List<Input>? inputs,
     List<ValueTransferOutput>? outputs,
     ValueTransferOutput? withdrawal,
@@ -38,10 +38,10 @@ class VTTCreateState extends Equatable {
     ValueTransferOutput? change,
     StakeOutput? stakeOutput,
     layout.TransactionType? transactionType,
-    VTTCreateStatus? status,
+    TransactionStatus? status,
     String? message,
   }) {
-    return VTTCreateState(
+    return TransactionState(
       transaction: BuildTransaction(
           vtTransaction: VTTransaction(
             body: VTTransactionBody(
@@ -70,12 +70,12 @@ class VTTCreateState extends Equatable {
                       this.transaction.unstakeTransaction?.body.withdrawal),
               signature:
                   signature ?? this.transaction.unstakeTransaction?.signature)),
-      vttCreateStatus: status ?? this.vttCreateStatus,
+      transactionStatus: status ?? this.transactionStatus,
       transactionType: transactionType ?? this.transactionType,
       message: message ?? this.message,
     );
   }
 
   @override
-  List<Object> get props => [transaction, vttCreateStatus];
+  List<Object> get props => [transaction, transactionStatus];
 }

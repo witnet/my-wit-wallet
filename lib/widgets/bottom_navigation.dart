@@ -37,7 +37,7 @@ class BottomNavigation extends StatelessWidget {
         text: localization.history,
         onPressed: currentScreen != DashboardScreen.route
             ? () => {
-                  BlocProvider.of<VTTCreateBloc>(context)
+                  BlocProvider.of<TransactionBloc>(context)
                       .add(ResetTransactionEvent()),
                   ScaffoldMessenger.of(context).clearSnackBars(),
                   Navigator.push(
