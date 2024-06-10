@@ -65,6 +65,12 @@ class WalletStorage {
   //<block_id, MintEntry>
   Map<String, MintEntry> _mints = {};
 
+  //<stake_id, StakeEntry>
+  Map<String, StakeEntry> _stakes = {};
+
+  //<unstake_id, UnstakeEntry>
+  Map<String, UnstakeEntry> _unstakes = {};
+
   // WalletType type;
   String? _currentWalletId;
   String? _currentAddress;
@@ -98,6 +104,18 @@ class WalletStorage {
     });
   }
 
+  void setStakes(Map<String, StakeEntry> stakes) {
+    stakes.forEach((stakeHash, mint) {
+      _stakes[stakeHash] = mint;
+    });
+  }
+
+  void setUnstakes(Map<String, UnstakeEntry> unstakes) {
+    unstakes.forEach((unstakeHash, mint) {
+      _unstakes[unstakeHash] = mint;
+    });
+  }
+
   void setAccounts(Map<String, Account> accounts) {
     accounts.values.forEach((account) {
       setAccount(account);
@@ -126,6 +144,8 @@ class WalletStorage {
 
   ValueTransferInfo? getVtt(String hash) => _transactions[hash];
   MintEntry? getMint(String hash) => _mints[hash];
+  StakeEntry? getStake(String hash) => _stakes[hash];
+  UnstakeEntry? getUnstake(String hash) => _unstakes[hash];
 
   void setVtt(String walletId, ValueTransferInfo vtt) {
     wallets[walletId]!.setTransaction(vtt);
@@ -137,6 +157,14 @@ class WalletStorage {
 
   void setMint(String walletId, MintEntry mint) {
     wallets[walletId]!.setTransaction(mint);
+  }
+
+  void setStake(String walletId, StakeEntry stake) {
+    wallets[walletId]!.setTransaction(stake);
+  }
+
+  void setUnstake(String walletId, UnstakeEntry unstake) {
+    wallets[walletId]!.setTransaction(unstake);
   }
 
   void setAccount(Account account) {

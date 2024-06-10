@@ -169,6 +169,56 @@ class Wallet {
     }
   }
 
+  List<UnstakeEntry> allUnstakes() {
+    Map<String, UnstakeEntry> _unstakeMap = {};
+    externalAccounts.forEach((key, account) {
+      account.unstakes.forEach((unstake) {
+        if (unstake.status != TxStatusLabel.reverted)
+          _unstakeMap[unstake.blockHash] = unstake;
+      });
+    });
+    internalAccounts.forEach((key, account) {
+      account.unstakes.forEach((unstake) {
+        if (unstake.status != TxStatusLabel.reverted)
+          _unstakeMap[unstake.blockHash] = unstake;
+      });
+    });
+
+    if (walletType == WalletType.single) {
+      masterAccount!.unstakes.forEach((unstake) {
+        if (unstake.status != TxStatusLabel.reverted)
+          _unstakeMap[unstake.blockHash] = unstake;
+      });
+    }
+    return _unstakeMap.values.toList()
+      ..sort((t1, t2) => t2.timestamp.compareTo(t1.timestamp));
+  }
+
+  List<StakeEntry> allStakes() {
+    Map<String, StakeEntry> _stakeMap = {};
+    externalAccounts.forEach((key, account) {
+      account.stakes.forEach((stake) {
+        if (stake.status != TxStatusLabel.reverted)
+          _stakeMap[stake.blockHash] = stake;
+      });
+    });
+    internalAccounts.forEach((key, account) {
+      account.stakes.forEach((stake) {
+        if (stake.status != TxStatusLabel.reverted)
+          _stakeMap[stake.blockHash] = stake;
+      });
+    });
+
+    if (walletType == WalletType.single) {
+      masterAccount!.stakes.forEach((stake) {
+        if (stake.status != TxStatusLabel.reverted)
+          _stakeMap[stake.blockHash] = stake;
+      });
+    }
+    return _stakeMap.values.toList()
+      ..sort((t1, t2) => t2.timestamp.compareTo(t1.timestamp));
+  }
+
   List<ValueTransferInfo> unconfirmedTransactions() {
     List<ValueTransferInfo> unconfirmedVtts = [];
     allTransactions().forEach((vtt) {
@@ -214,6 +264,8 @@ class Wallet {
   PaginatedData getPaginatedTransactions(PaginationParams args) {
     List<ValueTransferInfo> vtts = allTransactions();
     List<MintEntry> mints = allMints();
+    List<StakeEntry> stakes = allStakes();
+    List<UnstakeEntry> unstakes = allUnstakes();
     List<GeneralTransaction> standardizeVtts = vtts
         .map((ValueTransferInfo vtt) =>
             GeneralTransaction.fromValueTransferInfo(vtt))
@@ -221,9 +273,17 @@ class Wallet {
     List<GeneralTransaction> standardizeMints = mints
         .map((MintEntry mint) => GeneralTransaction.fromMintEntry(mint))
         .toList();
+    List<GeneralTransaction> standardizeStakes = stakes
+        .map((StakeEntry mint) => GeneralTransaction.fromStakeEntry(mint))
+        .toList();
+    List<GeneralTransaction> standardizeUnstakes = unstakes
+        .map((UnstakeEntry mint) => GeneralTransaction.fromUnstakeEntry(mint))
+        .toList();
     List<GeneralTransaction> allSortedTransactions = [
       ...standardizeVtts,
-      ...standardizeMints
+      ...standardizeMints,
+      ...standardizeStakes,
+      ...standardizeUnstakes,
     ]..sort((GeneralTransaction t1, GeneralTransaction t2) =>
         t2.txnTime.compareTo(t1.txnTime));
     if (allSortedTransactions.length > 0) {
@@ -624,6 +684,52 @@ class Wallet {
             Account account = internalAccounts[i]!;
             if (transaction.containsAddress(account.address)) {
               account.addVtt(transaction);
+              internalAccounts[i] = account;
+              updatedAccounts.add(account.address);
+            }
+          }
+        }
+        break;
+      case StakeEntry:
+        {
+          List<String> _extAddressList = addressList(KeyType.external);
+          List<String> _intAddressList = addressList(KeyType.internal);
+          List<String> updatedAccounts = [];
+          for (int i = 0; i < _extAddressList.length; i++) {
+            Account account = externalAccounts[i]!;
+            if (transaction.containsAddress(account.address)) {
+              account.addStake(transaction);
+              externalAccounts[i] = account;
+              updatedAccounts.add(account.address);
+            }
+          }
+          for (int i = 0; i < _intAddressList.length; i++) {
+            Account account = internalAccounts[i]!;
+            if (transaction.containsAddress(account.address)) {
+              account.addStake(transaction);
+              internalAccounts[i] = account;
+              updatedAccounts.add(account.address);
+            }
+          }
+        }
+        break;
+      case UnstakeEntry:
+        {
+          List<String> _extAddressList = addressList(KeyType.external);
+          List<String> _intAddressList = addressList(KeyType.internal);
+          List<String> updatedAccounts = [];
+          for (int i = 0; i < _extAddressList.length; i++) {
+            Account account = externalAccounts[i]!;
+            if (transaction.containsAddress(account.address)) {
+              account.addUnstake(transaction);
+              externalAccounts[i] = account;
+              updatedAccounts.add(account.address);
+            }
+          }
+          for (int i = 0; i < _intAddressList.length; i++) {
+            Account account = internalAccounts[i]!;
+            if (transaction.containsAddress(account.address)) {
+              account.addUnstake(transaction);
               internalAccounts[i] = account;
               updatedAccounts.add(account.address);
             }

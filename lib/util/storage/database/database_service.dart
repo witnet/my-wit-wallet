@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:my_wit_wallet/util/storage/database/check_version_compatibility.dart';
 import 'package:my_wit_wallet/util/storage/database/get_account_mints_map.dart';
+import 'package:my_wit_wallet/util/storage/database/get_account_stakes_map.dart';
+import 'package:my_wit_wallet/util/storage/database/get_account_unstakes_map.dart';
 import 'package:my_wit_wallet/util/storage/database/get_account_vtts_map.dart';
 import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
@@ -57,6 +59,8 @@ class DatabaseService {
   VttRepository vttRepository = VttRepository();
   AccountRepository accountRepository = AccountRepository();
   MintRepository mintRepository = MintRepository();
+  StakeRepository stakeRepository = StakeRepository();
+  UnstakeRepository unstakeRepository = UnstakeRepository();
   StatsRepository statsRepository = StatsRepository();
 
   KeyChain keyChain = KeyChain();
@@ -120,6 +124,12 @@ class DatabaseService {
         case MintEntry:
           await mintRepository.insertTransaction(item, _database);
           break;
+        case StakeEntry:
+          await stakeRepository.insertTransaction(item, _database);
+          break;
+        case UnstakeEntry:
+          await unstakeRepository.insertTransaction(item, _database);
+          break;
         case AccountStats:
           await statsRepository.insertStats(item, _database);
           break;
@@ -161,6 +171,12 @@ class DatabaseService {
         case MintEntry:
           await mintRepository.deleteTransaction(item.hash, _database);
           break;
+        case StakeEntry:
+          await stakeRepository.deleteTransaction(item.hash, _database);
+          break;
+        case UnstakeEntry:
+          await unstakeRepository.deleteTransaction(item.hash, _database);
+          break;
         case AccountStats:
           await statsRepository.deleteStats(item.address, _database);
           break;
@@ -187,6 +203,12 @@ class DatabaseService {
           break;
         case MintEntry:
           await mintRepository.updateTransaction(item, _database);
+          break;
+        case StakeEntry:
+          await stakeRepository.updateTransaction(item, _database);
+          break;
+        case UnstakeEntry:
+          await unstakeRepository.updateTransaction(item, _database);
           break;
         case AccountStats:
           await statsRepository.updateStats(item, _database);
@@ -270,15 +292,20 @@ class DatabaseService {
       /// Get all Transactions
       final List<ValueTransferInfo> transactions =
           await vttRepository.getAllTransactions(_database);
-
       final List<MintEntry> mints =
           await mintRepository.getAllTransactions(_database);
+      final List<StakeEntry> stakes =
+          await stakeRepository.getAllTransactions(_database);
+      final List<UnstakeEntry> unstakes =
+          await unstakeRepository.getAllTransactions(_database);
 
       /// Create a map of the Wallets with the wallet.id as the key.
       Map<String, Wallet> walletMap = {};
       Map<String, Account> accountMap = {};
       Map<String, ValueTransferInfo> vttMap = {};
       Map<String, MintEntry> mintMap = {};
+      Map<String, StakeEntry> stakeMap = {};
+      Map<String, UnstakeEntry> unstakeMap = {};
       for (int i = 0; i < wallets.length; i++) {
         walletMap[wallets[i].id] = wallets[i];
       }
@@ -287,6 +314,10 @@ class DatabaseService {
         Map<String, List<ValueTransferInfo>> accountVttMap =
             getAccountVttsMap(transactions);
         Map<String, List<MintEntry>> accountMintMap = getAccountMintsMap(mints);
+        Map<String, List<StakeEntry>> accountStakesMap =
+            getAccountStakesMap(stakes);
+        Map<String, List<UnstakeEntry>> accountUnstakesMap =
+            getAccountUnstakesMap(unstakes);
 
         /// Process by account
         for (int i = 0; i < accounts.length; i++) {
@@ -296,6 +327,12 @@ class DatabaseService {
           /// add the transaction if it is for this account
           if (accountVttMap[_address] != null) {
             accounts[i].vtts.addAll(accountVttMap[_address]!);
+          }
+          if (accountStakesMap[_address] != null) {
+            accounts[i].stakes.addAll(accountStakesMap[_address]!);
+          }
+          if (accountUnstakesMap[_address] != null) {
+            accounts[i].unstakes.addAll(accountUnstakesMap[_address]!);
           }
           if (accounts[i].keyType == KeyType.master) {
             // add the transaction if it is for this account
@@ -329,6 +366,12 @@ class DatabaseService {
         mints.forEach((mint) {
           mintMap[mint.blockHash] = mint;
         });
+        stakes.forEach((stake) {
+          stakeMap[stake.blockHash] = stake;
+        });
+        unstakes.forEach((unstake) {
+          unstakeMap[unstake.blockHash] = unstake;
+        });
       }
 
       /// Load current wallet and address from preferences
@@ -336,6 +379,8 @@ class DatabaseService {
       _walletStorage.setAccounts(accountMap);
       _walletStorage.setTransactions(vttMap);
       _walletStorage.setMints(mintMap);
+      _walletStorage.setStakes(stakeMap);
+      _walletStorage.setUnstakes(unstakeMap);
       return _walletStorage;
     } catch (e) {
       return DBException(code: e.hashCode, message: '$e');
@@ -363,6 +408,14 @@ class DatabaseService {
 
   Future<MintEntry?> getMint(params) async {
     return await mintRepository.getTransaction(params["hash"], _database);
+  }
+
+  Future<StakeEntry?> getStake(params) async {
+    return await stakeRepository.getTransaction(params["hash"], _database);
+  }
+
+  Future<UnstakeEntry?> getUnstake(params) async {
+    return await unstakeRepository.getTransaction(params["hash"], _database);
   }
 
   Future<Account?> getAccount(params) async {
