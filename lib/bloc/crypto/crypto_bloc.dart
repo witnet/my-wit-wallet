@@ -281,6 +281,8 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     try {
       Account account = await _generateAccount(wallet, index, keyType);
       account = await _syncAccount(account);
+      account = await _syncStakes(account);
+      account = await _syncUnstakes(account);
       account = await _syncVtts(account, emit);
       if (account.keyType == KeyType.master) {
         account = await _syncMints(account);
@@ -319,6 +321,72 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       return account;
     } catch (e) {
       add(CryptoExceptionEvent(message: 'Error syncing vtts:: $e'));
+      rethrow;
+    }
+  }
+
+  Future<Account> _syncStakes(Account account) async {
+    //* TODO: get StakeInfo info instead of BlockInfo and get stake from .data instead of blocks
+    try {
+      /// retrieve any Block Hashes
+      final stakes = await apiExplorer.address(
+          value: account.address,
+          // TODO: get correct tab 'stake'
+          tab: 'blocks') as PaginatedRequest<AddressBlocks?>;
+      if (stakes.data != null) {
+        /// retrieve each block
+        for (int i = 0; i < stakes.data!.blocks.length; i++) {
+          BlockInfo stakeInfo = stakes.data!.blocks.elementAt(i);
+          String _hash = stakeInfo.hash;
+
+          /// Creates a MintEntry from the BlockInfo and MintInfo
+          BlockDetails blockDetails =
+              await apiExplorer.hash(_hash) as BlockDetails;
+          StakeEntry stakeEntry = StakeEntry.fromStakeInfo(
+            stakeInfo,
+            blockDetails,
+          );
+          account.stakeHashes.add(stakeEntry.blockHash);
+          account.stakes.add(stakeEntry);
+          await db.addStake(stakeEntry);
+        }
+      }
+      return account;
+    } catch (e) {
+      add(CryptoExceptionEvent(message: 'Error syncing mints:: $e'));
+      rethrow;
+    }
+  }
+
+  Future<Account> _syncUnstakes(Account account) async {
+    //* TODO: get UnstakeInfo instead of BlockInfo and get unstake from .data instead of blocks
+    try {
+      /// retrieve any Block Hashes
+      final unstakes = await apiExplorer.address(
+          value: account.address,
+          // TODO: get correct tab 'unstake'
+          tab: 'blocks') as PaginatedRequest<AddressBlocks?>;
+      if (unstakes.data != null) {
+        /// retrieve each block
+        for (int i = 0; i < unstakes.data!.blocks.length; i++) {
+          BlockInfo unstakeInfo = unstakes.data!.blocks.elementAt(i);
+          String _hash = unstakeInfo.hash;
+
+          /// Creates a MintEntry from the BlockInfo and MintInfo
+          BlockDetails blockDetails =
+              await apiExplorer.hash(_hash) as BlockDetails;
+          UnstakeEntry unstakeEntry = UnstakeEntry.fromUnstakeInfo(
+            unstakeInfo,
+            blockDetails,
+          );
+          account.unstakeHashes.add(unstakeEntry.blockHash);
+          account.unstakes.add(unstakeEntry);
+          await db.addUnstake(unstakeEntry);
+        }
+      }
+      return account;
+    } catch (e) {
+      add(CryptoExceptionEvent(message: 'Error syncing mints:: $e'));
       rethrow;
     }
   }

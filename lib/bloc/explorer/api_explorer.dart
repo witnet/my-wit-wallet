@@ -209,4 +209,32 @@ class ApiExplorer {
     );
     return mintEntry;
   }
+
+  //* TODO: use StakeInfo instead of BlockInfo
+  //* TODO: use StakeDetails instead of BlockDetails
+  Future<StakeEntry> getStake(BlockInfo stakeInfo) async {
+    String _hash = stakeInfo.hash;
+    var result = await Locator.instance.get<ApiExplorer>().hash(_hash);
+
+    BlockDetails stakeDetails = result as BlockDetails;
+    StakeEntry stakeEntry = StakeEntry.fromStakeInfo(
+      stakeInfo,
+      stakeDetails,
+    );
+    return stakeEntry;
+  }
+
+  //* TODO: use UnstakeInfo instead of BlockInfo
+  //* TODO: use UnstakeDetails instead of BlockDetails
+  Future<UnstakeEntry> getUnstake(BlockInfo unstakeInfo) async {
+    String _hash = unstakeInfo.hash;
+    var result = await Locator.instance.get<ApiExplorer>().hash(_hash);
+
+    BlockDetails unstakeDetails = result as BlockDetails;
+    UnstakeEntry unstakeEntry = UnstakeEntry.fromUnstakeInfo(
+      unstakeInfo,
+      unstakeDetails,
+    );
+    return unstakeEntry;
+  }
 }
