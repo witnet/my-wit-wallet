@@ -207,6 +207,52 @@ class TransactionBody {
       this.unstakeTransactionBody});
 }
 
+//* TODO: update StakeData
+class StakeData {
+  final List<ValueTransferOutput> outputs;
+  final int timestamp;
+  final int reward;
+  final int valueTransferCount;
+  final int dataRequestCount;
+  final int commitCount;
+  final int revealCount;
+  final int tallyCount;
+
+  StakeData({
+    required this.outputs,
+    required this.timestamp,
+    required this.reward,
+    required this.valueTransferCount,
+    required this.dataRequestCount,
+    required this.commitCount,
+    required this.revealCount,
+    required this.tallyCount,
+  });
+}
+
+//* TODO: update UnstakeData
+class UnstakeData {
+  final List<ValueTransferOutput> outputs;
+  final int timestamp;
+  final int reward;
+  final int valueTransferCount;
+  final int dataRequestCount;
+  final int commitCount;
+  final int revealCount;
+  final int tallyCount;
+
+  UnstakeData({
+    required this.outputs,
+    required this.timestamp,
+    required this.reward,
+    required this.valueTransferCount,
+    required this.dataRequestCount,
+    required this.commitCount,
+    required this.revealCount,
+    required this.tallyCount,
+  });
+}
+
 class MintData {
   final List<ValueTransferOutput> outputs;
   final int timestamp;
@@ -256,6 +302,8 @@ class GeneralTransaction extends HashInfo {
   // UnstakeData? unstake;
   MintData? mint;
   VttData? vtt;
+  StakeData? stake;
+  UnstakeData? unstake;
   final int fee;
   final int? epoch;
 
@@ -267,6 +315,8 @@ class GeneralTransaction extends HashInfo {
       required status,
       required time,
       required type,
+      this.stake,
+      this.unstake,
       this.mint,
       this.vtt})
       : super(
@@ -275,7 +325,45 @@ class GeneralTransaction extends HashInfo {
             type: type,
             txnTime: time,
             blockHash: blockHash);
-
+  //* TODO: update stakeData
+  factory GeneralTransaction.fromStakeEntry(StakeEntry mintEntry) =>
+      GeneralTransaction(
+          blockHash: mintEntry.blockHash,
+          epoch: mintEntry.epoch,
+          fee: mintEntry.fees,
+          hash: mintEntry.blockHash,
+          status: mintEntry.status,
+          time: mintEntry.timestamp,
+          type: mintEntry.type,
+          mint: null,
+          stake: StakeData(
+              commitCount: mintEntry.commitCount,
+              outputs: mintEntry.outputs,
+              timestamp: mintEntry.timestamp,
+              reward: mintEntry.reward,
+              valueTransferCount: mintEntry.valueTransferCount,
+              dataRequestCount: mintEntry.dataRequestCount,
+              revealCount: mintEntry.revealCount,
+              tallyCount: mintEntry.tallyCount));
+  //* TODO: update unstakeData
+  factory GeneralTransaction.fromUnstakeEntry(UnstakeEntry mintEntry) =>
+      GeneralTransaction(
+          blockHash: mintEntry.blockHash,
+          epoch: mintEntry.epoch,
+          fee: mintEntry.fees,
+          hash: mintEntry.blockHash,
+          status: mintEntry.status,
+          time: mintEntry.timestamp,
+          type: mintEntry.type,
+          unstake: UnstakeData(
+              commitCount: mintEntry.commitCount,
+              outputs: mintEntry.outputs,
+              timestamp: mintEntry.timestamp,
+              reward: mintEntry.reward,
+              valueTransferCount: mintEntry.valueTransferCount,
+              dataRequestCount: mintEntry.dataRequestCount,
+              revealCount: mintEntry.revealCount,
+              tallyCount: mintEntry.tallyCount));
   factory GeneralTransaction.fromMintEntry(MintEntry mintEntry) =>
       GeneralTransaction(
           blockHash: mintEntry.blockHash,
@@ -293,8 +381,7 @@ class GeneralTransaction extends HashInfo {
               valueTransferCount: mintEntry.valueTransferCount,
               dataRequestCount: mintEntry.dataRequestCount,
               revealCount: mintEntry.revealCount,
-              tallyCount: mintEntry.tallyCount),
-          vtt: null);
+              tallyCount: mintEntry.tallyCount));
   factory GeneralTransaction.fromValueTransferInfo(
           ValueTransferInfo valueTransferInfo) =>
       GeneralTransaction(
@@ -305,7 +392,6 @@ class GeneralTransaction extends HashInfo {
           status: valueTransferInfo.status,
           time: valueTransferInfo.timestamp,
           type: valueTransferInfo.type,
-          mint: null,
           vtt: VttData(
               inputs: valueTransferInfo.inputUtxos,
               inputAddresses: valueTransferInfo.inputAddresses,
@@ -343,6 +429,225 @@ class GeneralTransaction extends HashInfo {
         changeOutputAddresses: [],
         trueValue: 0,
         changeValue: 0,
+      );
+}
+
+class UnstakeEntry {
+  UnstakeEntry({
+    required this.blockHash,
+    required this.fees,
+    required this.epoch,
+    // specific to mint entry
+    required this.outputs,
+    required this.timestamp,
+    required this.reward,
+    required this.valueTransferCount,
+    required this.dataRequestCount,
+    required this.commitCount,
+    required this.revealCount,
+    required this.tallyCount,
+    required this.status,
+    required this.type,
+    required this.confirmed,
+    required this.reverted,
+  });
+  final String blockHash;
+  final List<ValueTransferOutput> outputs;
+  final int timestamp;
+  final int epoch;
+  final int reward;
+  final int fees;
+  final int valueTransferCount;
+  final int dataRequestCount;
+  final int commitCount;
+  final int revealCount;
+  final int tallyCount;
+  final TxStatusLabel status;
+  final TransactionType type;
+  final bool confirmed;
+  final bool reverted;
+
+  bool containsAddress(String address) {
+    bool response = false;
+    outputs.forEach((element) {
+      if (element.pkh.address == address) response = true;
+    });
+    return response;
+  }
+
+  Map<String, dynamic> jsonMap() => {
+        "block_hash": blockHash,
+        "outputs": List<Map<String, dynamic>>.from(
+            outputs.map((x) => x.jsonMap(asHex: true))),
+        "timestamp": timestamp,
+        "epoch": epoch,
+        "reward": reward,
+        "fees": fees,
+        "vtt_count": valueTransferCount,
+        "drt_count": dataRequestCount,
+        "commit_count": commitCount,
+        "reveal_count": revealCount,
+        "tally_count": tallyCount,
+        'confirmed': confirmed,
+        'reverted': reverted,
+        "status": status.toString(),
+        "type": type.toString(),
+      };
+
+  factory UnstakeEntry.fromJson(Map<String, dynamic> json) {
+    return UnstakeEntry(
+      blockHash: json["block_hash"],
+      outputs: List<ValueTransferOutput>.from(
+          json["outputs"].map((x) => ValueTransferOutput.fromJson(x))),
+      timestamp: json["timestamp"],
+      epoch: json["epoch"],
+      reward: json["reward"],
+      fees: json["fees"],
+      valueTransferCount: json["vtt_count"],
+      dataRequestCount: json["drt_count"],
+      commitCount: json["commit_count"],
+      revealCount: json["reveal_count"],
+      tallyCount: json["tally_count"],
+      confirmed: json['confirmed'] ?? false,
+      reverted: json['reverted'] ?? false,
+      status: TransactionStatus.fromJson(json).status,
+      //* TODO: se new stake and unstake transaction types
+      type: TransactionType.mint,
+    );
+  }
+  //* TODO: update factory to use Unstakeinfo instead of BlocInfo
+  factory UnstakeEntry.fromUnstakeInfo(
+          BlockInfo blockInfo, BlockDetails blockDetails) =>
+      UnstakeEntry(
+        blockHash: blockDetails.mintInfo.blockHash,
+        outputs: blockDetails.mintInfo.outputs,
+        timestamp: blockInfo.timestamp,
+        epoch: blockInfo.epoch,
+        reward: blockInfo.reward,
+        fees: blockInfo.fees,
+        valueTransferCount: blockInfo.valueTransferCount,
+        dataRequestCount: blockInfo.dataRequestCount,
+        commitCount: blockInfo.commitCount,
+        revealCount: blockInfo.revealCount,
+        tallyCount: blockInfo.tallyCount,
+        status: TransactionStatus.fromJson({
+          'confirmed': blockDetails.confirmed,
+          'reverted': blockDetails.reverted
+        }).status,
+        //* TODO: se new stake and unstake transaction types
+        type: TransactionType.mint,
+        confirmed: blockDetails.confirmed,
+        reverted: blockDetails.reverted,
+      );
+}
+
+class StakeEntry {
+  StakeEntry({
+    required this.blockHash,
+    required this.fees,
+    required this.epoch,
+    // specific to mint entry
+    required this.outputs,
+    required this.timestamp,
+    required this.reward,
+    required this.valueTransferCount,
+    required this.dataRequestCount,
+    required this.commitCount,
+    required this.revealCount,
+    required this.tallyCount,
+    required this.status,
+    required this.type,
+    required this.confirmed,
+    required this.reverted,
+  });
+  final String blockHash;
+  final List<ValueTransferOutput> outputs;
+  final int timestamp;
+  final int epoch;
+  final int reward;
+  final int fees;
+  final int valueTransferCount;
+  final int dataRequestCount;
+  final int commitCount;
+  final int revealCount;
+  final int tallyCount;
+  final TxStatusLabel status;
+  final TransactionType type;
+  final bool confirmed;
+  final bool reverted;
+
+  bool containsAddress(String address) {
+    bool response = false;
+    outputs.forEach((element) {
+      if (element.pkh.address == address) response = true;
+    });
+    return response;
+  }
+
+  Map<String, dynamic> jsonMap() => {
+        "block_hash": blockHash,
+        "outputs": List<Map<String, dynamic>>.from(
+            outputs.map((x) => x.jsonMap(asHex: true))),
+        "timestamp": timestamp,
+        "epoch": epoch,
+        "reward": reward,
+        "fees": fees,
+        "vtt_count": valueTransferCount,
+        "drt_count": dataRequestCount,
+        "commit_count": commitCount,
+        "reveal_count": revealCount,
+        "tally_count": tallyCount,
+        'confirmed': confirmed,
+        'reverted': reverted,
+        "status": status.toString(),
+        "type": type.toString(),
+      };
+
+  factory StakeEntry.fromJson(Map<String, dynamic> json) {
+    return StakeEntry(
+      blockHash: json["block_hash"],
+      outputs: List<ValueTransferOutput>.from(
+          json["outputs"].map((x) => ValueTransferOutput.fromJson(x))),
+      timestamp: json["timestamp"],
+      epoch: json["epoch"],
+      reward: json["reward"],
+      fees: json["fees"],
+      valueTransferCount: json["vtt_count"],
+      dataRequestCount: json["drt_count"],
+      commitCount: json["commit_count"],
+      revealCount: json["reveal_count"],
+      tallyCount: json["tally_count"],
+      confirmed: json['confirmed'] ?? false,
+      reverted: json['reverted'] ?? false,
+      status: TransactionStatus.fromJson(json).status,
+      //* TODO: se new stake and unstake transaction types
+      type: TransactionType.mint,
+    );
+  }
+
+  //* TODO: update factory to use StakeInfo instead of BlocInfo
+  factory StakeEntry.fromStakeInfo(
+          BlockInfo blockInfo, BlockDetails blockDetails) =>
+      StakeEntry(
+        blockHash: blockDetails.mintInfo.blockHash,
+        outputs: blockDetails.mintInfo.outputs,
+        timestamp: blockInfo.timestamp,
+        epoch: blockInfo.epoch,
+        reward: blockInfo.reward,
+        fees: blockInfo.fees,
+        valueTransferCount: blockInfo.valueTransferCount,
+        dataRequestCount: blockInfo.dataRequestCount,
+        commitCount: blockInfo.commitCount,
+        revealCount: blockInfo.revealCount,
+        tallyCount: blockInfo.tallyCount,
+        status: TransactionStatus.fromJson({
+          'confirmed': blockDetails.confirmed,
+          'reverted': blockDetails.reverted
+        }).status,
+        //* TODO: se new stake and unstake transaction types
+        type: TransactionType.mint,
+        confirmed: blockDetails.confirmed,
+        reverted: blockDetails.reverted,
       );
 }
 
