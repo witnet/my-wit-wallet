@@ -34,6 +34,7 @@ class BottomNavigation extends StatelessWidget {
         color: getNavigationColor(
             context: context, routesList: [DashboardScreen.route]),
         padding: EdgeInsets.zero,
+        label: localization.home,
         text: localization.history,
         onPressed: currentScreen != DashboardScreen.route
             ? () => {
@@ -60,6 +61,7 @@ class BottomNavigation extends StatelessWidget {
           CreateVttScreen.route,
           ReceiveTransactionScreen.route
         ]),
+        label: localization.sendReceiveTx,
         padding: EdgeInsets.zero,
         text: localization.history,
         onPressed: onSendReceiveAction,
@@ -76,6 +78,7 @@ class BottomNavigation extends StatelessWidget {
             context: context, routesList: [StakeScreen.route]),
         padding: EdgeInsets.zero,
         text: localization.history,
+        label: localization.stakeUnstake,
         onPressed: onStakeUnstakeAction,
         // TODO: add current stake route
         icon: isActiveRoute(context, [StakeScreen.route])

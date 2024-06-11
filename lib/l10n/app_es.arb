@@ -331,5 +331,8 @@
   "autorizationTooltip": "Autorización del nodo para realizar staking",
   "authorizationInputHint": "Autorización del nodo...",
   "stakeTxnSuccess": "¡Transacción de stake enviada con éxito!",
-  "unstakeTxnSuccess": "¡Transacción de unstake enviada con éxito!"
+  "unstakeTxnSuccess": "¡Transacción de unstake enviada con éxito!",
+  "sendReceiveTx": "Enviar o recibir WIT",
+  "stakeUnstake": "Stake o unstake WIT",
+  "home": "Lista de transacciones"
 }

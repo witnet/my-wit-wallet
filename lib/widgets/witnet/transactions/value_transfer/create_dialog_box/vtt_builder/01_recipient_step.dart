@@ -572,7 +572,9 @@ class RecipientStepState extends State<RecipientStep>
         decoration: InputDecoration(
           hintText: localization.recipientAddress,
           suffixIcon: !Platform.isWindows && !Platform.isLinux
-              ? SuffixIcon(
+              ? Semantics(
+                  label: localization.scanQrCodeLabel,
+                  child: SuffixIcon(
                   onPressed: () => {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => QrScanner(
@@ -581,7 +583,7 @@ class RecipientStepState extends State<RecipientStep>
                       },
                   icon: FontAwesomeIcons.qrcode,
                   isFocus: isScanQrFocused,
-                  focusNode: _scanQrFocusNode)
+                  focusNode: _scanQrFocusNode))
               : null,
           errorText: _address.error,
         ),

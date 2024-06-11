@@ -43,16 +43,17 @@ class BalanceState extends State<Balance> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          IntrinsicWidth(
+          Semantics(
+                          label: localization.balance,
+                          button: true,
+                          child: IntrinsicWidth(
               child: MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
                       onTap: widget.onShowBalanceDetails,
                       child: Padding(
                         padding: EdgeInsets.only(left: 8, top: 8, bottom: 8),
-                        child: Semantics(
-                          label: localization.balance,
-                          child: Row(
+                        child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [

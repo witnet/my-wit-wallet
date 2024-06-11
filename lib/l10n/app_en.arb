@@ -330,5 +330,8 @@
   "autorizationTooltip": "Node authorization to stake",
   "authorizationInputHint": "Node authorization...",
   "stakeTxnSuccess": "Stake transaction succesfully sent!",
-  "unstakeTxnSuccess": "Unstake transaction succesfully sent!"
+  "unstakeTxnSuccess": "Unstake transaction succesfully sent!",
+  "sendReceiveTx": "Send or receive WIT",
+  "stakeUnstake": "Stake or unstake WIT",
+  "home": "Transactions list"
 }
