@@ -71,6 +71,8 @@ class RecipientStepState extends State<RecipientStep>
   String? errorMessage;
   FocusNode _scanQrFocusNode = FocusNode();
   bool isScanQrFocused = false;
+  FocusNode _copyAddressFocusNode = FocusNode();
+  bool isCopyAddressFocused = false;
   ValidationUtils validationUtils = ValidationUtils();
   List<FocusNode> _formFocusElements() => isVttTransaction
       ? [_addressFocusNode, _amountFocusNode]
@@ -104,7 +106,8 @@ class RecipientStepState extends State<RecipientStep>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-    _scanQrFocusNode.addListener(_handleFocus);
+    _scanQrFocusNode.addListener(_handleQrFocus);
+    _copyAddressFocusNode.addListener(_handleAddressFocus);
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => widget.nextAction(next),
     );
@@ -118,7 +121,8 @@ class RecipientStepState extends State<RecipientStep>
 
   @override
   void dispose() {
-    _scanQrFocusNode.removeListener(_handleFocus);
+    _scanQrFocusNode.removeListener(_handleQrFocus);
+    _copyAddressFocusNode.removeListener(_handleAddressFocus);
     _loadingController.dispose();
     _addressController.dispose();
     _addressFocusNode.dispose();
@@ -150,9 +154,15 @@ class RecipientStepState extends State<RecipientStep>
     setAuthorization(value);
   }
 
-  _handleFocus() {
+  _handleQrFocus() {
     setState(() {
       isScanQrFocused = _scanQrFocusNode.hasFocus;
+    });
+  }
+
+  _handleAddressFocus() {
+    setState(() {
+      isCopyAddressFocused = _copyAddressFocusNode.hasFocus;
     });
   }
 
@@ -523,21 +533,23 @@ class RecipientStepState extends State<RecipientStep>
         decoration: InputDecoration(
           hintText: localization.withdrawalAddress,
           suffixIcon: !Platform.isWindows && !Platform.isLinux
-              ? SuffixIcon(
-                  iconSize: 16,
-                  onPressed: () async {
-                    await Clipboard.setData(
-                        ClipboardData(text: _addressController.text));
-                    if (await Clipboard.hasStrings()) {
-                      ScaffoldMessenger.of(context).clearSnackBars();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          buildCopiedSnackbar(
-                              theme, localization.copyAddressConfirmed));
-                    }
-                  },
-                  icon: FontAwesomeIcons.copy,
-                  isFocus: isScanQrFocused,
-                  focusNode: _scanQrFocusNode)
+              ? Semantics(
+                  label: localization.copyAddressLabel,
+                  child: SuffixIcon(
+                      iconSize: 16,
+                      onPressed: () async {
+                        await Clipboard.setData(
+                            ClipboardData(text: _addressController.text));
+                        if (await Clipboard.hasStrings()) {
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              buildCopiedSnackbar(
+                                  theme, localization.copyAddressConfirmed));
+                        }
+                      },
+                      icon: FontAwesomeIcons.copy,
+                      isFocus: isCopyAddressFocused,
+                      focusNode: _copyAddressFocusNode))
               : null,
           errorText: _address.error,
         ),
@@ -575,15 +587,15 @@ class RecipientStepState extends State<RecipientStep>
               ? Semantics(
                   label: localization.scanQrCodeLabel,
                   child: SuffixIcon(
-                  onPressed: () => {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => QrScanner(
-                                currentRoute: widget.routeName,
-                                onChanged: (_value) => {})))
-                      },
-                  icon: FontAwesomeIcons.qrcode,
-                  isFocus: isScanQrFocused,
-                  focusNode: _scanQrFocusNode))
+                      onPressed: () => {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => QrScanner(
+                                    currentRoute: widget.routeName,
+                                    onChanged: (_value) => {})))
+                          },
+                      icon: FontAwesomeIcons.qrcode,
+                      isFocus: isScanQrFocused,
+                      focusNode: _scanQrFocusNode))
               : null,
           errorText: _address.error,
         ),
