@@ -51,6 +51,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.backgroundBox,
     required this.regularPanelText,
     required this.mediumPanelText,
+    required this.navigationColor,
   });
   final Color? selectBackgroundColor;
   final Color? selectedTextColor;
@@ -97,6 +98,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? singleWalletBgColor;
   final Color? warningColor;
   final Color? backgroundBox;
+  final Color? navigationColor;
   final TextStyle? regularPanelText;
   final TextStyle? mediumPanelText;
   @override
@@ -145,6 +147,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       Color? backgroundBox,
       TextStyle? regularPanelText,
       TextStyle? mediumPanelText,
+      Color? navigationColor,
       r}) {
     return ExtendedTheme(
         selectBackgroundColor:
@@ -209,7 +212,9 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         warningColor: warningColor ?? this.warningColor,
         backgroundBox: backgroundBox ?? this.backgroundBox,
         regularPanelText: regularPanelText ?? this.regularPanelText,
-        mediumPanelText: mediumPanelText ?? this.mediumPanelText);
+        mediumPanelText: mediumPanelText ?? this.mediumPanelText,
+        navigationColor: navigationColor ?? this.navigationColor,
+        );
   }
 
   // Controls how the properties change on theme changes
@@ -290,7 +295,9 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         warningColor: Color.lerp(warningColor, other.warningColor, t),
         backgroundBox: Color.lerp(backgroundBox, other.backgroundBox, t),
         regularPanelText: TextStyle.lerp(regularPanelText, other.regularPanelText, t),
-        mediumPanelText: TextStyle.lerp(mediumPanelText, other.mediumPanelText, t));
+        mediumPanelText: TextStyle.lerp(mediumPanelText, other.mediumPanelText, t),
+        navigationColor: Color.lerp(navigationColor, other.navigationColor, t),
+        );
   }
 
   // the light theme
@@ -308,6 +315,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     walletActiveItemBorderColor: WitnetPallet.witnetGreen1,
     walletItemBorderColor: WitnetPallet.lightGrey,
     inputIconColor: WitnetPallet.lightGrey,
+    navigationColor: WitnetPallet.lightGrey,
     txBorderColor: WitnetPallet.lightGrey,
     txValueNegativeColor: WitnetPallet.darkRed,
     txValuePositiveColor: WitnetPallet.darkGreen,
@@ -410,6 +418,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     tooltipBgColor: WitnetPallet.opacityWitnetGreen,
     hdWalletTypeBgColor: WitnetPallet.mediumGrey,
     singleWalletBgColor: WitnetPallet.brown,
+    navigationColor: WitnetPallet.opacityWhite2,
     monoSmallText: TextStyle(
         fontFamily: 'RobotoMono',
         fontWeight: FontWeight.w400,
