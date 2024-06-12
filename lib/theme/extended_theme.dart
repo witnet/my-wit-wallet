@@ -150,71 +150,71 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       Color? navigationColor,
       r}) {
     return ExtendedTheme(
-        selectBackgroundColor:
-            selectBackgroundColor ?? this.selectBackgroundColor,
-        selectedTextColor: selectedTextColor ?? this.selectedTextColor,
-        dropdownBackgroundColor:
-            dropdownBackgroundColor ?? this.dropdownBackgroundColor,
-        dropdownTextColor: dropdownTextColor ?? this.dropdownTextColor,
-        navigationActiveButton:
-            navigationActiveButton ?? this.navigationActiveButton,
-        headerBackgroundColor:
-            headerBackgroundColor ?? this.headerBackgroundColor,
-        headerTextColor: headerTextColor ?? this.headerTextColor,
-        headerActiveTextColor:
-            headerActiveTextColor ?? this.headerActiveTextColor,
-        walletListBackgroundColor:
-            walletListBackgroundColor ?? this.walletListBackgroundColor,
-        walletActiveItemBackgroundColor: walletActiveItemBackgroundColor ??
-            this.walletActiveItemBackgroundColor,
-        walletActiveItemBorderColor:
-            walletActiveItemBorderColor ?? this.walletActiveItemBorderColor,
-        walletItemBorderColor:
-            walletItemBorderColor ?? this.walletItemBorderColor,
-        inputIconColor: inputIconColor ?? this.inputIconColor,
-        txBorderColor: txBorderColor ?? this.txBorderColor,
-        txValueNegativeColor: txValueNegativeColor ?? this.txValueNegativeColor,
-        txValuePositiveColor: txValuePositiveColor ?? this.txValuePositiveColor,
-        stepBarActiveColor: stepBarActiveColor ?? this.stepBarActiveColor,
-        stepBarActionableColor:
-            stepBarActionableColor ?? this.stepBarActionableColor,
-        stepBarColor: stepBarColor ?? this.stepBarColor,
-        switchActiveBg: switchActiveBg ?? this.switchActiveBg,
-        switchActiveFg: switchActiveFg ?? this.switchActiveFg,
-        switchInactiveBg: switchInactiveBg ?? this.switchInactiveBg,
-        switchInactiveFg: switchInactiveFg ?? this.switchInactiveFg,
-        switchBorderColor: switchBorderColor ?? this.switchBorderColor,
-        errorColor: errorColor ?? this.errorColor,
-        activeClickableBoxBgColor:
-            activeClickableBoxBgColor ?? this.activeClickableBoxBgColor,
-        activeClickableBoxBorderColor:
-            activeClickableBoxBorderColor ?? this.activeClickableBoxBorderColor,
-        inactiveClickableBoxBgColor:
-            inactiveClickableBoxBgColor ?? this.inactiveClickableBoxBgColor,
-        inactiveClickableBoxBorderColor: inactiveClickableBoxBorderColor ??
-            this.inactiveClickableBoxBorderColor,
-        dialogBackground: dialogBackground ?? this.dialogBackground,
-        copiedSnackbarBg: copiedSnackbarBg ?? copiedSnackbarBg,
-        copiedSnackbarText: copiedSnackbarText ?? copiedSnackbarText,
-        monoSmallText: monoSmallText ?? this.monoSmallText,
-        monoRegularText: monoRegularText ?? this.monoRegularText,
-        monoMediumText: monoMediumText ?? this.monoMediumText,
-        monoLargeText: monoLargeText ?? this.monoLargeText,
-        numberPaginatiorSelectedBg:
-            numberPaginatiorSelectedBg ?? this.numberPaginatiorSelectedBg,
-        numberPaginatiorUnselectedFg:
-            numberPaginatiorUnselectedFg ?? this.numberPaginatiorUnselectedFg,
-        darkBgFocusColor: darkBgFocusColor ?? this.darkBgFocusColor,
-        focusBg: focusBg ?? this.focusBg,
-        tooltipBgColor: tooltipBgColor ?? this.tooltipBgColor,
-        hdWalletTypeBgColor: hdWalletTypeBgColor ?? this.hdWalletTypeBgColor,
-        singleWalletBgColor: singleWalletBgColor ?? this.singleWalletBgColor,
-        warningColor: warningColor ?? this.warningColor,
-        backgroundBox: backgroundBox ?? this.backgroundBox,
-        regularPanelText: regularPanelText ?? this.regularPanelText,
-        mediumPanelText: mediumPanelText ?? this.mediumPanelText,
-        navigationColor: navigationColor ?? this.navigationColor,
-        );
+      selectBackgroundColor:
+          selectBackgroundColor ?? this.selectBackgroundColor,
+      selectedTextColor: selectedTextColor ?? this.selectedTextColor,
+      dropdownBackgroundColor:
+          dropdownBackgroundColor ?? this.dropdownBackgroundColor,
+      dropdownTextColor: dropdownTextColor ?? this.dropdownTextColor,
+      navigationActiveButton:
+          navigationActiveButton ?? this.navigationActiveButton,
+      headerBackgroundColor:
+          headerBackgroundColor ?? this.headerBackgroundColor,
+      headerTextColor: headerTextColor ?? this.headerTextColor,
+      headerActiveTextColor:
+          headerActiveTextColor ?? this.headerActiveTextColor,
+      walletListBackgroundColor:
+          walletListBackgroundColor ?? this.walletListBackgroundColor,
+      walletActiveItemBackgroundColor: walletActiveItemBackgroundColor ??
+          this.walletActiveItemBackgroundColor,
+      walletActiveItemBorderColor:
+          walletActiveItemBorderColor ?? this.walletActiveItemBorderColor,
+      walletItemBorderColor:
+          walletItemBorderColor ?? this.walletItemBorderColor,
+      inputIconColor: inputIconColor ?? this.inputIconColor,
+      txBorderColor: txBorderColor ?? this.txBorderColor,
+      txValueNegativeColor: txValueNegativeColor ?? this.txValueNegativeColor,
+      txValuePositiveColor: txValuePositiveColor ?? this.txValuePositiveColor,
+      stepBarActiveColor: stepBarActiveColor ?? this.stepBarActiveColor,
+      stepBarActionableColor:
+          stepBarActionableColor ?? this.stepBarActionableColor,
+      stepBarColor: stepBarColor ?? this.stepBarColor,
+      switchActiveBg: switchActiveBg ?? this.switchActiveBg,
+      switchActiveFg: switchActiveFg ?? this.switchActiveFg,
+      switchInactiveBg: switchInactiveBg ?? this.switchInactiveBg,
+      switchInactiveFg: switchInactiveFg ?? this.switchInactiveFg,
+      switchBorderColor: switchBorderColor ?? this.switchBorderColor,
+      errorColor: errorColor ?? this.errorColor,
+      activeClickableBoxBgColor:
+          activeClickableBoxBgColor ?? this.activeClickableBoxBgColor,
+      activeClickableBoxBorderColor:
+          activeClickableBoxBorderColor ?? this.activeClickableBoxBorderColor,
+      inactiveClickableBoxBgColor:
+          inactiveClickableBoxBgColor ?? this.inactiveClickableBoxBgColor,
+      inactiveClickableBoxBorderColor: inactiveClickableBoxBorderColor ??
+          this.inactiveClickableBoxBorderColor,
+      dialogBackground: dialogBackground ?? this.dialogBackground,
+      copiedSnackbarBg: copiedSnackbarBg ?? copiedSnackbarBg,
+      copiedSnackbarText: copiedSnackbarText ?? copiedSnackbarText,
+      monoSmallText: monoSmallText ?? this.monoSmallText,
+      monoRegularText: monoRegularText ?? this.monoRegularText,
+      monoMediumText: monoMediumText ?? this.monoMediumText,
+      monoLargeText: monoLargeText ?? this.monoLargeText,
+      numberPaginatiorSelectedBg:
+          numberPaginatiorSelectedBg ?? this.numberPaginatiorSelectedBg,
+      numberPaginatiorUnselectedFg:
+          numberPaginatiorUnselectedFg ?? this.numberPaginatiorUnselectedFg,
+      darkBgFocusColor: darkBgFocusColor ?? this.darkBgFocusColor,
+      focusBg: focusBg ?? this.focusBg,
+      tooltipBgColor: tooltipBgColor ?? this.tooltipBgColor,
+      hdWalletTypeBgColor: hdWalletTypeBgColor ?? this.hdWalletTypeBgColor,
+      singleWalletBgColor: singleWalletBgColor ?? this.singleWalletBgColor,
+      warningColor: warningColor ?? this.warningColor,
+      backgroundBox: backgroundBox ?? this.backgroundBox,
+      regularPanelText: regularPanelText ?? this.regularPanelText,
+      mediumPanelText: mediumPanelText ?? this.mediumPanelText,
+      navigationColor: navigationColor ?? this.navigationColor,
+    );
   }
 
   // Controls how the properties change on theme changes
@@ -224,80 +224,87 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       return this;
     }
     return ExtendedTheme(
-        selectBackgroundColor:
-            Color.lerp(selectBackgroundColor, other.selectBackgroundColor, t),
-        selectedTextColor:
-            Color.lerp(selectedTextColor, other.selectedTextColor, t),
-        dropdownBackgroundColor: Color.lerp(
-            dropdownBackgroundColor, other.dropdownBackgroundColor, t),
-        dropdownTextColor:
-            Color.lerp(dropdownTextColor, other.dropdownTextColor, t),
-        navigationActiveButton:
-            Color.lerp(navigationActiveButton, other.navigationActiveButton, t),
-        headerBackgroundColor:
-            Color.lerp(headerBackgroundColor, other.dropdownTextColor, t),
-        headerTextColor:
-            Color.lerp(headerTextColor, other.dropdownTextColor, t),
-        headerActiveTextColor:
-            Color.lerp(headerActiveTextColor, other.dropdownTextColor, t),
-        walletListBackgroundColor: Color.lerp(
-            walletListBackgroundColor, other.walletListBackgroundColor, t),
-        walletActiveItemBackgroundColor: Color.lerp(
-            walletActiveItemBackgroundColor,
-            other.walletActiveItemBackgroundColor,
-            t),
-        walletActiveItemBorderColor: Color.lerp(
-            walletActiveItemBorderColor, other.walletActiveItemBorderColor, t),
-        walletItemBorderColor:
-            Color.lerp(walletItemBorderColor, other.walletItemBorderColor, t),
-        inputIconColor: Color.lerp(inputIconColor, other.inputIconColor, t),
-        txBorderColor: Color.lerp(txBorderColor, other.txBorderColor, t),
-        txValueNegativeColor:
-            Color.lerp(txValueNegativeColor, other.txValueNegativeColor, t),
-        txValuePositiveColor:
-            Color.lerp(txValuePositiveColor, other.txValuePositiveColor, t),
-        stepBarActiveColor:
-            Color.lerp(stepBarActiveColor, other.stepBarActiveColor, t),
-        stepBarActionableColor:
-            Color.lerp(stepBarActiveColor, other.stepBarActionableColor, t),
-        stepBarColor: Color.lerp(stepBarColor, other.stepBarColor, t),
-        dialogBackground:
-            Color.lerp(dialogBackground, other.dialogBackground, t),
-        switchActiveBg: Color.lerp(switchActiveBg, other.switchActiveBg, t),
-        switchActiveFg: Color.lerp(switchActiveFg, other.switchActiveFg, t),
-        switchInactiveBg:
-            Color.lerp(switchInactiveBg, other.switchInactiveBg, t),
-        switchInactiveFg:
-            Color.lerp(switchInactiveFg, other.switchInactiveFg, t),
-        switchBorderColor:
-            Color.lerp(switchBorderColor, other.switchBorderColor, t),
-        errorColor: Color.lerp(errorColor, other.errorColor, t),
-        activeClickableBoxBgColor: Color.lerp(
-            activeClickableBoxBgColor, other.activeClickableBoxBgColor, t),
-        activeClickableBoxBorderColor: Color.lerp(activeClickableBoxBorderColor,
-            other.activeClickableBoxBorderColor, t),
-        inactiveClickableBoxBgColor: Color.lerp(
-            inactiveClickableBoxBgColor, other.inactiveClickableBoxBgColor, t),
-        inactiveClickableBoxBorderColor: Color.lerp(inactiveClickableBoxBorderColor, other.inactiveClickableBoxBorderColor, t),
-        numberPaginatiorSelectedBg: Color.lerp(numberPaginatiorSelectedBg, other.numberPaginatiorSelectedBg, t),
-        numberPaginatiorUnselectedFg: Color.lerp(numberPaginatiorUnselectedFg, other.numberPaginatiorUnselectedFg, t),
-        copiedSnackbarBg: Color.lerp(copiedSnackbarBg, other.copiedSnackbarBg, t),
-        copiedSnackbarText: Color.lerp(copiedSnackbarText, other.copiedSnackbarText, t),
-        monoSmallText: TextStyle.lerp(monoSmallText, other.monoSmallText, t),
-        monoRegularText: TextStyle.lerp(monoRegularText, other.monoRegularText, t),
-        monoMediumText: TextStyle.lerp(monoMediumText, other.monoMediumText, t),
-        monoLargeText: TextStyle.lerp(monoLargeText, other.monoLargeText, t),
-        darkBgFocusColor: Color.lerp(darkBgFocusColor, other.darkBgFocusColor, t),
-        focusBg: Color.lerp(focusBg, other.focusBg, t),
-        tooltipBgColor: Color.lerp(focusBg, other.focusBg, t),
-        hdWalletTypeBgColor: Color.lerp(hdWalletTypeBgColor, other.hdWalletTypeBgColor, t),
-        singleWalletBgColor: Color.lerp(singleWalletBgColor, other.singleWalletBgColor, t),
-        warningColor: Color.lerp(warningColor, other.warningColor, t),
-        backgroundBox: Color.lerp(backgroundBox, other.backgroundBox, t),
-        regularPanelText: TextStyle.lerp(regularPanelText, other.regularPanelText, t),
-        mediumPanelText: TextStyle.lerp(mediumPanelText, other.mediumPanelText, t),
-        navigationColor: Color.lerp(navigationColor, other.navigationColor, t),
-        );
+      selectBackgroundColor:
+          Color.lerp(selectBackgroundColor, other.selectBackgroundColor, t),
+      selectedTextColor:
+          Color.lerp(selectedTextColor, other.selectedTextColor, t),
+      dropdownBackgroundColor:
+          Color.lerp(dropdownBackgroundColor, other.dropdownBackgroundColor, t),
+      dropdownTextColor:
+          Color.lerp(dropdownTextColor, other.dropdownTextColor, t),
+      navigationActiveButton:
+          Color.lerp(navigationActiveButton, other.navigationActiveButton, t),
+      headerBackgroundColor:
+          Color.lerp(headerBackgroundColor, other.dropdownTextColor, t),
+      headerTextColor: Color.lerp(headerTextColor, other.dropdownTextColor, t),
+      headerActiveTextColor:
+          Color.lerp(headerActiveTextColor, other.dropdownTextColor, t),
+      walletListBackgroundColor: Color.lerp(
+          walletListBackgroundColor, other.walletListBackgroundColor, t),
+      walletActiveItemBackgroundColor: Color.lerp(
+          walletActiveItemBackgroundColor,
+          other.walletActiveItemBackgroundColor,
+          t),
+      walletActiveItemBorderColor: Color.lerp(
+          walletActiveItemBorderColor, other.walletActiveItemBorderColor, t),
+      walletItemBorderColor:
+          Color.lerp(walletItemBorderColor, other.walletItemBorderColor, t),
+      inputIconColor: Color.lerp(inputIconColor, other.inputIconColor, t),
+      txBorderColor: Color.lerp(txBorderColor, other.txBorderColor, t),
+      txValueNegativeColor:
+          Color.lerp(txValueNegativeColor, other.txValueNegativeColor, t),
+      txValuePositiveColor:
+          Color.lerp(txValuePositiveColor, other.txValuePositiveColor, t),
+      stepBarActiveColor:
+          Color.lerp(stepBarActiveColor, other.stepBarActiveColor, t),
+      stepBarActionableColor:
+          Color.lerp(stepBarActiveColor, other.stepBarActionableColor, t),
+      stepBarColor: Color.lerp(stepBarColor, other.stepBarColor, t),
+      dialogBackground: Color.lerp(dialogBackground, other.dialogBackground, t),
+      switchActiveBg: Color.lerp(switchActiveBg, other.switchActiveBg, t),
+      switchActiveFg: Color.lerp(switchActiveFg, other.switchActiveFg, t),
+      switchInactiveBg: Color.lerp(switchInactiveBg, other.switchInactiveBg, t),
+      switchInactiveFg: Color.lerp(switchInactiveFg, other.switchInactiveFg, t),
+      switchBorderColor:
+          Color.lerp(switchBorderColor, other.switchBorderColor, t),
+      errorColor: Color.lerp(errorColor, other.errorColor, t),
+      activeClickableBoxBgColor: Color.lerp(
+          activeClickableBoxBgColor, other.activeClickableBoxBgColor, t),
+      activeClickableBoxBorderColor: Color.lerp(activeClickableBoxBorderColor,
+          other.activeClickableBoxBorderColor, t),
+      inactiveClickableBoxBgColor: Color.lerp(
+          inactiveClickableBoxBgColor, other.inactiveClickableBoxBgColor, t),
+      inactiveClickableBoxBorderColor: Color.lerp(
+          inactiveClickableBoxBorderColor,
+          other.inactiveClickableBoxBorderColor,
+          t),
+      numberPaginatiorSelectedBg: Color.lerp(
+          numberPaginatiorSelectedBg, other.numberPaginatiorSelectedBg, t),
+      numberPaginatiorUnselectedFg: Color.lerp(
+          numberPaginatiorUnselectedFg, other.numberPaginatiorUnselectedFg, t),
+      copiedSnackbarBg: Color.lerp(copiedSnackbarBg, other.copiedSnackbarBg, t),
+      copiedSnackbarText:
+          Color.lerp(copiedSnackbarText, other.copiedSnackbarText, t),
+      monoSmallText: TextStyle.lerp(monoSmallText, other.monoSmallText, t),
+      monoRegularText:
+          TextStyle.lerp(monoRegularText, other.monoRegularText, t),
+      monoMediumText: TextStyle.lerp(monoMediumText, other.monoMediumText, t),
+      monoLargeText: TextStyle.lerp(monoLargeText, other.monoLargeText, t),
+      darkBgFocusColor: Color.lerp(darkBgFocusColor, other.darkBgFocusColor, t),
+      focusBg: Color.lerp(focusBg, other.focusBg, t),
+      tooltipBgColor: Color.lerp(focusBg, other.focusBg, t),
+      hdWalletTypeBgColor:
+          Color.lerp(hdWalletTypeBgColor, other.hdWalletTypeBgColor, t),
+      singleWalletBgColor:
+          Color.lerp(singleWalletBgColor, other.singleWalletBgColor, t),
+      warningColor: Color.lerp(warningColor, other.warningColor, t),
+      backgroundBox: Color.lerp(backgroundBox, other.backgroundBox, t),
+      regularPanelText:
+          TextStyle.lerp(regularPanelText, other.regularPanelText, t),
+      mediumPanelText:
+          TextStyle.lerp(mediumPanelText, other.mediumPanelText, t),
+      navigationColor: Color.lerp(navigationColor, other.navigationColor, t),
+    );
   }
 
   // the light theme
