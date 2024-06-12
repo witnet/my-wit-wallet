@@ -44,16 +44,17 @@ class BalanceState extends State<Balance> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Semantics(
-                          label: localization.balance,
-                          button: true,
-                          child: IntrinsicWidth(
-              child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                      onTap: widget.onShowBalanceDetails,
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 8, top: 8, bottom: 8),
-                        child: Row(
+              label: localization.balance,
+              button: true,
+              enabled: true,
+              child: IntrinsicWidth(
+                  child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        onTap: widget.onShowBalanceDetails,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -61,12 +62,19 @@ class BalanceState extends State<Balance> {
                                     '${widget.currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
                                     textAlign: TextAlign.center,
                                     style: theme.textTheme.headlineMedium),
-                                SizedBox(width: 8),
-                                Icon(
-                                  color: theme.textTheme.headlineMedium!.color,
-                                  FontAwesomeIcons.sortDown,
-                                  size: 12,
-                                )
+                                Flexible(
+                                  child: PaddedButton(
+                                      padding: EdgeInsets.zero,
+                                      label: localization.showBalanceDetails,
+                                      text: localization.showBalanceDetails,
+                                      type: ButtonType.iconButton,
+                                      iconSize: 12,
+                                      onPressed: widget.onShowBalanceDetails,
+                                      icon: Icon(
+                                        FontAwesomeIcons.sortDown,
+                                        size: 12,
+                                      )),
+                                ),
                               ]),
                         ),
                       )))),

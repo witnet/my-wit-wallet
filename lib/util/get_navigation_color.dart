@@ -8,5 +8,5 @@ Color? getNavigationColor(
   final extendedTheme = theme.extension<ExtendedTheme>()!;
   return routesList.contains(currentRoute(context))
       ? extendedTheme.navigationActiveButton
-      : extendedTheme.inputIconColor;
+      : extendedTheme.navigationColor;
 }

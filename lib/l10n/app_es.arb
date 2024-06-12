@@ -334,5 +334,6 @@
   "unstakeTxnSuccess": "¡Transacción de unstake enviada con éxito!",
   "sendReceiveTx": "Enviar o recibir WIT",
   "stakeUnstake": "Stake o unstake WIT",
-  "home": "Lista de transacciones"
+  "home": "Lista de transacciones",
+  "showBalanceDetails": "Mostrar detalles del balace"
 }
