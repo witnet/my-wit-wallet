@@ -78,7 +78,6 @@ class BalanceState extends State<Balance> {
                               ]),
                         ),
                       )))),
-          SizedBox(height: 8),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Flexible(
                 child: Semantics(
