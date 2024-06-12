@@ -333,5 +333,6 @@
   "unstakeTxnSuccess": "Unstake transaction succesfully sent!",
   "sendReceiveTx": "Send or receive WIT",
   "stakeUnstake": "Stake or unstake WIT",
-  "home": "Transactions list"
+  "home": "Transactions list",
+  "showBalanceDetails": "Show balance details"
 }
