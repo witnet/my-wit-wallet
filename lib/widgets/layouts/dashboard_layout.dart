@@ -164,9 +164,6 @@ class DashboardLayoutState extends State<DashboardLayout>
           bottomNavigation: isDesktopSize ? null : _buildBottomNavigation(),
           widgetList: [
             _body,
-            SizedBox(
-              height: 24,
-            ),
           ],
           actions: [],
           slidingPanel: _panelContent,
