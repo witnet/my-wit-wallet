@@ -28,7 +28,6 @@ class BottomNavigation extends StatelessWidget {
     final theme = Theme.of(context);
     final double mainIconHeight = 40;
     final double iconHeight = 20;
-
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       PaddedButton(
         color: getNavigationColor(

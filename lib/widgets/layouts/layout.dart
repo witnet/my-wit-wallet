@@ -63,6 +63,12 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
       (globals.isPanelClose == null || globals.isPanelClose!);
   bool get showBottomBar =>
       allowBottomBar && (!isDesktopSize || widget.actions.length > 0);
+  double get bottomBarPadding => showBottomBar
+      ? MediaQuery.of(context).viewInsets.bottom +
+          kBottomNavigationBarHeight +
+          MediaQuery.of(context).viewPadding.bottom +
+          DEFAULT_BOTTOM_PADDING
+      : DEFAULT_BOTTOM_PADDING;
 
   @override
   void initState() {
@@ -195,11 +201,6 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     } else {
       // Hide panel if the mobile keyboard is open
       hidePanelOnMobileIfKeyboard();
-      double bottomBarPadding = showBottomBar
-          ? MediaQuery.of(context).viewInsets.bottom +
-              kBottomNavigationBarHeight +
-              DEFAULT_BOTTOM_PADDING
-          : DEFAULT_BOTTOM_PADDING;
       return SlidingUpPanel(
           controller: panelController,
           color: extendedTheme.walletListBackgroundColor!,
@@ -215,16 +216,13 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           body: GestureDetector(
               excludeFromSemantics: true,
               onTap: () => PanelUtils().close(),
-              child: Padding(
-                  child: _buildMainLayout(context, theme, true),
-                  padding: EdgeInsets.only(bottom: bottomBarPadding))));
+              child: _buildMainLayout(context, theme, true)));
     }
   }
 
   Widget _buildMainLayout(BuildContext context, theme, bool panel) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-
     return CustomScrollView(
       controller: widget.scrollController != null
           ? widget.scrollController
@@ -249,7 +247,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                 isDashboard ? getDashboardHeaderHeight() : HEADER_HEIGHT,
             flexibleSpace: headerLayout(context, theme)),
         SliverPadding(
-          padding: EdgeInsets.only(left: 16, right: 16, top: 24),
+          padding: EdgeInsets.only(
+              left: 16, right: 16, top: 24, bottom: bottomBarPadding),
           sliver: SliverToBoxAdapter(
               child: Center(
             child: ConstrainedBox(
@@ -285,12 +284,30 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
 
   Widget dashboardBottomBar() {
     final theme = Theme.of(context);
-    return BottomAppBar(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        height: 60,
-        color: theme.colorScheme.surface,
-        notchMargin: 5,
-        child: widget.bottomNavigation);
+    return Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+          colors: [
+            theme.colorScheme.surface.withOpacity(0),
+            theme.colorScheme.surface.withOpacity(0.7),
+            theme.colorScheme.surface.withOpacity(0.8),
+            theme.colorScheme.surface.withOpacity(0.9),
+            theme.colorScheme.surface.withOpacity(0.95),
+            theme.colorScheme.surface.withOpacity(0.97),
+            theme.colorScheme.surface.withOpacity(0.98),
+            theme.colorScheme.surface.withOpacity(0.99),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: [0, 0.03, 0.05, 0.1, 0.15, 0.2, 0.95, 1],
+        )),
+        child: BottomAppBar(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            height: 60,
+            surfaceTintColor: theme.colorScheme.surface.withOpacity(0.0),
+            color: theme.colorScheme.surface.withOpacity(0.0),
+            notchMargin: 5,
+            child: widget.bottomNavigation));
   }
 
   Widget bottomBar() {
@@ -354,6 +371,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         canPop: false,
         child: Scaffold(
             resizeToAvoidBottomInset: true,
+            extendBody: true,
             backgroundColor: theme.colorScheme.surface,
             body: buildOverlay(buildMainContent(context, theme)),
             bottomNavigationBar: getBottomBar()));
