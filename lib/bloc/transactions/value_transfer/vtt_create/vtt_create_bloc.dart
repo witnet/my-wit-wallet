@@ -707,7 +707,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         transactionToSend = Transaction(unstake: transactionBuilt);
     }
     transactionAccepted = await _sendTransaction(transactionToSend);
-    //* TODO: save stake and unstake transaction in db
+    // TODO(#542): save stake and unstake transaction in db
     if (transactionAccepted && event.transaction.vtTransaction != null) {
       /// Adds pending transaction
       List<InputUtxo> _inputUtxoList = _buildInputUtxoList();

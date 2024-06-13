@@ -207,7 +207,7 @@ class TransactionBody {
       this.unstakeTransactionBody});
 }
 
-//* TODO: update StakeData
+// TODO(#542): update StakeData
 class StakeData {
   final List<ValueTransferOutput> outputs;
   final int timestamp;
@@ -230,7 +230,7 @@ class StakeData {
   });
 }
 
-//* TODO: update UnstakeData
+// TODO(#542): update UnstakeData
 class UnstakeData {
   final List<ValueTransferOutput> outputs;
   final int timestamp;
@@ -297,7 +297,7 @@ class VttData {
 }
 
 class GeneralTransaction extends HashInfo {
-  //* TODO: show stake and unstake transactions in transactions list create db
+  // TODO(#542): show stake and unstake transactions in transactions list create db
   // StakeData? stake;
   // UnstakeData? unstake;
   MintData? mint;
@@ -325,7 +325,7 @@ class GeneralTransaction extends HashInfo {
             type: type,
             txnTime: time,
             blockHash: blockHash);
-  //* TODO: update stakeData
+  // TODO(#542): update stakeData
   factory GeneralTransaction.fromStakeEntry(StakeEntry mintEntry) =>
       GeneralTransaction(
           blockHash: mintEntry.blockHash,
@@ -345,7 +345,7 @@ class GeneralTransaction extends HashInfo {
               dataRequestCount: mintEntry.dataRequestCount,
               revealCount: mintEntry.revealCount,
               tallyCount: mintEntry.tallyCount));
-  //* TODO: update unstakeData
+  // TODO(#542): update unstakeData
   factory GeneralTransaction.fromUnstakeEntry(UnstakeEntry mintEntry) =>
       GeneralTransaction(
           blockHash: mintEntry.blockHash,
@@ -511,11 +511,11 @@ class UnstakeEntry {
       confirmed: json['confirmed'] ?? false,
       reverted: json['reverted'] ?? false,
       status: TransactionStatus.fromJson(json).status,
-      //* TODO: se new stake and unstake transaction types
+      // TODO(#542): se new stake and unstake transaction types
       type: TransactionType.mint,
     );
   }
-  //* TODO: update factory to use Unstakeinfo instead of BlocInfo
+  // TODO(#542): update factory to use Unstakeinfo instead of BlocInfo
   factory UnstakeEntry.fromUnstakeInfo(
           BlockInfo blockInfo, BlockDetails blockDetails) =>
       UnstakeEntry(
@@ -534,7 +534,7 @@ class UnstakeEntry {
           'confirmed': blockDetails.confirmed,
           'reverted': blockDetails.reverted
         }).status,
-        //* TODO: se new stake and unstake transaction types
+        // TODO(#542): se new stake and unstake transaction types
         type: TransactionType.mint,
         confirmed: blockDetails.confirmed,
         reverted: blockDetails.reverted,
@@ -620,12 +620,12 @@ class StakeEntry {
       confirmed: json['confirmed'] ?? false,
       reverted: json['reverted'] ?? false,
       status: TransactionStatus.fromJson(json).status,
-      //* TODO: se new stake and unstake transaction types
+      // TODO(#542): se new stake and unstake transaction types
       type: TransactionType.mint,
     );
   }
 
-  //* TODO: update factory to use StakeInfo instead of BlocInfo
+  // TODO(#542): update factory to use StakeInfo instead of BlocInfo
   factory StakeEntry.fromStakeInfo(
           BlockInfo blockInfo, BlockDetails blockDetails) =>
       StakeEntry(
@@ -644,7 +644,7 @@ class StakeEntry {
           'confirmed': blockDetails.confirmed,
           'reverted': blockDetails.reverted
         }).status,
-        //* TODO: se new stake and unstake transaction types
+        // TODO(#542): se new stake and unstake transaction types
         type: TransactionType.mint,
         confirmed: blockDetails.confirmed,
         reverted: blockDetails.reverted,

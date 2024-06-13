@@ -210,8 +210,8 @@ class ApiExplorer {
     return mintEntry;
   }
 
-  //* TODO: use StakeInfo instead of BlockInfo
-  //* TODO: use StakeDetails instead of BlockDetails
+  // TODO(#542): use StakeInfo instead of BlockInfo
+  // TODO(#542): use StakeDetails instead of BlockDetails
   Future<StakeEntry> getStake(BlockInfo stakeInfo) async {
     String _hash = stakeInfo.hash;
     var result = await Locator.instance.get<ApiExplorer>().hash(_hash);
@@ -224,8 +224,8 @@ class ApiExplorer {
     return stakeEntry;
   }
 
-  //* TODO: use UnstakeInfo instead of BlockInfo
-  //* TODO: use UnstakeDetails instead of BlockDetails
+  // TODO(#542): use UnstakeInfo instead of BlockInfo
+  // TODO(#542): use UnstakeDetails instead of BlockDetails
   Future<UnstakeEntry> getUnstake(BlockInfo unstakeInfo) async {
     String _hash = unstakeInfo.hash;
     var result = await Locator.instance.get<ApiExplorer>().hash(_hash);

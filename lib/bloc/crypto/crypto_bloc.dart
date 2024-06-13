@@ -326,7 +326,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   }
 
   Future<Account> _syncStakes(Account account) async {
-    //* TODO: get StakeInfo info instead of BlockInfo and get stake from .data instead of blocks
+    // TODO(#542): get StakeInfo info instead of BlockInfo and get stake from .data instead of blocks
     try {
       /// retrieve any Block Hashes
       final stakes = await apiExplorer.address(
@@ -359,7 +359,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   }
 
   Future<Account> _syncUnstakes(Account account) async {
-    //* TODO: get UnstakeInfo instead of BlockInfo and get unstake from .data instead of blocks
+    // TODO(#542): get UnstakeInfo instead of BlockInfo and get unstake from .data instead of blocks
     try {
       /// retrieve any Block Hashes
       final unstakes = await apiExplorer.address(
