@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:my_wit_wallet/util/allow_biometrics.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
+import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/general_error_tx_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/sending_tx_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/signing_tx_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/successfull_transaction_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/unlock_keychain_modal.dart';
-import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
@@ -24,10 +24,12 @@ class ReviewStep extends StatefulWidget {
   final Wallet currentWallet;
   final String originRoute;
   final GeneralTransaction? speedUpTx;
+  final TransactionType transactionType;
   ReviewStep({
     required this.nextAction,
     required this.currentWallet,
     required this.originRoute,
+    required this.transactionType,
     this.speedUpTx,
   });
 
@@ -38,6 +40,10 @@ class ReviewStep extends StatefulWidget {
 class ReviewStepState extends State<ReviewStep>
     with SingleTickerProviderStateMixin {
   late AnimationController _loadingController;
+  bool get showFeeInfo => widget.transactionType != TransactionType.Unstake;
+  bool get isVttTransaction => widget.transactionType == TransactionType.Vtt;
+  TransactionBloc get createVttBloc =>
+      BlocProvider.of<TransactionBloc>(context);
 
   @override
   void initState() {
@@ -58,29 +64,29 @@ class ReviewStepState extends State<ReviewStep>
   }
 
   void nextAction() async {
-    BlocProvider.of<VTTCreateBloc>(context).add(SetBuildingEvent());
+    BlocProvider.of<TransactionBloc>(context).add(SetBuildingEvent());
     // Sign transaction
     if (await showBiometrics()) {
-      BlocProvider.of<VTTCreateBloc>(context).add(ShowAuthPreferencesEvent());
+      BlocProvider.of<TransactionBloc>(context).add(ShowAuthPreferencesEvent());
     } else {
       _signTransaction();
     }
   }
 
   void _signTransaction() {
-    final vtt =
-        BlocProvider.of<VTTCreateBloc>(context).state.vtTransaction.body;
-    BlocProvider.of<VTTCreateBloc>(context).add(SignTransactionEvent(
+    final vttBody = createVttBloc.state.transaction
+        .getBody(createVttBloc.state.transactionType);
+    BlocProvider.of<TransactionBloc>(context).add(SignTransactionEvent(
       currentWallet: widget.currentWallet,
-      vtTransactionBody: vtt,
+      transactionBody: vttBody,
       speedUpTx: widget.speedUpTx,
     ));
   }
 
-  void _sendTransaction(VTTransaction vtTransaction) {
-    BlocProvider.of<VTTCreateBloc>(context).add(SendTransactionEvent(
+  void _sendTransaction(BuildTransaction transaction) {
+    BlocProvider.of<TransactionBloc>(context).add(SendTransactionEvent(
         currentWallet: widget.currentWallet,
-        transaction: vtTransaction,
+        transaction: transaction,
         speedUpTx: widget.speedUpTx));
   }
 
@@ -91,14 +97,19 @@ class ReviewStepState extends State<ReviewStep>
     );
   }
 
+  String getAmountValue(TransactionState state) {
+    return '${state.transaction.getAmount(state.transactionType)} ${WIT_UNIT[WitUnit.Wit]}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    int fee = BlocProvider.of<VTTCreateBloc>(context).getFee();
-    return BlocListener<VTTCreateBloc, VTTCreateState>(
-        listenWhen: (VTTCreateState prevState, VTTCreateState state) => true,
+    return BlocListener<TransactionBloc, TransactionState>(
+        listenWhen: (TransactionState prevState, TransactionState state) =>
+            true,
         listener: (context, state) {
-          if (state.vttCreateStatus == VTTCreateStatus.needPasswordValidation) {
+          if (state.transactionStatus ==
+              TransactionStatus.needPasswordValidation) {
             unlockKeychainModal(
                 title: localization.enterYourPassword,
                 imageName: 'signing-transaction',
@@ -107,41 +118,50 @@ class ReviewStepState extends State<ReviewStep>
                 onAction: () => _signTransaction(),
                 routeToRedirect: widget.originRoute);
           }
-          if (state.vttCreateStatus == VTTCreateStatus.discarded) {
+          if (state.transactionStatus == TransactionStatus.discarded) {
             buildTxGeneralExceptionModal(
                 theme: theme,
                 context: context,
                 originRoute: widget.originRoute,
-                onAction: () => _sendTransaction(state.vtTransaction));
-          } else if (state.vttCreateStatus == VTTCreateStatus.signing) {
+                onAction: () => _sendTransaction(state.transaction));
+          } else if (state.transactionStatus == TransactionStatus.signing) {
             Navigator.popUntil(
                 context, ModalRoute.withName(widget.originRoute));
             buildSigningTxModal(theme, context);
-          } else if (state.vttCreateStatus == VTTCreateStatus.finished) {
+          } else if (state.transactionStatus == TransactionStatus.finished) {
             // Validate vtt weight to ensure confirmation
-            if (state.vtTransaction.weight <= MAX_VT_WEIGHT) {
+            if (state.transaction.get(state.transactionType) != null &&
+                state.transaction.getWeight(state.transactionType) <=
+                    MAX_VT_WEIGHT) {
               // Send transaction after signed
-              _sendTransaction(state.vtTransaction);
+              _sendTransaction(state.transaction);
             } else {
               buildTxGeneralExceptionModal(
                   theme: theme,
                   context: context,
                   originRoute: widget.originRoute,
-                  onAction: () => _sendTransaction(state.vtTransaction));
+                  onAction: () => _sendTransaction(state.transaction));
             }
-          } else if (state.vttCreateStatus == VTTCreateStatus.sending) {
+          } else if (state.transactionStatus == TransactionStatus.sending) {
             Navigator.popUntil(
                 context, ModalRoute.withName(widget.originRoute));
             buildSendingTransactionModal(theme, context);
-          } else if (state.vttCreateStatus == VTTCreateStatus.accepted) {
+          } else if (state.transactionStatus == TransactionStatus.accepted) {
             buildSuccessfullTransaction(
-                theme, state, context, widget.originRoute);
+                theme: theme,
+                state: state,
+                context: context,
+                routeName: widget.originRoute,
+                amountValue: getAmountValue(state),
+                transactionType: widget.transactionType);
           }
         },
-        child: BlocBuilder<VTTCreateBloc, VTTCreateState>(
+        child: BlocBuilder<TransactionBloc, TransactionState>(
           builder: (context, state) {
-            bool timelockSet =
-                state.vtTransaction.body.outputs[0].timeLock != 0;
+            bool hasTimelock =
+                state.transaction.hasTimelock(state.transactionType);
+            String address =
+                state.transaction.getAddress(state.transactionType);
             return Padding(
                 padding: EdgeInsets.only(left: 8, right: 8),
                 child: Column(
@@ -153,34 +173,43 @@ class ReviewStepState extends State<ReviewStep>
                       ),
                       SizedBox(height: 24),
                       InfoElement(
-                          label: localization.to,
-                          text: state
-                              .vtTransaction.body.outputs.first.pkh.address),
+                          label: isVttTransaction
+                              ? localization.to
+                              : localization.withdrawalAddress,
+                          text: address),
                       InfoElement(
                         label: localization.amount,
-                        text:
-                            '${state.vtTransaction.body.outputs.first.value.toInt().standardizeWitUnits(truncate: -1).formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
+                        text: getAmountValue(state),
                       ),
                       _timelock(state),
-                      if (timelockSet)
+                      if (hasTimelock)
                         SizedBox(
                           height: 16,
                         ),
-                      InfoElement(
-                          label: localization.fee,
-                          isLastItem: true,
-                          text:
-                              '${fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
-                      SizedBox(height: 16),
+                      if (showFeeInfo) ..._buildTransactionFeeInfo(context),
                     ]));
           },
         ));
   }
 }
 
-Widget _timelock(state) {
-  if (state.vtTransaction.body.outputs[0].timeLock != 0) {
-    int timestamp = state.vtTransaction.body.outputs[0].timeLock.toInt() * 1000;
+List<Widget> _buildTransactionFeeInfo(BuildContext context) {
+  int fee = BlocProvider.of<TransactionBloc>(context).getFee();
+  return [
+    InfoElement(
+        label: localization.fee,
+        isLastItem: true,
+        text:
+            '${fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
+    SizedBox(height: 16),
+  ];
+}
+
+Widget _timelock(TransactionState state) {
+  if (state.transaction.hasTimelock(state.transactionType)) {
+    int timestamp =
+        state.transaction.vtTransaction?.body.outputs[0].timeLock.toInt() ??
+            0 * 1000;
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
     return InfoElement(
         label: localization.timelock,

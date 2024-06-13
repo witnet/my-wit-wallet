@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
+import 'package:my_wit_wallet/util/get_header_heigth.dart';
 
 class Customshape extends CustomClipper<Path> {
   @override
@@ -54,12 +55,12 @@ class HeaderLayout extends StatelessWidget {
         decoration: BoxDecoration(
             gradient: LinearGradient(
           colors: [
-            theme.colorScheme.background,
-            theme.colorScheme.background,
-            theme.colorScheme.background,
-            theme.colorScheme.background.withOpacity(0.7),
-            theme.colorScheme.background.withOpacity(0.7),
-            theme.colorScheme.background.withOpacity(0),
+            theme.colorScheme.surface,
+            theme.colorScheme.surface,
+            theme.colorScheme.surface,
+            theme.colorScheme.surface.withOpacity(0.7),
+            theme.colorScheme.surface.withOpacity(0.7),
+            theme.colorScheme.surface.withOpacity(0),
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -72,8 +73,8 @@ class HeaderLayout extends StatelessWidget {
                 child: SafeArea(
                     child: Container(
                   height: dashboardActions != null
-                      ? DASHBOARD_HEADER_HEIGTH
-                      : HEADER_HEIGTH,
+                      ? getDashboardHeaderHeight()
+                      : HEADER_HEIGHT,
                   width: MediaQuery.of(context).size.width,
                   color: extendedTheme.headerBackgroundColor,
                   child: Column(children: [

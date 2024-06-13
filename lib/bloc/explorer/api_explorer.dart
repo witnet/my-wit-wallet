@@ -163,7 +163,9 @@ class ApiExplorer {
 
   /// Send a Generic Transaction
   Future<dynamic> sendTransaction(Transaction transaction) async {
+    print('...........Sending transaction..........');
     try {
+      print('Transaction to send: ${transaction.jsonMap(asHex: true)}');
       await delay();
       return await client.send(transaction: transaction.jsonMap(asHex: true));
     } catch (e) {
@@ -206,5 +208,33 @@ class ApiExplorer {
       blockDetails,
     );
     return mintEntry;
+  }
+
+  // TODO(#542): use StakeInfo instead of BlockInfo
+  // TODO(#542): use StakeDetails instead of BlockDetails
+  Future<StakeEntry> getStake(BlockInfo stakeInfo) async {
+    String _hash = stakeInfo.hash;
+    var result = await Locator.instance.get<ApiExplorer>().hash(_hash);
+
+    BlockDetails stakeDetails = result as BlockDetails;
+    StakeEntry stakeEntry = StakeEntry.fromStakeInfo(
+      stakeInfo,
+      stakeDetails,
+    );
+    return stakeEntry;
+  }
+
+  // TODO(#542): use UnstakeInfo instead of BlockInfo
+  // TODO(#542): use UnstakeDetails instead of BlockDetails
+  Future<UnstakeEntry> getUnstake(BlockInfo unstakeInfo) async {
+    String _hash = unstakeInfo.hash;
+    var result = await Locator.instance.get<ApiExplorer>().hash(_hash);
+
+    BlockDetails unstakeDetails = result as BlockDetails;
+    UnstakeEntry unstakeEntry = UnstakeEntry.fromUnstakeInfo(
+      unstakeInfo,
+      unstakeDetails,
+    );
+    return unstakeEntry;
   }
 }

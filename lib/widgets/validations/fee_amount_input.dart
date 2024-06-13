@@ -63,7 +63,7 @@ class FeeAmountInput extends VttAmountInput {
     }
     if (this.minFee != null &&
         super.witAmountToNanoWitNumber(value) <= this.minFee!) {
-      return '${validationUtils.getErrorText(FeeInputError.minFee)} ${this.minFee!.standardizeWitUnits(outputUnit: WitUnit.Wit)} WIT';
+      return '${validationUtils.getErrorText(FeeInputError.minFee)} ${this.minFee!.standardizeWitUnits(outputUnit: WitUnit.Wit)} ${WIT_UNIT[WitUnit.Wit]}';
     }
     return null;
   }

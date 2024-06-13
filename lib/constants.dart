@@ -5,9 +5,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
-import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
+import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
 import 'package:witnet/data_structures.dart';
 
 typedef String LocalizationCallback(String value);
@@ -23,10 +23,19 @@ Map<DashboardViewSteps, String> localizedDashboardSteps = {
   DashboardViewSteps.stats: localization.dashboardViewSteps('stats'),
 };
 
-Map<VTTsteps, String> localizedVTTsteps = {
-  VTTsteps.Transaction: localization.vttSendSteps('Transaction'),
-  VTTsteps.MinerFee: localization.vttSendSteps('MinerFee'),
-  VTTsteps.Review: localization.vttSendSteps('Review'),
+Map<TxSteps, String> localizedVTTsteps = {
+  TxSteps.Transaction: localization.vttSendSteps('Transaction'),
+  TxSteps.MinerFee: localization.vttSendSteps('MinerFee'),
+  TxSteps.Review: localization.vttSendSteps('Review'),
+};
+Map<TxSteps, String> localizedStakeSteps = {
+  TxSteps.Transaction: localization.stakeSteps('Transaction'),
+  TxSteps.MinerFee: localization.stakeSteps('MinerFee'),
+  TxSteps.Review: localization.stakeSteps('Review'),
+};
+Map<TxSteps, String> localizedUnstakeSteps = {
+  TxSteps.Transaction: localization.unstakeSteps('Transaction'),
+  TxSteps.Review: localization.unstakeSteps('Review'),
 };
 Map<EstimatedFeeOptions, String> localizedFeeOptions = {
   EstimatedFeeOptions.Stinky: localization.estimatedFeeOptions('stinky'),
@@ -117,8 +126,10 @@ const int INTERNAL_GAP_LIMIT = 3;
 const bool ENCRYPT_DB = false;
 const int PAGINATION_LIMIT = 10;
 const String VERSION_NUMBER = '1.1.2';
-const double DASHBOARD_HEADER_HEIGTH = 258;
-const double HEADER_HEIGTH = 158;
+const double SMALL_DASHBOARD_HEADER_HEIGHT = 180;
+const double LARGE_DASHBOARD_HEADER_HEIGHT = 258;
+const double DEFAULT_BOTTOM_PADDING = 24;
+const double HEADER_HEIGHT = 158;
 const int ENCRYPTED_XPRV_LENGTH = 293;
 const int XPRV_LENGTH = 117;
 const int MAX_VT_WEIGHT = 20000;

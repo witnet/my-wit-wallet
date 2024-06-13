@@ -158,6 +158,167 @@ class DataRequestRepository extends _TransactionRepository {
   }
 }
 
+class UnstakeRepository extends _TransactionRepository {
+  final StoreRef _store = stringMapStoreFactory.store("unstakes");
+
+  @override
+  Future<bool> deleteTransaction(
+    String transactionId,
+    DatabaseClient databaseClient,
+  ) async {
+    try {
+      await _store.record(transactionId).delete(databaseClient);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  Future<List<UnstakeEntry>> getAllTransactions(
+      DatabaseClient databaseClient) async {
+    final snapshots = await _store.find(databaseClient);
+    try {
+      List<UnstakeEntry> transactions = snapshots
+          .map((snapshot) =>
+              UnstakeEntry.fromJson(snapshot.value as Map<String, dynamic>))
+          .toList(growable: false);
+      return transactions;
+    } catch (e) {
+      print('Error getting mint transactions $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<bool> insertTransaction(
+    transaction,
+    DatabaseClient databaseClient,
+  ) async {
+    try {
+      assert(transaction.runtimeType == UnstakeEntry);
+      await _store
+          .record(transaction.blockHash)
+          .add(databaseClient, transaction.jsonMap());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> updateTransaction(
+    transaction,
+    DatabaseClient databaseClient,
+  ) async {
+    try {
+      assert(transaction.runtimeType == UnstakeEntry);
+      await _store.record(transaction.blockHash).update(
+            databaseClient,
+            transaction.jsonMap(),
+          );
+    } catch (e) {
+      print('Error updating mint $e');
+      return false;
+    }
+    return true;
+  }
+
+  Future<UnstakeEntry?> getTransaction(
+      String txHash, DatabaseClient databaseClient) async {
+    try {
+      dynamic unstakeInfoDbJson =
+          await _store.record(txHash).get(databaseClient);
+
+      UnstakeEntry unstakeEntry = UnstakeEntry.fromJson(unstakeInfoDbJson);
+
+      return unstakeEntry;
+    } catch (e) {
+      return null;
+    }
+  }
+}
+
+class StakeRepository extends _TransactionRepository {
+  final StoreRef _store = stringMapStoreFactory.store("stakes");
+
+  @override
+  Future<bool> deleteTransaction(
+    String transactionId,
+    DatabaseClient databaseClient,
+  ) async {
+    try {
+      await _store.record(transactionId).delete(databaseClient);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  Future<List<StakeEntry>> getAllTransactions(
+      DatabaseClient databaseClient) async {
+    final snapshots = await _store.find(databaseClient);
+    try {
+      List<StakeEntry> transactions = snapshots
+          .map((snapshot) =>
+              StakeEntry.fromJson(snapshot.value as Map<String, dynamic>))
+          .toList(growable: false);
+      return transactions;
+    } catch (e) {
+      print('Error getting mint transactions $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<bool> insertTransaction(
+    transaction,
+    DatabaseClient databaseClient,
+  ) async {
+    try {
+      assert(transaction.runtimeType == StakeEntry);
+      await _store
+          .record(transaction.blockHash)
+          .add(databaseClient, transaction.jsonMap());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> updateTransaction(
+    transaction,
+    DatabaseClient databaseClient,
+  ) async {
+    try {
+      assert(transaction.runtimeType == StakeEntry);
+      await _store.record(transaction.blockHash).update(
+            databaseClient,
+            transaction.jsonMap(),
+          );
+    } catch (e) {
+      print('Error updating mint $e');
+      return false;
+    }
+    return true;
+  }
+
+  Future<StakeEntry?> getTransaction(
+      String txHash, DatabaseClient databaseClient) async {
+    try {
+      dynamic stakeInfoDbJson = await _store.record(txHash).get(databaseClient);
+
+      StakeEntry stakeEntry = StakeEntry.fromJson(stakeInfoDbJson);
+
+      return stakeEntry;
+    } catch (e) {
+      return null;
+    }
+  }
+}
+
 class MintRepository extends _TransactionRepository {
   final StoreRef _store = stringMapStoreFactory.store("mints");
 

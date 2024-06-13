@@ -58,7 +58,7 @@ class _InputAmountState extends State<InputAmount> {
           suffixText: WIT_UNIT[WitUnit.Wit],
           suffixIcon: widget.onSuffixTap != null
               ? Semantics(
-                  label: localization.showPassword,
+                  label: 'Max',
                   child: PaddedButton(
                       padding: EdgeInsets.zero,
                       text: 'Max',

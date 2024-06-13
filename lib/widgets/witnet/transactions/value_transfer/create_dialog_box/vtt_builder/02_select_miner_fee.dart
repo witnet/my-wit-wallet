@@ -52,10 +52,10 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   bool _connectionError = false;
   EstimatedFeeOptions _feeOption = EstimatedFeeOptions.Medium;
   String _savedFeeAmount = '1';
-  VTTCreateBloc get vttBloc => BlocProvider.of<VTTCreateBloc>(context);
+  TransactionBloc get vttBloc => BlocProvider.of<TransactionBloc>(context);
 
-  int get vttAmount =>
-      vttBloc.state.vtTransaction.body.outputs.first.value.toInt();
+  int? get vttAmount =>
+      vttBloc.state.transaction.getNanoWitAmount(vttBloc.state.transactionType);
   bool allowSetMinFeeValue(EstimatedFeeOptions label) =>
       widget.minFee != null && label == EstimatedFeeOptions.Custom;
 
@@ -124,7 +124,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
             validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
         availableNanoWit: balanceInfo.availableNanoWit,
         value: amount,
-        vttAmount: vttAmount,
+        vttAmount: vttAmount ?? 0,
         minFee: widget.minFee,
         weightedAmount: _feeType == FeeType.Weighted ? weightedFeeAmount : null,
         allowZero: true);
@@ -189,7 +189,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
     FeeAmountInput _feePriority = FeeAmountInput.dirty(
         value: value,
         allowValidation: true,
-        vttAmount: vttAmount,
+        vttAmount: vttAmount ?? 0,
         minFee: widget.minFee,
         availableNanoWit: balanceInfo.availableNanoWit);
     String? errorText =
@@ -287,7 +287,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: theme.colorScheme.background,
+                        color: theme.colorScheme.surface,
                       ),
                       textStyle: theme.textTheme.bodyMedium,
                       height: 100,
@@ -329,10 +329,10 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocListener<VTTCreateBloc, VTTCreateState>(
+    return BlocListener<TransactionBloc, TransactionState>(
         listenWhen: (previousState, currentState) {
-          if (showTxConnectionReEstablish(
-              previousState.vttCreateStatus, currentState.vttCreateStatus)) {
+          if (showTxConnectionReEstablish(previousState.transactionStatus,
+              currentState.transactionStatus)) {
             setState(() {
               _connectionError = false;
             });
@@ -340,7 +340,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
           return true;
         },
         listener: (context, state) {
-          if (state.vttCreateStatus == VTTCreateStatus.exception) {
+          if (state.transactionStatus == TransactionStatus.exception) {
             setState(() {
               _connectionError = true;
             });

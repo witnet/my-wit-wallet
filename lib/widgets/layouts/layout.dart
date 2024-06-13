@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'package:my_wit_wallet/globals.dart' as globals;
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
+import 'package:my_wit_wallet/util/current_route.dart';
+import 'package:my_wit_wallet/util/get_header_heigth.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,18 +14,13 @@ import 'package:my_wit_wallet/auto_updater_overlay.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/is_desktop_size.dart';
+import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/layouts/listen_fourth_button.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
-import 'package:my_wit_wallet/widgets/wallet_type_label.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/general_error_modal.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:my_wit_wallet/shared/api_database.dart';
-import 'package:my_wit_wallet/shared/locator.dart';
-import 'package:my_wit_wallet/theme/colors.dart';
-import 'package:my_wit_wallet/widgets/identicon.dart';
 import 'package:my_wit_wallet/widgets/layouts/headerLayout.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/app_lifecycle_overlay.dart';
@@ -35,14 +33,16 @@ class Layout extends StatefulWidget {
   final ScrollController? scrollController;
   final List<Widget> widgetList;
   final List<Widget> actions;
-  final List<Widget> navigationActions;
+  final List<Widget> topNavigation;
   final Widget? slidingPanel;
   final Widget? dashboardActions;
+  final Widget? bottomNavigation;
 
   const Layout({
     required this.widgetList,
     required this.actions,
-    required this.navigationActions,
+    required this.topNavigation,
+    this.bottomNavigation,
     this.dashboardActions,
     this.slidingPanel,
     this.scrollController,
@@ -52,20 +52,37 @@ class Layout extends StatefulWidget {
   LayoutState createState() => LayoutState();
 }
 
+final panelController = PanelController();
+
 class LayoutState extends State<Layout> with TickerProviderStateMixin {
-  var isPanelClose;
   ScrollController defaultScrollController =
       ScrollController(keepScrollOffset: false);
-  final panelController = PanelController();
   bool get isUpdateCheckerEnabled => Platform.isMacOS || Platform.isLinux;
+  bool get isDashboard => widget.dashboardActions != null;
+  bool get allowBottomBar =>
+      (globals.isPanelClose == null || globals.isPanelClose!);
+  bool get showBottomBar =>
+      allowBottomBar && (!isDesktopSize || widget.actions.length > 0);
+  double get bottomBarPadding => showBottomBar
+      ? MediaQuery.of(context).viewInsets.bottom +
+          kBottomNavigationBarHeight +
+          MediaQuery.of(context).viewPadding.bottom +
+          DEFAULT_BOTTOM_PADDING
+      : DEFAULT_BOTTOM_PADDING;
 
-  BlocListener<VTTCreateBloc, VTTCreateState> _vttListener(Widget child) {
+  @override
+  void initState() {
+    super.initState();
+    PanelUtils().setCloseState();
+  }
+
+  BlocListener<TransactionBloc, TransactionState> _vttListener(Widget child) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    return BlocListener<VTTCreateBloc, VTTCreateState>(
+    return BlocListener<TransactionBloc, TransactionState>(
       listenWhen: (previousState, currentState) {
         if (showTxConnectionReEstablish(
-            previousState.vttCreateStatus, currentState.vttCreateStatus,
+            previousState.transactionStatus, currentState.transactionStatus,
             message: previousState.message)) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
@@ -81,14 +98,14 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         return true;
       },
       listener: (context, state) {
-        if (state.vttCreateStatus == VTTCreateStatus.explorerException) {
+        if (state.transactionStatus == TransactionStatus.explorerException) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
               theme: theme,
               text: localization.connectionIssue,
               log: state.message,
               color: theme.colorScheme.error));
-        } else if (state.vttCreateStatus == VTTCreateStatus.exception) {
+        } else if (state.transactionStatus == TransactionStatus.exception) {
           ScaffoldMessenger.of(context).clearSnackBars();
           buildGeneralExceptionModal(
             theme: theme,
@@ -97,7 +114,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             message: localization.vttException,
             errorMessage: state.message,
             iconName: 'general-warning',
-            originRouteName: CreateVttScreen.route,
+            originRouteName: currentRoute(context),
             originRoute: CreateVttScreen(),
           );
         }
@@ -167,43 +184,6 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     );
   }
 
-  Widget showWalletList(BuildContext context) {
-    String walletId =
-        Locator.instance.get<ApiDatabase>().walletStorage.currentWallet.id;
-    return PaddedButton(
-        padding: EdgeInsets.zero,
-        label: '${localization.showWalletList} button',
-        text: localization.showWalletList,
-        type: ButtonType.iconButton,
-        iconSize: 30,
-        icon: Container(
-          color: WitnetPallet.white,
-          width: 28,
-          height: 28,
-          child: Identicon(seed: walletId, size: 8),
-        ),
-        onPressed: () => {
-              if (panelController.isPanelOpen)
-                {
-                  panelController.close(),
-                  Timer(Duration(milliseconds: 300), () {
-                    setState(() {
-                      isPanelClose = true;
-                    });
-                  }),
-                }
-              else
-                {
-                  // If keyboard is open hide keyboard
-                  FocusScope.of(context).unfocus(),
-                  panelController.open(),
-                  setState(() {
-                    isPanelClose = panelController.isPanelClosed;
-                  })
-                }
-            });
-  }
-
   void hidePanelOnMobileIfKeyboard() {
     if ((Platform.isAndroid || Platform.isIOS) &&
         FocusScope.of(context).isFirstFocus &&
@@ -229,29 +209,20 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(8), topRight: Radius.circular(8)),
           panel: widget.slidingPanel,
+          onPanelClosed: () => {
+                Timer(Duration(milliseconds: 300),
+                    () => setState(() => PanelUtils().setCloseState()))
+              },
           body: GestureDetector(
               excludeFromSemantics: true,
-              onTap: () {
-                if (panelController.isPanelOpen) {
-                  panelController.close();
-                  Timer(Duration(milliseconds: 300), () {
-                    setState(() {
-                      isPanelClose = true;
-                    });
-                  });
-                }
-              },
-              child: Padding(
-                  child: _buildMainLayout(context, theme, true),
-                  padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom))));
+              onTap: () => PanelUtils().close(),
+              child: _buildMainLayout(context, theme, true)));
     }
   }
 
   Widget _buildMainLayout(BuildContext context, theme, bool panel) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-
     return CustomScrollView(
       controller: widget.scrollController != null
           ? widget.scrollController
@@ -266,23 +237,18 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             ),
             pinned: true,
             elevation: 0,
-            surfaceTintColor: theme.colorScheme.background.withOpacity(0.0),
+            surfaceTintColor: theme.colorScheme.surface.withOpacity(0.0),
             automaticallyImplyLeading: false,
             scrolledUnderElevation: 0,
-            backgroundColor: theme.colorScheme.background.withOpacity(0.0),
-            expandedHeight: widget.dashboardActions != null
-                ? DASHBOARD_HEADER_HEIGTH
-                : HEADER_HEIGTH,
-            toolbarHeight: widget.dashboardActions != null
-                ? DASHBOARD_HEADER_HEIGTH
-                : HEADER_HEIGTH,
+            backgroundColor: theme.colorScheme.surface.withOpacity(0.0),
+            expandedHeight:
+                isDashboard ? getDashboardHeaderHeight() : HEADER_HEIGHT,
+            toolbarHeight:
+                isDashboard ? getDashboardHeaderHeight() : HEADER_HEIGHT,
             flexibleSpace: headerLayout(context, theme)),
         SliverPadding(
           padding: EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 24,
-              bottom: Platform.isAndroid ? 24 : 0),
+              left: 16, right: 16, top: 24, bottom: bottomBarPadding),
           sliver: SliverToBoxAdapter(
               child: Center(
             child: ConstrainedBox(
@@ -293,11 +259,6 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
               child: _cryptoListener(_vttListener(_explorerListerner(
                   Column(mainAxisSize: MainAxisSize.max, children: [
                 ...widget.widgetList,
-                SizedBox(
-                  height: MediaQuery.of(context).viewPadding.bottom > 0
-                      ? MediaQuery.of(context).viewPadding.bottom
-                      : 0,
-                )
               ])))),
             ),
           )),
@@ -307,53 +268,46 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   }
 
   Widget headerLayout(context, theme) {
-    final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
     if (widget.slidingPanel == null) {
       return Container(
           child: HeaderLayout(
-        navigationActions: widget.navigationActions,
+        navigationActions: widget.topNavigation,
         dashboardActions: widget.dashboardActions,
       ));
     } else {
-      Wallet wallet =
-          Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
       return HeaderLayout(
-        navigationActions: [
-          showWalletList(context),
-          Expanded(
-              child: Padding(
-                  padding: EdgeInsets.only(left: 24, right: 24),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Tooltip(
-                          margin: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: extendedTheme.tooltipBgColor,
-                          ),
-                          height: 50,
-                          richMessage: TextSpan(
-                            text: wallet.name,
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                          child: Text(wallet.name,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  color: extendedTheme.headerTextColor,
-                                  fontSize: 16))),
-                      SizedBox(
-                          height:
-                              wallet.walletType == WalletType.single ? 8 : 0),
-                      WalletTypeLabel(label: wallet.walletType),
-                    ],
-                  ))),
-          ...widget.navigationActions
-        ],
+        navigationActions: [...widget.topNavigation],
         dashboardActions: widget.dashboardActions,
       );
     }
+  }
+
+  Widget dashboardBottomBar() {
+    final theme = Theme.of(context);
+    return Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+          colors: [
+            theme.colorScheme.surface.withOpacity(0),
+            theme.colorScheme.surface.withOpacity(0.7),
+            theme.colorScheme.surface.withOpacity(0.8),
+            theme.colorScheme.surface.withOpacity(0.9),
+            theme.colorScheme.surface.withOpacity(0.95),
+            theme.colorScheme.surface.withOpacity(0.97),
+            theme.colorScheme.surface.withOpacity(0.98),
+            theme.colorScheme.surface.withOpacity(0.99),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: [0, 0.03, 0.05, 0.1, 0.15, 0.2, 0.95, 1],
+        )),
+        child: BottomAppBar(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            height: 60,
+            surfaceTintColor: theme.colorScheme.surface.withOpacity(0.0),
+            color: theme.colorScheme.surface.withOpacity(0.0),
+            notchMargin: 5,
+            child: widget.bottomNavigation));
   }
 
   Widget bottomBar() {
@@ -401,6 +355,15 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     );
   }
 
+  Widget? getBottomBar() {
+    if (showBottomBar) {
+      return buildOverlay(isDashboard ? dashboardBottomBar() : bottomBar(),
+          isBottomBar: true);
+    } else {
+      return null;
+    }
+  }
+
   PopScope buildMainScaffold() {
     final theme = Theme.of(context);
     return PopScope(
@@ -408,12 +371,10 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         canPop: false,
         child: Scaffold(
             resizeToAvoidBottomInset: true,
-            backgroundColor: theme.colorScheme.background,
+            extendBody: true,
+            backgroundColor: theme.colorScheme.surface,
             body: buildOverlay(buildMainContent(context, theme)),
-            bottomNavigationBar: (isPanelClose == null || isPanelClose) &&
-                    widget.actions.length > 0
-                ? buildOverlay(bottomBar(), isBottomBar: true)
-                : null));
+            bottomNavigationBar: getBottomBar()));
   }
 
   Widget build(BuildContext context) {

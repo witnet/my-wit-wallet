@@ -63,7 +63,7 @@ class FtuActionsState extends State<FtuActions> with TickerProviderStateMixin {
   Layout build(BuildContext context) {
     final theme = Theme.of(context);
     return Layout(
-      navigationActions: [],
+      topNavigation: [],
       widgetList: widget.mainComponents,
       actions: [_buildInitialButtons(context, theme)],
     );

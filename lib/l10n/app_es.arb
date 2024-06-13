@@ -233,6 +233,22 @@
       }
     }
   },
+  "stakeSteps": "{currentStepIndex, select, Transaction{Transaction} MinerFee{Miner Fee} Review{Review} other{unused}}",
+  "@stakeSteps": {
+    "placeholders": {
+      "currentStepIndex": {
+        "type": "String"
+      }
+    }
+  },
+  "unstakeSteps": "{currentStepIndex, select, Transaction{Transaction} MinerFee{Miner Fee} Review{Review} other{unused}}",
+  "@unstakeSteps": {
+    "placeholders": {
+      "currentStepIndex": {
+        "type": "String"
+      }
+    }
+  },
   "walletConfig01": "Tu clave Xprv te permite exportar y hacer una copia de seguridad de tu cartera en cualquier momento después de crearla.",
   "walletConfig02": "En términos de privacidad, tu clave Xprv es equivalente a una frase de recuperación secreta. No la compartas con nadie y nunca la almacenes en un archivo en tu dispositivo ni en ningún otro lugar electrónico.",
   "walletConfig03": "Tu clave Xprv estará protegida con la contraseña a continuación. Al importar la clave Xprv en esta u otra aplicación, se te pedirá que escribas esa misma contraseña.",
@@ -305,5 +321,19 @@
   "deleteWallet01": "Hacer clic en \"Eliminar\" resultará en la eliminación permanente de los datos de tu wallet actual. Si procedes, deberás importar la wallet nuevamente para acceder a tus fondos.",
   "errorDeletingWallet": "¡Hubo un error al eliminar la wallet, por favor inténtalo de nuevo!",
   "deleteWalletWarning": "¡Tu wallet está a punto de ser eliminada permanentemente!",
-  "deleteWalletSuccess": "¡Los datos de tu wallet han sido eliminados exitosamente!"
+  "deleteWalletSuccess": "¡Los datos de tu wallet han sido eliminados exitosamente!",
+  "stake": "Stake",
+  "unstake": "Unstake",
+  "available": "Disponible",
+  "locked": "Bloqueado",
+  "withdrawalAddress": "Withdrawal address",
+  "authorization": "Autorización del nodo",
+  "autorizationTooltip": "Autorización del nodo para realizar staking",
+  "authorizationInputHint": "Autorización del nodo...",
+  "stakeTxnSuccess": "¡Transacción de stake enviada con éxito!",
+  "unstakeTxnSuccess": "¡Transacción de unstake enviada con éxito!",
+  "sendReceiveTx": "Enviar o recibir WIT",
+  "stakeUnstake": "Stake o unstake WIT",
+  "home": "Lista de transacciones",
+  "showBalanceDetails": "Mostrar detalles del balace"
 }

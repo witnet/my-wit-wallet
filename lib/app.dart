@@ -10,6 +10,8 @@ import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
 import 'package:my_wit_wallet/screens/receive_transaction/receive_tx_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
+import 'package:my_wit_wallet/screens/stake/stake_screen.dart';
+import 'package:my_wit_wallet/screens/unstake/unstake_screen.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 
 import 'bloc/theme/theme_bloc.dart';
@@ -35,7 +37,9 @@ class _MyWitWalletState extends State<MyWitWalletApp> {
     DashboardScreen.route: (context) => DashboardScreen(),
     CreateVttScreen.route: (context) => CreateVttScreen(),
     PreferencePage.route: (context) => PreferencePage(),
-    ReceiveTransactionScreen.route: (context) => ReceiveTransactionScreen()
+    ReceiveTransactionScreen.route: (context) => ReceiveTransactionScreen(),
+    StakeScreen.route: (context) => StakeScreen(),
+    UnstakeScreen.route: (context) => UnstakeScreen()
   };
 
   List<LocalizationsDelegate<dynamic>> _localizationsDelegates =

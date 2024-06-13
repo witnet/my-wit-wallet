@@ -1,34 +1,23 @@
 import 'dart:async';
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:my_wit_wallet/util/get_localization.dart';
+import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
-import 'package:my_wit_wallet/constants.dart';
-import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
-import 'package:my_wit_wallet/screens/receive_transaction/receive_tx_screen.dart';
-import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
-import 'package:my_wit_wallet/theme/extended_theme.dart';
-import 'package:my_wit_wallet/theme/wallet_theme.dart';
-import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:my_wit_wallet/util/is_desktop_size.dart';
+import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
-import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
-import 'package:my_wit_wallet/widgets/wallet_list.dart';
+import 'package:my_wit_wallet/widgets/balance.dart';
+import 'package:my_wit_wallet/widgets/balance_details.dart';
+import 'package:my_wit_wallet/widgets/bottom_navigation.dart';
+import 'package:my_wit_wallet/widgets/send_receive.dart';
+import 'package:my_wit_wallet/widgets/stake_unstake.dart';
+import 'package:my_wit_wallet/widgets/top_navigation.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
-import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
-import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
-
 import 'package:my_wit_wallet/shared/locator.dart';
-import 'package:my_wit_wallet/widgets/snack_bars.dart';
+import 'package:my_wit_wallet/widgets/wallet_list.dart';
 
 const headerAniInterval = Interval(.1, .3, curve: Curves.easeOut);
 
@@ -63,6 +52,10 @@ class DashboardLayoutState extends State<DashboardLayout>
   bool isAddressCopied = false;
   bool isCopyAddressFocus = false;
   FocusNode _copyToClipboardFocusNode = FocusNode();
+  PanelUtils panel = PanelUtils();
+  Widget get _panelContent => panel.getContent();
+  Wallet get currentWallet =>
+      Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
 
   @override
   void initState() {
@@ -82,215 +75,36 @@ class DashboardLayoutState extends State<DashboardLayout>
     });
   }
 
-  Future<void> _goToSettings() async {
-    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
-    Navigator.push(
-        context,
-        CustomPageRoute(
-            builder: (BuildContext context) {
-              return PreferencePage();
-            },
-            maintainState: false,
-            settings: RouteSettings(name: PreferencePage.route)));
-  }
-
-  Future<void> _showCreateVTTDialog() async {
-    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
-    Navigator.push(
-        context,
-        CustomPageRoute(
-            builder: (BuildContext context) {
-              return CreateVttScreen();
-            },
-            maintainState: false,
-            settings: RouteSettings(name: CreateVttScreen.route)));
-  }
-
-  Future<void> _showReceiveDialog() async {
-    BlocProvider.of<VTTCreateBloc>(context).add(ResetTransactionEvent());
-    Navigator.push(
-        context,
-        CustomPageRoute(
-            builder: (BuildContext context) {
-              return ReceiveTransactionScreen();
-            },
-            maintainState: false,
-            settings: RouteSettings(name: ReceiveTransactionScreen.route)));
-  }
-
-  String? currentRoute() {
-    return ModalRoute.of(context)?.settings.name ?? DashboardScreen.route;
-  }
-
-  Color? getButtonColorByRoute(route) {
-    final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
-    return currentRoute() == route
-        ? extendedTheme.headerDashboardActiveButton
-        : extendedTheme.headerTextColor;
-  }
-
-  Widget _buildDashboardActions() {
-    final theme = Theme.of(context);
-    final double iconHeight = 40;
-    String currentRoute = ModalRoute.of(context)!.settings.name!;
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      PaddedButton(
-        color: getButtonColorByRoute(CreateVttScreen.route),
-        padding: EdgeInsets.zero,
-        text: localization.send,
-        onPressed: currentRoute != CreateVttScreen.route
-            ? _showCreateVTTDialog
-            : () {},
-        icon: Container(
-            height: 40,
-            child: Icon(
-              FontAwesomeIcons.locationArrow,
-              size: 18,
-            )),
-        type: ButtonType.verticalIcon,
-      ),
-      PaddedButton(
-        color: getButtonColorByRoute(DashboardScreen.route),
-        padding: EdgeInsets.zero,
-        text: localization.history,
-        onPressed: currentRoute != DashboardScreen.route
-            ? () => {
-                  BlocProvider.of<VTTCreateBloc>(context)
-                      .add(ResetTransactionEvent()),
-                  ScaffoldMessenger.of(context).clearSnackBars(),
-                  Navigator.push(
-                      context,
-                      CustomPageRoute(
-                          builder: (BuildContext context) {
-                            return DashboardScreen();
-                          },
-                          maintainState: false,
-                          settings:
-                              RouteSettings(name: DashboardScreen.route))),
-                }
-            : () {},
-        icon: witnetEyeIcon(theme, height: iconHeight),
-        type: ButtonType.verticalIcon,
-      ),
-      PaddedButton(
-        color: getButtonColorByRoute(ReceiveTransactionScreen.route),
-        padding: EdgeInsets.zero,
-        text: localization.receive,
-        onPressed: currentRoute != ReceiveTransactionScreen.route
-            ? _showReceiveDialog
-            : () {},
-        icon: Container(
-            height: 40,
-            child: Transform.rotate(
-                angle: 90 * math.pi / 90,
-                child: Icon(
-                  FontAwesomeIcons.locationArrow,
-                  size: 18,
-                ))),
-        type: ButtonType.verticalIcon,
-      ),
-    ]);
-  }
-
-  Widget _buildBalanceDisplay() {
-    final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
-    return BlocBuilder<DashboardBloc, DashboardState>(
-        builder: (BuildContext context, DashboardState state) {
-      Wallet currentWallet =
-          Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
-      Account currentAccount =
-          Locator.instance.get<ApiDatabase>().walletStorage.currentAccount;
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Semantics(
-              label: localization.balance,
-              child: Text(
-                '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
-                textAlign: TextAlign.center,
-                style: theme.textTheme.headlineMedium,
-              )),
-          SizedBox(height: 8),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Flexible(
-                child: Semantics(
-                    label: localization.currentAddress,
-                    child: Text(
-                      currentAccount.address.cropMiddle(18),
-                      overflow: TextOverflow.ellipsis,
-                      style: extendedTheme.monoRegularText!.copyWith(
-                          color: theme.textTheme.headlineMedium!.color),
-                    ))),
-            Flexible(
-              child: PaddedButton(
-                  padding: EdgeInsets.zero,
-                  label: localization.copyAddressToClipboard,
-                  text: localization.copyAddressToClipboard,
-                  type: ButtonType.iconButton,
-                  iconSize: 12,
-                  onPressed: () async {
-                    if (!isAddressCopied) {
-                      await Clipboard.setData(
-                          ClipboardData(text: currentAccount.address));
-                      if (await Clipboard.hasStrings()) {
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            buildCopiedSnackbar(
-                                theme, localization.addressCopied));
-                        setState(() {
-                          isAddressCopied = true;
-                        });
-                        if (this.mounted) {
-                          Timer(Duration(milliseconds: 500), () {
-                            setState(() {
-                              isAddressCopied = false;
-                            });
-                          });
-                        }
-                      }
-                    }
-                  },
-                  icon: Icon(
-                    isAddressCopied
-                        ? FontAwesomeIcons.check
-                        : FontAwesomeIcons.copy,
-                    size: 12,
-                  )),
-            ),
-          ]),
-        ],
-      );
-    });
-  }
-
   Widget _buildDashboardHeader() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildBalanceDisplay(),
-        SizedBox(height: 8),
-        _buildDashboardActions(),
+        Balance(
+            onShowBalanceDetails: () => {
+                  setState(() {
+                    panel.toggle(BalanceDetails(
+                        balance: currentWallet.balanceNanoWit()));
+                  })
+                },
+            currentWallet: currentWallet),
+        if (isDesktopSize) ...[SizedBox(height: 24), _buildBottomNavigation()]
       ],
     );
   }
 
-  List<Widget> _navigationActions() {
-    String currentRoute = ModalRoute.of(context)!.settings.name!;
-    return [
-      PaddedButton(
-          padding: EdgeInsets.zero,
-          label: localization.settings,
-          text: localization.settings,
-          iconSize: 28,
-          icon: Icon(FontAwesomeIcons.gear,
-              size: 28, color: getButtonColorByRoute(PreferencePage.route)),
-          onPressed: currentRoute != PreferencePage.route
-              ? () => _goToSettings()
-              : () {},
-          type: ButtonType.iconButton)
-    ];
+  Widget _buildBottomNavigation() {
+    return BottomNavigation(
+        currentScreen: currentRoute(context),
+        onSendReceiveAction: () => {
+              setState(() {
+                panel.toggle(SendReceiveButtons());
+              })
+            },
+        onStakeUnstakeAction: () => {
+              setState(() {
+                panel.toggle(StakeUnstakeButtons());
+              })
+            });
   }
 
   Widget _authBuilder() {
@@ -312,7 +126,6 @@ class DashboardLayoutState extends State<DashboardLayout>
       child: BlocBuilder<LoginBloc, LoginState>(
           builder: (BuildContext context, LoginState loginState) {
         Widget _body;
-        Widget? _walletList;
         switch (loginState.status) {
           case LoginStatus.LoggedOut:
             _body = Column(
@@ -325,7 +138,6 @@ class DashboardLayoutState extends State<DashboardLayout>
             );
             break;
           case LoginStatus.LoginSuccess:
-            _walletList = WalletList();
             _body = Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -342,17 +154,19 @@ class DashboardLayoutState extends State<DashboardLayout>
         }
         return Layout(
           scrollController: widget.scrollController,
-          navigationActions: _navigationActions(),
+          topNavigation: TopNavigation(
+                  onShowWalletList: () =>
+                      {setState(() => panel.toggle(WalletList()))},
+                  currentScreen: currentRoute(context),
+                  currentWallet: currentWallet)
+              .getNavigationActions(context),
           dashboardActions: _buildDashboardHeader(),
+          bottomNavigation: isDesktopSize ? null : _buildBottomNavigation(),
           widgetList: [
             _body,
-            if (widget.actions.length > 0)
-              SizedBox(
-                height: 80,
-              ),
           ],
-          actions: widget.actions,
-          slidingPanel: _walletList,
+          actions: [],
+          slidingPanel: _panelContent,
         );
       }),
     );

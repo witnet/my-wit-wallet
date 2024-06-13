@@ -21,6 +21,8 @@ Map<String, Function(DatabaseService, SendPort, Map<String, dynamic>)>
   'getVtt': _getVtt,
   'getAccount': _getAccount,
   'getMint': _getMint,
+  'getStake': _getStake,
+  'getUnstake': _getUnstake,
   'loadWallets': _getAllWallets,
   'lock': _lock,
   'masterKeySet': _masterKeySet,
@@ -158,6 +160,12 @@ Future<void> _addRecord(
     case 'stats':
       value = await dbService.add(AccountStats.fromJson(params['value']));
       break;
+    case 'stake':
+      value = await dbService.add(StakeEntry.fromJson(params['value']));
+      break;
+    case 'unstake':
+      value = await dbService.add(UnstakeEntry.fromJson(params['value']));
+      break;
     default:
       value = false;
       break;
@@ -221,6 +229,12 @@ Future<void> _updateRecord(
     case 'stats':
       value = await dbService.update(AccountStats.fromJson(params['value']));
       break;
+    case 'stake':
+      value = await dbService.update(StakeEntry.fromJson(params['value']));
+      break;
+    case 'unstake':
+      value = await dbService.update(UnstakeEntry.fromJson(params['value']));
+      break;
     default:
       value = false;
       break;
@@ -277,4 +291,22 @@ Future<void> _getMint(
 ) async {
   MintEntry? mint = await dbService.getMint(params);
   port.send(mint);
+}
+
+Future<void> _getStake(
+  DatabaseService dbService,
+  SendPort port,
+  Map<String, dynamic> params,
+) async {
+  StakeEntry? stake = await dbService.getStake(params);
+  port.send(stake);
+}
+
+Future<void> _getUnstake(
+  DatabaseService dbService,
+  SendPort port,
+  Map<String, dynamic> params,
+) async {
+  UnstakeEntry? stake = await dbService.getUnstake(params);
+  port.send(stake);
 }

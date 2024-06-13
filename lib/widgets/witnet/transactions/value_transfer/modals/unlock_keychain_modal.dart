@@ -57,8 +57,8 @@ Future<String?> unlockKeychainModal(
                   title,
                   style: theme.textTheme.displayMedium,
                 ),
-                backgroundColor: theme.colorScheme.background,
-                surfaceTintColor: theme.colorScheme.background,
+                backgroundColor: theme.colorScheme.surface,
+                surfaceTintColor: theme.colorScheme.surface,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8))),
                 content: Column(mainAxisSize: MainAxisSize.min, children: [

@@ -23,6 +23,8 @@ abstract class _Account {
   List<Utxo> utxos = [];
   List<ValueTransferInfo> vtts = [];
   List<MintEntry> mints = [];
+  List<StakeEntry> stakes = [];
+  List<UnstakeEntry> unstakes = [];
 
   int get hashCode;
 
@@ -62,6 +64,8 @@ class Account extends _Account {
   final String address;
   List<String> vttHashes = [];
   List<String> mintHashes = [];
+  List<String> stakeHashes = [];
+  List<String> unstakeHashes = [];
 
   @override
   String toString() => '{"address": $address, "path": $path}';
@@ -81,6 +85,18 @@ class Account extends _Account {
       account.mintHashes = List<String>.from(data['mint_hashes']);
     } else {
       account.mintHashes = [];
+    }
+
+    if (data.containsKey("stake_hashes")) {
+      account.stakeHashes = List<String>.from(data['stake_hashes']);
+    } else {
+      account.stakeHashes = [];
+    }
+
+    if (data.containsKey("unstake_hashes")) {
+      account.unstakeHashes = List<String>.from(data['unstake_hashes']);
+    } else {
+      account.unstakeHashes = [];
     }
 
     account.updateUtxos(_utxos);
@@ -141,6 +157,40 @@ class Account extends _Account {
       isSameList = false;
     }
     return isSameList;
+  }
+
+  Future<bool> addStake(StakeEntry stakeEntry) async {
+    try {
+      ApiDatabase database = Locator.instance<ApiDatabase>();
+      stakeHashes.add(stakeEntry.blockHash);
+      stakes.add(stakeEntry);
+      if (await database.getStake(stakeEntry.blockHash) == null) {
+        await database.addStake(stakeEntry);
+      } else {
+        await database.updateStake(this.walletId, stakeEntry);
+      }
+      await database.updateAccount(this);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> addUnstake(UnstakeEntry unstakeEntry) async {
+    try {
+      ApiDatabase database = Locator.instance<ApiDatabase>();
+      unstakeHashes.add(unstakeEntry.blockHash);
+      unstakes.add(unstakeEntry);
+      if (await database.getUnstake(unstakeEntry.blockHash) == null) {
+        await database.addUnstake(unstakeEntry);
+      } else {
+        await database.updateUnstake(this.walletId, unstakeEntry);
+      }
+      await database.updateAccount(this);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<bool> addMint(MintEntry mintEntry) async {
@@ -209,6 +259,8 @@ class Account extends _Account {
       'balance': balance.jsonMap(),
       'value_transfer_hashes': vttHashes.toList(),
       'mint_hashes': mintHashes.toList(),
+      'stake_hashes': stakeHashes.toList(),
+      'unstake_hashes': unstakeHashes.toList()
     };
   }
 

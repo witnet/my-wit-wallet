@@ -8,6 +8,7 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/closable_view.dart';
+import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/02_select_miner_fee.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/03_review_step.dart';
 
@@ -69,9 +70,9 @@ class SpeedUpVttState extends State<SpeedUpVtt> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocBuilder<VTTCreateBloc, VTTCreateState>(
+    return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (previous, current) {
-        if (current.vttCreateStatus != VTTCreateStatus.initial) {
+        if (current.transactionStatus != TransactionStatus.initial) {
           return ClosableView(closeSetting: widget.closeSetting, children: [
             Text(
               localization.speedUpTxTitle,
@@ -87,6 +88,7 @@ class SpeedUpVttState extends State<SpeedUpVtt> {
                     currentWallet: db.walletStorage.currentWallet,
                   )
                 : ReviewStep(
+                    transactionType: TransactionType.Vtt,
                     originRoute: DashboardScreen.route,
                     nextAction: _setNextAction,
                     speedUpTx: widget.speedUpTx,

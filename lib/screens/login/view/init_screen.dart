@@ -71,7 +71,7 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
           return widget.data!;
         }
         return Layout(
-          navigationActions: [],
+          topNavigation: [],
           widgetList: [
             ...mainComponents(),
             SizedBox(height: 32),

@@ -16,6 +16,8 @@ enum ButtonType {
   boxButton
 }
 
+enum IconPosition { left, right }
+
 Widget buildCircularProgress(context, theme) {
   return SizedBox(
       height: 20,
@@ -44,6 +46,8 @@ class PaddedButton extends StatelessWidget {
       this.attachedIcon = false,
       this.iconSize = 16,
       this.darkBackground = false,
+      this.alignment = MainAxisAlignment.center,
+      this.iconPosition = IconPosition.right,
       this.autofocus});
 
   final EdgeInsets padding;
@@ -61,6 +65,8 @@ class PaddedButton extends StatelessWidget {
   final double iconSize;
   final bool darkBackground;
   final double? fontSize;
+  final MainAxisAlignment alignment;
+  final IconPosition iconPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +75,7 @@ class PaddedButton extends StatelessWidget {
 
     Color overlayColor() {
       if (!enabled) {
-        return theme.colorScheme.background.withOpacity(0);
+        return theme.colorScheme.surface.withOpacity(0);
       }
       if (darkBackground) {
         return extendedTheme.darkBgFocusColor!;
@@ -119,16 +125,20 @@ class PaddedButton extends StatelessWidget {
 
     Widget textButtonHorizontalIcon = TextButton(
       child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: alignment,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            iconPosition == IconPosition.left ? icon : Container(),
+            iconPosition == IconPosition.left
+                ? SizedBox(width: 8)
+                : Container(),
             Text(
               text,
               style: TextStyle(
                   fontFamily: 'Almarai', fontSize: 14, color: color ?? null),
             ),
             Padding(padding: EdgeInsets.only(left: 8)),
-            icon,
+            iconPosition == IconPosition.right ? icon : Container(),
           ]),
       onPressed: onPressed,
     );
@@ -136,9 +146,9 @@ class PaddedButton extends StatelessWidget {
     Widget textButtonVerticalIcon = TextButton(
       style: color != null
           ? theme.textButtonTheme.style?.copyWith(
-              foregroundColor: MaterialStateProperty.all(color),
+              foregroundColor: WidgetStateProperty.all(color),
               overlayColor:
-                  MaterialStateProperty.all(WitnetPallet.transparentWhite))
+                  WidgetStateProperty.all(WitnetPallet.transparentWhite))
           : theme.textButtonTheme.style,
       child: Column(children: [
         SizedBox(height: 8),
@@ -159,11 +169,11 @@ class PaddedButton extends StatelessWidget {
         child: TextButton(
           style: color != null
               ? theme.textButtonTheme.style?.copyWith(
-                  padding: MaterialStateProperty.all(EdgeInsets.zero),
-                  fixedSize: MaterialStateProperty.all(Size.zero),
-                  foregroundColor: MaterialStateProperty.all(color),
+                  padding: WidgetStateProperty.all(EdgeInsets.zero),
+                  fixedSize: WidgetStateProperty.all(Size.zero),
+                  foregroundColor: WidgetStateProperty.all(color),
                   overlayColor:
-                      MaterialStateProperty.all(WitnetPallet.transparentWhite))
+                      WidgetStateProperty.all(WitnetPallet.transparentWhite))
               : theme.textButtonTheme.style,
           child: Semantics(excludeSemantics: true, label: label, child: icon),
           onPressed: onPressed,
@@ -172,9 +182,9 @@ class PaddedButton extends StatelessWidget {
     Widget textButton = TextButton(
       style: color != null
           ? theme.textButtonTheme.style?.copyWith(
-              foregroundColor: MaterialStateProperty.all(color),
+              foregroundColor: WidgetStateProperty.all(color),
               overlayColor:
-                  MaterialStateProperty.all(WitnetPallet.transparentGrey))
+                  WidgetStateProperty.all(WitnetPallet.transparentGrey))
           : theme.textButtonTheme.style,
       child: Text(
         text,
@@ -188,7 +198,7 @@ class PaddedButton extends StatelessWidget {
 
     Widget stepBarButton = TextButton(
       style: theme.textButtonTheme.style!
-          .copyWith(overlayColor: MaterialStateProperty.all(overlayColor())),
+          .copyWith(overlayColor: WidgetStateProperty.all(overlayColor())),
       child: Text(
         text,
         style: color != null
@@ -201,9 +211,9 @@ class PaddedButton extends StatelessWidget {
     Widget containerButton = TextButton(
       autofocus: autofocus ?? false,
       style: theme.textButtonTheme.style?.copyWith(
-          padding: MaterialStateProperty.all(EdgeInsets.zero),
+          padding: WidgetStateProperty.all(EdgeInsets.zero),
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          overlayColor: MaterialStateProperty.all(overlayColor())),
+          overlayColor: WidgetStateProperty.all(overlayColor())),
       child: Semantics(
           label: label,
           excludeSemantics: true,

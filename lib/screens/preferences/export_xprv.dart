@@ -50,12 +50,13 @@ class ExportXprvState extends State<ExportXprv> {
     Widget verifyPassword = VerifyPassword(
         onXprvGenerated: (generatedXprv) => {
               widget.scrollController.jumpTo(0.0),
-              setState(() => {
-                    if (isSingleAddressWallet)
-                      {newXprv = generatedXprv}
-                    else
-                      {xprv = generatedXprv}
-                  })
+              setState(() {
+                if (isSingleAddressWallet) {
+                  newXprv = generatedXprv;
+                } else {
+                  xprv = generatedXprv;
+                }
+              })
             });
     Widget encryptXprv = GenerateCompatibleXprv(
         xprv: xprv,

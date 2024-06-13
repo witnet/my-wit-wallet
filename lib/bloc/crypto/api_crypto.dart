@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/schema.dart';
 import 'package:witnet/witnet.dart';
@@ -198,6 +199,26 @@ class ApiCrypto {
     return await cryptoIsolate.send(method: 'decryptXprv', params: {
       'xprv': xprv,
       'password': password,
+    });
+  }
+
+  Future<dynamic> signUnstakeBody(Uint8List unstakeBody, String address) async {
+    String key = await db.getKeychain();
+
+    Wallet currentWallet = db.walletStorage.currentWallet;
+    Account? _account = currentWallet.allAccounts()[address];
+
+    // the signer map is {master xprv: address path}
+    // e.g. {"xprv1...": "m/3h/4919h/0h/0/0"}
+    Map<String, String> _signer = {
+      currentWallet.xprv!: _account!.path,
+    };
+
+    CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
+    return await cryptoIsolate.send(method: 'signUnstakeBody', params: {
+      'password': key,
+      'signer': _signer,
+      'message': unstakeBody,
     });
   }
 

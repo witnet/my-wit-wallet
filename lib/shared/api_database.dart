@@ -227,8 +227,13 @@ class ApiDatabase {
 
   Future<bool> openDatabase() async {
     await interface.init();
+    String? version;
     var fileExists = await interface.fileExists(interface.getDbWalletsPath());
-    String? version = await explorer.getVersion();
+    try {
+      version = await explorer.getVersion();
+    } catch (err) {
+      print('Error getting api version $err');
+    }
     try {
       var response = await _processIsolate(
         method: 'configure',
@@ -306,10 +311,40 @@ class ApiDatabase {
         method: 'add', params: {'type': 'vtt', 'value': transaction.jsonMap()});
   }
 
+  Future<bool> addStake(StakeEntry transaction) async {
+    return await _processIsolate(
+        method: 'add',
+        params: {'type': 'stake', 'value': transaction.jsonMap()});
+  }
+
+  Future<bool> addUnstake(UnstakeEntry transaction) async {
+    return await _processIsolate(
+        method: 'add',
+        params: {'type': 'unstake', 'value': transaction.jsonMap()});
+  }
+
   Future<bool> addMint(MintEntry transaction) async {
     return await _processIsolate(
         method: 'add',
         params: {'type': 'mint', 'value': transaction.jsonMap()});
+  }
+
+  Future<ValueTransferInfo?> getStake(String hash) async {
+    try {
+      return await _processIsolate(method: 'getStake', params: {"hash": hash});
+    } catch (err) {
+      print('Error getting vtt:: $err');
+      return null;
+    }
+  }
+
+  Future<ValueTransferInfo?> getUnstake(String hash) async {
+    try {
+      return await _processIsolate(method: 'getStake', params: {"hash": hash});
+    } catch (err) {
+      print('Error getting vtt:: $err');
+      return null;
+    }
   }
 
   Future<ValueTransferInfo?> getVtt(String hash) async {
@@ -385,6 +420,16 @@ class ApiDatabase {
   Future<bool> updateMint(String walletId, MintEntry mint) async {
     return await _processIsolate(
         method: 'update', params: {'type': 'mint', 'value': mint.jsonMap()});
+  }
+
+  Future<bool> updateStake(String walletId, StakeEntry mint) async {
+    return await _processIsolate(
+        method: 'update', params: {'type': 'stake', 'value': mint.jsonMap()});
+  }
+
+  Future<bool> updateUnstake(String walletId, UnstakeEntry mint) async {
+    return await _processIsolate(
+        method: 'update', params: {'type': 'stake', 'value': mint.jsonMap()});
   }
 
   Future<bool> deleteVtt(ValueTransferInfo vtt) async {
