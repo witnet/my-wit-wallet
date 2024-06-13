@@ -7,7 +7,7 @@ Map<String, List<UnstakeEntry>> getAccountUnstakesMap(
 
   // Creates map to get unstakes by account address
   for (int i = 0; i < unstakesList.length; i++) {
-    //* TODO: get withdrawal or operator address instead of output address
+    // TODO(#542): get withdrawal or operator address instead of output address
     List<ValueTransferOutput> outputs = unstakesList[i].outputs;
     outputs.forEach((output) {
       if (accountUnstakeMap[output.pkh.address] != null) {
