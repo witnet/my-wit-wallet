@@ -261,7 +261,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     }
   }
 
-  //* TODO: add stake and unstake stats to account stats
+  // TODO(#542): add stake and unstake stats to account stats
   Future<AccountStats> getAccountStats(Wallet currentWallet) async {
     String address = currentWallet.masterAccount!.address;
     AddressDataRequestsSolved? dataRequestsSolved =
@@ -353,22 +353,22 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<Account> _syncAccountUnstakes(Account account) async {
     try {
-      //* TODO: use Unstakes instead of AddressBlocks
+      // TODO(#542): use Unstakes instead of AddressBlocks
       /// retrieve all Block Hashes
       AddressBlocks? unstakes = (await explorer.address(
               value: account.address,
-              //* TODO: get paginated Unstakes from unstake tab instead of AddressBlocks
+              // TODO(#542): get paginated Unstakes from unstake tab instead of AddressBlocks
               tab: 'blocks') as PaginatedRequest<AddressBlocks?>)
           .data;
 
       if (unstakes != null) {
         /// check if the list of transaction is already in the database
-        //* TODO: use .unstakes from instead of .blocks
+        // TODO(#542): use .unstakes from instead of .blocks
         for (int i = 0; i < unstakes.blocks.length; i++) {
           String unstakeHash = unstakes.blocks[i].hash;
           UnstakeEntry? unstakeEntry =
               database.walletStorage.getUnstake(unstakeHash);
-          //* TODO: use UnstakeInfo from instead of BlocInfo
+          // TODO(#542): use UnstakeInfo from instead of BlocInfo
           BlockInfo unstakeInfo = unstakes.blocks.elementAt(i);
 
           if (unstakeEntry != null) {
@@ -397,21 +397,21 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
   Future<Account> _syncAccountStakes(Account account) async {
     try {
-      //* TODO: use Stakes instead of AddressBlocks
+      // TODO(#542): use Stakes instead of AddressBlocks
       /// retrieve all Block Hashes
       AddressBlocks? stakes = (await explorer.address(
               value: account.address,
-              //* TODO: get paginated Stakes from 'stake' tab instead of AddressBlocks
+              // TODO(#542): get paginated Stakes from 'stake' tab instead of AddressBlocks
               tab: 'blocks') as PaginatedRequest<AddressBlocks?>)
           .data;
 
       if (stakes != null) {
         /// check if the list of transaction is already in the database
-        //* TODO: use .stakes from instead of .blocks
+        // TODO(#542): use .stakes from instead of .blocks
         for (int i = 0; i < stakes.blocks.length; i++) {
           String stakeHash = stakes.blocks[i].hash;
           StakeEntry? stakeEntry = database.walletStorage.getStake(stakeHash);
-          //* TODO: use StakeInfo from instead of BlocInfo
+          // TODO(#542): use StakeInfo from instead of BlocInfo
           BlockInfo stakeInfo = stakes.blocks.elementAt(i);
 
           if (stakeEntry != null) {

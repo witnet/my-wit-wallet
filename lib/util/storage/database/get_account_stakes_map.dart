@@ -6,7 +6,7 @@ Map<String, List<StakeEntry>> getAccountStakesMap(List<StakeEntry> stakesList) {
 
   // Creates map to get stakes by account address
   for (int i = 0; i < stakesList.length; i++) {
-    //* TODO: get withdrawal or operator address instead of output address
+    // TODO(#542): get withdrawal or operator address instead of output address
     List<ValueTransferOutput> outputs = stakesList[i].outputs;
     outputs.forEach((output) {
       if (accountStakeMap[output.pkh.address] != null) {

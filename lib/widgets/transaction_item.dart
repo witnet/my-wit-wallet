@@ -101,7 +101,7 @@ class TransactionsItemState extends State<TransactionsItem> {
       });
       return nanoWitvalue;
     } else if (vti.stake != null) {
-      //* TODO: get value and correct type for for stake transactions
+      // TODO(#542): get value and correct type for for stake transactions
       vti.stake!.outputs.forEach((element) {
         if ((externalAddresses.contains(element.pkh.address) ||
             internalAddresses.contains(element.pkh.address))) {
@@ -113,7 +113,7 @@ class TransactionsItemState extends State<TransactionsItem> {
       });
       return nanoWitvalue;
     } else {
-      //* TODO: get value and correct type for unstake transactions
+      // TODO(#542): get value and correct type for unstake transactions
       vti.unstake!.outputs.forEach((element) {
         if ((externalAddresses.contains(element.pkh.address) ||
             internalAddresses.contains(element.pkh.address))) {
@@ -218,7 +218,7 @@ class TransactionsItemState extends State<TransactionsItem> {
       address = getTransactionAddress(label, widget.transaction.vtt!.inputs,
           widget.transaction.vtt!.outputs);
     } else {
-      //* TODO: set stake and unstake transaction label when feature is supported
+      // TODO(#542): set stake and unstake transaction label when feature is supported
       label = localization.from;
       address = 'Mint';
     }
