@@ -104,7 +104,7 @@ jobs:
         run: flutter test
 
       - name: Run E2E tests
-        run: xvfb-run flutter test integration_test -d linux -r github
+        run: xvfb-run flutter test integration_test/main.dart -d linux -r github
 
       - name: Binary
         run: flutter build linux --release
