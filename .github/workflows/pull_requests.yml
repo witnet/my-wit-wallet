@@ -104,7 +104,7 @@ jobs:
         run: flutter test
 
       - name: Run E2E tests
-        run: xvfb-run flutter drive --driver=integration_test/main.dart
+        run: xvfb-run flutter drive --driver=integration_test/main.dart -d linux
 
       - name: Binary
         run: flutter build linux --release
