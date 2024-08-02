@@ -1,7 +1,8 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -232,13 +233,70 @@ Future<bool> teardownTest() async {
   ApiDatabase apiDatabase = Locator.instance<ApiDatabase>();
   if (globals.testingActive) {
     if (globals.testingDeleteStorage) {
-      await apiDatabase.deleteAllWallets();
-      await apiDatabase.openDatabase();
-      globals.firstRun = false;
+      bool isDeleted = await apiDatabase.deleteAllWallets();
+      if (isDeleted) {
+        await apiDatabase.openDatabase();
+        globals.firstRun = false;
+      }
     }
     await apiDatabase.lockDatabase();
   }
+  await Future.delayed(Duration(seconds: 4));
   return true;
 }
 
 bool isTextOnScreen(String text) => find.text(text).hasFound;
+
+/// Originally published on: https://gist.github.com/stevenosse/b191d56cb4b75ed8012c3d04c1d80448
+extension TestScreenshotUtil on WidgetTester {
+  Future<void> takeScreenshot({required String name}) async {
+    final liveElement = binding.renderViewElement!;
+
+    late final Uint8List bytes;
+    await binding.runAsync(() async {
+      final image = await _captureImage(liveElement);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) {
+        return 'Could not take screenshot';
+      }
+      bytes = byteData.buffer.asUint8List();
+      image.dispose();
+    });
+
+    final directory = Directory('./screenshots');
+    if (!directory.existsSync()) {
+      directory.createSync();
+    }
+    final file = File('./screenshots/$name.png');
+    file.writeAsBytesSync(bytes);
+  }
+
+  Future<ui.Image> _captureImage(Element element) async {
+    assert(element.renderObject != null);
+    RenderObject renderObject = element.renderObject!;
+    while (!renderObject.isRepaintBoundary) {
+      // ignore: unnecessary_cast
+      renderObject = renderObject.parent! as RenderObject;
+    }
+    assert(!renderObject.debugNeedsPaint);
+
+    final OffsetLayer layer = renderObject.debugLayer! as OffsetLayer;
+    final ui.Image image = await layer.toImage(renderObject.paintBounds);
+
+    if (element.renderObject is RenderBox) {
+      final expectedSize = (element.renderObject as RenderBox?)!.size;
+      if (expectedSize.width != image.width ||
+          expectedSize.height != image.height) {
+        // ignore: avoid_print
+        print(
+          'Warning: The screenshot captured of ${element.toStringShort()} is '
+          'larger (${image.width}, ${image.height}) than '
+          '${element.toStringShort()} (${expectedSize.width}, ${expectedSize.height}) itself.\n'
+          'Wrap the ${element.toStringShort()} in a RepaintBoundary to be able to capture only that layer. ',
+        );
+      }
+    }
+
+    return image;
+  }
+}
