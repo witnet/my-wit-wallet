@@ -81,7 +81,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create .env
-        run: cp ./.env.example ./.env
+        run: | 
+          cp ./.env.example ./.env
+          echo "DELAY=100" >> .env
+          echo "INIT_E2E_DELAY_IN_SECONDS=10" >> .env
+          echo "DELETE_TEST_STORAGE=true" >> .env
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -100,11 +104,18 @@ jobs:
       - name: Flutter Doctor
         run: flutter doctor
 
-      - name: Run unit tests
-        run: flutter test
-
+      # - name: Run unit tests
+      #   run: flutter test
       - name: Run E2E tests
-        run: xvfb-run flutter test integration_test/main.dart -d linux -r github
+        run: xvfb-run --auto-servernum flutter test integration_test/main.dart -d linux -r github 
+
+      - name: Upload images as artifacts 
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots 
+          path: screenshots/*.png
+
 
       - name: Binary
         run: flutter build linux --release

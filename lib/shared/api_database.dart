@@ -349,6 +349,7 @@ class ApiDatabase {
   }
 
   Future<WalletStorage> loadWalletsDatabase() async {
+    print("[loadWalletsDatabase]");
     /// Get all Wallets
     final result = await _processIsolate(method: 'loadWallets');
     if (result.runtimeType == WalletStorage) {

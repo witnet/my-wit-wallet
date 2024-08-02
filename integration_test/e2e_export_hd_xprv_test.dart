@@ -1,30 +1,15 @@
 part of 'test_utils.dart';
 
 Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
+  print("4");
   await initializeTest(tester);
+  print("5");
 
   AppLocalizations _localization =
       AppLocalizations.of(navigatorKey.currentContext!)!;
 
   /// Assess what is on the screen
   walletsExist = isTextOnScreen(_localization.unlockWallet);
-  bool biometricsActive = isTextOnScreen(_localization.cancel);
-
-  /// Cancel the Biometrics popup for linux
-  if (walletsExist && biometricsActive && Platform.isAndroid) {
-    await tapButton(tester, _localization.cancel);
-  }
-  if (walletsExist) {
-    /// Login Screen
-    await enterText(tester, TextFormField, password);
-    await tapButton(tester, _localization.unlockWallet);
-
-    /// Dashboard
-    /// Tap on the first PaddedButton on the screen, which is the identicon
-    /// and brings up the wallet list.
-    await tapButton(tester, PaddedButton, index: 0);
-    await tapButton(tester, FontAwesomeIcons.circlePlus);
-  }
 
   /// Create or Import Wallet
   await tapButton(tester, _localization.importWalletLabel);
@@ -46,11 +31,9 @@ Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
   await tapButton(tester, _localization.continueLabel);
 
   /// If the wallet database does not exist we need to enter the password.
-  if (!walletsExist) {
-    await enterText(tester, TextFormField, password, index: 0);
-    await enterText(tester, TextFormField, password, index: 1);
-    await tapButton(tester, _localization.continueLabel);
-  }
+  await enterText(tester, TextFormField, password, index: 0);
+  await enterText(tester, TextFormField, password, index: 1);
+  await tapButton(tester, _localization.continueLabel);
 
   await tester.pumpAndSettle();
 
@@ -83,14 +66,14 @@ Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
 
   await tapButton(tester, _localization.generateXprv);
 
-  // Scroll Save button into view
+  /// Scroll Save button into view
   await scrollUntilVisible(
       tester, widgetByText(_localization.copyXprvLabel).first,
       lastScroll: true);
   await tester.pumpAndSettle();
   await tapButton(tester, _localization.copyXprvLabel);
 
-  // Data from the copied xprv
+  /// Data from the copied xprv
   ClipboardData? data = await Clipboard.getData('text/plain');
 
   /// Dashboard
@@ -102,6 +85,9 @@ Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
   /// Create or Import Wallet
   await tapButton(tester, _localization.importWalletLabel);
   await tapButton(tester, _localization.importXprvLabel);
+
+  /// Wait until popover disappears
+  await Future.delayed(Duration(seconds: 7));
 
   /// Wallet Security
   await scrollUntilVisible(
@@ -127,5 +113,6 @@ Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
   expect(currentWallet2!.externalAccounts[0]!.address,
       currentWallet!.externalAccounts[0]!.address);
 
-  await teardownTest();
+ // await teardownTest();
+  print("6");
 }
