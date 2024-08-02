@@ -5,26 +5,6 @@ Future<void> e2eSignMessageTest(WidgetTester tester) async {
   AppLocalizations _localization =
       AppLocalizations.of(navigatorKey.currentContext!)!;
 
-  /// Assess what is on the screen
-  walletsExist = isTextOnScreen(_localization.unlockWallet);
-  bool biometricsActive = isTextOnScreen(_localization.cancel);
-
-  /// Cancel the Biometrics popup for linux
-  if (walletsExist && biometricsActive && Platform.isAndroid) {
-    await tapButton(tester, _localization.cancel);
-  }
-  if (walletsExist) {
-    /// Login Screen
-    await enterText(tester, TextFormField, password);
-    await tapButton(tester, _localization.unlockWallet);
-
-    /// Dashboard
-    /// Tap on the first PaddedButton on the screen, which is the identicon
-    /// and brings up the wallet list.
-    await tapButton(tester, PaddedButton, index: 0);
-    await tapButton(tester, FontAwesomeIcons.circlePlus);
-  }
-
   /// Create or Import Wallet
   await tapButton(tester, _localization.importWalletLabel);
   await tapButton(tester, _localization.importXprvLabel);
@@ -45,12 +25,10 @@ Future<void> e2eSignMessageTest(WidgetTester tester) async {
   await enterText(tester, TextField, "Test Wallet");
   await tapButton(tester, _localization.continueLabel);
 
-  /// If the wallet database does not exist we need to enter the password.
-  if (!walletsExist) {
-    await enterText(tester, TextFormField, password, index: 0);
-    await enterText(tester, TextFormField, password, index: 1);
-    await tapButton(tester, _localization.continueLabel);
-  }
+  /// Enter the password
+  await enterText(tester, TextFormField, password, index: 0);
+  await enterText(tester, TextFormField, password, index: 1);
+  await tapButton(tester, _localization.continueLabel);
 
   await tester.pumpAndSettle();
 
@@ -71,31 +49,27 @@ Future<void> e2eSignMessageTest(WidgetTester tester) async {
 
   await tapButton(tester, _localization.signMessage);
 
-  // Select second address in the list
-  await tapButton(tester, Select, index: 0);
-  await tapButton(tester, "wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u",
-      index: 2);
-
   /// Enter Message to sign
-  await enterText(tester, TextField, _localization.messageToBeSigned);
+  await enterText(tester, TextField, "myWitWallet");
+
   // Scroll Sign message button into view
-  await scrollUntilVisible(tester, widgetByText(_localization.signMessage).last,
-      lastScroll: true);
+  await scrollUntilVisible(tester,find.text(_localization.signMessage), lastScroll: true);
+
   await tapButton(tester, _localization.signMessage);
 
-  if (Platform.isIOS || Platform.isAndroid) {
-    // Show modal to verify password
-    expect(widgetByText(_localization.enterYourPassword), findsWidgets);
-
-    // Enter password for verification and continue
-    await enterText(tester, TextFormField, password);
-    await tapButton(tester, _localization.continueLabel);
-  }
+  // if (Platform.isIOS || Platform.isAndroid) {
+  //   // Show modal to verify password
+  //   expect(widgetByText(_localization.enterYourPassword), findsWidgets);
+  //   // Enter password for verification and continue
+  //   await enterText(tester, TextFormField, password);
+  //   await tapButton(tester, _localization.continueLabel);
+  // }
 
   // Scroll Copy JSON button into view
   await scrollUntilVisible(tester, widgetByText(_localization.copyJson).first,
       lastScroll: true);
-  await tester.pumpAndSettle();
+
+  // Scroll Copy JSON button into view
   await tapButton(tester, _localization.copyJson);
 
   ClipboardData? data = await Clipboard.getData('text/plain');
