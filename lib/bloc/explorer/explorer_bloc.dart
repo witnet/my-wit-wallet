@@ -170,7 +170,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     if (errorMessage.runtimeType == ExplorerException) {
       errorMessage = (errorMessage as ExplorerException).message;
     }
-    add(SyncErrorEvent(ExplorerStatus.error, errorMessage));
+    add(SyncErrorEvent(ExplorerStatus.error, '${errorMessage}'));
   }
 
   Future<void> _syncSingleAccount(
