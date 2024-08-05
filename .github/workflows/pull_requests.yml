@@ -108,7 +108,7 @@ jobs:
       #   run: flutter test
 
       - name: Run E2E tests
-        run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' flutter test integration_test/main.dart -d linux -r github
+        run: xvfb-run --auto-servernum flutter test integration_test/main.dart -d linux -r github
 
       - name: Binary
         run: flutter build linux --release
