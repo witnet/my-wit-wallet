@@ -1,339 +1,341 @@
 {
-  "address": "Dirección",
-  "addressCopied": "¡Dirección copiada!",
-  "amount": "Cantidad",
-  "authenticateWithBiometrics": "Autenticación biométrica",
-  "backLabel": "Volver",
-  "balance": "saldo",
-  "biometricsLabel": "Biométricas",
-  "blocksMined": "Bloques extraídos",
-  "buildWallet01": "Se están escaneando las diferentes direcciones de tu cartera en busca de transacciones y saldo existentes. Esto normalmente tomará menos de 1 minuto.",
-  "buildWalletBalance": "Saldo:",
-  "buildWalletHeader": "Descubrimiento de direcciones",
-  "cancel": "Cancelar",
-  "cancelAuthentication": "Cancelar autentificación",
-  "carouselMsg01": "myWitWallet te permite enviar y recibir Wit al instante. ¡Adiós a la sincronización!",
-  "carouselMsg02": "myWitWallet utiliza la criptografía de última generación para almacenar tus monedas Wit de manera segura.",
-  "carouselMsg03": "myWitWallet es completamente no custodial. Tus claves nunca saldrán de tu dispositivo.",
-  "chooseMinerFee": "Elija la tasa minera que desee",
-  "close": "cerrar",
-  "confirmMnemonic01": "Escribe tu frase de recuperación secreta a continuación exactamente como se muestra. Esto asegurará que hayas escrito tu frase de recuperación secreta correctamente.",
-  "confirmMnemonicHeader": "Confirmación de la frase de recuperación secreta",
-  "confirmPassword": "Confirmar contraseña",
-  "connectionIssue": "myWitWallet está experimentando problemas de conexión",
-  "cryptoException": "Error creando el wallet",
-  "signMessageError": "Error firmando el mensaje",
-  "vttException": "Error creando la transacción",
-  "connectionReestablished": "¡Conexión restablecida!",
-  "continueLabel": "Continuar",
-  "copyAddressConfirmed": "¡Dirección copiada!",
-  "copyAddressLabel": "Copiar dirección seleccionada",
-  "copyAddressToClipboard": "Copiar dirección en el portapapeles",
-  "copyJson": "Copiar JSON",
-  "copyXprvConfirmed": "¡Xprv copiado!",
-  "copyXprvLabel": "Copiar Xprv",
-  "createImportWallet01": "Cuando creaste tu cartera, probablemente escribiste la frase de seguridad secreta en un papel. Parece una lista de 12 palabras aparentemente aleatorias.",
-  "createImportWallet02": "Si no conservaste la frase de seguridad secreta, aún puedes exportar una clave Xprv protegida con contraseña desde la configuración de tu cartera existente.",
-  "createImportWalletHeader": "Crear o importar tu cartera",
-  "createNewWalletLabel": "Crear nueva cartera",
-  "createOrImportLabel": "Crear o importar",
-  "createWalletLabel": "Crear cartera",
-  "currentAddress": "dirección actual",
-  "darkMode": "Modo oscuro",
-  "dashboardViewSteps": "{selectedIndex, select, transactions{Transacciones} stats{Estadísticas} other{unused}}",
-  "@dashboardViewSteps": {
-    "placeholders": {
-      "selectedIndex": {
-        "type": "String"
-      }
-    }
-  },
-  "deleteStorageWarning": "Tu almacenamiento está a punto de ser eliminado permanentemente.",
-  "drSolved": "Solicitudes de datos resueltas",
-  "enableLoginWithBiometrics": "Inicio de sesión con datos biométricos",
-  "encryptWallet01": "Esta contraseña encripta tu cartera Witnet solo en esta computadora.",
-  "encryptWallet02": "Esta no es tu copia de seguridad y no puedes restaurar tu cartera con esta contraseña.",
-  "encryptWallet03": "Tu frase de recuperación de {mnemonicLength} palabras sigue siendo tu método de recuperación definitivo.",
-  "@encryptWallet03": {
-    "placeholders": {
-      "mnemonicLength": {
-        "example": "12",
-        "type": "int"
-      }
-    }
-  },
-  "encryptWallet04": "Your Xprv is still your ultimate recovery method.",
-  "encryptWalletHeader": "Encripta tu cartera",
-  "enterYourPassword": "Escriba su contraseña",
-  "epoch": "Época",
-  "error": "Error",
-  "errorFieldBlank": "Field is blank",
-  "errorReestablish": "Se ha producido un error al restablecer myWitWallet, inténtalo de nuevo.",
-  "errorSigning": "Mensaje de error al firmar",
-  "errorTransaction": "Error al enviar la transacción, ¡inténtelo de nuevo!",
-  "errorXprvStart": "needs to start with \\\"xprv1\\\"",
-  "estimatedFeeOptions": "{feeOption, select, stinky{Apestoso} low{Bajo} medium{Medio} high{High} opulent{Alta} custom{A medida} other{}}",
-  "@estimatedFeeOptions": {
-    "placeholders": {
-      "feeOption": {
-        "type": "String"
-      }
-    }
-  },
-  "exploredAddresses": "Direcciones exploradas:",
-  "exploringAddress": "Explorando dirección:",
-  "exportJson": "Exportar JSON",
-  "exportXprv": "Exportar Xprv",
-  "fee": "Tasa",
-  "feesCollected": "Comisiones cobradas",
-  "feesPayed": "Comisiones pagadas",
-  "feeTypeOptions": "{feeType, select, absolute{Absoluto} weighted{Ponderado} other{}}",
-  "@feeTypeOptions": {
-    "placeholders": {
-      "feeType": {
-        "type": "String"
-      }
-    }
-  },
-  "forgetPassword": "¿Has olvidado tu contraseña?, ¡Puedes borrar tu monedero y configurar uno nuevo!",
-  "from": "de",
-  "generatedAddress": "Dirección generada",
-  "generatedAddresses": "Direcciones generadas",
-  "generateMnemonic01": "Estas {mnemonicLength} palabras aparentemente aleatorias son tu frase de recuperación secreta. Te permitirán recuperar tus monedas Wit si desinstalas esta aplicación o olvidas la contraseña de bloqueo de tu cartera.",
-  "@generateMnemonic01": {
-    "placeholders": {
-      "mnemonicLength": {
-        "example": "12",
-        "type": "int"
-      }
-    }
-  },
-  "generateMnemonic02": "Debes escribir tu frase de recuperación secreta en un papel y almacenarla en un lugar seguro. No la almacenes en un archivo en tu dispositivo ni en ningún otro lugar electrónico. Si pierdes tu frase de recuperación secreta, podrías perder permanentemente el acceso a tu cartera y tus monedas Wit.",
-  "generateMnemonic03": "Nunca debes compartir tu frase de recuperación secreta con nadie. Si alguien encuentra o ve tu frase de recuperación secreta, tendrá acceso completo a tu cartera y tus monedas Wit.",
-  "generateMnemonicHeader": "Escribe tu frase de recuperación secreta",
-  "generateXprv": "Generar Xprv",
-  "genNewAddressLabel": "Generar nueva dirección",
-  "history": "Historia",
-  "importMnemonic01": "Escribe tu frase de recuperación secreta a continuación. Parece una lista de 12 palabras aparentemente aleatorias.",
-  "importMnemonicHeader": "Importar cartera desde la frase de recuperación secreta",
-  "importMnemonicLabel": "Importar cartera desde la frase de recuperación secreta",
-  "importWalletHeader": "",
-  "importWalletLabel": "Importar cartera",
-  "importXprv01": "Xprv es un formato de intercambio de claves que codifica y protege tu cartera con una contraseña. Las claves Xprv se ven como una larga secuencia de letras y números aparentemente aleatorios, precedidos por \"xprv\".",
-  "importXprv02": "Para importar tu cartera desde una clave Xprv encriptada con una contraseña, debes escribir la clave misma y su contraseña a continuación:",
-  "importXprvHeader": "Importar cartera desde una clave Xprv",
-  "importXprvLabel": "Importar desde la clave Xprv",
-  "initializingWallet": "Inicializando cartera.",
-  "inputAmountHint": "Ingresar un monto",
-  "inputPasswordPrompt": "Por favor, ingresa la contraseña de tu cartera.",
-  "inputs": "Insumos",
-  "inputYourPassword": "Ingresa tu contraseña",
-  "internalBalance": "Saldo interno",
-  "internalBalanceHint": "El saldo interno corresponde a la suma del saldo disponible en todas las cuentas de cambio",
-  "invalidPassword": "Contraseña inválida",
-  "invalidXprv": "Xprv inválido:",
-  "invalidXprvBlank": "El campo está en blanco",
-  "invalidXprvStart": "debe comenzar con \"xprv1\"",
-  "launchUrlError": "No se pudo abrir {error}",
-  "jsonCopied": "JSON copiado!",
-  "@launchUrlError": {
-    "placeholders": {
-      "error": {
-        "example": "error de URL",
-        "type": "String"
-      }
-    }
-  },
-  "lightMode": "Modo claro",
-  "lockWalletLabel": "Bloquear cartera",
-  "lockYourWallet": "Bloquea tu cartera",
-  "messageSigning": "Firma de mensajes",
-  "messageSigning01": "Demuestre la propiedad de su dirección añadiendo su firma a un mensaje.",
-  "messageToBeSigned": "Mensaje a firmar",
-  "minerFeeHint": "Por defecto, la tarifa Absoluta está seleccionada. La comisión ponderada la calcula automáticamente el monedero teniendo en cuenta la congestión de la red y el peso de la transacción multiplicado por el valor seleccionado como personalizado.",
-  "minerFeeInputHint": "Introduzca la tasa minera",
-  "nameLabel": "Nombre",
-
-  "noTransactions": "¡Aún no tienes transacciones!",
-  "okLabel": "Aceptar",
-  "outputs": "Salidas",
-  "passwordDescription": "Esta contraseña encripta tu archivo xprv. Se te pedirá que ingreses esta contraseña si deseas importar este xprv como copia de seguridad.",
-  "passwordLabel": "Contraseña",
-  "preferenceTabs": "{selectedTab, select, general{General} wallet{Cartera} other{unused}}",
-  "@preferenceTabs": {
-    "placeholders": {
-      "selectedTab": {
-        "type": "String"
-      }
-    }
-  },
-  "readCarefully": "Por favor, lea atentamente antes de continuar. Su atención es crucial.",
-  "receive": "Recibir",
-  "recipientAddress": "Dirección del receptor",
-  "reestablish": "Restablecer",
-  "reestablishInstructions": "Al hacer clic en \"Continuar\" se eliminarán permanentemente los datos de su monedero actual. Si continúa, tendrá que importar un monedero existente o crear uno nuevo para acceder a sus fondos.",
-  "reestablishSteps01": "Asegúrese de que ha almacenado su frase semilla de recuperación o Xprv.",
-  "reestablishSteps02": "Haga clic en \"Continuar\" para borrar su almacenamiento e importar su monedero de nuevo.",
-  "reestablishSucess": "¡myWitWallet se ha restablecido con éxito!",
-  "reestablishWallet": "Restablecer cartera",
-  "reestablishYourWallet": "Restablezca su cartera",
-  "scanAqrCode": "Escanear un código QR",
-  "scanQrCodeLabel": "Escanear código QR",
-  "selectImportOptionHeader": "Importar tu cartera",
-  "send": "Enviar",
-  "settings": "Ajustes",
-  "sheikah": "Sheikah",
-  "showPassword": "Mostrar contraseña",
-  "showWalletList": "Mostrar lista de carteras",
-  "signAndSend": "Firmar y enviar",
-  "signMessage": "Signo Mensaje",
-  "status": "Estado",
-  "theme": "Tema",
-  "timestamp": "Marca de tiempo",
-  "to": "a",
-  "totalFeesPaid": "Total de tasas pagadas",
-  "totalMiningRewards": "Recompensas mineras totales",
-  "transaction": "Transacción",
-  "transactionDetails": "Detalles de la transacción",
-  "transactionId": "ID de la transacción",
-  "transactionsFound": "Transacciones encontradas:",
-  "tryAgain": "¡Inténtalo de nuevo!",
-  "txnCheckStatus": "Compruebe el estado de la transacción en el Explorador de bloques de Witnet:",
-  "txnDetails": "Detalles de la transacción",
-  "txnSending": "Transacción de envío",
-  "txnSending01": "La transacción se está enviando",
-  "txnSigning": "Transacción de canto",
-  "txnSigning01": "Se está firmando la transacción",
-  "txnStatus": "{feeType, select, pending{pendiente} mined{minado} confirmed{confirmado} other{}}",
-  "@txnStatus": {
-    "placeholders": {
-      "feeType": {
-        "type": "String"
-      }
-    }
-  },
-  "txnSuccess": "¡Transacción enviada con éxito!",
-  "type": "Tipo",
-  "unlockWallet": "Desbloquear cartera",
-  "verifyLabel": "Verificar",
-  "versionNumber": "Versión {versionNumber}",
-  "@versionNumber": {
-    "placeholders": {
-      "versionNumber": {
-        "example": "0.0.0-dev",
-        "type": "String"
-      }
-    }
-  },
-  "vttSendSteps": "{currentStepIndex, select, Transaction{Transacción} MinerFee{Minera cuota} Review{La revisión} other{unused}}",
-  "@vttSendSteps": {
-    "placeholders": {
-      "currentStepIndex": {
-        "type": "String"
-      }
-    }
-  },
-  "stakeSteps": "{currentStepIndex, select, Transaction{Transaction} MinerFee{Miner Fee} Review{Review} other{unused}}",
-  "@stakeSteps": {
-    "placeholders": {
-      "currentStepIndex": {
-        "type": "String"
-      }
-    }
-  },
-  "unstakeSteps": "{currentStepIndex, select, Transaction{Transaction} MinerFee{Miner Fee} Review{Review} other{unused}}",
-  "@unstakeSteps": {
-    "placeholders": {
-      "currentStepIndex": {
-        "type": "String"
-      }
-    }
-  },
-  "walletConfig01": "Tu clave Xprv te permite exportar y hacer una copia de seguridad de tu cartera en cualquier momento después de crearla.",
-  "walletConfig02": "En términos de privacidad, tu clave Xprv es equivalente a una frase de recuperación secreta. No la compartas con nadie y nunca la almacenes en un archivo en tu dispositivo ni en ningún otro lugar electrónico.",
-  "walletConfig03": "Tu clave Xprv estará protegida con la contraseña a continuación. Al importar la clave Xprv en esta u otra aplicación, se te pedirá que escribas esa misma contraseña.",
-  "walletConfigHeader": "Exportar la clave Xprv de mi cartera",
-  "walletDetail01": "Puedes hacer un mejor seguimiento de tus diferentes carteras dándoles a cada una su propio nombre y descripción.",
-  "walletDetail02": "Los nombres de las carteras facilitan cambiar rápidamente de una cartera a otra. Las descripciones de las carteras pueden ser más detalladas y describir el propósito de una cartera u otros metadatos.",
-  "walletDetailHeader": "Identifica tu cartera",
-  "walletNameHint": "Mis primeros millones de Wits",
-  "walletSecurity01": "Por favor, lee con atención antes de continuar.",
-  "walletSecurity02": "Una cartera es una aplicación que mantiene seguras tus credenciales y te permite interactuar con la cadena de bloques de Witnet. Te permite transferir y recibir Wit de manera sencilla.",
-  "walletSecurity03": "Nunca debes compartir tu frase de recuperación con nadie. Nosotros en Witnet no almacenamos tu frase de recuperación y nunca te pediremos que la compartas con nosotros. Si pierdes tu frase de recuperación, perderás permanentemente el acceso a tu cartera y a tus fondos.",
-  "walletSecurity04": "Si alguien encuentra o ve tu frase de recuperación, tendrá acceso a tu cartera y a todos tus fondos.",
-  "walletSecurity05": "Recomendamos almacenar tu frase de recuperación en papel en un lugar seguro. No la almacenes en un archivo en tu computadora ni en ningún lugar electrónico.",
-  "walletSecurity06": "Al aceptar estos avisos, te comprometes a cumplir con las restricciones explicadas y a firmar digitalmente tu conformidad utilizando tu cartera de Witnet.",
-  "walletSecurityConfirmLabel": "¡Seré cuidadoso, lo prometo!",
-  "walletSecurityHeader": "Seguridad de la cartera",
-  "walletTypeHDLabel": "HD Cartera",
-  "walletTypeNodeLabel": "Nodo",
-  "welcome": "Bienvenido",
-  "whatToDo": "¿Qué hacer?",
-  "xprvInputHint": "Tu clave Xprv (comienza con xprv...)",
-  "xprvOrigin": "Origen de Xprv",
-  "yourMessage": "Tu mensaje...",
-  "validationMinFee": "La tarifa de minado tiene que ser mayor que",
-  "validationEmpty": "Por favor, ingrese una cantidad",
-  "validationEnoughFunds": "Fondos insuficientes",
-  "validationNoZero": "La cantidad no puede ser cero",
-  "validationInvalidAmount": "Cantidad inválida",
-  "validationDecimals": "Solo se admiten 9 dígitos decimales",
-  "txEmptyState": "¡Todavía no tienes transacciones!",
-  "speedUp": "Acelerar",
-  "speedUpTxTitle": "Acelerar transacción",
-  "updateAvailable": "Actualización disponible",
-  "newVersionAvailable": "Nueva versión disponible.",
-  "newVersion": "Nueva versión: {versionNumber}",
-  "later": "Más tarde",
-  "updateNow": "Actualiza ahora",
-  "updateToVersion": "Actualizar a la versión {versionNumber}",
-  "pleaseWait": "Por favor, espera...",
-  "downloading": "Descargando...",
-  "clickToInstall": "Haz clic para instalar.",
-  "readyToInstall": "Listo para instalar.",
-  "updateError": "Hubo un problema con la actualización. Por favor, inténtalo de nuevo.",
-  "errorTryAgain": "Error. Inténtalo de nuevo.",
-  "insufficientFunds": "Fondos insuficientes",
-  "insufficientUtxosAvailable": "Espera a la confirmación de las transacciones pendientes o crea una transacción con una cantidad más pequeña.",
-  "dataRequestTxn": "Data Request",
-  "valueTransferTxn": "Value Transfer",
-  "mintTxn": "Mint",
-  "confirmed": "Confirmada",
-  "mined": "Minada",
-  "pending": "Pendiente",
-  "reverted": "Revertida",
-  "advancedSettings": "Configuración avanzada",
-  "timelock": "bloqueo temporizado",
-  "setTimelock": "fijar bloqueo horario",
-  "timelockTooltip": "El beneficiario no podrá gastar las monedas antes de esa fecha y hora.",
-  "hour": "Hora",
-  "minutes": "Minutos",
-  "datePickerHintText": "Seleccionar fecha",
-  "datePickerFormatError": "Formato de fecha no válido",
-  "datePickerInvalid": "Fecha no válida",
-  "timePickerHintText": "Hora fijada",
-  "timePickerInvalid": "tiempo inválido",
-  "confirm": "Confirmar",
-  "addTimelockLabel": "Añadir Timelock (Opcional)",
-  "clearTimelockLabel": "Borrar Timelock",
-  "deleteWallet": "Eliminar wallet",
-  "delete": "Eliminar",
-  "deleteWallet01": "Hacer clic en \"Eliminar\" resultará en la eliminación permanente de los datos de tu wallet actual. Si procedes, deberás importar la wallet nuevamente para acceder a tus fondos.",
-  "errorDeletingWallet": "¡Hubo un error al eliminar la wallet, por favor inténtalo de nuevo!",
-  "deleteWalletWarning": "¡Tu wallet está a punto de ser eliminada permanentemente!",
-  "deleteWalletSuccess": "¡Los datos de tu wallet han sido eliminados exitosamente!",
-  "stake": "Stake",
-  "unstake": "Unstake",
-  "available": "Disponible",
-  "locked": "Bloqueado",
-  "withdrawalAddress": "Withdrawal address",
-  "authorization": "Autorización del nodo",
-  "autorizationTooltip": "Autorización del nodo para realizar staking",
-  "authorizationInputHint": "Autorización del nodo...",
-  "stakeTxnSuccess": "¡Transacción de stake enviada con éxito!",
-  "unstakeTxnSuccess": "¡Transacción de unstake enviada con éxito!",
-  "sendReceiveTx": "Enviar o recibir WIT",
-  "stakeUnstake": "Stake o unstake WIT",
-  "home": "Lista de transacciones",
-  "showBalanceDetails": "Mostrar detalles del balace"
+	"@dashboardViewSteps": {
+		"placeholders": {
+			"selectedIndex": {
+				"type": "String"
+			}
+		}
+	},
+	"@encryptWallet03": {
+		"placeholders": {
+			"mnemonicLength": {
+				"example": "12",
+				"type": "int"
+			}
+		}
+	},
+	"@estimatedFeeOptions": {
+		"placeholders": {
+			"feeOption": {
+				"type": "String"
+			}
+		}
+	},
+	"@feeTypeOptions": {
+		"placeholders": {
+			"feeType": {
+				"type": "String"
+			}
+		}
+	},
+	"@generateMnemonic01": {
+		"placeholders": {
+			"mnemonicLength": {
+				"example": "12",
+				"type": "int"
+			}
+		}
+	},
+	"@launchUrlError": {
+		"placeholders": {
+			"error": {
+				"example": "error de URL",
+				"type": "String"
+			}
+		}
+	},
+	"@preferenceTabs": {
+		"placeholders": {
+			"selectedTab": {
+				"type": "String"
+			}
+		}
+	},
+	"@stakeSteps": {
+		"placeholders": {
+			"currentStepIndex": {
+				"type": "String"
+			}
+		}
+	},
+	"@txnStatus": {
+		"placeholders": {
+			"feeType": {
+				"type": "String"
+			}
+		}
+	},
+	"@unstakeSteps": {
+		"placeholders": {
+			"currentStepIndex": {
+				"type": "String"
+			}
+		}
+	},
+	"@versionNumber": {
+		"placeholders": {
+			"versionNumber": {
+				"example": "0.0.0-dev",
+				"type": "String"
+			}
+		}
+	},
+	"@vttSendSteps": {
+		"placeholders": {
+			"currentStepIndex": {
+				"type": "String"
+			}
+		}
+	},
+	"addTimelockLabel": "Añadir Timelock (Opcional)",
+	"address": "Dirección",
+	"addressCopied": "¡Dirección copiada!",
+	"advancedSettings": "Configuración avanzada",
+	"amount": "Cantidad",
+	"authenticateWithBiometrics": "Autenticación biométrica",
+	"authorization": "Autorización del nodo",
+	"authorizationInputHint": "Autorización del nodo...",
+	"autorizationTooltip": "Autorización del nodo para realizar staking",
+	"available": "Disponible",
+	"backLabel": "Volver",
+	"balance": "saldo",
+	"biometricsLabel": "Biométricas",
+	"blocksMined": "Bloques extraídos",
+	"buildWallet01": "Se están escaneando las diferentes direcciones de tu cartera en busca de transacciones y saldo existentes. Esto normalmente tomará menos de 1 minuto.",
+	"buildWalletBalance": "Saldo:",
+	"buildWalletHeader": "Descubrimiento de direcciones",
+	"cancel": "Cancelar",
+	"cancelAuthentication": "Cancelar autentificación",
+	"carouselMsg01": "myWitWallet te permite enviar y recibir Wit al instante. ¡Adiós a la sincronización!",
+	"carouselMsg02": "myWitWallet utiliza la criptografía de última generación para almacenar tus monedas Wit de manera segura.",
+	"carouselMsg03": "myWitWallet es completamente no custodial. Tus claves nunca saldrán de tu dispositivo.",
+	"chooseMinerFee": "Elija la tasa minera que desee",
+	"clearTimelockLabel": "Borrar Timelock",
+	"clickToInstall": "Haz clic para instalar.",
+	"close": "cerrar",
+	"confirm": "Confirmar",
+	"confirmMnemonic01": "Escribe tu frase de recuperación secreta a continuación exactamente como se muestra. Esto asegurará que hayas escrito tu frase de recuperación secreta correctamente.",
+	"confirmMnemonicHeader": "Confirmación de la frase de recuperación secreta",
+	"confirmPassword": "Confirmar contraseña",
+	"confirmed": "Confirmada",
+	"connectionIssue": "myWitWallet está experimentando problemas de conexión",
+	"connectionReestablished": "¡Conexión restablecida!",
+	"continueLabel": "Continuar",
+	"copyAddressConfirmed": "¡Dirección copiada!",
+	"copyAddressLabel": "Copiar dirección seleccionada",
+	"copyAddressToClipboard": "Copiar dirección en el portapapeles",
+	"copyJson": "Copiar JSON",
+	"copyXprvConfirmed": "¡Xprv copiado!",
+	"copyXprvLabel": "Copiar Xprv",
+	"createImportWallet01": "Cuando creaste tu cartera, probablemente escribiste la frase de seguridad secreta en un papel. Parece una lista de 12 palabras aparentemente aleatorias.",
+	"createImportWallet02": "Si no conservaste la frase de seguridad secreta, aún puedes exportar una clave Xprv protegida con contraseña desde la configuración de tu cartera existente.",
+	"createImportWalletHeader": "Crear o importar tu cartera",
+	"createNewWalletLabel": "Crear nueva cartera",
+	"createOrImportLabel": "Crear o importar",
+	"createWalletLabel": "Crear cartera",
+	"cryptoException": "Error creando el wallet",
+	"currentAddress": "dirección actual",
+	"darkMode": "Modo oscuro",
+	"dashboardViewSteps": "{selectedIndex, select, transactions{Transacciones} stats{Estadísticas} other{unused}}",
+	"dataRequestTxn": "Data Request",
+	"datePickerFormatError": "Formato de fecha no válido",
+	"datePickerHintText": "Seleccionar fecha",
+	"datePickerInvalid": "Fecha no válida",
+	"delete": "Eliminar",
+	"deleteStorageWarning": "Tu almacenamiento está a punto de ser eliminado permanentemente.",
+	"deleteWallet": "Eliminar wallet",
+	"deleteWallet01": "Hacer clic en \"Eliminar\" resultará en la eliminación permanente de los datos de tu wallet actual. Si procedes, deberás importar la wallet nuevamente para acceder a tus fondos.",
+	"deleteWalletSuccess": "¡Los datos de tu wallet han sido eliminados exitosamente!",
+	"deleteWalletWarning": "¡Tu wallet está a punto de ser eliminada permanentemente!",
+	"downloading": "Descargando...",
+	"drSolved": "Solicitudes de datos resueltas",
+  "emptyStakeMessage": "¡Haz stake de algunos $WIT! Asegura la red, gana recompensas y forma parte de un oráculo resistente a la censura.",
+  "emptyStakeTitle": "No tienes saldo para retirar stake",
+	"enableLoginWithBiometrics": "Inicio de sesión con datos biométricos",
+	"encryptWallet01": "Esta contraseña encripta tu cartera Witnet solo en esta computadora.",
+	"encryptWallet02": "Esta no es tu copia de seguridad y no puedes restaurar tu cartera con esta contraseña.",
+	"encryptWallet03": "Tu frase de recuperación de {mnemonicLength} palabras sigue siendo tu método de recuperación definitivo.",
+	"encryptWallet04": "Your Xprv is still your ultimate recovery method.",
+	"encryptWalletHeader": "Encripta tu cartera",
+	"enterYourPassword": "Escriba su contraseña",
+	"epoch": "Época",
+	"error": "Error",
+	"errorDeletingWallet": "¡Hubo un error al eliminar la wallet, por favor inténtalo de nuevo!",
+	"errorFieldBlank": "Field is blank",
+	"errorReestablish": "Se ha producido un error al restablecer myWitWallet, inténtalo de nuevo.",
+	"errorSigning": "Mensaje de error al firmar",
+	"errorTransaction": "Error al enviar la transacción, ¡inténtelo de nuevo!",
+	"errorTryAgain": "Error. Inténtalo de nuevo.",
+	"errorXprvStart": "needs to start with \\\"xprv1\\\"",
+	"estimatedFeeOptions": "{feeOption, select, stinky{Apestoso} low{Bajo} medium{Medio} high{High} opulent{Alta} custom{A medida} other{}}",
+	"exploredAddresses": "Direcciones exploradas:",
+	"exploringAddress": "Explorando dirección:",
+	"exportJson": "Exportar JSON",
+	"exportXprv": "Exportar Xprv",
+	"fee": "Tasa",
+	"feeTypeOptions": "{feeType, select, absolute{Absoluto} weighted{Ponderado} other{}}",
+	"feesCollected": "Comisiones cobradas",
+	"feesPayed": "Comisiones pagadas",
+	"forgetPassword": "¿Has olvidado tu contraseña?, ¡Puedes borrar tu monedero y configurar uno nuevo!",
+	"from": "de",
+	"genNewAddressLabel": "Generar nueva dirección",
+	"generateMnemonic01": "Estas {mnemonicLength} palabras aparentemente aleatorias son tu frase de recuperación secreta. Te permitirán recuperar tus monedas Wit si desinstalas esta aplicación o olvidas la contraseña de bloqueo de tu cartera.",
+	"generateMnemonic02": "Debes escribir tu frase de recuperación secreta en un papel y almacenarla en un lugar seguro. No la almacenes en un archivo en tu dispositivo ni en ningún otro lugar electrónico. Si pierdes tu frase de recuperación secreta, podrías perder permanentemente el acceso a tu cartera y tus monedas Wit.",
+	"generateMnemonic03": "Nunca debes compartir tu frase de recuperación secreta con nadie. Si alguien encuentra o ve tu frase de recuperación secreta, tendrá acceso completo a tu cartera y tus monedas Wit.",
+	"generateMnemonicHeader": "Escribe tu frase de recuperación secreta",
+	"generateXprv": "Generar Xprv",
+	"generatedAddress": "Dirección generada",
+	"generatedAddresses": "Direcciones generadas",
+	"history": "Historia",
+	"home": "Lista de transacciones",
+	"hour": "Hora",
+	"importMnemonic01": "Escribe tu frase de recuperación secreta a continuación. Parece una lista de 12 palabras aparentemente aleatorias.",
+	"importMnemonicHeader": "Importar cartera desde la frase de recuperación secreta",
+	"importMnemonicLabel": "Importar cartera desde la frase de recuperación secreta",
+	"importWalletHeader": "",
+	"importWalletLabel": "Importar cartera",
+	"importXprv01": "Xprv es un formato de intercambio de claves que codifica y protege tu cartera con una contraseña. Las claves Xprv se ven como una larga secuencia de letras y números aparentemente aleatorios, precedidos por \"xprv\".",
+	"importXprv02": "Para importar tu cartera desde una clave Xprv encriptada con una contraseña, debes escribir la clave misma y su contraseña a continuación:",
+	"importXprvHeader": "Importar cartera desde una clave Xprv",
+	"importXprvLabel": "Importar desde la clave Xprv",
+	"initializingWallet": "Inicializando cartera.",
+	"inputAmountHint": "Ingresar un monto",
+	"inputPasswordPrompt": "Por favor, ingresa la contraseña de tu cartera.",
+	"inputYourPassword": "Ingresa tu contraseña",
+	"inputs": "Insumos",
+	"insufficientFunds": "Fondos insuficientes",
+	"insufficientUtxosAvailable": "Espera a la confirmación de las transacciones pendientes o crea una transacción con una cantidad más pequeña.",
+	"internalBalance": "Saldo interno",
+	"internalBalanceHint": "El saldo interno corresponde a la suma del saldo disponible en todas las cuentas de cambio",
+	"invalidPassword": "Contraseña inválida",
+	"invalidXprv": "Xprv inválido:",
+	"invalidXprvBlank": "El campo está en blanco",
+	"invalidXprvStart": "debe comenzar con \"xprv1\"",
+	"jsonCopied": "JSON copiado!",
+	"later": "Más tarde",
+	"launchUrlError": "No se pudo abrir {error}",
+	"lightMode": "Modo claro",
+	"lockWalletLabel": "Bloquear cartera",
+	"lockYourWallet": "Bloquea tu cartera",
+	"locked": "Bloqueado",
+	"messageSigning": "Firma de mensajes",
+	"messageSigning01": "Demuestre la propiedad de su dirección añadiendo su firma a un mensaje.",
+	"messageToBeSigned": "Mensaje a firmar",
+	"mined": "Minada",
+	"minerFeeHint": "Por defecto, la tarifa Absoluta está seleccionada. La comisión ponderada la calcula automáticamente el monedero teniendo en cuenta la congestión de la red y el peso de la transacción multiplicado por el valor seleccionado como personalizado.",
+	"minerFeeInputHint": "Introduzca la tasa minera",
+	"mintTxn": "Mint",
+	"minutes": "Minutos",
+	"nameLabel": "Nombre",
+	"newVersion": "Nueva versión: {versionNumber}",
+	"newVersionAvailable": "Nueva versión disponible.",
+	"noTransactions": "¡Aún no tienes transacciones!",
+	"okLabel": "Aceptar",
+	"outputs": "Salidas",
+	"passwordDescription": "Esta contraseña encripta tu archivo xprv. Se te pedirá que ingreses esta contraseña si deseas importar este xprv como copia de seguridad.",
+	"passwordLabel": "Contraseña",
+	"pending": "Pendiente",
+	"pleaseWait": "Por favor, espera...",
+	"preferenceTabs": "{selectedTab, select, general{General} wallet{Cartera} other{unused}}",
+	"readCarefully": "Por favor, lea atentamente antes de continuar. Su atención es crucial.",
+	"readyToInstall": "Listo para instalar.",
+	"receive": "Recibir",
+	"recipientAddress": "Dirección del receptor",
+	"reestablish": "Restablecer",
+	"reestablishInstructions": "Al hacer clic en \"Continuar\" se eliminarán permanentemente los datos de su monedero actual. Si continúa, tendrá que importar un monedero existente o crear uno nuevo para acceder a sus fondos.",
+	"reestablishSteps01": "Asegúrese de que ha almacenado su frase semilla de recuperación o Xprv.",
+	"reestablishSteps02": "Haga clic en \"Continuar\" para borrar su almacenamiento e importar su monedero de nuevo.",
+	"reestablishSucess": "¡myWitWallet se ha restablecido con éxito!",
+	"reestablishWallet": "Restablecer cartera",
+	"reestablishYourWallet": "Restablezca su cartera",
+	"reverted": "Revertida",
+	"scanAqrCode": "Escanear un código QR",
+	"scanQrCodeLabel": "Escanear código QR",
+	"selectImportOptionHeader": "Importar tu cartera",
+	"send": "Enviar",
+	"sendReceiveTx": "Enviar o recibir WIT",
+	"setTimelock": "fijar bloqueo horario",
+	"settings": "Ajustes",
+	"sheikah": "Sheikah",
+	"showBalanceDetails": "Mostrar detalles del balace",
+	"showPassword": "Mostrar contraseña",
+	"showWalletList": "Mostrar lista de carteras",
+	"signAndSend": "Firmar y enviar",
+	"signMessage": "Signo Mensaje",
+	"signMessageError": "Error firmando el mensaje",
+	"speedUp": "Acelerar",
+	"speedUpTxTitle": "Acelerar transacción",
+	"stake": "Stake",
+	"stakeSteps": "{currentStepIndex, select, Transaction{Stake} MinerFee{Miner Fee} Review{Review} other{unused}}",
+	"stakeTxnSuccess": "¡Transacción de stake enviada con éxito!",
+	"stakeUnstake": "Stake o unstake WIT",
+	"staked": "Staked",
+	"status": "Estado",
+	"theme": "Tema",
+	"timePickerHintText": "Hora fijada",
+	"timePickerInvalid": "tiempo inválido",
+	"timelock": "bloqueo temporizado",
+	"timelockTooltip": "El beneficiario no podrá gastar las monedas antes de esa fecha y hora.",
+	"timestamp": "Marca de tiempo",
+	"to": "a",
+	"totalFeesPaid": "Total de tasas pagadas",
+	"totalMiningRewards": "Recompensas mineras totales",
+	"transaction": "Transacción",
+	"transactionDetails": "Detalles de la transacción",
+	"transactionId": "ID de la transacción",
+	"transactionsFound": "Transacciones encontradas:",
+	"tryAgain": "¡Inténtalo de nuevo!",
+	"txEmptyState": "¡Todavía no tienes transacciones!",
+	"txnCheckStatus": "Compruebe el estado de la transacción en el Explorador de bloques de Witnet:",
+	"txnDetails": "Detalles de la transacción",
+	"txnSending": "Transacción de envío",
+	"txnSending01": "La transacción se está enviando",
+	"txnSigning": "Transacción de canto",
+	"txnSigning01": "Se está firmando la transacción",
+	"txnStatus": "{feeType, select, pending{pendiente} mined{minado} confirmed{confirmado} other{}}",
+	"txnSuccess": "¡Transacción enviada con éxito!",
+	"type": "Tipo",
+	"unlockWallet": "Desbloquear cartera",
+	"unstake": "Unstake",
+	"unstakeSteps": "{currentStepIndex, select, Transaction{Unstake} MinerFee{Miner Fee} Review{Review} other{unused}}",
+	"unstakeTxnSuccess": "¡Transacción de unstake enviada con éxito!",
+	"updateAvailable": "Actualización disponible",
+	"updateError": "Hubo un problema con la actualización. Por favor, inténtalo de nuevo.",
+	"updateNow": "Actualiza ahora",
+	"updateToVersion": "Actualizar a la versión {versionNumber}",
+	"validationDecimals": "Solo se admiten 9 dígitos decimales",
+	"validationEmpty": "Por favor, ingrese una cantidad",
+	"validationEnoughFunds": "Fondos insuficientes",
+	"validationInvalidAmount": "Cantidad inválida",
+	"validationMinFee": "La tarifa de minado tiene que ser mayor que",
+	"validationNoZero": "La cantidad no puede ser cero",
+	"valueTransferTxn": "Value Transfer",
+	"verifyLabel": "Verificar",
+	"versionNumber": "Versión {versionNumber}",
+	"vttException": "Error creando la transacción",
+	"vttSendSteps": "{currentStepIndex, select, Transaction{Transacción} MinerFee{Minera cuota} Review{La revisión} other{unused}}",
+	"walletConfig01": "Tu clave Xprv te permite exportar y hacer una copia de seguridad de tu cartera en cualquier momento después de crearla.",
+	"walletConfig02": "En términos de privacidad, tu clave Xprv es equivalente a una frase de recuperación secreta. No la compartas con nadie y nunca la almacenes en un archivo en tu dispositivo ni en ningún otro lugar electrónico.",
+	"walletConfig03": "Tu clave Xprv estará protegida con la contraseña a continuación. Al importar la clave Xprv en esta u otra aplicación, se te pedirá que escribas esa misma contraseña.",
+	"walletConfigHeader": "Exportar la clave Xprv de mi cartera",
+	"walletDetail01": "Puedes hacer un mejor seguimiento de tus diferentes carteras dándoles a cada una su propio nombre y descripción.",
+	"walletDetail02": "Los nombres de las carteras facilitan cambiar rápidamente de una cartera a otra. Las descripciones de las carteras pueden ser más detalladas y describir el propósito de una cartera u otros metadatos.",
+	"walletDetailHeader": "Identifica tu cartera",
+	"walletNameHint": "Mis primeros millones de Wits",
+	"walletSecurity01": "Por favor, lee con atención antes de continuar.",
+	"walletSecurity02": "Una cartera es una aplicación que mantiene seguras tus credenciales y te permite interactuar con la cadena de bloques de Witnet. Te permite transferir y recibir Wit de manera sencilla.",
+	"walletSecurity03": "Nunca debes compartir tu frase de recuperación con nadie. Nosotros en Witnet no almacenamos tu frase de recuperación y nunca te pediremos que la compartas con nosotros. Si pierdes tu frase de recuperación, perderás permanentemente el acceso a tu cartera y a tus fondos.",
+	"walletSecurity04": "Si alguien encuentra o ve tu frase de recuperación, tendrá acceso a tu cartera y a todos tus fondos.",
+	"walletSecurity05": "Recomendamos almacenar tu frase de recuperación en papel en un lugar seguro. No la almacenes en un archivo en tu computadora ni en ningún lugar electrónico.",
+	"walletSecurity06": "Al aceptar estos avisos, te comprometes a cumplir con las restricciones explicadas y a firmar digitalmente tu conformidad utilizando tu cartera de Witnet.",
+	"walletSecurityConfirmLabel": "¡Seré cuidadoso, lo prometo!",
+	"walletSecurityHeader": "Seguridad de la cartera",
+	"walletTypeHDLabel": "HD Cartera",
+	"walletTypeNodeLabel": "Nodo",
+	"welcome": "Bienvenido",
+	"whatToDo": "¿Qué hacer?",
+	"withdrawalAddress": "Withdrawal address",
+	"xprvInputHint": "Tu clave Xprv (comienza con xprv...)",
+	"xprvOrigin": "Origen de Xprv",
+	"yourMessage": "Tu mensaje..."
 }
