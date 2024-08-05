@@ -261,8 +261,10 @@ class DatabaseService {
     /// Get all Wallets
 
     try {
+      print("1");
       final List<Wallet> wallets = await walletRepository.getWallets(_database);
 
+      print("2");
       /// Get all Accounts
       final List<Account> accounts =
           await accountRepository.getAccounts(_database);
@@ -338,6 +340,7 @@ class DatabaseService {
       _walletStorage.setMints(mintMap);
       return _walletStorage;
     } catch (e) {
+      print('exception')
       return DBException(code: e.hashCode, message: '$e');
     }
   }
