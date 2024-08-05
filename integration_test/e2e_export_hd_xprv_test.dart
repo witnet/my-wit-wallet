@@ -13,7 +13,9 @@ Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
   /// Wallet Security
   await scrollUntilVisible(
       tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
+  print('1st');
   await tapButton(tester, LabeledCheckbox);
+  print('2nd');
   await tapButton(tester, _localization.continueLabel);
 
   /// Enter Shiekah Compatible Encrypted Xprv
@@ -84,8 +86,10 @@ Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
   /// Wallet Security
   await scrollUntilVisible(
       tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
+  print('3rd');
   await tapButton(tester, LabeledCheckbox);
   await tapButton(tester, _localization.continueLabel);
+  print('4th');
 
   /// Enter Sheikah Compatible Encrypted Xprv
   await enterText(tester, TextField, data?.text ?? '', index: 0);
