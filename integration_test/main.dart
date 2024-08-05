@@ -10,7 +10,7 @@ void main() async {
 
   // Set the screen size to a larger resolution
   final TestWidgetsFlutterBinding binding = TestWidgetsFlutterBinding.ensureInitialized();
-  binding.window.physicalSizeTestValue = Size(400, 844);
+  binding.window.physicalSizeTestValue = Size(417, 730);
   binding.window.devicePixelRatioTestValue = 1.0;
 
   group("End To End Mnemonic Tests", () {
