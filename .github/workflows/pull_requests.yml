@@ -84,7 +84,7 @@ jobs:
         run: | 
           cp ./.env.example ./.env
           echo "DELAY=100" >> .env
-          echo "INIT_E2E_DELAY_IN_SECONDS=5" >> .env
+          echo "INIT_E2E_DELAY_IN_SECONDS=10" >> .env
           echo "DELETE_TEST_STORAGE=true" >> .env
 
       - name: Setup Flutter
