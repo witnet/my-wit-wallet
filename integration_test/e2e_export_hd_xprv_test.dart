@@ -39,6 +39,7 @@ Future<void> ensureVisibleAndTap(WidgetTester tester, Finder finder) async {
 
   // Wallet Security
   await scrollUntilVisible(tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
+  await scrollUntilVisible(tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
   await ensureVisibleAndTap(tester, find.byType(LabeledCheckbox));
   await ensureVisibleAndTap(tester, find.text(_localization.continueLabel));
 
@@ -103,6 +104,7 @@ Future<void> ensureVisibleAndTap(WidgetTester tester, Finder finder) async {
   await ensureVisibleAndTap(tester, find.text(_localization.importXprvLabel));
 
   // Wallet Security
+  await scrollUntilVisible(tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
   await scrollUntilVisible(tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
   await ensureVisibleAndTap(tester, find.byType(LabeledCheckbox));
   await ensureVisibleAndTap(tester, find.text(_localization.continueLabel));
