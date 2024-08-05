@@ -54,12 +54,12 @@ class HeaderLayout extends StatelessWidget {
         decoration: BoxDecoration(
             gradient: LinearGradient(
           colors: [
-            theme.colorScheme.background,
-            theme.colorScheme.background,
-            theme.colorScheme.background,
-            theme.colorScheme.background.withOpacity(0.7),
-            theme.colorScheme.background.withOpacity(0.7),
-            theme.colorScheme.background.withOpacity(0),
+            theme.colorScheme.surface,
+            theme.colorScheme.surface,
+            theme.colorScheme.surface,
+            theme.colorScheme.surface.withOpacity(0.7),
+            theme.colorScheme.surface.withOpacity(0.7),
+            theme.colorScheme.surface.withOpacity(0),
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
