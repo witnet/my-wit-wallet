@@ -6,6 +6,11 @@ import 'test_utils.dart';
 void main() async {
   globals.testingActive = true;
 
+  // Set the screen size to a larger resolution
+  final TestWidgetsFlutterBinding binding = TestWidgetsFlutterBinding.ensureInitialized();
+  binding.window.physicalSizeTestValue = Size(1920, 1080);
+  binding.window.devicePixelRatioTestValue = 1.0;
+
   group("End To End Mnemonic Tests", () {
     testWidgets("Create Mnemonic Test", e2eCreateMnemonicTest, skip: true);
     testWidgets("Import Mnemonic Test", e2eImportMnemonicTest, skip: true);
