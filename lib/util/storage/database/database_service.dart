@@ -340,7 +340,7 @@ class DatabaseService {
       _walletStorage.setMints(mintMap);
       return _walletStorage;
     } catch (e) {
-      print('exception')
+      print('exception');
       return DBException(code: e.hashCode, message: '$e');
     }
   }
