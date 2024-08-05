@@ -12,6 +12,7 @@ import 'package:witnet/constants.dart';
 import 'package:witnet/crypto.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
+import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
 
@@ -416,7 +417,6 @@ class Wallet {
 
   BalanceInfo balanceNanoWit() {
     List<Utxo> _utxos = [];
-
     internalAccounts.forEach((address, account) {
       _utxos.addAll(account.utxos);
     });
@@ -427,6 +427,20 @@ class Wallet {
       _utxos.addAll(masterAccount!.utxos);
     }
     return BalanceInfo.fromUtxoList(_utxos);
+  }
+
+  StakedBalanceInfo stakedNanoWit() {
+    List<StakeOutput> _stakes = [];
+    internalAccounts.forEach((address, account) {
+      // TODO(#542): get stakes by account
+    });
+    externalAccounts.forEach((address, account) {
+      // TODO(#542): get stakes by account
+    });
+    if (masterAccount != null) {
+      // TODO(#542): get stakes by account
+    }
+    return StakedBalanceInfo.fromStakesList(_stakes);
   }
 
   Future<Account> generateKey({

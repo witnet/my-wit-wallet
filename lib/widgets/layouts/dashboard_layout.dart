@@ -83,7 +83,9 @@ class DashboardLayoutState extends State<DashboardLayout>
             onShowBalanceDetails: () => {
                   setState(() {
                     panel.toggle(BalanceDetails(
-                        balance: currentWallet.balanceNanoWit()));
+                      balance: currentWallet.balanceNanoWit(),
+                      stakedBalance: currentWallet.stakedNanoWit(),
+                    ));
                   })
                 },
             currentWallet: currentWallet),

@@ -54,6 +54,8 @@ class RecipientStepState extends State<RecipientStep>
     with SingleTickerProviderStateMixin {
   late BalanceInfo balanceInfo =
       widget.walletStorage.currentWallet.balanceNanoWit();
+  late StakedBalanceInfo stakeInfo =
+      widget.walletStorage.currentWallet.stakedNanoWit();
   late Account currentAccount = widget.walletStorage.currentAccount;
   late AnimationController _loadingController;
   final _formKey = GlobalKey<FormState>();
@@ -78,8 +80,10 @@ class RecipientStepState extends State<RecipientStep>
       : [_addressFocusNode, _amountFocusNode, _authorizationFocusNode];
   ValueTransferOutput? ongoingOutput;
   TransactionBloc get vttBloc => BlocProvider.of<TransactionBloc>(context);
-  String get maxAmountWit =>
-      nanoWitToWit(balanceInfo.availableNanoWit).toString();
+  String get maxAmountWit => nanoWitToWit(isUnstakeTransaction
+          ? stakeInfo.stakedNanoWit
+          : balanceInfo.availableNanoWit)
+      .toString();
   bool get showTimelockInput => isVttTransaction;
   bool get showAuthorization => isStakeTarnsaction;
   bool get isStakeTarnsaction =>
@@ -208,7 +212,9 @@ class RecipientStepState extends State<RecipientStep>
   void setAmount(String value, {bool? validate}) {
     setState(() {
       _amount = VttAmountInput.dirty(
-          availableNanoWit: balanceInfo.availableNanoWit,
+          availableNanoWit: isUnstakeTransaction
+              ? stakeInfo.stakedNanoWit
+              : balanceInfo.availableNanoWit,
           allowValidation:
               validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
           value: value);
@@ -417,6 +423,9 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   List<Widget> _buildStakeInputAmount(ThemeData theme) {
+    int balance = isUnstakeTransaction
+        ? stakeInfo.stakedNanoWit
+        : balanceInfo.availableNanoWit;
     return [
       SizedBox(height: 16),
       Text(
@@ -427,9 +436,7 @@ class RecipientStepState extends State<RecipientStep>
       InputSlider(
         hint: localization.amount,
         minAmount: 0.0,
-        maxAmount: balanceInfo.availableNanoWit
-            .standardizeWitUnits(truncate: -1)
-            .toDouble(),
+        maxAmount: balance.standardizeWitUnits(truncate: -1).toDouble(),
         errorText: _amount.error,
         textEditingController: _amountController,
         focusNode: _amountFocusNode,

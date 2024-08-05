@@ -8,8 +8,9 @@ import 'package:flutter/material.dart';
 typedef void VoidCallback();
 
 class BalanceDetails extends StatelessWidget {
-  BalanceDetails({required this.balance});
+  BalanceDetails({required this.balance, required this.stakedBalance});
   final BalanceInfo balance;
+  final StakedBalanceInfo stakedBalance;
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -43,6 +44,18 @@ class BalanceDetails extends StatelessWidget {
                 Spacer(),
                 Text(
                   '${balance.lockedNanoWit.standardizeWitUnits().toString()} ${WIT_UNIT[WitUnit.Wit]}',
+                  style: textStyle,
+                ),
+              ]),
+              SizedBox(height: 16),
+              Row(children: [
+                Text(
+                  localization.staked,
+                  style: labelTextStyle,
+                ),
+                Spacer(),
+                Text(
+                  '${stakedBalance.stakedNanoWit.standardizeWitUnits().toString()} ${WIT_UNIT[WitUnit.Wit]}',
                   style: textStyle,
                 ),
               ])
