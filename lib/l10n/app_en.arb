@@ -1,338 +1,341 @@
 {
-  "address": "Address",
-  "addressCopied": "Address copied!",
-  "amount": "Amount",
-  "authenticateWithBiometrics": "Authenticate with biometrics",
-  "backLabel": "Back",
-  "balance": "balance",
-  "biometricsLabel": "Biometrics",
-  "blocksMined": "Blocks mined",
-  "buildWallet01": "The different addresses in your wallet are being scanned for existing transactions and balance. This will normally take less than 1 minute.",
-  "buildWalletBalance": "Balance:",
-  "buildWalletHeader": "Address discovery",
-  "cancel": "Cancel",
-  "cancelAuthentication": "Cancel authentication",
-  "carouselMsg01": "myWitWallet allows you to send and receive Wit immediately. Bye bye synchronization!",
-  "carouselMsg02": "myWitWallet uses state-of-the-art cryptography to store your Wit coins securely.",
-  "carouselMsg03": "myWitWallet is completely non-custodial. Your keys will never leave your device.",
-  "chooseMinerFee": "Choose you desired miner fee",
-  "close": "Close",
-  "confirmMnemonic01": "Type in your secret recovery phrase below exactly as shown before. This will ensure that you have written down your secret recovery phrase correctly.",
-  "confirmMnemonicHeader": "Secret Recovery Phrase Confirmation",
-  "confirmPassword": "Confirm Password",
-  "connectionIssue": "myWitWallet is experiencing connection problems",
-  "cryptoException": "Error building the wallet",
-  "signMessageError": "Error signing message",
-  "vttException": "Error building the transaction",
-  "connectionReestablished": "Connection reestablished!",
-  "continueLabel": "Continue",
-  "copyAddressConfirmed": "Address copied!",
-  "copyAddressLabel": "Copy selected address",
-  "copyAddressToClipboard": "Copy address to clipboard",
-  "copyJson": "Copy JSON",
-  "copyXprvConfirmed": "Xprv copied!",
-  "copyXprvLabel": "Copy Xprv",
-  "createImportWallet01": "When you created your wallet, you probably wrote down the secret security phrase on a piece of paper. It looks like a list of 12 apparently random words.",
-  "createImportWallet02": "If you did not keep the secret security phrase, you can still export a password-protected Xprv key from the settings of your existing wallet.",
-  "createImportWalletHeader": "Create or import your wallet",
-  "createNewWalletLabel": "Create new wallet",
-  "createOrImportLabel": "Create or import",
-  "createWalletLabel": "Create wallet",
-  "currentAddress": "Current address",
-  "darkMode": "Dark Mode",
-  "dashboardViewSteps": "{selectedIndex, select, transactions{Transactions} stats{Stats} other{unused}}",
-  "@dashboardViewSteps": {
-    "placeholders": {
-      "selectedIndex": {
-        "type": "String"
-      }
-    }
-  },
-  "deleteStorageWarning": "Your storage is about to be permanently deleted!",
-  "drSolved": "Data requests solved",
-  "enableLoginWithBiometrics": "Enable login with biometrics",
-  "encryptWallet01": "This password encrypts your Witnet wallet only on this computer.",
-  "encryptWallet02": "This is not your backup and you cannot restore your wallet with this password.",
-  "encryptWallet03": "Your {mnemonicLength} word seed phrase is still your ultimate recovery method.",
-  "@encryptWallet03": {
-    "placeholders": {
-      "mnemonicLength": {
-        "example": "12",
-        "type": "int"
-      }
-    }
-  },
-  "encryptWallet04": "Your Xprv is still your ultimate recovery method.",
-  "encryptWalletHeader": "Encrypt your wallet",
-  "enterYourPassword": "Enter your Password",
-  "epoch": "Epoch",
-  "error": "Error",
-  "errorFieldBlank": "Field is blank",
-  "errorReestablish": "There was an error re-establishing myWitWallet, please try again!",
-  "errorSigning": "Error signing message",
-  "errorTransaction": "Error sending the transaction, try again!",
-  "errorXprvStart": "needs to start with \"xprv1\"",
-  "estimatedFeeOptions": "{feeOption, select, stinky{Stinky} low{Low} medium{Medium} high{High} opulent{Opulent} custom{Custom} other{}}",
-  "@estimatedFeeOptions": {
-    "placeholders": {
-      "feeOption": {
-        "type": "String"
-      }
-    }
-  },
-  "exploredAddresses": "Explored addresses: ",
-  "exploringAddress": "Exploring address: ",
-  "exportJson": "Export JSON",
-  "exportXprv": "Export Xprv",
-  "fee": "Fee",
-  "feesCollected": "Fees collected",
-  "feesPayed": "Fees payed",
-  "feeTypeOptions": "{feeType, select, absolute{Absolute} weighted{Weighted} other{}}",
-  "@feeTypeOptions": {
-    "placeholders": {
-      "feeType": {
-        "type": "String"
-      }
-    }
-  },
-  "forgetPassword": "Did you forget your password?, You can delete your wallet and configure a new one!",
-  "from": "from",
-  "generatedAddress": "Generated address",
-  "generatedAddresses": "Generated addresses",
-  "generateMnemonic01": "These {mnemonicLength} apparently random words are your secret recovery phrase. They will allow you to recover your Wit coins if you uninstall this app or forget your wallet lock password.",
-  "@generateMnemonic01": {
-    "placeholders": {
-      "mnemonicLength": {
-        "example": "12",
-        "type": "int"
-      }
-    }
-  },
-  "generateMnemonic02": "You must write down your secret recovery phrase on a piece of paper and store it somewhere safe. Do not store it in a file in your device or anywhere else electronically. If you lose your secret recovery phrase, you may permanently lose access to your wallet and your Wit coins.",
-  "generateMnemonic03": "You should never share your secret recovery phrase with anyone. If someone finds or sees your secret recovery phrase, they will have full access to your wallet and your Wit coins.",
-  "generateMnemonicHeader": "Write down your secret recovery phrase",
-  "generateXprv": "Generate Xprv",
-  "genNewAddressLabel": "Generate new Address",
-  "history": "History",
-  "importMnemonic01": "Type your secret recovery phrase below. It looks like a list of 12 apparently random words.",
-  "importMnemonicHeader": "Import wallet from secret recovery phrase",
-  "importMnemonicLabel": "Import wallet from secret recovery phrase",
-  "importWalletHeader": "",
-  "importWalletLabel": "Import wallet",
-  "importXprv01": "Xprv is a key exchange format that encodes and protects your wallet with a password. Xprv keys look like a long sequence of apparently random letters and numbers, preceded by \"xprv\".",
-  "importXprv02": "To import your wallet from an Xprv key encrypted with a password, you need to type the key itself and its password below:",
-  "importXprvHeader": "Import wallet from an Xprv key",
-  "importXprvLabel": "Import from Xprv key",
-  "initializingWallet": "Initializing Wallet.",
-  "inputAmountHint": "Input an amount",
-  "inputPasswordPrompt": "Please, input your wallet's password.",
-  "inputs": "Inputs",
-  "inputYourPassword": "Input your password",
-  "internalBalance": "Internal balance",
-  "internalBalanceHint": "The internal balance corresponds to the sum of all the change accounts available balance",
-  "invalidPassword": "Invalid Password",
-  "invalidXprv": "Invalid Xprv:",
-  "invalidXprvBlank": "Field is blank",
-  "invalidXprvStart": "needs to start with \"xprv1\"",
-  "jsonCopied": "JSON copied!",
-  "launchUrlError": "Could not launch {error}",
-  "@launchUrlError": {
-    "placeholders": {
-      "error": {
-        "example": "url error",
-        "type": "String"
-      }
-    }
-  },
-  "lightMode": "Light Mode",
-  "lockWalletLabel": "Lock wallet",
-  "lockYourWallet": "Lock your wallet",
-  "messageSigning": "Message Signing",
-  "messageSigning01": "Prove the ownership of your address by adding your signature to a message.",
-  "messageToBeSigned": "Message to be signed",
-  "minerFeeHint": "By default, `Absolute fee` is selected.\\nTo set a custom weighted fee, you need to select 'Weighted'. \\nThe Weighted fee is automatically calculated by the wallet considering the network congestion and transaction weight multiplied by the value selected as custom.",
-  "minerFeeInputHint": "Input the miner fee",
-  "nameLabel": "Name",
-  "noTransactions": "You don't have transactions yet!",
-  "okLabel": "Ok",
-  "outputs": "Outputs",
-  "passwordDescription": "This password encrypts your xprv file. You will be asked to type this password if you want to import this xprv as a backup.",
-  "passwordLabel": "Password",
-  "preferenceTabs": "{selectedTab, select, general{General} wallet{Wallet} other{unused}}",
-  "@preferenceTabs": {
-    "placeholders": {
-      "selectedTab": {
-        "type": "String"
-      }
-    }
-  },
-  "readCarefully": "Please, read carefully before continuing. Your attention is crucial!",
-  "receive": "Receive",
-  "recipientAddress": "Recipient address",
-  "reestablish": "Re-establish",
-  "reestablishInstructions": "Clicking \"Continue\" will result in the permanent deletion of your current wallet data. If you proceed, you'll need to import an existing wallet to access your funds or create a new one.",
-  "reestablishSteps01": "Make sure you have stored your recovery seed phrase or Xprv.",
-  "reestablishSteps02": "Click \"Continue\" to delete your storage and import your wallet again.",
-  "reestablishSucess": "myWitWallet has been successfully re-established!",
-  "reestablishWallet": "Re-establish wallet",
-  "reestablishYourWallet": "Re-establish your wallet",
-  "scanAqrCode": "Scan a QR code",
-  "scanQrCodeLabel": "Scan QR code",
-  "selectImportOptionHeader": "Import your wallet",
-  "send": "Send",
-  "settings": "Settings",
-  "sheikah": "Sheikah",
-  "showPassword": "Show password",
-  "showWalletList": "Show wallet list",
-  "signAndSend": "Sign and Send",
-  "signMessage": "Sign Message",
-  "status": "Status",
-  "theme": "Theme",
-  "timestamp": "Timestamp",
-  "to": "To",
-  "totalFeesPaid": "Total fees paid",
-  "totalMiningRewards": "Total mining rewards",
-  "transaction": "Transaction",
-  "transactionDetails": "Transaction details",
-  "transactionId": "Transaction ID",
-  "transactionsFound": "Transactions found: ",
-  "tryAgain": "Try again!",
-  "txnCheckStatus": "Check the transaction status in the Witnet Block Explorer:",
-  "txnDetails": "Transaction details",
-  "txnSending": "Sending transaction",
-  "txnSending01": "The transaction is being sent",
-  "txnSigning": "Singing transaction",
-  "txnSigning01": "The transaction is being signed",
-  "txnStatus": "{feeType, select, pending{pending} mined{mined} confirmed{confirmed} other{}}",
-  "@txnStatus": {
-    "placeholders": {
-      "feeType": {
-        "type": "String"
-      }
-    }
-  },
-  "txnSuccess": "Transaction succesfully sent!",
-  "type": "Type",
-  "unlockWallet": "Unlock wallet",
-  "verifyLabel": "Verify",
-  "versionNumber": "Version {versionNumber}",
-  "@versionNumber": {
-    "placeholders": {
-      "versionNumber": {
-        "example": "0.0.0-dev",
-        "type": "String"
-      }
-    }
-  },
-  "vttSendSteps": "{currentStepIndex, select, Transaction{Transaction} MinerFee{Miner Fee} Review{Review} other{unused}}",
-  "@vttSendSteps": {
-    "placeholders": {
-      "currentStepIndex": {
-        "type": "String"
-      }
-    }
-  },
-  "stakeSteps": "{currentStepIndex, select, Transaction{Stake} MinerFee{Miner Fee} Review{Review} other{unused}}",
-  "@stakeSteps": {
-    "placeholders": {
-      "currentStepIndex": {
-        "type": "String"
-      }
-    }
-  },
-  "unstakeSteps": "{currentStepIndex, select, Transaction{Unstake} MinerFee{Miner Fee} Review{Review} other{unused}}",
-  "@unstakeSteps": {
-    "placeholders": {
-      "currentStepIndex": {
-        "type": "String"
-      }
-    }
-  },
-  "walletConfig01": "Your Xprv key allows you to export and back up your wallet at any point after creating it.",
-  "walletConfig02": "Privacy-wise, your Xprv key is equivalent to a secret recovery phrase. Do not share it with anyone, and never store it in a file in your device or anywhere else electronically.",
-  "walletConfig03": "Your Xprv key will be protected with the password below. When importing the Xprv on this or another app, you will be asked to type in that same password.",
-  "walletConfigHeader": "Export the Xprv key of my wallet",
-  "walletDetail01": "You can better keep track of your different wallets by giving each its own name and description.",
-  "walletDetail02": "Wallet names make it easy to quickly change from one wallet to another. Wallet descriptions can be more elaborate and rather describe the purpose of a wallet or any other metadata.",
-  "walletDetailHeader": "Identify your wallet",
-  "walletNameHint": "My first million Wits",
-  "walletSecurity01": "Please, read carefully before continuing.",
-  "walletSecurity02": "A wallet is an app that keeps your credentials safe and lets you interface with the Witnet blockchain. It allows you to easily transfer and receive Wit.",
-  "walletSecurity03": "You should never share your seed phrase with anyone. We at Witnet do not store your seed phrase and will never ask you to share it with us. If you lose your seed phrase, you will permanently lose access to your wallet and your funds.",
-  "walletSecurity04": "If someone finds or sees your seed phrase, they will have access to your wallet and all of your funds.",
-  "walletSecurity05": "We recommend storing your seed phrase on paper somewhere safe. Do not store it in a file on your computer or anywhere electronically.",
-  "walletSecurity06": "By accepting these disclaimers, you commit to comply with the explained restrictions and digitally sign your conformance using your Witnet wallet.",
-  "walletSecurityConfirmLabel": "I will be careful, I promise!",
-  "walletSecurityHeader": "Wallet security",
-  "walletTypeHDLabel": "HD Wallet",
-  "walletTypeNodeLabel": "Node",
-  "welcome": "Welcome",
-  "whatToDo": "What to do?",
-  "xprvInputHint": "Your Xprv key (starts with xprv...)",
-  "xprvOrigin": "Xprv Origin",
-  "yourMessage": "Your message...",
-  "validationMinFee": "Fee should be higher than",
-  "validationEmpty": "Please enter an amount",
-  "validationEnoughFunds": "Not enough Funds",
-  "validationNoZero": "Amount cannot be zero",
-  "validationInvalidAmount": "Invalid amount",
-  "validationDecimals": "Only 9 decimal digits supported",
-  "txEmptyState": "You don't have transactions yet!",
-  "speedUp": "Speed up",
-  "speedUpTxTitle": "Speed up transaction",
-  "updateAvailable": "Update available",
-  "newVersionAvailable": "A new version of the app is available.",
-  "newVersion": "New Version: {versionNumber}",
-  "later": "Later",
-  "updateNow": "Update now",
-  "updateToVersion": "Update to version {versionNumber}",
-  "pleaseWait": "Please wait...",
-  "downloading": "Downloading...",
-  "clickToInstall": "Click to install",
-  "readyToInstall": "Ready to install",
-  "updateError": "There was an issue with the update. Please try again.",
-  "errorTryAgain": "Error. Try Again.",
-  "insufficientFunds": "Insufficient funds",
-  "insufficientUtxosAvailable": "Wait untill the pending transactions are confirmed or try creating a transaction with a smaller amount.",
-  "dataRequestTxn": "Data Request",
-  "valueTransferTxn": "Value Transfer",
-  "mintTxn": "Mint",
-  "confirmed": "Confirmed",
-  "mined": "Mined",
-  "pending": "Pending",
-  "reverted": "Reverted",
-  "advancedSettings": "Advanced Settings",
-  "timelock": "Timelock",
-  "setTimelock": "Set Timelock",
-  "timelockTooltip": "The recipient will not be able to spend the coins before this date and time.",
-  "hour": "Hour",
-  "minutes": "Minutes",
-  "datePickerHintText": "Select date",
-  "datePickerFormatError": "Invalid date format",
-  "datePickerInvalid": "Invalid date",
-  "timePickerHintText": "Set Time",
-  "timePickerInvalid": "Invalid time",
-  "confirm": "Confirm",
-  "addTimelockLabel": "Add Timelock (Optional)",
-  "clearTimelockLabel": "Clear Timelock",
-  "deleteWallet": "Delete wallet",
-  "delete": "Delete",
-  "deleteWallet01": "Clicking \"Delete\" will result in the permanent deletion of your current wallet data. If you proceed, you'll need to import the wallet again to access your funds.",
-  "errorDeletingWallet": "There was an error deleting the wallet, please try again!",
-  "deleteWalletWarning": "Your wallet is about to be permanently deleted!",
-  "deleteWalletSuccess": "Your wallet data has been successfully deleted!",
-  "stake": "Stake",
-  "unstake": "Unstake",
-  "available": "Available",
-  "locked": "Locked",
-  "withdrawalAddress": "Withdrawal address",
-  "authorization": "Node authorization",
-  "autorizationTooltip": "Node authorization to stake",
-  "authorizationInputHint": "Node authorization...",
-  "stakeTxnSuccess": "Stake transaction succesfully sent!",
-  "unstakeTxnSuccess": "Unstake transaction succesfully sent!",
-  "sendReceiveTx": "Send or receive WIT",
-  "stakeUnstake": "Stake or unstake WIT",
-  "home": "Transactions list",
-  "showBalanceDetails": "Show balance details"
+	"@dashboardViewSteps": {
+		"placeholders": {
+			"selectedIndex": {
+				"type": "String"
+			}
+		}
+	},
+	"@encryptWallet03": {
+		"placeholders": {
+			"mnemonicLength": {
+				"example": "12",
+				"type": "int"
+			}
+		}
+	},
+	"@estimatedFeeOptions": {
+		"placeholders": {
+			"feeOption": {
+				"type": "String"
+			}
+		}
+	},
+	"@feeTypeOptions": {
+		"placeholders": {
+			"feeType": {
+				"type": "String"
+			}
+		}
+	},
+	"@generateMnemonic01": {
+		"placeholders": {
+			"mnemonicLength": {
+				"example": "12",
+				"type": "int"
+			}
+		}
+	},
+	"@launchUrlError": {
+		"placeholders": {
+			"error": {
+				"example": "url error",
+				"type": "String"
+			}
+		}
+	},
+	"@preferenceTabs": {
+		"placeholders": {
+			"selectedTab": {
+				"type": "String"
+			}
+		}
+	},
+	"@stakeSteps": {
+		"placeholders": {
+			"currentStepIndex": {
+				"type": "String"
+			}
+		}
+	},
+	"@txnStatus": {
+		"placeholders": {
+			"feeType": {
+				"type": "String"
+			}
+		}
+	},
+	"@unstakeSteps": {
+		"placeholders": {
+			"currentStepIndex": {
+				"type": "String"
+			}
+		}
+	},
+	"@versionNumber": {
+		"placeholders": {
+			"versionNumber": {
+				"example": "0.0.0-dev",
+				"type": "String"
+			}
+		}
+	},
+	"@vttSendSteps": {
+		"placeholders": {
+			"currentStepIndex": {
+				"type": "String"
+			}
+		}
+	},
+	"addTimelockLabel": "Add Timelock (Optional)",
+	"address": "Address",
+	"addressCopied": "Address copied!",
+	"advancedSettings": "Advanced Settings",
+	"amount": "Amount",
+	"authenticateWithBiometrics": "Authenticate with biometrics",
+	"authorization": "Node authorization",
+	"authorizationInputHint": "Node authorization...",
+	"autorizationTooltip": "Node authorization to stake",
+	"available": "Available",
+	"backLabel": "Back",
+	"balance": "balance",
+	"biometricsLabel": "Biometrics",
+	"blocksMined": "Blocks mined",
+	"buildWallet01": "The different addresses in your wallet are being scanned for existing transactions and balance. This will normally take less than 1 minute.",
+	"buildWalletBalance": "Balance:",
+	"buildWalletHeader": "Address discovery",
+	"cancel": "Cancel",
+	"cancelAuthentication": "Cancel authentication",
+	"carouselMsg01": "myWitWallet allows you to send and receive Wit immediately. Bye bye synchronization!",
+	"carouselMsg02": "myWitWallet uses state-of-the-art cryptography to store your Wit coins securely.",
+	"carouselMsg03": "myWitWallet is completely non-custodial. Your keys will never leave your device.",
+	"chooseMinerFee": "Choose you desired miner fee",
+	"clearTimelockLabel": "Clear Timelock",
+	"clickToInstall": "Click to install",
+	"close": "Close",
+	"confirm": "Confirm",
+	"confirmMnemonic01": "Type in your secret recovery phrase below exactly as shown before. This will ensure that you have written down your secret recovery phrase correctly.",
+	"confirmMnemonicHeader": "Secret Recovery Phrase Confirmation",
+	"confirmPassword": "Confirm Password",
+	"confirmed": "Confirmed",
+	"connectionIssue": "myWitWallet is experiencing connection problems",
+	"connectionReestablished": "Connection reestablished!",
+	"continueLabel": "Continue",
+	"copyAddressConfirmed": "Address copied!",
+	"copyAddressLabel": "Copy selected address",
+	"copyAddressToClipboard": "Copy address to clipboard",
+	"copyJson": "Copy JSON",
+	"copyXprvConfirmed": "Xprv copied!",
+	"copyXprvLabel": "Copy Xprv",
+	"createImportWallet01": "When you created your wallet, you probably wrote down the secret security phrase on a piece of paper. It looks like a list of 12 apparently random words.",
+	"createImportWallet02": "If you did not keep the secret security phrase, you can still export a password-protected Xprv key from the settings of your existing wallet.",
+	"createImportWalletHeader": "Create or import your wallet",
+	"createNewWalletLabel": "Create new wallet",
+	"createOrImportLabel": "Create or import",
+	"createWalletLabel": "Create wallet",
+	"cryptoException": "Error building the wallet",
+	"currentAddress": "Current address",
+	"darkMode": "Dark Mode",
+	"dashboardViewSteps": "{selectedIndex, select, transactions{Transactions} stats{Stats} other{unused}}",
+	"dataRequestTxn": "Data Request",
+	"datePickerFormatError": "Invalid date format",
+	"datePickerHintText": "Select date",
+	"datePickerInvalid": "Invalid date",
+	"delete": "Delete",
+	"deleteStorageWarning": "Your storage is about to be permanently deleted!",
+	"deleteWallet": "Delete wallet",
+	"deleteWallet01": "Clicking \"Delete\" will result in the permanent deletion of your current wallet data. If you proceed, you'll need to import the wallet again to access your funds.",
+	"deleteWalletSuccess": "Your wallet data has been successfully deleted!",
+	"deleteWalletWarning": "Your wallet is about to be permanently deleted!",
+	"downloading": "Downloading...",
+	"drSolved": "Data requests solved",
+	"emptyStakeMessage": "Stake some $WIT! Secure the network, earn rewards, and be part of a censorship-resistant oracle.",
+	"emptyStakeTitle": "You don´t have balance to unstake",
+	"enableLoginWithBiometrics": "Enable login with biometrics",
+	"encryptWallet01": "This password encrypts your Witnet wallet only on this computer.",
+	"encryptWallet02": "This is not your backup and you cannot restore your wallet with this password.",
+	"encryptWallet03": "Your {mnemonicLength} word seed phrase is still your ultimate recovery method.",
+	"encryptWallet04": "Your Xprv is still your ultimate recovery method.",
+	"encryptWalletHeader": "Encrypt your wallet",
+	"enterYourPassword": "Enter your Password",
+	"epoch": "Epoch",
+	"error": "Error",
+	"errorDeletingWallet": "There was an error deleting the wallet, please try again!",
+	"errorFieldBlank": "Field is blank",
+	"errorReestablish": "There was an error re-establishing myWitWallet, please try again!",
+	"errorSigning": "Error signing message",
+	"errorTransaction": "Error sending the transaction, try again!",
+	"errorTryAgain": "Error. Try Again.",
+	"errorXprvStart": "needs to start with \"xprv1\"",
+	"estimatedFeeOptions": "{feeOption, select, stinky{Stinky} low{Low} medium{Medium} high{High} opulent{Opulent} custom{Custom} other{}}",
+	"exploredAddresses": "Explored addresses: ",
+	"exploringAddress": "Exploring address: ",
+	"exportJson": "Export JSON",
+	"exportXprv": "Export Xprv",
+	"fee": "Fee",
+	"feeTypeOptions": "{feeType, select, absolute{Absolute} weighted{Weighted} other{}}",
+	"feesCollected": "Fees collected",
+	"feesPayed": "Fees payed",
+	"forgetPassword": "Did you forget your password?, You can delete your wallet and configure a new one!",
+	"from": "from",
+	"genNewAddressLabel": "Generate new Address",
+	"generateMnemonic01": "These {mnemonicLength} apparently random words are your secret recovery phrase. They will allow you to recover your Wit coins if you uninstall this app or forget your wallet lock password.",
+	"generateMnemonic02": "You must write down your secret recovery phrase on a piece of paper and store it somewhere safe. Do not store it in a file in your device or anywhere else electronically. If you lose your secret recovery phrase, you may permanently lose access to your wallet and your Wit coins.",
+	"generateMnemonic03": "You should never share your secret recovery phrase with anyone. If someone finds or sees your secret recovery phrase, they will have full access to your wallet and your Wit coins.",
+	"generateMnemonicHeader": "Write down your secret recovery phrase",
+	"generateXprv": "Generate Xprv",
+	"generatedAddress": "Generated address",
+	"generatedAddresses": "Generated addresses",
+	"history": "History",
+	"home": "Transactions list",
+	"hour": "Hour",
+	"importMnemonic01": "Type your secret recovery phrase below. It looks like a list of 12 apparently random words.",
+	"importMnemonicHeader": "Import wallet from secret recovery phrase",
+	"importMnemonicLabel": "Import wallet from secret recovery phrase",
+	"importWalletHeader": "",
+	"importWalletLabel": "Import wallet",
+	"importXprv01": "Xprv is a key exchange format that encodes and protects your wallet with a password. Xprv keys look like a long sequence of apparently random letters and numbers, preceded by \"xprv\".",
+	"importXprv02": "To import your wallet from an Xprv key encrypted with a password, you need to type the key itself and its password below:",
+	"importXprvHeader": "Import wallet from an Xprv key",
+	"importXprvLabel": "Import from Xprv key",
+	"initializingWallet": "Initializing Wallet.",
+	"inputAmountHint": "Input an amount",
+	"inputPasswordPrompt": "Please, input your wallet's password.",
+	"inputYourPassword": "Input your password",
+	"inputs": "Inputs",
+	"insufficientFunds": "Insufficient funds",
+	"insufficientUtxosAvailable": "Wait untill the pending transactions are confirmed or try creating a transaction with a smaller amount.",
+	"internalBalance": "Internal balance",
+	"internalBalanceHint": "The internal balance corresponds to the sum of all the change accounts available balance",
+	"invalidPassword": "Invalid Password",
+	"invalidXprv": "Invalid Xprv:",
+	"invalidXprvBlank": "Field is blank",
+	"invalidXprvStart": "needs to start with \"xprv1\"",
+	"jsonCopied": "JSON copied!",
+	"later": "Later",
+	"launchUrlError": "Could not launch {error}",
+	"lightMode": "Light Mode",
+	"lockWalletLabel": "Lock wallet",
+	"lockYourWallet": "Lock your wallet",
+	"locked": "Locked",
+	"messageSigning": "Message Signing",
+	"messageSigning01": "Prove the ownership of your address by adding your signature to a message.",
+	"messageToBeSigned": "Message to be signed",
+	"mined": "Mined",
+	"minerFeeHint": "By default, `Absolute fee` is selected.\\nTo set a custom weighted fee, you need to select 'Weighted'. \\nThe Weighted fee is automatically calculated by the wallet considering the network congestion and transaction weight multiplied by the value selected as custom.",
+	"minerFeeInputHint": "Input the miner fee",
+	"mintTxn": "Mint",
+	"minutes": "Minutes",
+	"nameLabel": "Name",
+	"newVersion": "New Version: {versionNumber}",
+	"newVersionAvailable": "A new version of the app is available.",
+	"noTransactions": "You don't have transactions yet!",
+	"okLabel": "Ok",
+	"outputs": "Outputs",
+	"passwordDescription": "This password encrypts your xprv file. You will be asked to type this password if you want to import this xprv as a backup.",
+	"passwordLabel": "Password",
+	"pending": "Pending",
+	"pleaseWait": "Please wait...",
+	"preferenceTabs": "{selectedTab, select, general{General} wallet{Wallet} other{unused}}",
+	"readCarefully": "Please, read carefully before continuing. Your attention is crucial!",
+	"readyToInstall": "Ready to install",
+	"receive": "Receive",
+	"recipientAddress": "Recipient address",
+	"reestablish": "Re-establish",
+	"reestablishInstructions": "Clicking \"Continue\" will result in the permanent deletion of your current wallet data. If you proceed, you'll need to import an existing wallet to access your funds or create a new one.",
+	"reestablishSteps01": "Make sure you have stored your recovery seed phrase or Xprv.",
+	"reestablishSteps02": "Click \"Continue\" to delete your storage and import your wallet again.",
+	"reestablishSucess": "myWitWallet has been successfully re-established!",
+	"reestablishWallet": "Re-establish wallet",
+	"reestablishYourWallet": "Re-establish your wallet",
+	"reverted": "Reverted",
+	"scanAqrCode": "Scan a QR code",
+	"scanQrCodeLabel": "Scan QR code",
+	"selectImportOptionHeader": "Import your wallet",
+	"send": "Send",
+	"sendReceiveTx": "Send or receive WIT",
+	"setTimelock": "Set Timelock",
+	"settings": "Settings",
+	"sheikah": "Sheikah",
+	"showBalanceDetails": "Show balance details",
+	"showPassword": "Show password",
+	"showWalletList": "Show wallet list",
+	"signAndSend": "Sign and Send",
+	"signMessage": "Sign Message",
+	"signMessageError": "Error signing message",
+	"speedUp": "Speed up",
+	"speedUpTxTitle": "Speed up transaction",
+	"stake": "Stake",
+	"stakeSteps": "{currentStepIndex, select, Transaction{Stake} MinerFee{Miner Fee} Review{Review} other{unused}}",
+	"stakeTxnSuccess": "Stake transaction succesfully sent!",
+	"stakeUnstake": "Stake or unstake WIT",
+	"staked": "Staked",
+	"status": "Status",
+	"theme": "Theme",
+	"timePickerHintText": "Set Time",
+	"timePickerInvalid": "Invalid time",
+	"timelock": "Timelock",
+	"timelockTooltip": "The recipient will not be able to spend the coins before this date and time.",
+	"timestamp": "Timestamp",
+	"to": "To",
+	"totalFeesPaid": "Total fees paid",
+	"totalMiningRewards": "Total mining rewards",
+	"transaction": "Transaction",
+	"transactionDetails": "Transaction details",
+	"transactionId": "Transaction ID",
+	"transactionsFound": "Transactions found: ",
+	"tryAgain": "Try again!",
+	"txEmptyState": "You don't have transactions yet!",
+	"txnCheckStatus": "Check the transaction status in the Witnet Block Explorer:",
+	"txnDetails": "Transaction details",
+	"txnSending": "Sending transaction",
+	"txnSending01": "The transaction is being sent",
+	"txnSigning": "Singing transaction",
+	"txnSigning01": "The transaction is being signed",
+	"txnStatus": "{feeType, select, pending{pending} mined{mined} confirmed{confirmed} other{}}",
+	"txnSuccess": "Transaction succesfully sent!",
+	"type": "Type",
+	"unlockWallet": "Unlock wallet",
+	"unstake": "Unstake",
+	"unstakeSteps": "{currentStepIndex, select, Transaction{Unstake} MinerFee{Miner Fee} Review{Review} other{unused}}",
+	"unstakeTxnSuccess": "Unstake transaction succesfully sent!",
+	"updateAvailable": "Update available",
+	"updateError": "There was an issue with the update. Please try again.",
+	"updateNow": "Update now",
+	"updateToVersion": "Update to version {versionNumber}",
+	"validationDecimals": "Only 9 decimal digits supported",
+	"validationEmpty": "Please enter an amount",
+	"validationEnoughFunds": "Not enough Funds",
+	"validationInvalidAmount": "Invalid amount",
+	"validationMinFee": "Fee should be higher than",
+	"validationNoZero": "Amount cannot be zero",
+	"valueTransferTxn": "Value Transfer",
+	"verifyLabel": "Verify",
+	"versionNumber": "Version {versionNumber}",
+	"vttException": "Error building the transaction",
+	"vttSendSteps": "{currentStepIndex, select, Transaction{Transaction} MinerFee{Miner Fee} Review{Review} other{unused}}",
+	"walletConfig01": "Your Xprv key allows you to export and back up your wallet at any point after creating it.",
+	"walletConfig02": "Privacy-wise, your Xprv key is equivalent to a secret recovery phrase. Do not share it with anyone, and never store it in a file in your device or anywhere else electronically.",
+	"walletConfig03": "Your Xprv key will be protected with the password below. When importing the Xprv on this or another app, you will be asked to type in that same password.",
+	"walletConfigHeader": "Export the Xprv key of my wallet",
+	"walletDetail01": "You can better keep track of your different wallets by giving each its own name and description.",
+	"walletDetail02": "Wallet names make it easy to quickly change from one wallet to another. Wallet descriptions can be more elaborate and rather describe the purpose of a wallet or any other metadata.",
+	"walletDetailHeader": "Identify your wallet",
+	"walletNameHint": "My first million Wits",
+	"walletSecurity01": "Please, read carefully before continuing.",
+	"walletSecurity02": "A wallet is an app that keeps your credentials safe and lets you interface with the Witnet blockchain. It allows you to easily transfer and receive Wit.",
+	"walletSecurity03": "You should never share your seed phrase with anyone. We at Witnet do not store your seed phrase and will never ask you to share it with us. If you lose your seed phrase, you will permanently lose access to your wallet and your funds.",
+	"walletSecurity04": "If someone finds or sees your seed phrase, they will have access to your wallet and all of your funds.",
+	"walletSecurity05": "We recommend storing your seed phrase on paper somewhere safe. Do not store it in a file on your computer or anywhere electronically.",
+	"walletSecurity06": "By accepting these disclaimers, you commit to comply with the explained restrictions and digitally sign your conformance using your Witnet wallet.",
+	"walletSecurityConfirmLabel": "I will be careful, I promise!",
+	"walletSecurityHeader": "Wallet security",
+	"walletTypeHDLabel": "HD Wallet",
+	"walletTypeNodeLabel": "Node",
+	"welcome": "Welcome",
+	"whatToDo": "What to do?",
+	"withdrawalAddress": "Withdrawal address",
+	"xprvInputHint": "Your Xprv key (starts with xprv...)",
+	"xprvOrigin": "Xprv Origin",
+	"yourMessage": "Your message..."
 }
