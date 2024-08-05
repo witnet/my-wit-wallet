@@ -1,14 +1,20 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/screens/stake/stake_screen.dart';
 import 'package:my_wit_wallet/screens/unstake/unstake_screen.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
+import 'package:my_wit_wallet/util/storage/database/balance_info.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/empty_stake_modal.dart';
 
 typedef void VoidCallback();
 
@@ -18,6 +24,9 @@ class StakeUnstakeButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
+    ApiDatabase db = Locator.instance.get<ApiDatabase>();
+    Wallet currentWallet = db.walletStorage.currentWallet;
+    late StakedBalanceInfo stakeInfo = currentWallet.stakedNanoWit();
 
     Future<void> _goToStakeScreen() async {
       BlocProvider.of<TransactionBloc>(context).add(ResetTransactionEvent());
@@ -33,14 +42,23 @@ class StakeUnstakeButtons extends StatelessWidget {
 
     Future<void> _goToUnstakeScreen() async {
       BlocProvider.of<TransactionBloc>(context).add(ResetTransactionEvent());
-      Navigator.push(
-          context,
-          CustomPageRoute(
-              builder: (BuildContext context) {
-                return UnstakeScreen();
-              },
-              maintainState: false,
-              settings: RouteSettings(name: UnstakeScreen.route)));
+      if (stakeInfo.stakedNanoWit > 0) {
+        Navigator.push(
+            context,
+            CustomPageRoute(
+                builder: (BuildContext context) {
+                  return UnstakeScreen();
+                },
+                maintainState: false,
+                settings: RouteSettings(name: UnstakeScreen.route)));
+      } else {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        buildEmptyStakeModal(
+            theme: theme,
+            context: context,
+            originRouteName: DashboardScreen.route,
+            originRoute: DashboardScreen());
+      }
     }
 
     return Column(
