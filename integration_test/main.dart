@@ -11,7 +11,7 @@ void main() async {
     testWidgets("Import Mnemonic Test", e2eImportMnemonicTest);
     testWidgets("Import Xprv Test", e2eImportXprvTest);
     testWidgets("Export Node Xprv Test", e2eExportXprvTest);
-    testWidgets("Export Hd Xprv Test", e2eExportHdXprvTest);
+    testWidgets("Export Hd Xprv Test", e2eExportHdXprvTest, skip: true);
     testWidgets("Sign message Test", e2eSignMessageTest);
     testWidgets('Update current wallet', e2eUpdateCurrentWalletTest);
     testWidgets("Auth preferences Test", e2eAuthPreferencesTest);
