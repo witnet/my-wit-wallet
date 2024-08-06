@@ -58,14 +58,6 @@ Future<void> e2eSignMessageTest(WidgetTester tester) async {
 
   await tapButton(tester, _localization.signMessage);
 
-  // if (Platform.isIOS || Platform.isAndroid) {
-  //   // Show modal to verify password
-  //   expect(widgetByText(_localization.enterYourPassword), findsWidgets);
-  //   // Enter password for verification and continue
-  //   await enterText(tester, TextFormField, password);
-  //   await tapButton(tester, _localization.continueLabel);
-  // }
-
   // Scroll Copy JSON button into view
   await scrollUntilVisible(tester, widgetByText(_localization.copyJson).first,
       lastScroll: true);
