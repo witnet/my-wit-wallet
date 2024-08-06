@@ -23,6 +23,7 @@ Future<void> e2eReEstablishWallets(WidgetTester tester) async {
   /// Enter Wallet Name
   await enterText(tester, TextField, "Test Wallet");
   await tapButton(tester, _localization.continueLabel);
+
   /// Enter the password
   await enterText(tester, TextFormField, password, index: 0);
   await enterText(tester, TextFormField, password, index: 1);
@@ -51,7 +52,7 @@ Future<void> e2eReEstablishWallets(WidgetTester tester) async {
   await tapButton(tester, LabeledCheckbox);
   await tapButton(tester, _localization.continueLabel);
   await tapButton(tester, _localization.reestablish);
-  // Wait until is deleted 
+  // Wait until is deleted
   await tester.pumpAndSettle(Duration(seconds: 2));
   await tapButton(tester, _localization.continueLabel, index: 1);
   expect(widgetByText(_localization.createNewWalletLabel), findsOneWidget);

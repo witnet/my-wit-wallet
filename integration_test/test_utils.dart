@@ -247,11 +247,9 @@ Future<bool> teardownTest() async {
 
 bool isTextOnScreen(String text) => find.text(text).hasFound;
 
-
 /// Originally published on: https://gist.github.com/stevsct/fc84fee8bcc3271e2295d99d7c7ae49d
 ///
 /// Inspired by https://pub.dev/packages/spot
-
 
 extension TestScreenshotUtil on WidgetTester {
   Future<void> takeScreenshot({required String name}) async {
@@ -290,7 +288,8 @@ extension TestScreenshotUtil on WidgetTester {
 
     if (element.renderObject is RenderBox) {
       final expectedSize = (element.renderObject as RenderBox?)!.size;
-      if (expectedSize.width != image.width || expectedSize.height != image.height) {
+      if (expectedSize.width != image.width ||
+          expectedSize.height != image.height) {
         // ignore: avoid_print
         print(
           'Warning: The screenshot captured of ${element.toStringShort()} is '

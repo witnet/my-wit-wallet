@@ -3,7 +3,8 @@ part of 'test_utils.dart';
 Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
   await initializeTest(tester);
 
-  AppLocalizations _localization = AppLocalizations.of(navigatorKey.currentContext!)!;
+  AppLocalizations _localization =
+      AppLocalizations.of(navigatorKey.currentContext!)!;
 
   /// Assess what is on the screen
   walletsExist = isTextOnScreen(_localization.unlockWallet);
@@ -14,7 +15,8 @@ Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
   await tapButton(tester, _localization.importXprvLabel);
 
   /// Wallet Security
-  await scrollUntilVisible(tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
+  await scrollUntilVisible(
+      tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
   await tapButton(tester, LabeledCheckbox);
   await tapButton(tester, _localization.continueLabel);
 
@@ -35,7 +37,8 @@ Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
   await tester.pumpAndSettle();
 
   /// Get the currentWallet loaded in the dashboard
-  final DashboardScreenState dashboardScreenState = tester.state(widgetByType(DashboardScreen));
+  final DashboardScreenState dashboardScreenState =
+      tester.state(widgetByType(DashboardScreen));
   Wallet? currentWallet = dashboardScreenState.currentWallet;
 
   await tapButton(tester, FontAwesomeIcons.gear);
@@ -45,7 +48,9 @@ Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
 
   await enterText(tester, TextFormField, password, index: 0);
 
-  await scrollUntilVisible(tester, widgetByText(_localization.verifyLabel).first, lastScroll: true);
+  await scrollUntilVisible(
+      tester, widgetByText(_localization.verifyLabel).first,
+      lastScroll: true);
 
   await tapButton(tester, _localization.verifyLabel);
 
@@ -54,12 +59,16 @@ Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
   await enterText(tester, TextFormField, password, index: 0);
   await enterText(tester, TextFormField, password, index: 1);
 
-  await scrollUntilVisible(tester, widgetByText(_localization.generateXprv).first, lastScroll: true);
+  await scrollUntilVisible(
+      tester, widgetByText(_localization.generateXprv).first,
+      lastScroll: true);
 
   await tapButton(tester, _localization.generateXprv);
 
   /// Scroll Save button into view
-  await scrollUntilVisible(tester, widgetByText(_localization.copyXprvLabel).first, lastScroll: true);
+  await scrollUntilVisible(
+      tester, widgetByText(_localization.copyXprvLabel).first,
+      lastScroll: true);
   await tester.pumpAndSettle();
   await tapButton(tester, _localization.copyXprvLabel);
 
@@ -76,11 +85,12 @@ Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
   await tapButton(tester, _localization.importWalletLabel);
   await tapButton(tester, _localization.importXprvLabel);
 
-  /// Wait until popover disappears 
-  await Future.delayed(Duration(seconds: 7 ));
+  /// Wait until popover disappears
+  await Future.delayed(Duration(seconds: 7));
 
   /// Wallet Security
-  await scrollUntilVisible(tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
+  await scrollUntilVisible(
+      tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
   await tapButton(tester, LabeledCheckbox);
   await tapButton(tester, _localization.continueLabel);
 
@@ -94,11 +104,13 @@ Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
   await tapButton(tester, _localization.continueLabel);
 
   /// Get the currentWallet loaded in the dashboard
-  final DashboardScreenState dashboardScreenState2 = tester.state(widgetByType(DashboardScreen));
+  final DashboardScreenState dashboardScreenState2 =
+      tester.state(widgetByType(DashboardScreen));
   Wallet? currentWallet2 = dashboardScreenState2.currentWallet;
 
   /// Verify the imported wallet and the current address corresponds to the exported xprv
-  expect(currentWallet2!.externalAccounts[0]!.address, currentWallet!.externalAccounts[0]!.address);
+  expect(currentWallet2!.externalAccounts[0]!.address,
+      currentWallet!.externalAccounts[0]!.address);
 
   await teardownTest();
 }

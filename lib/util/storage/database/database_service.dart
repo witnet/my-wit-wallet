@@ -265,6 +265,7 @@ class DatabaseService {
       final List<Wallet> wallets = await walletRepository.getWallets(_database);
 
       print("2");
+
       /// Get all Accounts
       final List<Account> accounts =
           await accountRepository.getAccounts(_database);

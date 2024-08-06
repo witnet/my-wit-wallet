@@ -14,7 +14,6 @@ Future<void> e2eImportXprvTest(WidgetTester tester) async {
     await tapButton(tester, _localization.cancel);
   }
 
-
   /// Create or Import Wallet
   await tapButton(tester, _localization.importWalletLabel);
   await tapButton(tester, _localization.importXprvLabel);

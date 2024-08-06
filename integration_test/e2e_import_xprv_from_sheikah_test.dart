@@ -32,6 +32,7 @@ Future<void> e2eImportXprvFromSheikahTest(WidgetTester tester) async {
   await enterText(tester, TextFormField, password, index: 0);
   await enterText(tester, TextFormField, password, index: 1);
   await tapButton(tester, _localization.continueLabel);
+
   /// Get the currentWallet loaded in the dashboard
   final DashboardScreenState dashboardScreenState =
       tester.state(widgetByType(DashboardScreen));

@@ -26,9 +26,9 @@ Future<void> e2eExportXprvTest(WidgetTester tester) async {
   await tapButton(tester, _localization.continueLabel);
 
   /// Enter the password
-    await enterText(tester, TextFormField, password, index: 0);
-    await enterText(tester, TextFormField, password, index: 1);
-    await tapButton(tester, _localization.continueLabel);
+  await enterText(tester, TextFormField, password, index: 0);
+  await enterText(tester, TextFormField, password, index: 1);
+  await tapButton(tester, _localization.continueLabel);
 
   await tester.pumpAndSettle();
 

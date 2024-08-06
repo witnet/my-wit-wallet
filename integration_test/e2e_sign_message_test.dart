@@ -53,7 +53,8 @@ Future<void> e2eSignMessageTest(WidgetTester tester) async {
   await enterText(tester, TextField, "myWitWallet");
 
   // Scroll Sign message button into view
-  await scrollUntilVisible(tester,find.text(_localization.signMessage), lastScroll: true);
+  await scrollUntilVisible(tester, find.text(_localization.signMessage),
+      lastScroll: true);
 
   await tapButton(tester, _localization.signMessage);
 
