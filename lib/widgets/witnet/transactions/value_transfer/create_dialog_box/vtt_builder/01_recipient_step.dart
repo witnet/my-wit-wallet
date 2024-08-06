@@ -1,7 +1,5 @@
-import 'package:flutter/services.dart';
 import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/constants.dart';
-import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
