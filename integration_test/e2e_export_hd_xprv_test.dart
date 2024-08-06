@@ -8,7 +8,6 @@ Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
 
   /// Assess what is on the screen
   walletsExist = isTextOnScreen(_localization.unlockWallet);
-  bool biometricsActive = isTextOnScreen(_localization.cancel);
 
   /// Create or Import Wallet
   await tapButton(tester, _localization.importWalletLabel);

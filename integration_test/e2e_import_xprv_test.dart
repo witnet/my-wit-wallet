@@ -5,15 +5,6 @@ Future<void> e2eImportXprvTest(WidgetTester tester) async {
   AppLocalizations _localization =
       AppLocalizations.of(navigatorKey.currentContext!)!;
 
-  /// Assess what is on the screen
-  walletsExist = isTextOnScreen(_localization.unlockWallet);
-  bool biometricsActive = isTextOnScreen(_localization.cancel);
-
-  /// Cancel the Biometrics popup for linux
-  if (walletsExist && biometricsActive && Platform.isAndroid) {
-    await tapButton(tester, _localization.cancel);
-  }
-
   /// Create or Import Wallet
   await tapButton(tester, _localization.importWalletLabel);
   await tapButton(tester, _localization.importXprvLabel);
