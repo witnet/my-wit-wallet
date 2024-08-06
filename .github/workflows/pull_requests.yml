@@ -107,6 +107,12 @@ jobs:
       # - name: Run unit tests
       #   run: flutter test
 
+      - name: Upload images as artifacts 
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots 
+          path: screenshots/*.png
+
       - name: Run E2E tests
         run: xvfb-run --auto-servernum flutter test integration_test/main.dart -d linux -r github
 

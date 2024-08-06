@@ -41,7 +41,9 @@ Future<void> ensureVisibleAndTap(WidgetTester tester, Finder finder) async {
   await scrollUntilVisible(tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
   await scrollUntilVisible(tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
   await ensureVisibleAndTap(tester, find.byType(LabeledCheckbox));
+  await tester.takeScreenshot(name: '1');
   await ensureVisibleAndTap(tester, find.text(_localization.continueLabel));
+  await tester.takeScreenshot(name: '2');
 
   // Enter Shiekah Compatible Encrypted Xprv
   await enterText(tester, TextField, sheikahXprv, index: 0);
@@ -107,7 +109,9 @@ Future<void> ensureVisibleAndTap(WidgetTester tester, Finder finder) async {
   await scrollUntilVisible(tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
   await scrollUntilVisible(tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
   await ensureVisibleAndTap(tester, find.byType(LabeledCheckbox));
+  await tester.takeScreenshot(name: '3');
   await ensureVisibleAndTap(tester, find.text(_localization.continueLabel));
+  await tester.takeScreenshot(name: '4');
 
   // Enter Sheikah Compatible Encrypted Xprv
   await enterText(tester, TextField, data?.text ?? '', index: 0);
