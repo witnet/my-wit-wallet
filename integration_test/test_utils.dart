@@ -235,7 +235,7 @@ Future<bool> teardownTest() async {
       await apiDatabase.openDatabase();
       globals.firstRun = false;
     }
-    await apiDatabase.lockDatabase();
+    // await apiDatabase.lockDatabase();
   }
   return true;
 }
