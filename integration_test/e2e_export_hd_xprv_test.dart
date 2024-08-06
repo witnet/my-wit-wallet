@@ -17,22 +17,6 @@ Future<void> ensureVisibleAndTap(WidgetTester tester, Finder finder) async {
   walletsExist = isTextOnScreen(_localization.unlockWallet);
   bool biometricsActive = isTextOnScreen(_localization.cancel);
 
-  // Cancel the Biometrics popup for linux
-  if (walletsExist && biometricsActive && Platform.isAndroid) {
-    await tapButton(tester, _localization.cancel);
-  }
-  if (walletsExist) {
-    // Login Screen
-    await enterText(tester, TextFormField, password);
-    await tapButton(tester, _localization.unlockWallet);
-
-    // Dashboard
-    // Tap on the first PaddedButton on the screen, which is the identicon
-    // and brings up the wallet list.
-    await ensureVisibleAndTap(tester, find.byType(PaddedButton).first);
-    await ensureVisibleAndTap(tester, find.byIcon(FontAwesomeIcons.circlePlus));
-  }
-
   // Create or Import Wallet
   await ensureVisibleAndTap(tester, find.text(_localization.importWalletLabel));
   await ensureVisibleAndTap(tester, find.text(_localization.importXprvLabel));
@@ -55,11 +39,9 @@ Future<void> ensureVisibleAndTap(WidgetTester tester, Finder finder) async {
   await ensureVisibleAndTap(tester, find.text(_localization.continueLabel));
 
   // If the wallet database does not exist we need to enter the password.
-  if (!walletsExist) {
-    await enterText(tester, TextFormField, password, index: 0);
-    await enterText(tester, TextFormField, password, index: 1);
-    await ensureVisibleAndTap(tester, find.text(_localization.continueLabel));
-  }
+  await enterText(tester, TextFormField, password, index: 0);
+  await enterText(tester, TextFormField, password, index: 1);
+  await ensureVisibleAndTap(tester, find.text(_localization.continueLabel));
 
   await tester.pumpAndSettle();
 
