@@ -1,50 +1,42 @@
 part of 'test_utils.dart';
 
 Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
-  // Helper function to ensure a widget is visible and then tap it
-Future<void> ensureVisibleAndTap(WidgetTester tester, Finder finder) async {
-  await tester.ensureVisible(finder);
-  await tester.pumpAndSettle();
-  await tester.tap(finder);
-  await tester.pumpAndSettle();
-}
-
   await initializeTest(tester);
 
   AppLocalizations _localization = AppLocalizations.of(navigatorKey.currentContext!)!;
 
-  // Assess what is on the screen
+  /// Assess what is on the screen
   walletsExist = isTextOnScreen(_localization.unlockWallet);
   bool biometricsActive = isTextOnScreen(_localization.cancel);
 
-  // Create or Import Wallet
+  /// Create or Import Wallet
   await tapButton(tester, _localization.importWalletLabel);
   await tapButton(tester, _localization.importXprvLabel);
 
-  // Wallet Security
+  /// Wallet Security
   await scrollUntilVisible(tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
   await tapButton(tester, LabeledCheckbox);
   await tester.takeScreenshot(name: '1');
   await tapButton(tester, _localization.continueLabel);
   await tester.takeScreenshot(name: '2');
 
-  // Enter Shiekah Compatible Encrypted Xprv
+  /// Enter Shiekah Compatible Encrypted Xprv
   await enterText(tester, TextField, sheikahXprv, index: 0);
   await enterText(tester, TextField, password, index: 1);
   await tapButton(tester, _localization.continueLabel);
 
-  // Enter Wallet Name
+  /// Enter Wallet Name
   await enterText(tester, TextField, "Test Wallet");
   await tapButton(tester, _localization.continueLabel);
 
-  // If the wallet database does not exist we need to enter the password.
+  /// If the wallet database does not exist we need to enter the password.
   await enterText(tester, TextFormField, password, index: 0);
   await enterText(tester, TextFormField, password, index: 1);
   await tapButton(tester, _localization.continueLabel);
 
   await tester.pumpAndSettle();
 
-  // Get the currentWallet loaded in the dashboard
+  /// Get the currentWallet loaded in the dashboard
   final DashboardScreenState dashboardScreenState = tester.state(widgetByType(DashboardScreen));
   Wallet? currentWallet = dashboardScreenState.currentWallet;
 
@@ -68,26 +60,26 @@ Future<void> ensureVisibleAndTap(WidgetTester tester, Finder finder) async {
 
   await tapButton(tester, _localization.generateXprv);
 
-  // Scroll Save button into view
+  /// Scroll Save button into view
   await scrollUntilVisible(tester, widgetByText(_localization.copyXprvLabel).first, lastScroll: true);
   await tester.pumpAndSettle();
   await tapButton(tester, _localization.copyXprvLabel);
 
-  // Data from the copied xprv
+  /// Data from the copied xprv
   ClipboardData? data = await Clipboard.getData('text/plain');
 
-  // Dashboard
-  // Tap on the first PaddedButton on the screen, which is the identicon
-  // and brings up the wallet list.
+  /// Dashboard
+  /// Tap on the first PaddedButton on the screen, which is the identicon
+  /// and brings up the wallet list.
   await tapButton(tester, PaddedButton, index: 0);
   await tapButton(tester, FontAwesomeIcons.circlePlus);
 
-  // Create or Import Wallet
+  /// Create or Import Wallet
   await tapButton(tester, _localization.importWalletLabel);
   await tapButton(tester, _localization.importXprvLabel);
   await Future.delayed(Duration(seconds: 7 ));
 
-  // Wallet Security
+  /// Wallet Security
   await scrollUntilVisible(tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
   await tester.takeScreenshot(name: '3');
   await Future.delayed(Duration(seconds: 7 ));
@@ -97,20 +89,20 @@ Future<void> ensureVisibleAndTap(WidgetTester tester, Finder finder) async {
   await tapButton(tester, _localization.continueLabel);
   await tester.takeScreenshot(name: '4');
 
-  // Enter Sheikah Compatible Encrypted Xprv
+  /// Enter Sheikah Compatible Encrypted Xprv
   await enterText(tester, TextField, data?.text ?? '', index: 0);
   await enterText(tester, TextField, password, index: 1);
   await tapButton(tester, _localization.continueLabel);
 
-  // Enter Wallet Name
+  /// Enter Wallet Name
   await enterText(tester, TextField, "Test Wallet");
   await tapButton(tester, _localization.continueLabel);
 
-  // Get the currentWallet loaded in the dashboard
+  /// Get the currentWallet loaded in the dashboard
   final DashboardScreenState dashboardScreenState2 = tester.state(widgetByType(DashboardScreen));
   Wallet? currentWallet2 = dashboardScreenState2.currentWallet;
 
-  // Verify the imported wallet and the current address corresponds to the exported xprv
+  /// Verify the imported wallet and the current address corresponds to the exported xprv
   expect(currentWallet2!.externalAccounts[0]!.address, currentWallet!.externalAccounts[0]!.address);
 
   await teardownTest();
