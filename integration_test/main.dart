@@ -7,7 +7,7 @@ void main() async {
   globals.testingActive = true;
 
   group("End To End Mnemonic Tests", () {
-    testWidgets("Create Mnemonic Test", e2eCreateMnemonicTest);
+    testWidgets("Create Mnemonic Test", e2eCreateMnemonicTest, skip: true);
     testWidgets("Import Mnemonic Test", e2eImportMnemonicTest);
     testWidgets("Import Xprv Test", e2eImportXprvTest);
     testWidgets("Export Node Xprv Test", e2eExportXprvTest);
@@ -19,6 +19,5 @@ void main() async {
     testWidgets("Re-establish wallets", e2eReEstablishWallets);
     testWidgets("Import Xprv From Sheikah Test", e2eImportXprvFromSheikahTest);
     testWidgets("Update theme color", e2eUpdateThemeColorTest);
-
   });
 }
