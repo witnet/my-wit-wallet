@@ -235,8 +235,10 @@ Future<bool> teardownTest() async {
       await apiDatabase.openDatabase();
       globals.firstRun = false;
     }
-    // await apiDatabase.lockDatabase();
+    await apiDatabase.lockDatabase();
   }
+  await Future.delayed(Duration(seconds: 4));
+ 
   return true;
 }
 
