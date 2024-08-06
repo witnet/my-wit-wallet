@@ -104,15 +104,16 @@ Future<void> ensureVisibleAndTap(WidgetTester tester, Finder finder) async {
   // Create or Import Wallet
   await ensureVisibleAndTap(tester, find.text(_localization.importWalletLabel));
   await ensureVisibleAndTap(tester, find.text(_localization.importXprvLabel));
+  await Future.delayed(Duration(seconds: 7 ));
 
   // Wallet Security
   await scrollUntilVisible(tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
   await scrollUntilVisible(tester, widgetByLabel(_localization.walletSecurityConfirmLabel));
-  await ensureVisibleAndTap(tester, find.byType(LabeledCheckbox));
   await tester.takeScreenshot(name: '3');
-
   await Future.delayed(Duration(seconds: 7 ));
 
+
+  await ensureVisibleAndTap(tester, find.byType(LabeledCheckbox));
   await ensureVisibleAndTap(tester, find.text(_localization.continueLabel));
   await tester.takeScreenshot(name: '4');
 
