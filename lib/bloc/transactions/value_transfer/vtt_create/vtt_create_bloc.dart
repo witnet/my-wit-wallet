@@ -7,6 +7,7 @@ import 'package:my_wit_wallet/util/allow_biometrics.dart';
 import 'package:my_wit_wallet/util/filter_utxos.dart';
 import 'package:my_wit_wallet/util/get_utxos_match_inputs.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
+import 'package:my_wit_wallet/util/storage/scanned_content.dart';
 import 'package:witnet/constants.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
@@ -100,6 +101,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   bool isPrioritiesLoading = false;
   Map<EstimatedFeeOptions, String?> minerFeeOptions = DEFAULT_MINER_FEE_OPTIONS;
   int valuePaidNanoWit = 0;
+  ScannedContent scannedContent = ScannedContent();
 
   int getFee([int additionalOutputs = 0]) {
     switch (feeType) {
@@ -679,6 +681,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
 
   void _resetTransactionEvent(
       ResetTransactionEvent event, Emitter<VTTCreateState> emit) {
+    scannedContent.clearScannedContent();
     selectedUtxos.clear();
     inputs.clear();
     outputs.clear();

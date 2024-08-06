@@ -130,12 +130,13 @@ class CreateVttScreenState extends State<CreateVttScreen>
   RecipientStep _recipientStep() {
     return RecipientStep(
       key: transactionFormState,
+      currentRoute: CreateVttScreen.route,
       nextAction: _setNextAction,
       goNext: () {
         nextAction().action();
         if (_isNextStepAllow()) goToNextStep();
       },
-      currentWallet: currentWallet!,
+      walletStorage: database.walletStorage,
     );
   }
 

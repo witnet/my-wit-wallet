@@ -147,10 +147,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
                             builder: (context) => QrScanner(
                                 currentRoute: CreateWalletScreen.route,
                                 onChanged: (String value) async {
-                                  Navigator.popUntil(
-                                      context,
-                                      ModalRoute.withName(
-                                          CreateWalletScreen.route));
                                   _textController.text = value;
                                   xprv = XprvInput.dirty(
                                       xprvType: _xprvType,

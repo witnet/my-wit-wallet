@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:math' as math;
-
+import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
+import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -23,10 +25,6 @@ import 'package:my_wit_wallet/widgets/wallet_list.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
-import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
-import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
-
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 

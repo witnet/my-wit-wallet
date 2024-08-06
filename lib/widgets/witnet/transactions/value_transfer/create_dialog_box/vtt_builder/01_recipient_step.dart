@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
@@ -7,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
+import 'package:my_wit_wallet/util/storage/scanned_content.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/widgets/validations/address_input.dart';
@@ -18,24 +21,26 @@ import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/util/storage/database/balance_info.dart';
-import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/input_amount.dart';
 import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
 import 'dart:io' show Platform;
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
 import 'package:witnet/utils.dart';
+import 'package:my_wit_wallet/util/storage/database/account.dart';
 
 class RecipientStep extends StatefulWidget {
   final Function nextAction;
-  final Wallet currentWallet;
+  final WalletStorage walletStorage;
   final VoidCallback goNext;
+  final String currentRoute;
 
   RecipientStep({
     required Key? key,
-    required this.currentWallet,
+    required this.walletStorage,
     required this.nextAction,
     required this.goNext,
+    required this.currentRoute,
   }) : super(key: key);
 
   @override
@@ -44,7 +49,9 @@ class RecipientStep extends StatefulWidget {
 
 class RecipientStepState extends State<RecipientStep>
     with SingleTickerProviderStateMixin {
-  late BalanceInfo balanceInfo = widget.currentWallet.balanceNanoWit();
+  late BalanceInfo balanceInfo =
+      widget.walletStorage.currentWallet.balanceNanoWit();
+  late Account currentAccount = widget.walletStorage.currentAccount;
   late AnimationController _loadingController;
   final _formKey = GlobalKey<FormState>();
   AddressInput _address = AddressInput.pure();
@@ -64,6 +71,8 @@ class RecipientStepState extends State<RecipientStep>
   String get maxAmountWit =>
       nanoWitToWit(balanceInfo.availableNanoWit).toString();
 
+  ScannedContent scannedContent = ScannedContent();
+
   bool showAdvancedSettings = false;
   bool timelockSet = false;
   int _currIndex = 0;
@@ -73,6 +82,9 @@ class RecipientStepState extends State<RecipientStep>
   @override
   void initState() {
     super.initState();
+    if (scannedContent.scannedContent != null) {
+      _handleQrAddressResults(scannedContent.scannedContent!);
+    }
     if (vttBloc.outputs.length > 0) {
       ongoingOutput = vttBloc.outputs.first;
       _setSavedTxData(ongoingOutput);
@@ -96,6 +108,11 @@ class RecipientStepState extends State<RecipientStep>
     _amountController.dispose();
     _amountFocusNode.dispose();
     super.dispose();
+  }
+
+  _handleQrAddressResults(String value) {
+    _addressController.text = value;
+    setAddress(value);
   }
 
   _handleFocus() {
@@ -179,7 +196,7 @@ class RecipientStepState extends State<RecipientStep>
     }
     if (validateForm(force: true)) {
       vttBloc.add(AddValueTransferOutputEvent(
-          currentWallet: widget.currentWallet,
+          currentWallet: widget.walletStorage.currentWallet,
           output: ValueTransferOutput.fromJson({
             'pkh': _address.value,
             'value': int.parse(_amountToNumber()
@@ -297,18 +314,8 @@ class RecipientStepState extends State<RecipientStep>
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => QrScanner(
-                                              currentRoute:
-                                                  CreateVttScreen.route,
-                                              onChanged: (String value) => {
-                                                    Navigator.popUntil(
-                                                        context,
-                                                        ModalRoute.withName(
-                                                            CreateVttScreen
-                                                                .route)),
-                                                    _addressController.text =
-                                                        value,
-                                                    setAddress(value)
-                                                  })))
+                                              currentRoute: widget.currentRoute,
+                                              onChanged: (_value) => {})))
                                 },
                             icon: FontAwesomeIcons.qrcode,
                             isFocus: isScanQrFocused,
