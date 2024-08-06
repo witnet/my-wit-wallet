@@ -7,7 +7,7 @@ void main() async {
   globals.testingActive = true;
 
   group("End To End Mnemonic Tests", () {
-    testWidgets("Create Mnemonic Test", e2eCreateMnemonicTest, skip: true);
+    testWidgets("Create Mnemonic Test", e2eCreateMnemonicTest);
     testWidgets("Import Mnemonic Test", e2eImportMnemonicTest);
     testWidgets("Import Xprv Test", e2eImportXprvTest);
     testWidgets("Export Node Xprv Test", e2eExportXprvTest);
