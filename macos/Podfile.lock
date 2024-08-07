@@ -3,7 +3,7 @@ PODS:
   - local_auth_darwin (0.0.1):
     - Flutter
     - FlutterMacOS
-  - mobile_scanner (3.5.5):
+  - mobile_scanner (5.1.1):
     - FlutterMacOS
   - path_provider_foundation (0.0.1):
     - Flutter
@@ -49,7 +49,11 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   local_auth_darwin: 66e40372f1c29f383a314c738c7446e2f7fdadc3
+<<<<<<< HEAD
   mobile_scanner: d12930b68bf502497f78b8b5182aeccfaa1e04f6
+=======
+  mobile_scanner: 1efac1e53c294b24e3bb55bcc7f4deee0233a86b
+>>>>>>> 8f2d04cd (chore: update deps)
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   screen_retriever: 59634572a57080243dd1bf715e55b6c54f241a38
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
