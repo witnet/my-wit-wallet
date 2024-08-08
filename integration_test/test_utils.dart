@@ -233,11 +233,9 @@ Future<bool> teardownTest() async {
   print("[teardownTest 2]");
   if (globals.testingActive) {
     if (globals.testingDeleteStorage) {
-      bool isDeleted = await apiDatabase.deleteAllWallets();
-      if (isDeleted) {
-        await apiDatabase.openDatabase();
-        globals.firstRun = false;
-      }
+      await apiDatabase.deleteAllWallets();
+      await apiDatabase.openDatabase();
+      globals.firstRun = false;
   print("[teardownTest 3]");
     }
     await apiDatabase.lockDatabase();
