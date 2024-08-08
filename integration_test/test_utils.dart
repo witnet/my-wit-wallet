@@ -231,14 +231,15 @@ Future<bool> teardownTest() async {
   ApiDatabase apiDatabase = Locator.instance<ApiDatabase>();
   if (globals.testingActive) {
     if (globals.testingDeleteStorage) {
-      await apiDatabase.deleteAllWallets();
-      await apiDatabase.openDatabase();
-      globals.firstRun = false;
+      bool isDeleted = await apiDatabase.deleteAllWallets();
+      if (isDeleted) {
+        await apiDatabase.openDatabase();
+        globals.firstRun = false;
+      }
     }
     await apiDatabase.lockDatabase();
   }
   await Future.delayed(Duration(seconds: 4));
- 
   return true;
 }
 
