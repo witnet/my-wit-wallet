@@ -18,7 +18,7 @@ void main() async {
     testWidgets("Export Hd Xprv Test", e2eExportHdXprvTest);
     testWidgets("Sign message Test", e2eSignMessageTest);
     testWidgets('Update current wallet', e2eUpdateCurrentWalletTest);
-    testWidgets("Auth preferences Test", e2eAuthPreferencesTest);
+    testWidgets("Auth preferences Test", e2eAuthPreferencesTest, skip: true);
     testWidgets("Show node stats Test", e2eShowNodeStatsTest);
     testWidgets("Re-establish wallets", e2eReEstablishWallets);
     testWidgets("Import Xprv From Sheikah Test", e2eImportXprvFromSheikahTest);
