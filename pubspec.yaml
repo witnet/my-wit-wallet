@@ -45,7 +45,9 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   decimal: 2.3.3
   witnet: 
-    path: '../witnet.dart'
+    git: 
+      url: 'https://github.com/witnet/witnet.dart'
+      ref: 'wit/2'
   path_provider: ^2.0.8
   permission_handler: ^11.0.1
   open_file: ^3.3.2
