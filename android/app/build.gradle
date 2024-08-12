@@ -35,7 +35,8 @@ def keystoreProperties = new Properties()
 
 android {
     compileSdkVersion 34
-
+    namespace "io.witnet.myWitWallet"
+    testNamespace "io.witnet.myWitWalletTest"
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
