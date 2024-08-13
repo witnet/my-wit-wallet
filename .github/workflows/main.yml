@@ -360,8 +360,6 @@ jobs:
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_AASP}}
         run: |
           brew install gnu-sed
-          gsed -i "s/TEAM_ID/$TEAM_ID/g" ./export_options.plist
-          gsed -i "s/SENSITIVE_REPLACE_ME/$TEAM_ID/g" ./Runner.xcodeproj/project.pbxproj
           echo "$PGP" > key.json.asc
           gpg -d --passphrase "$PHRASE" --batch key.json.asc > key.json
           bundle exec fastlane setup
