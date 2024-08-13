@@ -50,7 +50,7 @@ platform :ios do
     if is_ci
       setup_ci
     end
-    match(type: "appstore", readonly: is_ci, force: true)
+    match(type: "appstore", force: true)
   end
 
   ############ ? Beta(Testflight) Lane ############
