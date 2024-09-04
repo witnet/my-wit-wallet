@@ -22,7 +22,7 @@ class DebugLogger {
           // Colorful log messages
           printEmojis: false,
           // Print an emoji for each log message
-          printTime: true // Should each log print contain a timestamp
+          dateTimeFormat: DateTimeFormat.dateAndTime,
           ),
       // Use the PrettyPrinter to format and print log
       output: MultiOutput([customLogOutput.FileOutput(), ConsoleOutput()]),
