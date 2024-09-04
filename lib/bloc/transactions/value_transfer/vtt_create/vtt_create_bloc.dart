@@ -335,7 +335,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
       outIdx += 1;
     });
 
-    if (containsChangeAddress && walletType != WalletType.single) {
+    if (containsChangeAddress && changeIndex == 1) {
       outputs.removeAt(changeIndex);
     }
     outputs.forEach((element) {
