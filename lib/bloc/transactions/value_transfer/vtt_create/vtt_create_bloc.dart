@@ -318,7 +318,7 @@ class VTTCreateBloc extends Bloc<VTTCreateEvent, VTTCreateState> {
   void _buildTransactionBody(Wallet wallet, {GeneralTransaction? speedUpTx}) {
     int valueOwedNanoWit = 0;
     int valueChangeNanoWit = 0;
-    WalletType walletType = wallet.walletType;
+
     // Reset tx value paid
     valuePaidNanoWit = 0;
 

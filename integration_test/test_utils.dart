@@ -247,7 +247,7 @@ bool isTextOnScreen(String text) => find.text(text).hasFound;
 /// Originally published on: https://gist.github.com/stevenosse/b191d56cb4b75ed8012c3d04c1d80448
 extension TestScreenshotUtil on WidgetTester {
   Future<void> takeScreenshot({required String name}) async {
-    final liveElement = binding.renderViewElement!;
+    final liveElement = binding.rootElement!;
 
     late final Uint8List bytes;
     await binding.runAsync(() async {
