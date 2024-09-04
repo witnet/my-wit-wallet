@@ -397,7 +397,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       outIdx += 1;
     });
 
-    if (containsChangeAddress && walletType != WalletType.single) {
+    if (containsChangeAddress && changeIndex == 1) {
       outputs.removeAt(changeIndex);
     }
     outputs.forEach((element) {
