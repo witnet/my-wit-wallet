@@ -45,16 +45,24 @@ Response statusHandler(Request request) {
 
 Future<Response> _utxos(Request request) async {
   final Map<String, dynamic> queryParams = request.url.queryParameters;
-  List<String> addresses = queryParams['addresses'];
+  var addresses = queryParams['addresses'];
   List<Object> addressList = [];
-  addresses.forEach((address) {
-    if (_utxoData.containsKey(address)) {
-      addressList.add(json.encode(_utxoData[address]!));
+  if (addresses.runtimeType == String) {
+    if (_utxoData.containsKey(addresses)) {
+      addressList.add(json.encode(_utxoData[addresses]!));
     } else {
-      addressList.add(json.encode({"address": address, "utxos": []}));
+      addressList.add(json.encode({"address": addresses, "utxos": []}));
     }
-  });
-  return Response.ok(addressList.toString(), headers: _headerData);
+  } else {
+    addresses.forEach((address) {
+      if (_utxoData.containsKey(address)) {
+        addressList.add(json.encode(_utxoData[address]!));
+      } else {
+        addressList.add(json.encode({"address": address, "utxos": []}));
+      }
+    });
+  }
+  return Response.ok(addressList.toString());
 }
 
 Response _valueTransfers(Request request) {
