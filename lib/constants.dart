@@ -49,10 +49,13 @@ Map<ConfigSteps, String> localizedConfigSteps = {
 
 /// Explorer Settings
 const bool USE_EXPLORER_DEV = false;
+const bool USE_EXPLORER_MOCK = false;
+const bool USE_MOCK_WALLETS_FILE = false;
 // ignore: non_constant_identifier_names
 String EXPLORER_ADDRESS = dotenv.get('EXPLORER_ADDRESS');
 // ignore: non_constant_identifier_names
 String EXPLORER_DEV_ADDRESS = dotenv.get('EXPLORER_DEV_ADDRESS');
+String EXPLORER_MOCK_ADDRESS = dotenv.get('EXPLORER_MOCK_ADDRESS');
 const int EXPLORER_DELAY_MS = 100;
 const int SYNC_TIMER_IN_SECONDS = 30;
 

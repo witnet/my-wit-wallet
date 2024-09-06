@@ -58,6 +58,7 @@ dependencies:
   updat: ^1.2.0+1
   logger: ^2.0.2+1
   pub_semver: ^2.1.4
+  shelf_router: ^1.1.0
 
 flutter_icons:
   android: true

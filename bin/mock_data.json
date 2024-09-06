@@ -1,0 +1,90 @@
+{
+  "headers": {
+    "content-length": "body.length",
+    "content-type": "text/plain; charset=utf-8",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "SAMEORIGIN",
+    "x-powered-by": "Dart with package:shelf",
+    "x-xss-protection": "1; mode=block",
+    "x-version": "1.0.0"
+  },
+  "status": {
+    "database_confirmed": {
+      "epoch": 1,
+      "hash": "69fae23c1a316313189559fa6ecb10213e90770cdd0288b8873d3462051f362f"
+    },
+    "database_message": "database processes seem healthy",
+    "database_unconfirmed": {
+      "epoch": 1,
+      "hash": "41250277bd1601f11659077df12cb5cc39efff19d1ef1ec37992d8060223ac86"
+    },
+    "expected_epoch": 1,
+    "message": "all backend services are up and running",
+    "node_pool_message": {
+      "epoch": 1,
+      "message": "fetched node pool status correctly",
+      "status": "Synced"
+    }
+  },
+  "utxos": {
+    "wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u": {
+      "address": "wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u",
+      "utxos": [
+        {"output_pointer":"0000000000000000000000000000000000000000000000000000000000000001:0","timelock":0,"utxo_mature":false,"value":805030938},
+        {"output_pointer":"0000000000000000000000000000000000000000000000000000000000000001:1","timelock":0,"utxo_mature":false,"value":799999912469}
+      ]
+    }
+  },
+  "value-transfers": {
+    "wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u": [
+      {
+        "confirmed":true,
+        "direction":"self",
+        "epoch":2563701,
+        "fee":0,
+        "hash":"0000000000000000000000000000000000000000000000000000000000000001",
+        "input_addresses":["wit100000000000000000000000000000000r0v4g2"],
+        "locked":false,
+        "output_addresses":["wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u"],
+        "priority":1,
+        "timestamp":1718032590,
+        "value":0,
+        "weight":493}
+    ]
+  },
+  "priority": {
+    "vtt_stinky": {"priority": 0.1, "time_to_block":  21600},
+    "vtt_low": {"priority": 0.2, "time_to_block":  3600},
+    "vtt_medium": {"priority": 0.3, "time_to_block":  900},
+    "vtt_high": {"priority": 0.4, "time_to_block":  300},
+    "vtt_opulent": {"priority": 0.5, "time_to_block":  60}
+  },
+  "hashes": {
+    "0000000000000000000000000000000000000000000000000000000000000001": {
+      "response_type":"value_transfer",
+      "value_transfer": {
+        "block":"0000000000000000000000000000000000000000000000000000000000000000",
+        "change_output_addresses":["wit100000000000000000000000000000000r0v4g2"],
+        "change_value":0,
+        "confirmed":true,
+        "epoch":2052870,
+        "fee":0,
+        "hash":"0000000000000000000000000000000000000000000000000000000000000001",
+        "input_addresses":["wit100000000000000000000000000000000r0v4g2"],
+        "input_utxos":[
+          {"address":"wit100000000000000000000000000000000r0v4g2", "input_utxo":"000000000000000000000000000000000000000000000000000000000000000A:1", "value":800804943407}],
+        "inputs_merged":[{"address":"wit100000000000000000000000000000000r0v4g2", "value":800804943407}],
+        "output_addresses":["wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u","wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u"],
+        "output_values":[805030938,799999912469],
+        "priority":1,
+        "reverted":false,
+        "timelocks":[0,0],
+        "timestamp":1695045195,
+        "true_output_addresses":[],
+        "true_value":0,
+        "utxos":[
+          {"address":"wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u","locked":false,"timelock":0,"value":805030938},
+          {"address":"wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u","locked":false,"timelock":0,"value":799999912469}],
+        "utxos_merged":[{"address":"wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u","locked":false,"timelock":0,"value":800804943407}],"value":800804943407,"weight":853}}
+  }
+}
