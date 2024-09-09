@@ -12,18 +12,18 @@ class DebugLogger {
       filter: DevelopmentFilter(),
       // Use the default LogFilter (-> only log in debug mode)
       printer: PrettyPrinter(
-          methodCount: 2,
-          // number of method calls to be displayed
-          errorMethodCount: 8,
-          // number of method calls if stacktrace is provided
-          lineLength: 120,
-          // width of the output
-          colors: true,
-          // Colorful log messages
-          printEmojis: false,
-          // Print an emoji for each log message
-          dateTimeFormat: DateTimeFormat.dateAndTime,
-          ),
+        methodCount: 2,
+        // number of method calls to be displayed
+        errorMethodCount: 8,
+        // number of method calls if stacktrace is provided
+        lineLength: 120,
+        // width of the output
+        colors: true,
+        // Colorful log messages
+        printEmojis: false,
+        // Print an emoji for each log message
+        dateTimeFormat: DateTimeFormat.dateAndTime,
+      ),
       // Use the PrettyPrinter to format and print log
       output: MultiOutput([customLogOutput.FileOutput(), ConsoleOutput()]),
     );
