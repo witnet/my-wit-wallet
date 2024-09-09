@@ -196,6 +196,7 @@ jobs:
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           IDENTITY_ID: ${{ secrets.IDENTITY_ID }}
         run: |
+          xcrun notarytool store-credentials "Signing-Profile" --apple-id "$APPLE_EMAIL" --team-id "$IDENTITY_ID" --password "$APPLE_PASSWORD"
           xcrun notarytool submit ./myWitWallet.dmg --apple-id "$APPLE_EMAIL" --password "$APPLE_PASSWORD" --team-id "$IDENTITY_ID" --wait
 
       - name: Staple
