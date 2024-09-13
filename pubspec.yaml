@@ -94,26 +94,26 @@ flutter:
     - .env
 
   fonts:
-    - family: Almarai
+    - family: Poppins
       fonts:
-        - asset: assets/fonts/Almarai/Almarai-Light.ttf
+        - asset: assets/fonts/Poppins/Poppins-Light.ttf
           weight: 300
-        - asset: assets/fonts/Almarai/Almarai-Regular.ttf
+        - asset: assets/fonts/Poppins/Poppins-Regular.ttf
           weight: 400
-        - asset: assets/fonts/Almarai/Almarai-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/Almarai/Almarai-ExtraBold.ttf
-          weight: 800
-    - family: RobotoMono
-      fonts:
-        - asset: assets/fonts/Roboto_Mono/RobotoMono-Light.ttf
-          weight: 300
-        - asset: assets/fonts/Roboto_Mono/RobotoMono-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/Roboto_Mono/RobotoMono-Medium.ttf
+        - asset: assets/fonts/Poppins/Poppins-Medium.ttf
           weight: 500
-        - asset: assets/fonts/Roboto_Mono/RobotoMono-Bold.ttf
+        - asset: assets/fonts/Poppins/Poppins-Bold.ttf
           weight: 700
+    - family: Outfit
+      fonts:
+        - asset: assets/fonts/Outfit/Outfit-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Outfit/Outfit-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Outfit/Outfit-Medium.ttf
+          weight: 700
+        - asset: assets/fonts/Outfit/Outfit-Bold.ttf
+          weight: 800
 
 msix_config:
   display_name: myWitWallet
