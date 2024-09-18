@@ -35,7 +35,11 @@ Future<void> e2eStakeUnstakeTest(WidgetTester tester) async {
   expect(widgetByText(localization.stake), findsOneWidget);
   await tapButton(tester, localization.stakeUnstake, semantics: true);
   await tapButton(tester, localization.unstake);
+<<<<<<< HEAD
   expect(widgetByText(localization.emptyStakeTitle), findsOneWidget);
+=======
+  expect(widgetByText(localization.emptyStakeMessage), findsOneWidget);
+>>>>>>> e03eccc3 (feat: fetch latest changes)
 
   await teardownTest();
 }
