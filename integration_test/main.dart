@@ -19,5 +19,8 @@ void main() async {
     testWidgets("Re-establish wallets", e2eReEstablishWallets);
     testWidgets("Import Xprv From Sheikah Test", e2eImportXprvFromSheikahTest);
     testWidgets("Update theme color", e2eUpdateThemeColorTest);
+    testWidgets("Go to send and receive transaction view", e2eSendReceiveTest);
+    testWidgets(
+        "Go to stake and unstake transaction view", e2eStakeUnstakeTest);
   });
 }

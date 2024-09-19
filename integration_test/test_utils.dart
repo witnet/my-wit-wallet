@@ -33,6 +33,8 @@ part 'e2e_import_xprv_from_sheikah_test.dart';
 part 'e2e_update_wallet_test.dart';
 part 'e2e_sign_message_test.dart';
 part 'e2e_update_theme_test.dart';
+part 'e2e_send_receive_vtt.dart';
+part 'e2e_stake_unstake.dart';
 
 bool walletsExist = false;
 int defaultDelay = int.parse(dotenv.env['DELAY'] ?? '100');
@@ -70,6 +72,7 @@ Future<bool> tapButton(
   WidgetTester tester,
   dynamic value, {
   int? index,
+  bool semantics = false,
   bool delay = true,
   int? milliseconds,
 }) async {
@@ -79,7 +82,7 @@ Future<bool> tapButton(
       finder = widgetByType(value);
       break;
     case String:
-      finder = widgetByText(value);
+      finder = semantics ? widgetByLabel(value) : widgetByText(value);
       break;
     case IconData:
       finder = widgetByIcon(value);
