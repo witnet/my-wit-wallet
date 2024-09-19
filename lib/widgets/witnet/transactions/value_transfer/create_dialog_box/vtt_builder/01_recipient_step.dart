@@ -79,11 +79,14 @@ class RecipientStepState extends State<RecipientStep>
   VTTCreateBloc get vttBloc => BlocProvider.of<VTTCreateBloc>(context);
   String get maxAmountWit =>
       nanoWitToWit(balanceInfo.availableNanoWit).toString();
-  bool get showAuthorization => widget.transactionType == TransactionType.Stake;
+  bool get showTimelockInput => isVttTransaction;
+  bool get showAuthorization => isStakeTarnsaction;
+  bool get isStakeTarnsaction =>
+      widget.transactionType == TransactionType.Stake;
   bool get isVttTransaction => widget.transactionType == TransactionType.Vtt;
-  bool get showStakeAmountInput =>
-      widget.transactionType == TransactionType.Stake ||
+  bool get isUnstakeTransaction =>
       widget.transactionType == TransactionType.Unstake;
+  bool get showStakeAmountInput => isStakeTarnsaction || isUnstakeTransaction;
 
   ScannedContent scannedContent = ScannedContent();
 
@@ -91,21 +94,12 @@ class RecipientStepState extends State<RecipientStep>
   bool timelockSet = false;
   int _currIndex = 0;
   DateTime currentTime = DateTime.now();
-  DateTime? timelockValue;
   DateTime? calendarValue;
   @override
   void initState() {
     super.initState();
-    if (scannedContent.scannedContent != null) {
-      if (isVttTransaction)
-        _handleQrAddressResults(scannedContent.scannedContent!);
-      if (showAuthorization)
-        _handleQrAuthorizationResults(scannedContent.scannedContent!);
-    }
-    if (vttBloc.outputs.length > 0) {
-      ongoingOutput = vttBloc.outputs.first;
-      _setSavedTxData(ongoingOutput);
-    }
+    _handleScannedContent();
+    _setSavedTxData();
     _loadingController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
@@ -114,6 +108,12 @@ class RecipientStepState extends State<RecipientStep>
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => widget.nextAction(next),
     );
+    //Set default timelock for unstake
+    if (isUnstakeTransaction) {
+      DateTime date = DateTime.now();
+      int weeksToAdd = 2;
+      setMinimunTimelock(date.add(Duration(days: (7 * weeksToAdd).toInt())));
+    }
   }
 
   @override
@@ -127,6 +127,17 @@ class RecipientStepState extends State<RecipientStep>
     _authorizationController.dispose();
     _authorizationFocusNode.dispose();
     super.dispose();
+  }
+
+  _handleScannedContent() {
+    if (scannedContent.scannedContent != null) {
+      if (isVttTransaction)
+        _handleQrAddressResults(scannedContent.scannedContent!);
+      if (showAuthorization)
+        _handleQrAuthorizationResults(scannedContent.scannedContent!);
+    } else if (_addressController.text.isEmpty && showStakeAmountInput) {
+      _handleQrAddressResults(currentAccount.address);
+    }
   }
 
   _handleQrAddressResults(String value) {
@@ -195,31 +206,56 @@ class RecipientStepState extends State<RecipientStep>
     });
   }
 
+  void setMinimunTimelock(DateTime date) {
+    setState(() {
+      timelockSet = true;
+      showAdvancedSettings = true;
+      calendarValue = date;
+    });
+  }
+
   void setAuthorization(String value, {bool? validate}) {
     setState(() {
       _authorization = AuthorizationInput.dirty(
+          withdrawerAddress: _address.value,
           allowValidation:
               validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
           value: value);
     });
   }
 
-  void _setSavedTxData(ValueTransferOutput? ongoingOutput) {
-    String? savedAddress = ongoingOutput?.pkh.address;
-    String? savedAmount =
-        ongoingOutput?.value.toInt().standardizeWitUnits().toString();
+  void _setSavedTxData() {
+    if (vttBloc.state.transaction.hasOutput(widget.transactionType)) {
+      String? savedAddress =
+          vttBloc.state.transaction.get(widget.transactionType) != null
+              ? vttBloc.state.transaction.getAddress(widget.transactionType)
+              : null;
+      String? savedAmount =
+          vttBloc.state.transaction.get(widget.transactionType) != null
+              ? vttBloc.state.transaction.getAmount(widget.transactionType)
+              : null;
 
-    if (savedAddress != null) {
-      _addressController.text = savedAddress;
-      setAddress(savedAddress, validate: false);
+      if (savedAddress != null) {
+        _addressController.text = savedAddress;
+        setAddress(savedAddress, validate: false);
+      }
+
+      if (savedAmount != null) {
+        _amountController.text = savedAmount;
+        setAmount(savedAmount, validate: false);
+      }
+
+      if (isStakeTarnsaction) {
+        String? savedAuthorization =
+            vttBloc.state.transaction.get(widget.transactionType) != null
+                ? vttBloc.authorizationString
+                : null;
+        _authorizationController.text = savedAuthorization ?? '';
+        setAuthorization(savedAuthorization ?? '');
+      }
+
+      vttBloc.add(ResetTransactionEvent());
     }
-
-    if (savedAmount != null) {
-      _amountController.text = savedAmount;
-      setAmount(savedAmount, validate: false);
-    }
-
-    vttBloc.add(ResetTransactionEvent());
   }
 
   void nextAction() {
@@ -235,17 +271,30 @@ class RecipientStepState extends State<RecipientStep>
       ScaffoldMessenger.of(context).clearSnackBars();
     }
     if (validateForm(force: true)) {
-      vttBloc.add(AddValueTransferOutputEvent(
+      if (widget.transactionType == TransactionType.Stake) {
+        vttBloc.add(AddStakeOutputEvent(
           currentWallet: widget.walletStorage.currentWallet,
-          output: ValueTransferOutput.fromJson({
-            'pkh': _address.value,
-            'value': int.parse(_amountToNumber()
-                .standardizeWitUnits(
-                    inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)
-                .toString()),
-            'time_lock': timelockSet ? dateTimeToTimelock(calendarValue) : 0,
-          }),
-          merge: true));
+          withdrawer: _address.value,
+          authorization: _authorization.value,
+          value: int.parse(_amountToNumber()
+              .standardizeWitUnits(
+                  inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)
+              .toString()),
+          merge: true,
+        ));
+      } else {
+        vttBloc.add(AddValueTransferOutputEvent(
+            currentWallet: widget.walletStorage.currentWallet,
+            output: ValueTransferOutput.fromJson({
+              'pkh': _address.value,
+              'value': int.parse(_amountToNumber()
+                  .standardizeWitUnits(
+                      inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)
+                  .toString()),
+              'time_lock': timelockSet ? dateTimeToTimelock(calendarValue) : 0,
+            }),
+            merge: true));
+      }
     }
   }
 
@@ -583,7 +632,7 @@ class RecipientStepState extends State<RecipientStep>
                 ..._buildAmountInput(theme),
               ],
             )),
-        isVttTransaction
+        showTimelockInput
             ? Column(children: [
                 _buildCalendarDialogButton(context),
                 SizedBox(height: 16),

@@ -31,12 +31,16 @@ class VTTCreateState extends Equatable {
   VTTCreateState copyWith({
     List<Input>? inputs,
     List<ValueTransferOutput>? outputs,
+    ValueTransferOutput? withdrawal,
+    KeyedSignature? signature,
     List<KeyedSignature>? signatures,
+    PublicKeyHash? operator,
+    ValueTransferOutput? change,
+    StakeOutput? stakeOutput,
     layout.TransactionType? transactionType,
     VTTCreateStatus? status,
     String? message,
   }) {
-    layout.TransactionType txType = transactionType ?? this.transactionType;
     return VTTCreateState(
       transaction: BuildTransaction(
           vtTransaction: VTTransaction(
@@ -48,18 +52,26 @@ class VTTCreateState extends Equatable {
                 signatures ?? this.transaction.vtTransaction?.signatures,
           ),
           stakeTransaction: StakeTransaction(
-              body: StakeBody(
-                  change: this.transaction.stakeTransaction?.body.change,
-                  inputs: this.transaction.stakeTransaction?.body.inputs,
-                  output: this.transaction.stakeTransaction?.body.output)),
+            body: StakeBody(
+                change:
+                    change ?? this.transaction.stakeTransaction?.body.change,
+                inputs:
+                    inputs ?? this.transaction.stakeTransaction?.body.inputs,
+                output: stakeOutput ??
+                    this.transaction.stakeTransaction?.body.output),
+            signatures:
+                signatures ?? this.transaction.stakeTransaction?.signatures,
+          ),
           unstakeTransaction: UnstakeTransaction(
               body: UnstakeBody(
-                  operator: this.transaction.unstakeTransaction?.body.operator,
-                  withdrawal:
+                  operator: operator ??
+                      this.transaction.unstakeTransaction?.body.operator,
+                  withdrawal: withdrawal ??
                       this.transaction.unstakeTransaction?.body.withdrawal),
-              signature: this.transaction.unstakeTransaction?.signature)),
+              signature:
+                  signature ?? this.transaction.unstakeTransaction?.signature)),
       vttCreateStatus: status ?? this.vttCreateStatus,
-      transactionType: txType,
+      transactionType: transactionType ?? this.transactionType,
       message: message ?? this.message,
     );
   }

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
-import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
-import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 
 void buildTxGeneralExceptionModal({
   required ThemeData theme,
@@ -25,14 +22,7 @@ void buildTxGeneralExceptionModal({
             onPressed: () => {
                   Navigator.popUntil(context, ModalRoute.withName(originRoute)),
                   ScaffoldMessenger.of(context).clearSnackBars(),
-                  Navigator.pushReplacement(
-                      context,
-                      CustomPageRoute(
-                          builder: (BuildContext context) {
-                            return DashboardScreen();
-                          },
-                          maintainState: false,
-                          settings: RouteSettings(name: DashboardScreen.route)))
+                  Navigator.pushReplacementNamed(context, originRoute)
                 }),
         PaddedButton(
             padding: EdgeInsets.zero,
@@ -40,8 +30,7 @@ void buildTxGeneralExceptionModal({
             type: ButtonType.text,
             enabled: true,
             onPressed: () => {
-                  Navigator.popUntil(
-                      context, ModalRoute.withName(CreateVttScreen.route)),
+                  Navigator.popUntil(context, ModalRoute.withName(originRoute)),
                   onAction(),
                 })
       ],

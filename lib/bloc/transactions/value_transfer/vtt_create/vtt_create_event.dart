@@ -21,6 +21,25 @@ class AddValueTransferOutputEvent extends VTTCreateEvent {
   List<Object?> get props => [output, currentWallet, merge];
 }
 
+class AddStakeOutputEvent extends VTTCreateEvent {
+  final String withdrawer;
+  final String authorization;
+  final int value;
+  final Wallet currentWallet;
+  final bool merge;
+  final bool filteredUtxos;
+  AddStakeOutputEvent(
+      {required this.authorization,
+      required this.withdrawer,
+      required this.currentWallet,
+      required this.value,
+      required this.merge,
+      this.filteredUtxos = true});
+  @override
+  List<Object?> get props =>
+      [currentWallet, authorization, withdrawer, value, merge];
+}
+
 class PrepareSpeedUpTxEvent extends VTTCreateEvent {
   final ValueTransferOutput output;
   final Wallet currentWallet;
