@@ -108,21 +108,21 @@ class BuildTransactionEvent extends VTTCreateEvent {}
 class ShowAuthPreferencesEvent extends VTTCreateEvent {}
 
 class SignTransactionEvent extends VTTCreateEvent {
-  final VTTransactionBody vtTransactionBody;
+  final TransactionBody transactionBody;
   final Wallet currentWallet;
   final GeneralTransaction? speedUpTx;
   SignTransactionEvent({
     required this.currentWallet,
-    required this.vtTransactionBody,
+    required this.transactionBody,
     this.speedUpTx,
   });
 
   @override
-  List<Object?> get props => [currentWallet, vtTransactionBody, speedUpTx];
+  List<Object?> get props => [currentWallet, transactionBody, speedUpTx];
 }
 
 class SendTransactionEvent extends VTTCreateEvent {
-  final VTTransaction transaction;
+  final BuildTransaction transaction;
   final Wallet currentWallet;
   final GeneralTransaction? speedUpTx;
   SendTransactionEvent(
