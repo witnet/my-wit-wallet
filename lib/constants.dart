@@ -29,13 +29,13 @@ Map<TxSteps, String> localizedVTTsteps = {
   TxSteps.Review: localization.vttSendSteps('Review'),
 };
 Map<TxSteps, String> localizedStakeSteps = {
-  TxSteps.Transaction: localization.vttSendSteps('Transaction'),
-  TxSteps.MinerFee: localization.vttSendSteps('MinerFee'),
-  TxSteps.Review: localization.vttSendSteps('Review'),
+  TxSteps.Transaction: localization.stakeSteps('Transaction'),
+  TxSteps.MinerFee: localization.stakeSteps('MinerFee'),
+  TxSteps.Review: localization.stakeSteps('Review'),
 };
 Map<TxSteps, String> localizedUnstakeSteps = {
-  TxSteps.Transaction: localization.vttSendSteps('Transaction'),
-  TxSteps.Review: localization.vttSendSteps('Review'),
+  TxSteps.Transaction: localization.unstakeSteps('Transaction'),
+  TxSteps.Review: localization.unstakeSteps('Review'),
 };
 Map<EstimatedFeeOptions, String> localizedFeeOptions = {
   EstimatedFeeOptions.Stinky: localization.estimatedFeeOptions('stinky'),

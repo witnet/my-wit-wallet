@@ -6,6 +6,7 @@ class UnstakeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SendTransactionLayout(
-        routeName: UnstakeScreen.route, transactionType: TransactionType.Stake);
+        routeName: UnstakeScreen.route,
+        transactionType: TransactionType.Unstake);
   }
 }

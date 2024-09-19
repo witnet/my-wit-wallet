@@ -46,12 +46,14 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
   dynamic nextStep;
   bool _insufficientUtxos = false;
   ScrollController scrollController = ScrollController(keepScrollOffset: false);
+  String? selectedItem;
 
   Map<TransactionType, String> selectedItemByTxType = {
     TransactionType.Stake: localizedStakeSteps[TxSteps.Transaction]!,
     TransactionType.Unstake: localizedUnstakeSteps[TxSteps.Transaction]!,
     TransactionType.Vtt: localizedVTTsteps[TxSteps.Transaction]!,
   };
+
   Map<dynamic, String> getLocalizedStepByTxType(
       {required TransactionType transactionType}) {
     switch (transactionType) {
@@ -73,8 +75,6 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
 
   Map<dynamic, String> get localizedSteps =>
       getLocalizedStepByTxType(transactionType: widget.transactionType);
-
-  String? selectedItem;
 
   @override
   void initState() {
@@ -162,6 +162,8 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
   RecipientStep _recipientStep() {
     return RecipientStep(
       key: transactionFormState,
+      routeName: widget.routeName,
+      transactionType: widget.transactionType,
       nextAction: _setNextAction,
       goNext: () {
         nextAction().action();
