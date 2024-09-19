@@ -52,8 +52,6 @@ typedef PointerDownCallback = void Function(PointerDownEvent);
 class _InputSliderState extends State<InputSlider> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    print(widget.maxAmount);
-    print(widget.textEditingController!.text);
     String? inputValue = widget.textEditingController?.text;
     double sliderValue =
         inputValue != null && inputValue != '' ? double.parse(inputValue) : 0;
