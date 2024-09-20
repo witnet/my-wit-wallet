@@ -118,7 +118,7 @@ class Wallet {
 
   Map<int, Account> orderAccountsByIndex(Map<int, Account> accountMap) {
     return Map.fromEntries(accountMap.entries.toList()
-      ..sort((e1, e2) => e1.key.compareTo(e2.key)));
+      ..sort((e1, e2) => e2.key.compareTo(e1.key)));
   }
 
   List<String> addressList(KeyType keyType) {
