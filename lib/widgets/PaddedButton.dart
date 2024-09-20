@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/util/get_localization.dart';
 
 const defaultIcon = Icon(null);
 
@@ -27,7 +28,7 @@ Widget buildCircularProgress(context, ThemeData theme) {
         color: theme.colorScheme.surface,
         strokeWidth: 2,
         value: null,
-        semanticsLabel: 'Circular progress indicator',
+        semanticsLabel: localization.loading,
       ));
 }
 

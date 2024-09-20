@@ -123,7 +123,7 @@ class SpeedUpVttState extends State<SpeedUpVtt> {
                             color: extendedTheme.spinnerColor,
                             strokeWidth: 2,
                             value: null,
-                            semanticsLabel: 'Circular progress indicator',
+                            semanticsLabel: localization.loading,
                           )),
                       SizedBox(
                         height: 24,
