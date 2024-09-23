@@ -2,30 +2,31 @@ import 'package:flutter/material.dart'
     show Color, MaterialColor, WidgetState, WidgetStateColor;
 
 class WitnetPallet {
-  static const black = Color.fromARGB(255, 40, 40, 40);
-  static const lightGrey = Color.fromRGBO(193, 196, 198, 1);
-  static const mediumGrey = Color.fromRGBO(101, 101, 101, 1);
-  static const darkGrey = Color.fromRGBO(50, 50, 50, 1);
-  static const white = Color.fromRGBO(240, 243, 245, 1);
-  static const witnetGreen1 = Color.fromARGB(255, 80, 186, 177);
-  static const darkBlue1 = Color.fromARGB(255, 13, 45, 67);
-  static const darkBlue2 = Color.fromARGB(255, 2, 29, 48);
-  static const opacityWitnetGreen = Color.fromRGBO(23, 73, 79, 1);
-  static const opacitywitnetGreen2 = Color.fromRGBO(65, 190, 165, 0.25);
-  static const opacityWitnetGreen3 = Color.fromRGBO(54, 140, 125, 0.16);
-  static const opacitywitnetGreen4 = Color.fromRGBO(54, 140, 125, 0.24);
-  static const opacityWhite = Color.fromRGBO(240, 243, 245, 80);
-  static const opacityWhite2 = Color.fromRGBO(240, 243, 245, 95);
-  static const darkRed = Color.fromARGB(255, 179, 0, 12);
-  static const darkOrange = Color.fromARGB(255, 179, 104, 0);
-  static const brightRed = Color.fromARGB(255, 255, 65, 78);
-  static const brightOrange = Color.fromARGB(255, 255, 176, 65);
-  static const darkGreen = Color.fromARGB(255, 54, 140, 83);
-  static const brightGreen = Color.fromRGBO(74, 182, 161, 1);
-  static const transparent = Color.fromARGB(0, 255, 255, 255);
-  static const transparentGrey = Color.fromARGB(16, 126, 126, 126);
-  static const transparentWhite = Color.fromARGB(16, 255, 255, 255);
-  static const brown = Color.fromRGBO(95, 65, 33, 1);
+  static const black = Color(0xFF1D1D1B);
+  static const white = Color(0xFFFFFFFF);
+  static const opacityWhite = Color(0xAFF0F3F5);
+  static const opacityWhite2 = Color(0xA0F0F3F5);
+
+  static const lightGrey = Color(0xFFBDBDBD);
+  static const mediumGrey = Color(0xFF656565);
+  static const darkGrey = Color(0xFF424242);
+
+  static const transparent = Color(0x00FFFFFF);
+  static const transparentGrey = Color(0x10656565);
+  static const transparentWhite = Color(0x10656565);
+
+  static const brightCyan = Color(0xFF00E2ED);
+  static const brightCyanOpacity1 = Color(0xFF17494F);
+  static const brightCyanOpacity2 = Color(0x3E00E2ED);
+  static const brightCyanOpacity3 = Color(0x2800E2ED);
+
+  static const darkRed = Color.fromARGB(255, 211, 53, 64);
+  static const darkOrange = Color.fromARGB(255, 202, 119, 1);
+  static const brightRed = Color(0xFFed0b00);
+  static const brightOrange = Color(0xFFed9900);
+  static const darkGreen = Color.fromARGB(255, 25, 147, 66);
+  static const brightGreen = Color(0xFF00ed99);
+  static const brown = Color.fromARGB(255, 147, 82, 1);
 }
 
 MaterialColor createMaterialColor(Color color) {

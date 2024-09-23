@@ -5,11 +5,11 @@ import 'colors.dart';
 
 Brightness brightness = Brightness.dark;
 MaterialColor primarySwatch =
-    createMaterialColor(WitnetPallet.opacityWitnetGreen);
-Color primaryColor = WitnetPallet.opacityWitnetGreen;
+    createMaterialColor(WitnetPallet.brightCyanOpacity1);
+Color primaryColor = WitnetPallet.brightCyanOpacity1;
 TextSelectionThemeData textSelectionTheme = TextSelectionThemeData(
-  cursorColor: WitnetPallet.witnetGreen1,
-  selectionColor: WitnetPallet.witnetGreen1,
+  cursorColor: WitnetPallet.brightCyan,
+  selectionColor: WitnetPallet.brightCyan,
 );
 Brightness primaryColorBrightness = brightness;
 TextTheme textTheme = TextTheme(
@@ -106,7 +106,7 @@ TextTheme textTheme = TextTheme(
       fontWeight: FontWeight.normal),
 );
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
-  fillColor: WitnetPallet.darkBlue2,
+  fillColor: WitnetPallet.black,
   filled: true,
   errorStyle: TextStyle(color: WitnetPallet.brightRed),
   helperStyle: TextStyle(color: WitnetPallet.white),
@@ -114,8 +114,8 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   errorMaxLines: 1,
   hintStyle: TextStyle(color: Color.fromARGB(159, 190, 191, 192)),
   labelStyle: TextStyle(color: WitnetPallet.opacityWhite),
-  hoverColor: WitnetPallet.darkBlue2,
-  focusColor: WitnetPallet.opacityWitnetGreen,
+  hoverColor: WitnetPallet.black,
+  focusColor: WitnetPallet.brightCyanOpacity1,
   isDense: false,
   isCollapsed: false,
   contentPadding: EdgeInsets.all(16),
@@ -126,7 +126,7 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   ),
   focusedBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: WitnetPallet.opacityWitnetGreen,
+        color: WitnetPallet.brightCyanOpacity1,
         width: 1.0,
         style: BorderStyle.solid),
     borderRadius: BorderRadius.circular(4),
@@ -176,7 +176,7 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(16),
       foregroundColor: WitnetPallet.white,
-      backgroundColor: WitnetPallet.opacityWitnetGreen,
+      backgroundColor: WitnetPallet.brightCyanOpacity1,
       disabledForegroundColor:
           Color.fromARGB(102, 164, 212, 204).withOpacity(0.38),
       disabledBackgroundColor:
@@ -206,7 +206,7 @@ OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
 CardTheme cardTheme = CardTheme(
   elevation: 5.0,
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.0)),
-  color: WitnetPallet.opacityWitnetGreen,
+  color: WitnetPallet.brightCyanOpacity1,
 );
 IconThemeData iconTheme = IconThemeData(
   color: WitnetPallet.opacityWhite,
@@ -221,10 +221,10 @@ IconThemeData primaryIconTheme = IconThemeData(
 CheckboxThemeData checkboxTheme = CheckboxThemeData(
   splashRadius: 0,
   side: WidgetStateBorderSide.resolveWith(
-      (_) => const BorderSide(width: 2, color: WitnetPallet.witnetGreen1)),
+      (_) => const BorderSide(width: 2, color: WitnetPallet.brightCyan)),
   fillColor: WidgetStateProperty.resolveWith((Set<WidgetState> states) {
     if (states.contains(WidgetState.selected)) {
-      return WitnetPallet.witnetGreen1;
+      return WitnetPallet.brightCyan;
     }
     return WitnetPallet.transparent;
   }),
@@ -234,7 +234,7 @@ CheckboxThemeData checkboxTheme = CheckboxThemeData(
 Color getColorPrimary(Set<WidgetState> states) {
   const Set<WidgetState> activeStates = <WidgetState>{WidgetState.selected};
   if (states.any(activeStates.contains)) {
-    return WitnetPallet.witnetGreen1;
+    return WitnetPallet.brightCyan;
   }
   return WitnetPallet.lightGrey;
 }
@@ -242,7 +242,7 @@ Color getColorPrimary(Set<WidgetState> states) {
 Color getColorSecondary(Set<WidgetState> states) {
   const Set<WidgetState> activeStates = <WidgetState>{WidgetState.selected};
   if (states.any(activeStates.contains)) {
-    return WitnetPallet.opacityWitnetGreen;
+    return WitnetPallet.brightCyanOpacity1;
   }
   return WitnetPallet.opacityWhite;
 }
@@ -267,34 +267,34 @@ PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(
 );
 
 TimePickerThemeData timePickerTheme = TimePickerThemeData(
-  backgroundColor: WitnetPallet.darkBlue2,
+  backgroundColor: WitnetPallet.black,
   cancelButtonStyle: textButtonTheme.style,
   confirmButtonStyle: textButtonTheme.style,
 
   /// day period
-  dayPeriodBorderSide: BorderSide(color: WitnetPallet.witnetGreen1, width: 1),
-  dayPeriodColor: stateColor(WitnetPallet.witnetGreen1, WitnetPallet.darkBlue2),
+  dayPeriodBorderSide: BorderSide(color: WitnetPallet.brightCyan, width: 1),
+  dayPeriodColor: stateColor(WitnetPallet.brightCyan, WitnetPallet.black),
   dayPeriodShape: RoundedRectangleBorder(
-      side: BorderSide(color: WitnetPallet.witnetGreen1, width: 5),
+      side: BorderSide(color: WitnetPallet.brightCyan, width: 5),
       borderRadius: BorderRadius.all(Radius.circular(4))),
   dayPeriodTextColor: stateColor(WitnetPallet.darkGrey, WitnetPallet.white),
   dayPeriodTextStyle: textTheme.bodyMedium,
 
   /// dial
   dialBackgroundColor: WitnetPallet.transparentGrey,
-  dialHandColor: WitnetPallet.witnetGreen1,
+  dialHandColor: WitnetPallet.brightCyan,
   dialTextColor: stateColor(WitnetPallet.darkGrey, WitnetPallet.white),
   dialTextStyle: textTheme.bodyMedium,
   elevation: 0,
-  entryModeIconColor: WitnetPallet.witnetGreen1,
+  entryModeIconColor: WitnetPallet.brightCyan,
   helpTextStyle: textTheme.titleLarge,
 
   /// hour minute
   hourMinuteColor:
-      stateColor(WitnetPallet.opacityWitnetGreen3, WitnetPallet.transparent),
+      stateColor(WitnetPallet.brightCyanOpacity3, WitnetPallet.transparent),
   hourMinuteShape: RoundedRectangleBorder(
     side: BorderSide(
-        color: stateColor(WitnetPallet.witnetGreen1, WitnetPallet.lightGrey),
+        color: stateColor(WitnetPallet.brightCyan, WitnetPallet.lightGrey),
         width: 0),
     borderRadius: BorderRadius.all(Radius.circular(4)),
   ),
@@ -302,10 +302,10 @@ TimePickerThemeData timePickerTheme = TimePickerThemeData(
   hourMinuteTextStyle: textTheme.titleLarge,
   inputDecorationTheme: inputDecorationTheme.copyWith(
     outlineBorder: BorderSide(
-      color: stateColor(WitnetPallet.witnetGreen1, WitnetPallet.darkGrey),
+      color: stateColor(WitnetPallet.brightCyan, WitnetPallet.darkGrey),
     ),
-    focusColor: WitnetPallet.witnetGreen1,
-    hoverColor: WitnetPallet.opacityWitnetGreen3,
+    focusColor: WitnetPallet.brightCyan,
+    hoverColor: WitnetPallet.brightCyanOpacity3,
   ),
 
   padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 15),
@@ -316,15 +316,15 @@ TimePickerThemeData timePickerTheme = TimePickerThemeData(
 );
 
 DatePickerThemeData datePickerTheme = DatePickerThemeData(
-  backgroundColor: WitnetPallet.darkBlue2,
+  backgroundColor: WitnetPallet.black,
   elevation: 0,
   shadowColor: WitnetPallet.darkGrey,
-  surfaceTintColor: WitnetPallet.darkBlue2,
+  surfaceTintColor: WitnetPallet.black,
   shape: RoundedRectangleBorder(
     side: BorderSide.none,
     borderRadius: BorderRadius.all(Radius.circular(10)),
   ),
-  headerBackgroundColor: WitnetPallet.opacityWitnetGreen,
+  headerBackgroundColor: WitnetPallet.brightCyanOpacity1,
   headerForegroundColor: WitnetPallet.lightGrey,
   headerHelpStyle: textTheme.titleLarge!.copyWith(color: WitnetPallet.white),
   weekdayStyle: TextStyle(color: WitnetPallet.lightGrey),
@@ -332,19 +332,18 @@ DatePickerThemeData datePickerTheme = DatePickerThemeData(
       TextStyle(color: WitnetPallet.lightGrey, fontWeight: FontWeight.bold),
   dayForegroundColor: stateColor(WitnetPallet.darkGrey, WitnetPallet.white),
   dayBackgroundColor:
-      stateColor(WitnetPallet.witnetGreen1, WitnetPallet.transparent),
+      stateColor(WitnetPallet.brightCyan, WitnetPallet.transparent),
   dayOverlayColor: stateColor(
-      WitnetPallet.opacitywitnetGreen2, WitnetPallet.opacitywitnetGreen2),
+      WitnetPallet.brightCyanOpacity2, WitnetPallet.brightCyanOpacity2),
   todayForegroundColor:
-      stateColor(WitnetPallet.darkGrey, WitnetPallet.witnetGreen1),
-  todayBackgroundColor:
-      stateColor(WitnetPallet.witnetGreen1, WitnetPallet.darkBlue2),
+      stateColor(WitnetPallet.darkGrey, WitnetPallet.brightCyan),
+  todayBackgroundColor: stateColor(WitnetPallet.brightCyan, WitnetPallet.black),
   yearStyle: textTheme.bodyMedium!.copyWith(decoration: TextDecoration.none),
   yearForegroundColor: stateColor(WitnetPallet.white, WitnetPallet.lightGrey),
   yearBackgroundColor:
-      stateColor(WitnetPallet.opacitywitnetGreen2, WitnetPallet.transparent),
+      stateColor(WitnetPallet.brightCyanOpacity2, WitnetPallet.transparent),
   yearOverlayColor: stateColor(
-      WitnetPallet.opacitywitnetGreen2, WitnetPallet.opacitywitnetGreen2),
+      WitnetPallet.brightCyanOpacity2, WitnetPallet.brightCyanOpacity2),
   dividerColor: WitnetPallet.transparent,
   inputDecorationTheme: inputDecorationTheme,
   cancelButtonStyle: textButtonTheme.style,
@@ -353,11 +352,11 @@ DatePickerThemeData datePickerTheme = DatePickerThemeData(
 
 SliderThemeData sliderTheme = SliderThemeData(
   showValueIndicator: ShowValueIndicator.always,
-  valueIndicatorColor: WitnetPallet.witnetGreen1,
-  thumbColor: WitnetPallet.witnetGreen1,
-  activeTrackColor: WitnetPallet.witnetGreen1,
-  inactiveTrackColor: WitnetPallet.opacityWitnetGreen,
-  overlayColor: WitnetPallet.opacityWitnetGreen3,
+  valueIndicatorColor: WitnetPallet.brightCyan,
+  thumbColor: WitnetPallet.brightCyan,
+  activeTrackColor: WitnetPallet.brightCyan,
+  inactiveTrackColor: WitnetPallet.brightCyanOpacity1,
+  overlayColor: WitnetPallet.brightCyanOpacity3,
 );
 
 ThemeData darkTheme = ThemeData(
@@ -379,6 +378,6 @@ ThemeData darkTheme = ThemeData(
     textTheme: textTheme,
     inputDecorationTheme: inputDecorationTheme,
     colorScheme: ColorScheme.dark().copyWith(
-        surface: WitnetPallet.darkBlue2,
+        surface: WitnetPallet.black,
         outline: WitnetPallet.transparent,
         error: WitnetPallet.darkRed));

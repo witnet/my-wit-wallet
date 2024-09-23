@@ -54,7 +54,7 @@ class _AppLifecycleState extends State<AppLifecycleOverlay>
     Widget overlayBackground = Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      color: WitnetPallet.darkBlue2,
+      color: WitnetPallet.black,
     );
     if (shouldBlur && (Platform.isIOS || Platform.isAndroid)) {
       if (widget.isBottomBar) {

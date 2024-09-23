@@ -27,7 +27,7 @@ buildAlertDialog({
                   borderRadius: BorderRadius.all(Radius.circular(8))),
               icon: icon != null
                   ? Icon(icon,
-                      size: 24, color: color ?? WitnetPallet.witnetGreen1)
+                      size: 24, color: color ?? WitnetPallet.brightCyan)
                   : null,
               actionsPadding: EdgeInsets.only(bottom: 16, right: 16, top: 0),
               content: content,

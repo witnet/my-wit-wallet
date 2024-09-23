@@ -32,11 +32,11 @@ class QrAddressGeneratorState extends State<QrAddressGenerator> {
                   version: QrVersions.auto,
                   eyeStyle: const QrEyeStyle(
                     eyeShape: QrEyeShape.square,
-                    color: WitnetPallet.witnetGreen1,
+                    color: WitnetPallet.brightCyan,
                   ),
                   dataModuleStyle: const QrDataModuleStyle(
                     dataModuleShape: QrDataModuleShape.square,
-                    color: WitnetPallet.witnetGreen1,
+                    color: WitnetPallet.brightCyan,
                   ),
                 ),
               ),
