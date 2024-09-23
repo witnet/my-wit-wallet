@@ -140,7 +140,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
             ),
             SizedBox(height: 24),
             DashedRect(
-              color: WitnetPallet.witnetGreen1,
+              color: WitnetPallet.brightCyan,
               strokeWidth: 1.0,
               gap: 3.0,
               text: selectedAccount!.address,

@@ -55,8 +55,7 @@ class _CarouselState extends State<Carousel> {
       height: 8,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color:
-            index == page ? WitnetPallet.witnetGreen1 : WitnetPallet.lightGrey,
+        color: index == page ? WitnetPallet.brightCyan : WitnetPallet.lightGrey,
       ),
     );
   }
