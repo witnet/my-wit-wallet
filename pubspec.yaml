@@ -114,6 +114,16 @@ flutter:
           weight: 700
         - asset: assets/fonts/Outfit/Outfit-Bold.ttf
           weight: 800
+    - family: NimbusMono
+      fonts:
+        - asset: assets/fonts/Nimbus/NimbusMono-Regular.otf
+          weight: 300
+        - asset: assets/fonts/Nimbus/NimbusMono-Regular.otf
+          weight: 400
+        - asset: assets/fonts/Nimbus/NimbusMono-Regular.otf
+          weight: 700
+        - asset: assets/fonts/Nimbus/NimbusMono-Bold.otf
+          weight: 800
 
 msix_config:
   display_name: myWitWallet
