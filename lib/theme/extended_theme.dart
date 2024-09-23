@@ -372,22 +372,22 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     hdWalletTypeBgColor: WitnetPallet.mediumGrey,
     singleWalletBgColor: WitnetPallet.brown,
     monoSmallText: TextStyle(
-        fontFamily: 'RobotoMono',
+        fontFamily: 'NimbusMono',
         fontWeight: FontWeight.w400,
         color: WitnetPallet.darkGrey,
         fontSize: 14),
     monoRegularText: TextStyle(
-        fontFamily: 'RobotoMono',
+        fontFamily: 'NimbusMono',
         fontWeight: FontWeight.w400,
         color: WitnetPallet.darkGrey,
         fontSize: 16),
     monoMediumText: TextStyle(
-        fontFamily: 'RobotoMono',
+        fontFamily: 'NimbusMono',
         fontWeight: FontWeight.w700,
         color: WitnetPallet.darkGrey,
         fontSize: 16),
     monoLargeText: TextStyle(
-        fontFamily: 'RobotoMono',
+        fontFamily: 'NimbusMono',
         fontWeight: FontWeight.w700,
         color: WitnetPallet.darkGrey,
         fontSize: 18),
@@ -450,22 +450,22 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     singleWalletBgColor: WitnetPallet.brown,
     navigationColor: WitnetPallet.black,
     monoSmallText: TextStyle(
-        fontFamily: 'RobotoMono',
+        fontFamily: 'NimbusMono',
         fontWeight: FontWeight.w400,
         color: WitnetPallet.white,
         fontSize: 14),
     monoRegularText: TextStyle(
-        fontFamily: 'RobotoMono',
+        fontFamily: 'NimbusMono',
         fontWeight: FontWeight.w400,
         color: WitnetPallet.opacityWhite,
         fontSize: 16),
     monoMediumText: TextStyle(
-        fontFamily: 'RobotoMono',
+        fontFamily: 'NimbusMono',
         fontWeight: FontWeight.w700,
         color: WitnetPallet.white,
         fontSize: 16),
     monoLargeText: TextStyle(
-        fontFamily: 'RobotoMono',
+        fontFamily: 'NimbusMono',
         fontWeight: FontWeight.w700,
         color: WitnetPallet.white,
         fontSize: 18),
