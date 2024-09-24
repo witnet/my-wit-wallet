@@ -37,6 +37,7 @@ class PaddedButton extends StatelessWidget {
       required this.onPressed,
       this.color,
       this.fontSize = 16,
+      this.boldText = false,
       this.isLoading = false,
       this.icon = defaultIcon,
       this.enabled = true,
@@ -57,6 +58,7 @@ class PaddedButton extends StatelessWidget {
   final Color? color;
   final ButtonType type;
   final Widget icon;
+  final bool boldText;
   final VoidCallback onPressed;
   final String? label;
   final bool attachedIcon;
@@ -77,11 +79,7 @@ class PaddedButton extends StatelessWidget {
       if (!enabled) {
         return theme.colorScheme.surface.withOpacity(0);
       }
-      if (darkBackground) {
-        return extendedTheme.darkBgFocusColor!;
-      } else {
-        return extendedTheme.focusBg!;
-      }
+      return extendedTheme.focusBg!;
     }
 
     Widget child = attachedIcon
@@ -134,8 +132,8 @@ class PaddedButton extends StatelessWidget {
                 : Container(),
             Text(
               text,
-              style: TextStyle(
-                  fontFamily: 'Almarai', fontSize: 14, color: color ?? null),
+              style: theme.textTheme.labelMedium!.copyWith(fontSize: 14, fontWeight:
+                      boldText ? FontWeight.bold : FontWeight.normal, color: color ?? null)
             ),
             Padding(padding: EdgeInsets.only(left: 8)),
             iconPosition == IconPosition.right ? icon : Container(),
@@ -169,8 +167,8 @@ class PaddedButton extends StatelessWidget {
         child: TextButton(
           style: color != null
               ? theme.textButtonTheme.style?.copyWith(
-                  padding: WidgetStateProperty.all(EdgeInsets.zero),
-                  fixedSize: WidgetStateProperty.all(Size.zero),
+                  // padding: WidgetStateProperty.all(EdgeInsets.zero),
+                  // fixedSize: WidgetStateProperty.all(Size.zero),
                   foregroundColor: WidgetStateProperty.all(color),
                   overlayColor:
                       WidgetStateProperty.all(WitnetPallet.transparentWhite))
@@ -191,7 +189,7 @@ class PaddedButton extends StatelessWidget {
         style: color != null
             ? theme.textTheme.labelMedium
                 ?.copyWith(color: color, fontSize: fontSize)
-            : theme.textTheme.labelMedium,
+            : theme.textTheme.displaySmall?.copyWith(color: WitnetPallet.black, fontSize: fontSize),
       ),
       onPressed: onPressed,
     );

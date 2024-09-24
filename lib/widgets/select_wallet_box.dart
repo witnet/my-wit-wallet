@@ -32,17 +32,12 @@ class SelectWalletBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    final textStyle = TextStyle(
-        fontFamily: 'Almarai',
-        color: WitnetPallet.white,
-        fontSize: 14,
-        fontWeight: FontWeight.normal);
+    final textStyle = theme.textTheme.titleSmall;
     return PaddedButton(
       padding: EdgeInsets.zero,
       label: label,
       text: 'wallet',
       type: ButtonType.boxButton,
-      darkBackground: true,
       container: Container(
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
@@ -60,11 +55,15 @@ class SelectWalletBox extends StatelessWidget {
         margin: EdgeInsets.all(8),
         child: Row(children: [
           Container(
-            color: extendedTheme.selectedTextColor,
+            decoration: BoxDecoration(color: WitnetPallet.black, border: Border.all(color: WitnetPallet.transparent), borderRadius:  BorderRadius.all(Radius.circular(8))),
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+              child: Container(
+            decoration: BoxDecoration(color: WitnetPallet.black, border: Border.all(color: WitnetPallet.black)),
             width: 30,
             height: 30,
             child: Identicon(seed: walletId, size: 8),
-          ),
+          ),)),
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(left: 16, right: 16),
@@ -80,7 +79,7 @@ class SelectWalletBox extends StatelessWidget {
                     address,
                     overflow: TextOverflow.ellipsis,
                     style: extendedTheme.monoSmallText!
-                        .copyWith(color: WitnetPallet.white),
+                        .copyWith(color: theme.textTheme.titleSmall!.color),
                   ),
                 ],
               ),

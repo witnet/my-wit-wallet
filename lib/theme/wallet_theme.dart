@@ -43,7 +43,7 @@ Widget witnetEyeIcon(ThemeData theme, {height = 100}) {
           filterQuality: FilterQuality.high,
         )
       : Image.asset(
-          'assets/img/witnet_dark_icon.png',
+          'assets/img/witnet_light_icon.png',
           height: height,
           fit: BoxFit.fitWidth,
           filterQuality: FilterQuality.high,

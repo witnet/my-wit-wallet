@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
@@ -208,7 +209,7 @@ class DashboardLayoutState extends State<DashboardLayout>
               child: Text(
                 '${currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
                 textAlign: TextAlign.center,
-                style: theme.textTheme.headlineMedium,
+                style: theme.textTheme.headlineMedium!.copyWith(color: extendedTheme.headerTextColor),
               )),
           SizedBox(height: 8),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -219,7 +220,7 @@ class DashboardLayoutState extends State<DashboardLayout>
                       currentAccount.address.cropMiddle(18),
                       overflow: TextOverflow.ellipsis,
                       style: extendedTheme.monoRegularText!.copyWith(
-                          color: theme.textTheme.headlineMedium!.color),
+                          color: extendedTheme.headerTextColor),
                     ))),
             Flexible(
               child: PaddedButton(
@@ -227,6 +228,7 @@ class DashboardLayoutState extends State<DashboardLayout>
                   label: localization.copyAddressToClipboard,
                   text: localization.copyAddressToClipboard,
                   type: ButtonType.iconButton,
+                  color: extendedTheme.headerTextColor,
                   iconSize: 12,
                   onPressed: () async {
                     if (!isAddressCopied) {
@@ -251,6 +253,7 @@ class DashboardLayoutState extends State<DashboardLayout>
                     }
                   },
                   icon: Icon(
+                    color: extendedTheme.headerTextColor,
                     isAddressCopied
                         ? FontAwesomeIcons.check
                         : FontAwesomeIcons.copy,
@@ -282,6 +285,7 @@ class DashboardLayoutState extends State<DashboardLayout>
           label: localization.settings,
           text: localization.settings,
           iconSize: 28,
+          color: WitnetPallet.black,
           icon: Icon(FontAwesomeIcons.gear,
               size: 28, color: getButtonColorByRoute(PreferencePage.route)),
           onPressed: currentRoute != PreferencePage.route

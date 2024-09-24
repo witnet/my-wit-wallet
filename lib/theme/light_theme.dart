@@ -37,7 +37,7 @@ TextTheme textTheme = TextTheme(
       fontFamily: 'Almarai',
       letterSpacing: 0,
       height: 1.15,
-      color: WitnetPallet.brightCyan,
+      color: WitnetPallet.black,
       fontSize: 24,
       fontWeight: FontWeight.normal),
   headlineSmall: TextStyle(
@@ -100,7 +100,7 @@ TextTheme textTheme = TextTheme(
       fontFamily: 'Almarai',
       letterSpacing: 0,
       height: 1.15,
-      color: WitnetPallet.brightCyan,
+      color: WitnetPallet.deepAqua,
       fontSize: 16,
       fontWeight: FontWeight.normal),
 );
@@ -152,10 +152,10 @@ CardTheme cardTheme = CardTheme(
 ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(16),
-      backgroundColor: WitnetPallet.black,
+      backgroundColor: WitnetPallet.brightCyan,
       disabledForegroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.38),
       disabledBackgroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.12),
-      foregroundColor: WitnetPallet.white,
+      foregroundColor: WitnetPallet.black,
       splashFactory: NoSplash.splashFactory,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4)), // background color
@@ -163,12 +163,12 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
         fontFamily: 'Almarai',
         fontSize: 16,
         fontWeight: FontWeight.w400,
-        color: WitnetPallet.white,
+        color: WitnetPallet.black,
       )),
 );
 TextButtonThemeData textButtonTheme = TextButtonThemeData(
   style: TextButton.styleFrom(
-    foregroundColor: WitnetPallet.brightCyan,
+    foregroundColor: WitnetPallet.black,
     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     splashFactory: NoSplash.splashFactory,
     shape: RoundedRectangleBorder(
@@ -177,7 +177,7 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
       fontFamily: 'Almarai',
       fontSize: 16,
       fontWeight: FontWeight.w400,
-      color: WitnetPallet.brightCyan,
+      color: WitnetPallet.black,
     ),
   ),
 );
@@ -197,11 +197,11 @@ OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
   ),
 ));
 IconThemeData iconTheme = IconThemeData(
-  color: WitnetPallet.brightCyan,
+  color: WitnetPallet.deepAqua,
   size: 16,
 );
 IconThemeData primaryIconTheme = IconThemeData(
-  color: WitnetPallet.brightCyan,
+  color: WitnetPallet.deepAqua,
   size: 24,
 );
 CheckboxThemeData checkboxTheme = CheckboxThemeData(

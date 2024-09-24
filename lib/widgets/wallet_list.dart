@@ -111,14 +111,17 @@ class WalletListState extends State<WalletList> {
   }
 
   Widget _buildInitialButtons() {
+    final theme = Theme.of(context);
     return PaddedButton(
       padding: EdgeInsets.all(0),
       text: localization.createOrImportLabel,
+      boldText: true,
       onPressed: () => {
         _createImportWallet(),
       },
       icon: Icon(
         FontAwesomeIcons.circlePlus,
+        color: theme.iconTheme.color,
         size: 18,
       ),
       type: ButtonType.horizontalIcon,

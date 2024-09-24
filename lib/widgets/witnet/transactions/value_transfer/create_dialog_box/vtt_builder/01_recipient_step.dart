@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/util/storage/scanned_content.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/widgets/validations/address_input.dart';
@@ -240,7 +241,6 @@ class RecipientStepState extends State<RecipientStep>
 
   _buildCalendarDialogButton(BuildContext context) {
     final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Padding(
         padding: const EdgeInsets.only(top: 20),
         child: Column(
@@ -248,26 +248,24 @@ class RecipientStepState extends State<RecipientStep>
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                TextButton(
+                PaddedButton(
+                  padding: EdgeInsets.all(0),
+                  text: localization.addTimelockLabel,
+                  boldText: true,
                   onPressed: () {
                     setState(() {
                       showAdvancedSettings = !showAdvancedSettings;
                     });
                   },
-                  child: Row(
-                    children: [
-                      Text(localization.addTimelockLabel),
-                      SizedBox(width: 10),
-                      Icon(
-                        showAdvancedSettings
+                  icon: Icon(
+                    color: theme.iconTheme.color,
+                    showAdvancedSettings
                             ? FontAwesomeIcons.minus
                             : FontAwesomeIcons.plus,
-                        color: extendedTheme.headerTextColor,
-                        size: 15,
-                      ),
-                    ],
+                    size: 15,
                   ),
-                ),
+                  type: ButtonType.horizontalIcon,
+                )
               ],
             ),
             showAdvancedSettings

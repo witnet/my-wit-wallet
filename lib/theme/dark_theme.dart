@@ -175,8 +175,8 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
 ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(16),
-      foregroundColor: WitnetPallet.white,
-      backgroundColor: WitnetPallet.brightCyanOpacity1,
+      foregroundColor: WitnetPallet.black,
+      backgroundColor: WitnetPallet.brightCyan,
       disabledForegroundColor:
           Color.fromARGB(102, 164, 212, 204).withOpacity(0.38),
       disabledBackgroundColor:
@@ -187,7 +187,7 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
         fontFamily: 'Almarai',
         fontSize: 16,
         fontWeight: FontWeight.normal,
-        color: WitnetPallet.white,
+        color: WitnetPallet.black,
       )),
 );
 OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(

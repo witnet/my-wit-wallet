@@ -175,13 +175,18 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         label: '${localization.showWalletList} button',
         text: localization.showWalletList,
         type: ButtonType.iconButton,
+        color: WitnetPallet.black,
         iconSize: 30,
         icon: Container(
-          color: WitnetPallet.white,
+          decoration: BoxDecoration(color: WitnetPallet.black, border: Border.all(color: WitnetPallet.black), borderRadius:  BorderRadius.all(Radius.circular(8))),
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            child: Container(
+          decoration: BoxDecoration(color: WitnetPallet.black, border: Border.all(color: WitnetPallet.black)),
           width: 28,
           height: 28,
           child: Identicon(seed: walletId, size: 8),
-        ),
+        ),)),
         onPressed: () => {
               if (panelController.isPanelOpen)
                 {
