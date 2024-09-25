@@ -12,6 +12,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.headerBackgroundColor,
     required this.headerTextColor,
     required this.headerActiveTextColor,
+    required this.panelBgColor,
     required this.walletListBackgroundColor,
     required this.walletActiveItemBackgroundColor,
     required this.walletActiveItemBorderColor,
@@ -35,6 +36,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.monoRegularText,
     required this.monoMediumText,
     required this.monoLargeText,
+    required this.spinnerColor,
     required this.errorColor,
     required this.activeClickableBoxBgColor,
     required this.activeClickableBoxBorderColor,
@@ -52,6 +54,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.regularPanelText,
     required this.mediumPanelText,
     required this.navigationColor,
+    required this.navigationPointerActiveButton,
   });
   final Color? selectBackgroundColor;
   final Color? selectedTextColor;
@@ -61,6 +64,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? headerTextColor;
   final Color? headerActiveTextColor;
   final Color? headerBackgroundColor;
+  final Color? panelBgColor;
   final Color? walletListBackgroundColor;
   final Color? walletActiveItemBorderColor;
   final Color? walletActiveItemBackgroundColor;
@@ -84,6 +88,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final TextStyle? monoRegularText;
   final TextStyle? monoMediumText;
   final TextStyle? monoLargeText;
+  final Color? spinnerColor;
   final Color? errorColor;
   final Color? activeClickableBoxBgColor;
   final Color? activeClickableBoxBorderColor;
@@ -99,6 +104,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? warningColor;
   final Color? backgroundBox;
   final Color? navigationColor;
+  final Color? navigationPointerActiveButton;
   final TextStyle? regularPanelText;
   final TextStyle? mediumPanelText;
   @override
@@ -108,6 +114,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       Color? dropdownBackgroundColor,
       Color? dropdownTextColor,
       Color? navigationActiveButton,
+      Color? panelBgColor,
       Color? walletListBackgroundColor,
       Color? walletActiveItemBorderColor,
       Color? walletItemBorderColor,
@@ -131,6 +138,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       TextStyle? monoRegularText,
       TextStyle? monoMediumText,
       TextStyle? monoLargeText,
+      Color? spinnerColor,
       Color? errorColor,
       Color? activeClickableBoxBgColor,
       Color? activeClickableBoxBorderColor,
@@ -148,6 +156,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       TextStyle? regularPanelText,
       TextStyle? mediumPanelText,
       Color? navigationColor,
+      Color? navigationPointerActiveButton,
       r}) {
     return ExtendedTheme(
       selectBackgroundColor:
@@ -158,11 +167,14 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       dropdownTextColor: dropdownTextColor ?? this.dropdownTextColor,
       navigationActiveButton:
           navigationActiveButton ?? this.navigationActiveButton,
+      navigationPointerActiveButton:
+          navigationPointerActiveButton ?? this.navigationPointerActiveButton,
       headerBackgroundColor:
           headerBackgroundColor ?? this.headerBackgroundColor,
       headerTextColor: headerTextColor ?? this.headerTextColor,
       headerActiveTextColor:
           headerActiveTextColor ?? this.headerActiveTextColor,
+      panelBgColor: panelBgColor ?? this.panelBgColor,
       walletListBackgroundColor:
           walletListBackgroundColor ?? this.walletListBackgroundColor,
       walletActiveItemBackgroundColor: walletActiveItemBackgroundColor ??
@@ -184,6 +196,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       switchInactiveBg: switchInactiveBg ?? this.switchInactiveBg,
       switchInactiveFg: switchInactiveFg ?? this.switchInactiveFg,
       switchBorderColor: switchBorderColor ?? this.switchBorderColor,
+      spinnerColor: spinnerColor ?? this.spinnerColor,
       errorColor: errorColor ?? this.errorColor,
       activeClickableBoxBgColor:
           activeClickableBoxBgColor ?? this.activeClickableBoxBgColor,
@@ -234,11 +247,14 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
           Color.lerp(dropdownTextColor, other.dropdownTextColor, t),
       navigationActiveButton:
           Color.lerp(navigationActiveButton, other.navigationActiveButton, t),
+      navigationPointerActiveButton: Color.lerp(navigationPointerActiveButton,
+          other.navigationPointerActiveButton, t),
       headerBackgroundColor:
           Color.lerp(headerBackgroundColor, other.dropdownTextColor, t),
       headerTextColor: Color.lerp(headerTextColor, other.dropdownTextColor, t),
       headerActiveTextColor:
           Color.lerp(headerActiveTextColor, other.dropdownTextColor, t),
+      panelBgColor: Color.lerp(panelBgColor, other.panelBgColor, t),
       walletListBackgroundColor: Color.lerp(
           walletListBackgroundColor, other.walletListBackgroundColor, t),
       walletActiveItemBackgroundColor: Color.lerp(
@@ -267,6 +283,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       switchInactiveFg: Color.lerp(switchInactiveFg, other.switchInactiveFg, t),
       switchBorderColor:
           Color.lerp(switchBorderColor, other.switchBorderColor, t),
+      spinnerColor: Color.lerp(spinnerColor, other.spinnerColor, t),
       errorColor: Color.lerp(errorColor, other.errorColor, t),
       activeClickableBoxBgColor: Color.lerp(
           activeClickableBoxBgColor, other.activeClickableBoxBgColor, t),
@@ -313,20 +330,22 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     selectedTextColor: WitnetPallet.white,
     dropdownBackgroundColor: WitnetPallet.white,
     dropdownTextColor: WitnetPallet.darkGrey,
-    navigationActiveButton: WitnetPallet.white,
-    headerActiveTextColor: WitnetPallet.brightCyan,
-    headerTextColor: WitnetPallet.brightCyan,
-    headerBackgroundColor: WitnetPallet.black,
-    walletListBackgroundColor: WitnetPallet.black,
-    walletActiveItemBackgroundColor: WitnetPallet.brightCyanOpacity2,
+    navigationActiveButton: WitnetPallet.lightGrey,
+    navigationPointerActiveButton: WitnetPallet.deepAqua,
+    headerActiveTextColor: WitnetPallet.black,
+    headerTextColor: WitnetPallet.black,
+    headerBackgroundColor: WitnetPallet.brightCyan,
+    panelBgColor: WitnetPallet.lighterGrey,
+    walletListBackgroundColor: WitnetPallet.transparentGrey2,
+    walletActiveItemBackgroundColor: WitnetPallet.brightCyanOpacity3,
     walletActiveItemBorderColor: WitnetPallet.brightCyan,
-    walletItemBorderColor: WitnetPallet.lightGrey,
+    walletItemBorderColor: WitnetPallet.transparentGrey2,
     inputIconColor: WitnetPallet.lightGrey,
-    navigationColor: WitnetPallet.lightGrey,
+    navigationColor: WitnetPallet.black,
     txBorderColor: WitnetPallet.lightGrey,
     txValueNegativeColor: WitnetPallet.darkRed,
     txValuePositiveColor: WitnetPallet.darkGreen,
-    stepBarActiveColor: WitnetPallet.brightCyan,
+    stepBarActiveColor: WitnetPallet.deepAqua,
     stepBarActionableColor: WitnetPallet.darkGrey,
     stepBarColor: WitnetPallet.lightGrey,
     switchActiveBg: WitnetPallet.black,
@@ -334,9 +353,10 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     switchInactiveBg: WitnetPallet.white,
     switchInactiveFg: WitnetPallet.darkGrey,
     switchBorderColor: WitnetPallet.black,
+    spinnerColor: WitnetPallet.brightCyan,
     errorColor: WitnetPallet.darkRed,
     warningColor: WitnetPallet.darkOrange,
-    activeClickableBoxBgColor: Color.fromARGB(34, 65, 190, 165),
+    activeClickableBoxBgColor: WitnetPallet.brightCyanOpacity3,
     activeClickableBoxBorderColor: WitnetPallet.brightCyan,
     inactiveClickableBoxBgColor: WitnetPallet.white,
     inactiveClickableBoxBorderColor: WitnetPallet.lightGrey,
@@ -374,12 +394,12 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     regularPanelText: TextStyle(
         fontFamily: 'Almarai',
         fontWeight: FontWeight.w400,
-        color: WitnetPallet.white,
+        color: WitnetPallet.darkerGrey,
         fontSize: 16),
     mediumPanelText: TextStyle(
         fontFamily: 'Almarai',
         fontWeight: FontWeight.w700,
-        color: WitnetPallet.white,
+        color: WitnetPallet.darkerGrey,
         fontSize: 16),
   );
   // the dark theme
@@ -388,11 +408,13 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     selectedTextColor: WitnetPallet.white,
     dropdownBackgroundColor: WitnetPallet.brightCyanOpacity1,
     dropdownTextColor: WitnetPallet.white,
-    navigationActiveButton: WitnetPallet.white,
-    headerActiveTextColor: WitnetPallet.white,
-    headerTextColor: WitnetPallet.white,
-    headerBackgroundColor: WitnetPallet.brightCyanOpacity1,
-    walletListBackgroundColor: Color.fromRGBO(14, 41, 53, 1),
+    navigationPointerActiveButton: WitnetPallet.deepAqua,
+    navigationActiveButton: WitnetPallet.lightGrey,
+    headerActiveTextColor: WitnetPallet.black,
+    headerTextColor: WitnetPallet.black,
+    headerBackgroundColor: WitnetPallet.brightCyan,
+    panelBgColor: WitnetPallet.darkerGrey,
+    walletListBackgroundColor: WitnetPallet.darkerGrey,
     walletActiveItemBackgroundColor: WitnetPallet.brightCyanOpacity3,
     walletActiveItemBorderColor: WitnetPallet.brightCyan,
     walletItemBorderColor: WitnetPallet.opacityWhite2,
@@ -408,6 +430,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     switchInactiveBg: WitnetPallet.black,
     switchInactiveFg: WitnetPallet.white,
     switchBorderColor: WitnetPallet.brightCyan,
+    spinnerColor: WitnetPallet.brightCyan,
     errorColor: WitnetPallet.brightRed,
     warningColor: WitnetPallet.brightOrange,
     activeClickableBoxBgColor: WitnetPallet.brightCyanOpacity3,
@@ -425,7 +448,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     tooltipBgColor: WitnetPallet.brightCyanOpacity1,
     hdWalletTypeBgColor: WitnetPallet.mediumGrey,
     singleWalletBgColor: WitnetPallet.brown,
-    navigationColor: WitnetPallet.opacityWhite2,
+    navigationColor: WitnetPallet.black,
     monoSmallText: TextStyle(
         fontFamily: 'RobotoMono',
         fontWeight: FontWeight.w400,

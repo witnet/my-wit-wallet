@@ -77,7 +77,8 @@ Future<String?> unlockKeychainModal(
                   PaddedButton(
                       padding: EdgeInsets.zero,
                       text: localization.close,
-                      type: ButtonType.text,
+                      type: ButtonType.secondary,
+                      sizeCover: false,
                       color: theme.textTheme.bodyLarge!.color,
                       enabled: true,
                       onPressed: () => {
@@ -88,7 +89,8 @@ Future<String?> unlockKeychainModal(
                   PaddedButton(
                       padding: EdgeInsets.zero,
                       text: localization.continueLabel,
-                      type: ButtonType.text,
+                      sizeCover: false,
+                      type: ButtonType.primary,
                       enabled: true,
                       onPressed: () =>
                           {_login(validate: true, password: _password)})

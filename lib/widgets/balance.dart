@@ -61,7 +61,10 @@ class BalanceState extends State<Balance> {
                                 Text(
                                     '${widget.currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
                                     textAlign: TextAlign.center,
-                                    style: theme.textTheme.headlineMedium),
+                                    style: theme.textTheme.headlineMedium!
+                                        .copyWith(
+                                            color:
+                                                extendedTheme.headerTextColor)),
                                 Flexible(
                                   child: PaddedButton(
                                       padding: EdgeInsets.zero,
@@ -71,6 +74,7 @@ class BalanceState extends State<Balance> {
                                       iconSize: 12,
                                       onPressed: widget.onShowBalanceDetails,
                                       icon: Icon(
+                                        color: extendedTheme.headerTextColor,
                                         FontAwesomeIcons.sortDown,
                                         size: 12,
                                       )),
@@ -85,8 +89,8 @@ class BalanceState extends State<Balance> {
                     child: Text(
                       currentAccount.address.cropMiddle(18),
                       overflow: TextOverflow.ellipsis,
-                      style: extendedTheme.monoRegularText!.copyWith(
-                          color: theme.textTheme.headlineMedium!.color),
+                      style: extendedTheme.monoRegularText!
+                          .copyWith(color: extendedTheme.headerTextColor),
                     ))),
             Flexible(
               child: PaddedButton(
@@ -94,6 +98,7 @@ class BalanceState extends State<Balance> {
                   label: localization.copyAddressToClipboard,
                   text: localization.copyAddressToClipboard,
                   type: ButtonType.iconButton,
+                  color: extendedTheme.headerTextColor,
                   iconSize: 12,
                   onPressed: () async {
                     if (!isAddressCopied) {
@@ -118,6 +123,7 @@ class BalanceState extends State<Balance> {
                     }
                   },
                   icon: Icon(
+                    color: extendedTheme.headerTextColor,
                     isAddressCopied
                         ? FontAwesomeIcons.check
                         : FontAwesomeIcons.copy,

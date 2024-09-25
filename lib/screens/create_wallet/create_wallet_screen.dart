@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_import_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/re_establish_wallet_disclaimer.dart';
@@ -95,6 +96,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
           padding: EdgeInsets.zero,
           text: prevAction != null ? prevAction().label : '',
           type: ButtonType.text,
+          color: WitnetPallet.black,
           enabled: prevAction != null,
           onPressed: () => {
                 prevAction != null ? prevAction().action() : null,

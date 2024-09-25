@@ -10,7 +10,7 @@ void buildEmptyStakeModal({
   required BuildContext context,
   required String originRouteName,
   required Widget originRoute,
-  String iconName = 'general-warning',
+  String iconName = 'empty',
 }) {
   return buildAlertDialog(
       context: context,
@@ -18,7 +18,8 @@ void buildEmptyStakeModal({
         PaddedButton(
             padding: EdgeInsets.all(8),
             text: localization.close,
-            type: ButtonType.text,
+            sizeCover: false,
+            type: ButtonType.primary,
             enabled: true,
             onPressed: () => {
                   Navigator.popUntil(
@@ -26,7 +27,6 @@ void buildEmptyStakeModal({
                   ScaffoldMessenger.of(context).clearSnackBars(),
                 }),
       ],
-      icon: FontAwesomeIcons.circleExclamation,
       title: localization.emptyStakeTitle,
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         svgThemeImage(theme, name: iconName, height: 100),

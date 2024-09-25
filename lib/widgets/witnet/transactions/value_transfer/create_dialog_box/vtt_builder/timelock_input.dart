@@ -39,7 +39,7 @@ class TimelockInput extends StatelessWidget {
               Tooltip(
                   margin: EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(24),
                     color: theme.colorScheme.surface,
                   ),
                   textStyle: theme.textTheme.bodyMedium,
@@ -66,7 +66,7 @@ class TimelockInput extends StatelessWidget {
                   onPressed: onSelectedDate,
                   attachedIcon: true,
                   icon: Icon(FontAwesomeIcons.calendar, size: 12),
-                  type: ButtonType.primary,
+                  type: ButtonType.secondary,
                 )),
             timelockSet
                 ? Flexible(

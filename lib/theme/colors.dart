@@ -4,21 +4,27 @@ import 'package:flutter/material.dart'
 class WitnetPallet {
   static const black = Color(0xFF1D1D1B);
   static const white = Color(0xFFFFFFFF);
-  static const opacityWhite = Color(0xAFF0F3F5);
-  static const opacityWhite2 = Color(0xA0F0F3F5);
+  static const opacityWhite = Color(0xAFFFFFFF);
+  static const opacityWhite2 = Color(0xA0FFFFFF);
+  static const opacityBlack = Color(0xAF1D1D1B);
+  static const opacityBlack2 = Color(0xA01D1D1B);
 
+  static const lighterGrey = Color(0xFFEDECEC);
   static const lightGrey = Color(0xFFBDBDBD);
   static const mediumGrey = Color(0xFF656565);
   static const darkGrey = Color(0xFF424242);
+  static const darkerGrey = Color(0xFF292929);
 
   static const transparent = Color(0x00FFFFFF);
   static const transparentGrey = Color(0x10656565);
+  static const transparentGrey2 = Color(0x18656565);
   static const transparentWhite = Color(0x10656565);
 
   static const brightCyan = Color(0xFF00E2ED);
-  static const brightCyanOpacity1 = Color(0xFF17494F);
-  static const brightCyanOpacity2 = Color(0x3E00E2ED);
-  static const brightCyanOpacity3 = Color(0x2800E2ED);
+  static const deepAqua = Color(0xFF0099A1);
+  static const brightCyanOpacity1 = Color.fromARGB(163, 0, 225, 237);
+  static const brightCyanOpacity2 = Color.fromARGB(82, 0, 225, 237);
+  static const brightCyanOpacity3 = Color.fromARGB(26, 0, 225, 237);
 
   static const darkRed = Color.fromARGB(255, 211, 53, 64);
   static const darkOrange = Color.fromARGB(255, 202, 119, 1);

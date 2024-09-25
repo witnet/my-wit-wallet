@@ -142,7 +142,7 @@ class TransactionsListState extends State<TransactionsList> {
                   SizedBox(
                     height: 24,
                   ),
-                  svgThemeImage(theme, name: 'no-transactions', height: 152),
+                  svgThemeImage(theme, name: 'empty', height: 152),
                   SizedBox(
                     height: 24,
                   ),

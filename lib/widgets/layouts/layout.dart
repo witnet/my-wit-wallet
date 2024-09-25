@@ -203,7 +203,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
       hidePanelOnMobileIfKeyboard();
       return SlidingUpPanel(
           controller: panelController,
-          color: extendedTheme.walletListBackgroundColor!,
+          backdropEnabled: true,
+          color: extendedTheme.panelBgColor!,
           minHeight: 0,
           maxHeight: MediaQuery.of(context).size.height * 0.3,
           borderRadius: BorderRadius.only(
@@ -301,13 +302,14 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           end: Alignment.bottomCenter,
           stops: [0, 0.03, 0.05, 0.1, 0.15, 0.2, 0.95, 1],
         )),
-        child: BottomAppBar(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            height: 60,
-            surfaceTintColor: theme.colorScheme.surface.withOpacity(0.0),
-            color: theme.colorScheme.surface.withOpacity(0.0),
-            notchMargin: 5,
-            child: widget.bottomNavigation));
+        child: Padding(
+            padding: EdgeInsets.only(top: 16),
+            child: BottomAppBar(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                height: 60,
+                surfaceTintColor: theme.colorScheme.surface.withOpacity(0.0),
+                color: theme.colorScheme.surface.withOpacity(0.0),
+                child: widget.bottomNavigation)));
   }
 
   Widget bottomBar() {

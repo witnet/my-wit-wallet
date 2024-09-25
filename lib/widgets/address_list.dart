@@ -57,7 +57,7 @@ class AddressListState extends State<AddressList> {
                 height: 16,
                 width: 16,
                 child: CircularProgressIndicator(
-                  color: theme.textTheme.labelMedium?.color,
+                  color: extendedTheme.spinnerColor,
                   strokeWidth: 2,
                   value: null,
                   semanticsLabel: 'Circular progress indicator',

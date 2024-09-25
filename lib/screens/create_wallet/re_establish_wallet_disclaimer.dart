@@ -128,19 +128,20 @@ class ReEstablishWalletDisclaimerState
           PaddedButton(
               color: theme.textTheme.bodyLarge!.color,
               padding: EdgeInsets.zero,
+              sizeCover: false,
               text: localization.cancel,
-              type: ButtonType.text,
+              type: ButtonType.secondary,
               enabled: true,
               onPressed: () => {setState(() => closeModal())}),
           PaddedButton(
               color: extendedTheme.errorColor,
               padding: EdgeInsets.zero,
+              sizeCover: false,
               text: localization.reestablish,
-              type: ButtonType.text,
+              type: ButtonType.primary,
               enabled: true,
               onPressed: deleteStorageAndContinue)
         ],
-        icon: FontAwesomeIcons.circleExclamation,
         title: localization.deleteStorageWarning,
         content: Column(mainAxisSize: MainAxisSize.min, children: [
           SizedBox(height: 16),
@@ -156,7 +157,8 @@ class ReEstablishWalletDisclaimerState
           PaddedButton(
               padding: EdgeInsets.all(8),
               text: localization.continueLabel,
-              type: ButtonType.text,
+              type: ButtonType.primary,
+              sizeCover: false,
               enabled: true,
               onPressed: continueToNextStep)
         ],

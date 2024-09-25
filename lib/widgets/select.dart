@@ -55,7 +55,7 @@ class Select extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: theme.selectBackgroundColor,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Padding(
         padding: EdgeInsets.only(left: 8, right: 8),
@@ -82,7 +82,7 @@ class Select extends StatelessWidget {
               }).toList();
             },
             underline: Container(),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(24),
             isExpanded: true,
             items: listItems
                 .map<DropdownMenuItem<String>>((SelectItem item) =>

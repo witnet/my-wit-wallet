@@ -53,18 +53,24 @@ class _InputAmountState extends State<InputAmount> {
         decoration: InputDecoration(
           hintText: widget.hint ?? localization.inputAmountHint,
           errorText: widget.errorText,
+          contentPadding:
+              EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
           prefixIcon:
               widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
           suffixText: WIT_UNIT[WitUnit.Wit],
+          suffixIconConstraints: BoxConstraints(minHeight: 44),
           suffixIcon: widget.onSuffixTap != null
-              ? Semantics(
-                  label: 'Max',
-                  child: PaddedButton(
-                      padding: EdgeInsets.zero,
-                      text: 'Max',
-                      onPressed: widget.onSuffixTap ?? () {},
-                      type: ButtonType.text),
-                )
+              ? Padding(
+                  padding: EdgeInsets.only(left: 8),
+                  child: Semantics(
+                    label: 'Max',
+                    child: PaddedButton(
+                        padding: EdgeInsets.zero,
+                        text: 'Max',
+                        sizeCover: false,
+                        onPressed: widget.onSuffixTap ?? () {},
+                        type: ButtonType.sufix),
+                  ))
               : null,
         ),
         minLines: 1,

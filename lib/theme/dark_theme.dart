@@ -112,39 +112,37 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   helperStyle: TextStyle(color: WitnetPallet.white),
   helperMaxLines: 1,
   errorMaxLines: 1,
-  hintStyle: TextStyle(color: Color.fromARGB(159, 190, 191, 192)),
+  hintStyle: TextStyle(color: WitnetPallet.lighterGrey),
   labelStyle: TextStyle(color: WitnetPallet.opacityWhite),
-  hoverColor: WitnetPallet.black,
+  hoverColor: const Color.fromARGB(9, 255, 255, 255),
   focusColor: WitnetPallet.brightCyanOpacity1,
-  isDense: false,
-  isCollapsed: false,
-  contentPadding: EdgeInsets.all(16),
+  contentPadding: EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: WitnetPallet.opacityWhite, width: 1.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(4),
+        color: WitnetPallet.white, width: 1.0, style: BorderStyle.solid),
+    borderRadius: BorderRadius.circular(24),
   ),
   focusedBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.brightCyanOpacity1,
-        width: 1.0,
+        width: 2.0,
         style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(4),
+    borderRadius: BorderRadius.circular(24),
   ),
   errorBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.brightRed, width: 1.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(4),
+    borderRadius: BorderRadius.circular(24),
   ),
   focusedErrorBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.brightRed, width: 1.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(4),
+    borderRadius: BorderRadius.circular(24),
   ),
   border: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.opacityWhite, width: 1.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(4),
+    borderRadius: BorderRadius.circular(24),
   ),
   alignLabelWithHint: true,
 );
@@ -162,7 +160,7 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
   style: TextButton.styleFrom(
     foregroundColor: WitnetPallet.white,
     shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8))),
+        borderRadius: BorderRadius.all(Radius.circular(24))),
     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     textStyle: const TextStyle(
       fontFamily: 'Almarai',
@@ -174,27 +172,26 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
 );
 ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.all(16),
-      foregroundColor: WitnetPallet.white,
-      backgroundColor: WitnetPallet.brightCyanOpacity1,
+      padding: const EdgeInsets.all(0),
+      foregroundColor: WitnetPallet.black,
+      backgroundColor: WitnetPallet.white,
       disabledForegroundColor:
           Color.fromARGB(102, 164, 212, 204).withOpacity(0.38),
       disabledBackgroundColor:
           Color.fromARGB(102, 164, 212, 204).withOpacity(0.12),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4)), // background color
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       textStyle: const TextStyle(
         fontFamily: 'Almarai',
         fontSize: 16,
-        fontWeight: FontWeight.normal,
-        color: WitnetPallet.white,
+        fontWeight: FontWeight.bold,
+        color: WitnetPallet.black,
       )),
 );
 OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
   foregroundColor: WitnetPallet.white,
   disabledForegroundColor: Color.fromARGB(78, 240, 243, 245).withOpacity(0.38),
-  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
   side: BorderSide(width: 1, color: WitnetPallet.white),
   padding: const EdgeInsets.all(16),
   textStyle: const TextStyle(
@@ -213,7 +210,7 @@ IconThemeData iconTheme = IconThemeData(
   size: 16,
 );
 ButtonThemeData buttonThemeData = ButtonThemeData(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)));
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)));
 IconThemeData primaryIconTheme = IconThemeData(
   color: WitnetPallet.opacityWhite,
   size: 24,
@@ -228,8 +225,8 @@ CheckboxThemeData checkboxTheme = CheckboxThemeData(
     }
     return WitnetPallet.transparent;
   }),
-  checkColor: WidgetStateProperty.all(WitnetPallet.white),
-  overlayColor: WidgetStateProperty.all(WitnetPallet.white),
+  checkColor: WidgetStateProperty.all(WitnetPallet.black),
+  overlayColor: WidgetStateProperty.all(WitnetPallet.black),
 );
 Color getColorPrimary(Set<WidgetState> states) {
   const Set<WidgetState> activeStates = <WidgetState>{WidgetState.selected};

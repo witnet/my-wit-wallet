@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/login/view/ftu_actions.dart';
 import 'package:my_wit_wallet/screens/login/view/login_form.dart';
@@ -64,6 +65,7 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
   @override
   FutureBuilder<Widget> build(BuildContext context) {
     final theme = Theme.of(context);
+    ExtendedTheme extendedTheme = theme.extension<ExtendedTheme>()!;
     return FutureBuilder(
       future: loadInitialScreen(),
       builder: (context, widget) {
@@ -79,7 +81,7 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
                 height: 32,
                 width: 32,
                 child: CircularProgressIndicator(
-                  color: theme.textTheme.labelMedium?.color,
+                  color: extendedTheme.spinnerColor,
                   strokeWidth: 2,
                   value: null,
                   semanticsLabel: 'Circular progress indicator',

@@ -67,7 +67,8 @@ class StakeUnstakeButtons extends StatelessWidget {
         children: [
           SizedBox(height: 32),
           PaddedButton(
-            color: extendedTheme.inputIconColor,
+            color: extendedTheme.mediumPanelText!.color,
+            boldText: true,
             padding: EdgeInsets.only(left: 16, right: 16),
             text: localization.stake,
             onPressed: currentRoute(context) != StakeScreen.route
@@ -82,7 +83,8 @@ class StakeUnstakeButtons extends StatelessWidget {
           ),
           SizedBox(width: 16),
           PaddedButton(
-            color: extendedTheme.inputIconColor,
+            color: extendedTheme.mediumPanelText!.color,
+            boldText: true,
             padding: EdgeInsets.only(left: 16, right: 16),
             text: localization.unstake,
             onPressed: currentRoute != UnstakeScreen.route

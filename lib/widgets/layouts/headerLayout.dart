@@ -81,7 +81,7 @@ class HeaderLayout extends StatelessWidget {
                     Container(
                         padding: navigationBarPadding(),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: navigationActions.length > 1
                               ? MainAxisAlignment.spaceBetween
                               : MainAxisAlignment.start,

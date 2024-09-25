@@ -17,7 +17,8 @@ void buildTxGeneralExceptionModal({
         PaddedButton(
             padding: EdgeInsets.all(8),
             text: localization.cancel,
-            type: ButtonType.text,
+            type: ButtonType.secondary,
+            sizeCover: false,
             enabled: true,
             onPressed: () => {
                   Navigator.popUntil(context, ModalRoute.withName(originRoute)),
@@ -26,8 +27,9 @@ void buildTxGeneralExceptionModal({
                 }),
         PaddedButton(
             padding: EdgeInsets.zero,
+            sizeCover: false,
             text: localization.tryAgain,
-            type: ButtonType.text,
+            type: ButtonType.primary,
             enabled: true,
             onPressed: () => {
                   Navigator.popUntil(context, ModalRoute.withName(originRoute)),

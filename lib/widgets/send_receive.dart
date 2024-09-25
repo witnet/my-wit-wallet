@@ -48,7 +48,8 @@ class SendReceiveButtons extends StatelessWidget {
         children: [
           SizedBox(height: 32),
           PaddedButton(
-            color: extendedTheme.inputIconColor,
+            color: extendedTheme.mediumPanelText!.color,
+            boldText: true,
             padding: EdgeInsets.only(left: 16, right: 16),
             text: localization.send,
             onPressed: currentRoute(context) != CreateVttScreen.route
@@ -63,7 +64,8 @@ class SendReceiveButtons extends StatelessWidget {
           ),
           SizedBox(width: 16),
           PaddedButton(
-            color: extendedTheme.inputIconColor,
+            color: extendedTheme.mediumPanelText!.color,
+            boldText: true,
             padding: EdgeInsets.only(left: 16, right: 16),
             text: localization.receive,
             onPressed: currentRoute != ReceiveTransactionScreen.route

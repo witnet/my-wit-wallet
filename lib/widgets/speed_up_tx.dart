@@ -4,6 +4,7 @@ import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_cr
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
@@ -70,6 +71,8 @@ class SpeedUpVttState extends State<SpeedUpVtt> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    ExtendedTheme extendedTheme = theme.extension<ExtendedTheme>()!;
+
     return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (previous, current) {
         if (current.transactionStatus != TransactionStatus.initial) {
@@ -117,7 +120,7 @@ class SpeedUpVttState extends State<SpeedUpVtt> {
                           height: 32,
                           width: 32,
                           child: CircularProgressIndicator(
-                            color: theme.textTheme.labelMedium?.color,
+                            color: extendedTheme.spinnerColor,
                             strokeWidth: 2,
                             value: null,
                             semanticsLabel: 'Circular progress indicator',

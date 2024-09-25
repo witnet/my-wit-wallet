@@ -18,13 +18,14 @@ buildAlertDialog({
             barrierDismissible: closable,
             builder: (BuildContext context) => AlertDialog(
               title: Text(
+                textAlign: TextAlign.center,
                 title,
                 style: theme.textTheme.displayMedium,
               ),
               backgroundColor: theme.colorScheme.surface,
               surfaceTintColor: theme.colorScheme.surface,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8))),
+                  borderRadius: BorderRadius.all(Radius.circular(24))),
               icon: icon != null
                   ? Icon(icon,
                       size: 24, color: color ?? WitnetPallet.brightCyan)

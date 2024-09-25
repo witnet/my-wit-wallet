@@ -33,7 +33,8 @@ void buildSuccessfullTransaction(
       PaddedButton(
           padding: EdgeInsets.zero,
           text: localization.close,
-          type: ButtonType.text,
+          sizeCover: false,
+          type: ButtonType.primary,
           enabled: true,
           onPressed: () => {
                 Navigator.popUntil(context, ModalRoute.withName(routeName)),

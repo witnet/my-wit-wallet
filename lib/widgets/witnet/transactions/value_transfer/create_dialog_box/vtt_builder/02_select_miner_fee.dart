@@ -286,7 +286,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                       margin: EdgeInsets.all(8),
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(24),
                         color: theme.colorScheme.surface,
                       ),
                       textStyle: theme.textTheme.bodyMedium,

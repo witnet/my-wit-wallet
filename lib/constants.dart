@@ -159,3 +159,31 @@ const String LATEST_RELEASE_URL =
     "https://api.github.com/repos/witnet/my-wit-wallet/releases/latest";
 const String DOWNLOAD_BASE_URL =
     "https://github.com/witnet/my-wit-wallet/releases/download";
+
+const List<String> CUSTOM_ICON_NAMES = [
+  'create-or-import-wallet',
+  'general-error',
+  'general-warning',
+  'import-wallet',
+  'empty',
+  'receive-icon-dark',
+  'receive-icon',
+  'send-icon-dark',
+  'send-icon',
+  'send-receive-desktop-dark',
+  'send-receive-desktop',
+  'send-receive-dark',
+  'send-receive',
+  'sending-transaction',
+  'signing-transaction',
+  'stake-desktop-dark',
+  'stake-desktop',
+  'stake-dark',
+  'stake-icon-dark',
+  'stake-icon',
+  'stake',
+  'transaction-error',
+  'transaction-success',
+  'unstake-icon-dark',
+  'unstake-icon',
+];

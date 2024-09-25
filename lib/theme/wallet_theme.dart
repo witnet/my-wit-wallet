@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'extended_theme.dart';
 import 'dark_theme.dart' show darkTheme;
 import 'light_theme.dart' show lightTheme;
@@ -43,7 +46,7 @@ Widget witnetEyeIcon(ThemeData theme, {height = 100}) {
           filterQuality: FilterQuality.high,
         )
       : Image.asset(
-          'assets/img/witnet_dark_icon.png',
+          'assets/img/witnet_light_icon.png',
           height: height,
           fit: BoxFit.fitWidth,
           filterQuality: FilterQuality.high,
@@ -51,15 +54,27 @@ Widget witnetEyeIcon(ThemeData theme, {height = 100}) {
 }
 
 Widget svgThemeImage(ThemeData theme, {name, double height = 100}) {
-  return (theme.primaryColor == lightTheme.primaryColor)
-      ? SvgPicture.asset(
-          'assets/svg/$name.svg',
-          height: height,
-          fit: BoxFit.fitWidth,
-        )
-      : SvgPicture.asset(
-          'assets/svg/$name-dark.svg',
-          height: height,
-          fit: BoxFit.fitWidth,
-        );
+  Widget? lightIcon;
+  Widget? darkIcon;
+  if (CUSTOM_ICON_NAMES.contains(name)) {
+    lightIcon = SvgPicture.asset(
+      'assets/svg/$name.svg',
+      height: height,
+      fit: BoxFit.fitWidth,
+    );
+  }
+  if (CUSTOM_ICON_NAMES.contains('$name-dark')) {
+    darkIcon = SvgPicture.asset(
+      'assets/svg/$name-dark.svg',
+      height: height,
+      fit: BoxFit.fitWidth,
+    );
+  }
+  if (darkIcon != null && theme.primaryColor == darkTheme.primaryColor) {
+    return darkIcon;
+  } else if (lightIcon != null) {
+    return lightIcon;
+  } else {
+    return Container();
+  }
 }

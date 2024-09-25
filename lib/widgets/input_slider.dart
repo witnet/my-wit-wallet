@@ -4,6 +4,7 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/input_amount.dart';
 
 class InputSlider extends StatefulWidget {
   InputSlider({
@@ -62,39 +63,17 @@ class _InputSliderState extends State<InputSlider> {
     }
     return Column(children: [
       Container(
-        child: TextFormField(
-          decoration: InputDecoration(
-            hintText: widget.hint ?? localization.inputAmountHint,
-            errorText: widget.errorText,
-            prefixIcon:
-                widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
-            suffixText: WIT_UNIT[WitUnit.Wit],
-            suffixIcon: widget.onSuffixTap != null
-                ? Semantics(
-                    label: localization.showPassword,
-                    child: PaddedButton(
-                        padding: EdgeInsets.zero,
-                        text: 'Max',
-                        onPressed: widget.onSuffixTap ?? () {},
-                        type: ButtonType.text),
-                  )
-                : null,
-          ),
-          minLines: 1,
-          keyboardType: Platform.isIOS
-              ? TextInputType.numberWithOptions(signed: true, decimal: true)
-              : widget.keyboardType,
-          inputFormatters: [WitValueFormatter()],
-          style: theme.textTheme.bodyLarge,
-          autocorrect: false,
-          focusNode: widget.focusNode,
-          controller: widget.textEditingController,
-          onChanged: widget.onChanged,
-          onEditingComplete: widget.onEditingComplete ?? () {},
-          onFieldSubmitted: widget.onFieldSubmitted ?? (String? value) {},
-          onTapOutside: widget.onTapOutside ?? (PointerDownEvent? event) {},
-          onTap: widget.onTap ?? () {},
+        child: InputAmount(
+          hint: widget.hint ?? localization.inputAmountHint,
+          errorText: widget.errorText,
+          onSuffixTap: widget.onSuffixTap ?? () {},
           validator: widget.validator,
+          onTap: widget.onTap ?? () {},
+          onFieldSubmitted: widget.onFieldSubmitted ?? (String? value) {},
+          onEditingComplete: widget.onEditingComplete ?? () {},
+          onChanged: widget.onChanged,
+          textEditingController: widget.textEditingController,
+          focusNode: widget.focusNode,
         ),
       ),
       SizedBox(height: 8),

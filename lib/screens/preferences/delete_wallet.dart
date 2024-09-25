@@ -98,14 +98,16 @@ class DeleteSingleWalletState extends State<DeleteSingleWallet> {
               color: theme.textTheme.bodyLarge!.color,
               padding: EdgeInsets.zero,
               text: localization.cancel,
-              type: ButtonType.text,
+              type: ButtonType.secondary,
+              sizeCover: false,
               enabled: true,
               onPressed: () => {setState(() => closeModal())}),
           PaddedButton(
               color: extendedTheme.errorColor,
               padding: EdgeInsets.zero,
               text: localization.delete,
-              type: ButtonType.text,
+              type: ButtonType.primary,
+              sizeCover: false,
               enabled: true,
               onPressed: deleteStorageAndContinue)
         ],

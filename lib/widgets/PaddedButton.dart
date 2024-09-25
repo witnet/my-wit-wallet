@@ -13,17 +13,19 @@ enum ButtonType {
   verticalIcon,
   iconButton,
   stepbar,
-  boxButton
+  boxButton,
+  sufix
 }
 
 enum IconPosition { left, right }
 
-Widget buildCircularProgress(context, theme) {
+Widget buildCircularProgress(context, ThemeData theme) {
+  final extendedTheme = theme.extension<ExtendedTheme>()!;
   return SizedBox(
       height: 20,
       width: 20,
       child: CircularProgressIndicator(
-        color: theme.textTheme.labelMedium?.color,
+        color: extendedTheme.spinnerColor,
         strokeWidth: 2,
         value: null,
         semanticsLabel: 'Circular progress indicator',
@@ -36,7 +38,9 @@ class PaddedButton extends StatelessWidget {
       required this.text,
       required this.onPressed,
       this.color,
+      this.sizeCover = true,
       this.fontSize = 16,
+      this.boldText = false,
       this.isLoading = false,
       this.icon = defaultIcon,
       this.enabled = true,
@@ -51,12 +55,14 @@ class PaddedButton extends StatelessWidget {
       this.autofocus});
 
   final EdgeInsets padding;
+  final bool sizeCover;
   final String text;
   final bool isLoading;
   final bool enabled;
   final Color? color;
   final ButtonType type;
   final Widget icon;
+  final bool boldText;
   final VoidCallback onPressed;
   final String? label;
   final bool attachedIcon;
@@ -77,11 +83,7 @@ class PaddedButton extends StatelessWidget {
       if (!enabled) {
         return theme.colorScheme.surface.withOpacity(0);
       }
-      if (darkBackground) {
-        return extendedTheme.darkBgFocusColor!;
-      } else {
-        return extendedTheme.focusBg!;
-      }
+      return extendedTheme.focusBg!;
     }
 
     Widget child = attachedIcon
@@ -97,16 +99,28 @@ class PaddedButton extends StatelessWidget {
 
     Widget primaryButton = ElevatedButton(
       style: ElevatedButton.styleFrom(
-        minimumSize: Size(double.infinity, 54),
+        minimumSize: sizeCover ? Size(double.infinity, 54) : null,
         backgroundColor: color != null ? color : null,
       ),
       child: isLoading ? buildCircularProgress(context, theme) : child,
       onPressed: enabled ? onPressed : null,
     );
 
+    Widget sufixButton = ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          backgroundColor: color != null ? color : null,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+            topRight: Radius.circular(24),
+            bottomRight: Radius.circular(24),
+          ))),
+      child: isLoading ? buildCircularProgress(context, theme) : child,
+      onPressed: enabled ? onPressed : null,
+    );
+
     Widget secondaryButton = OutlinedButton(
       style: ElevatedButton.styleFrom(
-        minimumSize: Size(double.infinity, 54),
+        minimumSize: sizeCover ? Size(double.infinity, 54) : null,
       ),
       child: isLoading ? buildCircularProgress(context, theme) : Text(text),
       onPressed: onPressed,
@@ -132,11 +146,11 @@ class PaddedButton extends StatelessWidget {
             iconPosition == IconPosition.left
                 ? SizedBox(width: 8)
                 : Container(),
-            Text(
-              text,
-              style: TextStyle(
-                  fontFamily: 'Almarai', fontSize: 14, color: color ?? null),
-            ),
+            Text(text,
+                style: theme.textTheme.labelMedium!.copyWith(
+                    fontSize: 14,
+                    fontWeight: boldText ? FontWeight.bold : FontWeight.normal,
+                    color: color ?? null)),
             Padding(padding: EdgeInsets.only(left: 8)),
             iconPosition == IconPosition.right ? icon : Container(),
           ]),
@@ -189,9 +203,9 @@ class PaddedButton extends StatelessWidget {
       child: Text(
         text,
         style: color != null
-            ? theme.textTheme.labelMedium
+            ? theme.textTheme.displayMedium
                 ?.copyWith(color: color, fontSize: fontSize)
-            : theme.textTheme.labelMedium,
+            : theme.textTheme.displayMedium?.copyWith(fontSize: fontSize),
       ),
       onPressed: onPressed,
     );
@@ -241,6 +255,8 @@ class PaddedButton extends StatelessWidget {
           return containerButton;
         case ButtonType.stepbar:
           return stepBarButton;
+        case ButtonType.sufix:
+          return sufixButton;
       }
     }
 

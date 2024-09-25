@@ -12,6 +12,7 @@ import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/identicon.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
+import 'package:my_wit_wallet/widgets/navigation_button.dart';
 import 'package:my_wit_wallet/widgets/wallet_type_label.dart';
 
 typedef void VoidCallback();
@@ -48,18 +49,30 @@ class TopNavigation extends StatelessWidget {
           label: '${localization.showWalletList} button',
           text: localization.showWalletList,
           type: ButtonType.iconButton,
-          iconSize: 30,
+          color: WitnetPallet.black,
+          iconSize: 24,
           icon: Container(
-            color: WitnetPallet.white,
-            width: 28,
-            height: 28,
-            child: Identicon(seed: walletId, size: 8),
-          ),
+              decoration: BoxDecoration(
+                  color: WitnetPallet.black,
+                  border: Border.all(color: WitnetPallet.black),
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: WitnetPallet.black,
+                      border: Border.all(color: WitnetPallet.black)),
+                  width: 24,
+                  height: 24,
+                  child: Identicon(seed: walletId, size: 8),
+                ),
+              )),
           onPressed: onShowWalletList),
       Expanded(
           child: Padding(
-              padding: EdgeInsets.only(left: 24, right: 24),
+              padding: EdgeInsets.only(left: 24, right: 24, top: 16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Tooltip(
@@ -85,19 +98,20 @@ class TopNavigation extends StatelessWidget {
                   WalletTypeLabel(label: currentWallet.walletType),
                 ],
               ))),
-      PaddedButton(
-          padding: EdgeInsets.zero,
-          label: localization.settings,
-          text: localization.settings,
-          iconSize: 28,
-          icon: Icon(FontAwesomeIcons.gear,
-              size: 28,
-              color: getNavigationColor(
-                  context: context, routesList: [PreferencePage.route])),
-          onPressed: !isActiveRoute(context, [PreferencePage.route])
-              ? () => _goToSettings(context)
-              : () {},
-          type: ButtonType.iconButton)
+      NavigationButton(
+          button: PaddedButton(
+              padding: EdgeInsets.zero,
+              label: localization.settings,
+              text: localization.settings,
+              color: WitnetPallet.black,
+              iconSize: 22,
+              icon: Icon(FontAwesomeIcons.gear,
+                  size: 22, color: extendedTheme.navigationColor),
+              onPressed: !isActiveRoute(context, [PreferencePage.route])
+                  ? () => _goToSettings(context)
+                  : () {},
+              type: ButtonType.iconButton),
+          routesList: [PreferencePage.route])
     ];
   }
 

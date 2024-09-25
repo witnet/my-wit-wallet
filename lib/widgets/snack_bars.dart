@@ -83,7 +83,7 @@ SnackBar buildErrorSnackbar(
       log != null
           ? Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(24),
                 color: WitnetPallet.lightGrey,
               ),
               padding: EdgeInsets.only(left: 8),

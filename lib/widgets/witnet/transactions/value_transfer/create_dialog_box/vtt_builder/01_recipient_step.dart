@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/util/storage/scanned_content.dart';
+import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/input_slider.dart';
 import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
@@ -347,7 +348,6 @@ class RecipientStepState extends State<RecipientStep>
 
   _buildCalendarDialogButton(BuildContext context) {
     final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Padding(
         padding: const EdgeInsets.only(top: 20),
         child: Column(
@@ -355,25 +355,22 @@ class RecipientStepState extends State<RecipientStep>
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                TextButton(
+                PaddedButton(
+                  padding: EdgeInsets.all(0),
+                  text: localization.addTimelockLabel,
+                  boldText: true,
                   onPressed: () {
                     setState(() {
                       showAdvancedSettings = !showAdvancedSettings;
                     });
                   },
-                  child: Row(
-                    children: [
-                      Text(localization.addTimelockLabel),
-                      SizedBox(width: 10),
-                      Icon(
-                        showAdvancedSettings
-                            ? FontAwesomeIcons.minus
-                            : FontAwesomeIcons.plus,
-                        color: extendedTheme.headerTextColor,
-                        size: 15,
-                      ),
-                    ],
-                  ),
+                  icon: Icon(
+                      color: theme.iconTheme.color,
+                      showAdvancedSettings
+                          ? FontAwesomeIcons.minus
+                          : FontAwesomeIcons.plus,
+                      size: 15),
+                  type: ButtonType.horizontalIcon,
                 ),
               ],
             ),
@@ -475,7 +472,7 @@ class RecipientStepState extends State<RecipientStep>
             Tooltip(
                 margin: EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(24),
                   color: theme.colorScheme.surface,
                 ),
                 textStyle: theme.textTheme.bodyMedium,
@@ -490,6 +487,7 @@ class RecipientStepState extends State<RecipientStep>
       TextField(
         decoration: InputDecoration(
           hintText: localization.authorizationInputHint,
+          contentPadding: EdgeInsets.all(16),
           suffixIcon: !Platform.isWindows && !Platform.isLinux
               ? Semantics(
                   label: localization.scanQrCodeLabel,

@@ -37,7 +37,7 @@ TextTheme textTheme = TextTheme(
       fontFamily: 'Almarai',
       letterSpacing: 0,
       height: 1.15,
-      color: WitnetPallet.brightCyan,
+      color: WitnetPallet.black,
       fontSize: 24,
       fontWeight: FontWeight.normal),
   headlineSmall: TextStyle(
@@ -100,7 +100,7 @@ TextTheme textTheme = TextTheme(
       fontFamily: 'Almarai',
       letterSpacing: 0,
       height: 1.15,
-      color: WitnetPallet.brightCyan,
+      color: WitnetPallet.deepAqua,
       fontSize: 16,
       fontWeight: FontWeight.normal),
 );
@@ -111,36 +111,36 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   errorBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.darkRed, width: 1.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(4),
+    borderRadius: BorderRadius.circular(24),
   ),
-  helperStyle: TextStyle(color: WitnetPallet.darkGrey),
+  helperStyle: TextStyle(color: WitnetPallet.darkerGrey),
   helperMaxLines: 1,
   errorMaxLines: 1,
   hintStyle: TextStyle(),
   hoverColor: WitnetPallet.white,
   focusColor: WitnetPallet.brightCyan,
-  isDense: false,
+  isDense: true,
   isCollapsed: false,
   contentPadding: EdgeInsets.all(16),
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: WitnetPallet.lightGrey, width: 1.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(4),
+        color: WitnetPallet.black, width: 1.0, style: BorderStyle.solid),
+    borderRadius: BorderRadius.circular(24),
   ),
   focusedBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.brightCyan, width: 1.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(4),
+    borderRadius: BorderRadius.circular(24),
   ),
   focusedErrorBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.darkRed, width: 1.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(4),
+    borderRadius: BorderRadius.circular(24),
   ),
   border: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.white, width: 1.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(4),
+    borderRadius: BorderRadius.circular(24),
   ),
   alignLabelWithHint: true,
 );
@@ -155,29 +155,29 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
       backgroundColor: WitnetPallet.black,
       disabledForegroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.38),
       disabledBackgroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.12),
-      foregroundColor: WitnetPallet.white,
+      foregroundColor: WitnetPallet.lighterGrey,
       splashFactory: NoSplash.splashFactory,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4)), // background color
+          borderRadius: BorderRadius.circular(24)), // background color
       textStyle: const TextStyle(
         fontFamily: 'Almarai',
         fontSize: 16,
-        fontWeight: FontWeight.w400,
-        color: WitnetPallet.white,
+        fontWeight: FontWeight.bold,
+        color: WitnetPallet.black,
       )),
 );
 TextButtonThemeData textButtonTheme = TextButtonThemeData(
   style: TextButton.styleFrom(
-    foregroundColor: WitnetPallet.brightCyan,
+    foregroundColor: WitnetPallet.black,
     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     splashFactory: NoSplash.splashFactory,
     shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8))),
+        borderRadius: BorderRadius.all(Radius.circular(24))),
     textStyle: const TextStyle(
       fontFamily: 'Almarai',
       fontSize: 16,
       fontWeight: FontWeight.w400,
-      color: WitnetPallet.brightCyan,
+      color: WitnetPallet.black,
     ),
   ),
 );
@@ -187,7 +187,7 @@ OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
   foregroundColor: WitnetPallet.black,
   disabledForegroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.38),
-  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
   side: BorderSide(width: 1, color: WitnetPallet.black),
   padding: const EdgeInsets.all(16),
   textStyle: const TextStyle(
@@ -197,20 +197,20 @@ OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
   ),
 ));
 IconThemeData iconTheme = IconThemeData(
-  color: WitnetPallet.brightCyan,
+  color: WitnetPallet.deepAqua,
   size: 16,
 );
 IconThemeData primaryIconTheme = IconThemeData(
-  color: WitnetPallet.brightCyan,
+  color: WitnetPallet.deepAqua,
   size: 24,
 );
 CheckboxThemeData checkboxTheme = CheckboxThemeData(
   splashRadius: 0,
   side: WidgetStateBorderSide.resolveWith(
-      (_) => const BorderSide(width: 2, color: WitnetPallet.brightCyan)),
+      (_) => const BorderSide(width: 2, color: WitnetPallet.deepAqua)),
   fillColor: WidgetStateProperty.resolveWith((Set<WidgetState> states) {
     if (states.contains(WidgetState.selected)) {
-      return WitnetPallet.brightCyan;
+      return WitnetPallet.deepAqua;
     }
     return WitnetPallet.transparent;
   }),
@@ -254,7 +254,7 @@ PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(
 );
 
 TimePickerThemeData timePickerTheme = TimePickerThemeData(
-  backgroundColor: WitnetPallet.white,
+  backgroundColor: const Color.fromARGB(255, 125, 80, 80),
   cancelButtonStyle: textButtonTheme.style,
   confirmButtonStyle: textButtonTheme.style,
 
