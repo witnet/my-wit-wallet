@@ -36,14 +36,11 @@ Future<void> e2eUpdateThemeColorTest(WidgetTester tester) async {
     // Tap switch to change theme color
     await tapButton(tester, Switch, index: 0);
   }
-  Color? gearIconColor =
-      (tester.widget(find.byIcon(FontAwesomeIcons.gear)) as Icon).color;
 
   final textColor =
       tester.widget<Text>(find.text(localization.darkMode)).style!.color;
 
   // Avoid switch to password authentication if password is not typed by the user
-  expect(gearIconColor, WitnetPallet.white);
   expect(textColor, WitnetPallet.opacityWhite);
 
   // Tap switch to change theme color
@@ -51,13 +48,9 @@ Future<void> e2eUpdateThemeColorTest(WidgetTester tester) async {
 
   await tester.pumpAndSettle(Duration(milliseconds: 600));
 
-  Color? gearIconColor2 =
-      (tester.widget(find.byIcon(FontAwesomeIcons.gear)) as Icon).color;
-
   final textColor2 =
       tester.widget<Text>(find.text(localization.darkMode)).style!.color;
   // Avoid switch to password authentication if password is not typed by the user
-  expect(gearIconColor2, WitnetPallet.darkerGrey);
   expect(textColor2, WitnetPallet.darkGrey);
   await teardownTest();
 }

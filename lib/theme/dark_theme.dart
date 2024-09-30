@@ -116,7 +116,7 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   labelStyle: TextStyle(color: WitnetPallet.opacityWhite),
   hoverColor: const Color.fromARGB(9, 255, 255, 255),
   focusColor: WitnetPallet.brightCyanOpacity1,
-  contentPadding: EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
+  contentPadding: EdgeInsets.all(16),
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.white, width: 1.0, style: BorderStyle.solid),
@@ -172,7 +172,7 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
 );
 ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.all(0),
+      padding: const EdgeInsets.all(16),
       foregroundColor: WitnetPallet.black,
       backgroundColor: WitnetPallet.white,
       disabledForegroundColor:
@@ -197,6 +197,7 @@ OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
   textStyle: const TextStyle(
     fontSize: 16,
     fontFamily: 'Almarai',
+    fontWeight: FontWeight.bold,
     color: WitnetPallet.white,
   ),
 ));

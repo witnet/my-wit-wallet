@@ -404,10 +404,10 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   );
   // the dark theme
   static const dark = ExtendedTheme(
-    selectBackgroundColor: WitnetPallet.brightCyanOpacity1,
-    selectedTextColor: WitnetPallet.white,
-    dropdownBackgroundColor: WitnetPallet.brightCyanOpacity1,
-    dropdownTextColor: WitnetPallet.white,
+    selectBackgroundColor: WitnetPallet.brightCyan,
+    selectedTextColor: WitnetPallet.black,
+    dropdownBackgroundColor: WitnetPallet.darkerGrey,
+    dropdownTextColor: WitnetPallet.lighterGrey,
     navigationPointerActiveButton: WitnetPallet.deepAqua,
     navigationActiveButton: WitnetPallet.lightGrey,
     headerActiveTextColor: WitnetPallet.black,

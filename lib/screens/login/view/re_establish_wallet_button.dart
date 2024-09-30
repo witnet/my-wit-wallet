@@ -29,6 +29,7 @@ class ReEstablishWalletBtn extends StatelessWidget {
           child: PaddedButton(
             fontSize: 14,
             padding: EdgeInsets.all(0),
+            boldText: false,
             color: extendedTheme.errorColor,
             onPressed: () => resetWallet(context),
             text: localization.reestablishWallet,

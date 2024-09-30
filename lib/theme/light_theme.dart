@@ -44,7 +44,7 @@ TextTheme textTheme = TextTheme(
       fontFamily: 'Almarai',
       letterSpacing: 0,
       height: 1.15,
-      color: WitnetPallet.brightCyan,
+      color: WitnetPallet.deepAqua,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   titleLarge: TextStyle(
@@ -193,6 +193,7 @@ OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
   textStyle: const TextStyle(
     fontFamily: 'Almarai',
     fontSize: 16,
+    fontWeight: FontWeight.bold,
     color: WitnetPallet.black,
   ),
 ));

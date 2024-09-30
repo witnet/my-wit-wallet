@@ -203,9 +203,13 @@ class PaddedButton extends StatelessWidget {
       child: Text(
         text,
         style: color != null
-            ? theme.textTheme.displayMedium
-                ?.copyWith(color: color, fontSize: fontSize)
-            : theme.textTheme.displayMedium?.copyWith(fontSize: fontSize),
+            ? theme.textTheme.displaySmall?.copyWith(
+                color: color,
+                fontSize: fontSize,
+                fontWeight: boldText ? FontWeight.bold : FontWeight.normal)
+            : theme.textTheme.displaySmall?.copyWith(
+                fontSize: fontSize,
+                fontWeight: boldText ? FontWeight.bold : FontWeight.normal),
       ),
       onPressed: onPressed,
     );

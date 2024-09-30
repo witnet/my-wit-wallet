@@ -97,6 +97,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
           text: prevAction != null ? prevAction().label : '',
           type: ButtonType.text,
           color: WitnetPallet.black,
+          boldText: true,
           enabled: prevAction != null,
           onPressed: () => {
                 prevAction != null ? prevAction().action() : null,
