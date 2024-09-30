@@ -31,7 +31,8 @@ buildAlertDialog({
                       size: 24, color: color ?? WitnetPallet.brightCyan)
                   : null,
               actionsPadding: EdgeInsets.only(bottom: 16, right: 16, top: 0),
-              content: content,
+              content: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 300), child: content),
               actions: actions,
             ),
           ));
