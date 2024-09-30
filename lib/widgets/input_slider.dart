@@ -1,9 +1,6 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/constants.dart';
-import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/input_amount.dart';
 
 class InputSlider extends StatefulWidget {
