@@ -206,10 +206,15 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           backdropEnabled: true,
           color: extendedTheme.panelBgColor!,
           minHeight: 0,
-          maxHeight: MediaQuery.of(context).size.height * 0.3,
+          maxHeight: MediaQuery.of(context).size.height * 0.4,
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(8), topRight: Radius.circular(8)),
-          panel: widget.slidingPanel,
+          panel: Center(
+              child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: 600,
+                  ),
+                  child: widget.slidingPanel)),
           onPanelClosed: () => {
                 Timer(Duration(milliseconds: 300),
                     () => setState(() => PanelUtils().setCloseState()))

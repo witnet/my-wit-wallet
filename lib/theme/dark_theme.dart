@@ -116,6 +116,8 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   labelStyle: TextStyle(color: WitnetPallet.opacityWhite),
   hoverColor: const Color.fromARGB(9, 255, 255, 255),
   focusColor: WitnetPallet.brightCyanOpacity1,
+  isDense: true,
+  isCollapsed: false,
   contentPadding: EdgeInsets.all(16),
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(

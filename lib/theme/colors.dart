@@ -28,10 +28,10 @@ class WitnetPallet {
 
   static const darkRed = Color.fromARGB(255, 211, 53, 64);
   static const darkOrange = Color.fromARGB(255, 202, 119, 1);
-  static const brightRed = Color(0xFFed0b00);
+  static const brightRed = Color.fromARGB(255, 236, 56, 56);
   static const brightOrange = Color(0xFFed9900);
   static const darkGreen = Color.fromARGB(255, 25, 147, 66);
-  static const brightGreen = Color(0xFF00ed99);
+  static const brightGreen = Color.fromARGB(212, 67, 252, 187);
   static const brown = Color.fromARGB(255, 147, 82, 1);
 }
 

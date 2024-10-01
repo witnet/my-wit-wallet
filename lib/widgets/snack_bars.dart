@@ -68,6 +68,8 @@ SnackBar buildErrorSnackbar(
   final extendedTheme = theme.extension<ExtendedTheme>()!;
   return SnackBar(
     clipBehavior: Clip.none,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(24))),
     action: action != null
         ? SnackBarAction(
             label: 'Dismiss',
@@ -86,7 +88,7 @@ SnackBar buildErrorSnackbar(
                 borderRadius: BorderRadius.circular(24),
                 color: WitnetPallet.lightGrey,
               ),
-              padding: EdgeInsets.only(left: 8),
+              padding: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

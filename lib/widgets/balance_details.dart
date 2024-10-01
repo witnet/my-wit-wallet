@@ -19,11 +19,16 @@ class BalanceDetails extends StatelessWidget {
     final labelTextStyle = extendedTheme.mediumPanelText;
     ;
     return Padding(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.only(top: 32, bottom: 32, left: 24, right: 24),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                localization.balanceDetails,
+                style: labelTextStyle,
+              ),
+              SizedBox(height: 24),
               Row(children: [
                 Text(
                   localization.available,
