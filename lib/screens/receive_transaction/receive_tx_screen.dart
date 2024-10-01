@@ -147,18 +147,18 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
             ),
             SizedBox(height: 24),
             ..._actions(),
-            SizedBox(height: 24),
+            SizedBox(height: 16),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   localization.generatedAddresses,
-                  style: theme.textTheme.displaySmall,
+                  style: theme.textTheme.displayMedium,
                   textAlign: TextAlign.start,
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 8),
             AddressList(
               currentWallet: db.walletStorage.currentWallet,
             ),

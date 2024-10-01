@@ -3,7 +3,9 @@ import 'colors.dart';
 
 @immutable
 class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
+
   const ExtendedTheme({
+    required this.monoBoldText,
     required this.selectBackgroundColor,
     required this.selectedTextColor,
     required this.dropdownBackgroundColor,
@@ -32,10 +34,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.dialogBackground,
     required this.copiedSnackbarBg,
     required this.copiedSnackbarText,
-    required this.monoSmallText,
     required this.monoRegularText,
-    required this.monoMediumText,
-    required this.monoLargeText,
     required this.spinnerColor,
     required this.errorColor,
     required this.activeClickableBoxBgColor,
@@ -84,11 +83,9 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? dialogBackground;
   final Color? copiedSnackbarBg;
   final Color? copiedSnackbarText;
-  final TextStyle? monoSmallText;
   final TextStyle? monoRegularText;
-  final TextStyle? monoMediumText;
-  final TextStyle? monoLargeText;
   final Color? spinnerColor;
+  final TextStyle? monoBoldText;
   final Color? errorColor;
   final Color? activeClickableBoxBgColor;
   final Color? activeClickableBoxBorderColor;
@@ -209,10 +206,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       dialogBackground: dialogBackground ?? this.dialogBackground,
       copiedSnackbarBg: copiedSnackbarBg ?? copiedSnackbarBg,
       copiedSnackbarText: copiedSnackbarText ?? copiedSnackbarText,
-      monoSmallText: monoSmallText ?? this.monoSmallText,
       monoRegularText: monoRegularText ?? this.monoRegularText,
-      monoMediumText: monoMediumText ?? this.monoMediumText,
-      monoLargeText: monoLargeText ?? this.monoLargeText,
       numberPaginatiorSelectedBg:
           numberPaginatiorSelectedBg ?? this.numberPaginatiorSelectedBg,
       numberPaginatiorUnselectedFg:
@@ -227,6 +221,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       regularPanelText: regularPanelText ?? this.regularPanelText,
       mediumPanelText: mediumPanelText ?? this.mediumPanelText,
       navigationColor: navigationColor ?? this.navigationColor,
+      monoBoldText: monoBoldText ?? this.monoBoldText,
     );
   }
 
@@ -302,11 +297,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       copiedSnackbarBg: Color.lerp(copiedSnackbarBg, other.copiedSnackbarBg, t),
       copiedSnackbarText:
           Color.lerp(copiedSnackbarText, other.copiedSnackbarText, t),
-      monoSmallText: TextStyle.lerp(monoSmallText, other.monoSmallText, t),
       monoRegularText:
           TextStyle.lerp(monoRegularText, other.monoRegularText, t),
-      monoMediumText: TextStyle.lerp(monoMediumText, other.monoMediumText, t),
-      monoLargeText: TextStyle.lerp(monoLargeText, other.monoLargeText, t),
       darkBgFocusColor: Color.lerp(darkBgFocusColor, other.darkBgFocusColor, t),
       focusBg: Color.lerp(focusBg, other.focusBg, t),
       tooltipBgColor: Color.lerp(focusBg, other.focusBg, t),
@@ -321,6 +313,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       mediumPanelText:
           TextStyle.lerp(mediumPanelText, other.mediumPanelText, t),
       navigationColor: Color.lerp(navigationColor, other.navigationColor, t),
+        monoBoldText: TextStyle.lerp(monoBoldText, other.monoBoldText, t),
     );
   }
 
@@ -371,36 +364,27 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     tooltipBgColor: Color.fromARGB(255, 214, 217, 220),
     hdWalletTypeBgColor: WitnetPallet.mediumGrey,
     singleWalletBgColor: WitnetPallet.brown,
-    monoSmallText: TextStyle(
-        fontFamily: 'NimbusMono',
-        fontWeight: FontWeight.w400,
-        color: WitnetPallet.darkGrey,
-        fontSize: 14),
     monoRegularText: TextStyle(
         fontFamily: 'NimbusMono',
         fontWeight: FontWeight.w400,
         color: WitnetPallet.darkGrey,
         fontSize: 16),
-    monoMediumText: TextStyle(
-        fontFamily: 'NimbusMono',
-        fontWeight: FontWeight.w700,
-        color: WitnetPallet.darkGrey,
-        fontSize: 16),
-    monoLargeText: TextStyle(
-        fontFamily: 'NimbusMono',
-        fontWeight: FontWeight.w700,
-        color: WitnetPallet.darkGrey,
-        fontSize: 18),
+
     regularPanelText: TextStyle(
-        fontFamily: 'Almarai',
+        fontFamily: 'Poppins',
         fontWeight: FontWeight.w400,
         color: WitnetPallet.darkerGrey,
         fontSize: 16),
     mediumPanelText: TextStyle(
-        fontFamily: 'Almarai',
+        fontFamily: 'Poppins',
         fontWeight: FontWeight.w700,
         color: WitnetPallet.darkerGrey,
         fontSize: 16),
+      monoBoldText: TextStyle(
+      fontFamily: 'NimbusMono',
+      fontWeight: FontWeight.w700,
+      color: WitnetPallet.darkGrey,
+      fontSize: 16),
   );
   // the dark theme
   static const dark = ExtendedTheme(
@@ -449,26 +433,11 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     hdWalletTypeBgColor: WitnetPallet.mediumGrey,
     singleWalletBgColor: WitnetPallet.brown,
     navigationColor: WitnetPallet.black,
-    monoSmallText: TextStyle(
-        fontFamily: 'NimbusMono',
-        fontWeight: FontWeight.w400,
-        color: WitnetPallet.white,
-        fontSize: 14),
     monoRegularText: TextStyle(
         fontFamily: 'NimbusMono',
         fontWeight: FontWeight.w400,
         color: WitnetPallet.opacityWhite,
         fontSize: 16),
-    monoMediumText: TextStyle(
-        fontFamily: 'NimbusMono',
-        fontWeight: FontWeight.w700,
-        color: WitnetPallet.white,
-        fontSize: 16),
-    monoLargeText: TextStyle(
-        fontFamily: 'NimbusMono',
-        fontWeight: FontWeight.w700,
-        color: WitnetPallet.white,
-        fontSize: 18),
     regularPanelText: TextStyle(
         fontFamily: 'Almarai',
         fontWeight: FontWeight.w400,
@@ -479,5 +448,10 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         fontWeight: FontWeight.w700,
         color: WitnetPallet.white,
         fontSize: 16),
+    monoBoldText: TextStyle(
+      fontFamily: 'NimbusMono',
+      fontWeight: FontWeight.w700,
+      color: WitnetPallet.opacityWhite,
+      fontSize: 16),
   );
 }

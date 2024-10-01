@@ -96,34 +96,30 @@ flutter:
   fonts:
     - family: Poppins
       fonts:
+        - asset: assets/fonts/Poppins/Poppins-Thin.ttf
+        - asset: assets/fonts/Poppins/Poppins-ExtraLight.ttf
         - asset: assets/fonts/Poppins/Poppins-Light.ttf
-          weight: 300
         - asset: assets/fonts/Poppins/Poppins-Regular.ttf
-          weight: 400
         - asset: assets/fonts/Poppins/Poppins-Medium.ttf
-          weight: 500
+        - asset: assets/fonts/Poppins/Poppins-SemiBold.ttf
         - asset: assets/fonts/Poppins/Poppins-Bold.ttf
-          weight: 700
+        - asset: assets/fonts/Poppins/Poppins-ExtraBold.ttf
+        - asset: assets/fonts/Poppins/Poppins-Black.ttf
     - family: Outfit
       fonts:
+        - asset: assets/fonts/Outfit/Outfit-Thin.ttf
+        - asset: assets/fonts/Outfit/Outfit-ExtraLight.ttf
         - asset: assets/fonts/Outfit/Outfit-Light.ttf
-          weight: 300
         - asset: assets/fonts/Outfit/Outfit-Regular.ttf
-          weight: 400
         - asset: assets/fonts/Outfit/Outfit-Medium.ttf
-          weight: 700
+        - asset: assets/fonts/Outfit/Outfit-SemiBold.ttf
         - asset: assets/fonts/Outfit/Outfit-Bold.ttf
-          weight: 800
+        - asset: assets/fonts/Outfit/Outfit-ExtraBold.ttf
+        - asset: assets/fonts/Outfit/Outfit-Black.ttf
     - family: NimbusMono
       fonts:
-        - asset: assets/fonts/Nimbus/NimbusMono-Regular.otf
-          weight: 300
-        - asset: assets/fonts/Nimbus/NimbusMono-Regular.otf
-          weight: 400
-        - asset: assets/fonts/Nimbus/NimbusMono-Regular.otf
-          weight: 700
-        - asset: assets/fonts/Nimbus/NimbusMono-Bold.otf
-          weight: 800
+        - asset: assets/fonts/Nimbus/NimbusMono-Regular.ttf
+        - asset: assets/fonts/Nimbus/NimbusMono-Bold.ttf
 
 msix_config:
   display_name: myWitWallet

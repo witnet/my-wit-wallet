@@ -283,17 +283,6 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
     return '$start...$end';
   }
 
-  Widget buildErrorList(List<dynamic> errors) {
-    List<Widget> _children = [];
-    errors.forEach((element) {
-      _children.add(Text(
-        element.toString(),
-        style: TextStyle(color: Colors.red),
-      ));
-    });
-    return Column(children: _children);
-  }
-
   ImportOrigin labelToWalletOrigin(String origin) {
     return ImportOrigin.values.firstWhere((e) {
       return e.name == origin;

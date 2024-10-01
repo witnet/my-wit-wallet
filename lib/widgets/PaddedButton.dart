@@ -31,6 +31,22 @@ Widget buildCircularProgress(context, ThemeData theme) {
       ));
 }
 
+class BaseButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
+}
+
+class PrimaryButton extends BaseButton {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
+}
+
 class PaddedButton extends StatelessWidget {
   PaddedButton(
       {required this.padding,
@@ -131,7 +147,7 @@ class PaddedButton extends StatelessWidget {
           ? buildCircularProgress(context, theme)
           : Text(
               text,
-              style: TextStyle(fontSize: 10),
+              style: theme.textTheme.bodyMedium?.copyWith(fontSize: 10),
             ),
       onPressed: onPressed,
     );
@@ -169,7 +185,8 @@ class PaddedButton extends StatelessWidget {
         SizedBox(height: 8),
         Text(
           text,
-          style: TextStyle(fontFamily: 'Almarai', fontSize: 14),
+          style: TextStyle(
+              fontFamily: theme.textTheme.bodyMedium?.fontFamily, fontSize: 14),
         ),
         SizedBox(height: 8),
       ]),
@@ -219,8 +236,9 @@ class PaddedButton extends StatelessWidget {
       child: Text(
         text,
         style: color != null
-            ? TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: color)
-            : theme.textTheme.labelMedium,
+            ? theme.textTheme.labelMedium?.copyWith(
+                fontSize: 16, fontWeight: FontWeight.w600, color: color)
+            : theme.textTheme.labelMedium?.copyWith(fontSize: fontSize),
       ),
       onPressed: !enabled ? null : onPressed,
     );

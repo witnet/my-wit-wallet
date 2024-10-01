@@ -22,6 +22,7 @@ class WalletTypeLabel extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return label == WalletType.single
         ? Container(
             decoration: BoxDecoration(
@@ -30,7 +31,8 @@ class WalletTypeLabel extends StatelessWidget {
             child: Padding(
                 padding: EdgeInsets.only(top: 2, bottom: 2, left: 4, right: 4),
                 child: Text(walletTypeToLabel(context)[label]!,
-                    style: TextStyle(color: WitnetPallet.white, fontSize: 10))))
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(color: WitnetPallet.white, fontSize: 9))))
         : Container();
   }
 }

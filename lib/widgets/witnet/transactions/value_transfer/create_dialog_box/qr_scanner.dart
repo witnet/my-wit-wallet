@@ -19,6 +19,7 @@ class QrScanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     ScannedContent scannedContent = ScannedContent();
     return Scaffold(
         backgroundColor: Colors.black,
@@ -57,7 +58,7 @@ class QrScanner extends StatelessWidget {
                             Padding(
                               padding: EdgeInsets.only(right: 16),
                               child: Text(localization.scanAqrCode,
-                                  style: TextStyle(color: Colors.white)),
+                                  style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white)),
                             )
                           ],
                         ))))
