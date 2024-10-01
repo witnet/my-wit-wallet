@@ -99,7 +99,7 @@ SnackBar buildErrorSnackbar(
                         child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Text(log,
-                                style: extendedTheme.monoSmallText!.copyWith(
+                                style: extendedTheme.monoRegularText!.copyWith(
                                     color: WitnetPallet.darkGrey,
                                     fontSize: 12)))),
                     Flexible(

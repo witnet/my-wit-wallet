@@ -65,11 +65,12 @@ class _CarouselState extends State<Carousel> {
     final theme = Theme.of(context);
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.only(left: 24, right: 24, top: 8, bottom: 8),
+      padding: EdgeInsets.only(left: 24, right: 24, top: 0, bottom: 8),
       child: Text(
         item,
-        style: theme.textTheme.bodyLarge,
+        style: theme.textTheme.bodyMedium?.copyWith(fontSize: 13),
         textAlign: TextAlign.center,
+
       ),
     );
   }

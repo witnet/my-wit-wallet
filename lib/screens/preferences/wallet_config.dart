@@ -68,8 +68,8 @@ class WalletConfigState extends State<WalletConfig> {
             localization.walletConfigHeader,
             style: theme.textTheme.titleMedium,
           ),
-          SizedBox(height: 16),
-          Text(localization.walletConfig01, style: theme.textTheme.bodyLarge),
+          SizedBox(height: 8),
+          Text(localization.walletConfig01, style: theme.textTheme.bodyMedium),
           PaddedButton(
               padding: EdgeInsets.only(bottom: 16, top: 16),
               text: localization.exportXprv,
@@ -81,8 +81,8 @@ class WalletConfigState extends State<WalletConfig> {
             localization.messageSigning,
             style: theme.textTheme.titleMedium,
           ),
-          SizedBox(height: 16),
-          Text(localization.messageSigning01, style: theme.textTheme.bodyLarge),
+          SizedBox(height: 8),
+          Text(localization.messageSigning01, style: theme.textTheme.bodyMedium),
           PaddedButton(
               padding: EdgeInsets.only(bottom: 16, top: 16),
               text: localization.signMessage,

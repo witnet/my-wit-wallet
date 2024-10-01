@@ -40,31 +40,30 @@ class Select extends StatelessWidget {
       item,
       overflow: TextOverflow.ellipsis,
       style: selected
-          ? TextStyle(
-              fontFamily: extendedTheme.monoRegularText!.fontFamily,
-              fontWeight: FontWeight.normal,
-              color: extendedTheme.selectedTextColor)
-          : TextStyle(
-              fontFamily: extendedTheme.monoRegularText!.fontFamily,
-              fontWeight: FontWeight.normal),
+          ? extendedTheme.monoRegularText
+              ?.copyWith(color: extendedTheme.selectedTextColor)
+          : extendedTheme.monoRegularText
+              ?.copyWith(fontWeight: FontWeight.normal),
     );
   }
 
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).extension<ExtendedTheme>()!;
+    final theme = Theme.of(context);
+    final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.selectBackgroundColor,
+        color: extendedTheme.selectBackgroundColor,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Padding(
         padding: EdgeInsets.only(left: 8, right: 8),
         child: DropdownButton<String>(
             value: selectedItem,
-            dropdownColor: theme.dropdownBackgroundColor,
-            focusColor: theme.dropdownBackgroundColor,
-            iconEnabledColor: theme.selectedTextColor,
-            style: TextStyle(color: theme.dropdownTextColor, fontSize: 16),
+            dropdownColor: extendedTheme.dropdownBackgroundColor,
+            focusColor: extendedTheme.dropdownBackgroundColor,
+            iconEnabledColor: extendedTheme.selectedTextColor,
+            style: theme.textTheme.bodyMedium?.copyWith(
+                color: extendedTheme.dropdownTextColor, fontSize: 16),
             selectedItemBuilder: (BuildContext context) {
               return listItems.map<Widget>((SelectItem item) {
                 return Container(
@@ -74,8 +73,8 @@ class Select extends StatelessWidget {
                       ? buildCropItem(item.label, context, true)
                       : Text(
                           item.label,
-                          style: TextStyle(
-                              color: theme.selectedTextColor,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                              color: extendedTheme.selectedTextColor,
                               fontWeight: FontWeight.normal),
                         ),
                 );

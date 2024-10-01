@@ -22,16 +22,15 @@ class CustomLink extends StatelessWidget {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     Color? contentColor =
-        color != null ? color : extendedTheme.monoSmallText!.color;
+        color != null ? color : extendedTheme.monoRegularText!.color;
     return MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           child: Padding(
               padding: EdgeInsets.only(right: 8),
               child: Text(text,
-                  style: extendedTheme.monoSmallText!.copyWith(
+                  style: extendedTheme.monoRegularText!.copyWith(
                       color: contentColor,
-                      fontWeight: FontWeight.w400,
                       decorationColor: contentColor,
                       decoration: TextDecoration.underline))),
           onTap: () => {_launchUrl(url)},

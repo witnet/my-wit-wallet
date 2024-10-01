@@ -44,7 +44,7 @@ class AddressListState extends State<AddressList> {
     ExtendedTheme extendedTheme = theme.extension<ExtendedTheme>()!;
     final isAddressSelected = account.address == currentAddress;
     final textStyle = isAddressSelected
-        ? extendedTheme.monoMediumText
+        ? extendedTheme.monoBoldText
         : extendedTheme.monoRegularText;
     return BlocBuilder<ExplorerBloc, ExplorerState>(
         builder: (BuildContext context, ExplorerState state) {
@@ -80,7 +80,7 @@ class AddressListState extends State<AddressList> {
     ExtendedTheme extendedTheme = theme.extension<ExtendedTheme>()!;
     final isAddressSelected = account.address == currentAddress;
     final textStyle = isAddressSelected
-        ? extendedTheme.monoMediumText
+        ? extendedTheme.monoBoldText
         : extendedTheme.monoRegularText;
     return Semantics(
         button: true,

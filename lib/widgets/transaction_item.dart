@@ -149,11 +149,10 @@ class TransactionsItemState extends State<TransactionsItem> {
                                 label.capitalize(),
                                 style: theme.textTheme.bodyMedium,
                               ),
-                              SizedBox(height: 4),
                               Text(
                                 address,
                                 overflow: TextOverflow.fade,
-                                style: extendedTheme.monoSmallText!.copyWith(
+                                style: extendedTheme.regularPanelText!.copyWith(
                                     color: theme.textTheme.bodyMedium!.color),
                               ),
                             ],

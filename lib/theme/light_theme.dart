@@ -11,103 +11,73 @@ TextSelectionThemeData textSelectionTheme = TextSelectionThemeData(
   selectionColor: WitnetPallet.brightCyan,
 );
 Brightness primaryColorBrightness = brightness;
-TextTheme textTheme = TextTheme(
-  displayLarge: TextStyle(
-      fontFamily: 'Outfit',
-      letterSpacing: 0,
-      height: 1.15,
-      color: WitnetPallet.darkGrey,
-      fontSize: 24,
-      fontWeight: FontWeight.bold),
-  displayMedium: TextStyle(
-      fontFamily: 'Poppins',
-      letterSpacing: 0,
-      height: 1.15,
-      color: WitnetPallet.darkGrey,
-      fontSize: 18,
-      fontWeight: FontWeight.bold),
-  displaySmall: TextStyle(
-      fontFamily: 'Poppins',
-      letterSpacing: 0,
-      height: 1.15,
-      color: WitnetPallet.darkGrey,
-      fontSize: 16,
-      fontWeight: FontWeight.bold),
-  headlineMedium: TextStyle(
-      fontFamily: 'Outfit',
-      letterSpacing: 0,
-      height: 1.15,
-      color: WitnetPallet.black,
-      fontSize: 24,
-      fontWeight: FontWeight.normal),
-  headlineSmall: TextStyle(
-      fontFamily: 'Outfit',
-      letterSpacing: 0,
-      height: 1.15,
-      color: WitnetPallet.black,
-      fontSize: 16,
-      fontWeight: FontWeight.normal),
-  titleLarge: TextStyle(
-      fontFamily: 'Outfit',
-      letterSpacing: 0,
-      height: 1.15,
-      color: WitnetPallet.darkGrey,
-      fontSize: 18,
-      fontWeight: FontWeight.bold),
-  titleMedium: TextStyle(
-      fontFamily: 'Outfit',
-      letterSpacing: 0,
-      height: 1.15,
-      color: WitnetPallet.darkGrey,
-      fontSize: 16,
-      fontWeight: FontWeight.bold),
-  titleSmall: TextStyle(
-      fontFamily: 'Poppins',
-      letterSpacing: 0,
-      height: 1.15,
-      color: WitnetPallet.darkGrey,
-      fontSize: 14,
-      fontWeight: FontWeight.bold),
-  bodyLarge: TextStyle(
-      fontFamily: 'Poppins',
-      letterSpacing: 0,
-      height: 1.15,
-      color: WitnetPallet.darkGrey,
-      fontSize: 16,
-      fontWeight: FontWeight.normal),
-  bodyMedium: TextStyle(
-      fontFamily: 'Poppins',
-      letterSpacing: 0,
-      height: 1.15,
-      color: WitnetPallet.darkGrey,
-      fontSize: 14,
-      fontWeight: FontWeight.normal),
-  bodySmall: TextStyle(
-      fontFamily: 'Poppins',
-      letterSpacing: 0,
-      height: 1.15,
-      color: WitnetPallet.darkGrey,
-      fontSize: 12,
-      fontWeight: FontWeight.normal),
-  labelLarge: TextStyle(
-      fontFamily: 'Poppins',
-      letterSpacing: 0,
-      height: 1.15,
-      color: WitnetPallet.white,
-      fontSize: 16,
-      fontWeight: FontWeight.normal),
-  labelMedium: TextStyle(
-      fontFamily: 'Poppins',
-      letterSpacing: 0,
-      height: 1.15,
-      color: WitnetPallet.black,
-      fontSize: 16,
-      fontWeight: FontWeight.normal),
+
+const TextStyle defaultTextStyle = TextStyle(
+  color: WitnetPallet.darkGrey,
+  fontSize: 14,
+  fontWeight: FontWeight.normal,
+  fontStyle: FontStyle.normal,
+  letterSpacing: 0,
+  wordSpacing: 0,
+  height: 1.5,
 );
+
+final TextStyle p = defaultTextStyle.copyWith(fontFamily: 'Poppins');
+final TextStyle bodyThin = p.copyWith(fontWeight: FontWeight.w100);
+final TextStyle bodyExtraLight = p.copyWith(fontWeight: FontWeight.w200);
+final TextStyle bodyLight = p.copyWith(fontWeight: FontWeight.w300);
+final TextStyle bodyRegular = p.copyWith(fontWeight: FontWeight.w400);
+final TextStyle bodyMedium = p.copyWith(fontWeight: FontWeight.w500);
+final TextStyle bodySemiBold = p.copyWith(fontWeight: FontWeight.w600);
+final TextStyle bodyBold = p.copyWith(fontWeight: FontWeight.w700);
+final TextStyle bodyExtraBold = p.copyWith(fontWeight: FontWeight.w800);
+final TextStyle bodyBlack = p.copyWith(fontWeight: FontWeight.w900);
+
+final TextStyle o = defaultTextStyle.copyWith(fontFamily: 'Outfit');
+final TextStyle titleThin = o.copyWith(fontWeight: FontWeight.w100);
+final TextStyle titleExtraLight = o.copyWith(fontWeight: FontWeight.w200);
+final TextStyle titleLight = o.copyWith(fontWeight: FontWeight.w300);
+final TextStyle titleRegular = o.copyWith(fontWeight: FontWeight.w400);
+final TextStyle titleMedium = o.copyWith(fontWeight: FontWeight.w500);
+final TextStyle titleSemiBold = o.copyWith(fontWeight: FontWeight.w600);
+final TextStyle titleBold = o.copyWith(fontWeight: FontWeight.w700);
+final TextStyle titleExtraBold = o.copyWith(fontWeight: FontWeight.w800);
+final TextStyle titleBlack = o.copyWith(fontWeight: FontWeight.w900);
+
+TextTheme textTheme = TextTheme(
+    displayLarge: titleBold.copyWith(fontSize: 24),
+    displayMedium: titleMedium.copyWith(fontSize: 18),
+    displaySmall: titleRegular.copyWith(fontSize: 16),
+    headlineMedium: titleRegular.copyWith(
+      color: WitnetPallet.black,
+      fontSize: 24,
+    ),
+    headlineSmall: titleRegular.copyWith(
+      color: WitnetPallet.black,
+      fontSize: 16,
+    ),
+    titleLarge: titleBold.copyWith(fontSize: 18),
+    titleMedium: titleMedium.copyWith(fontSize: 16),
+    titleSmall: titleRegular.copyWith(fontSize: 9),
+    bodyLarge: bodyBold.copyWith(fontSize: 13),
+    bodyMedium: bodyMedium.copyWith(
+      fontSize: 13,
+      height: 0
+    ),
+    bodySmall: bodyRegular.copyWith(fontSize: 10),
+    labelLarge: bodyBold.copyWith(
+      color: WitnetPallet.white,
+      fontSize: 13,
+    ),
+    labelMedium: bodyRegular.copyWith(
+      color: WitnetPallet.black,
+      fontSize: 16,
+    ));
+
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.white,
   filled: true,
-  errorStyle: TextStyle(color: WitnetPallet.darkRed),
+  errorStyle: bodyRegular.copyWith(color: WitnetPallet.darkRed),
   errorBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.darkRed, width: 1.0, style: BorderStyle.solid),
@@ -116,7 +86,7 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   helperStyle: TextStyle(color: WitnetPallet.darkerGrey),
   helperMaxLines: 1,
   errorMaxLines: 1,
-  hintStyle: TextStyle(color: WitnetPallet.mediumGrey),
+  hintStyle: bodyRegular,
   hoverColor: WitnetPallet.white,
   focusColor: WitnetPallet.brightCyan,
   isDense: true,
@@ -157,26 +127,21 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
       disabledBackgroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.12),
       foregroundColor: WitnetPallet.lighterGrey,
       splashFactory: NoSplash.splashFactory,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24)), // background color
-      textStyle: const TextStyle(
-        fontFamily: 'Poppins',
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-        color: WitnetPallet.black,
-      )),
-);
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)), // background color
+      textStyle: bodyRegular.copyWith(
+      fontSize: 16,
+      color: WitnetPallet.white,
+        ),
+));
 TextButtonThemeData textButtonTheme = TextButtonThemeData(
   style: TextButton.styleFrom(
     foregroundColor: WitnetPallet.black,
     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     splashFactory: NoSplash.splashFactory,
     shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(24))),
-    textStyle: const TextStyle(
-      fontFamily: 'Poppins',
+        borderRadius: BorderRadius.all(Radius.circular(8))),
+    textStyle: bodyRegular.copyWith(
       fontSize: 16,
-      fontWeight: FontWeight.w400,
       color: WitnetPallet.black,
     ),
   ),
@@ -190,8 +155,7 @@ OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
   side: BorderSide(width: 1, color: WitnetPallet.black),
   padding: const EdgeInsets.all(16),
-  textStyle: const TextStyle(
-    fontFamily: 'Poppins',
+  textStyle: bodyRegular.copyWith(
     fontSize: 16,
     fontWeight: FontWeight.bold,
     color: WitnetPallet.black,
@@ -315,8 +279,8 @@ DatePickerThemeData datePickerTheme = DatePickerThemeData(
   headerBackgroundColor: WitnetPallet.black,
   headerForegroundColor: WitnetPallet.brightCyan,
   headerHelpStyle: textTheme.titleLarge!.copyWith(color: WitnetPallet.white),
-  weekdayStyle: TextStyle(color: WitnetPallet.darkGrey),
-  dayStyle: TextStyle(color: WitnetPallet.white),
+  weekdayStyle: bodyRegular,
+  dayStyle: bodyRegular.copyWith(color: WitnetPallet.white),
   dayForegroundColor: stateColor(WitnetPallet.white, WitnetPallet.darkGrey),
   dayBackgroundColor:
       stateColor(WitnetPallet.brightCyan, WitnetPallet.transparent),

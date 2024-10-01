@@ -97,34 +97,31 @@ class DisclaimerCardState extends State<DisclaimerCard>
           style: theme.textTheme.titleLarge!,
         ),
         SizedBox(
-          height: 16,
+          height: 8,
         ),
-        Text(
-          localization.walletSecurity01,
-          style: theme.textTheme.bodyLarge,
-        ),
+        Text(localization.walletSecurity01, style: theme.textTheme.bodyMedium),
         SizedBox(
-          height: 10,
+          height: 8,
         ),
-        Text(localization.walletSecurity02, style: theme.textTheme.bodyLarge),
+        Text(localization.walletSecurity02, style: theme.textTheme.bodyMedium),
         SizedBox(
-          height: 10,
+          height: 8,
         ),
-        Text(localization.walletSecurity03, style: theme.textTheme.bodyLarge),
+        Text(localization.walletSecurity03, style: theme.textTheme.bodyMedium),
         SizedBox(
-          height: 10,
+          height: 8,
         ),
-        Text(localization.walletSecurity04, style: theme.textTheme.bodyLarge),
+        Text(localization.walletSecurity04, style: theme.textTheme.bodyMedium),
         SizedBox(
-          height: 10,
+          height: 8,
         ),
-        Text(localization.walletSecurity05, style: theme.textTheme.bodyLarge),
+        Text(localization.walletSecurity05, style: theme.textTheme.bodyMedium),
         SizedBox(
-          height: 10,
+          height: 4,
         ),
-        Text(localization.walletSecurity06, style: theme.textTheme.bodyLarge),
+        Text(localization.walletSecurity06, style: theme.textTheme.bodyMedium),
         SizedBox(
-          height: 10,
+          height: 8,
         ),
         LabeledCheckbox(
             focusNode: _checkBoxFocusNode,

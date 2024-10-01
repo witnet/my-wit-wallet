@@ -44,7 +44,7 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
         ),
         Text(
           localization.importMnemonic01,
-          style: theme.textTheme.bodyLarge, //Textstyle
+          style: theme.textTheme.bodyMedium, //Textstyle
         ), //Text
         SizedBox(
           height: 16,

@@ -40,7 +40,7 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
       ),
       Text(
         localization.welcome,
-        style: theme.textTheme.displayLarge,
+        style: theme.textTheme.displayLarge?.copyWith(height: 0),
       ),
       Carousel(list: [
         localization.carouselMsg01,

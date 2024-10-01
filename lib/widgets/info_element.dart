@@ -46,10 +46,10 @@ class InfoElement extends StatelessWidget {
       Text(
         label,
         style: plainText
-            ? theme.textTheme.bodyLarge
-            : theme.textTheme.displaySmall,
+            ? theme.textTheme.bodyMedium
+            : theme.textTheme.bodyLarge,
       ),
-      SizedBox(height: 8),
+      SizedBox(height: 4),
       copyText != null
           ? buildContentWithCopyIcon(context, theme)
           : buildContent(theme),
