@@ -28,10 +28,16 @@ class ApiExplorer {
   late ExplorerClient client;
   late Status status;
   ApiExplorer() {
-    client = (USE_EXPLORER_DEV)
-        ? ExplorerClient(
-            url: EXPLORER_DEV_ADDRESS, mode: ExplorerMode.development)
-        : ExplorerClient(url: EXPLORER_ADDRESS, mode: ExplorerMode.production);
+
+    if(USE_EXPLORER_MOCK) {
+      client = ExplorerClient(
+          url: EXPLORER_MOCK_ADDRESS, mode: ExplorerMode.development);
+    } else {
+      client = (USE_EXPLORER_DEV)
+          ? ExplorerClient(
+          url: EXPLORER_DEV_ADDRESS, mode: ExplorerMode.development)
+          : ExplorerClient(url: EXPLORER_ADDRESS, mode: ExplorerMode.production);
+    }
   }
 
   Future<dynamic> hash(String value, [bool simple = true]) async {
