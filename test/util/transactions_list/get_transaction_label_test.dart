@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/transactions_list/get_transaction_label.dart';
 import 'package:test/test.dart';
 import 'package:witnet/explorer.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   List<String> externalAddresses = [
     'wit10v6vv58udnxtw92ckkkfw2csg74x5aqewan4ac',
     'wit136ksszlmep3np2chvd9pp5vwhhnk5d30fljw08',
@@ -27,9 +29,16 @@ void main() {
   ];
 
   String transactionFromLabel = getTransactionLabel(
-      externalAddresses, internalAddresses, inputs, null, null);
-  String transactionToLabel =
-      getTransactionLabel([], [], inputs, singleAddressAccount, null);
+      externalAddresses: externalAddresses,
+      internalAddresses: internalAddresses,
+      inputs: inputs,
+      singleAddressAccount: null);
+
+  String transactionToLabel = getTransactionLabel(
+      externalAddresses: [],
+      internalAddresses: [],
+      inputs: inputs,
+      singleAddressAccount: singleAddressAccount);
 
   group(
       'getTransactionAddress',
@@ -37,7 +46,7 @@ void main() {
             test(
                 'with to label',
                 () => {
-                      expect(transactionToLabel, 'to'),
+                      expect(transactionToLabel, 'To'),
                     }),
             test(
                 'with from label',

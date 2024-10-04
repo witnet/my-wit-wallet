@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/widgets/copy_button.dart';
 import 'package:my_wit_wallet/widgets/link.dart';
 
 class InfoElement extends StatelessWidget {
@@ -8,6 +9,7 @@ class InfoElement extends StatelessWidget {
   final bool plainText;
   final Color? color;
   final bool isLastItem;
+  final String? copyText;
 
   const InfoElement({
     required this.label,
@@ -16,7 +18,27 @@ class InfoElement extends StatelessWidget {
     this.isLastItem = false,
     this.url,
     this.color,
+    this.copyText,
   });
+
+  Widget buildContentWithCopyIcon(BuildContext context, ThemeData theme) {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          buildContent(theme),
+          Flexible(child: CopyButton(copyContent: copyText ?? '')),
+        ]);
+  }
+
+  Widget buildContent(ThemeData theme) {
+    return url != null
+        ? CustomLink(text: text, url: url ?? '', color: color)
+        : Text(text,
+            style: (color != null
+                ? theme.textTheme.bodyLarge?.copyWith(color: color)
+                : theme.textTheme.bodyLarge));
+  }
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -28,12 +50,9 @@ class InfoElement extends StatelessWidget {
             : theme.textTheme.displaySmall,
       ),
       SizedBox(height: 8),
-      url != null
-          ? CustomLink(text: text, url: url ?? '')
-          : Text(text,
-              style: (color != null
-                  ? theme.textTheme.bodyLarge?.copyWith(color: color)
-                  : theme.textTheme.bodyLarge)),
+      copyText != null
+          ? buildContentWithCopyIcon(context, theme)
+          : buildContent(theme),
       SizedBox(height: isLastItem ? 0 : 16),
     ]);
   }

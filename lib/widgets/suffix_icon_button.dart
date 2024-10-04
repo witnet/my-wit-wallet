@@ -34,6 +34,6 @@ class SuffixIcon extends StatelessWidget {
         onPressed: onPressed,
         color: isFocus
             ? theme.textSelectionTheme.cursorColor
-            : theme.inputDecorationTheme.enabledBorder?.borderSide.color);
+            : theme.textTheme.bodyMedium!.color);
   }
 }

@@ -77,37 +77,45 @@ class HeaderLayout extends StatelessWidget {
                       : HEADER_HEIGHT,
                   width: MediaQuery.of(context).size.width,
                   color: extendedTheme.headerBackgroundColor,
-                  child: Column(children: [
-                    Container(
-                        padding: navigationBarPadding(),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: navigationActions.length > 1
-                              ? MainAxisAlignment.spaceBetween
-                              : MainAxisAlignment.start,
-                          children: navigationActions,
-                        )),
-                    Container(
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                          Flexible(
-                              child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                                minWidth: 50,
-                                maxWidth: dashboardActions != null
-                                    ? MediaQuery.of(context).size.width * 0.9
-                                    : MediaQuery.of(context).size.width * 0.3),
-                            child: Column(
-                              children: [
-                                dashboardActions != null
-                                    ? dashboardActions!
-                                    : witnetEyeIcon(theme,
-                                        height: witnetLogoHeight)
-                              ],
-                            ),
+                  child: Stack(children: [
+                    Positioned(
+                        top: -100,
+                        right: -60,
+                        child:
+                            svgThemeImage(theme, name: 'dots-bg', height: 270)),
+                    Column(children: [
+                      Container(
+                          padding: navigationBarPadding(),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: navigationActions.length > 1
+                                ? MainAxisAlignment.spaceBetween
+                                : MainAxisAlignment.start,
+                            children: navigationActions,
                           )),
-                        ])),
+                      Container(
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                            Flexible(
+                                child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  minWidth: 50,
+                                  maxWidth: dashboardActions != null
+                                      ? MediaQuery.of(context).size.width * 0.9
+                                      : MediaQuery.of(context).size.width *
+                                          0.3),
+                              child: Column(
+                                children: [
+                                  dashboardActions != null
+                                      ? dashboardActions!
+                                      : witnetEyeIcon(theme,
+                                          height: witnetLogoHeight)
+                                ],
+                              ),
+                            )),
+                          ])),
+                    ])
                   ]),
                 )))));
   }

@@ -106,14 +106,14 @@ TextTheme textTheme = TextTheme(
       fontWeight: FontWeight.normal),
 );
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
-  fillColor: WitnetPallet.black,
+  fillColor: WitnetPallet.darkGrey2,
   filled: true,
   errorStyle: TextStyle(color: WitnetPallet.brightRed),
   helperStyle: TextStyle(color: WitnetPallet.white),
   helperMaxLines: 1,
   errorMaxLines: 1,
-  hintStyle: TextStyle(color: WitnetPallet.lighterGrey),
-  labelStyle: TextStyle(color: WitnetPallet.opacityWhite),
+  hintStyle: TextStyle(color: WitnetPallet.mediumGrey),
+  labelStyle: TextStyle(color: WitnetPallet.mediumGrey),
   hoverColor: const Color.fromARGB(9, 255, 255, 255),
   focusColor: WitnetPallet.brightCyanOpacity1,
   isDense: true,
@@ -121,14 +121,12 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   contentPadding: EdgeInsets.all(16),
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: WitnetPallet.white, width: 1.0, style: BorderStyle.solid),
+        color: WitnetPallet.darkGrey2, width: 1.0, style: BorderStyle.solid),
     borderRadius: BorderRadius.circular(24),
   ),
   focusedBorder: OutlineInputBorder(
     borderSide: BorderSide(
-        color: WitnetPallet.brightCyanOpacity1,
-        width: 2.0,
-        style: BorderStyle.solid),
+        color: WitnetPallet.brightCyan, width: 2.0, style: BorderStyle.solid),
     borderRadius: BorderRadius.circular(24),
   ),
   errorBorder: OutlineInputBorder(
@@ -176,7 +174,7 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.all(16),
       foregroundColor: WitnetPallet.black,
-      backgroundColor: WitnetPallet.white,
+      backgroundColor: WitnetPallet.brightCyan,
       disabledForegroundColor:
           Color.fromARGB(102, 164, 212, 204).withOpacity(0.38),
       disabledBackgroundColor:

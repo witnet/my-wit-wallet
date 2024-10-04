@@ -88,7 +88,7 @@ class ToggleSwitch extends StatefulWidget {
     this.inactiveBgColor,
     this.inactiveFgColor,
     this.onToggle,
-    this.cornerRadius = 8.0,
+    this.cornerRadius = 24.0,
     this.initialLabelIndex = 0,
     this.minWidth = 72.0,
     this.minHeight = 40.0,

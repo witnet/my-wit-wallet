@@ -1,17 +1,15 @@
 import 'package:my_wit_wallet/util/storage/database/account.dart';
-import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:witnet/explorer.dart';
 
 String getTransactionLabel(
-    List<String?> externalAddresses,
-    List<String?> internalAddresses,
-    List<InputUtxo> inputs,
-    Account? singleAddressAccount,
-    BuildContext? context) {
+    {required List<String?> externalAddresses,
+    required List<String?> internalAddresses,
+    required List<InputUtxo> inputs,
+    required Account? singleAddressAccount}) {
   String label = '';
-  String _from = context != null ? localization.from : "from";
-  String _to = context != null ? localization.to : "to";
+  String _from = localization.from;
+  String _to = localization.to;
   if (inputs.length < 1) {
     return _from;
   }

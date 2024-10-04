@@ -44,7 +44,7 @@ TextTheme textTheme = TextTheme(
       fontFamily: 'Almarai',
       letterSpacing: 0,
       height: 1.15,
-      color: WitnetPallet.deepAqua,
+      color: WitnetPallet.black,
       fontSize: 16,
       fontWeight: FontWeight.normal),
   titleLarge: TextStyle(
@@ -100,7 +100,7 @@ TextTheme textTheme = TextTheme(
       fontFamily: 'Almarai',
       letterSpacing: 0,
       height: 1.15,
-      color: WitnetPallet.deepAqua,
+      color: WitnetPallet.black,
       fontSize: 16,
       fontWeight: FontWeight.normal),
 );
@@ -116,7 +116,7 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   helperStyle: TextStyle(color: WitnetPallet.darkerGrey),
   helperMaxLines: 1,
   errorMaxLines: 1,
-  hintStyle: TextStyle(),
+  hintStyle: TextStyle(color: WitnetPallet.mediumGrey),
   hoverColor: WitnetPallet.white,
   focusColor: WitnetPallet.brightCyan,
   isDense: true,
@@ -198,25 +198,25 @@ OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
   ),
 ));
 IconThemeData iconTheme = IconThemeData(
-  color: WitnetPallet.deepAqua,
+  color: WitnetPallet.black,
   size: 16,
 );
 IconThemeData primaryIconTheme = IconThemeData(
-  color: WitnetPallet.deepAqua,
+  color: WitnetPallet.black,
   size: 24,
 );
 CheckboxThemeData checkboxTheme = CheckboxThemeData(
   splashRadius: 0,
   side: WidgetStateBorderSide.resolveWith(
-      (_) => const BorderSide(width: 2, color: WitnetPallet.deepAqua)),
+      (_) => const BorderSide(width: 2, color: WitnetPallet.black)),
   fillColor: WidgetStateProperty.resolveWith((Set<WidgetState> states) {
     if (states.contains(WidgetState.selected)) {
-      return WitnetPallet.deepAqua;
+      return WitnetPallet.brightCyan;
     }
     return WitnetPallet.transparent;
   }),
-  checkColor: WidgetStateProperty.all(WitnetPallet.white),
-  overlayColor: WidgetStateProperty.all(WitnetPallet.white),
+  checkColor: WidgetStateProperty.all(WitnetPallet.black),
+  overlayColor: WidgetStateProperty.all(WitnetPallet.black),
 );
 
 Color getColorPrimary(Set<WidgetState> states) {
@@ -255,7 +255,7 @@ PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(
 );
 
 TimePickerThemeData timePickerTheme = TimePickerThemeData(
-  backgroundColor: const Color.fromARGB(255, 125, 80, 80),
+  backgroundColor: WitnetPallet.white,
   cancelButtonStyle: textButtonTheme.style,
   confirmButtonStyle: textButtonTheme.style,
 

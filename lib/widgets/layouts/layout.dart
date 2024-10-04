@@ -290,30 +290,20 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
 
   Widget dashboardBottomBar() {
     final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Container(
         decoration: BoxDecoration(
-            gradient: LinearGradient(
-          colors: [
-            theme.colorScheme.surface.withOpacity(0),
-            theme.colorScheme.surface.withOpacity(0.7),
-            theme.colorScheme.surface.withOpacity(0.8),
-            theme.colorScheme.surface.withOpacity(0.9),
-            theme.colorScheme.surface.withOpacity(0.95),
-            theme.colorScheme.surface.withOpacity(0.97),
-            theme.colorScheme.surface.withOpacity(0.98),
-            theme.colorScheme.surface.withOpacity(0.99),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: [0, 0.03, 0.05, 0.1, 0.15, 0.2, 0.95, 1],
-        )),
+            color: theme.colorScheme.surface,
+            border: Border(
+                top: BorderSide(
+                    width: 0.3, color: extendedTheme.txBorderColor!))),
         child: Padding(
             padding: EdgeInsets.only(top: 16),
             child: BottomAppBar(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 height: 60,
-                surfaceTintColor: theme.colorScheme.surface.withOpacity(0.0),
-                color: theme.colorScheme.surface.withOpacity(0.0),
+                surfaceTintColor: theme.colorScheme.surface,
+                color: theme.colorScheme.surface,
                 child: widget.bottomNavigation)));
   }
 

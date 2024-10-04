@@ -160,8 +160,7 @@ class ReviewStepState extends State<ReviewStep>
           builder: (context, state) {
             bool hasTimelock =
                 state.transaction.hasTimelock(state.transactionType);
-            String address =
-                state.transaction.getAddress(state.transactionType);
+            String address = state.transaction.getOrigin(state.transactionType);
             return Padding(
                 padding: EdgeInsets.only(left: 8, right: 8),
                 child: Column(

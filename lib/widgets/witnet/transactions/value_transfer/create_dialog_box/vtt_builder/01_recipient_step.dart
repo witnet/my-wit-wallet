@@ -245,7 +245,7 @@ class RecipientStepState extends State<RecipientStep>
     if (vttBloc.state.transaction.hasOutput(widget.transactionType)) {
       String? savedAddress =
           vttBloc.state.transaction.get(widget.transactionType) != null
-              ? vttBloc.state.transaction.getAddress(widget.transactionType)
+              ? vttBloc.state.transaction.getOrigin(widget.transactionType)
               : null;
       String? savedAmount =
           vttBloc.state.transaction.get(widget.transactionType) != null

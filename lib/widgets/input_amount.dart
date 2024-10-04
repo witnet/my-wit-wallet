@@ -48,47 +48,50 @@ typedef PointerDownCallback = void Function(PointerDownEvent);
 class _InputAmountState extends State<InputAmount> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      child: TextFormField(
-        decoration: InputDecoration(
-          hintText: widget.hint ?? localization.inputAmountHint,
-          errorText: widget.errorText,
-          contentPadding:
-              EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
-          prefixIcon:
-              widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
-          suffixText: WIT_UNIT[WitUnit.Wit],
-          suffixIconConstraints: BoxConstraints(minHeight: 44),
-          suffixIcon: widget.onSuffixTap != null
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          TextFormField(
+            decoration: InputDecoration(
+              hintText: widget.hint ?? localization.inputAmountHint,
+              errorText: widget.errorText,
+              prefixIcon:
+                  widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
+              suffixText: WIT_UNIT[WitUnit.Wit],
+              suffixIconConstraints: BoxConstraints(minHeight: 44),
+            ),
+            minLines: 1,
+            keyboardType: Platform.isIOS
+                ? TextInputType.numberWithOptions(signed: true, decimal: true)
+                : widget.keyboardType,
+            inputFormatters: [WitValueFormatter()],
+            style: theme.textTheme.bodyLarge,
+            autocorrect: false,
+            focusNode: widget.focusNode,
+            controller: widget.textEditingController,
+            onChanged: widget.onChanged ?? (String? value) {},
+            onEditingComplete: widget.onEditingComplete ?? () {},
+            onFieldSubmitted: widget.onFieldSubmitted ?? (String? value) {},
+            onTapOutside: widget.onTapOutside ?? (PointerDownEvent? event) {},
+            onTap: widget.onTap ?? () {},
+            validator: widget.validator,
+          ),
+          widget.onSuffixTap != null ? SizedBox(height: 8) : Container(),
+          widget.onSuffixTap != null
               ? Padding(
                   padding: EdgeInsets.only(left: 8),
                   child: Semantics(
-                    label: 'Max',
+                    label: 'Max amount',
                     child: PaddedButton(
                         padding: EdgeInsets.zero,
+                        boldText: true,
                         text: 'Max',
                         sizeCover: false,
                         onPressed: widget.onSuffixTap ?? () {},
-                        type: ButtonType.sufix),
+                        type: ButtonType.text),
                   ))
-              : null,
-        ),
-        minLines: 1,
-        keyboardType: Platform.isIOS
-            ? TextInputType.numberWithOptions(signed: true, decimal: true)
-            : widget.keyboardType,
-        inputFormatters: [WitValueFormatter()],
-        style: theme.textTheme.bodyLarge,
-        autocorrect: false,
-        focusNode: widget.focusNode,
-        controller: widget.textEditingController,
-        onChanged: widget.onChanged ?? (String? value) {},
-        onEditingComplete: widget.onEditingComplete ?? () {},
-        onFieldSubmitted: widget.onFieldSubmitted ?? (String? value) {},
-        onTapOutside: widget.onTapOutside ?? (PointerDownEvent? event) {},
-        onTap: widget.onTap ?? () {},
-        validator: widget.validator,
-      ),
-    );
+              : Container(),
+        ]);
   }
 }

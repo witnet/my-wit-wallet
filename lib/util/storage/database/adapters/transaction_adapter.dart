@@ -144,7 +144,7 @@ class BuildTransaction {
     }
   }
 
-  dynamic getAddress(layout.TransactionType txType) {
+  dynamic getOrigin(layout.TransactionType txType) {
     switch (txType) {
       case layout.TransactionType.Vtt:
         return this.vtTransaction?.body.outputs[0].pkh.address;

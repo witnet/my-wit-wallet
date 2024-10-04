@@ -304,7 +304,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                   activeFgColor: extendedTheme?.switchActiveFg,
                   inactiveFgColor: extendedTheme?.switchInactiveFg,
                   activeBgColor: [extendedTheme!.switchActiveBg!],
-                  cornerRadius: 4,
+                  cornerRadius: 24,
                   borderWidth: 1.0,
                   borderColor: [extendedTheme.switchBorderColor!],
                   totalSwitches: 2,

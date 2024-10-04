@@ -2,17 +2,16 @@ import 'package:flutter/material.dart'
     show Color, MaterialColor, WidgetState, WidgetStateColor;
 
 class WitnetPallet {
-  static const black = Color(0xFF1D1D1B);
+  static const black = Color(0xFF232323);
   static const white = Color(0xFFFFFFFF);
   static const opacityWhite = Color(0xAFFFFFFF);
   static const opacityWhite2 = Color(0xA0FFFFFF);
-  static const opacityBlack = Color(0xAF1D1D1B);
-  static const opacityBlack2 = Color(0xA01D1D1B);
 
   static const lighterGrey = Color(0xFFEDECEC);
   static const lightGrey = Color(0xFFBDBDBD);
-  static const mediumGrey = Color(0xFF656565);
+  static const mediumGrey = Color(0xFF707070);
   static const darkGrey = Color(0xFF424242);
+  static const darkGrey2 = Color(0xFF343434);
   static const darkerGrey = Color(0xFF292929);
 
   static const transparent = Color(0x00FFFFFF);
@@ -21,7 +20,6 @@ class WitnetPallet {
   static const transparentWhite = Color(0x10656565);
 
   static const brightCyan = Color(0xFF00E2ED);
-  static const deepAqua = Color(0xFF0099A1);
   static const brightCyanOpacity1 = Color.fromARGB(163, 0, 225, 237);
   static const brightCyanOpacity2 = Color.fromARGB(82, 0, 225, 237);
   static const brightCyanOpacity3 = Color.fromARGB(26, 0, 225, 237);

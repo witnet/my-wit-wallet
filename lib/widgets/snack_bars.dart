@@ -12,6 +12,8 @@ SnackBar buildCopiedSnackbar(ThemeData theme, String text) {
   final extendedTheme = theme.extension<ExtendedTheme>()!;
   return SnackBar(
     width: 150,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(24))),
     clipBehavior: Clip.none,
     content: Text(text,
         textAlign: TextAlign.center,

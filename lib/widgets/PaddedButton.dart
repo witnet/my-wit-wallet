@@ -20,12 +20,11 @@ enum ButtonType {
 enum IconPosition { left, right }
 
 Widget buildCircularProgress(context, ThemeData theme) {
-  final extendedTheme = theme.extension<ExtendedTheme>()!;
   return SizedBox(
       height: 20,
       width: 20,
       child: CircularProgressIndicator(
-        color: extendedTheme.spinnerColor,
+        color: theme.colorScheme.surface,
         strokeWidth: 2,
         value: null,
         semanticsLabel: 'Circular progress indicator',

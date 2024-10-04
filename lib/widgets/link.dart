@@ -5,11 +5,10 @@ import 'package:my_wit_wallet/theme/extended_theme.dart';
 class CustomLink extends StatelessWidget {
   final String text;
   final String url;
+  final Color? color;
 
-  const CustomLink({
-    required this.text,
-    required this.url,
-  });
+  const CustomLink(
+      {required this.text, required this.url, required this.color});
 
   _launchUrl(String searchItem) async {
     try {
@@ -29,6 +28,9 @@ class CustomLink extends StatelessWidget {
               padding: EdgeInsets.only(right: 8),
               child: Text(text,
                   style: extendedTheme.monoSmallText!.copyWith(
+                      color: color != null
+                          ? color
+                          : extendedTheme.monoSmallText!.color,
                       fontWeight: FontWeight.w400,
                       decoration: TextDecoration.underline))),
           onTap: () => {_launchUrl(url)},
