@@ -212,7 +212,7 @@ class TransactionUtils {
     if (label == localization.from) {
       return Text(
         ' + ${receiveValue().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
-        style: theme.textTheme.bodyLarge?.copyWith(
+        style: theme.textTheme.bodyMedium?.copyWith(
             color: _lockedWit > 0
                 ? WitnetPallet.mediumGrey
                 : extendedTheme.txValuePositiveColor),
@@ -221,7 +221,7 @@ class TransactionUtils {
     } else if (sendValue().standardizeWitUnits().toString() != '0') {
       return Text(
         ' - ${sendValue().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
-        style: theme.textTheme.bodyLarge?.copyWith(
+        style: theme.textTheme.bodyMedium?.copyWith(
             color: _lockedWit > 0
                 ? WitnetPallet.mediumGrey
                 : extendedTheme.txValueNegativeColor),
@@ -230,7 +230,7 @@ class TransactionUtils {
     } else {
       return Text(
         '${sendValue().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
-        style: theme.textTheme.bodyLarge!.copyWith(
+        style: theme.textTheme.bodyMedium!.copyWith(
             color: _lockedWit > 0
                 ? WitnetPallet.mediumGrey
                 : theme.textTheme.bodyLarge!.color),

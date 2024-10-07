@@ -66,7 +66,7 @@ class TransactionsItemState extends State<TransactionsItem> {
           transacionStatusCopy,
           textAlign: TextAlign.start,
           overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.bodySmall,
+          style: theme.textTheme.bodyMedium,
         ),
       ],
     );

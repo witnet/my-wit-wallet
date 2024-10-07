@@ -357,10 +357,10 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                     padding: EdgeInsets.only(left: 8),
                     child: Text(
                       localization.chooseMinerFee,
-                      style: theme.textTheme.titleSmall,
+                      style: theme.textTheme.titleMedium,
                     ))
               ]),
-              SizedBox(height: 16),
+              SizedBox(height: 8),
               _buildFeeOptionsButtonGroup(context),
               _buildCustomInput(context),
               if (_feeOption != EstimatedFeeOptions.Custom &&

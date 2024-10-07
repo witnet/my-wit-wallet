@@ -89,6 +89,7 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   hintStyle: bodyRegular,
   hoverColor: WitnetPallet.white,
   focusColor: WitnetPallet.brightCyan,
+  labelStyle: bodyRegular.copyWith(fontSize: 24),
   isDense: true,
   isCollapsed: false,
   contentPadding: EdgeInsets.all(16),
