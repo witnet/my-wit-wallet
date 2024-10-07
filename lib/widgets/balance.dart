@@ -13,6 +13,7 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/copy_button.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
@@ -93,43 +94,9 @@ class BalanceState extends State<Balance> {
                           .copyWith(color: extendedTheme.headerTextColor),
                     ))),
             Flexible(
-              child: PaddedButton(
-                  padding: EdgeInsets.zero,
-                  label: localization.copyAddressToClipboard,
-                  text: localization.copyAddressToClipboard,
-                  type: ButtonType.iconButton,
-                  color: extendedTheme.headerTextColor,
-                  iconSize: 12,
-                  onPressed: () async {
-                    if (!isAddressCopied) {
-                      await Clipboard.setData(
-                          ClipboardData(text: currentAccount.address));
-                      if (await Clipboard.hasStrings()) {
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            buildCopiedSnackbar(
-                                theme, localization.addressCopied));
-                        setState(() {
-                          isAddressCopied = true;
-                        });
-                        if (this.mounted) {
-                          Timer(Duration(milliseconds: 500), () {
-                            setState(() {
-                              isAddressCopied = false;
-                            });
-                          });
-                        }
-                      }
-                    }
-                  },
-                  icon: Icon(
-                    color: extendedTheme.headerTextColor,
-                    isAddressCopied
-                        ? FontAwesomeIcons.check
-                        : FontAwesomeIcons.copy,
-                    size: 12,
-                  )),
-            ),
+                child: CopyButton(
+                    copyContent: currentAccount.address,
+                    color: extendedTheme.headerTextColor)),
           ]),
         ],
       );

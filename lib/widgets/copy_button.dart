@@ -12,7 +12,8 @@ typedef void VoidCallback();
 
 class CopyButton extends StatefulWidget {
   final String copyContent;
-  CopyButton({required this.copyContent});
+  final Color? color;
+  CopyButton({required this.copyContent, this.color});
 
   @override
   CopyButtonState createState() => CopyButtonState();
@@ -31,7 +32,9 @@ class CopyButtonState extends State<CopyButton> {
         label: localization.copyAddressToClipboard,
         text: localization.copyAddressToClipboard,
         type: ButtonType.iconButton,
-        color: extendedTheme.headerTextColor,
+        color: widget.color != null
+            ? extendedTheme.headerTextColor
+            : theme.textTheme.bodyMedium!.color,
         iconSize: 12,
         onPressed: () async {
           if (!isAddressCopied) {
@@ -54,7 +57,9 @@ class CopyButtonState extends State<CopyButton> {
           }
         },
         icon: Icon(
-          color: extendedTheme.headerTextColor,
+          color: widget.color != null
+              ? extendedTheme.headerTextColor
+              : theme.textTheme.bodyMedium!.color,
           isAddressCopied ? FontAwesomeIcons.check : FontAwesomeIcons.copy,
           size: 12,
         ));

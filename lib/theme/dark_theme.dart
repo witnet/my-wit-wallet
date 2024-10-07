@@ -322,8 +322,8 @@ DatePickerThemeData datePickerTheme = DatePickerThemeData(
     side: BorderSide.none,
     borderRadius: BorderRadius.all(Radius.circular(10)),
   ),
-  headerBackgroundColor: WitnetPallet.brightCyanOpacity1,
-  headerForegroundColor: WitnetPallet.lightGrey,
+  headerBackgroundColor: WitnetPallet.brightCyan,
+  headerForegroundColor: WitnetPallet.black,
   headerHelpStyle: textTheme.titleLarge!.copyWith(color: WitnetPallet.white),
   weekdayStyle: TextStyle(color: WitnetPallet.lightGrey),
   dayStyle:
