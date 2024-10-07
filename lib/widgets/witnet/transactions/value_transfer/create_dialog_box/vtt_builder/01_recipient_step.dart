@@ -392,7 +392,7 @@ class RecipientStepState extends State<RecipientStep>
       SizedBox(height: 16),
       Text(
         localization.amount,
-        style: theme.textTheme.titleSmall,
+        style: theme.textTheme.titleMedium,
       ),
       SizedBox(height: 8),
       InputAmount(
@@ -428,7 +428,7 @@ class RecipientStepState extends State<RecipientStep>
       SizedBox(height: 16),
       Text(
         localization.amount,
-        style: theme.textTheme.titleSmall,
+        style: theme.textTheme.titleMedium,
       ),
       SizedBox(height: 8),
       InputSlider(
@@ -530,7 +530,7 @@ class RecipientStepState extends State<RecipientStep>
     return [
       Text(
         localization.withdrawalAddress,
-        style: theme.textTheme.titleSmall,
+        style: theme.textTheme.titleMedium,
       ),
       SizedBox(height: 8),
       TextFormField(
@@ -581,7 +581,7 @@ class RecipientStepState extends State<RecipientStep>
     return [
       Text(
         localization.address,
-        style: theme.textTheme.titleSmall,
+        style: theme.textTheme.titleMedium,
       ),
       SizedBox(height: 8),
       TextFormField(

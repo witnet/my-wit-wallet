@@ -164,8 +164,7 @@ class PaddedButton extends StatelessWidget {
             Text(text,
                 style: theme.textTheme.labelMedium!.copyWith(
                     fontSize: 14,
-                    fontWeight: boldText ? FontWeight.bold : FontWeight.normal,
-                    color: color ?? null)),
+                    fontWeight: boldText ? FontWeight.bold : FontWeight.normal)),
             Padding(padding: EdgeInsets.only(left: 8)),
             iconPosition == IconPosition.right ? icon : Container(),
           ]),
