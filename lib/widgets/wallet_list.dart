@@ -116,6 +116,7 @@ class WalletListState extends State<WalletList> {
       padding: EdgeInsets.all(0),
       text: localization.createOrImportLabel,
       color: theme.textTheme.displayMedium!.color,
+      fontSize: 13,
       boldText: false,
       onPressed: () => {
         _createImportWallet(),

@@ -116,8 +116,8 @@ class PaddedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
           minimumSize: sizeCover ? Size(double.infinity, 54) : null,
           backgroundColor: color != null ? color : null,
-          textStyle: theme.textTheme.labelLarge
-              ?.copyWith(fontWeight: FontWeight.bold)),
+          textStyle: theme.textTheme.labelMedium
+              ?.copyWith(fontWeight: FontWeight.w600)),
       child: isLoading ? buildCircularProgress(context, theme) : child,
       onPressed: enabled ? onPressed : null,
     );
@@ -138,7 +138,7 @@ class PaddedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         minimumSize: sizeCover ? Size(double.infinity, 54) : null,
       ),
-      child: isLoading ? buildCircularProgress(context, theme) : Text(text),
+      child: isLoading ? buildCircularProgress(context, theme) : Text(text, style: theme.textTheme.labelMedium),
       onPressed: onPressed,
     );
 
@@ -164,7 +164,7 @@ class PaddedButton extends StatelessWidget {
                 : Container(),
             Text(text,
                 style: theme.textTheme.labelMedium!.copyWith(
-                    fontSize: 14,
+                    fontSize: fontSize,
                     fontWeight:
                         boldText ? FontWeight.bold : FontWeight.normal)),
             Padding(padding: EdgeInsets.only(left: 8)),
@@ -206,7 +206,7 @@ class PaddedButton extends StatelessWidget {
                   overlayColor:
                       WidgetStateProperty.all(WitnetPallet.transparentWhite))
               : theme.textButtonTheme.style,
-          child: Semantics(excludeSemantics: true, label: label, child: icon),
+          child: icon,
           onPressed: onPressed,
         ));
 

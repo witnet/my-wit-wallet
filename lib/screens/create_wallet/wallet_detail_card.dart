@@ -157,14 +157,14 @@ class WalletDetailCardState extends State<WalletDetailCard>
         ),
         Text(
           localization.walletDetail01,
-          style: theme.textTheme.bodyLarge, //Textstyle
+          style: theme.textTheme.bodyMedium, //Textstyle
         ), //Text
         SizedBox(
           height: 8,
         ), //SizedBox
         Text(
           localization.walletDetail02,
-          style: theme.textTheme.bodyLarge, //Textstyle
+          style: theme.textTheme.bodyMedium, //Textstyle
         ),
         SizedBox(
           height: 16,

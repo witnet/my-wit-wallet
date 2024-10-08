@@ -99,7 +99,7 @@ class DisclaimerCardState extends State<DisclaimerCard>
         SizedBox(
           height: 8,
         ),
-        Text(localization.walletSecurity01, style: theme.textTheme.bodyMedium),
+        Text(localization.walletSecurity01, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400)),
         SizedBox(
           height: 8,
         ),

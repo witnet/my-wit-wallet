@@ -52,7 +52,7 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
         TextField(
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.go,
-          style: theme.textTheme.displayMedium,
+          style: theme.textTheme.displaySmall,
           maxLines: 3,
           controller: textController,
           onSubmitted: (value) => {

@@ -74,7 +74,7 @@ TextTheme textTheme = TextTheme(
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.white,
   filled: true,
-  errorStyle: bodyRegular.copyWith(color: WitnetPallet.darkRed),
+  errorStyle: bodyRegular.copyWith(color: WitnetPallet.darkRed, fontSize: 12),
   errorBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.darkRed, width: 1.0, style: BorderStyle.solid),
@@ -145,6 +145,7 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
     ),
   ),
 );
+
 ProgressIndicatorThemeData progressIndicatorTheme = ProgressIndicatorThemeData(
     refreshBackgroundColor: WitnetPallet.brightCyanOpacity1);
 OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(

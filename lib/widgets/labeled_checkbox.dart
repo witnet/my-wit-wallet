@@ -35,20 +35,24 @@ class LabeledCheckbox extends StatelessWidget {
                   },
                 )),
             MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () {
-                    final bool valueToSend = !checked;
-                    onChanged(valueToSend);
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 8, top: 8, bottom: 8),
-                    child: Text(label,
-                        style: checked
-                            ? theme.textTheme.labelMedium
-                            : theme.textTheme.bodyLarge),
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () {
+                  final bool valueToSend = !checked;
+                  onChanged(valueToSend);
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                  child: Text(
+                    label,
+                    style: checked
+                        ? theme.textTheme.labelMedium
+                        : theme.textTheme.labelMedium?.copyWith(
+                            color: theme.textTheme.bodyMedium?.color),
                   ),
-                ))
+                ),
+              ),
+            )
           ],
         ));
   }

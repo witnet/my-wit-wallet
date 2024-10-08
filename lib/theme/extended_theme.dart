@@ -380,7 +380,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         fontSize: 16),
     mediumPanelText: TextStyle(
         fontFamily: 'Poppins',
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w500,
         color: WitnetPallet.darkerGrey,
         fontSize: 16),
   );
