@@ -34,7 +34,7 @@ class TimelockInput extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(localization.timelock, style: theme.textTheme.titleSmall),
+              Text(localization.timelock, style: theme.textTheme.titleMedium),
               SizedBox(width: 8),
               Tooltip(
                   margin: EdgeInsets.all(8),

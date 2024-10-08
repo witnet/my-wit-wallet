@@ -358,7 +358,7 @@ class RecipientStepState extends State<RecipientStep>
                 PaddedButton(
                   padding: EdgeInsets.all(0),
                   text: localization.addTimelockLabel,
-                  boldText: true,
+                  boldText: false,
                   onPressed: () {
                     setState(() {
                       showAdvancedSettings = !showAdvancedSettings;
