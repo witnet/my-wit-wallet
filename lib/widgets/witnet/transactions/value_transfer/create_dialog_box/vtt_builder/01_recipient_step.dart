@@ -467,7 +467,7 @@ class RecipientStepState extends State<RecipientStep>
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(localization.authorization, style: theme.textTheme.titleSmall),
+            Text(localization.authorization, style: theme.textTheme.titleMedium),
             SizedBox(width: 8),
             Tooltip(
                 margin: EdgeInsets.all(8),

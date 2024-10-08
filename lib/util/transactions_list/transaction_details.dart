@@ -233,7 +233,7 @@ class TransactionUtils {
         style: theme.textTheme.bodyMedium!.copyWith(
             color: _lockedWit > 0
                 ? WitnetPallet.mediumGrey
-                : theme.textTheme.bodyLarge!.color),
+                : theme.textTheme.bodyMedium!.color),
         overflow: TextOverflow.ellipsis,
       );
     }

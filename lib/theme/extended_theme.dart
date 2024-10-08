@@ -369,7 +369,11 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         fontWeight: FontWeight.w400,
         color: WitnetPallet.darkGrey,
         fontSize: 16),
-
+    monoBoldText: TextStyle(
+        fontFamily: 'NimbusMono',
+        fontWeight: FontWeight.w700,
+        color: WitnetPallet.darkGrey,
+        fontSize: 16),
     regularPanelText: TextStyle(
         fontFamily: 'Poppins',
         fontWeight: FontWeight.w400,
@@ -380,11 +384,6 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         fontWeight: FontWeight.w700,
         color: WitnetPallet.darkerGrey,
         fontSize: 16),
-      monoBoldText: TextStyle(
-      fontFamily: 'NimbusMono',
-      fontWeight: FontWeight.w700,
-      color: WitnetPallet.darkGrey,
-      fontSize: 16),
   );
   // the dark theme
   static const dark = ExtendedTheme(

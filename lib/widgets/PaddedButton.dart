@@ -116,6 +116,7 @@ class PaddedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         minimumSize: sizeCover ? Size(double.infinity, 54) : null,
         backgroundColor: color != null ? color : null,
+        textStyle: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold)
       ),
       child: isLoading ? buildCircularProgress(context, theme) : child,
       onPressed: enabled ? onPressed : null,

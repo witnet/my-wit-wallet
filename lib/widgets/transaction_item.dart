@@ -66,7 +66,7 @@ class TransactionsItemState extends State<TransactionsItem> {
           transacionStatusCopy,
           textAlign: TextAlign.start,
           overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.bodyMedium,
+          style: theme.textTheme.bodyMedium?.copyWith(fontSize: 11),
         ),
       ],
     );
@@ -152,9 +152,7 @@ class TransactionsItemState extends State<TransactionsItem> {
                               Text(
                                 address,
                                 overflow: TextOverflow.fade,
-                                style: extendedTheme.regularPanelText!.copyWith(
-                                    color: theme.textTheme.bodyMedium!.color),
-                              ),
+                                style: extendedTheme.monoRegularText?.copyWith(fontSize: 14))
                             ],
                           )),
                         ],

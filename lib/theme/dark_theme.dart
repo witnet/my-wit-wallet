@@ -55,29 +55,29 @@ TextTheme textTheme = TextTheme(
   headlineMedium: titleRegular.copyWith(fontSize: 24),
   headlineSmall: titleRegular.copyWith(fontSize: 16),
   titleLarge: titleBold.copyWith(
-    color: WitnetPallet.opacityWhite,
+    color: WitnetPallet.white,
     fontSize: 18,
   ),
   titleMedium: titleBold.copyWith(
-    color: WitnetPallet.opacityWhite,
+    color: WitnetPallet.white,
     fontSize: 16,
   ),
   titleSmall: bodyRegular.copyWith(fontSize: 9),
-  bodyLarge: bodyRegular.copyWith(
-    color: WitnetPallet.opacityWhite,
+  bodyLarge: bodyBold.copyWith(
+    color: WitnetPallet.white,
     fontSize: 13,
   ),
-  bodyMedium: bodyRegular.copyWith(
+  bodyMedium: bodyMedium.copyWith(
     color: WitnetPallet.opacityWhite,
     fontSize: 12,
     height: 0
   ),
-  bodySmall: bodyRegular.copyWith(
+  bodySmall: bodyLight.copyWith(
     color: WitnetPallet.opacityWhite,
     fontSize: 10,
   ),
   labelLarge: bodyRegular.copyWith(
-    color: WitnetPallet.opacityWhite,
+    color: WitnetPallet.white,
     fontSize: 16,
   ),
   labelMedium: bodyRegular.copyWith(fontSize: 13),
