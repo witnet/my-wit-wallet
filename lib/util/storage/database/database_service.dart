@@ -6,7 +6,6 @@ import 'package:my_wit_wallet/util/storage/database/get_account_unstakes_map.dar
 import 'package:my_wit_wallet/util/storage/database/get_account_vtts_map.dart';
 import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
-import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/constants.dart';
