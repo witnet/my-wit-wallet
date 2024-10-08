@@ -36,8 +36,8 @@ class InfoElement extends StatelessWidget {
         ? CustomLink(text: text, url: url ?? '', color: color)
         : Text(text,
             style: (color != null
-                ? theme.textTheme.bodyLarge?.copyWith(color: color)
-                : theme.textTheme.bodyLarge));
+                ? theme.textTheme.bodyMedium?.copyWith(color: color)
+                : theme.textTheme.bodyMedium));
   }
 
   Widget build(BuildContext context) {

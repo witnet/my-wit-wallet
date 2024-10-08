@@ -159,6 +159,7 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
               : localization.continueLabel,
           type: ButtonType.primary,
           enabled: true,
+          boldText: true,
           onPressed: () => {
                 if (nextAction != null)
                   {
