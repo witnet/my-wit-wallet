@@ -62,7 +62,9 @@ TextTheme textTheme = TextTheme(
     color: WitnetPallet.white,
     fontSize: 16,
   ),
-  titleSmall: bodyRegular.copyWith(fontSize: 9,),
+  titleSmall: bodyRegular.copyWith(
+    fontSize: 9,
+  ),
   bodyLarge: bodyBold.copyWith(
     color: WitnetPallet.white,
     fontSize: 13,
