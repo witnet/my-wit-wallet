@@ -60,10 +60,7 @@ TextTheme textTheme = TextTheme(
     titleMedium: titleMedium.copyWith(fontSize: 16),
     titleSmall: titleRegular.copyWith(fontSize: 9),
     bodyLarge: bodyBold.copyWith(fontSize: 13),
-    bodyMedium: bodyMedium.copyWith(
-      fontSize: 13,
-      height: 0
-    ),
+    bodyMedium: bodyMedium.copyWith(fontSize: 13, height: 0),
     bodySmall: bodyRegular.copyWith(fontSize: 10),
     labelLarge: bodyBold.copyWith(
       color: WitnetPallet.white,
@@ -121,18 +118,19 @@ CardTheme cardTheme = CardTheme(
   color: WitnetPallet.black,
 );
 ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
-  style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.all(16),
-      backgroundColor: WitnetPallet.black,
-      disabledForegroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.38),
-      disabledBackgroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.12),
-      foregroundColor: WitnetPallet.lighterGrey,
-      splashFactory: NoSplash.splashFactory,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)), // background color
-      textStyle: bodyRegular.copyWith(
-      fontSize: 16,
-      color: WitnetPallet.white,
-        ),
+    style: ElevatedButton.styleFrom(
+  padding: const EdgeInsets.all(16),
+  backgroundColor: WitnetPallet.black,
+  disabledForegroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.38),
+  disabledBackgroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.12),
+  foregroundColor: WitnetPallet.lighterGrey,
+  splashFactory: NoSplash.splashFactory,
+  shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(4)), // background color
+  textStyle: bodyRegular.copyWith(
+    fontSize: 16,
+    color: WitnetPallet.white,
+  ),
 ));
 TextButtonThemeData textButtonTheme = TextButtonThemeData(
   style: TextButton.styleFrom(

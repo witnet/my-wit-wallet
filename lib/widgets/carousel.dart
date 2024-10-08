@@ -70,7 +70,6 @@ class _CarouselState extends State<Carousel> {
         item,
         style: theme.textTheme.bodyMedium?.copyWith(fontSize: 13),
         textAlign: TextAlign.center,
-
       ),
     );
   }

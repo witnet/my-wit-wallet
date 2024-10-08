@@ -82,7 +82,8 @@ class WalletConfigState extends State<WalletConfig> {
             style: theme.textTheme.titleMedium,
           ),
           SizedBox(height: 8),
-          Text(localization.messageSigning01, style: theme.textTheme.bodyMedium),
+          Text(localization.messageSigning01,
+              style: theme.textTheme.bodyMedium),
           PaddedButton(
               padding: EdgeInsets.only(bottom: 16, top: 16),
               text: localization.signMessage,

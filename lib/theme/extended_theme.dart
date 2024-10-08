@@ -3,7 +3,6 @@ import 'colors.dart';
 
 @immutable
 class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
-
   const ExtendedTheme({
     required this.monoBoldText,
     required this.selectBackgroundColor,
@@ -313,7 +312,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       mediumPanelText:
           TextStyle.lerp(mediumPanelText, other.mediumPanelText, t),
       navigationColor: Color.lerp(navigationColor, other.navigationColor, t),
-        monoBoldText: TextStyle.lerp(monoBoldText, other.monoBoldText, t),
+      monoBoldText: TextStyle.lerp(monoBoldText, other.monoBoldText, t),
     );
   }
 
@@ -448,9 +447,9 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         color: WitnetPallet.white,
         fontSize: 16),
     monoBoldText: TextStyle(
-      fontFamily: 'NimbusMono',
-      fontWeight: FontWeight.w700,
-      color: WitnetPallet.opacityWhite,
-      fontSize: 16),
+        fontFamily: 'NimbusMono',
+        fontWeight: FontWeight.w700,
+        color: WitnetPallet.opacityWhite,
+        fontSize: 16),
   );
 }

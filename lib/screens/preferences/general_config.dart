@@ -198,7 +198,8 @@ class GeneralConfigState extends State<GeneralConfig> {
           SizedBox(height: 12),
           Text(
             localization.versionNumber(VERSION_NUMBER),
-            style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+            style: theme.textTheme.bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w700),
           ),
         ]));
   }
