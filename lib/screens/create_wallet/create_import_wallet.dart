@@ -123,11 +123,11 @@ class CreateImportWalletState extends State<CreateImportWallet> {
         SizedBox(height: 16),
         Text(
           localization.createImportWallet01,
-          style: theme.textTheme.bodyLarge,
+          style: theme.textTheme.bodyMedium,
         ),
         SizedBox(height: 16),
         Text(localization.createImportWallet02,
-            style: theme.textTheme.bodyLarge)
+            style: theme.textTheme.bodyMedium)
       ],
     );
   }

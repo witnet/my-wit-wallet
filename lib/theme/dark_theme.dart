@@ -46,43 +46,43 @@ final TextStyle titleExtraBold = o.copyWith(fontWeight: FontWeight.w800);
 final TextStyle titleBlack = o.copyWith(fontWeight: FontWeight.w900);
 
 TextTheme textTheme = TextTheme(
-  displayLarge: titleBold.copyWith(
-    color: WitnetPallet.opacityWhite,
+  displayLarge: titleSemiBold.copyWith(
+    color: WitnetPallet.white,
     fontSize: 24,
   ),
-  displayMedium: titleBold.copyWith(fontSize: 18),
-  displaySmall: titleBold.copyWith(fontSize: 16),
+  displayMedium: titleMedium.copyWith(fontSize: 18),
+  displaySmall: titleRegular.copyWith(fontSize: 16),
   headlineMedium: titleRegular.copyWith(fontSize: 24),
   headlineSmall: titleRegular.copyWith(fontSize: 16),
-  titleLarge: titleBold.copyWith(
+  titleLarge: titleSemiBold.copyWith(
     color: WitnetPallet.white,
     fontSize: 18,
   ),
-  titleMedium: titleBold.copyWith(
+  titleMedium: titleMedium.copyWith(
     color: WitnetPallet.white,
     fontSize: 16,
   ),
-  titleSmall: bodyRegular.copyWith(fontSize: 9),
+  titleSmall: bodyRegular.copyWith(fontSize: 9,),
   bodyLarge: bodyBold.copyWith(
     color: WitnetPallet.white,
     fontSize: 13,
   ),
   bodyMedium: bodyMedium.copyWith(
-      color: WitnetPallet.opacityWhite, fontSize: 12, height: 0),
+      color: WitnetPallet.opacityWhite, fontSize: 13, height: 0),
   bodySmall: bodyLight.copyWith(
     color: WitnetPallet.opacityWhite,
-    fontSize: 10,
+    fontSize: 11,
   ),
   labelLarge: bodyRegular.copyWith(
     color: WitnetPallet.white,
     fontSize: 16,
   ),
-  labelMedium: bodyRegular.copyWith(fontSize: 13),
+  labelMedium: bodyRegular.copyWith(fontSize: 14),
 );
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.darkGrey2,
   filled: true,
-  errorStyle: bodyRegular.copyWith(color: WitnetPallet.brightRed),
+  errorStyle: bodyRegular.copyWith(color: WitnetPallet.brightRed, fontSize: 12),
   helperStyle: bodyRegular.copyWith(color: WitnetPallet.white),
   helperMaxLines: 1,
   errorMaxLines: 1,
@@ -149,7 +149,7 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
     disabledBackgroundColor:
         Color.fromARGB(102, 164, 212, 204).withOpacity(0.12),
     shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4)), // background color
+        borderRadius: BorderRadius.circular(24)), // background color
     textStyle: bodyRegular.copyWith(fontSize: 16),
   ),
 );

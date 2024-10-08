@@ -75,20 +75,19 @@ class SelectWalletBox extends StatelessWidget {
               )),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(left: 16, right: 16),
+              padding: EdgeInsets.only(left: 16, right: 16, top: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     walletName,
                     overflow: TextOverflow.ellipsis,
-                    style: textStyle.copyWith(fontSize: 14),
+                    style: textStyle.copyWith(fontSize: 12, height: 1),
                   ),
                   Text(
                     address,
                     overflow: TextOverflow.ellipsis,
-                    style: extendedTheme.monoRegularText!
-                        .copyWith(color: WitnetPallet.white),
+                    style: extendedTheme.monoRegularText?.copyWith(color: WitnetPallet.white, height: 1.3),
                   ),
                 ],
               ),
@@ -103,7 +102,7 @@ class SelectWalletBox extends StatelessWidget {
                 '$balance ${WIT_UNIT[WitUnit.Wit]}',
                 textAlign: TextAlign.end,
                 overflow: TextOverflow.ellipsis,
-                style: textStyle,
+                style: textStyle.copyWith(fontSize: 13),
               )
             ]),
           ),

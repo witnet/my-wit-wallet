@@ -145,7 +145,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
             flex: 1,
             child: Text(
               localization.buildWallet01,
-              style: theme.textTheme.bodyLarge,
+              style: theme.textTheme.bodyMedium,
             ))
       ]),
       SizedBox(
@@ -261,7 +261,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
                           Row(
                             children: [
                               Text(localization.buildWalletBalance,
-                                  style: theme.textTheme.bodyLarge),
+                                  style: theme.textTheme.bodyMedium),
                               SizedBox(
                                 height: 8,
                               ),
@@ -290,7 +290,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
               Row(
                 children: [
                   Text(localization.transactionsFound,
-                      style: theme.textTheme.bodyLarge!),
+                      style: theme.textTheme.bodyMedium!),
                   AutoSizeText(
                     '$currentTransactionCount',
                     maxLines: 2,
@@ -304,8 +304,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
                   children: [
                     AutoSizeText(
                       localization.exploredAddresses,
-                      maxLines: 2,
-                      minFontSize: 16,
+                      style: theme.textTheme.bodyMedium,
                     ),
                     AnimatedIntegerText(
                         initialValue: currentAddressCount,
