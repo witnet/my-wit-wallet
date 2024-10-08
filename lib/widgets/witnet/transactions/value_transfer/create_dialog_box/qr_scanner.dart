@@ -58,7 +58,8 @@ class QrScanner extends StatelessWidget {
                             Padding(
                               padding: EdgeInsets.only(right: 16),
                               child: Text(localization.scanAqrCode,
-                                  style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white)),
+                                  style: theme.textTheme.bodyMedium
+                                      ?.copyWith(color: Colors.white)),
                             )
                           ],
                         ))))

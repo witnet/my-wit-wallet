@@ -57,9 +57,10 @@ void buildGeneralExceptionModal({
                           child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Text(errorMessage,
-                                  style: extendedTheme.monoRegularText!.copyWith(
-                                      color: WitnetPallet.darkGrey,
-                                      fontSize: 12)))),
+                                  style: extendedTheme.monoRegularText!
+                                      .copyWith(
+                                          color: WitnetPallet.darkGrey,
+                                          fontSize: 12)))),
                       Flexible(
                           flex: 1,
                           child: PaddedButton(
