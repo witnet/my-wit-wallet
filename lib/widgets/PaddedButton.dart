@@ -208,7 +208,7 @@ class PaddedButton extends StatelessWidget {
                   overlayColor:
                       WidgetStateProperty.all(WitnetPallet.transparentWhite))
               : theme.textButtonTheme.style,
-          child: icon,
+          child: Semantics(excludeSemantics: true, label: label, child: icon),
           onPressed: onPressed,
         ));
 

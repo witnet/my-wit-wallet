@@ -306,19 +306,19 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
           ),
           Text(
             localization.importXprv01,
-            style: theme.textTheme.bodyLarge, //Textstyle
+            style: theme.textTheme.bodyMedium, //Textstyle
           ),
           SizedBox(height: 8),
           Text(
             localization.importXprv02,
-            style: theme.textTheme.bodyLarge, //Textstyle
+            style: theme.textTheme.bodyMedium, //Textstyle
           ),
           SizedBox(
             height: 16,
           ),
           Text(
             localization.xprvOrigin,
-            style: theme.textTheme.titleSmall,
+            style: theme.textTheme.labelMedium,
           ),
           SizedBox(height: 8),
           Select(
