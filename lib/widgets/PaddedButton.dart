@@ -31,22 +31,6 @@ Widget buildCircularProgress(context, ThemeData theme) {
       ));
 }
 
-class BaseButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
-}
-
-class PrimaryButton extends BaseButton {
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
-}
-
 class PaddedButton extends StatelessWidget {
   PaddedButton(
       {required this.padding,
