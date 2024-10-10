@@ -27,7 +27,7 @@ class CustomSwitch extends StatelessWidget {
           padding: EdgeInsets.only(left: 16),
           child: Text(
             primaryLabel,
-            style: theme.textTheme.bodyMedium?.copyWith(fontSize: 14),
+            style: theme.textTheme.bodyMedium,
           )),
       Container(
           color: isFocused ? extendedTheme.focusBg : null,

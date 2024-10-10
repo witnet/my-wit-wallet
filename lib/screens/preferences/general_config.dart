@@ -181,7 +181,7 @@ class GeneralConfigState extends State<GeneralConfig> {
             localization.theme,
             style: theme.textTheme.titleMedium,
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 16),
           themeWidget(theme, context),
           ...showAuthModeSettings(theme),
           CustomDivider(),
@@ -190,16 +190,15 @@ class GeneralConfigState extends State<GeneralConfig> {
             style: theme.textTheme.titleMedium,
           ),
           PaddedButton(
-              padding: EdgeInsets.only(bottom: 16, top: 10),
+              padding: EdgeInsets.only(bottom: 16, top: 16),
               text: localization.lockWalletLabel,
               type: ButtonType.primary,
               enabled: true,
               onPressed: () => logout(context)),
-          SizedBox(height: 12),
+          SizedBox(height: 16),
           Text(
             localization.versionNumber(VERSION_NUMBER),
-            style: theme.textTheme.bodyMedium
-                ?.copyWith(fontWeight: FontWeight.w700),
+            style: theme.textTheme.bodyLarge,
           ),
         ]));
   }
