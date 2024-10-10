@@ -126,7 +126,7 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   foregroundColor: WitnetPallet.lighterGrey,
   splashFactory: NoSplash.splashFactory,
   shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(4)), // background color
+      borderRadius: BorderRadius.circular(24)), // background color
   textStyle: bodyRegular.copyWith(
     fontSize: 16,
     color: WitnetPallet.white,
