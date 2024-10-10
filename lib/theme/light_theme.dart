@@ -138,7 +138,7 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     splashFactory: NoSplash.splashFactory,
     shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8))),
+        borderRadius: BorderRadius.all(Radius.circular(24))),
     textStyle: bodyRegular.copyWith(
       fontSize: 16,
       color: WitnetPallet.black,
