@@ -53,6 +53,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.mediumPanelText,
     required this.navigationColor,
     required this.navigationPointerActiveButton,
+    required this.monoSmallText,
+    required this.monoMediumText,
   });
   final Color? selectBackgroundColor;
   final Color? selectedTextColor;
@@ -82,9 +84,11 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? dialogBackground;
   final Color? copiedSnackbarBg;
   final Color? copiedSnackbarText;
+  final TextStyle? monoSmallText;
   final TextStyle? monoRegularText;
-  final Color? spinnerColor;
+  final TextStyle? monoMediumText;
   final TextStyle? monoBoldText;
+  final Color? spinnerColor;
   final Color? errorColor;
   final Color? activeClickableBoxBgColor;
   final Color? activeClickableBoxBorderColor;
@@ -221,6 +225,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       mediumPanelText: mediumPanelText ?? this.mediumPanelText,
       navigationColor: navigationColor ?? this.navigationColor,
       monoBoldText: monoBoldText ?? this.monoBoldText,
+      monoSmallText: monoSmallText ?? this.monoSmallText,
+      monoMediumText: monoMediumText ?? this.monoMediumText,
     );
   }
 
@@ -313,6 +319,8 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
           TextStyle.lerp(mediumPanelText, other.mediumPanelText, t),
       navigationColor: Color.lerp(navigationColor, other.navigationColor, t),
       monoBoldText: TextStyle.lerp(monoBoldText, other.monoBoldText, t),
+      monoSmallText: TextStyle.lerp(monoSmallText, other.monoSmallText, t),
+      monoMediumText: TextStyle.lerp(monoMediumText, other.monoMediumText, t),
     );
   }
 
@@ -363,7 +371,17 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     tooltipBgColor: Color.fromARGB(255, 214, 217, 220),
     hdWalletTypeBgColor: WitnetPallet.mediumGrey,
     singleWalletBgColor: WitnetPallet.brown,
+    monoSmallText: TextStyle(
+        fontFamily: 'NimbusMono',
+        fontWeight: FontWeight.w400,
+        color: WitnetPallet.darkGrey,
+        fontSize: 12),
     monoRegularText: TextStyle(
+        fontFamily: 'NimbusMono',
+        fontWeight: FontWeight.w400,
+        color: WitnetPallet.darkGrey,
+        fontSize: 14),
+    monoMediumText: TextStyle(
         fontFamily: 'NimbusMono',
         fontWeight: FontWeight.w400,
         color: WitnetPallet.darkGrey,
@@ -431,9 +449,24 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     hdWalletTypeBgColor: WitnetPallet.mediumGrey,
     singleWalletBgColor: WitnetPallet.brown,
     navigationColor: WitnetPallet.black,
+    monoSmallText: TextStyle(
+        fontFamily: 'NimbusMono',
+        fontWeight: FontWeight.w400,
+        color: WitnetPallet.darkGrey,
+        fontSize: 12),
     monoRegularText: TextStyle(
         fontFamily: 'NimbusMono',
         fontWeight: FontWeight.w400,
+        color: WitnetPallet.opacityWhite,
+        fontSize: 14),
+    monoMediumText: TextStyle(
+        fontFamily: 'NimbusMono',
+        fontWeight: FontWeight.w400,
+        color: WitnetPallet.opacityWhite,
+        fontSize: 16),
+    monoBoldText: TextStyle(
+        fontFamily: 'NimbusMono',
+        fontWeight: FontWeight.w700,
         color: WitnetPallet.opacityWhite,
         fontSize: 16),
     regularPanelText: TextStyle(
@@ -445,11 +478,6 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         fontFamily: 'Almarai',
         fontWeight: FontWeight.w700,
         color: WitnetPallet.white,
-        fontSize: 16),
-    monoBoldText: TextStyle(
-        fontFamily: 'NimbusMono',
-        fontWeight: FontWeight.w700,
-        color: WitnetPallet.opacityWhite,
         fontSize: 16),
   );
 }

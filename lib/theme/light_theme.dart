@@ -47,7 +47,7 @@ final TextStyle titleBlack = o.copyWith(fontWeight: FontWeight.w900);
 TextTheme textTheme = TextTheme(
     displayLarge: titleBold.copyWith(fontSize: 24),
     displayMedium: titleMedium.copyWith(fontSize: 18),
-    displaySmall: titleRegular.copyWith(fontSize: 16),
+    displaySmall: titleRegular.copyWith(fontSize: 13),
     headlineMedium: titleRegular.copyWith(
       color: WitnetPallet.black,
       fontSize: 24,
