@@ -49,7 +49,7 @@ class DashedRect extends StatelessWidget {
                                 ..color = extendedTheme.monoBoldText!.color!
                                 ..maskFilter =
                                     MaskFilter.blur(BlurStyle.normal, 6))
-                          : extendedTheme.monoBoldText,
+                          : extendedTheme.monoBoldText?.copyWith(fontSize: 18),
                     )),
           showEye && container == null
               ? Padding(
