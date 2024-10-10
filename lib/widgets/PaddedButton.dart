@@ -137,10 +137,10 @@ class PaddedButton extends StatelessWidget {
     Widget secondaryButton = OutlinedButton(
       style: ElevatedButton.styleFrom(
         minimumSize: sizeCover ? Size(double.infinity, 54) : null,
+        textStyle:
+            theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w600),
       ),
-      child: isLoading
-          ? buildCircularProgress(context, theme)
-          : Text(text, style: theme.textTheme.labelMedium),
+      child: isLoading ? buildCircularProgress(context, theme) : Text(text),
       onPressed: onPressed,
     );
 

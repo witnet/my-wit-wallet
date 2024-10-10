@@ -87,8 +87,7 @@ class SelectWalletBox extends StatelessWidget {
                   Text(
                     address,
                     overflow: TextOverflow.ellipsis,
-                    style: extendedTheme.monoRegularText
-                        ?.copyWith(color: WitnetPallet.white, height: 1.3),
+                    style: extendedTheme.monoRegularText?.copyWith(height: 1.3),
                   ),
                 ],
               ),

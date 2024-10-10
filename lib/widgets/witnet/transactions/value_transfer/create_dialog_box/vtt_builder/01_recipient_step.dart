@@ -476,7 +476,7 @@ class RecipientStepState extends State<RecipientStep>
                   borderRadius: BorderRadius.circular(24),
                   color: theme.colorScheme.surface,
                 ),
-                textStyle: theme.textTheme.bodyMedium,
+                textStyle: theme.textTheme.titleMedium,
                 height: 60,
                 message: localization.autorizationTooltip,
                 child: MouseRegion(
@@ -535,7 +535,6 @@ class RecipientStepState extends State<RecipientStep>
       ),
       SizedBox(height: 8),
       TextFormField(
-        style: theme.textTheme.bodyLarge,
         decoration: InputDecoration(
           hintText: localization.withdrawalAddress,
           suffixIcon: !Platform.isWindows && !Platform.isLinux

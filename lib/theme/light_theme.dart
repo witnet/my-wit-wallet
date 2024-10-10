@@ -63,12 +63,12 @@ TextTheme textTheme = TextTheme(
     bodyMedium: bodyMedium.copyWith(fontSize: 13, height: 0),
     bodySmall: bodyRegular.copyWith(fontSize: 10),
     labelLarge: bodyBold.copyWith(
-      color: WitnetPallet.white,
-      fontSize: 13,
+      color: WitnetPallet.black,
+      fontSize: 16,
     ),
     labelMedium: bodyRegular.copyWith(
       color: WitnetPallet.black,
-      fontSize: 16,
+      fontSize: 13,
     ));
 
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
