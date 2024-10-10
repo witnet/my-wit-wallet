@@ -318,7 +318,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
           ),
           Text(
             localization.xprvOrigin,
-            style: theme.textTheme.labelMedium,
+            style: theme.textTheme.titleMedium,
           ),
           SizedBox(height: 8),
           Select(
