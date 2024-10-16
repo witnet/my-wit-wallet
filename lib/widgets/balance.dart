@@ -17,8 +17,7 @@ import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 typedef void VoidCallback();
 
 class Balance extends StatefulWidget {
-  Balance({required this.currentWallet, required this.onShowBalanceDetails});
-  final Wallet currentWallet;
+  Balance({required this.onShowBalanceDetails});
   final VoidCallback onShowBalanceDetails;
 
   @override
@@ -37,6 +36,8 @@ class BalanceState extends State<Balance> {
         builder: (BuildContext context, DashboardState state) {
       Account currentAccount =
           Locator.instance.get<ApiDatabase>().walletStorage.currentAccount;
+      Wallet currentWallet =
+          Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -56,7 +57,7 @@ class BalanceState extends State<Balance> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                    '${widget.currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
+                                    '${currentWallet.balanceNanoWit().availableNanoWit.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
                                     textAlign: TextAlign.center,
                                     style: theme.textTheme.titleLarge!.copyWith(
                                         color: extendedTheme.headerTextColor)),
