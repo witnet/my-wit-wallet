@@ -6,7 +6,6 @@ import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/util/is_desktop_size.dart';
 import 'package:my_wit_wallet/util/panel.dart';
-import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/balance.dart';
 import 'package:my_wit_wallet/widgets/balance_details.dart';
