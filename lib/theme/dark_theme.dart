@@ -46,32 +46,20 @@ final TextStyle titleExtraBold = o.copyWith(fontWeight: FontWeight.w800);
 final TextStyle titleBlack = o.copyWith(fontWeight: FontWeight.w900);
 
 TextTheme textTheme = TextTheme(
-  displayLarge: titleBold.copyWith(color: WitnetPallet.white, fontSize: 57),
-  displayMedium: titleBold.copyWith(color: WitnetPallet.white, fontSize: 45),
-  displaySmall: titleBold.copyWith(color: WitnetPallet.white, fontSize: 36),
-  headlineLarge: titleBold.copyWith(color: WitnetPallet.white, fontSize: 32),
-  headlineMedium: titleBold.copyWith(
-    color: WitnetPallet.white,
-    fontSize: 28,
-  ),
-  headlineSmall: titleBold.copyWith(
-    color: WitnetPallet.white,
-    fontSize: 24,
-  ),
-  titleLarge: titleBold.copyWith(fontSize: 22, color: WitnetPallet.white),
-  titleMedium: titleBold.copyWith(fontSize: 16, color: WitnetPallet.white),
-  titleSmall: titleBold.copyWith(fontSize: 14, color: WitnetPallet.white),
-  bodyLarge: bodyMedium.copyWith(fontSize: 16),
-  bodyMedium: bodyMedium.copyWith(fontSize: 14),
-  bodySmall: bodyMedium.copyWith(fontSize: 12),
-  labelLarge: bodyMedium.copyWith(
-    color: WitnetPallet.white,
-    fontSize: 14,
-  ),
-  labelMedium: bodyMedium.copyWith(
-    color: WitnetPallet.white,
-    fontSize: 12,
-  ),
+  displayLarge: titleBold.copyWith(fontSize: 57),
+  displayMedium: titleBold.copyWith(fontSize: 45),
+  displaySmall: titleBold.copyWith(fontSize: 36),
+  headlineLarge: titleBold.copyWith(fontSize: 32),
+  headlineMedium: titleBold.copyWith(fontSize: 28),
+  headlineSmall: titleBold.copyWith(fontSize: 24),
+  titleLarge: titleBold.copyWith(fontSize: 22),
+  titleMedium: titleBold.copyWith(fontSize: 16),
+  titleSmall: titleBold.copyWith(fontSize: 14),
+  bodyLarge: bodyMedium.copyWith(fontSize: 16, color: WitnetPallet.lightGrey),
+  bodyMedium: bodyMedium.copyWith(fontSize: 14, color: WitnetPallet.lightGrey),
+  bodySmall: bodyMedium.copyWith(fontSize: 12, color: WitnetPallet.lightGrey),
+  labelLarge: bodyMedium.copyWith(fontSize: 14),
+  labelMedium: bodyMedium.copyWith(fontSize: 12),
   labelSmall: bodyMedium.copyWith(fontSize: 11),
 );
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
