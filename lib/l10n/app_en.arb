@@ -223,7 +223,7 @@
 	"messageSigning01": "Prove the ownership of your address by adding your signature to a message.",
 	"messageToBeSigned": "Message to be signed",
 	"mined": "Mined",
-	"minerFeeHint": "By default, `Absolute fee` is selected.\\nTo set a custom weighted fee, you need to select 'Weighted'. \\nThe Weighted fee is automatically calculated by the wallet considering the network congestion and transaction weight multiplied by the value selected as custom.",
+	"minerFeeHint": "By default, 'Absolute fee' is selected.\nTo set a custom weighted fee, you need to select 'Weighted'. \nThe Weighted fee is automatically calculated by the wallet considering the network congestion and transaction weight multiplied by the value selected as custom.",
 	"minerFeeInputHint": "Input the miner fee",
 	"mintTxn": "Mint",
 	"minutes": "Minutes",

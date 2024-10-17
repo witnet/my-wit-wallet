@@ -153,7 +153,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
               children: [
                 Text(
                   localization.generatedAddresses,
-                  style: theme.textTheme.displayMedium,
+                  style: theme.textTheme.titleLarge,
                   textAlign: TextAlign.start,
                 ),
               ],

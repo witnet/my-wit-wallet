@@ -45,7 +45,6 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     required this.numberPaginatiorUnselectedFg,
     required this.darkBgFocusColor,
     required this.focusBg,
-    required this.tooltipBgColor,
     required this.hdWalletTypeBgColor,
     required this.singleWalletBgColor,
     required this.warningColor,
@@ -100,7 +99,6 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? numberPaginatiorUnselectedFg;
   final Color? darkBgFocusColor;
   final Color? focusBg;
-  final Color? tooltipBgColor;
   final Color? hdWalletTypeBgColor;
   final Color? singleWalletBgColor;
   final Color? warningColor;
@@ -150,7 +148,6 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       Color? numberPaginatiorUnselectedFg,
       Color? darkBgFocusColor,
       Color? focusBg,
-      Color? tooltipBgColor,
       Color? hdWalletTypeBgColor,
       Color? singleWalletBgColor,
       Color? warningColor,
@@ -218,7 +215,6 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
           numberPaginatiorUnselectedFg ?? this.numberPaginatiorUnselectedFg,
       darkBgFocusColor: darkBgFocusColor ?? this.darkBgFocusColor,
       focusBg: focusBg ?? this.focusBg,
-      tooltipBgColor: tooltipBgColor ?? this.tooltipBgColor,
       hdWalletTypeBgColor: hdWalletTypeBgColor ?? this.hdWalletTypeBgColor,
       singleWalletBgColor: singleWalletBgColor ?? this.singleWalletBgColor,
       warningColor: warningColor ?? this.warningColor,
@@ -309,7 +305,6 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
           TextStyle.lerp(monoRegularText, other.monoRegularText, t),
       darkBgFocusColor: Color.lerp(darkBgFocusColor, other.darkBgFocusColor, t),
       focusBg: Color.lerp(focusBg, other.focusBg, t),
-      tooltipBgColor: Color.lerp(focusBg, other.focusBg, t),
       hdWalletTypeBgColor:
           Color.lerp(hdWalletTypeBgColor, other.hdWalletTypeBgColor, t),
       singleWalletBgColor:
@@ -372,7 +367,6 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     darkBgFocusColor: Color.fromARGB(21, 65, 190, 165),
     focusBg: Color.fromARGB(7, 1, 1, 1),
     backgroundBox: Color.fromRGBO(114, 114, 114, 0.08),
-    tooltipBgColor: WitnetPallet.lighterGrey,
     hdWalletTypeBgColor: WitnetPallet.mediumGrey,
     singleWalletBgColor: WitnetPallet.brown,
     monoSmallText: TextStyle(
@@ -454,7 +448,6 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     darkBgFocusColor: Color.fromARGB(21, 65, 190, 165),
     focusBg: Color.fromARGB(14, 255, 255, 255),
     backgroundBox: Color.fromARGB(14, 255, 255, 255),
-    tooltipBgColor: WitnetPallet.black,
     hdWalletTypeBgColor: WitnetPallet.mediumGrey,
     singleWalletBgColor: WitnetPallet.brown,
     navigationColor: WitnetPallet.black,

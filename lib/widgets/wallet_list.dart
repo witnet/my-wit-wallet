@@ -123,7 +123,7 @@ class WalletListState extends State<WalletList> {
       },
       icon: Icon(
         FontAwesomeIcons.circlePlus,
-        color: theme.textTheme.displayMedium!.color,
+        color: theme.textTheme.titleLarge!.color,
         size: 18,
       ),
       type: ButtonType.horizontalIcon,

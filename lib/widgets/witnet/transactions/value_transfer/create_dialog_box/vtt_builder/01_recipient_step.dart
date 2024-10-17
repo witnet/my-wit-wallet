@@ -470,12 +470,6 @@ class RecipientStepState extends State<RecipientStep>
             Text(localization.authorization, style: theme.textTheme.labelLarge),
             SizedBox(width: 8),
             Tooltip(
-                margin: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  color: theme.colorScheme.surface,
-                ),
-                textStyle: theme.textTheme.labelLarge,
                 height: 60,
                 message: localization.autorizationTooltip,
                 child: MouseRegion(

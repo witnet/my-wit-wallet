@@ -75,7 +75,6 @@ class TopNavigation extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Tooltip(
-                      margin: EdgeInsets.all(8),
                       height: 50,
                       richMessage: TextSpan(
                         text: currentWallet.name,

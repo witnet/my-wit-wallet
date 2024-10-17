@@ -106,9 +106,11 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   alignLabelWithHint: true,
 );
 TooltipThemeData tooltipTheme = TooltipThemeData(
+    margin: EdgeInsets.all(8),
+    padding: EdgeInsets.all(16),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(24),
-      color: WitnetPallet.black,
+      color: WitnetPallet.darkerGrey,
     ),
     textStyle: bodyRegular.copyWith(color: WitnetPallet.white, fontSize: 12));
 TextButtonThemeData textButtonTheme = TextButtonThemeData(
