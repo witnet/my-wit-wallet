@@ -92,7 +92,7 @@ class TransactionsItemState extends State<TransactionsItem> {
     TransactionValue transactionValue = transactionUtils!.getTransactionValue();
 
     return Text(' ${transactionValue.prefix} ${transactionValue.amount}',
-        style: theme.textTheme.bodyMedium?.copyWith(
+        style: theme.textTheme.labelLarge?.copyWith(
           color: getAmountColor(transactionValue.prefix),
           overflow: TextOverflow.ellipsis,
         ));

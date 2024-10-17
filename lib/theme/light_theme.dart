@@ -45,21 +45,22 @@ final TextStyle titleExtraBold = o.copyWith(fontWeight: FontWeight.w800);
 final TextStyle titleBlack = o.copyWith(fontWeight: FontWeight.w900);
 
 TextTheme textTheme = TextTheme(
-  displayLarge: titleBold.copyWith(fontSize: 57),
-  displayMedium: titleBold.copyWith(fontSize: 45),
-  displaySmall: titleBold.copyWith(fontSize: 36),
-  headlineLarge: titleBold.copyWith(fontSize: 32),
-  headlineMedium: titleBold.copyWith(fontSize: 28),
-  headlineSmall: titleBold.copyWith(fontSize: 24),
-  titleLarge: titleBold.copyWith(fontSize: 22),
-  titleMedium: titleBold.copyWith(fontSize: 16),
-  titleSmall: titleBold.copyWith(fontSize: 14),
-  bodyLarge: bodyMedium.copyWith(fontSize: 16, color: WitnetPallet.mediumGrey),
-  bodyMedium: bodyMedium.copyWith(fontSize: 14, color: WitnetPallet.mediumGrey),
-  bodySmall: bodyMedium.copyWith(fontSize: 12, color: WitnetPallet.mediumGrey),
-  labelLarge: bodyBold.copyWith(fontSize: 14),
-  labelMedium: bodyBold.copyWith(fontSize: 12),
-  labelSmall: bodyBold.copyWith(fontSize: 11),
+  displayLarge: titleMedium.copyWith(fontSize: 57),
+  displayMedium: titleMedium.copyWith(fontSize: 45),
+  displaySmall: titleMedium.copyWith(fontSize: 36),
+  headlineLarge: titleMedium.copyWith(fontSize: 32),
+  headlineMedium: titleMedium.copyWith(fontSize: 28),
+  headlineSmall: titleMedium.copyWith(fontSize: 24),
+  titleLarge: titleRegular.copyWith(fontSize: 22),
+  titleMedium: titleRegular.copyWith(fontSize: 16),
+  titleSmall: titleRegular.copyWith(fontSize: 14),
+  bodyLarge: bodyRegular.copyWith(fontSize: 16, color: WitnetPallet.mediumGrey),
+  bodyMedium:
+      bodyRegular.copyWith(fontSize: 14, color: WitnetPallet.mediumGrey),
+  bodySmall: bodyRegular.copyWith(fontSize: 12, color: WitnetPallet.mediumGrey),
+  labelLarge: bodyMedium.copyWith(fontSize: 14),
+  labelMedium: bodyMedium.copyWith(fontSize: 12),
+  labelSmall: bodyMedium.copyWith(fontSize: 11),
 );
 
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
@@ -144,6 +145,8 @@ TooltipThemeData tooltipTheme = TooltipThemeData(
       borderRadius: BorderRadius.circular(24),
       color: WitnetPallet.lighterGrey,
     ),
+    margin: EdgeInsets.all(8),
+    padding: EdgeInsets.all(16),
     textStyle: bodyRegular.copyWith(color: WitnetPallet.black, fontSize: 12));
 
 ProgressIndicatorThemeData progressIndicatorTheme = ProgressIndicatorThemeData(

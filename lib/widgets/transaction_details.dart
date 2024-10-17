@@ -102,6 +102,7 @@ class TransactionDetails extends StatelessWidget {
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     TransactionUtils transactionUtils = TransactionUtils(vti: transaction);
     String label = transactionUtils.getLabel();
     String? timelock = transactionUtils.timelock();
@@ -126,10 +127,14 @@ class TransactionDetails extends StatelessWidget {
               text: transactionType(transaction.type)),
           InfoElement(
               label: localization.from.toTitleCase(),
-              text: transactionUtils.getSenderAddress()),
+              copyText: transactionUtils.getSenderAddress(),
+              fontFamily: extendedTheme.monoRegularText!.fontFamily,
+              text: transactionUtils.getSenderAddress().cropMiddle(30)),
           InfoElement(
               label: localization.to,
-              text: transactionUtils.getRecipientAddress()),
+              copyText: transactionUtils.getRecipientAddress(),
+              fontFamily: extendedTheme.monoRegularText!.fontFamily,
+              text: transactionUtils.getRecipientAddress().cropMiddle(30)),
           InfoElement(
             label: localization.amount,
             text: transactionUtils.getTransactionValue().amount,

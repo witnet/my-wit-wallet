@@ -476,8 +476,8 @@ class RecipientStepState extends State<RecipientStep>
       SizedBox(height: 8),
       TextField(
         decoration: InputDecoration(
-          hintStyle: theme.textTheme.bodyLarge!.copyWith(
-              color: theme.textTheme.titleLarge!.color!.withOpacity(0.5)),
+          hintStyle: extendedTheme.monoMediumText!.copyWith(
+              color: extendedTheme.monoMediumText!.color!.withOpacity(0.5)),
           hintText: localization.authorizationInputHint,
           contentPadding: EdgeInsets.all(16),
           suffixIcon: !Platform.isWindows && !Platform.isLinux
@@ -502,7 +502,7 @@ class RecipientStepState extends State<RecipientStep>
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.go,
         focusNode: _authorizationFocusNode,
-        style: theme.textTheme.bodyLarge,
+        style: extendedTheme.monoMediumText,
         maxLines: 3,
         controller: _authorizationController,
         onSubmitted: (value) async {
@@ -519,11 +519,13 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   List<Widget> _buildWithdrawalAddressInput(ThemeData theme) {
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return [
       LabeledFormEntry(
           label: localization.withdrawalAddress,
           formEntry: TextFormField(
             decoration: InputDecoration(
+              hintStyle: extendedTheme.monoMediumText,
               hintText: localization.withdrawalAddress,
               suffixIcon: !Platform.isWindows && !Platform.isLinux
                   ? Semantics(
@@ -546,6 +548,7 @@ class RecipientStepState extends State<RecipientStep>
                   : null,
               errorText: _address.error,
             ),
+            style: extendedTheme.monoMediumText,
             controller: _addressController,
             focusNode: _addressFocusNode,
             keyboardType: TextInputType.text,
@@ -566,12 +569,14 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   List<Widget> _buildReceiverAddressInput(ThemeData theme) {
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return [
       LabeledFormEntry(
         label: localization.address,
         formEntry: TextFormField(
-          style: theme.textTheme.bodyLarge,
+          style: extendedTheme.monoMediumText,
           decoration: InputDecoration(
+            hintStyle: extendedTheme.monoMediumText,
             hintText: localization.recipientAddress,
             suffixIcon: !Platform.isWindows && !Platform.isLinux
                 ? Semantics(

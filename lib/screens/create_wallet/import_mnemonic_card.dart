@@ -33,7 +33,6 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
 
   Widget _buildConfirmField() {
     final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -53,11 +52,11 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
         ),
         TextField(
           decoration: InputDecoration(
-              hintStyle: extendedTheme.monoLargeText!.copyWith(
-                  color: extendedTheme.monoLargeText!.color!.withOpacity(0.5))),
+              hintStyle: theme.textTheme.titleLarge!.copyWith(
+                  color: theme.textTheme.titleLarge!.color!.withOpacity(0.5))),
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.go,
-          style: extendedTheme.monoLargeText,
+          style: theme.textTheme.titleLarge,
           maxLines: 3,
           controller: textController,
           onSubmitted: (value) => {

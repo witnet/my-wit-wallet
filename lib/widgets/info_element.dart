@@ -10,12 +10,14 @@ class InfoElement extends StatelessWidget {
   final Color? color;
   final bool isLastItem;
   final String? copyText;
+  final String? fontFamily;
 
   const InfoElement({
     required this.label,
     required this.text,
     this.plainText = false,
     this.isLastItem = false,
+    this.fontFamily,
     this.url,
     this.color,
     this.copyText,
@@ -31,13 +33,20 @@ class InfoElement extends StatelessWidget {
         ]);
   }
 
+  TextStyle getContentStyle(ThemeData theme) {
+    String? fontFamily = this.fontFamily != null
+        ? this.fontFamily
+        : theme.textTheme.bodyMedium!.fontFamily;
+    Color? color =
+        this.color != null ? this.color : theme.textTheme.bodyMedium!.color;
+    return theme.textTheme.bodyMedium!
+        .copyWith(color: color, fontFamily: fontFamily);
+  }
+
   Widget buildContent(ThemeData theme) {
     return url != null
         ? CustomLink(text: text, url: url ?? '', color: color)
-        : Text(text,
-            style: (color != null
-                ? theme.textTheme.bodyMedium?.copyWith(color: color)
-                : theme.textTheme.bodyMedium));
+        : Text(text, style: getContentStyle(theme));
   }
 
   Widget build(BuildContext context) {

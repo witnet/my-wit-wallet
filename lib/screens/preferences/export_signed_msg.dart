@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dart_date/dart_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/storage/path_provider_interface.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
@@ -54,6 +55,7 @@ class ExportSignMessageState extends State<ExportSignMessage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return FutureBuilder(
         future: _getPermissionStatus(),
         builder: (context, AsyncSnapshot<PermissionStatus> snapshot) {
@@ -64,6 +66,7 @@ class ExportSignMessageState extends State<ExportSignMessage> {
             DashedRect(
                 color: Colors.grey,
                 strokeWidth: 1.0,
+                textStyle: extendedTheme.monoLargeText,
                 gap: 3.0,
                 showEye: true,
                 blur: !_showMessage,

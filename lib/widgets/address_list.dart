@@ -7,6 +7,7 @@ import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
@@ -107,7 +108,7 @@ class AddressListState extends State<AddressList> {
                       children: [
                         Expanded(
                           child: Text(
-                            account.address,
+                            account.address.cropMiddle(18),
                             overflow: TextOverflow.ellipsis,
                             style: textStyle,
                           ),

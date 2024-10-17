@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/identicon.dart';
@@ -84,7 +85,7 @@ class SelectWalletBox extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    address,
+                    address.cropMiddle(15),
                     overflow: TextOverflow.ellipsis,
                     style: extendedTheme.monoSmallText,
                   ),

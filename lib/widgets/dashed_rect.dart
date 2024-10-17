@@ -9,6 +9,7 @@ typedef void VoidCallback();
 class DashedRect extends StatelessWidget {
   final Color color;
   final double strokeWidth;
+  final TextStyle? textStyle;
   final double gap;
   final bool blur;
   final bool showEye;
@@ -18,6 +19,7 @@ class DashedRect extends StatelessWidget {
   DashedRect(
       {this.color = Colors.black,
       this.updateBlur,
+      this.textStyle,
       this.strokeWidth = 1.0,
       this.blur = false,
       this.showEye = false,
@@ -29,6 +31,8 @@ class DashedRect extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
+    TextStyle? textStyle =
+        this.textStyle != null ? this.textStyle : theme.textTheme.titleLarge;
     return Container(
         child: Padding(
       padding: EdgeInsets.all(strokeWidth / 2),
@@ -43,13 +47,13 @@ class DashedRect extends StatelessWidget {
                   : Text(
                       text,
                       style: blur
-                          ? extendedTheme.monoLargeText!.copyWith(
+                          ? textStyle!.copyWith(
                               foreground: Paint()
                                 ..style = PaintingStyle.fill
-                                ..color = extendedTheme.monoLargeText!.color!
+                                ..color = textStyle.color!
                                 ..maskFilter =
                                     MaskFilter.blur(BlurStyle.normal, 6))
-                          : extendedTheme.monoLargeText,
+                          : textStyle,
                     )),
           showEye && container == null
               ? Padding(

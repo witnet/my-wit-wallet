@@ -388,7 +388,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         fontFamily: 'NimbusMono',
         fontWeight: FontWeight.w500,
         color: WitnetPallet.darkGrey,
-        fontSize: 22),
+        fontSize: 18),
     monoBoldText: TextStyle(
         fontFamily: 'NimbusMono',
         fontWeight: FontWeight.w700,

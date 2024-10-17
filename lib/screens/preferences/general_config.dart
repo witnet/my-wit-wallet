@@ -198,7 +198,7 @@ class GeneralConfigState extends State<GeneralConfig> {
           SizedBox(height: 16),
           Text(
             localization.versionNumber(VERSION_NUMBER),
-            style: theme.textTheme.bodySmall,
+            style: theme.textTheme.labelMedium,
           ),
         ]));
   }

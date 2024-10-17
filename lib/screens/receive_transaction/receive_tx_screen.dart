@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -130,6 +131,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
   Widget _buildReceiveTransactionScreen() {
     final theme = Theme.of(context);
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
 
     return Padding(
         padding: EdgeInsets.only(left: 8, right: 8),
@@ -141,6 +143,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
             SizedBox(height: 24),
             DashedRect(
               color: WitnetPallet.brightCyan,
+              textStyle: extendedTheme.monoLargeText,
               strokeWidth: 1.0,
               gap: 3.0,
               text: selectedAccount!.address,

@@ -72,7 +72,6 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -91,7 +90,7 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
           height: 16,
         ),
         TextField(
-          style: extendedTheme.monoLargeText,
+          style: theme.textTheme.titleLarge,
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.go,
           maxLines: 3,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -43,6 +44,7 @@ class ExportXprvState extends State<ExportXprv> {
   Widget _exportWalletContent(BuildContext context) {
     globals.biometricsAuthInProgress = false;
     final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     Wallet currentWallet =
         Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
     bool isSingleAddressWallet = currentWallet.walletType == WalletType.single;
@@ -68,6 +70,7 @@ class ExportXprvState extends State<ExportXprv> {
       DashedRect(
           color: Colors.grey,
           strokeWidth: 1.0,
+          textStyle: extendedTheme.monoLargeText,
           gap: 3.0,
           showEye: true,
           blur: !showXprv,
