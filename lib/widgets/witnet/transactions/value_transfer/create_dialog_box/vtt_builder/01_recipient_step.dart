@@ -392,7 +392,7 @@ class RecipientStepState extends State<RecipientStep>
       SizedBox(height: 16),
       Text(
         localization.amount,
-        style: theme.textTheme.titleMedium,
+        style: theme.textTheme.labelLarge,
       ),
       SizedBox(height: 8),
       InputAmount(
@@ -428,7 +428,7 @@ class RecipientStepState extends State<RecipientStep>
       SizedBox(height: 16),
       Text(
         localization.amount,
-        style: theme.textTheme.titleMedium,
+        style: theme.textTheme.labelLarge,
       ),
       SizedBox(height: 8),
       InputSlider(
@@ -467,8 +467,7 @@ class RecipientStepState extends State<RecipientStep>
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(localization.authorization,
-                style: theme.textTheme.titleMedium),
+            Text(localization.authorization, style: theme.textTheme.labelLarge),
             SizedBox(width: 8),
             Tooltip(
                 margin: EdgeInsets.all(8),
@@ -476,7 +475,7 @@ class RecipientStepState extends State<RecipientStep>
                   borderRadius: BorderRadius.circular(24),
                   color: theme.colorScheme.surface,
                 ),
-                textStyle: theme.textTheme.titleMedium,
+                textStyle: theme.textTheme.labelLarge,
                 height: 60,
                 message: localization.autorizationTooltip,
                 child: MouseRegion(
@@ -487,6 +486,8 @@ class RecipientStepState extends State<RecipientStep>
       SizedBox(height: 8),
       TextField(
         decoration: InputDecoration(
+          hintStyle: theme.textTheme.bodyLarge!.copyWith(
+              color: theme.textTheme.titleLarge!.color!.withOpacity(0.5)),
           hintText: localization.authorizationInputHint,
           contentPadding: EdgeInsets.all(16),
           suffixIcon: !Platform.isWindows && !Platform.isLinux
@@ -511,7 +512,7 @@ class RecipientStepState extends State<RecipientStep>
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.go,
         focusNode: _authorizationFocusNode,
-        style: theme.textTheme.displayMedium,
+        style: theme.textTheme.bodyLarge,
         maxLines: 3,
         controller: _authorizationController,
         onSubmitted: (value) async {
@@ -531,7 +532,7 @@ class RecipientStepState extends State<RecipientStep>
     return [
       Text(
         localization.withdrawalAddress,
-        style: theme.textTheme.titleMedium,
+        style: theme.textTheme.labelLarge,
       ),
       SizedBox(height: 8),
       TextFormField(
@@ -581,7 +582,7 @@ class RecipientStepState extends State<RecipientStep>
     return [
       Text(
         localization.address,
-        style: theme.textTheme.titleMedium,
+        style: theme.textTheme.labelLarge,
       ),
       SizedBox(height: 8),
       TextFormField(

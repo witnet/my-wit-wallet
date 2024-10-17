@@ -24,14 +24,14 @@ class ReEstablishWalletBtn extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
       Text(
         localization.forgetPassword,
-        style: theme.textTheme.bodyMedium,
+        style: theme.textTheme.bodySmall,
         textAlign: TextAlign.center,
       ),
       SizedBox(height: 8),
       Container(
           width: 170,
           child: PaddedButton(
-            fontSize: 13,
+            fontSize: theme.textTheme.titleSmall!.fontSize,
             padding: EdgeInsets.all(0),
             boldText: false,
             color: extendedTheme.errorColor,

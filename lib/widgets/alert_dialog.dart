@@ -20,7 +20,7 @@ buildAlertDialog({
               title: Text(
                 textAlign: TextAlign.center,
                 title,
-                style: theme.textTheme.displayMedium,
+                style: theme.textTheme.titleLarge,
               ),
               backgroundColor: theme.colorScheme.surface,
               surfaceTintColor: theme.colorScheme.surface,

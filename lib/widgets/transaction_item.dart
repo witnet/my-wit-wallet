@@ -66,7 +66,7 @@ class TransactionsItemState extends State<TransactionsItem> {
           transacionStatusCopy,
           textAlign: TextAlign.start,
           overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.bodyMedium,
+          style: theme.textTheme.labelMedium,
         ),
       ],
     );
@@ -83,7 +83,7 @@ class TransactionsItemState extends State<TransactionsItem> {
     } else if (prefix == '+') {
       return extendedTheme.txValuePositiveColor;
     } else {
-      return theme.textTheme.bodyLarge!.color;
+      return theme.textTheme.bodyMedium!.color;
     }
   }
 
@@ -92,7 +92,7 @@ class TransactionsItemState extends State<TransactionsItem> {
     TransactionValue transactionValue = transactionUtils!.getTransactionValue();
 
     return Text(' ${transactionValue.prefix} ${transactionValue.amount}',
-        style: theme.textTheme.bodyLarge?.copyWith(
+        style: theme.textTheme.bodyMedium?.copyWith(
           color: getAmountColor(transactionValue.prefix),
           overflow: TextOverflow.ellipsis,
         ));
@@ -147,11 +147,12 @@ class TransactionsItemState extends State<TransactionsItem> {
                             children: [
                               Text(
                                 label.capitalize(),
-                                style: theme.textTheme.bodyMedium,
+                                style: theme.textTheme.labelLarge,
                               ),
+                              SizedBox(height: 4),
                               Text(address,
                                   overflow: TextOverflow.fade,
-                                  style: extendedTheme.monoRegularText)
+                                  style: extendedTheme.monoSmallText)
                             ],
                           )),
                         ],

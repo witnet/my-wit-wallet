@@ -45,8 +45,7 @@ class InfoElement extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(
         label,
-        style:
-            plainText ? theme.textTheme.bodyMedium : theme.textTheme.bodyLarge,
+        style: theme.textTheme.titleMedium,
       ),
       SizedBox(height: 4),
       copyText != null

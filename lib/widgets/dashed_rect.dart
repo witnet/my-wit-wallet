@@ -43,13 +43,13 @@ class DashedRect extends StatelessWidget {
                   : Text(
                       text,
                       style: blur
-                          ? extendedTheme.monoBoldText!.copyWith(
+                          ? extendedTheme.monoLargeText!.copyWith(
                               foreground: Paint()
                                 ..style = PaintingStyle.fill
-                                ..color = extendedTheme.monoBoldText!.color!
+                                ..color = extendedTheme.monoLargeText!.color!
                                 ..maskFilter =
                                     MaskFilter.blur(BlurStyle.normal, 6))
-                          : extendedTheme.monoBoldText?.copyWith(fontSize: 18),
+                          : extendedTheme.monoLargeText,
                     )),
           showEye && container == null
               ? Padding(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
@@ -130,8 +131,11 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
 
   Widget _buildXprvInput() {
     final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return TextField(
       decoration: InputDecoration(
+        hintStyle: extendedTheme.monoLargeText!.copyWith(
+            color: theme.textTheme.titleMedium!.color!.withOpacity(0.5)),
         hintText: localization.xprvInputHint,
         suffixIcon: !Platform.isWindows && !Platform.isLinux
             ? Semantics(
@@ -166,7 +170,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.go,
       focusNode: _textFocusNode,
-      style: theme.textTheme.displayMedium,
+      style: extendedTheme.monoLargeText,
       maxLines: 3,
       controller: _textController,
       onSubmitted: (value) async {
@@ -306,19 +310,19 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
           ),
           Text(
             localization.importXprv01,
-            style: theme.textTheme.bodyMedium, //Textstyle
+            style: theme.textTheme.bodyLarge, //Textstyle
           ),
           SizedBox(height: 8),
           Text(
             localization.importXprv02,
-            style: theme.textTheme.bodyMedium, //Textstyle
+            style: theme.textTheme.bodyLarge, //Textstyle
           ),
           SizedBox(
             height: 16,
           ),
           Text(
             localization.xprvOrigin,
-            style: theme.textTheme.titleMedium,
+            style: theme.textTheme.labelLarge,
           ),
           SizedBox(height: 8),
           Select(

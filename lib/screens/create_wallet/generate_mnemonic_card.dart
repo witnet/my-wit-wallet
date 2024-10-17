@@ -151,11 +151,11 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
         style: theme.textTheme.titleLarge,
       ),
       SizedBox(
-        height: 8,
+        height: 16,
       ),
       _buildMnemonicBox(theme),
       SizedBox(
-        height: 8,
+        height: 16,
       ),
       _buildInfoTextScrollBox(deviceSize),
     ]);

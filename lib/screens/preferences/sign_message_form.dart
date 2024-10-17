@@ -147,13 +147,15 @@ class SignMessageFormState extends State<SignMessageForm> {
     final theme = Theme.of(context);
     return TextField(
       decoration: InputDecoration(
+        hintStyle: theme.textTheme.bodyLarge!.copyWith(
+            color: theme.textTheme.bodyLarge!.color!.withOpacity(0.5)),
         hintText: localization.yourMessage,
         errorText: _message.error,
       ),
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.go,
       focusNode: _messageFocusNode,
-      style: theme.textTheme.displayMedium,
+      style: theme.textTheme.bodyLarge,
       maxLines: 3,
       controller: _messageController,
       onSubmitted: (value) async {

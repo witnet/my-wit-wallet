@@ -29,7 +29,7 @@ class CustomLink extends StatelessWidget {
           child: Padding(
               padding: EdgeInsets.only(right: 8),
               child: Text(text,
-                  style: extendedTheme.monoRegularText!.copyWith(
+                  style: extendedTheme.monoBoldText!.copyWith(
                       color: contentColor,
                       decorationColor: contentColor,
                       decoration: TextDecoration.underline))),

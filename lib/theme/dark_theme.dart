@@ -46,40 +46,33 @@ final TextStyle titleExtraBold = o.copyWith(fontWeight: FontWeight.w800);
 final TextStyle titleBlack = o.copyWith(fontWeight: FontWeight.w900);
 
 TextTheme textTheme = TextTheme(
-  displayLarge: titleSemiBold.copyWith(
+  displayLarge: titleBold.copyWith(color: WitnetPallet.white, fontSize: 57),
+  displayMedium: titleBold.copyWith(color: WitnetPallet.white, fontSize: 45),
+  displaySmall: titleBold.copyWith(color: WitnetPallet.white, fontSize: 36),
+  headlineLarge: titleBold.copyWith(color: WitnetPallet.white, fontSize: 32),
+  headlineMedium: titleBold.copyWith(
+    color: WitnetPallet.white,
+    fontSize: 28,
+  ),
+  headlineSmall: titleBold.copyWith(
     color: WitnetPallet.white,
     fontSize: 24,
   ),
-  displayMedium: titleMedium.copyWith(fontSize: 18),
-  displaySmall: titleRegular.copyWith(fontSize: 16),
-  headlineMedium: titleRegular.copyWith(fontSize: 24),
-  headlineSmall: titleRegular.copyWith(fontSize: 16),
-  titleLarge: titleSemiBold.copyWith(
+  titleLarge: titleBold.copyWith(fontSize: 22, color: WitnetPallet.white),
+  titleMedium: titleBold.copyWith(fontSize: 16, color: WitnetPallet.white),
+  titleSmall: titleBold.copyWith(fontSize: 14, color: WitnetPallet.white),
+  bodyLarge: bodyMedium.copyWith(fontSize: 16),
+  bodyMedium: bodyMedium.copyWith(fontSize: 14),
+  bodySmall: bodyMedium.copyWith(fontSize: 12),
+  labelLarge: bodyMedium.copyWith(
     color: WitnetPallet.white,
-    fontSize: 18,
+    fontSize: 14,
   ),
-  titleMedium: titleMedium.copyWith(
+  labelMedium: bodyMedium.copyWith(
     color: WitnetPallet.white,
-    fontSize: 16,
+    fontSize: 12,
   ),
-  titleSmall: bodyRegular.copyWith(
-    fontSize: 9,
-  ),
-  bodyLarge: bodyBold.copyWith(
-    color: WitnetPallet.white,
-    fontSize: 13,
-  ),
-  bodyMedium: bodyMedium.copyWith(
-      color: WitnetPallet.opacityWhite, fontSize: 13, height: 0),
-  bodySmall: bodyLight.copyWith(
-    color: WitnetPallet.opacityWhite,
-    fontSize: 11,
-  ),
-  labelLarge: bodyRegular.copyWith(
-    color: WitnetPallet.white,
-    fontSize: 16,
-  ),
-  labelMedium: bodyRegular.copyWith(fontSize: 14),
+  labelSmall: bodyMedium.copyWith(fontSize: 11),
 );
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.darkGrey2,
@@ -88,7 +81,9 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   helperStyle: bodyRegular.copyWith(color: WitnetPallet.white),
   helperMaxLines: 1,
   errorMaxLines: 1,
-  hintStyle: bodyRegular.copyWith(color: WitnetPallet.mediumGrey),
+  hintStyle: bodyRegular
+      .copyWith(fontSize: 16)
+      .copyWith(color: bodyRegular.color!.withOpacity(0.5)),
   labelStyle: bodyRegular.copyWith(color: WitnetPallet.mediumGrey),
   hoverColor: const Color.fromARGB(9, 255, 255, 255),
   focusColor: WitnetPallet.brightCyanOpacity1,
@@ -123,15 +118,11 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   alignLabelWithHint: true,
 );
 TooltipThemeData tooltipTheme = TooltipThemeData(
-    height: 10,
-    padding: EdgeInsets.all(5),
-    margin: EdgeInsets.all(5),
-    verticalOffset: 0.0,
-    preferBelow: false,
     decoration: BoxDecoration(
-      color: WitnetPallet.lightGrey,
+      borderRadius: BorderRadius.circular(24),
+      color: WitnetPallet.black,
     ),
-    textStyle: bodyRegular.copyWith(color: WitnetPallet.lightGrey));
+    textStyle: bodyRegular.copyWith(color: WitnetPallet.white, fontSize: 12));
 TextButtonThemeData textButtonTheme = TextButtonThemeData(
   style: TextButton.styleFrom(
     foregroundColor: WitnetPallet.white,
@@ -146,10 +137,8 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
     padding: const EdgeInsets.all(16),
     foregroundColor: WitnetPallet.black,
     backgroundColor: WitnetPallet.brightCyan,
-    disabledForegroundColor:
-        Color.fromARGB(102, 164, 212, 204).withOpacity(0.38),
-    disabledBackgroundColor:
-        Color.fromARGB(102, 164, 212, 204).withOpacity(0.12),
+    disabledForegroundColor: WitnetPallet.mediumGrey,
+    disabledBackgroundColor: WitnetPallet.darkGrey2,
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24)), // background color
     textStyle: bodyRegular.copyWith(fontSize: 16),
@@ -332,6 +321,7 @@ ThemeData darkTheme = ThemeData(
     elevatedButtonTheme: elevatedButtonTheme,
     outlinedButtonTheme: outlinedButtonTheme,
     textButtonTheme: textButtonTheme,
+    tooltipTheme: tooltipTheme,
     cardTheme: cardTheme,
     datePickerTheme: datePickerTheme,
     timePickerTheme: timePickerTheme,

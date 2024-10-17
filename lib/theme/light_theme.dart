@@ -45,31 +45,34 @@ final TextStyle titleExtraBold = o.copyWith(fontWeight: FontWeight.w800);
 final TextStyle titleBlack = o.copyWith(fontWeight: FontWeight.w900);
 
 TextTheme textTheme = TextTheme(
-    displayLarge: titleBold.copyWith(fontSize: 24),
-    displayMedium: titleMedium.copyWith(fontSize: 18),
-    displaySmall: titleRegular.copyWith(fontSize: 13),
-    headlineMedium: titleRegular.copyWith(
-      color: WitnetPallet.black,
-      fontSize: 24,
-    ),
-    headlineSmall: titleRegular.copyWith(
-      color: WitnetPallet.black,
-      fontSize: 16,
-    ),
-    titleLarge: titleBold.copyWith(fontSize: 18),
-    titleMedium: titleMedium.copyWith(fontSize: 16),
-    titleSmall: titleRegular.copyWith(fontSize: 9),
-    bodyLarge: bodyBold.copyWith(fontSize: 13),
-    bodyMedium: bodyMedium.copyWith(fontSize: 13, height: 0),
-    bodySmall: bodyRegular.copyWith(fontSize: 10),
-    labelLarge: bodyBold.copyWith(
-      color: WitnetPallet.black,
-      fontSize: 16,
-    ),
-    labelMedium: bodyRegular.copyWith(
-      color: WitnetPallet.black,
-      fontSize: 13,
-    ));
+  displayLarge: titleBold.copyWith(color: WitnetPallet.black, fontSize: 57),
+  displayMedium: titleBold.copyWith(color: WitnetPallet.black, fontSize: 45),
+  displaySmall: titleBold.copyWith(color: WitnetPallet.black, fontSize: 36),
+  headlineLarge: titleBold.copyWith(color: WitnetPallet.black, fontSize: 32),
+  headlineMedium: titleBold.copyWith(
+    color: WitnetPallet.black,
+    fontSize: 28,
+  ),
+  headlineSmall: titleBold.copyWith(
+    color: WitnetPallet.black,
+    fontSize: 24,
+  ),
+  titleLarge: titleBold.copyWith(fontSize: 22, color: WitnetPallet.black),
+  titleMedium: titleBold.copyWith(fontSize: 16, color: WitnetPallet.black),
+  titleSmall: titleBold.copyWith(fontSize: 14, color: WitnetPallet.black),
+  bodyLarge: bodyMedium.copyWith(fontSize: 16),
+  bodyMedium: bodyMedium.copyWith(fontSize: 14),
+  bodySmall: bodyMedium.copyWith(fontSize: 12),
+  labelLarge: bodyMedium.copyWith(
+    color: WitnetPallet.black,
+    fontSize: 14,
+  ),
+  labelMedium: bodyMedium.copyWith(
+    color: WitnetPallet.black,
+    fontSize: 12,
+  ),
+  labelSmall: bodyMedium.copyWith(fontSize: 11),
+);
 
 InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   fillColor: WitnetPallet.white,
@@ -83,7 +86,9 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   helperStyle: TextStyle(color: WitnetPallet.darkerGrey),
   helperMaxLines: 1,
   errorMaxLines: 1,
-  hintStyle: bodyRegular,
+  hintStyle: bodyRegular
+      .copyWith(fontSize: 16)
+      .copyWith(color: bodyRegular.color!.withOpacity(0.5)),
   hoverColor: WitnetPallet.white,
   focusColor: WitnetPallet.brightCyan,
   labelStyle: bodyRegular.copyWith(fontSize: 24),
@@ -121,8 +126,8 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
   padding: const EdgeInsets.all(16),
   backgroundColor: WitnetPallet.black,
-  disabledForegroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.38),
-  disabledBackgroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.12),
+  disabledForegroundColor: WitnetPallet.lightGrey,
+  disabledBackgroundColor: WitnetPallet.lighterGrey,
   foregroundColor: WitnetPallet.lighterGrey,
   splashFactory: NoSplash.splashFactory,
   shape: RoundedRectangleBorder(
@@ -145,6 +150,13 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
     ),
   ),
 );
+
+TooltipThemeData tooltipTheme = TooltipThemeData(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(24),
+      color: WitnetPallet.lighterGrey,
+    ),
+    textStyle: bodyRegular.copyWith(color: WitnetPallet.black, fontSize: 12));
 
 ProgressIndicatorThemeData progressIndicatorTheme = ProgressIndicatorThemeData(
     refreshBackgroundColor: WitnetPallet.brightCyanOpacity1);
@@ -322,6 +334,7 @@ ThemeData lightTheme = ThemeData(
     shadowColor: Colors.transparent,
     elevatedButtonTheme: elevatedButtonTheme,
     textButtonTheme: textButtonTheme,
+    tooltipTheme: tooltipTheme,
     outlinedButtonTheme: outlinedButtonTheme,
     cardTheme: cardTheme,
     textTheme: textTheme,

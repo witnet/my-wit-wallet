@@ -105,7 +105,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
     return errorText != null ? false : true;
   }
 
-  Widget _buildWalletDetailsForm(theme) {
+  Widget _buildWalletDetailsForm(ThemeData theme) {
     _nameFocusNode.addListener(() => validate());
     return Form(
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -114,12 +114,12 @@ class WalletDetailCardState extends State<WalletDetailCard>
         children: [
           Text(
             localization.nameLabel,
-            style: theme.textTheme.bodySmall,
+            style: theme.textTheme.labelLarge,
           ),
           SizedBox(height: 8),
           TextField(
             autofocus: true,
-            style: theme.textTheme.bodyMedium,
+            style: theme.textTheme.bodyLarge,
             decoration: InputDecoration(
               hintText: localization.walletNameHint,
               errorText: errorText,
@@ -144,7 +144,7 @@ class WalletDetailCardState extends State<WalletDetailCard>
     );
   }
 
-  Widget _buildInfoText(theme) {
+  Widget _buildInfoText(ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -157,14 +157,14 @@ class WalletDetailCardState extends State<WalletDetailCard>
         ),
         Text(
           localization.walletDetail01,
-          style: theme.textTheme.bodyMedium, //Textstyle
+          style: theme.textTheme.bodyLarge, //Textstyle
         ), //Text
         SizedBox(
           height: 8,
         ), //SizedBox
         Text(
           localization.walletDetail02,
-          style: theme.textTheme.bodyMedium, //Textstyle
+          style: theme.textTheme.bodyLarge, //Textstyle
         ),
         SizedBox(
           height: 16,

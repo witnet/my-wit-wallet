@@ -142,7 +142,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
             children: [
               Text(
                 localization.passwordLabel,
-                style: theme.textTheme.titleSmall,
+                style: theme.textTheme.labelLarge,
               ),
               SizedBox(height: 8),
               InputLogin(
@@ -165,7 +165,7 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
               SizedBox(height: 16),
               Text(
                 localization.confirmPassword,
-                style: theme.textTheme.titleSmall,
+                style: theme.textTheme.labelLarge,
               ),
               SizedBox(height: 8),
               InputLogin(

@@ -97,7 +97,7 @@ class WalletConfigState extends State<WalletConfig> {
             style: theme.textTheme.titleMedium,
           ),
           SizedBox(height: 16),
-          Text(localization.deleteWallet01, style: theme.textTheme.bodyLarge),
+          Text(localization.deleteWallet01, style: theme.textTheme.bodyMedium),
           PaddedButton(
               padding: EdgeInsets.only(bottom: 16, top: 16),
               text: localization.deleteWallet,

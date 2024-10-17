@@ -183,11 +183,9 @@ class ReEstablishWalletDisclaimerState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    TextStyle titleMedium = theme.textTheme.titleMedium!;
     TextStyle titleLarge = theme.textTheme.titleLarge!;
     TextStyle bodyLarge = theme.textTheme.bodyLarge!;
-    TextStyle bodyLargeBold = bodyLarge.copyWith(
-      fontWeight: FontWeight.bold,
-    );
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -197,14 +195,15 @@ class ReEstablishWalletDisclaimerState
         Text(localization.reestablishYourWallet, style: titleLarge),
         SizedBox(height: 16),
         Text(localization.readCarefully, style: bodyLarge),
-        SizedBox(height: 10),
+        SizedBox(height: 8),
         Text(localization.reestablishInstructions, style: bodyLarge),
-        SizedBox(height: 10),
-        Text(localization.whatToDo, style: bodyLargeBold),
-        SizedBox(height: 10),
+        SizedBox(height: 8),
+        Text(localization.whatToDo, style: titleMedium),
+        SizedBox(height: 8),
         buildOrderedListItem('1. ', localization.reestablishSteps01, context),
-        SizedBox(height: 10),
+        SizedBox(height: 8),
         buildOrderedListItem('2. ', localization.reestablishSteps02, context),
+        SizedBox(height: 16),
         LabeledCheckbox(
           focusNode: _checkBoxFocusNode,
           isFocus: isCheckBoxFocus,

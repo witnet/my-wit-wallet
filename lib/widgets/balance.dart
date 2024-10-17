@@ -58,10 +58,8 @@ class BalanceState extends State<Balance> {
                                 Text(
                                     '${widget.currentWallet.balanceNanoWit().availableNanoWit.toInt().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
                                     textAlign: TextAlign.center,
-                                    style: theme.textTheme.headlineMedium!
-                                        .copyWith(
-                                            color:
-                                                extendedTheme.headerTextColor)),
+                                    style: theme.textTheme.titleLarge!.copyWith(
+                                        color: extendedTheme.headerTextColor)),
                                 Flexible(
                                   child: PaddedButton(
                                       padding: EdgeInsets.zero,
@@ -79,21 +77,22 @@ class BalanceState extends State<Balance> {
                               ]),
                         ),
                       )))),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Flexible(
-                child: Semantics(
-                    label: localization.currentAddress,
-                    child: Text(
-                      currentAccount.address.cropMiddle(18),
-                      overflow: TextOverflow.ellipsis,
-                      style: extendedTheme.monoRegularText!
-                          .copyWith(color: extendedTheme.headerTextColor),
-                    ))),
-            Flexible(
-                child: CopyButton(
-                    copyContent: currentAccount.address,
-                    color: extendedTheme.headerTextColor)),
-          ]),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  currentAccount.address.cropMiddle(18),
+                  overflow: TextOverflow.ellipsis,
+                  style: extendedTheme.monoMediumText!
+                      .copyWith(color: extendedTheme.headerTextColor),
+                ),
+                SizedBox(width: 4),
+                Flexible(
+                    child: CopyButton(
+                        copyContent: currentAccount.address,
+                        color: extendedTheme.headerTextColor)),
+              ]),
         ],
       );
     });

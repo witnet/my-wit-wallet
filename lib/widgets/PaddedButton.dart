@@ -100,7 +100,7 @@ class PaddedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
           minimumSize: sizeCover ? Size(double.infinity, 54) : null,
           backgroundColor: color != null ? color : null,
-          textStyle: theme.textTheme.labelMedium
+          textStyle: theme.textTheme.titleMedium
               ?.copyWith(fontWeight: FontWeight.w600)),
       child: isLoading ? buildCircularProgress(context, theme) : child,
       onPressed: enabled ? onPressed : null,
@@ -122,7 +122,7 @@ class PaddedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         minimumSize: sizeCover ? Size(double.infinity, 54) : null,
         textStyle:
-            theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w600),
+            theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
       ),
       child: isLoading ? buildCircularProgress(context, theme) : Text(text),
       onPressed: onPressed,
@@ -134,7 +134,7 @@ class PaddedButton extends StatelessWidget {
           ? buildCircularProgress(context, theme)
           : Text(
               text,
-              style: theme.textTheme.bodyMedium?.copyWith(fontSize: 10),
+              style: theme.textTheme.titleMedium?.copyWith(fontSize: 10),
             ),
       onPressed: onPressed,
     );
@@ -148,11 +148,7 @@ class PaddedButton extends StatelessWidget {
             iconPosition == IconPosition.left
                 ? SizedBox(width: 8)
                 : Container(),
-            Text(text,
-                style: theme.textTheme.labelMedium!.copyWith(
-                    fontSize: 14,
-                    fontWeight:
-                        boldText ? FontWeight.bold : FontWeight.normal)),
+            Text(text, style: theme.textTheme.labelLarge),
             Padding(padding: EdgeInsets.only(left: 8)),
             iconPosition == IconPosition.right ? icon : Container(),
           ]),
@@ -173,7 +169,8 @@ class PaddedButton extends StatelessWidget {
         Text(
           text,
           style: TextStyle(
-              fontFamily: theme.textTheme.bodyMedium?.fontFamily, fontSize: 14),
+              fontFamily: theme.textTheme.titleMedium?.fontFamily,
+              fontSize: 14),
         ),
         SizedBox(height: 8),
       ]),
@@ -206,11 +203,11 @@ class PaddedButton extends StatelessWidget {
       child: Text(
         text,
         style: color != null
-            ? theme.textTheme.displaySmall?.copyWith(
+            ? theme.textTheme.titleMedium?.copyWith(
                 color: color,
                 fontSize: fontSize,
                 fontWeight: boldText ? FontWeight.bold : FontWeight.normal)
-            : theme.textTheme.displaySmall?.copyWith(
+            : theme.textTheme.titleMedium?.copyWith(
                 fontSize: fontSize,
                 fontWeight: boldText ? FontWeight.bold : FontWeight.normal),
       ),
@@ -223,9 +220,8 @@ class PaddedButton extends StatelessWidget {
       child: Text(
         text,
         style: color != null
-            ? theme.textTheme.labelMedium?.copyWith(
-                fontSize: 16, fontWeight: FontWeight.w600, color: color)
-            : theme.textTheme.labelMedium?.copyWith(fontSize: fontSize),
+            ? theme.textTheme.titleMedium?.copyWith(color: color)
+            : theme.textTheme.titleMedium,
       ),
       onPressed: !enabled ? null : onPressed,
     );

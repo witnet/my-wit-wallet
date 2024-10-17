@@ -111,7 +111,7 @@ class VerifyPasswordState extends State<VerifyPassword>
             children: [
               Text(
                 localization.passwordLabel,
-                style: theme.textTheme.titleMedium,
+                style: theme.textTheme.labelLarge,
               ),
               SizedBox(height: 8),
               InputLogin(

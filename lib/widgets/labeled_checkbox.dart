@@ -46,8 +46,8 @@ class LabeledCheckbox extends StatelessWidget {
                   child: Text(
                     label,
                     style: checked
-                        ? theme.textTheme.labelMedium
-                        : theme.textTheme.labelMedium?.copyWith(
+                        ? theme.textTheme.bodyLarge
+                        : theme.textTheme.bodyLarge?.copyWith(
                             color: theme.textTheme.bodyMedium?.color),
                   ),
                 ),

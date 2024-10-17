@@ -1,3 +1,4 @@
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +33,7 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
 
   Widget _buildConfirmField() {
     final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -44,15 +46,18 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
         ),
         Text(
           localization.importMnemonic01,
-          style: theme.textTheme.bodyMedium, //Textstyle
+          style: theme.textTheme.bodyLarge, //Textstyle
         ), //Text
         SizedBox(
           height: 16,
         ),
         TextField(
+          decoration: InputDecoration(
+              hintStyle: extendedTheme.monoLargeText!.copyWith(
+                  color: extendedTheme.monoLargeText!.color!.withOpacity(0.5))),
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.go,
-          style: theme.textTheme.displaySmall,
+          style: extendedTheme.monoLargeText,
           maxLines: 3,
           controller: textController,
           onSubmitted: (value) => {

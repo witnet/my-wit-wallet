@@ -172,7 +172,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
             children: [
               Text(
                 localization.passwordLabel,
-                style: theme.textTheme.titleSmall,
+                style: theme.textTheme.labelLarge,
               ),
               SizedBox(height: 8),
               InputLogin(
@@ -194,7 +194,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
               SizedBox(height: 16),
               Text(
                 localization.confirmPassword,
-                style: theme.textTheme.titleSmall,
+                style: theme.textTheme.labelLarge,
               ),
               SizedBox(height: 8),
               InputLogin(

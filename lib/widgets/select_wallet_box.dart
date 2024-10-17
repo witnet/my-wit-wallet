@@ -32,8 +32,6 @@ class SelectWalletBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    final textStyle = TextStyle(
-        fontFamily: theme.textTheme.bodyLarge?.fontFamily, fontSize: 16);
     return PaddedButton(
       padding: EdgeInsets.zero,
       label: label,
@@ -82,12 +80,13 @@ class SelectWalletBox extends StatelessWidget {
                   Text(
                     walletName,
                     overflow: TextOverflow.ellipsis,
-                    style: textStyle.copyWith(fontSize: 12, height: 1.3),
+                    style: theme.textTheme.labelLarge,
                   ),
+                  SizedBox(height: 4),
                   Text(
                     address,
                     overflow: TextOverflow.ellipsis,
-                    style: extendedTheme.monoRegularText?.copyWith(height: 1.3),
+                    style: extendedTheme.monoSmallText,
                   ),
                 ],
               ),
@@ -102,7 +101,7 @@ class SelectWalletBox extends StatelessWidget {
                 '$balance ${WIT_UNIT[WitUnit.Wit]}',
                 textAlign: TextAlign.end,
                 overflow: TextOverflow.ellipsis,
-                style: textStyle.copyWith(fontSize: 13),
+                style: theme.textTheme.labelLarge,
               )
             ]),
           ),

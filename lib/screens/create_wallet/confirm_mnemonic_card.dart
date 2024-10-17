@@ -85,13 +85,13 @@ class ConfirmMnemonicCardState extends State<ConfirmMnemonicCard>
         ),
         Text(
           localization.confirmMnemonic01,
-          style: theme.textTheme.bodyMedium,
+          style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 16,
         ),
         TextField(
-          style: extendedTheme.monoBoldText,
+          style: extendedTheme.monoLargeText,
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.go,
           maxLines: 3,

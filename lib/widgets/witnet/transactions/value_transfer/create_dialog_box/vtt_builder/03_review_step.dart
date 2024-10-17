@@ -168,7 +168,7 @@ class ReviewStepState extends State<ReviewStep>
                     children: [
                       Text(
                         localization.txnDetails,
-                        style: theme.textTheme.displaySmall,
+                        style: theme.textTheme.titleLarge,
                       ),
                       SizedBox(height: 24),
                       InfoElement(

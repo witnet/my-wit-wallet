@@ -85,7 +85,7 @@ class _InputAmountState extends State<InputAmount> {
                     label: 'Max amount',
                     child: PaddedButton(
                         padding: EdgeInsets.zero,
-                        boldText: true,
+                        boldText: false,
                         text: 'Max',
                         sizeCover: false,
                         onPressed: widget.onSuffixTap ?? () {},

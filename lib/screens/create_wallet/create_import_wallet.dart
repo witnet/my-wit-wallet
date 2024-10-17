@@ -43,7 +43,7 @@ class CreateImportWalletState extends State<CreateImportWallet> {
       children: [
         Padding(
           padding: EdgeInsets.only(top: 7, bottom: 7),
-          child: _buildInitialButtons(context, theme),
+          child: _buildContent(context, theme),
         ),
         Padding(padding: EdgeInsets.all(7)),
       ],
@@ -107,7 +107,7 @@ class CreateImportWalletState extends State<CreateImportWallet> {
     super.initState();
   }
 
-  Widget _buildInitialButtons(BuildContext context, ThemeData theme) {
+  Widget _buildContent(BuildContext context, ThemeData theme) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,11 +123,11 @@ class CreateImportWalletState extends State<CreateImportWallet> {
         SizedBox(height: 16),
         Text(
           localization.createImportWallet01,
-          style: theme.textTheme.bodyMedium,
+          style: theme.textTheme.bodyLarge,
         ),
         SizedBox(height: 16),
         Text(localization.createImportWallet02,
-            style: theme.textTheme.bodyMedium)
+            style: theme.textTheme.bodyLarge)
       ],
     );
   }

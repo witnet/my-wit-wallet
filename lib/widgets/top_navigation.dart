@@ -76,14 +76,9 @@ class TopNavigation extends StatelessWidget {
                 children: [
                   Tooltip(
                       margin: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: extendedTheme.tooltipBgColor,
-                      ),
                       height: 50,
                       richMessage: TextSpan(
                         text: currentWallet.name,
-                        style: theme.textTheme.bodyMedium,
                       ),
                       child: Text(currentWallet.name,
                           overflow: TextOverflow.ellipsis,

@@ -99,27 +99,27 @@ class DisclaimerCardState extends State<DisclaimerCard>
         SizedBox(
           height: 8,
         ),
-        Text(localization.walletSecurity01, style: theme.textTheme.bodyMedium),
+        Text(localization.walletSecurity01, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 8,
         ),
-        Text(localization.walletSecurity02, style: theme.textTheme.bodyMedium),
+        Text(localization.walletSecurity02, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 8,
         ),
-        Text(localization.walletSecurity03, style: theme.textTheme.bodyMedium),
+        Text(localization.walletSecurity03, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 8,
         ),
-        Text(localization.walletSecurity04, style: theme.textTheme.bodyMedium),
+        Text(localization.walletSecurity04, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 8,
         ),
-        Text(localization.walletSecurity05, style: theme.textTheme.bodyMedium),
+        Text(localization.walletSecurity05, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 4,
         ),
-        Text(localization.walletSecurity06, style: theme.textTheme.bodyMedium),
+        Text(localization.walletSecurity06, style: theme.textTheme.bodyLarge),
         SizedBox(
           height: 8,
         ),
