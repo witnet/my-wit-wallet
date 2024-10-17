@@ -8,6 +8,7 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'package:my_wit_wallet/widgets/validations/confirmed_password.dart';
 import 'package:my_wit_wallet/widgets/validations/password_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
@@ -170,51 +171,46 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                localization.passwordLabel,
-                style: theme.textTheme.labelLarge,
-              ),
-              SizedBox(height: 8),
-              InputLogin(
-                hint: localization.passwordLabel,
-                focusNode: _passFocusNode,
-                showPassFocusNode: _showPassFocusNode,
-                textEditingController: _passController,
-                errorText: _password.error,
-                obscureText: true,
-                onFieldSubmitted: (String? value) {
-                  _passConfirmFocusNode.requestFocus();
-                },
-                onChanged: (String? value) {
-                  if (this.mounted) {
-                    setPassword(value ?? '');
-                  }
-                },
+              LabeledFormEntry(
+                label: localization.passwordLabel,
+                formEntry: InputLogin(
+                  hint: localization.passwordLabel,
+                  focusNode: _passFocusNode,
+                  showPassFocusNode: _showPassFocusNode,
+                  textEditingController: _passController,
+                  errorText: _password.error,
+                  obscureText: true,
+                  onFieldSubmitted: (String? value) {
+                    _passConfirmFocusNode.requestFocus();
+                  },
+                  onChanged: (String? value) {
+                    if (this.mounted) {
+                      setPassword(value ?? '');
+                    }
+                  },
+                ),
               ),
               SizedBox(height: 16),
-              Text(
-                localization.confirmPassword,
-                style: theme.textTheme.labelLarge,
-              ),
-              SizedBox(height: 8),
-              InputLogin(
-                hint: localization.confirmPassword,
-                obscureText: true,
-                focusNode: _passConfirmFocusNode,
-                showPassFocusNode: _showPassConfirmedFocusNode,
-                textEditingController: _passConfirmController,
-                errorText: _confirmPassword.error,
-                onFieldSubmitted: (String? value) {
-                  // hide keyboard
-                  FocusManager.instance.primaryFocus?.unfocus();
-                  nextAction();
-                },
-                onChanged: (String? value) {
-                  if (this.mounted) {
-                    setConfirmPassword(value ?? '');
-                  }
-                },
-              )
+              LabeledFormEntry(
+                  label: localization.confirmPassword,
+                  formEntry: InputLogin(
+                    hint: localization.confirmPassword,
+                    obscureText: true,
+                    focusNode: _passConfirmFocusNode,
+                    showPassFocusNode: _showPassConfirmedFocusNode,
+                    textEditingController: _passConfirmController,
+                    errorText: _confirmPassword.error,
+                    onFieldSubmitted: (String? value) {
+                      // hide keyboard
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      nextAction();
+                    },
+                    onChanged: (String? value) {
+                      if (this.mounted) {
+                        setConfirmPassword(value ?? '');
+                      }
+                    },
+                  )),
             ],
           ),
         ),

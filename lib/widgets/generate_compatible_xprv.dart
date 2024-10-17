@@ -7,6 +7,7 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'package:my_wit_wallet/widgets/validations/confirmed_password.dart';
 import 'package:my_wit_wallet/widgets/validations/password_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
@@ -140,52 +141,47 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                localization.passwordLabel,
-                style: theme.textTheme.labelLarge,
-              ),
-              SizedBox(height: 8),
-              InputLogin(
-                hint: localization.passwordLabel,
-                focusNode: _passFocusNode,
-                errorText: _password.error,
-                showPassFocusNode: _showPassFocusNode,
-                textEditingController: _passController,
-                obscureText: true,
-                onFieldSubmitted: (String? value) {
-                  _passConfirmFocusNode.requestFocus();
-                },
-                onTap: () {
-                  _passFocusNode.requestFocus();
-                },
-                onChanged: (String? value) {
-                  setPassword(value ?? '');
-                },
+              LabeledFormEntry(
+                label: localization.passwordLabel,
+                formEntry: InputLogin(
+                  hint: localization.passwordLabel,
+                  focusNode: _passFocusNode,
+                  errorText: _password.error,
+                  showPassFocusNode: _showPassFocusNode,
+                  textEditingController: _passController,
+                  obscureText: true,
+                  onFieldSubmitted: (String? value) {
+                    _passConfirmFocusNode.requestFocus();
+                  },
+                  onTap: () {
+                    _passFocusNode.requestFocus();
+                  },
+                  onChanged: (String? value) {
+                    setPassword(value ?? '');
+                  },
+                ),
               ),
               SizedBox(height: 16),
-              Text(
-                localization.confirmPassword,
-                style: theme.textTheme.labelLarge,
-              ),
-              SizedBox(height: 8),
-              InputLogin(
-                hint: localization.confirmPassword,
-                obscureText: true,
-                focusNode: _passConfirmFocusNode,
-                showPassFocusNode: _showPassConfirmFocusNode,
-                textEditingController: _passConfirmController,
-                errorText: _confirmPassword.error,
-                onFieldSubmitted: (String? value) async {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                  await _loadAndgenerateSheikahXprv();
-                },
-                onTap: () {
-                  _passConfirmFocusNode.requestFocus();
-                },
-                onChanged: (String? value) {
-                  setConfirmPassword(value ?? '');
-                },
-              ),
+              LabeledFormEntry(
+                  label: localization.confirmPassword,
+                  formEntry: InputLogin(
+                    hint: localization.confirmPassword,
+                    obscureText: true,
+                    focusNode: _passConfirmFocusNode,
+                    showPassFocusNode: _showPassConfirmFocusNode,
+                    textEditingController: _passConfirmController,
+                    errorText: _confirmPassword.error,
+                    onFieldSubmitted: (String? value) async {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      await _loadAndgenerateSheikahXprv();
+                    },
+                    onTap: () {
+                      _passConfirmFocusNode.requestFocus();
+                    },
+                    onChanged: (String? value) {
+                      setConfirmPassword(value ?? '');
+                    },
+                  )),
               SizedBox(height: 16),
               PaddedButton(
                   padding: EdgeInsets.only(bottom: 8),

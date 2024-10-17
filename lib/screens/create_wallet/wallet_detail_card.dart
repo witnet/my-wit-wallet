@@ -4,6 +4,7 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 
@@ -112,33 +113,30 @@ class WalletDetailCardState extends State<WalletDetailCard>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            localization.nameLabel,
-            style: theme.textTheme.labelLarge,
-          ),
-          SizedBox(height: 8),
-          TextField(
-            autofocus: true,
-            style: theme.textTheme.bodyLarge,
-            decoration: InputDecoration(
-              hintText: localization.walletNameHint,
-              errorText: errorText,
-            ),
-            controller: _nameController,
-            focusNode: _nameFocusNode,
-            onSubmitted: (String value) => {
-              // hide keyboard
-              FocusManager.instance.primaryFocus?.unfocus(),
-              nextAction()
-            },
-            onChanged: (String value) {
-              setState(() {
-                _walletName = value;
-                Locator.instance.get<ApiCreateWallet>().walletName =
-                    _walletName;
-              });
-            },
-          ),
+          LabeledFormEntry(
+              label: localization.nameLabel,
+              formEntry: TextField(
+                autofocus: true,
+                style: theme.textTheme.bodyLarge,
+                decoration: InputDecoration(
+                  hintText: localization.walletNameHint,
+                  errorText: errorText,
+                ),
+                controller: _nameController,
+                focusNode: _nameFocusNode,
+                onSubmitted: (String value) => {
+                  // hide keyboard
+                  FocusManager.instance.primaryFocus?.unfocus(),
+                  nextAction()
+                },
+                onChanged: (String value) {
+                  setState(() {
+                    _walletName = value;
+                    Locator.instance.get<ApiCreateWallet>().walletName =
+                        _walletName;
+                  });
+                },
+              )),
         ],
       ),
     );

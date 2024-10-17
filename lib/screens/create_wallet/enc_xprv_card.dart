@@ -9,6 +9,7 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
@@ -320,28 +321,26 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
           SizedBox(
             height: 16,
           ),
-          Text(
-            localization.xprvOrigin,
-            style: theme.textTheme.labelLarge,
+          LabeledFormEntry(
+            label: localization.xprvOrigin,
+            formEntry: Select(
+                selectedItem: _selectedOrigin,
+                listItems: importOriginToXprvType.keys
+                    .map((label) => SelectItem(
+                        label.name, importOriginToLabel(context)[label] ?? ''))
+                    .toList(),
+                onChanged: (String? label) => {
+                      clearForm(),
+                      if (label != null)
+                        {
+                          setState(() {
+                            _selectedOrigin = label;
+                          }),
+                          _setXprvType(importOriginToXprvType[
+                              labelToWalletOrigin(label)]!),
+                        },
+                    }),
           ),
-          SizedBox(height: 8),
-          Select(
-              selectedItem: _selectedOrigin,
-              listItems: importOriginToXprvType.keys
-                  .map((label) => SelectItem(
-                      label.name, importOriginToLabel(context)[label] ?? ''))
-                  .toList(),
-              onChanged: (String? label) => {
-                    clearForm(),
-                    if (label != null)
-                      {
-                        setState(() {
-                          _selectedOrigin = label;
-                        }),
-                        _setXprvType(importOriginToXprvType[
-                            labelToWalletOrigin(label)]!),
-                      },
-                  }),
           SizedBox(
             height: 16,
           ),

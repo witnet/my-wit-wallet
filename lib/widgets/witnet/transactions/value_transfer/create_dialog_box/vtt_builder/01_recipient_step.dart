@@ -11,6 +11,7 @@ import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/util/storage/scanned_content.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/input_slider.dart';
+import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
@@ -390,32 +391,30 @@ class RecipientStepState extends State<RecipientStep>
   List<Widget> _buildVttInputAmount(ThemeData theme) {
     return [
       SizedBox(height: 16),
-      Text(
-        localization.amount,
-        style: theme.textTheme.labelLarge,
-      ),
-      SizedBox(height: 8),
-      InputAmount(
-        hint: localization.amount,
-        errorText: _amount.error,
-        textEditingController: _amountController,
-        focusNode: _amountFocusNode,
-        keyboardType: TextInputType.number,
-        onChanged: (String value) {
-          setAmount(value);
-        },
-        onSuffixTap: () => {
-          setAmount(maxAmountWit),
-          _amountController.text = maxAmountWit,
-        },
-        onTap: () {
-          _amountFocusNode.requestFocus();
-        },
-        onFieldSubmitted: (String value) {
-          // hide keyboard
-          FocusManager.instance.primaryFocus?.unfocus();
-          widget.goNext();
-        },
+      LabeledFormEntry(
+        label: localization.amount,
+        formEntry: InputAmount(
+          hint: localization.amount,
+          errorText: _amount.error,
+          textEditingController: _amountController,
+          focusNode: _amountFocusNode,
+          keyboardType: TextInputType.number,
+          onChanged: (String value) {
+            setAmount(value);
+          },
+          onSuffixTap: () => {
+            setAmount(maxAmountWit),
+            _amountController.text = maxAmountWit,
+          },
+          onTap: () {
+            _amountFocusNode.requestFocus();
+          },
+          onFieldSubmitted: (String value) {
+            // hide keyboard
+            FocusManager.instance.primaryFocus?.unfocus();
+            widget.goNext();
+          },
+        ),
       ),
     ];
   }
@@ -426,36 +425,33 @@ class RecipientStepState extends State<RecipientStep>
         : balanceInfo.availableNanoWit;
     return [
       SizedBox(height: 16),
-      Text(
-        localization.amount,
-        style: theme.textTheme.labelLarge,
-      ),
-      SizedBox(height: 8),
-      InputSlider(
-        hint: localization.amount,
-        minAmount: 0.0,
-        maxAmount: balance.standardizeWitUnits(truncate: -1).toDouble(),
-        errorText: _amount.error,
-        textEditingController: _amountController,
-        focusNode: _amountFocusNode,
-        keyboardType: TextInputType.number,
-        onChanged: (String value) {
-          _amountController.text = value;
-          setAmount(value);
-        },
-        onSuffixTap: () => {
-          setAmount(maxAmountWit),
-          _amountController.text = maxAmountWit,
-        },
-        onTap: () {
-          _amountFocusNode.requestFocus();
-        },
-        onFieldSubmitted: (String value) {
-          // hide keyboard
-          FocusManager.instance.primaryFocus?.unfocus();
-          widget.goNext();
-        },
-      )
+      LabeledFormEntry(
+          label: localization.amount,
+          formEntry: InputSlider(
+            hint: localization.amount,
+            minAmount: 0.0,
+            maxAmount: balance.standardizeWitUnits(truncate: -1).toDouble(),
+            errorText: _amount.error,
+            textEditingController: _amountController,
+            focusNode: _amountFocusNode,
+            keyboardType: TextInputType.number,
+            onChanged: (String value) {
+              _amountController.text = value;
+              setAmount(value);
+            },
+            onSuffixTap: () => {
+              setAmount(maxAmountWit),
+              _amountController.text = maxAmountWit,
+            },
+            onTap: () {
+              _amountFocusNode.requestFocus();
+            },
+            onFieldSubmitted: (String value) {
+              // hide keyboard
+              FocusManager.instance.primaryFocus?.unfocus();
+              widget.goNext();
+            },
+          ))
     ];
   }
 
@@ -524,94 +520,89 @@ class RecipientStepState extends State<RecipientStep>
 
   List<Widget> _buildWithdrawalAddressInput(ThemeData theme) {
     return [
-      Text(
-        localization.withdrawalAddress,
-        style: theme.textTheme.labelLarge,
-      ),
-      SizedBox(height: 8),
-      TextFormField(
-        decoration: InputDecoration(
-          hintText: localization.withdrawalAddress,
-          suffixIcon: !Platform.isWindows && !Platform.isLinux
-              ? Semantics(
-                  label: localization.copyAddressLabel,
-                  child: SuffixIcon(
-                      iconSize: 16,
-                      onPressed: () async {
-                        await Clipboard.setData(
-                            ClipboardData(text: _addressController.text));
-                        if (await Clipboard.hasStrings()) {
-                          ScaffoldMessenger.of(context).clearSnackBars();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              buildCopiedSnackbar(
-                                  theme, localization.copyAddressConfirmed));
-                        }
-                      },
-                      icon: FontAwesomeIcons.copy,
-                      isFocus: isCopyAddressFocused,
-                      focusNode: _copyAddressFocusNode))
-              : null,
-          errorText: _address.error,
-        ),
-        controller: _addressController,
-        focusNode: _addressFocusNode,
-        keyboardType: TextInputType.text,
-        inputFormatters: [WitAddressFormatter()],
-        onChanged: (String value) {
-          setAddress(value);
-        },
-        onFieldSubmitted: (String value) {
-          showAuthorization
-              ? _authorizationFocusNode.requestFocus()
-              : _amountFocusNode.requestFocus();
-        },
-        onTap: () {
-          _addressFocusNode.requestFocus();
-        },
-      ),
+      LabeledFormEntry(
+          label: localization.withdrawalAddress,
+          formEntry: TextFormField(
+            decoration: InputDecoration(
+              hintText: localization.withdrawalAddress,
+              suffixIcon: !Platform.isWindows && !Platform.isLinux
+                  ? Semantics(
+                      label: localization.copyAddressLabel,
+                      child: SuffixIcon(
+                          iconSize: 16,
+                          onPressed: () async {
+                            await Clipboard.setData(
+                                ClipboardData(text: _addressController.text));
+                            if (await Clipboard.hasStrings()) {
+                              ScaffoldMessenger.of(context).clearSnackBars();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  buildCopiedSnackbar(theme,
+                                      localization.copyAddressConfirmed));
+                            }
+                          },
+                          icon: FontAwesomeIcons.copy,
+                          isFocus: isCopyAddressFocused,
+                          focusNode: _copyAddressFocusNode))
+                  : null,
+              errorText: _address.error,
+            ),
+            controller: _addressController,
+            focusNode: _addressFocusNode,
+            keyboardType: TextInputType.text,
+            inputFormatters: [WitAddressFormatter()],
+            onChanged: (String value) {
+              setAddress(value);
+            },
+            onFieldSubmitted: (String value) {
+              showAuthorization
+                  ? _authorizationFocusNode.requestFocus()
+                  : _amountFocusNode.requestFocus();
+            },
+            onTap: () {
+              _addressFocusNode.requestFocus();
+            },
+          ))
     ];
   }
 
   List<Widget> _buildReceiverAddressInput(ThemeData theme) {
     return [
-      Text(
-        localization.address,
-        style: theme.textTheme.labelLarge,
-      ),
-      SizedBox(height: 8),
-      TextFormField(
-        style: theme.textTheme.bodyLarge,
-        decoration: InputDecoration(
-          hintText: localization.recipientAddress,
-          suffixIcon: !Platform.isWindows && !Platform.isLinux
-              ? Semantics(
-                  label: localization.scanQrCodeLabel,
-                  child: SuffixIcon(
-                      onPressed: () => {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => QrScanner(
-                                    currentRoute: widget.routeName,
-                                    onChanged: (_value) => {})))
-                          },
-                      icon: FontAwesomeIcons.qrcode,
-                      isFocus: isScanQrFocused,
-                      focusNode: _scanQrFocusNode))
-              : null,
-          errorText: _address.error,
+      LabeledFormEntry(
+        label: localization.address,
+        formEntry: TextFormField(
+          style: theme.textTheme.bodyLarge,
+          decoration: InputDecoration(
+            hintText: localization.recipientAddress,
+            suffixIcon: !Platform.isWindows && !Platform.isLinux
+                ? Semantics(
+                    label: localization.scanQrCodeLabel,
+                    child: SuffixIcon(
+                        onPressed: () => {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => QrScanner(
+                                      currentRoute: widget.routeName,
+                                      onChanged: (_value) => {})))
+                            },
+                        icon: FontAwesomeIcons.qrcode,
+                        isFocus: isScanQrFocused,
+                        focusNode: _scanQrFocusNode))
+                : null,
+            errorText: _address.error,
+          ),
+          controller: _addressController,
+          focusNode: _addressFocusNode,
+          keyboardType: TextInputType.text,
+          inputFormatters: [WitAddressFormatter()],
+          onChanged: (String value) {
+            setAddress(value);
+          },
+          onFieldSubmitted: (String value) {
+            _amountFocusNode.requestFocus();
+          },
+          onTap: () {
+            _addressFocusNode.requestFocus();
+          },
         ),
-        controller: _addressController,
-        focusNode: _addressFocusNode,
-        keyboardType: TextInputType.text,
-        inputFormatters: [WitAddressFormatter()],
-        onChanged: (String value) {
-          setAddress(value);
-        },
-        onFieldSubmitted: (String value) {
-          _amountFocusNode.requestFocus();
-        },
-        onTap: () {
-          _addressFocusNode.requestFocus();
-        },
       ),
     ];
   }

@@ -5,6 +5,7 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'package:my_wit_wallet/widgets/validations/password_valid_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 
@@ -109,25 +110,23 @@ class VerifyPasswordState extends State<VerifyPassword>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                localization.passwordLabel,
-                style: theme.textTheme.labelLarge,
-              ),
-              SizedBox(height: 8),
-              InputLogin(
-                hint: localization.passwordLabel,
-                obscureText: true,
-                focusNode: _passFocusNode,
-                showPassFocusNode: _showPasswordFocusNode,
-                textEditingController: _passController,
-                errorText: _password.error ?? validPasswordError,
-                onFieldSubmitted: (String? value) async {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                  await _verify();
-                },
-                onChanged: (String? value) {
-                  setPassword(value ?? '');
-                },
+              LabeledFormEntry(
+                label: localization.passwordLabel,
+                formEntry: InputLogin(
+                  hint: localization.passwordLabel,
+                  obscureText: true,
+                  focusNode: _passFocusNode,
+                  showPassFocusNode: _showPasswordFocusNode,
+                  textEditingController: _passController,
+                  errorText: _password.error ?? validPasswordError,
+                  onFieldSubmitted: (String? value) async {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    await _verify();
+                  },
+                  onChanged: (String? value) {
+                    setPassword(value ?? '');
+                  },
+                ),
               ),
               SizedBox(height: 16),
               PaddedButton(
