@@ -40,7 +40,7 @@ class AddressListViewState extends State<AddressListView> {
             children: [
               Text(
                 localization.generatedAddresses,
-                style: theme.textTheme.displaySmall,
+                style: theme.textTheme.titleLarge,
                 textAlign: TextAlign.start,
               ),
             ],

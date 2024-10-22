@@ -79,7 +79,7 @@ class AddreessItemState extends State<AddreessItem>
     final theme = Theme.of(context);
     ExtendedTheme extendedTheme = theme.extension<ExtendedTheme>()!;
     final textStyle = isAddressSelected
-        ? extendedTheme.monoMediumText
+        ? extendedTheme.monoBoldText
         : extendedTheme.monoRegularText;
     return Container(
       decoration: BoxDecoration(
