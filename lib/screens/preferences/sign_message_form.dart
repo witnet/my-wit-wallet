@@ -9,7 +9,6 @@ import 'package:my_wit_wallet/screens/preferences/general_config.dart';
 import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
-import 'package:my_wit_wallet/util/get_window_width.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
@@ -174,10 +173,10 @@ class SignMessageFormState extends State<SignMessageForm> {
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
       String selectedAddress = Locator.instance
-              .get<ApiDatabase>()
-              .walletStorage
-              .currentAccount
-              .address;
+          .get<ApiDatabase>()
+          .walletStorage
+          .currentAccount
+          .address;
       final Wallet currentWallet =
           Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
       List<SelectItem> externalAddresses = currentWallet
