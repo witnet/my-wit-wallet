@@ -184,7 +184,6 @@ const List<String> CUSTOM_ICON_NAMES = [
   'stake-icon-dark',
   'stake-icon',
   'dots-bg',
-  'dots-bg-dark',
   'stake',
   'transaction-error',
   'transaction-success',
