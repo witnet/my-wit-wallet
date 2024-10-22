@@ -34,10 +34,11 @@ class BalanceState extends State<Balance> {
 
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
-      Account currentAccount =
+      final Account currentAccount =
           Locator.instance.get<ApiDatabase>().walletStorage.currentAccount;
-      Wallet currentWallet =
+      final Wallet currentWallet =
           Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

@@ -154,7 +154,7 @@ class DashboardLayoutState extends State<DashboardLayout>
         }
         return BlocBuilder<DashboardBloc, DashboardState>(
             builder: (BuildContext context, DashboardState state) {
-          Wallet currentWallet =
+          final Wallet currentWallet =
               Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
           return Layout(
             scrollController: widget.scrollController,
