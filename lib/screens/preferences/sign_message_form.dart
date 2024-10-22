@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
+import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/screens/preferences/general_config.dart';
 import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -41,15 +43,11 @@ class SignMessageFormState extends State<SignMessageForm> {
   List<FocusNode> _formFocusElements() => [_messageFocusNode];
   MessageInput _message = MessageInput.pure();
   Map<String, dynamic>? signedMessage;
-  Wallet? _currentWallet;
-  String? _address;
   bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _address = database.walletStorage.currentAccount.address;
-    _currentWallet = database.walletStorage.currentWallet;
   }
 
   @override
@@ -143,7 +141,7 @@ class SignMessageFormState extends State<SignMessageForm> {
     }
   }
 
-  Widget _buildMessageInput() {
+  Widget _buildMessageInput(String address) {
     final theme = Theme.of(context);
     return TextField(
       decoration: InputDecoration(
@@ -161,7 +159,7 @@ class SignMessageFormState extends State<SignMessageForm> {
       onSubmitted: (value) async {
         // hide keyboard
         FocusManager.instance.primaryFocus?.unfocus();
-        _unlockKeychainAndSign(_message.value, _address);
+        _unlockKeychainAndSign(_message.value, address);
       },
       onChanged: (String value) async {
         setMessage(_messageController.value.text);
@@ -172,41 +170,56 @@ class SignMessageFormState extends State<SignMessageForm> {
     );
   }
 
+  Widget formBuilder(BuildContext context) {
+    return BlocBuilder<DashboardBloc, DashboardState>(
+        builder: (BuildContext context, DashboardState state) {
+      String selectedAddress = Locator.instance
+              .get<ApiDatabase>()
+              .walletStorage
+              .currentAccount
+              .address;
+      final Wallet currentWallet =
+          Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
+      List<SelectItem> externalAddresses = currentWallet
+          .orderedExternalAccounts()
+          .values
+          .map(
+              (Account account) => SelectItem(account.address, account.address))
+          .toList();
+      List<SelectItem> masterAccountList = [
+        SelectItem(currentWallet.masterAccount?.address ?? '',
+            currentWallet.masterAccount?.address ?? '')
+      ];
+      bool isHdWallet = externalAddresses.length > 0;
+      return Form(
+          autovalidateMode: AutovalidateMode.disabled,
+          child: Column(children: [
+            Select(
+                selectedItem: selectedAddress,
+                cropLabel: true,
+                listItems: isHdWallet ? externalAddresses : masterAccountList,
+                onChanged: (String? label) => {
+                      if (label != null) setState(() => selectedAddress = label)
+                    }),
+            SizedBox(height: 16),
+            _buildMessageInput(selectedAddress),
+            SizedBox(height: 16),
+            PaddedButton(
+                padding: EdgeInsets.zero,
+                text: localization.signMessage,
+                isLoading: isLoading,
+                type: ButtonType.primary,
+                enabled: true,
+                onPressed: () async {
+                  await _unlockKeychainAndSign(_message.value, selectedAddress);
+                })
+          ]));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     _messageFocusNode.addListener(() => validateForm());
-    List<SelectItem> externalAddresses = _currentWallet!
-        .orderedExternalAccounts()
-        .values
-        .map((Account account) => SelectItem(account.address, account.address))
-        .toList();
-    List<SelectItem> masterAccountList = [
-      SelectItem(_currentWallet!.masterAccount?.address ?? '',
-          _currentWallet!.masterAccount?.address ?? '')
-    ];
-    bool isHdWallet = externalAddresses.length > 0;
-    return Form(
-        autovalidateMode: AutovalidateMode.disabled,
-        child: Column(children: [
-          Select(
-              selectedItem: _address ?? externalAddresses[0].label,
-              cropLabel: true,
-              cropMiddleLength: windowWidth > 550 ? null : 28,
-              listItems: isHdWallet ? externalAddresses : masterAccountList,
-              onChanged: (String? label) =>
-                  {if (label != null) setState(() => _address = label)}),
-          SizedBox(height: 16),
-          _buildMessageInput(),
-          SizedBox(height: 16),
-          PaddedButton(
-              padding: EdgeInsets.zero,
-              text: localization.signMessage,
-              isLoading: isLoading,
-              type: ButtonType.primary,
-              enabled: true,
-              onPressed: () async {
-                await _unlockKeychainAndSign(_message.value, _address);
-              })
-        ]));
+    return formBuilder(context);
   }
 }
