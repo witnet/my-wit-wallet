@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/widgets/wallet_list.dart';
 import 'package:my_wit_wallet/globals.dart' as globals;
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+PanelController panelController = PanelController();
 
 class PanelUtils {
   Widget panelContent = WalletList();
@@ -27,6 +29,22 @@ class PanelUtils {
     }
   }
 
+  PanelController getPanelController() {
+    return panelController;
+  }
+
+  bool isAttached() {
+    return panelController.isAttached;
+  }
+
+  bool isOpen() {
+    return panelController.isPanelOpen;
+  }
+
+  bool isClose() {
+    return panelController.isPanelClosed;
+  }
+
   void open({required Widget content}) {
     // FocusScope.of(context).unfocus();
     setContent(content);
@@ -39,7 +57,7 @@ class PanelUtils {
   }
 
   void close({Widget? content}) {
-    if (panelController.isPanelOpen) {
+    if (isAttached() && panelController.isPanelOpen) {
       Widget defaultContent = WalletList();
       setContent(content ?? defaultContent);
       panelController.close();
