@@ -17,7 +17,7 @@ class ContainerBackground extends StatelessWidget {
         margin: EdgeInsets.only(top: marginTop ?? 8),
         width: double.infinity,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.all(extendedTheme.borderRadius!),
             color: extendedTheme.backgroundBox),
         child: Padding(padding: EdgeInsets.all(padding ?? 16), child: content));
   }

@@ -78,14 +78,13 @@ Future<void> e2eShowNodeStatsTest(WidgetTester tester) async {
   final listFinder = find
       .byType(Scrollable)
       .first; // take first because it is the wallet list scroll
-  await tester.scrollUntilVisible(
-      find.text("wit174la8pevl74hczcpfepgmt036zkmjen4hu8zzs"), -100.0,
+  await tester.scrollUntilVisible(find.text("wit174l...4hu8zzs"), -100.0,
       scrollable: listFinder);
 
   await tester.pumpAndSettle();
 
   /// Select HD wallet from the wallets list
-  await tapButton(tester, "wit174la8pevl74hczcpfepgmt036zkmjen4hu8zzs");
+  await tapButton(tester, "wit174l...4hu8zzs");
 
   await tester.pumpAndSettle();
 

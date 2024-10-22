@@ -84,18 +84,10 @@ Future<void> e2eUpdateCurrentWalletTest(WidgetTester tester) async {
   /// and brings up the wallet list.
   await tapButton(tester, PaddedButton, index: 0);
 
-  /// Select another wallet from the wallet list
-  final listFinder = find
-      .byType(Scrollable)
-      .first; // take first because it is the wallet list scroll
-  await tester.scrollUntilVisible(
-      find.text("wit174la8pevl74hczcpfepgmt036zkmjen4hu8zzs"), -100.0,
-      scrollable: listFinder);
-
   await tester.pumpAndSettle();
 
   /// Select Node wallet from the wallets list
-  await tapButton(tester, "wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u");
+  await tapButton(tester, "wit1vzm...2tya50u");
 
   await tester.pumpAndSettle();
 
@@ -107,7 +99,7 @@ Future<void> e2eUpdateCurrentWalletTest(WidgetTester tester) async {
   await tester.pumpAndSettle();
 
   /// Verify the imported wallet and the current address
-  expectLater(currentWallet3!.masterAccount!.address,
-      "wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u");
+  expectLater(currentWallet3!.masterAccount!.address.cropMiddle(18),
+      "wit1vzm...2tya50u");
   await teardownTest();
 }

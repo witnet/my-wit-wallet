@@ -108,7 +108,7 @@ class GeneralConfigState extends State<GeneralConfig> {
     return Container(
         alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(24)),
+          borderRadius: BorderRadius.all(extendedTheme.borderRadius!),
           color: extendedTheme.backgroundBox,
         ),
         child: child);

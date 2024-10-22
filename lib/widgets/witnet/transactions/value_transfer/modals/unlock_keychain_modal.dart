@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/login/view/password_validate.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -13,6 +14,7 @@ Future<String?> unlockKeychainModal(
     required BuildContext context,
     required VoidCallback onAction,
     required String routeToRedirect}) {
+  final extendedTheme = theme.extension<ExtendedTheme>()!;
   return Future.delayed(
       Duration.zero,
       () => showDialog<String>(
@@ -60,9 +62,9 @@ Future<String?> unlockKeychainModal(
                 backgroundColor: theme.colorScheme.surface,
                 surfaceTintColor: theme.colorScheme.surface,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                    borderRadius:
+                        BorderRadius.all(extendedTheme.borderRadius!)),
                 content: Column(mainAxisSize: MainAxisSize.min, children: [
-                  SizedBox(height: 8),
                   svgThemeImage(theme, name: imageName, height: 100),
                   SizedBox(height: 16),
                   PasswordValidation(

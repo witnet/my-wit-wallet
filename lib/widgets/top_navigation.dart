@@ -54,9 +54,9 @@ class TopNavigation extends StatelessWidget {
               decoration: BoxDecoration(
                   color: WitnetPallet.black,
                   border: Border.all(color: WitnetPallet.black),
-                  borderRadius: BorderRadius.all(Radius.circular(24))),
+                  borderRadius: BorderRadius.all(extendedTheme.borderRadius!)),
               child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(24)),
+                borderRadius: BorderRadius.all(extendedTheme.borderRadius!),
                 child: Container(
                   decoration: BoxDecoration(
                       color: WitnetPallet.black,

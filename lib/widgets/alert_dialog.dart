@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 
 buildAlertDialog({
   required BuildContext context,
@@ -11,6 +12,7 @@ buildAlertDialog({
   bool closable = true,
 }) {
   final theme = Theme.of(context);
+  final extendedTheme = theme.extension<ExtendedTheme>()!;
   return Future.delayed(
       Duration.zero,
       () => showDialog<String>(
@@ -25,7 +27,7 @@ buildAlertDialog({
               backgroundColor: theme.colorScheme.surface,
               surfaceTintColor: theme.colorScheme.surface,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(24))),
+                  borderRadius: BorderRadius.all(extendedTheme.borderRadius!)),
               icon: icon != null
                   ? Icon(icon,
                       size: 24, color: color ?? WitnetPallet.brightCyan)

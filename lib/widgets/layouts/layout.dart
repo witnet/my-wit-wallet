@@ -208,7 +208,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           minHeight: 0,
           maxHeight: MediaQuery.of(context).size.height * 0.4,
           borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+              topLeft: extendedTheme.borderRadius!,
+              topRight: extendedTheme.borderRadius!),
           panel: Center(
               child: ConstrainedBox(
                   constraints: BoxConstraints(

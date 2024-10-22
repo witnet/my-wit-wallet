@@ -53,7 +53,7 @@ class StepBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     return SizedBox(
-        height: 30,
+        height: 40,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: listItems.length,

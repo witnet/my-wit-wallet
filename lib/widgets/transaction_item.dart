@@ -92,7 +92,7 @@ class TransactionsItemState extends State<TransactionsItem> {
     TransactionValue transactionValue = transactionUtils!.getTransactionValue();
 
     return Text(' ${transactionValue.prefix} ${transactionValue.amount}',
-        style: theme.textTheme.labelLarge?.copyWith(
+        style: theme.textTheme.titleMedium?.copyWith(
           color: getAmountColor(transactionValue.prefix),
           overflow: TextOverflow.ellipsis,
         ));
@@ -134,13 +134,12 @@ class TransactionsItemState extends State<TransactionsItem> {
                                     _lockedWit > 0
                                         ? SizedBox(width: 10)
                                         : Container(),
-                                    buildTransactionValue(label),
+                                    Expanded(
+                                        flex: 1,
+                                        child: buildTransactionValue(label)),
                                   ],
                                 ),
                               ])),
-                          SizedBox(
-                            width: 8,
-                          ),
                           Expanded(
                               child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,

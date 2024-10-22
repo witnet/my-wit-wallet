@@ -160,6 +160,8 @@ const String LATEST_RELEASE_URL =
 const String DOWNLOAD_BASE_URL =
     "https://github.com/witnet/my-wit-wallet/releases/download";
 
+const double BORDER_RADIUS = 32;
+
 const List<String> CUSTOM_ICON_NAMES = [
   'create-or-import-wallet',
   'general-error',
@@ -182,6 +184,7 @@ const List<String> CUSTOM_ICON_NAMES = [
   'stake-icon-dark',
   'stake-icon',
   'dots-bg',
+  'dots-bg-dark',
   'stake',
   'transaction-error',
   'transaction-success',

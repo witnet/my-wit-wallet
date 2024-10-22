@@ -69,6 +69,7 @@ class AddressListState extends State<AddressList> {
         return Text(
             '${account.balance.availableNanoWit.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
             textAlign: TextAlign.end,
+            overflow: TextOverflow.ellipsis,
             style: textStyle!.copyWith(fontFamily: 'Almarai'));
       }
     });
@@ -106,10 +107,10 @@ class AddressListState extends State<AddressList> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
+                        Padding(
+                          padding: EdgeInsets.only(right: 8),
                           child: Text(
                             account.address.cropMiddle(18),
-                            overflow: TextOverflow.ellipsis,
                             style: textStyle,
                           ),
                         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/screen_transitions/no_transitions_builder.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'colors.dart';
@@ -81,35 +82,35 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.darkGrey2, width: 1.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(24),
+    borderRadius: BorderRadius.circular(BORDER_RADIUS),
   ),
   focusedBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.brightCyan, width: 2.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(24),
+    borderRadius: BorderRadius.circular(BORDER_RADIUS),
   ),
   errorBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.brightRed, width: 1.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(24),
+    borderRadius: BorderRadius.circular(BORDER_RADIUS),
   ),
   focusedErrorBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.brightRed, width: 1.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(24),
+    borderRadius: BorderRadius.circular(BORDER_RADIUS),
   ),
   border: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.opacityWhite, width: 1.0, style: BorderStyle.solid),
-    borderRadius: BorderRadius.circular(24),
+    borderRadius: BorderRadius.circular(BORDER_RADIUS),
   ),
   alignLabelWithHint: true,
 );
 TooltipThemeData tooltipTheme = TooltipThemeData(
     margin: EdgeInsets.all(8),
-    padding: EdgeInsets.all(16),
+    padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(BORDER_RADIUS),
       color: WitnetPallet.darkerGrey,
     ),
     textStyle: bodyRegular.copyWith(color: WitnetPallet.white, fontSize: 12));
@@ -117,20 +118,20 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
   style: TextButton.styleFrom(
     foregroundColor: WitnetPallet.white,
     shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(24))),
+        borderRadius: BorderRadius.all(Radius.circular(32))),
     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     textStyle: bodyRegular.copyWith(fontSize: 16),
   ),
 );
 ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
-    padding: const EdgeInsets.all(16),
+    padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
     foregroundColor: WitnetPallet.black,
     backgroundColor: WitnetPallet.brightCyan,
     disabledForegroundColor: WitnetPallet.mediumGrey,
     disabledBackgroundColor: WitnetPallet.darkGrey2,
     shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24)), // background color
+        borderRadius: BorderRadius.circular(BORDER_RADIUS)), // background color
     textStyle: bodyRegular.copyWith(fontSize: 16),
   ),
 );
@@ -138,9 +139,10 @@ OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
   foregroundColor: WitnetPallet.white,
   disabledForegroundColor: Color.fromARGB(78, 240, 243, 245).withOpacity(0.38),
-  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+  shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(BORDER_RADIUS)),
   side: BorderSide(width: 1, color: WitnetPallet.white),
-  padding: const EdgeInsets.all(16),
+  padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
   textStyle: bodyRegular.copyWith(fontSize: 16),
 ));
 CardTheme cardTheme = CardTheme(
@@ -153,7 +155,8 @@ IconThemeData iconTheme = IconThemeData(
   size: 16,
 );
 ButtonThemeData buttonThemeData = ButtonThemeData(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)));
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(BORDER_RADIUS)));
 IconThemeData primaryIconTheme = IconThemeData(
   color: WitnetPallet.opacityWhite,
   size: 24,
@@ -176,7 +179,7 @@ Color getColorPrimary(Set<WidgetState> states) {
   if (states.any(activeStates.contains)) {
     return WitnetPallet.brightCyan;
   }
-  return WitnetPallet.lightGrey;
+  return WitnetPallet.mediumGrey;
 }
 
 Color getColorSecondary(Set<WidgetState> states) {

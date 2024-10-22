@@ -128,13 +128,13 @@ class TransactionDetails extends StatelessWidget {
           InfoElement(
               label: localization.from.toTitleCase(),
               copyText: transactionUtils.getSenderAddress(),
-              fontFamily: extendedTheme.monoRegularText!.fontFamily,
-              text: transactionUtils.getSenderAddress().cropMiddle(30)),
+              contentFontStyle: extendedTheme.monoBoldText!,
+              text: transactionUtils.getSenderAddress().cropMiddle(24)),
           InfoElement(
               label: localization.to,
               copyText: transactionUtils.getRecipientAddress(),
-              fontFamily: extendedTheme.monoRegularText!.fontFamily,
-              text: transactionUtils.getRecipientAddress().cropMiddle(30)),
+              contentFontStyle: extendedTheme.monoBoldText!,
+              text: transactionUtils.getRecipientAddress().cropMiddle(24)),
           InfoElement(
             label: localization.amount,
             text: transactionUtils.getTransactionValue().amount,
@@ -160,7 +160,7 @@ class TransactionDetails extends StatelessWidget {
               children: [
             InfoElement(
               label: localization.transactionId,
-              text: transaction.txnHash.cropMiddle(30),
+              text: transaction.txnHash.cropMiddle(24),
               copyText: transaction.txnHash,
               url: 'https://witnet.network/search/${transaction.txnHash}',
             ),

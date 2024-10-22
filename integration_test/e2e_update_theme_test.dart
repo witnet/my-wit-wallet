@@ -41,7 +41,7 @@ Future<void> e2eUpdateThemeColorTest(WidgetTester tester) async {
       tester.widget<Text>(find.text(localization.darkMode)).style!.color;
 
   // Avoid switch to password authentication if password is not typed by the user
-  expect(textColor, WitnetPallet.opacityWhite);
+  expect(textColor, WitnetPallet.lightGrey);
 
   // Tap switch to change theme color
   await tapButton(tester, Switch, index: 0);
@@ -51,6 +51,6 @@ Future<void> e2eUpdateThemeColorTest(WidgetTester tester) async {
   final textColor2 =
       tester.widget<Text>(find.text(localization.darkMode)).style!.color;
   // Avoid switch to password authentication if password is not typed by the user
-  expect(textColor2, WitnetPallet.darkGrey);
+  expect(textColor2, WitnetPallet.mediumGrey);
   await teardownTest();
 }

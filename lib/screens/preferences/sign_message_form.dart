@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
@@ -8,6 +7,7 @@ import 'package:my_wit_wallet/screens/preferences/general_config.dart';
 import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/get_window_width.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
@@ -191,6 +191,7 @@ class SignMessageFormState extends State<SignMessageForm> {
           Select(
               selectedItem: _address ?? externalAddresses[0].label,
               cropLabel: true,
+              cropMiddleLength: windowWidth > 550 ? null : 28,
               listItems: isHdWallet ? externalAddresses : masterAccountList,
               onChanged: (String? label) =>
                   {if (label != null) setState(() => _address = label)}),

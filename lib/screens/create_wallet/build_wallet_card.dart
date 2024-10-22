@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
@@ -295,14 +296,14 @@ class BuildWalletCardState extends State<BuildWalletCard>
                     '$currentTransactionCount',
                     maxLines: 2,
                     minFontSize: 16,
-                    style: extendedTheme.monoSmallText!,
+                    style: theme.textTheme.bodyMedium!,
                   )
                 ],
               ),
               if (isHdWallet)
                 Row(
                   children: [
-                    AutoSizeText(
+                    Text(
                       localization.exploredAddresses,
                       style: theme.textTheme.titleMedium,
                     ),
@@ -327,10 +328,10 @@ class BuildWalletCardState extends State<BuildWalletCard>
                   Expanded(
                       flex: 1,
                       child: Text(
-                        state.message,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodyMedium,
-                      )),
+                          state.message.contains('wit1')
+                              ? state.message.cropMiddle(18)
+                              : state.message,
+                          style: extendedTheme.monoMediumText)),
                 ],
               ),
             ],

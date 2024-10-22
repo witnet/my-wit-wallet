@@ -23,10 +23,11 @@ class WalletTypeLabel extends StatelessWidget {
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
     return label == WalletType.single
         ? Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.all(extendedTheme.borderRadius!),
                 color: walletTypeToBgColor(context)[label]),
             child: Padding(
                 padding: EdgeInsets.only(top: 2, bottom: 2, left: 4, right: 4),

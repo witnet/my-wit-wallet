@@ -10,14 +10,14 @@ class InfoElement extends StatelessWidget {
   final Color? color;
   final bool isLastItem;
   final String? copyText;
-  final String? fontFamily;
+  final TextStyle? contentFontStyle;
 
   const InfoElement({
     required this.label,
     required this.text,
     this.plainText = false,
     this.isLastItem = false,
-    this.fontFamily,
+    this.contentFontStyle,
     this.url,
     this.color,
     this.copyText,
@@ -34,13 +34,12 @@ class InfoElement extends StatelessWidget {
   }
 
   TextStyle getContentStyle(ThemeData theme) {
-    String? fontFamily = this.fontFamily != null
-        ? this.fontFamily
-        : theme.textTheme.bodyMedium!.fontFamily;
     Color? color =
         this.color != null ? this.color : theme.textTheme.bodyMedium!.color;
-    return theme.textTheme.bodyMedium!
-        .copyWith(color: color, fontFamily: fontFamily);
+    TextStyle? style = this.contentFontStyle != null
+        ? this.contentFontStyle
+        : theme.textTheme.bodyMedium;
+    return style!.copyWith(color: color);
   }
 
   Widget buildContent(ThemeData theme) {

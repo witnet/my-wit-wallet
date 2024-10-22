@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:updat/updat.dart';
@@ -138,6 +139,7 @@ void customDialog({
   required void Function() dismissUpdate,
 }) {
   final theme = Theme.of(context);
+  final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
@@ -145,7 +147,7 @@ void customDialog({
       surfaceTintColor: Colors.transparent,
       scrollable: true,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8))),
+          borderRadius: BorderRadius.all(extendedTheme.borderRadius!)),
       title: Flex(
         direction: Axis.vertical,
         children: [

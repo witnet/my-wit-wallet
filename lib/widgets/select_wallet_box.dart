@@ -45,7 +45,7 @@ class SelectWalletBox extends StatelessWidget {
           color: isSelected
               ? extendedTheme.walletActiveItemBackgroundColor
               : extendedTheme.walletListBackgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(24)),
+          borderRadius: BorderRadius.all(extendedTheme.borderRadius!),
           border: Border.all(
             color: isSelected
                 ? extendedTheme.walletActiveItemBorderColor!
@@ -60,9 +60,9 @@ class SelectWalletBox extends StatelessWidget {
               decoration: BoxDecoration(
                   color: WitnetPallet.black,
                   border: Border.all(color: WitnetPallet.transparent),
-                  borderRadius: BorderRadius.all(Radius.circular(24))),
+                  borderRadius: BorderRadius.all(extendedTheme.borderRadius!)),
               child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(24)),
+                borderRadius: BorderRadius.all(extendedTheme.borderRadius!),
                 child: Container(
                   decoration: BoxDecoration(
                       color: WitnetPallet.black,
@@ -72,25 +72,23 @@ class SelectWalletBox extends StatelessWidget {
                   child: Identicon(seed: walletId, size: 8),
                 ),
               )),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: 16, right: 16, top: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    walletName,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelLarge,
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    address.cropMiddle(15),
-                    overflow: TextOverflow.ellipsis,
-                    style: extendedTheme.monoSmallText,
-                  ),
-                ],
-              ),
+          Padding(
+            padding: EdgeInsets.only(left: 16, right: 16, top: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  walletName,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.labelLarge,
+                ),
+                SizedBox(height: 4),
+                Text(
+                  address.cropMiddle(18),
+                  overflow: TextOverflow.ellipsis,
+                  style: extendedTheme.monoSmallText,
+                ),
+              ],
             ),
           ),
           Expanded(

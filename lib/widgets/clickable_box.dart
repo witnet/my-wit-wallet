@@ -88,7 +88,7 @@ class ClickableBox extends StatelessWidget {
           padding: EdgeInsets.only(top: 14, bottom: 14, left: 16, right: 16),
           decoration: BoxDecoration(
             color: localTheme(extendedTheme)[ClickableBoxTheme.BgColor],
-            borderRadius: BorderRadius.all(Radius.circular(24)),
+            borderRadius: BorderRadius.all(extendedTheme.borderRadius!),
             border: Border.all(
               color: localTheme(extendedTheme)[ClickableBoxTheme.BorderColor]!,
               width: 1,

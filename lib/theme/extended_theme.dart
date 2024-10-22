@@ -1,61 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'colors.dart';
 
 @immutable
 class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
-  const ExtendedTheme({
-    required this.monoBoldText,
-    required this.monoLargeText,
-    required this.selectBackgroundColor,
-    required this.selectedTextColor,
-    required this.dropdownBackgroundColor,
-    required this.dropdownTextColor,
-    required this.navigationActiveButton,
-    required this.headerBackgroundColor,
-    required this.headerTextColor,
-    required this.headerActiveTextColor,
-    required this.panelBgColor,
-    required this.walletListBackgroundColor,
-    required this.walletActiveItemBackgroundColor,
-    required this.walletActiveItemBorderColor,
-    required this.walletItemBorderColor,
-    required this.inputIconColor,
-    required this.txBorderColor,
-    required this.txValuePositiveColor,
-    required this.txValueNegativeColor,
-    required this.stepBarActiveColor,
-    required this.stepBarActionableColor,
-    required this.stepBarColor,
-    required this.switchActiveBg,
-    required this.switchActiveFg,
-    required this.switchInactiveBg,
-    required this.switchInactiveFg,
-    required this.switchBorderColor,
-    required this.dialogBackground,
-    required this.copiedSnackbarBg,
-    required this.copiedSnackbarText,
-    required this.monoRegularText,
-    required this.spinnerColor,
-    required this.errorColor,
-    required this.activeClickableBoxBgColor,
-    required this.activeClickableBoxBorderColor,
-    required this.inactiveClickableBoxBgColor,
-    required this.inactiveClickableBoxBorderColor,
-    required this.numberPaginatiorSelectedBg,
-    required this.numberPaginatiorUnselectedFg,
-    required this.darkBgFocusColor,
-    required this.focusBg,
-    required this.hdWalletTypeBgColor,
-    required this.singleWalletBgColor,
-    required this.warningColor,
-    required this.backgroundBox,
-    required this.regularPanelText,
-    required this.mediumPanelText,
-    required this.navigationColor,
-    required this.navigationPointerActiveButton,
-    required this.monoSmallText,
-    required this.monoMediumText,
-  });
+  const ExtendedTheme(
+      {required this.monoBoldText,
+      required this.monoLargeText,
+      required this.selectBackgroundColor,
+      required this.selectedTextColor,
+      required this.dropdownBackgroundColor,
+      required this.dropdownTextColor,
+      required this.navigationActiveButton,
+      required this.headerBackgroundColor,
+      required this.headerTextColor,
+      required this.headerActiveTextColor,
+      required this.panelBgColor,
+      required this.walletListBackgroundColor,
+      required this.walletActiveItemBackgroundColor,
+      required this.walletActiveItemBorderColor,
+      required this.walletItemBorderColor,
+      required this.inputIconColor,
+      required this.txBorderColor,
+      required this.txValuePositiveColor,
+      required this.txValueNegativeColor,
+      required this.stepBarActiveColor,
+      required this.stepBarActionableColor,
+      required this.stepBarColor,
+      required this.switchActiveBg,
+      required this.switchActiveFg,
+      required this.switchInactiveBg,
+      required this.switchInactiveFg,
+      required this.switchBorderColor,
+      required this.dialogBackground,
+      required this.copiedSnackbarBg,
+      required this.copiedSnackbarText,
+      required this.monoRegularText,
+      required this.spinnerColor,
+      required this.errorColor,
+      required this.activeClickableBoxBgColor,
+      required this.activeClickableBoxBorderColor,
+      required this.inactiveClickableBoxBgColor,
+      required this.inactiveClickableBoxBorderColor,
+      required this.numberPaginatiorSelectedBg,
+      required this.numberPaginatiorUnselectedFg,
+      required this.darkBgFocusColor,
+      required this.focusBg,
+      required this.hdWalletTypeBgColor,
+      required this.singleWalletBgColor,
+      required this.warningColor,
+      required this.backgroundBox,
+      required this.regularPanelText,
+      required this.mediumPanelText,
+      required this.navigationColor,
+      required this.navigationPointerActiveButton,
+      required this.monoSmallText,
+      required this.monoMediumText,
+      required this.borderRadius});
   final Color? selectBackgroundColor;
   final Color? selectedTextColor;
   final Color? dropdownBackgroundColor;
@@ -107,6 +108,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
   final Color? navigationPointerActiveButton;
   final TextStyle? regularPanelText;
   final TextStyle? mediumPanelText;
+  final Radius? borderRadius;
   @override
   ExtendedTheme copyWith(
       {Color? selectBackgroundColor,
@@ -156,77 +158,78 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       TextStyle? mediumPanelText,
       Color? navigationColor,
       Color? navigationPointerActiveButton,
+      Radius? borderRadius,
       r}) {
     return ExtendedTheme(
-      selectBackgroundColor:
-          selectBackgroundColor ?? this.selectBackgroundColor,
-      selectedTextColor: selectedTextColor ?? this.selectedTextColor,
-      dropdownBackgroundColor:
-          dropdownBackgroundColor ?? this.dropdownBackgroundColor,
-      dropdownTextColor: dropdownTextColor ?? this.dropdownTextColor,
-      navigationActiveButton:
-          navigationActiveButton ?? this.navigationActiveButton,
-      navigationPointerActiveButton:
-          navigationPointerActiveButton ?? this.navigationPointerActiveButton,
-      headerBackgroundColor:
-          headerBackgroundColor ?? this.headerBackgroundColor,
-      headerTextColor: headerTextColor ?? this.headerTextColor,
-      headerActiveTextColor:
-          headerActiveTextColor ?? this.headerActiveTextColor,
-      panelBgColor: panelBgColor ?? this.panelBgColor,
-      walletListBackgroundColor:
-          walletListBackgroundColor ?? this.walletListBackgroundColor,
-      walletActiveItemBackgroundColor: walletActiveItemBackgroundColor ??
-          this.walletActiveItemBackgroundColor,
-      walletActiveItemBorderColor:
-          walletActiveItemBorderColor ?? this.walletActiveItemBorderColor,
-      walletItemBorderColor:
-          walletItemBorderColor ?? this.walletItemBorderColor,
-      inputIconColor: inputIconColor ?? this.inputIconColor,
-      txBorderColor: txBorderColor ?? this.txBorderColor,
-      txValueNegativeColor: txValueNegativeColor ?? this.txValueNegativeColor,
-      txValuePositiveColor: txValuePositiveColor ?? this.txValuePositiveColor,
-      stepBarActiveColor: stepBarActiveColor ?? this.stepBarActiveColor,
-      stepBarActionableColor:
-          stepBarActionableColor ?? this.stepBarActionableColor,
-      stepBarColor: stepBarColor ?? this.stepBarColor,
-      switchActiveBg: switchActiveBg ?? this.switchActiveBg,
-      switchActiveFg: switchActiveFg ?? this.switchActiveFg,
-      switchInactiveBg: switchInactiveBg ?? this.switchInactiveBg,
-      switchInactiveFg: switchInactiveFg ?? this.switchInactiveFg,
-      switchBorderColor: switchBorderColor ?? this.switchBorderColor,
-      spinnerColor: spinnerColor ?? this.spinnerColor,
-      errorColor: errorColor ?? this.errorColor,
-      activeClickableBoxBgColor:
-          activeClickableBoxBgColor ?? this.activeClickableBoxBgColor,
-      activeClickableBoxBorderColor:
-          activeClickableBoxBorderColor ?? this.activeClickableBoxBorderColor,
-      inactiveClickableBoxBgColor:
-          inactiveClickableBoxBgColor ?? this.inactiveClickableBoxBgColor,
-      inactiveClickableBoxBorderColor: inactiveClickableBoxBorderColor ??
-          this.inactiveClickableBoxBorderColor,
-      dialogBackground: dialogBackground ?? this.dialogBackground,
-      copiedSnackbarBg: copiedSnackbarBg ?? copiedSnackbarBg,
-      copiedSnackbarText: copiedSnackbarText ?? copiedSnackbarText,
-      monoRegularText: monoRegularText ?? this.monoRegularText,
-      numberPaginatiorSelectedBg:
-          numberPaginatiorSelectedBg ?? this.numberPaginatiorSelectedBg,
-      numberPaginatiorUnselectedFg:
-          numberPaginatiorUnselectedFg ?? this.numberPaginatiorUnselectedFg,
-      darkBgFocusColor: darkBgFocusColor ?? this.darkBgFocusColor,
-      focusBg: focusBg ?? this.focusBg,
-      hdWalletTypeBgColor: hdWalletTypeBgColor ?? this.hdWalletTypeBgColor,
-      singleWalletBgColor: singleWalletBgColor ?? this.singleWalletBgColor,
-      warningColor: warningColor ?? this.warningColor,
-      backgroundBox: backgroundBox ?? this.backgroundBox,
-      regularPanelText: regularPanelText ?? this.regularPanelText,
-      mediumPanelText: mediumPanelText ?? this.mediumPanelText,
-      navigationColor: navigationColor ?? this.navigationColor,
-      monoBoldText: monoBoldText ?? this.monoBoldText,
-      monoLargeText: monoLargeText ?? this.monoLargeText,
-      monoSmallText: monoSmallText ?? this.monoSmallText,
-      monoMediumText: monoMediumText ?? this.monoMediumText,
-    );
+        selectBackgroundColor:
+            selectBackgroundColor ?? this.selectBackgroundColor,
+        selectedTextColor: selectedTextColor ?? this.selectedTextColor,
+        dropdownBackgroundColor:
+            dropdownBackgroundColor ?? this.dropdownBackgroundColor,
+        dropdownTextColor: dropdownTextColor ?? this.dropdownTextColor,
+        navigationActiveButton:
+            navigationActiveButton ?? this.navigationActiveButton,
+        navigationPointerActiveButton:
+            navigationPointerActiveButton ?? this.navigationPointerActiveButton,
+        headerBackgroundColor:
+            headerBackgroundColor ?? this.headerBackgroundColor,
+        headerTextColor: headerTextColor ?? this.headerTextColor,
+        headerActiveTextColor:
+            headerActiveTextColor ?? this.headerActiveTextColor,
+        panelBgColor: panelBgColor ?? this.panelBgColor,
+        walletListBackgroundColor:
+            walletListBackgroundColor ?? this.walletListBackgroundColor,
+        walletActiveItemBackgroundColor: walletActiveItemBackgroundColor ??
+            this.walletActiveItemBackgroundColor,
+        walletActiveItemBorderColor:
+            walletActiveItemBorderColor ?? this.walletActiveItemBorderColor,
+        walletItemBorderColor:
+            walletItemBorderColor ?? this.walletItemBorderColor,
+        inputIconColor: inputIconColor ?? this.inputIconColor,
+        txBorderColor: txBorderColor ?? this.txBorderColor,
+        txValueNegativeColor: txValueNegativeColor ?? this.txValueNegativeColor,
+        txValuePositiveColor: txValuePositiveColor ?? this.txValuePositiveColor,
+        stepBarActiveColor: stepBarActiveColor ?? this.stepBarActiveColor,
+        stepBarActionableColor:
+            stepBarActionableColor ?? this.stepBarActionableColor,
+        stepBarColor: stepBarColor ?? this.stepBarColor,
+        switchActiveBg: switchActiveBg ?? this.switchActiveBg,
+        switchActiveFg: switchActiveFg ?? this.switchActiveFg,
+        switchInactiveBg: switchInactiveBg ?? this.switchInactiveBg,
+        switchInactiveFg: switchInactiveFg ?? this.switchInactiveFg,
+        switchBorderColor: switchBorderColor ?? this.switchBorderColor,
+        spinnerColor: spinnerColor ?? this.spinnerColor,
+        errorColor: errorColor ?? this.errorColor,
+        activeClickableBoxBgColor:
+            activeClickableBoxBgColor ?? this.activeClickableBoxBgColor,
+        activeClickableBoxBorderColor:
+            activeClickableBoxBorderColor ?? this.activeClickableBoxBorderColor,
+        inactiveClickableBoxBgColor:
+            inactiveClickableBoxBgColor ?? this.inactiveClickableBoxBgColor,
+        inactiveClickableBoxBorderColor: inactiveClickableBoxBorderColor ??
+            this.inactiveClickableBoxBorderColor,
+        dialogBackground: dialogBackground ?? this.dialogBackground,
+        copiedSnackbarBg: copiedSnackbarBg ?? copiedSnackbarBg,
+        copiedSnackbarText: copiedSnackbarText ?? copiedSnackbarText,
+        monoRegularText: monoRegularText ?? this.monoRegularText,
+        numberPaginatiorSelectedBg:
+            numberPaginatiorSelectedBg ?? this.numberPaginatiorSelectedBg,
+        numberPaginatiorUnselectedFg:
+            numberPaginatiorUnselectedFg ?? this.numberPaginatiorUnselectedFg,
+        darkBgFocusColor: darkBgFocusColor ?? this.darkBgFocusColor,
+        focusBg: focusBg ?? this.focusBg,
+        hdWalletTypeBgColor: hdWalletTypeBgColor ?? this.hdWalletTypeBgColor,
+        singleWalletBgColor: singleWalletBgColor ?? this.singleWalletBgColor,
+        warningColor: warningColor ?? this.warningColor,
+        backgroundBox: backgroundBox ?? this.backgroundBox,
+        regularPanelText: regularPanelText ?? this.regularPanelText,
+        mediumPanelText: mediumPanelText ?? this.mediumPanelText,
+        navigationColor: navigationColor ?? this.navigationColor,
+        monoBoldText: monoBoldText ?? this.monoBoldText,
+        monoLargeText: monoLargeText ?? this.monoLargeText,
+        monoSmallText: monoSmallText ?? this.monoSmallText,
+        monoMediumText: monoMediumText ?? this.monoMediumText,
+        borderRadius: borderRadius ?? this.borderRadius);
   }
 
   // Controls how the properties change on theme changes
@@ -320,6 +323,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
       monoLargeText: TextStyle.lerp(monoLargeText, other.monoLargeText, t),
       monoSmallText: TextStyle.lerp(monoSmallText, other.monoSmallText, t),
       monoMediumText: TextStyle.lerp(monoMediumText, other.monoMediumText, t),
+      borderRadius: Radius.lerp(borderRadius, borderRadius, t),
     );
   }
 
@@ -404,6 +408,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         fontWeight: FontWeight.w500,
         color: WitnetPallet.darkerGrey,
         fontSize: 16),
+    borderRadius: Radius.circular(BORDER_RADIUS),
   );
   // the dark theme
   static const dark = ExtendedTheme(
@@ -486,5 +491,6 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
         fontWeight: FontWeight.w700,
         color: WitnetPallet.white,
         fontSize: 16),
+    borderRadius: Radius.circular(BORDER_RADIUS),
   );
 }

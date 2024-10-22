@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 
 typedef void StringCallback(String? value);
 
@@ -13,12 +14,14 @@ class SelectItem {
 class Select extends StatelessWidget {
   final String selectedItem;
   final bool cropLabel;
+  final int? cropMiddleLength;
   final List<SelectItem> listItems;
   final StringCallback onChanged;
 
   const Select({
     required this.selectedItem,
     this.cropLabel = false,
+    this.cropMiddleLength,
     required this.listItems,
     required this.onChanged,
   });
@@ -36,15 +39,30 @@ class Select extends StatelessWidget {
   Widget buildCropItem(String item, BuildContext context, bool selected) {
     ThemeData theme = Theme.of(context);
     ExtendedTheme extendedTheme = theme.extension<ExtendedTheme>()!;
-    return Text(
-      item,
-      overflow: TextOverflow.ellipsis,
-      style: selected
-          ? extendedTheme.monoRegularText
-              ?.copyWith(color: extendedTheme.selectedTextColor)
-          : extendedTheme.monoRegularText
-              ?.copyWith(fontWeight: FontWeight.normal),
-    );
+    Widget content;
+    if (cropMiddleLength != null) {
+      content = Text(
+        item.cropMiddle(cropMiddleLength!),
+        overflow: TextOverflow.ellipsis,
+        style: selected
+            ? extendedTheme.monoRegularText
+                ?.copyWith(color: extendedTheme.selectedTextColor)
+            : extendedTheme.monoRegularText
+                ?.copyWith(fontWeight: FontWeight.normal),
+      );
+    } else {
+      content = Text(
+        item,
+        overflow: TextOverflow.ellipsis,
+        style: selected
+            ? extendedTheme.monoRegularText
+                ?.copyWith(color: extendedTheme.selectedTextColor)
+            : extendedTheme.monoRegularText
+                ?.copyWith(fontWeight: FontWeight.normal),
+      );
+    }
+
+    return DropdownMenuItem<String>(value: item, child: content);
   }
 
   Widget build(BuildContext context) {
@@ -53,7 +71,7 @@ class Select extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: extendedTheme.selectBackgroundColor,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.all(extendedTheme.borderRadius!),
       ),
       child: Padding(
         padding: EdgeInsets.only(left: 8, right: 8),
@@ -81,7 +99,7 @@ class Select extends StatelessWidget {
               }).toList();
             },
             underline: Container(),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.all(extendedTheme.borderRadius!),
             isExpanded: true,
             items: listItems
                 .map<DropdownMenuItem<String>>((SelectItem item) =>

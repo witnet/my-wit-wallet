@@ -36,7 +36,6 @@ class DashboardScreenState extends State<DashboardScreen>
   String? currentAddress;
   Wallet? currentWallet;
   Account? currentAccount;
-  late AnimationController _loadingController;
   late Timer syncTimer;
   ApiDatabase database = Locator.instance.get<ApiDatabase>();
   ScrollController scrollController = ScrollController(keepScrollOffset: true);
@@ -47,11 +46,6 @@ class DashboardScreenState extends State<DashboardScreen>
   @override
   void initState() {
     super.initState();
-    _loadingController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    );
-    _loadingController.forward();
     _setWallet();
     _setAccount();
     String walletId = database.walletStorage.currentWallet.id;
@@ -71,7 +65,6 @@ class DashboardScreenState extends State<DashboardScreen>
 
   @override
   void dispose() {
-    _loadingController.dispose();
     if (explorerBlock != null &&
         explorerBlock!.syncWalletSubscription != null) {
       explorerBlock!.syncWalletSubscription!.cancel();

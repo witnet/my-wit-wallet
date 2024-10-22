@@ -57,21 +57,21 @@ class GenerateMnemonicCardState extends State<GenerateMnemonicCard>
       children: [
         Text(
           localization.generateMnemonic01(_radioWordCount),
-          style: theme.textTheme.bodyMedium,
+          style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 8,
         ),
         Text(
           localization.generateMnemonic02,
-          style: theme.textTheme.bodyMedium,
+          style: theme.textTheme.bodyLarge,
         ),
         SizedBox(
           height: 8,
         ),
         Text(
           localization.generateMnemonic03,
-          style: theme.textTheme.bodyMedium,
+          style: theme.textTheme.bodyLarge,
         ),
       ],
     );

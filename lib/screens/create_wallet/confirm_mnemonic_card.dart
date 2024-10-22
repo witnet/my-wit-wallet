@@ -6,7 +6,6 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
-import 'package:my_wit_wallet/theme/extended_theme.dart';
 
 typedef void VoidCallback(NavAction? value);
 
