@@ -12,6 +12,7 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/select.dart';
 import 'package:my_wit_wallet/widgets/validations/message_input.dart';
@@ -169,56 +170,48 @@ class SignMessageFormState extends State<SignMessageForm> {
     );
   }
 
-  Widget formBuilder(BuildContext context) {
-    return BlocBuilder<DashboardBloc, DashboardState>(
-        builder: (BuildContext context, DashboardState state) {
-      String selectedAddress = Locator.instance
-          .get<ApiDatabase>()
-          .walletStorage
-          .currentAccount
-          .address;
-      final Wallet currentWallet =
-          Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
-      List<SelectItem> externalAddresses = currentWallet
-          .orderedExternalAccounts()
-          .values
-          .map(
-              (Account account) => SelectItem(account.address, account.address))
-          .toList();
-      List<SelectItem> masterAccountList = [
-        SelectItem(currentWallet.masterAccount?.address ?? '',
-            currentWallet.masterAccount?.address ?? '')
-      ];
-      bool isHdWallet = externalAddresses.length > 0;
-      return Form(
-          autovalidateMode: AutovalidateMode.disabled,
-          child: Column(children: [
-            Select(
-                selectedItem: selectedAddress,
-                cropLabel: true,
-                listItems: isHdWallet ? externalAddresses : masterAccountList,
-                onChanged: (String? label) => {
-                      if (label != null) setState(() => selectedAddress = label)
-                    }),
-            SizedBox(height: 16),
-            _buildMessageInput(selectedAddress),
-            SizedBox(height: 16),
-            PaddedButton(
-                padding: EdgeInsets.zero,
-                text: localization.signMessage,
-                isLoading: isLoading,
-                type: ButtonType.primary,
-                enabled: true,
-                onPressed: () async {
-                  await _unlockKeychainAndSign(_message.value, selectedAddress);
-                })
-          ]));
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     _messageFocusNode.addListener(() => validateForm());
-    return formBuilder(context);
+    return BlocBuilder<DashboardBloc, DashboardState>(
+        builder: (BuildContext context, DashboardState state) {
+          final WalletStorage walletStorage = Locator.instance.get<ApiDatabase>().walletStorage;
+          String selectedAddress = walletStorage.currentAccount.address;
+          final Wallet currentWallet = walletStorage.currentWallet;
+          final List<SelectItem> externalAddresses = currentWallet
+              .orderedExternalAccounts()
+              .values
+              .map(
+                  (Account account) => SelectItem(account.address, account.address))
+              .toList();
+          final List<SelectItem> masterAccountList = [
+            SelectItem(currentWallet.masterAccount?.address ?? '',
+                currentWallet.masterAccount?.address ?? '')
+          ];
+          final bool isHdWallet = externalAddresses.length > 0;
+          return Form(
+              autovalidateMode: AutovalidateMode.disabled,
+              child: Column(children: [
+                Select(
+                    selectedItem: selectedAddress,
+                    cropLabel: true,
+                    listItems: isHdWallet ? externalAddresses : masterAccountList,
+                    onChanged: (String? label) => {
+                      if (label != null) setState(() => selectedAddress = label)
+                    }),
+                SizedBox(height: 16),
+                _buildMessageInput(selectedAddress),
+                SizedBox(height: 16),
+                PaddedButton(
+                    padding: EdgeInsets.zero,
+                    text: localization.signMessage,
+                    isLoading: isLoading,
+                    type: ButtonType.primary,
+                    enabled: true,
+                    onPressed: () async {
+                      await _unlockKeychainAndSign(_message.value, selectedAddress);
+                    })
+              ]));
+        });
   }
 }
