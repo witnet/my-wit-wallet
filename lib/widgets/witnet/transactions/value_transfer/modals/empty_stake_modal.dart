@@ -7,9 +7,9 @@ import 'package:my_wit_wallet/widgets/alert_dialog.dart';
 void buildEmptyStakeModal({
   required ThemeData theme,
   required BuildContext context,
-  required String originRouteName,
-  required Widget originRoute,
   String iconName = 'empty',
+  required void Function() onPressedStake,
+  required void Function() onPressedCancel,
 }) {
   return buildAlertDialog(
       context: context,
@@ -20,11 +20,14 @@ void buildEmptyStakeModal({
             sizeCover: false,
             type: ButtonType.primary,
             enabled: true,
-            onPressed: () => {
-                  Navigator.popUntil(
-                      context, ModalRoute.withName(originRouteName)),
-                  ScaffoldMessenger.of(context).clearSnackBars(),
-                }),
+            onPressed: onPressedCancel),
+        PaddedButton(
+          padding: EdgeInsets.all(8),
+          text: localization.stake,
+          type: ButtonType.text,
+          enabled: true,
+          onPressed: onPressedStake,
+        )
       ],
       title: localization.emptyStakeTitle,
       content: Column(mainAxisSize: MainAxisSize.min, children: [

@@ -56,8 +56,21 @@ class StakeUnstakeButtons extends StatelessWidget {
         buildEmptyStakeModal(
             theme: theme,
             context: context,
-            originRouteName: DashboardScreen.route,
-            originRoute: DashboardScreen());
+            onPressedCancel: () {
+              Navigator.popUntil(
+                  context, ModalRoute.withName(DashboardScreen.route));
+              ScaffoldMessenger.of(context).clearSnackBars();
+            },
+            onPressedStake: () {
+              Navigator.push(
+                  context,
+                  CustomPageRoute(
+                      builder: (BuildContext context) {
+                        return StakeScreen();
+                      },
+                      maintainState: false,
+                      settings: RouteSettings(name: StakeScreen.route)));
+            });
       }
     }
 
