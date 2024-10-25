@@ -19,19 +19,33 @@ buildAlertDialog({
             context: context,
             barrierDismissible: closable,
             builder: (BuildContext context) => AlertDialog(
-              title: Text(
-                textAlign: TextAlign.center,
-                title,
-                style: theme.textTheme.titleLarge,
+              title: Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (icon != null)
+                      Icon(
+                        icon,
+                        size: 24,
+                        color: color ?? WitnetPallet.brightCyan,
+                      ),
+                    const SizedBox(width: 8),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        title,
+                        style: theme.textTheme.titleLarge,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               backgroundColor: theme.colorScheme.surface,
               surfaceTintColor: theme.colorScheme.surface,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(extendedTheme.borderRadius!)),
-              icon: icon != null
-                  ? Icon(icon,
-                      size: 24, color: color ?? WitnetPallet.brightCyan)
-                  : null,
+                borderRadius: BorderRadius.all(extendedTheme.borderRadius!),
+              ),
               actionsPadding: EdgeInsets.only(bottom: 16, right: 16, top: 0),
               content: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 300), child: content),

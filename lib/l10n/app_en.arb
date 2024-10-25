@@ -152,7 +152,7 @@
 	"downloading": "Downloading...",
 	"drSolved": "Data requests solved",
 	"emptyStakeMessage": "Stake some $WIT! Secure the network, earn rewards, and be part of a censorship-resistant oracle.",
-	"emptyStakeTitle": "You don´t have balance to unstake",
+	"emptyStakeTitle": "You don't have balance to unstake",
 	"enableLoginWithBiometrics": "Enable login with biometrics",
 	"encryptWallet01": "This password encrypts your Witnet wallet only on this computer.",
 	"encryptWallet02": "This is not your backup and you cannot restore your wallet with this password.",
