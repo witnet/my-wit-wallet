@@ -13,19 +13,21 @@ class NavigationButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
+      alignment: Alignment.center,
       children: [
         button,
-        SizedBox(height: 4),
-        Container(
-          width: 4,
-          height: 4,
-          decoration: BoxDecoration(
-            color: getNavigationPointerColor(
-                context: context, routesList: routesList),
-            shape: BoxShape.circle,
-          ),
-        )
+        Positioned(
+            bottom: 0,
+            child: Container(
+              width: 4,
+              height: 4,
+              decoration: BoxDecoration(
+                color: getNavigationPointerColor(
+                    context: context, routesList: routesList),
+                shape: BoxShape.circle,
+              ),
+            ))
       ],
     );
   }

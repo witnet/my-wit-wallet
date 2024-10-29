@@ -46,23 +46,22 @@ class SignMessageState extends State<SignMessage> {
     final theme = Theme.of(context);
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (previous, current) {
-        return ClosableView(closeSetting: widget.closeSetting, children: [
-          Text(
-            localization.messageSigning,
-            style: theme.textTheme.titleLarge,
-          ),
-          SizedBox(height: 16),
-          Text(localization.messageSigning01, style: theme.textTheme.bodyLarge),
-          SizedBox(height: 16),
-          signedMessage == null
-              ? SignMessageForm(
-                  scrollController: widget.scrollController,
-                  signedMessage: _setSignedMessage)
-              : ExportSignMessage(
-                  scrollController: widget.scrollController,
-                  signedMessage: signedMessage!),
-          SizedBox(height: 24),
-        ]);
+        return ClosableView(
+            title: localization.messageSigning,
+            closeSetting: widget.closeSetting,
+            children: [
+              Text(localization.messageSigning01,
+                  style: theme.textTheme.bodyLarge),
+              SizedBox(height: 16),
+              signedMessage == null
+                  ? SignMessageForm(
+                      scrollController: widget.scrollController,
+                      signedMessage: _setSignedMessage)
+                  : ExportSignMessage(
+                      scrollController: widget.scrollController,
+                      signedMessage: signedMessage!),
+              SizedBox(height: 24),
+            ]);
       },
     );
   }

@@ -39,7 +39,7 @@ class _MyWitWalletState extends State<MyWitWalletApp> {
     PreferencePage.route: (context) => PreferencePage(),
     ReceiveTransactionScreen.route: (context) => ReceiveTransactionScreen(),
     StakeScreen.route: (context) => StakeScreen(),
-    UnstakeScreen.route: (context) => UnstakeScreen()
+    UnstakeScreen.route: (context) => UnstakeScreen(),
   };
 
   List<LocalizationsDelegate<dynamic>> _localizationsDelegates =

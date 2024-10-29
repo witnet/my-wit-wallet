@@ -155,41 +155,41 @@ class DeleteSingleWalletState extends State<DeleteSingleWallet> {
 
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (previous, current) {
-        return ClosableView(closeSetting: widget.closeSetting, children: [
-          Text(
-            localization.deleteWallet,
-            style: theme.textTheme.titleLarge,
-          ),
-          SizedBox(height: 16),
-          Text(localization.readCarefully, style: bodyLarge),
-          SizedBox(height: 10),
-          Text(localization.reestablishInstructions, style: bodyLarge),
-          SizedBox(height: 10),
-          Text(localization.whatToDo, style: bodyLargeBold),
-          SizedBox(height: 10),
-          buildOrderedListItem('1. ', localization.reestablishSteps01, context),
-          SizedBox(height: 10),
-          buildOrderedListItem('2. ', localization.reestablishSteps02, context),
-          LabeledCheckbox(
-            focusNode: _checkBoxFocusNode,
-            isFocus: isCheckBoxFocus,
-            checked: isNextAllow,
-            label: localization.walletSecurityConfirmLabel,
-            onChanged: toggleCheckBox,
-          ),
-          SizedBox(height: 16),
-          PaddedButton(
-              padding: EdgeInsets.only(bottom: 0),
-              text: localization.delete,
-              type: ButtonType.primary,
-              isLoading: isLoading,
-              enabled: isNextAllow,
-              onPressed: () async {
-                setState(() => isLoading = true);
-                if (isNextAllow) showDeleteStorageAlert();
-                setState(() => isLoading = false);
-              }),
-        ]);
+        return ClosableView(
+            title: localization.deleteWallet,
+            closeSetting: widget.closeSetting,
+            children: [
+              Text(localization.readCarefully, style: bodyLarge),
+              SizedBox(height: 10),
+              Text(localization.reestablishInstructions, style: bodyLarge),
+              SizedBox(height: 10),
+              Text(localization.whatToDo, style: bodyLargeBold),
+              SizedBox(height: 10),
+              buildOrderedListItem(
+                  '1. ', localization.reestablishSteps01, context),
+              SizedBox(height: 10),
+              buildOrderedListItem(
+                  '2. ', localization.reestablishSteps02, context),
+              LabeledCheckbox(
+                focusNode: _checkBoxFocusNode,
+                isFocus: isCheckBoxFocus,
+                checked: isNextAllow,
+                label: localization.walletSecurityConfirmLabel,
+                onChanged: toggleCheckBox,
+              ),
+              SizedBox(height: 16),
+              PaddedButton(
+                  padding: EdgeInsets.only(bottom: 0),
+                  text: localization.delete,
+                  type: ButtonType.primary,
+                  isLoading: isLoading,
+                  enabled: isNextAllow,
+                  onPressed: () async {
+                    setState(() => isLoading = true);
+                    if (isNextAllow) showDeleteStorageAlert();
+                    setState(() => isLoading = false);
+                  }),
+            ]);
       },
     );
   }

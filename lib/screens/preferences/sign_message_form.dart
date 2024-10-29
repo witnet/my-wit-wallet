@@ -175,43 +175,44 @@ class SignMessageFormState extends State<SignMessageForm> {
     _messageFocusNode.addListener(() => validateForm());
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
-          final WalletStorage walletStorage = Locator.instance.get<ApiDatabase>().walletStorage;
-          String selectedAddress = walletStorage.currentAccount.address;
-          final Wallet currentWallet = walletStorage.currentWallet;
-          final List<SelectItem> externalAddresses = currentWallet
-              .orderedExternalAccounts()
-              .values
-              .map(
-                  (Account account) => SelectItem(account.address, account.address))
-              .toList();
-          final List<SelectItem> masterAccountList = [
-            SelectItem(currentWallet.masterAccount?.address ?? '',
-                currentWallet.masterAccount?.address ?? '')
-          ];
-          final bool isHdWallet = externalAddresses.length > 0;
-          return Form(
-              autovalidateMode: AutovalidateMode.disabled,
-              child: Column(children: [
-                Select(
-                    selectedItem: selectedAddress,
-                    cropLabel: true,
-                    listItems: isHdWallet ? externalAddresses : masterAccountList,
-                    onChanged: (String? label) => {
+      final WalletStorage walletStorage =
+          Locator.instance.get<ApiDatabase>().walletStorage;
+      String selectedAddress = walletStorage.currentAccount.address;
+      final Wallet currentWallet = walletStorage.currentWallet;
+      final List<SelectItem> externalAddresses = currentWallet
+          .orderedExternalAccounts()
+          .values
+          .map(
+              (Account account) => SelectItem(account.address, account.address))
+          .toList();
+      final List<SelectItem> masterAccountList = [
+        SelectItem(currentWallet.masterAccount?.address ?? '',
+            currentWallet.masterAccount?.address ?? '')
+      ];
+      final bool isHdWallet = externalAddresses.length > 0;
+      return Form(
+          autovalidateMode: AutovalidateMode.disabled,
+          child: Column(children: [
+            Select(
+                selectedItem: selectedAddress,
+                cropLabel: true,
+                listItems: isHdWallet ? externalAddresses : masterAccountList,
+                onChanged: (String? label) => {
                       if (label != null) setState(() => selectedAddress = label)
                     }),
-                SizedBox(height: 16),
-                _buildMessageInput(selectedAddress),
-                SizedBox(height: 16),
-                PaddedButton(
-                    padding: EdgeInsets.zero,
-                    text: localization.signMessage,
-                    isLoading: isLoading,
-                    type: ButtonType.primary,
-                    enabled: true,
-                    onPressed: () async {
-                      await _unlockKeychainAndSign(_message.value, selectedAddress);
-                    })
-              ]));
-        });
+            SizedBox(height: 16),
+            _buildMessageInput(selectedAddress),
+            SizedBox(height: 16),
+            PaddedButton(
+                padding: EdgeInsets.zero,
+                text: localization.signMessage,
+                isLoading: isLoading,
+                type: ButtonType.primary,
+                enabled: true,
+                onPressed: () async {
+                  await _unlockKeychainAndSign(_message.value, selectedAddress);
+                })
+          ]));
+    });
   }
 }

@@ -125,14 +125,14 @@ const int EXTERNAL_GAP_LIMIT = 10;
 const int INTERNAL_GAP_LIMIT = 3;
 const bool ENCRYPT_DB = false;
 const int PAGINATION_LIMIT = 10;
-const double SMALL_DASHBOARD_HEADER_HEIGHT = 180;
-const double LARGE_DASHBOARD_HEADER_HEIGHT = 258;
+const double DASHBOARD_HEADER_HEIGHT = 70;
 const double DEFAULT_BOTTOM_PADDING = 24;
-const double HEADER_HEIGHT = 158;
+const double HEADER_HEIGHT = 140;
 const String VERSION_NUMBER = '1.1.4';
 const int ENCRYPTED_XPRV_LENGTH = 293;
 const int XPRV_LENGTH = 117;
 const int MAX_VT_WEIGHT = 20000;
+const double MAX_LAYOUT_WIDTH = 600;
 
 List<LocalizationsDelegate<dynamic>> localizationDelegates = [
   AppLocalizations.delegate,
@@ -172,21 +172,21 @@ const List<String> CUSTOM_ICON_NAMES = [
   'receive-icon',
   'send-icon-dark',
   'send-icon',
-  'send-receive-desktop-dark',
-  'send-receive-desktop',
   'send-receive-dark',
   'send-receive',
   'sending-transaction',
   'signing-transaction',
-  'stake-desktop-dark',
-  'stake-desktop',
   'stake-dark',
   'stake-icon-dark',
   'stake-icon',
   'dots-bg',
+  'dots-bg-dark',
   'stake',
   'transaction-error',
   'transaction-success',
   'unstake-icon-dark',
   'unstake-icon',
+  'myWitWallet-logo',
+  'myWitWallet-title',
+  'myWitWallet-title-dark'
 ];

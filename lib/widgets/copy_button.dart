@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
@@ -25,7 +24,6 @@ class CopyButtonState extends State<CopyButton> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
 
     return PaddedButton(
         padding: EdgeInsets.zero,
@@ -33,7 +31,7 @@ class CopyButtonState extends State<CopyButton> {
         text: localization.copyAddressToClipboard,
         type: ButtonType.iconButton,
         color: widget.color != null
-            ? extendedTheme.headerTextColor
+            ? widget.color
             : theme.textTheme.bodyMedium!.color,
         iconSize: 12,
         onPressed: () async {
@@ -58,7 +56,7 @@ class CopyButtonState extends State<CopyButton> {
         },
         icon: Icon(
           color: widget.color != null
-              ? extendedTheme.headerTextColor
+              ? widget.color
               : theme.textTheme.bodyMedium!.color,
           isAddressCopied ? FontAwesomeIcons.check : FontAwesomeIcons.copy,
           size: 12,

@@ -3,8 +3,6 @@ import 'package:my_wit_wallet/widgets/wallet_list.dart';
 import 'package:my_wit_wallet/globals.dart' as globals;
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-PanelController panelController = PanelController();
-
 class PanelUtils {
   Widget panelContent = WalletList();
 
@@ -22,7 +20,7 @@ class PanelUtils {
       open(content: content);
       return;
     }
-    if (panelController.isPanelClosed) {
+    if (globals.panelController.isPanelClosed) {
       open(content: content);
     } else {
       close(content: content);
@@ -30,25 +28,24 @@ class PanelUtils {
   }
 
   PanelController getPanelController() {
-    return panelController;
+    return globals.panelController;
   }
 
   bool isAttached() {
-    return panelController.isAttached;
+    return globals.panelController.isAttached;
   }
 
   bool isOpen() {
-    return panelController.isPanelOpen;
+    return globals.panelController.isPanelOpen;
   }
 
   bool isClose() {
-    return panelController.isPanelClosed;
+    return globals.panelController.isPanelClosed;
   }
 
   void open({required Widget content}) {
-    // FocusScope.of(context).unfocus();
     setContent(content);
-    panelController.open();
+    globals.panelController.open();
     globals.isPanelClose = false;
   }
 
@@ -57,10 +54,10 @@ class PanelUtils {
   }
 
   void close({Widget? content}) {
-    if (isAttached() && panelController.isPanelOpen) {
+    if (isAttached() && globals.panelController.isPanelOpen) {
       Widget defaultContent = WalletList();
       setContent(content ?? defaultContent);
-      panelController.close();
+      globals.panelController.close();
     }
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart'
 class WitnetPallet {
   static const black = Color(0xFF232323);
   static const white = Color(0xFFFFFFFF);
+  static const opacityBlack = Color.fromARGB(23, 0, 0, 0);
   static const opacityWhite = Color(0xAFFFFFFF);
   static const opacityWhite2 = Color(0xA0FFFFFF);
 

@@ -87,10 +87,10 @@ SnackBar buildErrorSnackbar(
       log != null
           ? Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(extendedTheme.borderRadius!),
+                borderRadius: BorderRadius.all(Radius.circular(24)),
                 color: WitnetPallet.lightGrey,
               ),
-              padding: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
+              padding: EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

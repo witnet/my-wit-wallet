@@ -162,8 +162,9 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
             topNavigation: [],
             widgetList: [
               ...widget.mainComponents,
-              SizedBox(height: 16),
+              SizedBox(height: 32),
               _loginForm(),
+              SizedBox(height: 8),
               Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,

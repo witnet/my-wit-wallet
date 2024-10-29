@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
+import 'package:my_wit_wallet/util/get_create_import_icon.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_import_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/re_establish_wallet_disclaimer.dart';
@@ -110,6 +111,7 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   Widget build(BuildContext context) {
     return Layout(
       scrollController: scrollController,
+      headerIcon: getCreateImportIcon(),
       topNavigation: _navigationActions(),
       widgetList: [
         _formCards(),
@@ -164,6 +166,16 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
 
   _navigationCards() {
     return {
+      CreateWalletStatus.CreateImport: CreateImportWallet(
+          nextAction: _setNextAction,
+          secondaryAction: _setSecondaryAction,
+          prevAction: _setPrevAction),
+      CreateWalletStatus.Imported: SelectImportedOption(
+        nextAction: _setNextAction,
+        secondaryAction: _setSecondaryAction,
+        prevAction: _setPrevAction,
+        clearActions: _setClearActions,
+      ),
       CreateWalletStatus.Disclaimer: DisclaimerCard(
           nextAction: _setNextAction, prevAction: _setPrevAction),
       CreateWalletStatus.GenerateMnemonic: GenerateMnemonicCard(
@@ -203,16 +215,6 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
           nextAction: _setNextAction,
           prevAction: _setPrevAction,
           hideButton: _hideButton),
-      CreateWalletStatus.Imported: SelectImportedOption(
-        nextAction: _setNextAction,
-        secondaryAction: _setSecondaryAction,
-        prevAction: _setPrevAction,
-        clearActions: _setClearActions,
-      ),
-      CreateWalletStatus.CreateImport: CreateImportWallet(
-          nextAction: _setNextAction,
-          secondaryAction: _setSecondaryAction,
-          prevAction: _setPrevAction),
       CreateWalletStatus.Reset: ReEstablishWalletDisclaimer(
           nextAction: _setNextAction, prevAction: _setPrevAction),
       CreateWalletStatus.CreateWallet: null,

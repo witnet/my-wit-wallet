@@ -76,35 +76,34 @@ class SpeedUpVttState extends State<SpeedUpVtt> {
     return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (previous, current) {
         if (current.transactionStatus != TransactionStatus.initial) {
-          return ClosableView(closeSetting: widget.closeSetting, children: [
-            Text(
-              localization.speedUpTxTitle,
-              style: theme.textTheme.titleLarge,
-            ),
-            SizedBox(height: 24),
-            selectMinerFeeStep
-                ? SelectMinerFeeStep(
-                    key: minerFeeState,
-                    minFee: widget.speedUpTx.fee,
-                    nextAction: _setNextAction,
-                    goNext: goNext,
-                    currentWallet: db.walletStorage.currentWallet,
-                  )
-                : ReviewStep(
-                    transactionType: TransactionType.Vtt,
-                    originRoute: DashboardScreen.route,
-                    nextAction: _setNextAction,
-                    speedUpTx: widget.speedUpTx,
-                    currentWallet: db.walletStorage.currentWallet,
-                  ),
-            SizedBox(height: 16),
-            PaddedButton(
-                padding: EdgeInsets.zero,
-                text: localization.continueLabel,
-                type: ButtonType.primary,
-                enabled: true,
-                onPressed: goNext)
-          ]);
+          return ClosableView(
+              title: localization.speedUpTxTitle,
+              closeSetting: widget.closeSetting,
+              children: [
+                SizedBox(height: 16),
+                selectMinerFeeStep
+                    ? SelectMinerFeeStep(
+                        key: minerFeeState,
+                        minFee: widget.speedUpTx.fee,
+                        nextAction: _setNextAction,
+                        goNext: goNext,
+                        currentWallet: db.walletStorage.currentWallet,
+                      )
+                    : ReviewStep(
+                        transactionType: TransactionType.Vtt,
+                        originRoute: DashboardScreen.route,
+                        nextAction: _setNextAction,
+                        speedUpTx: widget.speedUpTx,
+                        currentWallet: db.walletStorage.currentWallet,
+                      ),
+                SizedBox(height: 16),
+                PaddedButton(
+                    padding: EdgeInsets.zero,
+                    text: localization.continueLabel,
+                    type: ButtonType.primary,
+                    enabled: true,
+                    onPressed: goNext)
+              ]);
         } else {
           return Row(
             children: [

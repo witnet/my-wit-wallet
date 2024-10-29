@@ -1,10 +1,11 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/stats.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/transactions_view.dart';
+import 'package:my_wit_wallet/util/panel.dart';
+import 'package:my_wit_wallet/widgets/balance_details.dart';
 import 'package:my_wit_wallet/widgets/step_bar.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -13,6 +14,7 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
+import 'package:my_wit_wallet/widgets/wallet_info.dart';
 
 enum DashboardViewSteps {
   transactions,
@@ -42,6 +44,9 @@ class DashboardScreenState extends State<DashboardScreen>
   ExplorerBloc? explorerBlock;
   String selectedItem =
       localizedDashboardSteps[DashboardViewSteps.transactions]!;
+  final PanelUtils panel = PanelUtils();
+  Widget get panelContent => panel.getContent();
+  bool dashboardNavigation = true;
 
   @override
   void initState() {
@@ -113,17 +118,51 @@ class DashboardScreenState extends State<DashboardScreen>
     scrollController.jumpTo(0.0);
   }
 
-  Widget buildTransactionsView() {
-    return TransactionsView(
-        currentWallet: currentWallet!, scrollJumpToTop: scrollToTop);
+  void toogleDashboardNavigation(bool show) {
+    if (show) {
+      setState(() {
+        dashboardNavigation = true;
+      });
+    } else {
+      setState(() {
+        dashboardNavigation = false;
+      });
+    }
   }
 
   Widget buildMainDashboardContent(ThemeData theme) {
     if (localizedDashboardSteps[DashboardViewSteps.transactions]! ==
         selectedItem) {
-      return buildTransactionsView();
+      return TransactionsView(
+          toggleDashboardInfo: toogleDashboardNavigation,
+          scrollJumpToTop: scrollToTop);
     }
     return Stats(currentWallet: currentWallet!);
+  }
+
+  List<Widget> dashboardInfoNavigation() {
+    return [
+      WalletInfo(
+          currentWallet: currentWallet!,
+          onShowBalanceDetails: () => {
+                setState(() => panel.toggle(BalanceDetails(
+                    balance: currentWallet!.balanceNanoWit(),
+                    stakedBalance: currentWallet!.stakedNanoWit())))
+              }),
+      SizedBox(height: 16),
+      StepBar(
+          selectedItem: selectedItem,
+          listItems: localizedDashboardSteps.values.toList(),
+          actionable: true,
+          onChanged: (item) => {
+                scrollToTop(),
+                setState(
+                  () => selectedItem = localizedDashboardSteps.entries
+                      .firstWhere((element) => element.value == item)
+                      .value,
+                ),
+              }),
+    ];
   }
 
   Widget _dashboardBuilder() {
@@ -132,23 +171,28 @@ class DashboardScreenState extends State<DashboardScreen>
     return BlocBuilder<DashboardBloc, DashboardState>(
         builder: (BuildContext context, DashboardState state) {
       return isHdWallet
-          ? buildTransactionsView()
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (dashboardNavigation)
+                  WalletInfo(
+                      currentWallet: currentWallet!,
+                      onShowBalanceDetails: () => {
+                            setState(() {
+                              panel.toggle(BalanceDetails(
+                                  balance: currentWallet!.balanceNanoWit(),
+                                  stakedBalance:
+                                      currentWallet!.stakedNanoWit()));
+                            })
+                          }),
+                SizedBox(height: 8),
+                buildMainDashboardContent(theme)
+              ],
+            )
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                StepBar(
-                    selectedItem: selectedItem,
-                    listItems: localizedDashboardSteps.values.toList(),
-                    actionable: true,
-                    onChanged: (item) => {
-                          scrollController.jumpTo(0.0),
-                          setState(
-                            () => selectedItem = localizedDashboardSteps.entries
-                                .firstWhere((element) => element.value == item)
-                                .value,
-                          ),
-                        }),
-                SizedBox(height: 24),
+                if (dashboardNavigation) ...dashboardInfoNavigation(),
                 buildMainDashboardContent(theme)
               ],
             );
@@ -160,6 +204,7 @@ class DashboardScreenState extends State<DashboardScreen>
     return BlocConsumer<ExplorerBloc, ExplorerState>(
         builder: (BuildContext context, ExplorerState state) {
       return DashboardLayout(
+        panel: panel,
         scrollController: scrollController,
         dashboardChild: _dashboardListener(),
         actions: [],

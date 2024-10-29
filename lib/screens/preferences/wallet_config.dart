@@ -8,13 +8,17 @@ import 'package:my_wit_wallet/widgets/custom_divider.dart';
 
 enum WalletConfigActions { exportXprv, signMsg, deleteWallet }
 
+typedef void BoolCallback(bool value);
+
 class WalletConfig extends StatefulWidget {
   final ScrollController scrollController;
+  final BoolCallback toggleConfigNavigation;
 
-  WalletConfig({
-    Key? key,
-    required this.scrollController,
-  }) : super(key: key);
+  WalletConfig(
+      {Key? key,
+      required this.scrollController,
+      required this.toggleConfigNavigation})
+      : super(key: key);
   @override
   State<StatefulWidget> createState() => WalletConfigState();
 }
@@ -28,12 +32,15 @@ class WalletConfigState extends State<WalletConfig> {
   }
 
   void _toggleSetting(WalletConfigActions action) {
+    widget.toggleConfigNavigation(false);
     setState(() {
       currentSetting = action;
     });
   }
 
   void _clearCurrentSetting() {
+    widget.scrollController.jumpTo(0.0);
+    widget.toggleConfigNavigation(true);
     setState(() {
       currentSetting = null;
     });

@@ -71,12 +71,11 @@ Future<void> e2eSignMessageTest(WidgetTester tester) async {
   expect(data?.text, isNotNull);
 
   // Scroll Close button into view
-  await scrollUntilVisible(
-      tester, widgetByIcon(FontAwesomeIcons.solidCircleXmark),
+  await scrollUntilVisible(tester, widgetByIcon(FontAwesomeIcons.chevronLeft),
       lastScroll: true);
 
   // Close sign message config view
-  await tapButton(tester, FontAwesomeIcons.solidCircleXmark);
+  await tapButton(tester, FontAwesomeIcons.chevronLeft);
 
   // Go back to wallet config options
   expect(widgetByText(_localization.walletConfigHeader), findsWidgets);

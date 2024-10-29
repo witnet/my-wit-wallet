@@ -30,7 +30,7 @@ class WalletTypeLabel extends StatelessWidget {
                 borderRadius: BorderRadius.all(extendedTheme.borderRadius!),
                 color: walletTypeToBgColor(context)[label]),
             child: Padding(
-                padding: EdgeInsets.only(top: 2, bottom: 2, left: 4, right: 4),
+                padding: EdgeInsets.only(left: 4, right: 4),
                 child: Text(walletTypeToLabel(context)[label]!,
                     style: theme.textTheme.bodyMedium
                         ?.copyWith(color: WitnetPallet.white, fontSize: 9))))

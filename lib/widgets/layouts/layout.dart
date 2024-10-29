@@ -6,7 +6,6 @@ import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
 import 'package:my_wit_wallet/util/current_route.dart';
-import 'package:my_wit_wallet/util/get_header_heigth.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +13,6 @@ import 'package:my_wit_wallet/auto_updater_overlay.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
-import 'package:my_wit_wallet/util/is_desktop_size.dart';
 import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
 import 'package:my_wit_wallet/widgets/layouts/listen_fourth_button.dart';
@@ -35,17 +33,19 @@ class Layout extends StatefulWidget {
   final List<Widget> actions;
   final List<Widget> topNavigation;
   final Widget? slidingPanel;
-  final Widget? dashboardActions;
+  final bool isDashboard;
   final Widget? bottomNavigation;
+  final Widget? headerIcon;
 
   const Layout({
     required this.widgetList,
     required this.actions,
     required this.topNavigation,
     this.bottomNavigation,
-    this.dashboardActions,
+    this.isDashboard = false,
     this.slidingPanel,
     this.scrollController,
+    this.headerIcon,
   });
 
   @override
@@ -55,24 +55,21 @@ class Layout extends StatefulWidget {
 class LayoutState extends State<Layout> with TickerProviderStateMixin {
   ScrollController defaultScrollController =
       ScrollController(keepScrollOffset: false);
-  PanelUtils panel = PanelUtils();
   bool get isUpdateCheckerEnabled => Platform.isMacOS || Platform.isLinux;
-  bool get isDashboard => widget.dashboardActions != null;
   bool get allowBottomBar =>
       (globals.isPanelClose == null || globals.isPanelClose!);
-  bool get showBottomBar =>
-      allowBottomBar && (!isDesktopSize || widget.actions.length > 0);
-  double get bottomBarPadding => showBottomBar
+  double get bottomBarPadding => allowBottomBar
       ? MediaQuery.of(context).viewInsets.bottom +
           kBottomNavigationBarHeight +
           MediaQuery.of(context).viewPadding.bottom +
           DEFAULT_BOTTOM_PADDING
       : DEFAULT_BOTTOM_PADDING;
+  PanelUtils panel = PanelUtils();
 
   @override
   void initState() {
     super.initState();
-    PanelUtils().setCloseState();
+    panel.setCloseState();
   }
 
   BlocListener<TransactionBloc, TransactionState> _vttListener(Widget child) {
@@ -212,7 +209,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           panel: Center(
               child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxWidth: 600,
+                    maxWidth: MAX_LAYOUT_WIDTH,
                   ),
                   child: widget.slidingPanel)),
           onPanelClosed: () => {
@@ -241,20 +238,24 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
               statusBarIconBrightness: Brightness.light,
               statusBarBrightness: Brightness.dark,
             ),
-            pinned: true,
+            pinned: widget.isDashboard,
             elevation: 0,
-            surfaceTintColor: theme.colorScheme.surface.withOpacity(0.0),
+            surfaceTintColor: theme.colorScheme.surface,
             automaticallyImplyLeading: false,
             scrolledUnderElevation: 0,
-            backgroundColor: theme.colorScheme.surface.withOpacity(0.0),
+            backgroundColor: theme.colorScheme.surface,
             expandedHeight:
-                isDashboard ? getDashboardHeaderHeight() : HEADER_HEIGHT,
+                widget.isDashboard ? DASHBOARD_HEADER_HEIGHT : HEADER_HEIGHT,
             toolbarHeight:
-                isDashboard ? getDashboardHeaderHeight() : HEADER_HEIGHT,
-            flexibleSpace: headerLayout(context, theme)),
+                widget.isDashboard ? DASHBOARD_HEADER_HEIGHT : HEADER_HEIGHT,
+            flexibleSpace: HeaderLayout(
+              isDashboard: widget.isDashboard,
+              icon: widget.headerIcon,
+              navigationActions: [...widget.topNavigation],
+            )),
         SliverPadding(
           padding: EdgeInsets.only(
-              left: 16, right: 16, top: 24, bottom: bottomBarPadding),
+              left: 16, right: 16, top: 16, bottom: bottomBarPadding),
           sliver: SliverToBoxAdapter(
               child: Center(
             child: ConstrainedBox(
@@ -273,21 +274,6 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     );
   }
 
-  Widget headerLayout(context, theme) {
-    if (widget.slidingPanel == null) {
-      return Container(
-          child: HeaderLayout(
-        navigationActions: widget.topNavigation,
-        dashboardActions: widget.dashboardActions,
-      ));
-    } else {
-      return HeaderLayout(
-        navigationActions: [...widget.topNavigation],
-        dashboardActions: widget.dashboardActions,
-      );
-    }
-  }
-
   Widget dashboardBottomBar() {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
@@ -298,10 +284,9 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                 top: BorderSide(
                     width: 0.3, color: extendedTheme.txBorderColor!))),
         child: Padding(
-            padding: EdgeInsets.only(top: 16),
+            padding: EdgeInsets.zero,
             child: BottomAppBar(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                height: 60,
                 surfaceTintColor: theme.colorScheme.surface,
                 color: theme.colorScheme.surface,
                 child: widget.bottomNavigation)));
@@ -353,8 +338,9 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
   }
 
   Widget? getBottomBar() {
-    if (showBottomBar) {
-      return buildOverlay(isDashboard ? dashboardBottomBar() : bottomBar(),
+    if (allowBottomBar) {
+      return buildOverlay(
+          widget.isDashboard ? dashboardBottomBar() : bottomBar(),
           isBottomBar: true);
     } else {
       return null;

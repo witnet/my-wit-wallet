@@ -18,6 +18,7 @@ import 'package:my_wit_wallet/widgets/info_element.dart';
 typedef void VoidCallback();
 
 class TransactionDetails extends StatelessWidget {
+  static final route = '/transaction-details';
   final GeneralTransaction transaction;
   final GeneralTransactionCallback speedUpTx;
   final VoidCallback goToList;
@@ -106,79 +107,78 @@ class TransactionDetails extends StatelessWidget {
     TransactionUtils transactionUtils = TransactionUtils(vti: transaction);
     String label = transactionUtils.getLabel();
     String? timelock = transactionUtils.timelock();
-    return ClosableView(closeSetting: goToList, children: [
-      Text(
-        localization.transactionDetails,
-        style: theme.textTheme.titleLarge,
-      ),
-      SizedBox(height: 24),
-      ContainerBackground(
-          content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
+    return ClosableView(
+        title: localization.transactionDetails,
+        closeSetting: goToList,
         children: [
-          InfoElement(
-              label: localization.status,
-              text: transactionStatus(transaction.status),
-              url: 'https://witnet.network/search/${transaction.txnHash}',
-              color: getStatusColor(transaction.status, theme)),
-          InfoElement(
-              label: localization.type,
-              text: transactionType(transaction.type)),
-          InfoElement(
-              label: localization.from.toTitleCase(),
-              copyText: transactionUtils.getSenderAddress(),
-              contentFontStyle: extendedTheme.monoBoldText!,
-              text: transactionUtils.getSenderAddress().cropMiddle(24)),
-          InfoElement(
-              label: localization.to,
-              copyText: transactionUtils.getRecipientAddress(),
-              contentFontStyle: extendedTheme.monoBoldText!,
-              text: transactionUtils.getRecipientAddress().cropMiddle(24)),
-          InfoElement(
-            label: localization.amount,
-            text: transactionUtils.getTransactionValue().amount,
-          ),
-          timelock != null
-              ? InfoElement(
-                  label: localization.timelock,
-                  text: transactionUtils.timelock()!,
-                )
+          ContainerBackground(
+              content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              InfoElement(
+                  label: localization.status,
+                  text: transactionStatus(transaction.status),
+                  url: 'https://witnet.network/search/${transaction.txnHash}',
+                  color: getStatusColor(transaction.status, theme)),
+              InfoElement(
+                  label: localization.type,
+                  text: transactionType(transaction.type)),
+              InfoElement(
+                  label: localization.from.toTitleCase(),
+                  copyText: transactionUtils.getSenderAddress(),
+                  contentFontStyle: extendedTheme.monoRegularText!,
+                  text: transactionUtils.getSenderAddress().cropMiddle(24)),
+              InfoElement(
+                  label: localization.to,
+                  copyText: transactionUtils.getRecipientAddress(),
+                  contentFontStyle: extendedTheme.monoRegularText!,
+                  text: transactionUtils.getRecipientAddress().cropMiddle(24)),
+              InfoElement(
+                label: localization.amount,
+                text: transactionUtils.getTransactionValue().amount,
+              ),
+              timelock != null
+                  ? InfoElement(
+                      label: localization.timelock,
+                      text: transactionUtils.timelock()!,
+                    )
+                  : Container(),
+              InfoElement(
+                  label: transaction.type == TransactionType.value_transfer
+                      ? localization.feesPayed
+                      : localization.feesCollected,
+                  text:
+                      '${transaction.fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
+            ],
+          )),
+          ContainerBackground(
+              content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                InfoElement(
+                  label: localization.transactionId,
+                  text: transaction.txnHash.cropMiddle(24),
+                  copyText: transaction.txnHash,
+                  url: 'https://witnet.network/search/${transaction.txnHash}',
+                ),
+                InfoElement(
+                    label: localization.timestamp,
+                    text: _isPendingTransaction(transaction.status)
+                        ? '_'
+                        : transaction.txnTime.formatDate()),
+                InfoElement(
+                    label: localization.epoch,
+                    text: _isPendingTransaction(transaction.status)
+                        ? '_'
+                        : transaction.epoch.toString()),
+              ])),
+          SizedBox(height: 8),
+          transaction.status == TxStatusLabel.pending &&
+                  label == localization.to
+              ? buildSpeedUpBtn()
               : Container(),
-          InfoElement(
-              label: transaction.type == TransactionType.value_transfer
-                  ? localization.feesPayed
-                  : localization.feesCollected,
-              text:
-                  '${transaction.fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
-        ],
-      )),
-      ContainerBackground(
-          content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-            InfoElement(
-              label: localization.transactionId,
-              text: transaction.txnHash.cropMiddle(24),
-              copyText: transaction.txnHash,
-              url: 'https://witnet.network/search/${transaction.txnHash}',
-            ),
-            InfoElement(
-                label: localization.timestamp,
-                text: _isPendingTransaction(transaction.status)
-                    ? '_'
-                    : transaction.txnTime.formatDate()),
-            InfoElement(
-                label: localization.epoch,
-                text: _isPendingTransaction(transaction.status)
-                    ? '_'
-                    : transaction.epoch.toString()),
-          ])),
-      SizedBox(height: 8),
-      transaction.status == TxStatusLabel.pending && label == localization.to
-          ? buildSpeedUpBtn()
-          : Container(),
-    ]);
+        ]);
   }
 }

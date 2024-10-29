@@ -119,25 +119,22 @@ class ExportXprvState extends State<ExportXprv> {
     final theme = Theme.of(context);
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (previous, current) {
-        return ClosableView(closeSetting: widget.closeSetting, children: [
-          SizedBox(height: 8),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.7,
-            child: Text(
-              localization.walletConfigHeader,
-              style: theme.textTheme.titleLarge,
-            ),
-          ),
-          SizedBox(height: 16),
-          Text(localization.walletConfig01, style: theme.textTheme.bodyLarge),
-          SizedBox(height: 8),
-          Text(localization.walletConfig02, style: theme.textTheme.bodyLarge),
-          SizedBox(height: 8),
-          Text(localization.walletConfig03, style: theme.textTheme.bodyLarge),
-          SizedBox(height: 16),
-          _exportWalletContent(context),
-          SizedBox(height: 24),
-        ]);
+        return ClosableView(
+            title: localization.walletConfigHeader,
+            closeSetting: widget.closeSetting,
+            children: [
+              Text(localization.walletConfig01,
+                  style: theme.textTheme.bodyLarge),
+              SizedBox(height: 8),
+              Text(localization.walletConfig02,
+                  style: theme.textTheme.bodyLarge),
+              SizedBox(height: 8),
+              Text(localization.walletConfig03,
+                  style: theme.textTheme.bodyLarge),
+              SizedBox(height: 16),
+              _exportWalletContent(context),
+              SizedBox(height: 24),
+            ]);
       },
       buildWhen: (previous, current) {
         if (previous.currentWalletId != current.currentWalletId) {

@@ -43,54 +43,67 @@ class TopNavigation extends StatelessWidget {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     String walletId = currentWallet.id;
     return [
-      PaddedButton(
-          padding: EdgeInsets.zero,
-          label: '${localization.showWalletList} button',
-          text: localization.showWalletList,
-          type: ButtonType.iconButton,
-          color: WitnetPallet.black,
-          iconSize: 24,
-          icon: Container(
-              decoration: BoxDecoration(
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              PaddedButton(
+                  padding: EdgeInsets.zero,
+                  label: '${localization.showWalletList} button',
+                  text: localization.showWalletList,
+                  type: ButtonType.iconButton,
                   color: WitnetPallet.black,
-                  border: Border.all(color: WitnetPallet.black),
-                  borderRadius: BorderRadius.all(extendedTheme.borderRadius!)),
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(extendedTheme.borderRadius!),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: WitnetPallet.black,
-                      border: Border.all(color: WitnetPallet.black)),
-                  width: 24,
-                  height: 24,
-                  child: Identicon(seed: walletId, size: 8),
-                ),
-              )),
-          onPressed: onShowWalletList),
-      Expanded(
-          child: Padding(
-              padding: EdgeInsets.only(left: 24, right: 24, top: 16),
-              child: Column(
+                  iconSize: 24,
+                  icon: Container(
+                      decoration: BoxDecoration(
+                          color: currentWallet.walletType == WalletType.single
+                              ? WitnetPallet.brown
+                              : WitnetPallet.brightCyan,
+                          border: Border.all(
+                              color:
+                                  currentWallet.walletType == WalletType.single
+                                      ? WitnetPallet.brown
+                                      : WitnetPallet.brightCyan),
+                          borderRadius:
+                              BorderRadius.all(extendedTheme.borderRadius!)),
+                      child: ClipRRect(
+                        borderRadius:
+                            BorderRadius.all(extendedTheme.borderRadius!),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: WitnetPallet.black,
+                              border: Border.all(color: WitnetPallet.black)),
+                          width: 30,
+                          height: 30,
+                          child: Identicon(seed: walletId, size: 8),
+                        ),
+                      )),
+                  onPressed: onShowWalletList),
+              Positioned(
+                  top: 2,
+                  right: -8,
+                  child: WalletTypeLabel(label: currentWallet.walletType)),
+            ],
+          ),
+          Padding(
+              padding: EdgeInsets.only(right: 16),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Tooltip(
-                      height: 50,
-                      richMessage: TextSpan(
-                        text: currentWallet.name,
-                      ),
-                      child: Text(currentWallet.name,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              color: extendedTheme.headerTextColor,
-                              fontSize: 16))),
-                  SizedBox(
-                      height: currentWallet.walletType == WalletType.single
-                          ? 8
-                          : 0),
-                  WalletTypeLabel(label: currentWallet.walletType),
+                  SizedBox(width: 16),
+                  Text(currentWallet.name,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium!.copyWith(
+                        color: extendedTheme.headerTextColor,
+                      ))
                 ],
-              ))),
+              )),
+        ],
+      ),
       NavigationButton(
           button: PaddedButton(
               padding: EdgeInsets.zero,

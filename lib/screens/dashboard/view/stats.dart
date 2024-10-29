@@ -31,7 +31,7 @@ class BlockStatsState extends State<Stats> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     AccountStats? stats = widget.currentWallet.masterAccountStats;
     return Padding(
-        padding: EdgeInsets.only(left: 8, right: 8),
+        padding: EdgeInsets.only(left: 8, right: 8, top: 16),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,

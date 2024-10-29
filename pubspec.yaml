@@ -89,8 +89,6 @@ flutter:
   assets:
     - assets/svg/
     - assets/img/
-    - assets/img/2x/
-    - assets/img/3x/
     - .env
 
   fonts:
@@ -116,6 +114,10 @@ flutter:
         - asset: assets/fonts/Outfit/Outfit-Bold.ttf
         - asset: assets/fonts/Outfit/Outfit-ExtraBold.ttf
         - asset: assets/fonts/Outfit/Outfit-Black.ttf
+    - family: CourierPrime
+      fonts:
+        - asset: assets/fonts/CourierPrime/CourierPrime-Regular.ttf
+        - asset: assets/fonts/CourierPrime/CourierPrime-Bold.ttf
     - family: NimbusMono
       fonts:
         - asset: assets/fonts/Nimbus/NimbusMono-Regular.ttf

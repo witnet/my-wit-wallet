@@ -31,25 +31,16 @@ class AddressListViewState extends State<AddressListView> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (previous, current) {
-        return ClosableView(closeSetting: widget.close, children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        return ClosableView(
+            title: localization.generatedAddresses,
+            closeSetting: widget.close,
             children: [
-              Text(
-                localization.generatedAddresses,
-                style: theme.textTheme.titleLarge,
-                textAlign: TextAlign.start,
+              AddressList(
+                currentWallet: widget.currentWallet,
               ),
-            ],
-          ),
-          SizedBox(height: 16),
-          AddressList(
-            currentWallet: widget.currentWallet,
-          ),
-        ]);
+            ]);
       },
     );
   }

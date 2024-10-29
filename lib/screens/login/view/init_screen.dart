@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/login/view/ftu_actions.dart';
 import 'package:my_wit_wallet/screens/login/view/login_form.dart';
-import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/widgets/carousel.dart';
@@ -35,8 +35,9 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
     final theme = Theme.of(context);
     return [
       Padding(
-        padding: EdgeInsets.only(left: 24, right: 24),
-        child: witnetLogo(Theme.of(context)),
+        padding: EdgeInsets.only(top: 0, left: 16, right: 16, bottom: 0),
+        child: svgThemeImage(Theme.of(context),
+            name: 'myWitWallet-title', width: 700),
       ),
       Text(
         localization.welcome,

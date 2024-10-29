@@ -17,47 +17,23 @@ Map<WalletTheme, ThemeData> walletThemeData = {
       .copyWith(extensions: <ThemeExtension<dynamic>>[ExtendedTheme.dark]),
 };
 
-Widget witnetLogo(ThemeData theme) {
-  return (theme.primaryColor == lightTheme.primaryColor)
-      ? Image.asset(
-          'assets/img/witnet_light_logo.png',
-          semanticLabel: 'myWitWallet',
-          width: 800,
-          height: 139.68,
-          fit: BoxFit.fitWidth,
-        )
-      : Image.asset(
-          'assets/img/witnet_dark_logo.png',
-          semanticLabel: 'myWitWallet',
-          width: 800,
-          height: 139.68,
-          fit: BoxFit.fitWidth,
-        );
+Widget svgImage({name, double? height, double? width}) {
+  return SvgPicture.asset(
+    'assets/svg/$name.svg',
+    height: height,
+    width: width,
+    fit: BoxFit.fitWidth,
+  );
 }
 
-Widget witnetEyeIcon(ThemeData theme, {height = 100}) {
-  return (theme.primaryColor == lightTheme.primaryColor)
-      ? Image.asset(
-          'assets/img/witnet_light_icon.png',
-          height: height,
-          fit: BoxFit.fitWidth,
-          filterQuality: FilterQuality.high,
-        )
-      : Image.asset(
-          'assets/img/witnet_light_icon.png',
-          height: height,
-          fit: BoxFit.fitWidth,
-          filterQuality: FilterQuality.high,
-        );
-}
-
-Widget svgThemeImage(ThemeData theme, {name, double height = 100}) {
+Widget svgThemeImage(ThemeData theme, {name, double? height, double? width}) {
   Widget? lightIcon;
   Widget? darkIcon;
   if (CUSTOM_ICON_NAMES.contains(name)) {
     lightIcon = SvgPicture.asset(
       'assets/svg/$name.svg',
       height: height,
+      width: width,
       fit: BoxFit.fitWidth,
     );
   }
@@ -65,6 +41,7 @@ Widget svgThemeImage(ThemeData theme, {name, double height = 100}) {
     darkIcon = SvgPicture.asset(
       'assets/svg/$name-dark.svg',
       height: height,
+      width: width,
       fit: BoxFit.fitWidth,
     );
   }

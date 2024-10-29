@@ -7,6 +7,7 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
+import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/widgets/dashed_rect.dart';
@@ -234,6 +235,7 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (BuildContext context, DashboardState state) {
         return DashboardLayout(
+          panel: PanelUtils(),
           dashboardChild: showAddressList
               ? _buildAddressList()
               : _buildReceiveTransactionScreen(),

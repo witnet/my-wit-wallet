@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/preferences/general_config.dart';
 import 'package:my_wit_wallet/screens/preferences/wallet_config.dart';
+import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/step_bar.dart';
 
@@ -22,6 +23,8 @@ class _PreferencePageState extends State<PreferencePage> {
 
   ConfigSteps currentStep = ConfigSteps.general;
   String selectedItem = localizedConfigSteps[ConfigSteps.general]!;
+  bool configNavigation = true;
+
   @override
   void initState() {
     super.initState();
@@ -32,12 +35,26 @@ class _PreferencePageState extends State<PreferencePage> {
     super.dispose();
   }
 
+  void toggleConfigNavigation(bool value) {
+    if (value) {
+      setState(() {
+        configNavigation = true;
+      });
+    } else {
+      setState(() {
+        configNavigation = false;
+      });
+    }
+  }
+
   Widget _buildConfigView() {
     Widget view = GeneralConfig();
     if (localizedConfigSteps[ConfigSteps.general] == selectedItem) {
       view = GeneralConfig();
     } else if (localizedConfigSteps[ConfigSteps.wallet] == selectedItem) {
-      view = WalletConfig(scrollController: scrollController);
+      view = WalletConfig(
+          scrollController: scrollController,
+          toggleConfigNavigation: toggleConfigNavigation);
     } else {
       return GeneralConfig();
     }
@@ -45,21 +62,22 @@ class _PreferencePageState extends State<PreferencePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        StepBar(
-            selectedItem: selectedItem,
-            listItems: localizedConfigSteps.values.toList(),
-            actionable: true,
-            onChanged: (item) => {
-                  scrollController.jumpTo(0.0),
-                  setState(() {
-                    selectedItem = localizedConfigSteps.entries
-                        .firstWhere((element) => element.value == item)
-                        .value;
-                    currentStep = localizedConfigSteps.entries
-                        .firstWhere((element) => element.value == item)
-                        .key;
+        if (configNavigation)
+          StepBar(
+              selectedItem: selectedItem,
+              listItems: localizedConfigSteps.values.toList(),
+              actionable: true,
+              onChanged: (item) => {
+                    scrollController.jumpTo(0.0),
+                    setState(() {
+                      selectedItem = localizedConfigSteps.entries
+                          .firstWhere((element) => element.value == item)
+                          .value;
+                      currentStep = localizedConfigSteps.entries
+                          .firstWhere((element) => element.value == item)
+                          .key;
+                    }),
                   }),
-                }),
         view,
       ],
     );
@@ -68,6 +86,7 @@ class _PreferencePageState extends State<PreferencePage> {
   @override
   Widget build(BuildContext context) {
     return DashboardLayout(
+      panel: PanelUtils(),
       scrollController: scrollController,
       dashboardChild: _buildConfigView(),
       actions: [],
