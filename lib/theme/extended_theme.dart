@@ -373,33 +373,28 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     backgroundBox: Color.fromRGBO(114, 114, 114, 0.08),
     hdWalletTypeBgColor: WitnetPallet.mediumGrey,
     singleWalletBgColor: WitnetPallet.brown,
-    //FIXME(#606): Update NimbusMono font
     monoSmallText: TextStyle(
-        fontFamily: 'NimbusMono',
+        fontFamily: 'CourierPrime',
         fontWeight: FontWeight.w400,
         color: WitnetPallet.darkGrey,
         fontSize: 14),
-    //FIXME(#606): Update NimbusMono font
     monoRegularText: TextStyle(
-        fontFamily: 'NimbusMono',
+        fontFamily: 'CourierPrime',
         fontWeight: FontWeight.w400,
         color: WitnetPallet.darkGrey,
         fontSize: 16),
-    //FIXME(#606): Update NimbusMono font
     monoMediumText: TextStyle(
-        fontFamily: 'NimbusMono',
+        fontFamily: 'CourierPrime',
         fontWeight: FontWeight.w500,
         color: WitnetPallet.darkGrey,
         fontSize: 16),
-    //FIXME(#606): Update NimbusMono font
     monoLargeText: TextStyle(
-        fontFamily: 'NimbusMono',
+        fontFamily: 'CourierPrime',
         fontWeight: FontWeight.w500,
         color: WitnetPallet.darkGrey,
         fontSize: 18),
-    //FIXME(#606): Update NimbusMono font
     monoBoldText: TextStyle(
-        fontFamily: 'NimbusMono',
+        fontFamily: 'CourierPrime',
         fontWeight: FontWeight.w700,
         color: WitnetPallet.darkGrey,
         fontSize: 16),
@@ -424,7 +419,7 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     navigationPointerActiveButton: WitnetPallet.lightGrey,
     navigationActiveButton: WitnetPallet.lightGrey,
     headerActiveTextColor: WitnetPallet.black,
-    headerTextColor: WitnetPallet.black,
+    headerTextColor: WitnetPallet.brightCyan,
     headerBackgroundColor: WitnetPallet.brightCyan,
     panelBgColor: WitnetPallet.darkerGrey,
     walletListBackgroundColor: WitnetPallet.darkerGrey,
@@ -460,34 +455,29 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     backgroundBox: Color.fromARGB(14, 255, 255, 255),
     hdWalletTypeBgColor: WitnetPallet.mediumGrey,
     singleWalletBgColor: WitnetPallet.brown,
-    navigationColor: WitnetPallet.black,
-    //FIXME(#606): Update NimbusMono font
+    navigationColor: WitnetPallet.lighterGrey,
     monoSmallText: TextStyle(
-        fontFamily: 'NimbusMono',
+        fontFamily: 'CourierPrime',
         fontWeight: FontWeight.w400,
         color: WitnetPallet.white,
         fontSize: 14),
-    //FIXME(#606): Update NimbusMono font
     monoRegularText: TextStyle(
-        fontFamily: 'NimbusMono',
+        fontFamily: 'CourierPrime',
         fontWeight: FontWeight.w400,
         color: WitnetPallet.white,
         fontSize: 16),
-    //FIXME(#606): Update NimbusMono font
     monoMediumText: TextStyle(
-        fontFamily: 'NimbusMono',
+        fontFamily: 'CourierPrime',
         fontWeight: FontWeight.w400,
         color: WitnetPallet.white,
         fontSize: 16),
-    //FIXME(#606): Update NimbusMono font
     monoBoldText: TextStyle(
-        fontFamily: 'NimbusMono',
+        fontFamily: 'CourierPrime',
         fontWeight: FontWeight.w700,
         color: WitnetPallet.white,
         fontSize: 16),
-    //FIXME(#606): Update NimbusMono font
     monoLargeText: TextStyle(
-        fontFamily: 'NimbusMono',
+        fontFamily: 'CourierPrime',
         fontWeight: FontWeight.w500,
         color: WitnetPallet.white,
         fontSize: 18),
