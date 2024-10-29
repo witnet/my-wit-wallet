@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/cache/implementations/vtt_get_through_block_explorer.dart';
 import 'package:my_wit_wallet/util/storage/database/database_isolate.dart';
@@ -23,6 +24,7 @@ class Locator {
     register(DebugLogger());
     register(ApiDatabase());
     register(ApiExplorer());
+    register(PanelUtils());
     register(ApiPreferences());
     register(ApiCreateWallet());
     register(ApiCrypto());

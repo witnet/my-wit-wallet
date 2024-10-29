@@ -32,11 +32,9 @@ class DashboardLayout extends StatefulWidget {
   final ScrollController? scrollController;
   final Widget dashboardChild;
   final List<Widget> actions;
-  final PanelUtils panel;
 
   DashboardLayout(
       {required this.dashboardChild,
-      required this.panel,
       required this.actions,
       this.scrollController});
 
@@ -53,6 +51,8 @@ class DashboardLayoutState extends State<DashboardLayout>
   FocusNode _copyToClipboardFocusNode = FocusNode();
   Wallet get currentWallet =>
       Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
+  PanelUtils get panel => Locator.instance.get<PanelUtils>();
+  Widget get panelContent => panel.getContent();
 
   @override
   void initState() {
@@ -75,21 +75,18 @@ class DashboardLayoutState extends State<DashboardLayout>
   Widget _buildBottomNavigation() {
     return BottomNavigation(
         currentScreen: currentRoute(context),
-        onSendReceiveAction: () => {
-              setState(() {
-                widget.panel.toggle(SendReceiveButtons());
-              })
+        onSendReceiveAction: () async => {
+              setState(() => panel.setContent(SendReceiveButtons())),
+              await panel.toggle(),
             },
-        onStakeUnstakeAction: () => {
-              setState(() {
-                widget.panel.toggle(StakeUnstakeButtons());
-              })
+        onStakeUnstakeAction: () async => {
+              setState(() => panel.setContent(StakeUnstakeButtons())),
+              await panel.toggle(),
             });
   }
 
   Widget _authBuilder() {
     final theme = Theme.of(context);
-    final panelContent = widget.panel.getContent();
     return BlocListener<LoginBloc, LoginState>(
       listenWhen: (previous, current) {
         if (previous.status != LoginStatus.LoggedOut &&
@@ -133,11 +130,14 @@ class DashboardLayoutState extends State<DashboardLayout>
               children: <Widget>[],
             );
         }
+
         return Layout(
           scrollController: widget.scrollController,
           topNavigation: TopNavigation(
-                  onShowWalletList: () =>
-                      {setState(() => widget.panel.toggle(WalletList()))},
+                  onShowWalletList: () async => {
+                        setState(() => panel.setContent(WalletList())),
+                        await panel.toggle(),
+                      },
                   currentScreen: currentRoute(context),
                   currentWallet: currentWallet)
               .getNavigationActions(context),

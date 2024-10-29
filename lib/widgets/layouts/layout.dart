@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/screens/login/view/init_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:flutter/services.dart';
@@ -64,7 +65,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           MediaQuery.of(context).viewPadding.bottom +
           DEFAULT_BOTTOM_PADDING
       : DEFAULT_BOTTOM_PADDING;
-  PanelUtils panel = PanelUtils();
+  PanelUtils panel = Locator.instance.get<PanelUtils>();
 
   @override
   void initState() {
@@ -214,11 +215,11 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                   child: widget.slidingPanel)),
           onPanelClosed: () => {
                 Timer(Duration(milliseconds: 300),
-                    () => setState(() => PanelUtils().setCloseState()))
+                    () => setState(() => panel.setCloseState()))
               },
           body: GestureDetector(
               excludeFromSemantics: true,
-              onTap: () => PanelUtils().close(),
+              onTap: () => panel.close(),
               child: _buildMainLayout(context, theme, true)));
     }
   }
@@ -251,7 +252,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             flexibleSpace: HeaderLayout(
               isDashboard: widget.isDashboard,
               icon: widget.headerIcon,
-              navigationActions: [...widget.topNavigation],
+              navigationActions: widget.topNavigation,
             )),
         SliverPadding(
           padding: EdgeInsets.only(
@@ -364,28 +365,28 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     final navigator = Navigator.of(context);
     return Shortcuts(
         shortcuts: <ShortcutActivator, Intent>{
-          LogicalKeySet(LogicalKeyboardKey.browserBack): const GoBackIntent(),
-          LogicalKeySet(LogicalKeyboardKey.goBack): const GoBackIntent(),
-          LogicalKeySet(
-                  LogicalKeyboardKey.metaRight, LogicalKeyboardKey.arrowLeft):
-              const GoBackIntent(),
-          LogicalKeySet(
-                  LogicalKeyboardKey.metaLeft, LogicalKeyboardKey.arrowLeft):
-              const GoBackIntent(),
+          // LogicalKeySet(LogicalKeyboardKey.browserBack): const GoBackIntent(),
+          // LogicalKeySet(LogicalKeyboardKey.goBack): const GoBackIntent(),
+          // LogicalKeySet(
+          //         LogicalKeyboardKey.metaRight, LogicalKeyboardKey.arrowLeft):
+          //     const GoBackIntent(),
+          // LogicalKeySet(
+          //         LogicalKeyboardKey.metaLeft, LogicalKeyboardKey.arrowLeft):
+          //     const GoBackIntent(),
         },
         child: Actions(
             actions: {
-              GoBackIntent: CallbackAction<GoBackIntent>(
-                onInvoke: (GoBackIntent intent) => {
-                  if (navigator.canPop() &&
-                      ModalRoute.of(context)!.settings.name! !=
-                          InitScreen.route)
-                    {
-                      navigator.pop(),
-                      if (panel.isAttached() && panel.isOpen()) {panel.close()}
-                    }
-                },
-              )
+              // GoBackIntent: CallbackAction<GoBackIntent>(
+              //   onInvoke: (GoBackIntent intent) => {
+              //     if (navigator.canPop() &&
+              //         ModalRoute.of(context)!.settings.name! !=
+              //             InitScreen.route)
+              //       {
+              //         navigator.pop(),
+              //         if (panel.isAttached() && panel.isOpen()) {panel.close()}
+              //       }
+              //   },
+              // )
             },
             child: FocusScope(
               autofocus: true,

@@ -3,7 +3,6 @@ import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/preferences/general_config.dart';
 import 'package:my_wit_wallet/screens/preferences/wallet_config.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
-import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/step_bar.dart';
 
@@ -93,7 +92,6 @@ class _PreferencePageState extends State<PreferencePage> {
   @override
   Widget build(BuildContext context) {
     return DashboardLayout(
-      panel: PanelUtils(),
       scrollController: scrollController,
       dashboardChild: _buildConfigView(),
       actions: [],

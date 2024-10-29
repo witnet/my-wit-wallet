@@ -45,7 +45,7 @@ class DashboardScreenState extends State<DashboardScreen>
   ExplorerBloc? explorerBlock;
   String selectedItem =
       localizedDashboardSteps[DashboardViewSteps.transactions]!;
-  final PanelUtils panel = PanelUtils();
+  final PanelUtils panel = Locator.instance.get<PanelUtils>();
   Widget get panelContent => panel.getContent();
   bool dashboardNavigation = true;
 
@@ -141,7 +141,7 @@ class DashboardScreenState extends State<DashboardScreen>
     return Stats(currentWallet: currentWallet!);
   }
 
-  List<Widget> dashboardInfoNavigation() {
+  List<Widget> dashboardInfo() {
     return [
       Padding(
         padding: EdgeInsets.only(top: 0, left: 8, right: 8, bottom: 0),
@@ -151,12 +151,20 @@ class DashboardScreenState extends State<DashboardScreen>
       SizedBox(height: 16),
       WalletInfo(
           currentWallet: currentWallet!,
-          onShowBalanceDetails: () => {
-                setState(() => panel.toggle(BalanceDetails(
+          onShowBalanceDetails: () async => {
+                setState(() => panel.setContent(BalanceDetails(
                     balance: currentWallet!.balanceNanoWit(),
-                    stakedBalance: currentWallet!.stakedNanoWit())))
+                    stakedBalance: currentWallet!.stakedNanoWit()))),
+                await panel.toggle(),
               }),
-      SizedBox(height: 16),
+      SizedBox(height: 8)
+    ];
+  }
+
+  List<Widget> dashboardInfoNavigation() {
+    return [
+      ...dashboardInfo(),
+      SizedBox(height: 8),
       StepBar(
           selectedItem: selectedItem,
           listItems: localizedDashboardSteps.values.toList(),
@@ -181,18 +189,7 @@ class DashboardScreenState extends State<DashboardScreen>
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (dashboardNavigation)
-                  WalletInfo(
-                      currentWallet: currentWallet!,
-                      onShowBalanceDetails: () => {
-                            setState(() {
-                              panel.toggle(BalanceDetails(
-                                  balance: currentWallet!.balanceNanoWit(),
-                                  stakedBalance:
-                                      currentWallet!.stakedNanoWit()));
-                            })
-                          }),
-                SizedBox(height: 8),
+                if (dashboardNavigation) ...dashboardInfo(),
                 buildMainDashboardContent(theme)
               ],
             )
@@ -211,7 +208,6 @@ class DashboardScreenState extends State<DashboardScreen>
     return BlocConsumer<ExplorerBloc, ExplorerState>(
         builder: (BuildContext context, ExplorerState state) {
       return DashboardLayout(
-        panel: panel,
         scrollController: scrollController,
         dashboardChild: _dashboardListener(),
         actions: [],

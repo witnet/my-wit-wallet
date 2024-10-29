@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_wit_wallet/widgets/wallet_list.dart';
 import 'package:my_wit_wallet/globals.dart' as globals;
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class PanelUtils {
-  Widget panelContent = WalletList();
+  Widget panelContent = Text('');
+  final PanelController panelController = PanelController();
 
   void setContent(Widget content) {
     panelContent = content;
@@ -14,50 +14,44 @@ class PanelUtils {
     return panelContent;
   }
 
-  void toggle(Widget content) {
-    if (panelContent.runtimeType != content.runtimeType) {
-      close(content: content);
-      open(content: content);
-      return;
-    }
-    if (globals.panelController.isPanelClosed) {
-      open(content: content);
+  Future<void> toggle() async {
+    if (panelController.isPanelClosed) {
+      await open();
     } else {
-      close(content: content);
+      await close();
     }
   }
 
   PanelController getPanelController() {
-    return globals.panelController;
+    return panelController;
   }
 
   bool isAttached() {
-    return globals.panelController.isAttached;
+    return panelController.isAttached;
   }
 
   bool isOpen() {
-    return globals.panelController.isPanelOpen;
+    return panelController.isPanelOpen;
   }
 
   bool isClose() {
-    return globals.panelController.isPanelClosed;
+    return panelController.isPanelClosed;
   }
 
-  void open({required Widget content}) {
-    setContent(content);
-    globals.panelController.open();
+  Future<void> open() async {
     globals.isPanelClose = false;
+    await panelController.open();
   }
 
   void setCloseState() {
     globals.isPanelClose = true;
   }
 
-  void close({Widget? content}) {
-    if (isAttached() && globals.panelController.isPanelOpen) {
-      Widget defaultContent = WalletList();
-      setContent(content ?? defaultContent);
-      globals.panelController.close();
+  Future<void> close() async {
+    if (isAttached() && panelController.isPanelOpen) {
+      Widget defaultContent = Text('');
+      setContent(defaultContent);
+      await panelController.close();
     }
   }
 }
