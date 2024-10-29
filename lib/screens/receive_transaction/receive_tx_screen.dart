@@ -186,6 +186,13 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
         padding: EdgeInsets.only(left: 8, right: 8),
         child: Column(
           children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                  padding: EdgeInsets.only(left: 8, right: 8),
+                  child: Text(localization.receive,
+                      style: theme.textTheme.titleLarge)),
+            ),
             Stack(children: [
               Padding(
                 padding: EdgeInsets.only(top: 24, right: 40, left: 40),

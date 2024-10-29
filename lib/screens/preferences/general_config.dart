@@ -173,33 +173,31 @@ class GeneralConfigState extends State<GeneralConfig> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-        padding: EdgeInsets.only(left: 8, right: 8),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SizedBox(height: 24),
-          Text(
-            localization.theme,
-            style: theme.textTheme.titleMedium,
-          ),
-          SizedBox(height: 16),
-          themeWidget(theme, context),
-          ...showAuthModeSettings(theme),
-          CustomDivider(),
-          Text(
-            localization.lockYourWallet,
-            style: theme.textTheme.titleMedium,
-          ),
-          PaddedButton(
-              padding: EdgeInsets.only(bottom: 16, top: 16),
-              text: localization.lockWalletLabel,
-              type: ButtonType.primary,
-              enabled: true,
-              onPressed: () => logout(context)),
-          SizedBox(height: 16),
-          Text(
-            localization.versionNumber(VERSION_NUMBER),
-            style: theme.textTheme.labelMedium,
-          ),
-        ]));
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      SizedBox(height: 24),
+      Text(
+        localization.theme,
+        style: theme.textTheme.titleMedium,
+      ),
+      SizedBox(height: 16),
+      themeWidget(theme, context),
+      ...showAuthModeSettings(theme),
+      CustomDivider(),
+      Text(
+        localization.lockYourWallet,
+        style: theme.textTheme.titleMedium,
+      ),
+      PaddedButton(
+          padding: EdgeInsets.only(bottom: 16, top: 16),
+          text: localization.lockWalletLabel,
+          type: ButtonType.primary,
+          enabled: true,
+          onPressed: () => logout(context)),
+      SizedBox(height: 16),
+      Text(
+        localization.versionNumber(VERSION_NUMBER),
+        style: theme.textTheme.labelMedium,
+      ),
+    ]);
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/preferences/general_config.dart';
 import 'package:my_wit_wallet/screens/preferences/wallet_config.dart';
+import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/step_bar.dart';
@@ -48,6 +49,7 @@ class _PreferencePageState extends State<PreferencePage> {
   }
 
   Widget _buildConfigView() {
+    final theme = Theme.of(context);
     Widget view = GeneralConfig();
     if (localizedConfigSteps[ConfigSteps.general] == selectedItem) {
       view = GeneralConfig();
@@ -62,6 +64,11 @@ class _PreferencePageState extends State<PreferencePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Padding(
+            padding: EdgeInsets.only(left: 8, right: 8),
+            child:
+                Text(localization.settings, style: theme.textTheme.titleLarge)),
+        SizedBox(height: 16),
         if (configNavigation)
           StepBar(
               selectedItem: selectedItem,
@@ -78,7 +85,7 @@ class _PreferencePageState extends State<PreferencePage> {
                           .key;
                     }),
                   }),
-        view,
+        Padding(padding: EdgeInsets.only(left: 8, right: 8), child: view),
       ],
     );
   }

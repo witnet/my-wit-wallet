@@ -67,52 +67,48 @@ class WalletConfigState extends State<WalletConfig> {
 
   Widget _buildWalletSettingsSelection() {
     final theme = Theme.of(context);
-    return Padding(
-        padding: EdgeInsets.only(left: 8, right: 8),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SizedBox(height: 24),
-          Text(
-            localization.walletConfigHeader,
-            style: theme.textTheme.titleMedium,
-          ),
-          SizedBox(height: 8),
-          Text(localization.walletConfig01, style: theme.textTheme.bodyMedium),
-          PaddedButton(
-              padding: EdgeInsets.only(bottom: 16, top: 16),
-              text: localization.exportXprv,
-              type: ButtonType.primary,
-              enabled: true,
-              onPressed: () => _toggleSetting(WalletConfigActions.exportXprv)),
-          CustomDivider(),
-          Text(
-            localization.messageSigning,
-            style: theme.textTheme.titleMedium,
-          ),
-          SizedBox(height: 8),
-          Text(localization.messageSigning01,
-              style: theme.textTheme.bodyMedium),
-          PaddedButton(
-              padding: EdgeInsets.only(bottom: 16, top: 16),
-              text: localization.signMessage,
-              type: ButtonType.primary,
-              enabled: true,
-              onPressed: () => _toggleSetting(WalletConfigActions.signMsg)),
-          SizedBox(height: 16),
-          CustomDivider(),
-          Text(
-            localization.deleteWallet,
-            style: theme.textTheme.titleMedium,
-          ),
-          SizedBox(height: 16),
-          Text(localization.deleteWallet01, style: theme.textTheme.bodyMedium),
-          PaddedButton(
-              padding: EdgeInsets.only(bottom: 16, top: 16),
-              text: localization.deleteWallet,
-              type: ButtonType.primary,
-              enabled: true,
-              onPressed: () =>
-                  _toggleSetting(WalletConfigActions.deleteWallet)),
-        ]));
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      SizedBox(height: 24),
+      Text(
+        localization.walletConfigHeader,
+        style: theme.textTheme.titleMedium,
+      ),
+      SizedBox(height: 8),
+      Text(localization.walletConfig01, style: theme.textTheme.bodyMedium),
+      PaddedButton(
+          padding: EdgeInsets.only(bottom: 16, top: 16),
+          text: localization.exportXprv,
+          type: ButtonType.primary,
+          enabled: true,
+          onPressed: () => _toggleSetting(WalletConfigActions.exportXprv)),
+      CustomDivider(),
+      Text(
+        localization.messageSigning,
+        style: theme.textTheme.titleMedium,
+      ),
+      SizedBox(height: 8),
+      Text(localization.messageSigning01, style: theme.textTheme.bodyMedium),
+      PaddedButton(
+          padding: EdgeInsets.only(bottom: 16, top: 16),
+          text: localization.signMessage,
+          type: ButtonType.primary,
+          enabled: true,
+          onPressed: () => _toggleSetting(WalletConfigActions.signMsg)),
+      SizedBox(height: 16),
+      CustomDivider(),
+      Text(
+        localization.deleteWallet,
+        style: theme.textTheme.titleMedium,
+      ),
+      SizedBox(height: 16),
+      Text(localization.deleteWallet01, style: theme.textTheme.bodyMedium),
+      PaddedButton(
+          padding: EdgeInsets.only(bottom: 16, top: 16),
+          text: localization.deleteWallet,
+          type: ButtonType.primary,
+          enabled: true,
+          onPressed: () => _toggleSetting(WalletConfigActions.deleteWallet)),
+    ]);
   }
 
   @override

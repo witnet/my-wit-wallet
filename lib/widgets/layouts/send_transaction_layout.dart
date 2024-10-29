@@ -67,6 +67,17 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
     }
   }
 
+  String getLocalizedTitle({required TransactionType transactionType}) {
+    switch (transactionType) {
+      case TransactionType.Stake:
+        return localization.sendStakeTransaction;
+      case TransactionType.Unstake:
+        return localization.sendUnstakeTransaction;
+      case TransactionType.Vtt:
+        return localization.sendValueTransferTransaction;
+    }
+  }
+
   bool isCurrentStepValid(
       {required TransactionType transactionType,
       required TxSteps stepToValidate,
@@ -223,9 +234,16 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
   }
 
   Widget _buildSendVttForm() {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Padding(
+            padding: EdgeInsets.only(left: 8, right: 8),
+            child: Text(
+                getLocalizedTitle(transactionType: widget.transactionType),
+                style: theme.textTheme.titleLarge)),
+        SizedBox(height: 16),
         StepBar(
             listItems: localizedSteps.values.toList(),
             selectedItem: selectedItem!,

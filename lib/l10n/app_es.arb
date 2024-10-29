@@ -343,5 +343,8 @@
 	"xprvOrigin": "Origen de Xprv",
 	"yourMessage": "Tu mensaje...",
 	"addressBalanceDescription": "Recibió pagos por un total de",
-	"loading": "Cargando"
+	"loading": "Cargando",
+	"sendValueTransferTransaction": "Transacción de Transferencia de Valor",
+	"sendStakeTransaction": "Transacción de Stake",
+	"sendUnstakeTransaction": "Transacción de Unstake"
 }

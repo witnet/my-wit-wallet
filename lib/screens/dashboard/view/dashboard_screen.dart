@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/stats.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/transactions_view.dart';
+import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/widgets/balance_details.dart';
 import 'package:my_wit_wallet/widgets/step_bar.dart';
@@ -142,6 +143,12 @@ class DashboardScreenState extends State<DashboardScreen>
 
   List<Widget> dashboardInfoNavigation() {
     return [
+      Padding(
+        padding: EdgeInsets.only(top: 0, left: 8, right: 8, bottom: 0),
+        child: svgThemeImage(Theme.of(context),
+            name: 'myWitWallet-title', width: 124),
+      ),
+      SizedBox(height: 16),
       WalletInfo(
           currentWallet: currentWallet!,
           onShowBalanceDetails: () => {
