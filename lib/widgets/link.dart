@@ -6,9 +6,10 @@ class CustomLink extends StatelessWidget {
   final String text;
   final String url;
   final Color? color;
+  final TextStyle? style;
 
   const CustomLink(
-      {required this.text, required this.url, required this.color});
+      {required this.text, required this.url, required this.color, this.style});
 
   _launchUrl(String searchItem) async {
     try {
@@ -27,12 +28,13 @@ class CustomLink extends StatelessWidget {
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           child: Padding(
-              padding: EdgeInsets.only(right: 8),
+              padding: EdgeInsets.zero,
               child: Text(text,
-                  style: extendedTheme.monoBoldText!.copyWith(
-                      color: contentColor,
-                      decorationColor: contentColor,
-                      decoration: TextDecoration.underline))),
+                  style: style ??
+                      extendedTheme.monoBoldText!.copyWith(
+                          color: contentColor,
+                          decorationColor: contentColor,
+                          decoration: TextDecoration.underline))),
           onTap: () => {_launchUrl(url)},
         ));
   }

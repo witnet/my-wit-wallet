@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/transactions_list/get_transaction_address.dart';
 import 'package:test/test.dart';
 import 'package:witnet/explorer.dart';
@@ -6,8 +7,8 @@ import 'package:witnet/schema.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  String tolabel = 'to';
-  String fromlabel = 'from';
+  String tolabel = 'To';
+  String fromlabel = 'From';
   List<InputUtxo> inputs = [
     InputUtxo(
         address: 'wit1zl7ty0lwr7atp5fu34azkgewhtfx2fl4wv69cw',
@@ -42,24 +43,25 @@ void main() {
   String transactionAddressFromSeveralInputs =
       getTransactionAddress(fromlabel, severalInputs, outputs);
 
+  String truncatedAddress = outputs[0].pkh.address.cropAddress(12);
   group(
       'getTransactionAddress',
       () => {
             test(
                 'with \'to\' label',
                 () => {
-                      expect(transactionAddressToLabel, 'wit1zl7...4wv69cw'),
+                      expect(transactionAddressToLabel, truncatedAddress),
                     }),
             test(
                 'with \'from\' label',
                 () => {
-                      expect(transactionAddressFromLabel, 'wit1zl7...4wv69cw'),
+                      expect(transactionAddressFromLabel, truncatedAddress),
                     }),
             test(
                 'with \'from\' label and several inputs',
                 () => {
                       expect(transactionAddressFromSeveralInputs,
-                          'wit1zl7...4wv69cw'),
+                          truncatedAddress),
                     })
           });
 }
