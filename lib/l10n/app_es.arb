@@ -104,7 +104,7 @@
 	"biometricsLabel": "Biométricas",
 	"blocksMined": "Bloques extraídos",
 	"buildWallet01": "Se están escaneando las diferentes direcciones de tu cartera en busca de transacciones y saldo existentes. Esto normalmente tomará menos de 1 minuto.",
-	"buildWalletBalance": "Saldo:",
+	"buildWalletBalance": "Saldo",
 	"buildWalletHeader": "Descubrimiento de direcciones",
 	"cancel": "Cancelar",
 	"cancelAuthentication": "Cancelar autentificación",
@@ -170,7 +170,7 @@
 	"errorTryAgain": "Error. Inténtalo de nuevo.",
 	"errorXprvStart": "needs to start with \\\"xprv1\\\"",
 	"estimatedFeeOptions": "{feeOption, select, stinky{Apestoso} low{Bajo} medium{Medio} high{High} opulent{Alta} custom{A medida} other{}}",
-	"exploredAddresses": "Direcciones exploradas:",
+	"exploredAddresses": "Direcciones exploradas",
 	"exploringAddress": "Explorando dirección:",
 	"exportJson": "Exportar JSON",
 	"exportXprv": "Exportar Xprv",
@@ -288,7 +288,7 @@
 	"transaction": "Transacción",
 	"transactionDetails": "Detalles de la transacción",
 	"transactionId": "ID de la transacción",
-	"transactionsFound": "Transacciones encontradas:",
+	"transactionsFound": "Transacciones encontradas",
 	"tryAgain": "¡Inténtalo de nuevo!",
 	"txEmptyState": "¡Todavía no tienes transacciones!",
 	"txnCheckStatus": "Compruebe el estado de la transacción en el Explorador de bloques de Witnet:",
@@ -348,5 +348,8 @@
 	"loading": "Cargando",
 	"sendValueTransferTransaction": "Transacción de Transferencia de Valor",
 	"sendStakeTransaction": "Transacción de Stake",
-	"sendUnstakeTransaction": "Transacción de Unstake"
+	"sendUnstakeTransaction": "Transacción de Unstake",
+	"networkContribution": "Contribución a la red",
+	"feesAndRewards": "Tasas y Recompensas",
+	"totalDataSynced": "Datos syncronizados"
 }

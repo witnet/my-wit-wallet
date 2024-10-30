@@ -18,6 +18,8 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/animated_numeric_text.dart';
 import 'package:my_wit_wallet/widgets/auto_size_text.dart';
+import 'package:my_wit_wallet/widgets/container_background.dart';
+import 'package:my_wit_wallet/widgets/info_element.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:witnet/utils.dart';
@@ -245,95 +247,86 @@ class BuildWalletCardState extends State<BuildWalletCard>
                   transactionCount: state.transactionCount,
                   message: state.message),
               SizedBox(
-                height: 20,
+                height: 8,
               ),
+              Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      child: SpinKitWave(
+                        color: theme.primaryColor,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                        state.message.contains('wit1')
+                            ? state.message.cropMiddle(18)
+                            : state.message,
+                        style: extendedTheme.monoBoldText!
+                            .copyWith(color: theme.primaryColor))
+                  ]),
               SizedBox(
-                child: SpinKitWave(
-                  color: theme.primaryColor,
-                ),
+                height: 24,
               ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                      flex: 1,
-                      child: Column(
-                        children: [
-                          Row(
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(localization.totalDataSynced,
+                      style: theme.textTheme.titleMedium)),
+              SizedBox(height: 8),
+              ContainerBackground(
+                  content: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                    InfoElement(
+                        horizontal: true,
+                        label: localization.buildWalletBalance,
+                        content: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Text(localization.buildWalletBalance,
-                                  style: theme.textTheme.titleMedium),
-                              SizedBox(
-                                height: 8,
+                              AnimatedNumericText(
+                                align: TextAlign.end,
+                                initialValue: nanoWitToWit(previousBalance),
+                                targetValue: nanoWitToWit(balance),
+                                curve: Interval(0, .5, curve: Curves.easeOut),
+                                controller: _balanceController,
+                                style: theme.textTheme.titleMedium!,
                               ),
-                            ],
-                          ),
-                          Row(children: [
-                            AnimatedNumericText(
-                              initialValue: nanoWitToWit(previousBalance),
-                              targetValue: nanoWitToWit(balance),
+                              SizedBox(width: 4),
+                              Text('WIT', style: theme.textTheme.titleMedium!)
+                            ]),
+                        text: '${nanoWitToWit(balance).toString()} WIT'),
+                    InfoElement(
+                        horizontal: true,
+                        label: localization.transactionsFound,
+                        isLastItem: isHdWallet ? false : true,
+                        text: '$currentTransactionCount',
+                        content: AnimatedIntegerText(
+                            align: TextAlign.end,
+                            initialValue: currentTransactionCount,
+                            // TODO:targetValue: addressCount,
+                            targetValue: currentTransactionCount,
+                            curve: Interval(0, .5, curve: Curves.easeOut),
+                            controller: _balanceController,
+                            style: theme.textTheme.titleMedium!)),
+                    if (isHdWallet)
+                      InfoElement(
+                          horizontal: true,
+                          label: localization.exploredAddresses,
+                          isLastItem: true,
+                          content: AnimatedIntegerText(
+                              align: TextAlign.end,
+                              initialValue: currentAddressCount,
+                              // TODO:targetValue: addressCount,
+                              targetValue: currentAddressCount,
                               curve: Interval(0, .5, curve: Curves.easeOut),
                               controller: _balanceController,
-                              style: theme.textTheme.bodyMedium!,
-                            ),
-                            SizedBox(width: 4),
-                            Text('WIT', style: theme.textTheme.bodyMedium!),
-                          ]),
-                        ],
-                      ))
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  Text(localization.transactionsFound,
-                      style: theme.textTheme.titleMedium!),
-                  AutoSizeText(
-                    '$currentTransactionCount',
-                    maxLines: 2,
-                    minFontSize: 16,
-                    style: theme.textTheme.bodyMedium!,
-                  )
-                ],
-              ),
-              if (isHdWallet)
-                Row(
-                  children: [
-                    Text(
-                      localization.exploredAddresses,
-                      style: theme.textTheme.titleMedium,
-                    ),
-                    AnimatedIntegerText(
-                        initialValue: currentAddressCount,
-                        // TODO:targetValue: addressCount,
-                        targetValue: currentAddressCount,
-                        curve: Interval(0, .5, curve: Curves.easeOut),
-                        controller: _balanceController,
-                        style: theme.textTheme.bodyMedium!)
-                  ],
-                ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  Text(
-                    localization.exploringAddress,
-                    style: theme.textTheme.titleMedium!,
-                  ),
-                  Expanded(
-                      flex: 1,
-                      child: Text(
-                          state.message.contains('wit1')
-                              ? state.message.cropMiddle(18)
-                              : state.message,
-                          style: extendedTheme.monoMediumText)),
-                ],
-              ),
+                              style: theme.textTheme.titleMedium!),
+                          text: '$currentAddressCount'),
+                  ])),
             ],
           );
 

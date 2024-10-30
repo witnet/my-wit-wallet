@@ -104,7 +104,7 @@
 	"biometricsLabel": "Biometrics",
 	"blocksMined": "Blocks mined",
 	"buildWallet01": "The different addresses in your wallet are being scanned for existing transactions and balance. This will normally take less than 1 minute.",
-	"buildWalletBalance": "Balance:",
+	"buildWalletBalance": "Balance",
 	"buildWalletHeader": "Address discovery",
 	"cancel": "Cancel",
 	"cancelAuthentication": "Cancel authentication",
@@ -170,7 +170,7 @@
 	"errorTryAgain": "Error. Try Again.",
 	"errorXprvStart": "needs to start with \"xprv1\"",
 	"estimatedFeeOptions": "{feeOption, select, stinky{Stinky} low{Low} medium{Medium} high{High} opulent{Opulent} custom{Custom} other{}}",
-	"exploredAddresses": "Explored addresses: ",
+	"exploredAddresses": "Explored addresses",
 	"exploringAddress": "Exploring address: ",
 	"exportJson": "Export JSON",
 	"exportXprv": "Export Xprv",
@@ -288,7 +288,7 @@
 	"transaction": "Transaction",
 	"transactionDetails": "Transaction details",
 	"transactionId": "Transaction ID",
-	"transactionsFound": "Transactions found: ",
+	"transactionsFound": "Transactions found",
 	"tryAgain": "Try again!",
 	"txEmptyState": "You don't have transactions yet!",
 	"txnCheckStatus": "Check the transaction status in the Witnet Block Explorer:",
@@ -348,5 +348,8 @@
 	"loading": "Loading",
 	"sendValueTransferTransaction": "Value Transfer Transaction",
 	"sendStakeTransaction": "Stake Transaction",
-	"sendUnstakeTransaction": "Unstake Transaction"
+	"sendUnstakeTransaction": "Unstake Transaction",
+	"networkContribution": "Network contribution",
+	"feesAndRewards": "Fees and rewards",
+	"totalDataSynced": "Total data synced"
 }

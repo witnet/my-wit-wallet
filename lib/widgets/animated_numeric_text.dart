@@ -5,6 +5,7 @@ class AnimatedNumericText extends StatelessWidget {
   AnimatedNumericText({
     Key? key,
     required this.initialValue,
+    this.align,
     required this.targetValue,
     required this.controller,
     this.curve = Curves.linear,
@@ -21,6 +22,7 @@ class AnimatedNumericText extends StatelessWidget {
         super(key: key);
 
   final double initialValue;
+  final TextAlign? align;
   final double targetValue;
   final AnimationController controller;
   final Curve curve;
@@ -34,6 +36,7 @@ class AnimatedNumericText extends StatelessWidget {
     return AnimatedBuilder(
       animation: numberAnimation,
       builder: (context, child) => Text(
+        textAlign: align != null ? align : null,
         '${numberFormat.format(numberAnimation.value)}',
         style: style,
       ),
@@ -50,6 +53,7 @@ class AnimatedIntegerText extends StatelessWidget {
     this.curve = Curves.linear,
     this.formatter = '#,###',
     required this.style,
+    this.align,
   })  : numberFormat = NumberFormat(formatter),
         numberAnimation = IntTween(
           begin: initialValue,
@@ -68,12 +72,14 @@ class AnimatedIntegerText extends StatelessWidget {
   final TextStyle style;
   final numberFormat;
   final Animation<int> numberAnimation;
+  final TextAlign? align;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: numberAnimation,
       builder: (context, child) => Text(
+        textAlign: align != null ? align : null,
         '${numberFormat.format(numberAnimation.value)}',
         style: style,
       ),
