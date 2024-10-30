@@ -87,7 +87,7 @@ Future<void> e2eUpdateCurrentWalletTest(WidgetTester tester) async {
   await tester.pumpAndSettle();
 
   /// Select Node wallet from the wallets list
-  await tapButton(tester, "wit1vzm...2tya50u");
+  await tapButton(tester, "wit1vzm…2tya50u");
 
   await tester.pumpAndSettle();
 
@@ -100,6 +100,6 @@ Future<void> e2eUpdateCurrentWalletTest(WidgetTester tester) async {
 
   /// Verify the imported wallet and the current address
   expectLater(currentWallet3!.masterAccount!.address.cropMiddle(18),
-      "wit1vzm...2tya50u");
+      "wit1vzm…2tya50u");
   await teardownTest();
 }
