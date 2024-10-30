@@ -308,7 +308,12 @@ class TransactionDetails extends StatelessWidget {
                                                                 .cropAddress(
                                                                     12),
                                                             style: extendedTheme
-                                                                .monoRegularText,
+                                                                .monoRegularText
+                                                                ?.copyWith(
+                                                                    color: theme
+                                                                        .textTheme
+                                                                        .bodyMedium
+                                                                        ?.color),
                                                           ),
                                                           SizedBox(
                                                             width: 8,
@@ -330,7 +335,7 @@ class TransactionDetails extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Icon(FontAwesomeIcons.circleArrowDown),
+                            Icon(FontAwesomeIcons.circleArrowDown, color: theme.textTheme.bodyMedium?.color),
                             SizedBox(width: 96),
                           ]),
                       SizedBox(
@@ -357,7 +362,10 @@ class TransactionDetails extends StatelessWidget {
                                   transactionUtils
                                       .getRecipientAddress()
                                       .cropAddress(12),
-                                  style: extendedTheme.monoRegularText,
+                                  style: extendedTheme.monoRegularText
+                                      ?.copyWith(
+                                          color: theme
+                                              .textTheme.bodyMedium?.color),
                                 ),
                                 SizedBox(
                                   width: 8,
