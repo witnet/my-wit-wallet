@@ -236,8 +236,6 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         SliverAppBar(
             systemOverlayStyle: SystemUiOverlayStyle(
               statusBarColor: extendedTheme.headerBackgroundColor,
-              statusBarIconBrightness: Brightness.light,
-              statusBarBrightness: Brightness.dark,
             ),
             pinned: widget.isDashboard,
             elevation: 0,
@@ -365,28 +363,28 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     final navigator = Navigator.of(context);
     return Shortcuts(
         shortcuts: <ShortcutActivator, Intent>{
-          // LogicalKeySet(LogicalKeyboardKey.browserBack): const GoBackIntent(),
-          // LogicalKeySet(LogicalKeyboardKey.goBack): const GoBackIntent(),
-          // LogicalKeySet(
-          //         LogicalKeyboardKey.metaRight, LogicalKeyboardKey.arrowLeft):
-          //     const GoBackIntent(),
-          // LogicalKeySet(
-          //         LogicalKeyboardKey.metaLeft, LogicalKeyboardKey.arrowLeft):
-          //     const GoBackIntent(),
+          LogicalKeySet(LogicalKeyboardKey.browserBack): const GoBackIntent(),
+          LogicalKeySet(LogicalKeyboardKey.goBack): const GoBackIntent(),
+          LogicalKeySet(
+                  LogicalKeyboardKey.metaRight, LogicalKeyboardKey.arrowLeft):
+              const GoBackIntent(),
+          LogicalKeySet(
+                  LogicalKeyboardKey.metaLeft, LogicalKeyboardKey.arrowLeft):
+              const GoBackIntent(),
         },
         child: Actions(
             actions: {
-              // GoBackIntent: CallbackAction<GoBackIntent>(
-              //   onInvoke: (GoBackIntent intent) => {
-              //     if (navigator.canPop() &&
-              //         ModalRoute.of(context)!.settings.name! !=
-              //             InitScreen.route)
-              //       {
-              //         navigator.pop(),
-              //         if (panel.isAttached() && panel.isOpen()) {panel.close()}
-              //       }
-              //   },
-              // )
+              GoBackIntent: CallbackAction<GoBackIntent>(
+                onInvoke: (GoBackIntent intent) => {
+                  if (navigator.canPop() &&
+                      ModalRoute.of(context)!.settings.name! !=
+                          InitScreen.route)
+                    {
+                      navigator.pop(),
+                      if (panel.isAttached() && panel.isOpen()) {panel.close()}
+                    }
+                },
+              )
             },
             child: FocusScope(
               autofocus: true,

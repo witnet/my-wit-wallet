@@ -143,9 +143,7 @@ class DashboardLayoutState extends State<DashboardLayout>
               .getNavigationActions(context),
           isDashboard: true,
           bottomNavigation: _buildBottomNavigation(),
-          widgetList: [
-            _body,
-          ],
+          widgetList: [_body, SizedBox(height: 16)],
           actions: [],
           slidingPanel: panelContent,
         );

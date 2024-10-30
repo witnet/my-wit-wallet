@@ -104,7 +104,7 @@ class TransactionsViewState extends State<TransactionsView>
     setState(() {
       speedUpTransaction = speedUpTx;
     });
-    if (speedUpTx != null) {
+    if (speedUpTx != null || txDetails != null) {
       widget.scrollJumpToTop();
       widget.toggleDashboardInfo(false);
       setState(() {
