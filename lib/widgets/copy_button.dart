@@ -34,6 +34,7 @@ class CopyButtonState extends State<CopyButton> {
             ? widget.color
             : theme.textTheme.bodyMedium!.color,
         iconSize: 12,
+        hoverPadding: 0,
         onPressed: () async {
           if (!isAddressCopied) {
             await Clipboard.setData(ClipboardData(text: widget.copyContent));

@@ -5,12 +5,18 @@ extension StringExtension on String {
 
   String cropMiddle(int length) {
     if (this.length > length) {
-      var leftSizeLengh = ((length - 3) / 2).floor();
-      var rightSizeLength = this.length - leftSizeLengh;
-      return '${this.substring(0, leftSizeLengh)}...${this.substring(rightSizeLength)}';
+      var leftSizeLength = ((length - 3) / 2).floor();
+      var rightSizeLength = this.length - leftSizeLength;
+      return '${this.substring(0, leftSizeLength)}…${this.substring(rightSizeLength)}';
     } else {
       return '';
     }
+  }
+
+  String cropAddress(int length) {
+    var leftSizeLength = 4;
+    var rightSizeLength = (length < 6) ? this.length - 6 : this.length - length;
+    return '${this.substring(0, leftSizeLength)}…${this.substring(rightSizeLength)}';
   }
 
   String fromPascalCaseToTitle() {

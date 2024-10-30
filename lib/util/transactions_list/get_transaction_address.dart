@@ -10,10 +10,10 @@ String getTransactionAddress(
     return 'genesis';
   else if (label == localization.from && inputs.length > 0) {
     // Set sender address
-    address = inputs[0].address.cropMiddle(18);
+    address = inputs[0].address.cropAddress(12);
   } else if (outputs.length > 0) {
     // Set recipient address
-    address = outputs[0].pkh.address.cropMiddle(18);
+    address = outputs[0].pkh.address.cropAddress(12);
   }
   return address;
 }

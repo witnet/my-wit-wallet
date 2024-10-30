@@ -52,7 +52,8 @@ class PaddedButton extends StatelessWidget {
       this.darkBackground = false,
       this.alignment = MainAxisAlignment.center,
       this.iconPosition = IconPosition.right,
-      this.autofocus});
+      this.autofocus,
+      this.hoverPadding});
 
   final EdgeInsets padding;
   final bool sizeCover;
@@ -73,6 +74,7 @@ class PaddedButton extends StatelessWidget {
   final double? fontSize;
   final MainAxisAlignment alignment;
   final IconPosition iconPosition;
+  final num? hoverPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -177,10 +179,10 @@ class PaddedButton extends StatelessWidget {
       ]),
       onPressed: onPressed,
     );
-
+    num _localHoverPad = hoverPadding ?? 22;
     Widget iconButton = SizedBox(
-        height: iconSize + 22,
-        width: iconSize + 22,
+        height: iconSize + _localHoverPad,
+        width: iconSize + _localHoverPad,
         child: TextButton(
           style: color != null
               ? theme.textButtonTheme.style?.copyWith(

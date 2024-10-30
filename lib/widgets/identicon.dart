@@ -3,6 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fixnum/fixnum.dart';
 
+import 'package:my_wit_wallet/theme/colors.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
+
 /// Identicon widget with customized painter
 ///
 /// [size] - number of blocks on x and y axis
@@ -167,4 +170,24 @@ class WiticonPainter extends CustomPainter {
 
   // PRIVATE:
   List<int> _randSeed = [];
+}
+
+Widget identiconContainer(ExtendedTheme extendedTheme, String seed) {
+  return Container(
+    decoration: BoxDecoration(
+        color: WitnetPallet.black,
+        border: Border.all(color: WitnetPallet.transparent),
+        borderRadius: BorderRadius.all(extendedTheme.borderRadius!)),
+    child: ClipRRect(
+      borderRadius: BorderRadius.all(extendedTheme.borderRadius!),
+      child: Container(
+        decoration: BoxDecoration(
+            color: WitnetPallet.black,
+            border: Border.all(color: WitnetPallet.black)),
+        width: 18,
+        height: 18,
+        child: Identicon(seed: seed, size: 8),
+      ),
+    ),
+  );
 }
