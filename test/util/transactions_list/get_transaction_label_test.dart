@@ -51,7 +51,7 @@ void main() {
             test(
                 'with from label',
                 () => {
-                      expect(transactionFromLabel, 'from'),
+                      expect(transactionFromLabel, 'From'),
                     }),
           });
 }
