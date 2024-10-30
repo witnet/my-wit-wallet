@@ -99,7 +99,7 @@ Future<void> e2eUpdateCurrentWalletTest(WidgetTester tester) async {
   await tester.pumpAndSettle();
 
   /// Verify the imported wallet and the current address
-  expectLater(currentWallet3!.masterAccount!.address.cropMiddle(18),
-      "wit1vzm…2tya50u");
+  expectLater(
+      currentWallet3!.masterAccount!.address.cropMiddle(18), "wit1vzm…2tya50u");
   await teardownTest();
 }
