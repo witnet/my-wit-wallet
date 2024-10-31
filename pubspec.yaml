@@ -62,7 +62,7 @@ dependencies:
   logger: ^2.4.0
   pub_semver: ^2.1.4
 
-flutter_icons:
+flutter_launcher_icons:
   android: true
   adaptive_icon_foreground: "assets/icon/adaptive-foreground.png"
   adaptive_icon_background: "assets/icon/adaptive-background.png"
