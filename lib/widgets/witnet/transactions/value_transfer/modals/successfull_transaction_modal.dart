@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
@@ -52,10 +53,13 @@ void buildSuccessfullTransaction(
     title: getTitleByTxType(transactionType),
     image: svgThemeImage(theme, name: 'transaction-success', height: 100),
     content: Column(mainAxisSize: MainAxisSize.min, children: [
-      InfoElement(
-        plainText: true,
+      InfoLink(
         label: localization.txnCheckStatus,
-        text: state.transaction.getTransactionID(state.transactionType),
+        text: state.transaction
+            .getTransactionID(state.transactionType)
+            .cropMiddle(18),
+        isContentImportant: true,
+        layout: InfoLayout.vertical,
         url:
             'https://witnet.network/search/${state.transaction.getTransactionID(state.transactionType)}',
       )

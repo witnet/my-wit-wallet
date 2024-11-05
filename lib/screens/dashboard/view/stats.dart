@@ -46,11 +46,11 @@ class BlockStatsState extends State<Stats> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                 InfoElement(
-                    horizontal: true,
+                    isContentImportant: true,
                     label: localization.drSolved,
                     text: stats?.totalDrSolved.toString() ?? '0'),
                 InfoElement(
-                    horizontal: true,
+                    isContentImportant: true,
                     label: localization.blocksMined,
                     isLastItem: true,
                     text: stats?.totalBlocksMined.toString() ?? '0'),
@@ -64,12 +64,12 @@ class BlockStatsState extends State<Stats> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                 InfoElement(
-                    horizontal: true,
+                    isContentImportant: true,
                     label: localization.totalFeesPaid,
                     text:
                         '${(stats?.totalFeesPayed ?? 0).standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
                 InfoElement(
-                    horizontal: true,
+                    isContentImportant: true,
                     label: localization.totalMiningRewards,
                     isLastItem: true,
                     text:

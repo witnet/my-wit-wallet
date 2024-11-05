@@ -6,9 +6,8 @@ import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/transactions_list/transaction_details.dart';
 import 'package:my_wit_wallet/widgets/closable_view.dart';
 import 'package:my_wit_wallet/widgets/container_background.dart';
-import 'package:my_wit_wallet/widgets/copy_button.dart';
 import 'package:my_wit_wallet/widgets/identicon.dart';
-import 'package:my_wit_wallet/widgets/link.dart';
+import 'package:my_wit_wallet/widgets/info_element.dart';
 import 'package:my_wit_wallet/widgets/speedup_btn.dart';
 import 'package:witnet/explorer.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
@@ -155,105 +154,40 @@ class TransactionDetails extends StatelessWidget {
 
     return ClosableView(
         closeSetting: goToList,
-        title: localization.transactionDetails,
+        title: transactionType(transaction.type),
         children: [
-          Text(
-            transactionType(transaction.type),
-            style: theme.textTheme.titleLarge,
-          ),
-          SizedBox(height: 12),
           ContainerBackground(
               padding: 22,
               content: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              CustomLink(
-                                text: localization.viewOnExplorer,
-                                url:
-                                    'https://witnet.network/search/${transaction.txnHash}',
-                                color: theme.primaryColorLight,
-                                style: theme.textTheme.labelLarge!.copyWith(
-                                    decoration: TextDecoration.underline),
-                              ),
-                              SizedBox(
-                                width: 8,
-                              ),
-                              Icon(FontAwesomeIcons.arrowUpRightFromSquare,
-                                  color: theme.textTheme.labelLarge?.color,
-                                  size: 12)
-                            ],
-                          ),
-                        ]),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Transaction ID",
-                              style: theme.textTheme.labelLarge),
-                          Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  transaction.txnHash.cropMiddle(14),
-                                  style: extendedTheme.monoRegularText,
-                                ),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                CopyButton(copyContent: transaction.txnHash)
-                              ]),
-                        ]),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              localization.timestamp,
-                              style: theme.textTheme.labelLarge,
-                            ),
-                            Text(_isPendingTransaction(transaction.status)
-                                ? '_'
-                                : transaction.txnTime.formatDate()),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(localization.status,
-                            style: theme.textTheme.labelLarge),
-                        Text(
-                          transactionStatus(transaction.status),
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                              color: getStatusColor(transaction.status, theme)),
-                        ),
-                      ],
-                    ),
+                    Align(
+                        alignment: Alignment.centerRight,
+                        child: InfoLink(
+                          url:
+                              'https://witnet.network/search/${transaction.txnHash}',
+                          label: '',
+                          text: localization.viewOnExplorer,
+                          isContentImportant: true,
+                        )),
+                    InfoCopy(
+                        label: localization.transactionId,
+                        layout: InfoLayout.horizonal,
+                        isContentImportant: true,
+                        isHashContent: true,
+                        text: transaction.txnHash.cropMiddle(14),
+                        infoToCopy: transaction.txnHash),
+                    _isPendingTransaction(transaction.status)
+                        ? Container()
+                        : InfoElement(
+                            label: localization.timestamp,
+                            text: transaction.txnTime.formatDate()),
+                    InfoElement(
+                        label: localization.status,
+                        text: transactionStatus(transaction.status),
+                        contentColor: getStatusColor(transaction.status, theme),
+                        isLastItem: true),
                   ])),
           isVTT
               ? ContainerBackground(
@@ -263,120 +197,70 @@ class TransactionDetails extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       isVTT
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                  Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(localization.from,
-                                            style: theme.textTheme.labelLarge),
-                                        isVTT
-                                            ? Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                    Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          isFromCurrentWallet()
-                                                              ? identiconContainer(
-                                                                  extendedTheme,
-                                                                  currentWallet
-                                                                      .id,
-                                                                )
-                                                              : Container(),
-                                                          isFromCurrentWallet()
-                                                              ? SizedBox(
-                                                                  width: 8)
-                                                              : Container(),
-                                                          Text(
-                                                            transactionUtils
-                                                                .getSenderAddress()
-                                                                .cropAddress(
-                                                                    12),
-                                                            style: extendedTheme
-                                                                .monoRegularText
-                                                                ?.copyWith(
-                                                                    color: theme
-                                                                        .textTheme
-                                                                        .bodyMedium
-                                                                        ?.color),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 8,
-                                                          ),
-                                                          CopyButton(
-                                                              copyContent:
-                                                                  transactionUtils
-                                                                      .getSenderAddress())
-                                                        ]),
-                                                  ])
-                                            : Container(),
-                                      ]),
-                                ])
+                          ? InfoCopy(
+                              isHashContent: true,
+                              infoToCopy: transactionUtils.getSenderAddress(),
+                              label: localization.from,
+                              customContent: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    isFromCurrentWallet()
+                                        ? identiconContainer(
+                                            extendedTheme,
+                                            currentWallet.id,
+                                          )
+                                        : Container(),
+                                    isFromCurrentWallet()
+                                        ? SizedBox(width: 8)
+                                        : Container(),
+                                    Text(
+                                      transactionUtils
+                                          .getSenderAddress()
+                                          .cropAddress(12),
+                                      style: extendedTheme.monoRegularText
+                                          ?.copyWith(
+                                              color: theme
+                                                  .textTheme.bodyMedium?.color),
+                                    ),
+                                  ]),
+                            )
                           : Container(),
-                      SizedBox(
-                        height: 16,
-                      ),
                       Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Icon(FontAwesomeIcons.circleArrowDown, color: theme.textTheme.bodyMedium?.color),
+                            Icon(FontAwesomeIcons.circleArrowDown,
+                                color: theme.textTheme.bodyMedium?.color),
                             SizedBox(width: 96),
                           ]),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(localization.to,
-                              style: theme.textTheme.labelLarge),
-                          Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                isToCurrentWallet()
-                                    ? identiconContainer(
-                                        extendedTheme,
-                                        currentWallet.id,
-                                      )
-                                    : Container(),
-                                SizedBox(width: 8),
-                                Text(
-                                  transactionUtils
-                                      .getRecipientAddress()
-                                      .cropAddress(12),
-                                  style: extendedTheme.monoRegularText
-                                      ?.copyWith(
-                                          color: theme
-                                              .textTheme.bodyMedium?.color),
-                                ),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                CopyButton(
-                                    copyContent:
-                                        transactionUtils.getSenderAddress())
-                              ]),
-                        ],
-                      ),
                       SizedBox(height: 8),
+                      InfoCopy(
+                        isLastItem: true,
+                        isHashContent: true,
+                        infoToCopy: transactionUtils.getRecipientAddress(),
+                        label: localization.to,
+                        customContent: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              isToCurrentWallet()
+                                  ? identiconContainer(
+                                      extendedTheme,
+                                      currentWallet.id,
+                                    )
+                                  : Container(),
+                              SizedBox(width: 8),
+                              Text(
+                                transactionUtils
+                                    .getRecipientAddress()
+                                    .cropAddress(12),
+                                style: extendedTheme.monoRegularText?.copyWith(
+                                    color: theme.textTheme.bodyMedium?.color),
+                              ),
+                            ]),
+                      ),
                     ],
                   ))
               : Container(),
@@ -386,46 +270,28 @@ class TransactionDetails extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(localization.amount),
-                      Text(transactionUtils.getTransactionValue().amount),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(isVTT
+                  InfoElement(
+                      label: localization.amount,
+                      text: transactionUtils.getTransactionValue().amount,
+                      isContentImportant: false),
+                  InfoElement(
+                      label: isVTT
                           ? localization.feesPayed
-                          : localization.feesCollected),
-                      Text(
-                          '${transaction.fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(localization.total),
-                      Text(transactionUtils.getTransactionValue().amount,
-                          style: theme.textTheme.labelLarge),
-                    ],
-                  ),
+                          : localization.feesCollected,
+                      text:
+                          '${transaction.fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
+                      isContentImportant: false),
+                  InfoElement(
+                      label: localization.total,
+                      text: transactionUtils.getTransactionValue().amount,
+                      isContentImportant: true,
+                      isLastItem: timelock == null),
                   timelock != null
-                      ? Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(localization.timelock,
-                                style: theme.textTheme.labelLarge),
-                            Text(transactionUtils.timelock()!),
-                          ],
-                        )
+                      ? InfoElement(
+                          label: localization.timelock,
+                          text: transactionUtils.timelock()!,
+                          isContentImportant: false,
+                          isLastItem: true)
                       : Container(),
                 ],
               )),

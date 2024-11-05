@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:my_wit_wallet/util/allow_biometrics.dart';
+import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/general_error_tx_modal.dart';
@@ -171,11 +172,12 @@ class ReviewStepState extends State<ReviewStep>
                         style: theme.textTheme.titleLarge,
                       ),
                       SizedBox(height: 24),
-                      InfoElement(
+                      InfoCopy(
+                          infoToCopy: address,
                           label: isVttTransaction
                               ? localization.to
                               : localization.withdrawalAddress,
-                          text: address),
+                          text: address.cropMiddle(18)),
                       InfoElement(
                         label: localization.amount,
                         text: getAmountValue(state),

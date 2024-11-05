@@ -280,31 +280,31 @@ class BuildWalletCardState extends State<BuildWalletCard>
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                     InfoElement(
-                        horizontal: true,
-                        label: localization.buildWalletBalance,
-                        content: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              AnimatedNumericText(
-                                align: TextAlign.end,
-                                initialValue: nanoWitToWit(previousBalance),
-                                targetValue: nanoWitToWit(balance),
-                                curve: Interval(0, .5, curve: Curves.easeOut),
-                                controller: _balanceController,
-                                style: theme.textTheme.titleMedium!,
-                              ),
-                              SizedBox(width: 4),
-                              Text('WIT', style: theme.textTheme.titleMedium!)
-                            ]),
-                        text: '${nanoWitToWit(balance).toString()} WIT'),
+                      isContentImportant: true,
+                      label: localization.buildWalletBalance,
+                      customContent: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            AnimatedNumericText(
+                              align: TextAlign.end,
+                              initialValue: nanoWitToWit(previousBalance),
+                              targetValue: nanoWitToWit(balance),
+                              curve: Interval(0, .5, curve: Curves.easeOut),
+                              controller: _balanceController,
+                              style: theme.textTheme.titleMedium!,
+                            ),
+                            SizedBox(width: 4),
+                            Text('WIT', style: theme.textTheme.titleMedium!)
+                          ]),
+                    ),
                     InfoElement(
-                        horizontal: true,
+                        isContentImportant: true,
                         label: localization.transactionsFound,
                         isLastItem: isHdWallet ? false : true,
                         text: '$currentTransactionCount',
-                        content: AnimatedIntegerText(
+                        customContent: AnimatedIntegerText(
                             align: TextAlign.end,
                             initialValue: currentTransactionCount,
                             // TODO:targetValue: addressCount,
@@ -314,18 +314,18 @@ class BuildWalletCardState extends State<BuildWalletCard>
                             style: theme.textTheme.titleMedium!)),
                     if (isHdWallet)
                       InfoElement(
-                          horizontal: true,
-                          label: localization.exploredAddresses,
-                          isLastItem: true,
-                          content: AnimatedIntegerText(
-                              align: TextAlign.end,
-                              initialValue: currentAddressCount,
-                              // TODO:targetValue: addressCount,
-                              targetValue: currentAddressCount,
-                              curve: Interval(0, .5, curve: Curves.easeOut),
-                              controller: _balanceController,
-                              style: theme.textTheme.titleMedium!),
-                          text: '$currentAddressCount'),
+                        isContentImportant: true,
+                        label: localization.exploredAddresses,
+                        isLastItem: true,
+                        customContent: AnimatedIntegerText(
+                            align: TextAlign.end,
+                            initialValue: currentAddressCount,
+                            // TODO:targetValue: addressCount,
+                            targetValue: currentAddressCount,
+                            curve: Interval(0, .5, curve: Curves.easeOut),
+                            controller: _balanceController,
+                            style: theme.textTheme.titleMedium!),
+                      ),
                   ])),
             ],
           );

@@ -1,102 +1,196 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/widgets/copy_button.dart';
 import 'package:my_wit_wallet/widgets/link.dart';
 
-class InfoElement extends StatelessWidget {
-  final String label;
-  final String text;
-  final String? url;
-  final bool plainText;
-  final Color? color;
-  final bool isLastItem;
-  final String? copyText;
-  final bool horizontal;
-  final TextStyle? contentFontStyle;
-  final Widget? content;
+enum InfoLayout { horizonal, vertical }
 
-  const InfoElement(
-      {required this.label,
-      required this.text,
-      this.horizontal = false,
-      this.plainText = false,
-      this.isLastItem = false,
-      this.contentFontStyle,
-      this.url,
-      this.color,
-      this.copyText,
-      this.content});
+enum ElementType { label, content }
+
+class InfoLink extends InfoElement {
+  final String url;
+  InfoLink({
+    required this.url,
+    required super.label,
+    required super.text,
+    super.isLastItem,
+    super.isHashContent,
+    super.isContentImportant,
+    super.layout,
+    super.contentColor,
+  });
+
+  Widget buildExternalLink(ThemeData theme) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: layout == InfoLayout.horizonal
+          ? MainAxisAlignment.end
+          : MainAxisAlignment.start,
+      children: [
+        CustomLink(
+          text: text!,
+          url: url,
+          color: getContentStyle(theme).color,
+          style: getContentStyle(theme)
+              .copyWith(decoration: TextDecoration.underline),
+        ),
+        SizedBox(
+          width: 8,
+        ),
+        Icon(FontAwesomeIcons.arrowUpRightFromSquare,
+            color: getContentStyle(theme).color,
+            size: getContentStyle(theme).fontSize! - 4)
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return super.buildLayout(theme: theme, content: buildExternalLink(theme));
+  }
+}
+
+class InfoCopy extends InfoElement {
+  final String infoToCopy;
+  InfoCopy({
+    required this.infoToCopy,
+    required super.label,
+    super.text,
+    super.isLastItem,
+    super.isHashContent,
+    super.isContentImportant,
+    super.layout,
+    super.contentColor,
+    super.customContent,
+  });
 
   Widget buildContentWithCopyIcon(BuildContext context, ThemeData theme) {
     return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          buildContent(theme),
-          Flexible(child: CopyButton(copyContent: copyText ?? '')),
+          super.buildContent(theme),
+          SizedBox(
+            width: 8,
+          ),
+          CopyButton(
+              copyContent: infoToCopy,
+              color: getStyle(theme, ElementType.content)!.color),
         ]);
   }
 
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return super.buildLayout(
+        theme: theme, content: buildContentWithCopyIcon(context, theme));
+  }
+}
+
+class InfoElement extends StatelessWidget {
+  final String label;
+  final InfoLayout layout;
+  final bool isLastItem;
+  final bool isHashContent;
+  final bool isContentImportant;
+  final Color? contentColor;
+  final String? text;
+  final Widget? customContent;
+
+  const InfoElement({
+    required this.label,
+    this.text,
+    this.isLastItem = false,
+    this.isHashContent = false,
+    this.isContentImportant = false,
+    this.layout = InfoLayout.horizonal,
+    this.contentColor,
+    this.customContent,
+  });
+
+  TextStyle? getStyle(ThemeData theme, ElementType elementType) {
+    switch (elementType) {
+      case ElementType.label:
+        return !isContentImportant
+            ? theme.textTheme.labelLarge
+            : theme.textTheme.bodyMedium;
+      case ElementType.content:
+        return isContentImportant
+            ? theme.textTheme.labelLarge
+            : theme.textTheme.bodyMedium;
+    }
+  }
+
   TextStyle getContentStyle(ThemeData theme) {
-    Color? color =
-        this.color != null ? this.color : theme.textTheme.titleMedium!.color;
-    TextStyle? style = this.contentFontStyle != null
-        ? this.contentFontStyle
-        : theme.textTheme.titleMedium;
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+    TextStyle? style = getStyle(theme, ElementType.content);
+    if (isHashContent) {
+      style = isContentImportant
+          ? extendedTheme.monoMediumText
+          : extendedTheme.monoBoldText;
+    }
+    Color? color = this.contentColor != null ? this.contentColor : style!.color;
     return style!.copyWith(color: color);
   }
 
   Widget buildContent(ThemeData theme) {
-    if (content != null) {
-      return content!;
+    if (customContent != null) {
+      return customContent!;
+    } else if (text != null) {
+      return Text(
+        text!,
+        style: getContentStyle(theme),
+        textAlign:
+            layout == InfoLayout.vertical ? TextAlign.start : TextAlign.end,
+      );
+    } else {
+      return Container();
     }
-    return url != null
-        ? CustomLink(text: text, url: url ?? '', color: color)
-        : Text(
-            text,
-            style: getContentStyle(theme),
-            textAlign: TextAlign.end,
-          );
   }
 
-  Widget _buildHorizontalElement(ThemeData theme, BuildContext context) {
-    return Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: theme.textTheme.bodyMedium,
-          ),
-          Expanded(
-              child: copyText != null
-                  ? buildContentWithCopyIcon(context, theme)
-                  : buildContent(theme)),
-          SizedBox(height: isLastItem ? 0 : 16),
-        ]);
+  Widget getLabelWidget(ThemeData theme) {
+    return Text(
+      label,
+      style: getStyle(theme, ElementType.label),
+    );
   }
 
-  Widget _buildElement(ThemeData theme, BuildContext context) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: theme.textTheme.titleMedium,
-          ),
-          SizedBox(height: 4),
-          copyText != null
-              ? buildContentWithCopyIcon(context, theme)
-              : buildContent(theme),
-          SizedBox(height: isLastItem ? 0 : 16),
-        ]);
+  Widget buildLayout({required ThemeData theme, required Widget content}) {
+    switch (layout) {
+      case InfoLayout.horizonal:
+        return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  getLabelWidget(theme),
+                  SizedBox(width: 8),
+                  content,
+                ],
+              ),
+              SizedBox(height: isLastItem ? 0 : 8),
+            ]);
+      case InfoLayout.vertical:
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            getLabelWidget(theme),
+            SizedBox(height: 8),
+            content,
+            SizedBox(height: isLastItem ? 0 : 8),
+          ],
+        );
+    }
   }
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    if (horizontal) {
-      return _buildHorizontalElement(theme, context);
-    }
-    return _buildElement(theme, context);
+    return buildLayout(theme: theme, content: buildContent(theme));
   }
 }
