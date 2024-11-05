@@ -50,10 +50,8 @@ void buildSuccessfullTransaction(
               })
     ],
     title: getTitleByTxType(transactionType),
+    image: svgThemeImage(theme, name: 'transaction-success', height: 100),
     content: Column(mainAxisSize: MainAxisSize.min, children: [
-      SizedBox(height: 16),
-      svgThemeImage(theme, name: 'transaction-success', height: 100),
-      SizedBox(height: 16),
       InfoElement(
         plainText: true,
         label: localization.txnCheckStatus,

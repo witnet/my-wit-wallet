@@ -26,11 +26,10 @@ void buildEmptyStakeModal({
                   ScaffoldMessenger.of(context).clearSnackBars(),
                 }),
       ],
+      image: Container(
+          width: 100, height: 100, child: svgImage(name: iconName, height: 50)),
       title: localization.emptyStakeTitle,
       content: Column(mainAxisSize: MainAxisSize.min, children: [
-        svgThemeImage(theme, name: iconName, height: 100),
-        SizedBox(height: 16),
         Text(localization.emptyStakeMessage, style: theme.textTheme.bodyLarge),
-        SizedBox(height: 16),
       ]));
 }

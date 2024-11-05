@@ -35,11 +35,9 @@ void buildGeneralExceptionModal({
                   Navigator.pushReplacementNamed(context, originRouteName)
                 }),
       ],
-      icon: FontAwesomeIcons.circleExclamation,
+      image: svgThemeImage(theme, name: iconName, height: 100),
       title: error,
       content: Column(mainAxisSize: MainAxisSize.min, children: [
-        svgThemeImage(theme, name: iconName, height: 100),
-        SizedBox(height: 16),
         Text(message, style: theme.textTheme.bodyLarge),
         SizedBox(height: 16),
         errorMessage != null
