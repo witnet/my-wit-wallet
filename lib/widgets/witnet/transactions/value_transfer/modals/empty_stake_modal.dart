@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/screens/stake/stake_screen.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
+import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 
 void buildEmptyStakeModal({
   required ThemeData theme,
@@ -15,14 +17,31 @@ void buildEmptyStakeModal({
       context: context,
       actions: [
         PaddedButton(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.zero,
             text: localization.close,
             sizeCover: false,
-            type: ButtonType.primary,
+            type: ButtonType.secondary,
             enabled: true,
             onPressed: () => {
                   Navigator.popUntil(
                       context, ModalRoute.withName(originRouteName)),
+                  ScaffoldMessenger.of(context).clearSnackBars(),
+                }),
+        PaddedButton(
+            padding: EdgeInsets.zero,
+            text: localization.stake,
+            sizeCover: false,
+            type: ButtonType.primary,
+            enabled: true,
+            onPressed: () => {
+                  Navigator.push(
+                      context,
+                      CustomPageRoute(
+                          builder: (BuildContext context) {
+                            return StakeScreen();
+                          },
+                          maintainState: false,
+                          settings: RouteSettings(name: StakeScreen.route))),
                   ScaffoldMessenger.of(context).clearSnackBars(),
                 }),
       ],
