@@ -352,6 +352,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
   }
 
   Future<Account> _syncAccountUnstakes(Account account) async {
+    // FIXME(#612): Adding AddressBlocks instead of Unstakes breaks node wallets that have mints.
     try {
       // TODO(#542): use Unstakes instead of AddressBlocks
       /// retrieve all Block Hashes
@@ -396,6 +397,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
   }
 
   Future<Account> _syncAccountStakes(Account account) async {
+    // FIXME(#612): Adding AddressBlocks instead of Stakes breaks node wallets that have mints.
     try {
       // TODO(#542): use Stakes instead of AddressBlocks
       /// retrieve all Block Hashes
