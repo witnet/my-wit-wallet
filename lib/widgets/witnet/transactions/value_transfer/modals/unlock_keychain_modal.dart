@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/login/view/password_validate.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/widgets/PaddedButton.dart';
-import 'package:my_wit_wallet/widgets/alert_dialog.dart';
 
 Future<String?> unlockKeychainModal(
     {required ThemeData theme,
@@ -22,6 +22,8 @@ Future<String?> unlockKeychainModal(
           builder: (context) {
             String _password = '';
             String? _passwordInputErrorText;
+            final theme = Theme.of(context);
+            final extendedTheme = theme.extension<ExtendedTheme>()!;
             return StatefulBuilder(builder: (context, setState) {
               void _updatePassword({required String password}) {
                 _password = password;
@@ -53,7 +55,37 @@ Future<String?> unlockKeychainModal(
                 }
               }
 
-              return buildAlertDialog(
+              return AlertDialog(
+                title: null,
+                backgroundColor: theme.colorScheme.surface,
+                surfaceTintColor: theme.colorScheme.surface,
+                shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.all(extendedTheme.borderRadius!)),
+                content: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: 300),
+                    child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: svgThemeImage(theme,
+                                name: imageName, height: 100),
+                          ),
+                          SizedBox(height: 8),
+                          Text(title,
+                              style: theme.textTheme.titleLarge,
+                              textAlign: TextAlign.left),
+                          SizedBox(height: 8),
+                          PasswordValidation(
+                            validate: _login,
+                            passwordUpdates: _updatePassword,
+                            clearError: _clearError,
+                            passwordInputErrorText: _passwordInputErrorText,
+                          )
+                        ])),
+                actionsPadding: EdgeInsets.only(bottom: 16, right: 16, top: 0),
                 actions: [
                   PaddedButton(
                       padding: EdgeInsets.zero,
@@ -76,17 +108,6 @@ Future<String?> unlockKeychainModal(
                       onPressed: () =>
                           {_login(validate: true, password: _password)})
                 ],
-                context: context,
-                title: title,
-                image: svgThemeImage(theme, name: imageName, height: 100),
-                content: Column(mainAxisSize: MainAxisSize.min, children: [
-                  PasswordValidation(
-                    validate: _login,
-                    passwordUpdates: _updatePassword,
-                    clearError: _clearError,
-                    passwordInputErrorText: _passwordInputErrorText,
-                  )
-                ]),
               );
             });
           }));

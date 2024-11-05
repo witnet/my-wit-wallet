@@ -44,9 +44,7 @@ class HeaderLayout extends StatelessWidget {
       {required ThemeData theme,
       required ExtendedTheme extendedTheme,
       required BuildContext context}) {
-    Color? headerBgColor = isLoginPage
-        ? theme.colorScheme.surface
-        : extendedTheme.headerBackgroundColor;
+    Color? headerBgColor = theme.colorScheme.surface;
     return Container(
       height: HEADER_HEIGHT,
       width: MediaQuery.of(context).size.width,

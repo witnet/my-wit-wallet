@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_wit_wallet/theme/colors.dart';
+import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_create_import_icon.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_import_wallet.dart';
@@ -92,12 +92,13 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   }
 
   List<Widget> _navigationActions() {
+    final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     return [
       PaddedButton(
           padding: EdgeInsets.zero,
           text: prevAction != null ? prevAction().label : '',
           type: ButtonType.text,
-          color: WitnetPallet.black,
+          color: extendedTheme.navigationColor,
           boldText: true,
           enabled: prevAction != null,
           onPressed: () => {
