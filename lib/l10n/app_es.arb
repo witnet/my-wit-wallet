@@ -351,5 +351,6 @@
 	"sendUnstakeTransaction": "Transacción de Unstake",
 	"networkContribution": "Contribución a la red",
 	"feesAndRewards": "Tasas y Recompensas",
-	"totalDataSynced": "Datos syncronizados"
+	"totalDataSynced": "Datos syncronizados",
+	"welcomeBack": "Bienvenido de nuevo"
 }

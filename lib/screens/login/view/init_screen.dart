@@ -31,7 +31,7 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  List<Widget> mainComponents() {
+  List<Widget> mainComponents({bool isFtu = false}) {
     final theme = Theme.of(context);
     return [
       Padding(
@@ -39,10 +39,15 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
         child: svgThemeImage(Theme.of(context),
             name: 'myWitWallet-title', width: 700),
       ),
-      Text(
-        localization.welcome,
-        style: theme.textTheme.titleLarge,
-      ),
+      isFtu
+          ? Text(
+              localization.welcome,
+              style: theme.textTheme.titleLarge,
+            )
+          : Text(
+              localization.welcomeBack,
+              style: theme.textTheme.titleLarge,
+            ),
       Carousel(list: [
         localization.carouselMsg01,
         localization.carouselMsg02,
@@ -59,7 +64,7 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
       return LoginForm(mainComponents: mainComponents());
     } else {
       // No wallets stored yet
-      return FtuActions(mainComponents: mainComponents());
+      return FtuActions(mainComponents: mainComponents(isFtu: true));
     }
   }
 
