@@ -66,7 +66,7 @@ class TransactionsListState extends State<TransactionsList> {
             transaction: transaction,
             showDetails: widget.setDetails,
             previousTxnTime:
-                index > 1 ? widget.transactions[index - 1].txnTime : null,
+                index > 0 ? widget.transactions[index - 1].txnTime : null,
           );
         },
       );
