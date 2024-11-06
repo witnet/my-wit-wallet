@@ -31,7 +31,7 @@ class WitnetPallet {
   static const brightOrange = Color(0xFFed9900);
   static const darkGreen = Color.fromARGB(255, 25, 147, 66);
   static const brightGreen = Color.fromARGB(212, 67, 252, 187);
-  static const brown = Color.fromARGB(255, 147, 82, 1);
+  static const brown = Color(0xFFA36943);
 }
 
 MaterialColor createMaterialColor(Color color) {
