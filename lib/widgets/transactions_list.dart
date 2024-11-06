@@ -63,7 +63,11 @@ class TransactionsListState extends State<TransactionsList> {
         itemBuilder: (context, index) {
           GeneralTransaction transaction = widget.transactions[index];
           return TransactionsItem(
-              transaction: transaction, showDetails: widget.setDetails);
+            transaction: transaction,
+            showDetails: widget.setDetails,
+            previousTxnTime:
+                index > 1 ? widget.transactions[index - 1].txnTime : null,
+          );
         },
       );
     } else {
