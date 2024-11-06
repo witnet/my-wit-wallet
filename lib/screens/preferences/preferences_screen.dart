@@ -23,7 +23,7 @@ class _PreferencePageState extends State<PreferencePage> {
 
   ConfigSteps currentStep = ConfigSteps.general;
   String selectedItem = localizedConfigSteps[ConfigSteps.general]!;
-  bool configNavigation = true;
+  WalletConfigActions? currentSetting = null;
 
   @override
   void initState() {
@@ -35,55 +35,60 @@ class _PreferencePageState extends State<PreferencePage> {
     super.dispose();
   }
 
-  void toggleConfigNavigation(bool value) {
-    if (value) {
+  void toggleConfigNavigation(WalletConfigActions? value) {
+    if (value != null) {
       setState(() {
-        configNavigation = true;
+        currentSetting = value;
       });
     } else {
       setState(() {
-        configNavigation = false;
+        currentSetting = null;
       });
     }
   }
 
-  Widget _buildConfigView() {
+  List<Widget> _buildConfigNavigation(BuildContext context) {
     final theme = Theme.of(context);
+    return [
+      Padding(
+          padding: EdgeInsets.only(left: 8, right: 8),
+          child:
+              Text(localization.settings, style: theme.textTheme.titleLarge)),
+      SizedBox(height: 16),
+      StepBar(
+          selectedItem: selectedItem,
+          listItems: localizedConfigSteps.values.toList(),
+          actionable: true,
+          onChanged: (item) => {
+                scrollController.jumpTo(0.0),
+                setState(() {
+                  selectedItem = localizedConfigSteps.entries
+                      .firstWhere((element) => element.value == item)
+                      .value;
+                  currentStep = localizedConfigSteps.entries
+                      .firstWhere((element) => element.value == item)
+                      .key;
+                }),
+              })
+    ];
+  }
+
+  Widget _buildConfigView() {
     Widget view = GeneralConfig();
     if (localizedConfigSteps[ConfigSteps.general] == selectedItem) {
       view = GeneralConfig();
     } else if (localizedConfigSteps[ConfigSteps.wallet] == selectedItem) {
       view = WalletConfig(
+          savedSetting: currentSetting,
           scrollController: scrollController,
           toggleConfigNavigation: toggleConfigNavigation);
     } else {
       return GeneralConfig();
     }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-            padding: EdgeInsets.only(left: 8, right: 8),
-            child:
-                Text(localization.settings, style: theme.textTheme.titleLarge)),
-        SizedBox(height: 16),
-        if (configNavigation)
-          StepBar(
-              selectedItem: selectedItem,
-              listItems: localizedConfigSteps.values.toList(),
-              actionable: true,
-              onChanged: (item) => {
-                    scrollController.jumpTo(0.0),
-                    setState(() {
-                      selectedItem = localizedConfigSteps.entries
-                          .firstWhere((element) => element.value == item)
-                          .value;
-                      currentStep = localizedConfigSteps.entries
-                          .firstWhere((element) => element.value == item)
-                          .key;
-                    }),
-                  }),
+        if (currentSetting == null) ..._buildConfigNavigation(context),
         Padding(padding: EdgeInsets.only(left: 8, right: 8), child: view),
       ],
     );

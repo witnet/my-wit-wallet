@@ -222,7 +222,7 @@
 	"lockWalletLabel": "Bloquear cartera",
 	"lockYourWallet": "Bloquea tu cartera",
 	"locked": "Bloqueado",
-	"messageSigning": "Firma de mensajes",
+	"messageSigning": "Configuración: Firma de mensajes",
 	"messageSigning01": "Demuestre la propiedad de su dirección añadiendo su firma a un mensaje.",
 	"messageToBeSigned": "Mensaje a firmar",
 	"mined": "Minada",
@@ -323,7 +323,7 @@
 	"walletConfig01": "Tu clave Xprv te permite exportar y hacer una copia de seguridad de tu cartera en cualquier momento después de crearla.",
 	"walletConfig02": "En términos de privacidad, tu clave Xprv es equivalente a una frase de recuperación secreta. No la compartas con nadie y nunca la almacenes en un archivo en tu dispositivo ni en ningún otro lugar electrónico.",
 	"walletConfig03": "Tu clave Xprv estará protegida con la contraseña a continuación. Al importar la clave Xprv en esta u otra aplicación, se te pedirá que escribas esa misma contraseña.",
-	"walletConfigHeader": "Exportar la clave Xprv de mi cartera",
+	"walletConfigHeader": "Configuración: Exportar la clave Xprv de mi cartera",
 	"walletDetail01": "Puedes hacer un mejor seguimiento de tus diferentes carteras dándoles a cada una su propio nombre y descripción.",
 	"walletDetail02": "Los nombres de las carteras facilitan cambiar rápidamente de una cartera a otra. Las descripciones de las carteras pueden ser más detalladas y describir el propósito de una cartera u otros metadatos.",
 	"walletDetailHeader": "Identifica tu cartera",
@@ -351,6 +351,7 @@
 	"sendUnstakeTransaction": "Transacción de Unstake",
 	"networkContribution": "Contribución a la red",
 	"feesAndRewards": "Tasas y Recompensas",
-	"totalDataSynced": "Datos syncronizados",
+	"totalDataSynced": "Resumen de la sincronización",
+	"deleteWalletSettings": "Configuración: Eliminar wallet",
 	"welcomeBack": "Bienvenido de nuevo"
 }

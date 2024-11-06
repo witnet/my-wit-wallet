@@ -156,7 +156,7 @@ class DeleteSingleWalletState extends State<DeleteSingleWallet> {
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (previous, current) {
         return ClosableView(
-            title: localization.deleteWallet,
+            title: localization.deleteWalletSettings,
             closeSetting: widget.closeSetting,
             children: [
               Text(localization.readCarefully, style: bodyLarge),

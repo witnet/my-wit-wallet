@@ -21,7 +21,7 @@ class ClosableView extends StatelessWidget {
     final theme = Theme.of(context);
     final screenWidth = MediaQuery.of(context).size.width;
     return Padding(
-        padding: EdgeInsets.only(right: 8, left: 8),
+        padding: EdgeInsets.zero,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
