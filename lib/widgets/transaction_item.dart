@@ -15,9 +15,13 @@ typedef void GeneralTransactionCallback(GeneralTransaction? value);
 class TransactionsItem extends StatefulWidget {
   final GeneralTransaction transaction;
   final GeneralTransactionCallback showDetails;
-  TransactionsItem(
-      {Key? key, required this.transaction, required this.showDetails})
-      : super(key: key);
+  final int? previousTxnTime;
+  TransactionsItem({
+    Key? key,
+    required this.transaction,
+    required this.showDetails,
+    this.previousTxnTime,
+  }) : super(key: key);
 
   @override
   TransactionsItemState createState() => TransactionsItemState();
@@ -47,6 +51,8 @@ class TransactionsItemState extends State<TransactionsItem> {
     String txnTime = widget.transaction.txnTime.formatDuration(context);
     List<Widget> pendingStatus = [];
     String transacionStatusCopy = txnTime;
+    String? previousTime = widget.previousTxnTime?.formatDuration(context);
+    bool showTimeLabel = (txnTime != previousTime);
 
     if (transactionStatus != TxStatusLabel.confirmed) {
       transacionStatusCopy = "$localizedtxnStatus $txnTime";
@@ -62,12 +68,14 @@ class TransactionsItemState extends State<TransactionsItem> {
     return Row(
       children: [
         ...pendingStatus,
-        Text(
-          transacionStatusCopy,
-          textAlign: TextAlign.start,
-          overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.labelMedium,
-        ),
+        showTimeLabel
+            ? Text(
+                transacionStatusCopy,
+                textAlign: TextAlign.start,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelMedium,
+              )
+            : Container(),
       ],
     );
   }
