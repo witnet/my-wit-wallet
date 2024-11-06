@@ -16,9 +16,10 @@ void buildNewAddressModal({
       context: context,
       actions: [
         PaddedButton(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.zero,
             text: localization.cancel,
-            type: ButtonType.text,
+            sizeCover: false,
+            type: ButtonType.secondary,
             enabled: true,
             onPressed: () => {
                   Navigator.popUntil(
@@ -26,9 +27,10 @@ void buildNewAddressModal({
                   ScaffoldMessenger.of(context).clearSnackBars(),
                 }),
         PaddedButton(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.zero,
             text: localization.confirm,
-            type: ButtonType.text,
+            sizeCover: false,
+            type: ButtonType.primary,
             enabled: true,
             onPressed: onAction),
       ],

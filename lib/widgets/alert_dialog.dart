@@ -17,7 +17,9 @@ buildAlertDialog({
 
   Widget? getIcon() {
     if (icon != null)
-      return Icon(icon, size: 24, color: color ?? WitnetPallet.brightCyan);
+      return Align(
+          alignment: Alignment.centerLeft,
+          child: Icon(icon, size: 24, color: color ?? WitnetPallet.brightCyan));
     else
       return null;
   }
