@@ -120,7 +120,7 @@ class ExportXprvState extends State<ExportXprv> {
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (previous, current) {
         return ClosableView(
-            title: localization.walletConfigHeader,
+            title: localization.settingsWalletConfigHeader,
             closeSetting: widget.closeSetting,
             children: [
               Text(localization.walletConfig01,

@@ -47,7 +47,7 @@ class SignMessageState extends State<SignMessage> {
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (previous, current) {
         return ClosableView(
-            title: localization.messageSigning,
+            title: localization.settingsMessageSigning,
             closeSetting: widget.closeSetting,
             children: [
               Text(localization.messageSigning01,
