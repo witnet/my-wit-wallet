@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:my_wit_wallet/widgets/input_login.dart';
+import 'package:my_wit_wallet/widgets/input_password.dart';
 import 'package:my_wit_wallet/widgets/validations/password_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
+import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
+
 
 typedef void ValidateCallback(
     {required bool validate, required String password});
@@ -29,7 +31,7 @@ class PasswordValidationState extends State<PasswordValidation>
   PasswordInput _password = PasswordInput.pure();
   bool isLoading = false;
 
-  final _loginController = TextEditingController();
+  final _loginController = StyledTextController();
   final _loginFocusNode = FocusNode();
   final _showPasswordFocusNode = FocusNode();
   ValidationUtils validationUtils = ValidationUtils();
@@ -71,12 +73,12 @@ class PasswordValidationState extends State<PasswordValidation>
     _loginFocusNode.addListener(() => validateForm());
     return Form(
       autovalidateMode: AutovalidateMode.disabled,
-      child: InputLogin(
+      child: InputPassword(
         hint: 'Password',
         errorText: _password.error ?? widget.passwordInputErrorText,
         showPassFocusNode: _showPasswordFocusNode,
         obscureText: true,
-        textEditingController: _loginController,
+        styledTextController: _loginController,
         focusNode: _loginFocusNode,
         onChanged: (String? value) {
           if (mounted) {

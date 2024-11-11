@@ -1,44 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/constants.dart';
-import 'package:my_wit_wallet/widgets/input_amount.dart';
+import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 
-class InputSlider extends StatefulWidget {
+import 'input_text.dart';
+
+class InputSlider extends InputText {
   InputSlider({
-    Key? key,
-    this.prefixIcon,
-    this.hint,
-    this.keyboardType,
-    this.obscureText = false,
-    this.textEditingController,
-    this.validator,
-    this.errorText,
-    this.focusNode,
-    required this.onChanged,
-    this.onEditingComplete,
-    this.onFieldSubmitted,
-    this.onTapOutside,
-    this.onTap,
-    this.onSuffixTap,
+    String? route,
     required this.maxAmount,
     required this.minAmount,
-  });
-  final IconData? prefixIcon;
-  final FocusNode? focusNode;
-  final String? errorText;
-  final String? Function(String?)? validator;
-  final String? hint;
-  final TextInputType? keyboardType;
-  final TextEditingController? textEditingController;
-  final bool obscureText;
-  final StringCallback onChanged;
-  final BlankCallback? onEditingComplete;
-  final StringCallback? onFieldSubmitted;
-  final PointerDownCallback? onTapOutside;
-  final BlankCallback? onTap;
-  final BlankCallback? onSuffixTap;
+    required FocusNode focusNode,
+    required StyledTextController styledTextController,
+    String? Function(String?)? validator,
+    IconData? prefixIcon,
+    String? errorText,
+    String? hint,
+    TextInputType? keyboardType,
+    bool obscureText = false,
+    void Function(String)? onChanged,
+    void Function()? onEditingComplete,
+    void Function(String)? onFieldSubmitted,
+    void Function(PointerDownEvent)? onTapOutside,
+    void Function()? onTap,
+    void Function()? onSuffixTap,
+    List<TextInputFormatter>? inputFormatters,
+  }) : super(
+          prefixIcon: prefixIcon,
+          focusNode: focusNode,
+          errorText: errorText,
+          validator: validator,
+          hint: hint,
+          keyboardType: keyboardType,
+          styledTextController: styledTextController,
+          obscureText: obscureText,
+          onChanged: onChanged,
+          onEditingComplete: onEditingComplete,
+          onFieldSubmitted: onFieldSubmitted,
+          onTapOutside: onTapOutside,
+          onTap: onTap,
+          onSuffixTap: onSuffixTap,
+          inputFormatters: inputFormatters,
+        );
+
   final double maxAmount;
   final double minAmount;
+
   @override
   _InputSliderState createState() => _InputSliderState();
 }
@@ -48,29 +56,55 @@ typedef BlankCallback = void Function();
 typedef PointerDownCallback = void Function(PointerDownEvent);
 
 class _InputSliderState extends State<InputSlider> {
+  TextSelection? lastSelection;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    widget.focusNode.addListener(_onFocusChange);
+  }
+
+  void _onFocusChange() {
+    int offset = widget.styledTextController.selection.baseOffset;
+    TextSelection collapsed = TextSelection.collapsed(
+      offset: offset,
+      affinity: TextAffinity.upstream,
+    );
+    if (!widget.focusNode.hasFocus) {
+      lastSelection = widget.styledTextController.selection;
+      widget.styledTextController.selection = collapsed;
+    } else {
+      widget.styledTextController.selection = lastSelection ?? collapsed;
+    }
+  }
+
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    String? inputValue = widget.textEditingController?.text;
+
+    widget.styledTextController.setStyle(
+      theme.textTheme.bodyLarge!,
+      theme.textTheme.bodyLarge!.copyWith(color: Colors.black),
+    );
+
+    String? inputValue = widget.styledTextController.text;
     double sliderValue = 0;
     try {
-      sliderValue =
-          inputValue != null && inputValue != '' ? double.parse(inputValue) : 0;
+      sliderValue = inputValue != '' ? double.parse(inputValue) : 0;
     } catch (err) {
       print('Error parsing sliderValue $inputValue');
     }
     return Column(children: [
       Container(
-        child: InputAmount(
-          hint: widget.hint ?? localization.inputAmountHint,
+        child: widget.buildInput(context: context,
+        decoration: InputDecoration(
+          hintText: widget.hint ?? localization.inputAmountHint,
           errorText: widget.errorText,
-          onSuffixTap: widget.onSuffixTap ?? () {},
-          validator: widget.validator,
-          onTap: widget.onTap ?? () {},
-          onFieldSubmitted: widget.onFieldSubmitted ?? (String? value) {},
-          onEditingComplete: widget.onEditingComplete ?? () {},
-          onChanged: widget.onChanged,
-          textEditingController: widget.textEditingController,
-          focusNode: widget.focusNode,
+          prefixIcon:
+          widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
+          suffixText: WIT_UNIT[WitUnit.Wit],
+          suffixIconConstraints: BoxConstraints(minHeight: 44),
+        ),
         ),
       ),
       SizedBox(height: 8),
@@ -82,7 +116,7 @@ class _InputSliderState extends State<InputSlider> {
           min: widget.minAmount,
           label: sliderValue.toString(),
           onChanged: (double value) =>
-              {widget.onChanged(value.toStringAsFixed(9))},
+              {widget.onChanged!(value.toStringAsFixed(9))},
         ),
         Row(
           children: [

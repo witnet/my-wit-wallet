@@ -1,43 +1,53 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
-
 import 'package:my_wit_wallet/widgets/buttons/text_btn.dart';
+import 'package:my_wit_wallet/widgets/input_text.dart';
+import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
+import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
 
-class InputAmount extends StatefulWidget {
+
+class InputAmount extends InputText {
   InputAmount({
-    Key? key,
-    this.prefixIcon,
-    this.hint,
-    this.keyboardType,
-    this.obscureText = false,
-    this.textEditingController,
-    this.validator,
-    this.errorText,
-    this.focusNode,
-    this.onChanged,
-    this.onEditingComplete,
-    this.onFieldSubmitted,
-    this.onTapOutside,
-    this.onTap,
-    this.onSuffixTap,
-  });
-  final IconData? prefixIcon;
-  final FocusNode? focusNode;
-  final String? errorText;
-  final String? Function(String?)? validator;
-  final String? hint;
-  final TextInputType? keyboardType;
-  final TextEditingController? textEditingController;
-  final bool obscureText;
-  final StringCallback? onChanged;
-  final BlankCallback? onEditingComplete;
-  final StringCallback? onFieldSubmitted;
-  final PointerDownCallback? onTapOutside;
-  final BlankCallback? onTap;
-  final BlankCallback? onSuffixTap;
+    required this.amount,
+    required FocusNode focusNode,
+    required StyledTextController styledTextController,
+    IconData? prefixIcon,
+    String? errorText,
+    String? Function(String?)? validator,
+    String? hint,
+    TextInputType? keyboardType,
+    bool obscureText = false,
+    this.route,
+    void Function(String)? onChanged,
+    void Function()? onEditingComplete,
+    void Function(String)? onFieldSubmitted,
+    void Function(PointerDownEvent)? onTapOutside,
+    void Function()? onTap,
+    void Function()? onSuffixTap,
+    List<TextInputFormatter>? inputFormatters,
+  }) : super(
+          prefixIcon: prefixIcon,
+          focusNode: focusNode,
+          errorText: errorText,
+          validator: validator,
+          hint: hint,
+          keyboardType: keyboardType,
+          styledTextController: styledTextController,
+          obscureText: obscureText,
+          inputFormatters: [WitValueFormatter()],
+          onChanged: onChanged,
+          onEditingComplete: onEditingComplete,
+          onFieldSubmitted: onFieldSubmitted,
+          onTapOutside: onTapOutside,
+          onTap: onTap,
+          onSuffixTap: onSuffixTap,
+        );
+  final VttAmountInput amount;
+  final String? route;
+
   @override
   _InputAmountState createState() => _InputAmountState();
 }
@@ -47,13 +57,46 @@ typedef BlankCallback = void Function();
 typedef PointerDownCallback = void Function(PointerDownEvent);
 
 class _InputAmountState extends State<InputAmount> {
+  TextSelection? lastSelection;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.focusNode.addListener(_onFocusChange);
+  }
+
+  void _onFocusChange() {
+    TextSelection collapsed = TextSelection.collapsed(
+      offset: widget.styledTextController.selection.baseOffset,
+      affinity: TextAffinity.upstream,
+    );
+    if (!widget.focusNode.hasFocus) {
+      lastSelection = widget.styledTextController.selection;
+      widget.styledTextController.selection = collapsed;
+    } else {
+      widget.styledTextController.selection = lastSelection ?? collapsed;
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.focusNode.removeListener(_onFocusChange);
+  }
+
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    widget.styledTextController.setStyle(
+      theme.textTheme.bodyLarge!,
+      theme.textTheme.bodyLarge!.copyWith(color: Colors.black),
+    );
+
     return Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.max,
         children: [
-          TextFormField(
+          widget.buildInput(
+            context: context,
             decoration: InputDecoration(
               hintText: widget.hint ?? localization.inputAmountHint,
               errorText: widget.errorText,
@@ -62,21 +105,6 @@ class _InputAmountState extends State<InputAmount> {
               suffixText: WIT_UNIT[WitUnit.Wit],
               suffixIconConstraints: BoxConstraints(minHeight: 44),
             ),
-            minLines: 1,
-            keyboardType: Platform.isIOS
-                ? TextInputType.numberWithOptions(signed: true, decimal: true)
-                : widget.keyboardType,
-            inputFormatters: [WitValueFormatter()],
-            style: theme.textTheme.bodyLarge,
-            autocorrect: false,
-            focusNode: widget.focusNode,
-            controller: widget.textEditingController,
-            onChanged: widget.onChanged ?? (String? value) {},
-            onEditingComplete: widget.onEditingComplete ?? () {},
-            onFieldSubmitted: widget.onFieldSubmitted ?? (String? value) {},
-            onTapOutside: widget.onTapOutside ?? (PointerDownEvent? event) {},
-            onTap: widget.onTap ?? () {},
-            validator: widget.validator,
           ),
           widget.onSuffixTap != null ? SizedBox(height: 8) : Container(),
           widget.onSuffixTap != null

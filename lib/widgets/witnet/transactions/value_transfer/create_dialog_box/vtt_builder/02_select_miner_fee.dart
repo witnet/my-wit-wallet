@@ -14,8 +14,10 @@ import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/clickable_box.dart';
 import 'package:my_wit_wallet/widgets/input_amount.dart';
 import 'package:my_wit_wallet/widgets/toggle_switch.dart';
+import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
+
 
 class SelectMinerFeeStep extends StatefulWidget {
   final Function nextAction;
@@ -45,7 +47,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
   String? _errorFeeText;
   int selectedIndex = 0;
   FeeType _feeType = FeeType.Absolute;
-  final _minerFeeController = TextEditingController();
+  final _minerFeeController = StyledTextController();
   final _minerFeeFocusNode = FocusNode();
   ValidationUtils validationUtils = ValidationUtils();
   List<FocusNode> _formFocusElements() => [_minerFeeFocusNode];
@@ -258,7 +260,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
               hint: localization.minerFeeInputHint,
               validator: (String? amount) => _minerFeeWit.error ?? null,
               errorText: _minerFeeWit.error ?? null,
-              textEditingController: _minerFeeController,
+              styledTextController: _minerFeeController,
               focusNode: _minerFeeFocusNode,
               keyboardType: TextInputType.number,
               onChanged: (String value) {
@@ -273,7 +275,7 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
               },
               onEditingComplete: () {
                 _setAbsoluteFee();
-              },
+              }, amount: _minerFeeWit,
             ),
             SizedBox(height: 16),
             Row(

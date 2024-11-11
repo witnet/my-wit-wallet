@@ -4,7 +4,9 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/widgets/input_address.dart';
 import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
+import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 import 'bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 
@@ -57,8 +59,8 @@ class WalletDetailCardState extends State<WalletDetailCard>
     );
   }
 
-  late TextEditingController _nameController;
-  late TextEditingController _descController;
+  late StyledTextController _nameController;
+  late StyledTextController _descController;
   final _nameFocusNode = FocusNode();
   String _walletName = '';
   String? errorText;
@@ -66,8 +68,8 @@ class WalletDetailCardState extends State<WalletDetailCard>
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController();
-    _descController = TextEditingController();
+    _nameController = StyledTextController();
+    _descController = StyledTextController();
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.prevAction(prev));
     WidgetsBinding.instance
@@ -115,16 +117,14 @@ class WalletDetailCardState extends State<WalletDetailCard>
         children: [
           LabeledFormEntry(
               label: localization.nameLabel,
-              formEntry: TextField(
-                autofocus: true,
-                style: theme.textTheme.bodyLarge,
+              formEntry: InputAddress(
                 decoration: InputDecoration(
                   hintText: localization.walletNameHint,
                   errorText: errorText,
                 ),
-                controller: _nameController,
+                styledTextController: _nameController,
                 focusNode: _nameFocusNode,
-                onSubmitted: (String value) => {
+                onFieldSubmitted: (String value) => {
                   // hide keyboard
                   FocusManager.instance.primaryFocus?.unfocus(),
                   nextAction()
