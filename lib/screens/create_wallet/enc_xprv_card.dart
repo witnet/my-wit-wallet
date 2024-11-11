@@ -11,7 +11,7 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
-import 'package:my_wit_wallet/widgets/input_login.dart';
+import 'package:my_wit_wallet/widgets/input_password.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/widgets/select.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
@@ -19,10 +19,12 @@ import 'package:my_wit_wallet/widgets/validations/xprv_input.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/widgets/validations/password_input.dart';
+import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 import 'dart:io' show Platform;
 
-final _passController = TextEditingController();
-final _textController = TextEditingController();
+
+final _passController = StyledTextController();
+final _textController = StyledTextController();
 final _textFocusNode = FocusNode();
 final _passFocusNode = FocusNode();
 final _showPasswordFocusNode = FocusNode();
@@ -261,10 +263,10 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   }
 
   Widget _buildPasswordField() {
-    return InputLogin(
+    return InputPassword(
       hint: localization.passwordLabel,
       focusNode: _passFocusNode,
-      textEditingController: _passController,
+      styledTextController: _passController,
       obscureText: true,
       errorText: _password.error ?? xprv.error,
       showPassFocusNode: _showPasswordFocusNode,

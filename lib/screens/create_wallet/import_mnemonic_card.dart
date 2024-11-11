@@ -5,6 +5,8 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/widgets/input_mnemonic.dart';
+import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 import 'package:witnet/crypto.dart';
 
 import 'bloc/create_wallet_bloc.dart';
@@ -27,7 +29,8 @@ class EnterMnemonicCard extends StatefulWidget {
 class EnterMnemonicCardState extends State<EnterMnemonicCard>
     with TickerProviderStateMixin {
   String mnemonic = '';
-  final TextEditingController textController = TextEditingController();
+  final StyledTextController styledTextController = StyledTextController(wordCheck: true);
+  final mnemonicFocusNode = FocusNode();
   int numLines = 0;
 
   Widget _buildConfirmField() {
@@ -49,29 +52,30 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
         SizedBox(
           height: 16,
         ),
-        TextField(
-          decoration: InputDecoration(
-              hintStyle: theme.textTheme.titleLarge!.copyWith(
-                  color: theme.textTheme.titleLarge!.color!.withOpacity(0.5))),
+        InputMnemonic(
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.go,
-          style: theme.textTheme.titleLarge,
-          maxLines: 3,
-          controller: textController,
-          onSubmitted: (value) => {
-            if (validMnemonic(textController.value.text)) {nextAction()}
+          hint: "enter recovery phrase.",
+          maxLines: 4,
+          styledTextController: styledTextController,
+          onFieldSubmitted: (value) => {
+            if (validMnemonic(styledTextController.value.text)) {nextAction()}
           },
           onChanged: (String e) {
-            if (validMnemonic(textController.value.text)) {
+            if (validMnemonic(styledTextController.value.text)) {
               widget.nextAction(next);
             } else {
               widget.nextAction(null);
             }
             setState(() {
-              mnemonic = textController.value.text;
+              mnemonic = styledTextController.value.text;
               numLines = '\n'.allMatches(e).length + 1;
             });
           },
+          onTapOutside: (event) {
+          mnemonicFocusNode.unfocus();
+        },
+          focusNode: mnemonicFocusNode,
         ),
       ],
     );

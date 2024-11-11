@@ -4,21 +4,21 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
-
 import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
-import 'package:my_wit_wallet/widgets/input_login.dart';
+import 'package:my_wit_wallet/widgets/input_password.dart';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
+import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 import 'package:my_wit_wallet/widgets/validations/confirmed_password.dart';
 import 'package:my_wit_wallet/widgets/validations/password_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 
-final _passController = TextEditingController();
+final _passController = StyledTextController();
 final _passFocusNode = FocusNode();
 final _passConfirmFocusNode = FocusNode();
 final _showPassFocusNode = FocusNode();
 final _showPassConfirmFocusNode = FocusNode();
-final _passConfirmController = TextEditingController();
+final _passConfirmController = StyledTextController();
 
 typedef void StringCallback(String? value);
 
@@ -144,12 +144,12 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
             children: [
               LabeledFormEntry(
                 label: localization.passwordLabel,
-                formEntry: InputLogin(
+                formEntry: InputPassword(
                   hint: localization.passwordLabel,
                   focusNode: _passFocusNode,
                   errorText: _password.error,
                   showPassFocusNode: _showPassFocusNode,
-                  textEditingController: _passController,
+                  styledTextController: _passController,
                   obscureText: true,
                   onFieldSubmitted: (String? value) {
                     _passConfirmFocusNode.requestFocus();
@@ -165,12 +165,12 @@ class GenerateCompatibleXprvState extends State<GenerateCompatibleXprv>
               SizedBox(height: 16),
               LabeledFormEntry(
                   label: localization.confirmPassword,
-                  formEntry: InputLogin(
+                  formEntry: InputPassword(
                     hint: localization.confirmPassword,
                     obscureText: true,
                     focusNode: _passConfirmFocusNode,
                     showPassFocusNode: _showPassConfirmFocusNode,
-                    textEditingController: _passConfirmController,
+                    styledTextController: _passConfirmController,
                     errorText: _confirmPassword.error,
                     onFieldSubmitted: (String? value) async {
                       FocusManager.instance.primaryFocus?.unfocus();

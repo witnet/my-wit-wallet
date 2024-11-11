@@ -1,5 +1,5 @@
 import 'package:formz/formz.dart';
-import 'package:my_wit_wallet/widgets/input_login.dart';
+import 'package:my_wit_wallet/widgets/input_password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
@@ -12,13 +12,14 @@ import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'package:my_wit_wallet/widgets/validations/confirmed_password.dart';
 import 'package:my_wit_wallet/widgets/validations/password_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
+import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 
-final _passController = TextEditingController();
+final _passController = StyledTextController();
 final _passFocusNode = FocusNode();
 final _passConfirmFocusNode = FocusNode();
 final _showPassFocusNode = FocusNode();
 final _showPassConfirmedFocusNode = FocusNode();
-final _passConfirmController = TextEditingController();
+final _passConfirmController = StyledTextController();
 
 typedef void VoidCallback(NavAction? value);
 typedef void BoolCallback(bool value);
@@ -173,11 +174,11 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
             children: [
               LabeledFormEntry(
                 label: localization.passwordLabel,
-                formEntry: InputLogin(
+                formEntry: InputPassword(
                   hint: localization.passwordLabel,
                   focusNode: _passFocusNode,
                   showPassFocusNode: _showPassFocusNode,
-                  textEditingController: _passController,
+                  styledTextController: _passController,
                   errorText: _password.error,
                   obscureText: true,
                   onFieldSubmitted: (String? value) {
@@ -193,12 +194,12 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
               SizedBox(height: 16),
               LabeledFormEntry(
                   label: localization.confirmPassword,
-                  formEntry: InputLogin(
+                  formEntry: InputPassword(
                     hint: localization.confirmPassword,
                     obscureText: true,
                     focusNode: _passConfirmFocusNode,
                     showPassFocusNode: _showPassConfirmedFocusNode,
-                    textEditingController: _passConfirmController,
+                    styledTextController: _passConfirmController,
                     errorText: _confirmPassword.error,
                     onFieldSubmitted: (String? value) {
                       // hide keyboard

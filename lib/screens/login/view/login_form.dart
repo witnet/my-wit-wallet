@@ -6,13 +6,13 @@ import 'package:my_wit_wallet/util/allow_biometrics.dart';
 import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
-import 'package:my_wit_wallet/widgets/input_login.dart';
-
+import 'package:my_wit_wallet/widgets/input_password.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/widgets/validations/password_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
+import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 
 class LoginForm extends StatefulWidget {
   final List<Widget> mainComponents;
@@ -27,8 +27,7 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
   PasswordInput _password = PasswordInput.pure();
   bool isLoading = false;
   String? _passwordInputErrorText;
-
-  final _loginController = TextEditingController();
+  final _loginController = StyledTextController(obscureText: true);
   final _loginFocusNode = FocusNode();
   final _showPasswordFocusNode = FocusNode();
   ValidationUtils validationUtils = ValidationUtils();
@@ -126,12 +125,12 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
     _loginFocusNode.addListener(() => validateForm());
     return Form(
       autovalidateMode: AutovalidateMode.disabled,
-      child: InputLogin(
+      child: InputPassword(
         hint: localization.passwordLabel,
         errorText: _password.error ?? _passwordInputErrorText,
         showPassFocusNode: _showPasswordFocusNode,
         obscureText: true,
-        textEditingController: _loginController,
+        styledTextController: _loginController,
         focusNode: _loginFocusNode,
         onChanged: (String? value) {
           if (mounted) {
