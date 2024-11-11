@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
@@ -73,13 +74,16 @@ class DashboardLayoutState extends State<DashboardLayout>
   }
 
   Widget _buildBottomNavigation() {
+    double actionsHeight = PANEL_ACTION_HEIGHT * 2;
     return BottomNavigation(
         currentScreen: currentRoute(context),
         onSendReceiveAction: () async => {
+              panel.setHeight(actionsHeight),
               setState(() => panel.setContent(SendReceiveButtons())),
               await panel.toggle(),
             },
         onStakeUnstakeAction: () async => {
+              panel.setHeight(actionsHeight),
               setState(() => panel.setContent(StakeUnstakeButtons())),
               await panel.toggle(),
             });

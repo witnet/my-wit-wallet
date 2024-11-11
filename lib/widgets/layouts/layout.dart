@@ -203,7 +203,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           backdropEnabled: true,
           color: extendedTheme.panelBgColor!,
           minHeight: 0,
-          maxHeight: MediaQuery.of(context).size.height * 0.4,
+          maxHeight: panel.getHeight(),
           borderRadius: BorderRadius.only(
               topLeft: extendedTheme.borderRadius!,
               topRight: extendedTheme.borderRadius!),

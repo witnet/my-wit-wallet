@@ -152,10 +152,11 @@ class DashboardScreenState extends State<DashboardScreen>
       WalletInfo(
           currentWallet: currentWallet!,
           onShowBalanceDetails: () async => {
+                panel.setHeight(PANEL_BALANCE_HEIGHT),
                 setState(() => panel.setContent(BalanceDetails(
                     balance: currentWallet!.balanceNanoWit(),
                     stakedBalance: currentWallet!.stakedNanoWit()))),
-                await panel.toggle(),
+                await panel.toggle()
               }),
       SizedBox(height: 8)
     ];

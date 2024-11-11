@@ -8,6 +8,7 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
+import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/util/sort_wallets_by_name.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -188,21 +189,27 @@ class WalletListState extends State<WalletList> {
 
   @override
   Widget build(BuildContext context) {
+    double walletListSize = (sortedWalletsByName.length * 100) + 16;
+    double maxSize = MediaQuery.of(context).size.height * 0.8;
+    // Sets panel height that shows the wallet list
+    Locator.instance
+        .get<PanelUtils>()
+        .setHeight(walletListSize > maxSize ? maxSize : walletListSize);
     return SafeArea(
         top: false,
         child: ListView(padding: EdgeInsets.all(8), children: [
           Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [_buildInitialButtons()]),
+          SizedBox(height: 8),
           ListView.builder(
-            padding: EdgeInsets.zero,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: sortedWalletsByName.length,
-            itemBuilder: (context, index) {
-              return _buildWalletItem(sortedWalletsByName[index]);
-            },
-          ),
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: sortedWalletsByName.length,
+              itemBuilder: (context, index) {
+                return _buildWalletItem(sortedWalletsByName[index]);
+              })
         ]));
   }
 }

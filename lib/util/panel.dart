@@ -4,6 +4,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class PanelUtils {
   Widget panelContent = Text('');
+  double contentHeight = 0;
   final PanelController panelController = PanelController();
 
   void setContent(Widget content) {
@@ -12,6 +13,14 @@ class PanelUtils {
 
   Widget getContent() {
     return panelContent;
+  }
+
+  void setHeight(double height) {
+    contentHeight = height;
+  }
+
+  double getHeight() {
+    return contentHeight;
   }
 
   Future<void> toggle() async {
