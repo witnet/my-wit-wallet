@@ -5,7 +5,6 @@ import 'package:my_wit_wallet/screens/preferences/logout.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
-import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
@@ -115,14 +114,10 @@ class DeleteSingleWalletState extends State<DeleteSingleWallet> {
         ],
         icon: FontAwesomeIcons.circleExclamation,
         title: localization.deleteWalletWarning,
-        content: Column(mainAxisSize: MainAxisSize.min, children: [
-          SizedBox(height: 16),
-          svgThemeImage(theme, name: 'general-warning', height: 100),
-        ]));
+        content: Container());
   }
 
   void showStorageDeletedMessage() {
-    final theme = Theme.of(context);
     return buildAlertDialog(
         context: context,
         actions: [
@@ -131,11 +126,9 @@ class DeleteSingleWalletState extends State<DeleteSingleWallet> {
               text: localization.continueLabel,
               onPressed: () => logout(context))
         ],
+        icon: FontAwesomeIcons.check,
         title: localization.deleteWalletSuccess,
-        content: Column(mainAxisSize: MainAxisSize.min, children: [
-          SizedBox(height: 16),
-          svgThemeImage(theme, name: 'transaction-success', height: 100),
-        ]));
+        content: Container());
   }
 
   void toggleCheckBox(bool? value) {
@@ -149,9 +142,6 @@ class DeleteSingleWalletState extends State<DeleteSingleWallet> {
     final theme = Theme.of(context);
 
     TextStyle bodyLarge = theme.textTheme.bodyLarge!;
-    TextStyle bodyLargeBold = bodyLarge.copyWith(
-      fontWeight: FontWeight.bold,
-    );
 
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (previous, current) {
@@ -163,7 +153,7 @@ class DeleteSingleWalletState extends State<DeleteSingleWallet> {
               SizedBox(height: 10),
               Text(localization.reestablishInstructions, style: bodyLarge),
               SizedBox(height: 10),
-              Text(localization.whatToDo, style: bodyLargeBold),
+              Text(localization.whatToDo, style: theme.textTheme.titleMedium),
               SizedBox(height: 10),
               buildOrderedListItem(
                   '1. ', localization.reestablishSteps01, context),
