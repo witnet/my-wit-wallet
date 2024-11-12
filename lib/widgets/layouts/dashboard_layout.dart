@@ -5,8 +5,10 @@ import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
+import 'package:my_wit_wallet/util/get_sized_height.dart';
 import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/widgets/bottom_navigation.dart';
 import 'package:my_wit_wallet/widgets/send_receive.dart';
 import 'package:my_wit_wallet/widgets/stake_unstake.dart';
@@ -45,13 +47,13 @@ class DashboardLayout extends StatefulWidget {
 
 class DashboardLayoutState extends State<DashboardLayout>
     with TickerProviderStateMixin {
-  Wallet? walletStorage;
   late Timer explorerTimer;
   bool isAddressCopied = false;
   bool isCopyAddressFocus = false;
   FocusNode _copyToClipboardFocusNode = FocusNode();
-  Wallet get currentWallet =>
-      Locator.instance.get<ApiDatabase>().walletStorage.currentWallet;
+  WalletStorage get walletStorage =>
+      Locator.instance.get<ApiDatabase>().walletStorage;
+  Wallet get currentWallet => walletStorage.currentWallet;
   PanelUtils get panel => Locator.instance.get<PanelUtils>();
   Widget get panelContent => panel.getContent();
 
@@ -134,11 +136,17 @@ class DashboardLayoutState extends State<DashboardLayout>
               children: <Widget>[],
             );
         }
-
+        double walletListSize =
+            getWalletListSize(context, walletStorage.wallets.length);
+        double maxSize = MediaQuery.of(context).size.height * 0.8;
         return Layout(
           scrollController: widget.scrollController,
           topNavigation: TopNavigation(
                   onShowWalletList: () async => {
+                        // Sets panel height that shows the wallet list
+                        panel.setHeight(walletListSize > maxSize
+                            ? maxSize
+                            : walletListSize),
                         setState(() => panel.setContent(WalletList())),
                         await panel.toggle(),
                       },

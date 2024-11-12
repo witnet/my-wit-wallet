@@ -14,6 +14,7 @@ import 'package:my_wit_wallet/auto_updater_overlay.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/get_sized_height.dart';
 import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
 import 'package:my_wit_wallet/widgets/layouts/listen_fourth_button.dart';
@@ -203,7 +204,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           backdropEnabled: true,
           color: extendedTheme.panelBgColor!,
           minHeight: 0,
-          maxHeight: panel.getHeight(),
+          maxHeight: panel.getHeight() + getBottomNavigationPadding(context),
           borderRadius: BorderRadius.only(
               topLeft: extendedTheme.borderRadius!,
               topRight: extendedTheme.borderRadius!),
