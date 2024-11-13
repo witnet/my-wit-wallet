@@ -29,7 +29,8 @@ class EnterMnemonicCard extends StatefulWidget {
 class EnterMnemonicCardState extends State<EnterMnemonicCard>
     with TickerProviderStateMixin {
   String mnemonic = '';
-  final StyledTextController styledTextController = StyledTextController(wordCheck: true);
+  final StyledTextController styledTextController =
+      StyledTextController(wordCheck: true);
   final mnemonicFocusNode = FocusNode();
   int numLines = 0;
 
@@ -73,8 +74,8 @@ class EnterMnemonicCardState extends State<EnterMnemonicCard>
             });
           },
           onTapOutside: (event) {
-          mnemonicFocusNode.unfocus();
-        },
+            mnemonicFocusNode.unfocus();
+          },
           focusNode: mnemonicFocusNode,
         ),
       ],

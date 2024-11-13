@@ -22,7 +22,6 @@ import 'package:my_wit_wallet/widgets/validations/password_input.dart';
 import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 import 'dart:io' show Platform;
 
-
 final _passController = StyledTextController();
 final _textController = StyledTextController();
 final _textFocusNode = FocusNode();

@@ -4,7 +4,6 @@ import 'package:my_wit_wallet/widgets/validations/password_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 
-
 typedef void ValidateCallback(
     {required bool validate, required String password});
 typedef void PasswordCallback({required String password});

@@ -18,7 +18,6 @@ import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 
-
 class SelectMinerFeeStep extends StatefulWidget {
   final Function nextAction;
   final Wallet currentWallet;
@@ -275,7 +274,8 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
               },
               onEditingComplete: () {
                 _setAbsoluteFee();
-              }, amount: _minerFeeWit,
+              },
+              amount: _minerFeeWit,
             ),
             SizedBox(height: 16),
             Row(

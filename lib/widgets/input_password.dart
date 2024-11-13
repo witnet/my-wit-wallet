@@ -8,47 +8,44 @@ import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
 class InputPassword extends InputText {
   InputPassword(
       {required this.showPassFocusNode,
-        IconData? autoFocusIconData,
-        IconData? prefixIcon,
-        required FocusNode focusNode,
-        String? errorText,
-        String? Function(String?)? validator,
-        String? hint,
-        TextInputType? keyboardType,
-        required StyledTextController styledTextController,
-        bool obscureText = false,
-        void Function(String)? onChanged,
-        void Function()? onEditingComplete,
-        void Function(String)? onFieldSubmitted,
-        void Function(PointerDownEvent)? onTapOutside,
-        void Function()? onTap,
-        void Function()? onSuffixTap,
-        List<TextInputFormatter>? inputFormatters})
+      IconData? autoFocusIconData,
+      IconData? prefixIcon,
+      required FocusNode focusNode,
+      String? errorText,
+      String? Function(String?)? validator,
+      String? hint,
+      TextInputType? keyboardType,
+      required StyledTextController styledTextController,
+      bool obscureText = false,
+      void Function(String)? onChanged,
+      void Function()? onEditingComplete,
+      void Function(String)? onFieldSubmitted,
+      void Function(PointerDownEvent)? onTapOutside,
+      void Function()? onTap,
+      void Function()? onSuffixTap,
+      List<TextInputFormatter>? inputFormatters})
       : super(
-    prefixIcon: prefixIcon,
-    focusNode: focusNode,
-    errorText: errorText,
-    validator: validator,
-    hint: hint,
-    keyboardType: keyboardType,
-    styledTextController: styledTextController,
-    obscureText: obscureText,
-    onChanged: onChanged,
-    onEditingComplete: onEditingComplete,
-    onFieldSubmitted: onFieldSubmitted,
-    onTapOutside: onTapOutside,
-    onTap: onTap,
-    onSuffixTap: onSuffixTap,
-    inputFormatters: inputFormatters,
-  );
+          prefixIcon: prefixIcon,
+          focusNode: focusNode,
+          errorText: errorText,
+          validator: validator,
+          hint: hint,
+          keyboardType: keyboardType,
+          styledTextController: styledTextController,
+          obscureText: obscureText,
+          onChanged: onChanged,
+          onEditingComplete: onEditingComplete,
+          onFieldSubmitted: onFieldSubmitted,
+          onTapOutside: onTapOutside,
+          onTap: onTap,
+          onSuffixTap: onSuffixTap,
+          inputFormatters: inputFormatters,
+          maxLines: 1,
+        );
   final FocusNode? showPassFocusNode;
   @override
   _InputLoginState createState() => _InputLoginState();
 }
-
-typedef StringCallback = void Function(String?);
-typedef BlankCallback = void Function();
-typedef PointerDownCallback = void Function(PointerDownEvent?);
 
 class _InputLoginState extends State<InputPassword> {
   bool showPassword = false;
@@ -56,25 +53,14 @@ class _InputLoginState extends State<InputPassword> {
 
   void initState() {
     super.initState();
-    widget.focusNode.addListener(_onFocusChange);
+    widget.focusNode.addListener(widget.onFocusChange);
     if (widget.showPassFocusNode != null && this.mounted)
-      widget.showPassFocusNode!.addListener(_onFocusChange);
+      widget.showPassFocusNode!.addListener(widget.onFocusChange);
   }
 
   void dispose() {
     super.dispose();
-    widget.focusNode.removeListener(_onFocusChange);
-  }
-
-  _onFocusChange() {
-    if (!widget.focusNode.hasFocus) {
-      int offset = widget.styledTextController.selection.baseOffset;
-      widget.styledTextController.selection = TextSelection.collapsed(
-          offset: offset, affinity: TextAffinity.upstream);
-    }
-    setState(() {
-      showPasswordFocus = widget.showPassFocusNode!.hasFocus;
-    });
+    widget.focusNode.removeListener(widget.onFocusChange);
   }
 
   Widget build(BuildContext context) {
@@ -88,7 +74,8 @@ class _InputLoginState extends State<InputPassword> {
         child: Semantics(
       textField: true,
       label: localization.inputYourPassword,
-      child: widget.buildInput( context: context,
+      child: widget.buildInput(
+        context: context,
         decoration: InputDecoration(
             suffixIconConstraints: BoxConstraints(minWidth: 50),
             hintText: widget.hint ?? localization.inputYourPassword,

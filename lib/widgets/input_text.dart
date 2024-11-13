@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
@@ -7,7 +6,7 @@ typedef StringCallback = void Function(String);
 typedef BlankCallback = void Function();
 typedef PointerDownCallback = void Function(PointerDownEvent);
 
-class InputText extends StatefulWidget {
+abstract class InputText extends StatefulWidget {
   InputText({
     Key? key,
     this.prefixIcon,
@@ -53,14 +52,13 @@ class InputText extends StatefulWidget {
   final int? maxLines;
   final int? minLines;
   final TextInputAction? textInputAction;
-  @override
-  State<StatefulWidget> createState() => throw UnimplementedError();
 
-  Widget buildInput({required BuildContext context, InputDecoration? decoration = null}) {
+  Widget buildInput(
+      {required BuildContext context, InputDecoration? decoration = null}) {
     return TextFormField(
       decoration: decoration ?? decoration,
       minLines: minLines,
-      maxLines: maxLines,
+      maxLines: maxLines ?? 1,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
       autocorrect: false,
@@ -73,14 +71,17 @@ class InputText extends StatefulWidget {
       onTap: onTap ?? () {},
       validator: validator,
       textInputAction: textInputAction ?? null,
-
     );
   }
-}
 
-class InputTextState extends State<InputText> {
-  @override
-  Widget build(BuildContext context) {
-    throw UnimplementedError();
+  void onFocusChange() {
+    final int offset = styledTextController.selection.baseOffset;
+    final TextSelection collapsed = TextSelection.collapsed(
+      offset: offset,
+      affinity: TextAffinity.upstream,
+    );
+    if (!focusNode.hasFocus) {
+      styledTextController.selection = collapsed;
+    }
   }
 }

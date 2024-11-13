@@ -52,36 +52,19 @@ class InputAmount extends InputText {
   _InputAmountState createState() => _InputAmountState();
 }
 
-typedef StringCallback = void Function(String);
-typedef BlankCallback = void Function();
-typedef PointerDownCallback = void Function(PointerDownEvent);
-
 class _InputAmountState extends State<InputAmount> {
   TextSelection? lastSelection;
 
   @override
   void initState() {
     super.initState();
-    widget.focusNode.addListener(_onFocusChange);
-  }
-
-  void _onFocusChange() {
-    TextSelection collapsed = TextSelection.collapsed(
-      offset: widget.styledTextController.selection.baseOffset,
-      affinity: TextAffinity.upstream,
-    );
-    if (!widget.focusNode.hasFocus) {
-      lastSelection = widget.styledTextController.selection;
-      widget.styledTextController.selection = collapsed;
-    } else {
-      widget.styledTextController.selection = lastSelection ?? collapsed;
-    }
+    widget.focusNode.addListener(widget.onFocusChange);
   }
 
   @override
   void dispose() {
     super.dispose();
-    widget.focusNode.removeListener(_onFocusChange);
+    widget.focusNode.removeListener(widget.onFocusChange);
   }
 
   Widget build(BuildContext context) {
