@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'dart:math' as math;
-
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 
 typedef void VoidCallback();
 
@@ -60,7 +59,8 @@ class DashedRect extends StatelessWidget {
                   padding: EdgeInsets.only(bottom: 16),
                   child: Align(
                     alignment: Alignment.center,
-                    child: PaddedButton(
+                    child: IconBtn(
+                      label: 'Show or hide password',
                       padding: EdgeInsets.all(0),
                       color: extendedTheme.inputIconColor,
                       text: '',
@@ -68,7 +68,7 @@ class DashedRect extends StatelessWidget {
                       icon: !blur
                           ? Icon(Icons.remove_red_eye)
                           : Icon(Icons.visibility_off),
-                      type: ButtonType.iconButton,
+                      iconBtnType: IconBtnType.icon,
                     ),
                   ))
               : SizedBox(height: 0),

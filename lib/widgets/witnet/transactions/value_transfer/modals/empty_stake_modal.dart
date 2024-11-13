@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/screens/stake/stake_screen.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 
 void buildEmptyStakeModal({
@@ -16,22 +16,22 @@ void buildEmptyStakeModal({
   return buildAlertDialog(
       context: context,
       actions: [
-        PaddedButton(
+        CustomButton(
             padding: EdgeInsets.zero,
             text: localization.close,
             sizeCover: false,
-            type: ButtonType.secondary,
+            type: CustomBtnType.secondary,
             enabled: true,
             onPressed: () => {
                   Navigator.popUntil(
                       context, ModalRoute.withName(originRouteName)),
                   ScaffoldMessenger.of(context).clearSnackBars(),
                 }),
-        PaddedButton(
+        CustomButton(
             padding: EdgeInsets.zero,
             text: localization.stake,
             sizeCover: false,
-            type: ButtonType.primary,
+            type: CustomBtnType.primary,
             enabled: true,
             onPressed: () => {
                   Navigator.push(

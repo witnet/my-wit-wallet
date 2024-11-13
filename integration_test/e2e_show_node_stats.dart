@@ -28,7 +28,7 @@ Future<void> e2eShowNodeStatsTest(WidgetTester tester) async {
   await enterText(tester, TextFormField, password, index: 1);
   await tapButton(tester, _localization.continueLabel);
   await tester.pumpAndSettle();
-  await tapButton(tester, PaddedButton, index: 0);
+  await tapButton(tester, IconBtn, index: 0);
   await tapButton(tester, FontAwesomeIcons.circlePlus);
 
   await tapButton(tester, _localization.importWalletLabel);
@@ -71,9 +71,9 @@ Future<void> e2eShowNodeStatsTest(WidgetTester tester) async {
   expect(find.text(_localization.totalFeesPaid), findsWidgets);
   expect(find.text(_localization.totalMiningRewards), findsWidgets);
 
-  /// Tap on the first PaddedButton on the screen, which is the identicon
+  /// Tap on the first IconBtn on the screen, which is the identicon
   /// and brings up the wallet list.
-  await tapButton(tester, PaddedButton, index: 0);
+  await tapButton(tester, IconBtn, index: 0);
 
   final listFinder = find
       .byType(Scrollable)

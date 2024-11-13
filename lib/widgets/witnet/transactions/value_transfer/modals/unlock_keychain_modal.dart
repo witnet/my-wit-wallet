@@ -5,7 +5,7 @@ import 'package:my_wit_wallet/screens/login/view/password_validate.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 
 Future<String?> unlockKeychainModal(
     {required ThemeData theme,
@@ -87,10 +87,10 @@ Future<String?> unlockKeychainModal(
                         ])),
                 actionsPadding: EdgeInsets.only(bottom: 16, right: 16, top: 0),
                 actions: [
-                  PaddedButton(
+                  CustomButton(
                       padding: EdgeInsets.zero,
                       text: localization.close,
-                      type: ButtonType.secondary,
+                      type: CustomBtnType.secondary,
                       sizeCover: false,
                       color: theme.textTheme.bodyLarge!.color,
                       enabled: true,
@@ -99,11 +99,11 @@ Future<String?> unlockKeychainModal(
                                 context, ModalRoute.withName(routeToRedirect)),
                             ScaffoldMessenger.of(context).clearSnackBars(),
                           }),
-                  PaddedButton(
+                  CustomButton(
                       padding: EdgeInsets.zero,
                       text: localization.continueLabel,
                       sizeCover: false,
-                      type: ButtonType.primary,
+                      type: CustomBtnType.primary,
                       enabled: true,
                       onPressed: () =>
                           {_login(validate: true, password: _password)})

@@ -7,8 +7,9 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 import 'package:my_wit_wallet/widgets/dashed_rect.dart';
 import 'package:my_wit_wallet/widgets/qr/qr_address_generator.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
@@ -75,10 +76,10 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
   List<Widget> _actions() {
     final theme = Theme.of(context);
     return [
-      PaddedButton(
+      CustomButton(
           padding: EdgeInsets.zero,
           text: localization.copyAddressLabel,
-          type: ButtonType.primary,
+          type: CustomBtnType.primary,
           enabled: enableButton,
           isLoading: isLoading,
           onPressed: () async {
@@ -92,10 +93,10 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
           }),
       SizedBox(height: 8),
       isHdWallet
-          ? PaddedButton(
+          ? CustomButton(
               padding: EdgeInsets.zero,
               text: localization.addressList,
-              type: ButtonType.secondary,
+              type: CustomBtnType.secondary,
               enabled: enableButton,
               isLoading: isLoading,
               onPressed: _showAddressList)
@@ -151,18 +152,17 @@ class ReceiveTransactionScreenState extends State<ReceiveTransactionScreen>
       child:
           BlocBuilder<ExplorerBloc, ExplorerState>(builder: (context, state) {
         if (isHdWallet) {
-          return PaddedButton(
+          return IconBtn(
             onPressed: _showNewAddressModal,
             padding: EdgeInsets.only(top: 8),
             text: localization.genNewAddressLabel,
             label: localization.genNewAddressLabel,
-            type: ButtonType.iconButton,
+            iconBtnType: IconBtnType.icon,
             iconSize: 20,
             icon: Icon(
               FontAwesomeIcons.arrowsRotate,
               size: 20,
             ),
-            enabled: state.status != ExplorerStatus.singleSync,
           );
         } else {
           return Container();

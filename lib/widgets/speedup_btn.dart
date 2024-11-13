@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 
 typedef void GeneralTransactionCallback(GeneralTransaction value);
 
@@ -36,13 +36,13 @@ class SpeedUpBtnState extends State<SpeedUpBtn> {
 
   @override
   Widget build(BuildContext context) {
-    return PaddedButton(
+    return CustomButton(
       padding: EdgeInsets.only(top: 8),
       text: localization.speedUp,
       onPressed: () => {
         widget.speedUpTx(widget.transaction),
       },
-      type: ButtonType.primary,
+      type: CustomBtnType.primary,
     );
   }
 }

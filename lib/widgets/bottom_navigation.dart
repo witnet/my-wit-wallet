@@ -8,7 +8,7 @@ import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/clear_and_redirect.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 import 'package:my_wit_wallet/widgets/navigation_button.dart';
 
 typedef void VoidCallback();
@@ -35,7 +35,7 @@ class BottomNavigation extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           NavigationButton(
-              button: PaddedButton(
+              button: IconBtn(
                 padding: EdgeInsets.only(bottom: 8, top: 8),
                 color: extendedTheme.navigationColor,
                 label: localization.home,
@@ -43,12 +43,12 @@ class BottomNavigation extends StatelessWidget {
                 onPressed: () => clearAndRedirectToDashboard(context),
                 icon:
                     svgImage(name: 'myWitWallet-logo', height: mainIconHeight),
-                type: ButtonType.iconButton,
+                iconBtnType: IconBtnType.icon,
               ),
               routesList: [DashboardScreen.route]),
           SizedBox(width: 16),
           NavigationButton(
-              button: PaddedButton(
+              button: IconBtn(
                 color: extendedTheme.navigationColor,
                 label: localization.sendReceiveTx,
                 padding: EdgeInsets.only(bottom: 8, top: 8),
@@ -56,7 +56,7 @@ class BottomNavigation extends StatelessWidget {
                 onPressed: onSendReceiveAction,
                 icon: svgThemeImage(theme,
                     name: 'send-receive', height: iconHeight),
-                type: ButtonType.iconButton,
+                iconBtnType: IconBtnType.icon,
               ),
               routesList: [
                 CreateVttScreen.route,
@@ -64,7 +64,7 @@ class BottomNavigation extends StatelessWidget {
               ]),
           SizedBox(width: 16),
           NavigationButton(
-              button: PaddedButton(
+              button: IconBtn(
                 color: extendedTheme.navigationColor,
                 padding: EdgeInsets.only(bottom: 8, top: 8),
                 text: localization.history,
@@ -73,7 +73,7 @@ class BottomNavigation extends StatelessWidget {
                 onPressed: onStakeUnstakeAction,
                 // TODO: add current stake route
                 icon: svgThemeImage(theme, name: 'stake', height: iconHeight),
-                type: ButtonType.iconButton,
+                iconBtnType: IconBtnType.icon,
               ),
               routesList: [StakeScreen.route, UnstakeScreen.route]),
         ]);

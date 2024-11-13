@@ -10,12 +10,12 @@ import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/sort_wallets_by_name.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 import 'package:my_wit_wallet/widgets/select_wallet_box.dart';
 
 class ListItem {
@@ -113,12 +113,11 @@ class WalletListState extends State<WalletList> {
 
   Widget _buildInitialButtons() {
     final theme = Theme.of(context);
-    return PaddedButton(
+    return IconBtn(
+      label: localization.createOrImportLabel,
       padding: EdgeInsets.all(0),
       text: localization.createOrImportLabel,
       color: theme.textTheme.displaySmall!.color,
-      fontSize: 13,
-      boldText: false,
       onPressed: () => {
         _createImportWallet(),
       },
@@ -127,7 +126,7 @@ class WalletListState extends State<WalletList> {
         color: theme.textTheme.titleLarge!.color,
         size: 18,
       ),
-      type: ButtonType.horizontalIcon,
+      iconBtnType: IconBtnType.horizontalText,
     );
   }
 

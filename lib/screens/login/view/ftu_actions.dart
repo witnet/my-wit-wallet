@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
@@ -30,15 +31,15 @@ class FtuActionsState extends State<FtuActions> with TickerProviderStateMixin {
   Widget _buildInitialButtons(BuildContext context, ThemeData theme) {
     return Column(
       children: <Widget>[
-        PaddedButton(
+        CustomButton(
             padding: EdgeInsets.only(top: 8, bottom: 0),
             text: localization.createNewWalletLabel,
-            type: ButtonType.primary,
+            type: CustomBtnType.primary,
             onPressed: () => _createNewWallet(context)),
-        PaddedButton(
+        CustomButton(
             padding: EdgeInsets.only(top: 8, bottom: 0),
             text: localization.importWalletLabel,
-            type: ButtonType.secondary,
+            type: CustomBtnType.secondary,
             onPressed: () => _importWallet(context)),
       ],
     );

@@ -5,7 +5,7 @@ import 'package:my_wit_wallet/util/get_create_import_icon.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/create_wallet/create_import_wallet.dart';
 import 'package:my_wit_wallet/screens/create_wallet/re_establish_wallet_disclaimer.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
 import 'package:my_wit_wallet/screens/create_wallet/import_mnemonic_card.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart';
 import 'package:my_wit_wallet/screens/create_wallet/confirm_mnemonic_card.dart';
@@ -13,6 +13,8 @@ import 'package:my_wit_wallet/screens/create_wallet/disclaimer_card.dart';
 import 'package:my_wit_wallet/screens/create_wallet/generate_mnemonic_card.dart';
 import 'package:my_wit_wallet/screens/create_wallet/wallet_detail_card.dart';
 import 'package:my_wit_wallet/screens/create_wallet/select_imported_option.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
+import 'package:my_wit_wallet/widgets/buttons/text_btn.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 
 import 'build_wallet_card.dart';
@@ -58,12 +60,12 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
 
     if (!hideButton) {
       actions = [
-        PaddedButton(
+        CustomButton(
             padding: EdgeInsets.only(bottom: 0),
             text: nextAction != null
                 ? nextAction().label
                 : localization.continueLabel,
-            type: ButtonType.primary,
+            type: CustomBtnType.primary,
             isLoading: isLoading,
             enabled: nextAction != null,
             onPressed: () async {
@@ -77,10 +79,10 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
     if (secondaryAction != null) {
       actions = [
         ...actions,
-        PaddedButton(
+        CustomButton(
             padding: EdgeInsets.only(top: 8),
             text: nextAction != null ? secondaryAction().label : '',
-            type: ButtonType.secondary,
+            type: CustomBtnType.secondary,
             enabled: nextAction != null,
             onPressed: () => {
                   nextAction != null ? secondaryAction().action() : null,
@@ -94,13 +96,11 @@ class CreateWalletScreenState extends State<CreateWalletScreen> {
   List<Widget> _navigationActions() {
     final extendedTheme = Theme.of(context).extension<ExtendedTheme>()!;
     return [
-      PaddedButton(
+      TextBtn(
           padding: EdgeInsets.zero,
           text: prevAction != null ? prevAction().label : '',
-          type: ButtonType.text,
           color: extendedTheme.navigationColor,
           boldText: true,
-          enabled: prevAction != null,
           onPressed: () => {
                 prevAction != null ? prevAction().action() : null,
                 _clearAllActions()

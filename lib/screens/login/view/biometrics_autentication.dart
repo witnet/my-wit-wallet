@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/globals.dart' as globals;
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 
 class BiometricsAutentication extends StatefulWidget {
   const BiometricsAutentication({Key? key}) : super(key: key);
@@ -42,14 +42,17 @@ class BiometricsAutenticationState extends State<BiometricsAutentication>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  PaddedButton(
+                  IconBtn(
+                    label: autenticationStatus == BiometricsStatus.autenticating
+                        ? localization.cancelAuthentication
+                        : localization.authenticateWithBiometrics,
                     padding: EdgeInsets.all(0),
                     onPressed: _authenticateWithBiometrics,
                     text: autenticationStatus == BiometricsStatus.autenticating
                         ? localization.cancelAuthentication
                         : localization.authenticateWithBiometrics,
                     icon: const Icon(Icons.fingerprint),
-                    type: ButtonType.horizontalIcon,
+                    iconBtnType: IconBtnType.horizontalText,
                   )
                 ],
               );

@@ -58,7 +58,6 @@ class _PreferencePageState extends State<PreferencePage> {
       TapBar(
           selectedItem: selectedItem,
           listItems: localizedConfigSteps.values.toList(),
-          actionable: true,
           onChanged: (item) => {
                 scrollController.jumpTo(0.0),
                 setState(() {

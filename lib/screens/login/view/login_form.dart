@@ -3,10 +3,11 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/login/view/biometrics_autentication.dart';
 import 'package:my_wit_wallet/screens/login/view/re_establish_wallet_button.dart';
 import 'package:my_wit_wallet/util/allow_biometrics.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
@@ -57,11 +58,11 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
   }
 
   Widget _buttonLogin() {
-    return PaddedButton(
+    return CustomButton(
       padding: EdgeInsets.only(top: 8, bottom: 0),
       text: localization.unlockWallet,
       isLoading: isLoading,
-      type: ButtonType.primary,
+      type: CustomBtnType.primary,
       onPressed: _login,
     );
   }

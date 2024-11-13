@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
+import 'package:my_wit_wallet/widgets/buttons/container_btn.dart';
 
 typedef void StringCallback(String value);
 
@@ -74,13 +75,12 @@ class ClickableBox extends StatelessWidget {
   Widget buildPaddedBoxButton(ThemeData theme) {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      PaddedButton(
+      ContainerBtn(
         padding: EdgeInsets.zero,
         enabled: error == null,
         autofocus: isSelected,
-        label: label,
+        label: label ?? '',
         text: 'wallet',
-        type: ButtonType.boxButton,
         onPressed: () => {
           if (error == null) {onClick(value)}
         },

@@ -6,8 +6,9 @@ import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/widgets/ordered_list_item.dart';
@@ -124,20 +125,20 @@ class ReEstablishWalletDisclaimerState
         color: extendedTheme.errorColor,
         context: context,
         actions: [
-          PaddedButton(
+          CustomButton(
               color: theme.textTheme.bodyLarge!.color,
               padding: EdgeInsets.zero,
               sizeCover: false,
               text: localization.cancel,
-              type: ButtonType.secondary,
+              type: CustomBtnType.secondary,
               enabled: true,
               onPressed: () => {setState(() => closeModal())}),
-          PaddedButton(
+          CustomButton(
               color: extendedTheme.errorColor,
               padding: EdgeInsets.zero,
               sizeCover: false,
               text: localization.reestablish,
-              type: ButtonType.primary,
+              type: CustomBtnType.primary,
               enabled: true,
               onPressed: deleteStorageAndContinue)
         ],
@@ -153,10 +154,10 @@ class ReEstablishWalletDisclaimerState
     return buildAlertDialog(
         context: context,
         actions: [
-          PaddedButton(
+          CustomButton(
               padding: EdgeInsets.all(8),
               text: localization.continueLabel,
-              type: ButtonType.primary,
+              type: CustomBtnType.primary,
               sizeCover: false,
               enabled: true,
               onPressed: continueToNextStep)

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 
 typedef void VoidCallback();
@@ -25,11 +25,11 @@ class CopyButtonState extends State<CopyButton> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return PaddedButton(
+    return IconBtn(
         padding: EdgeInsets.zero,
         label: localization.copyAddressToClipboard,
         text: localization.copyAddressToClipboard,
-        type: ButtonType.iconButton,
+        iconBtnType: IconBtnType.icon,
         color: widget.color != null
             ? widget.color
             : theme.textTheme.bodyMedium!.color,

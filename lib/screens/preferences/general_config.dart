@@ -5,7 +5,8 @@ import 'package:my_wit_wallet/screens/preferences/logout.dart';
 import 'package:my_wit_wallet/screens/preferences/preferences_screen.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/custom_divider.dart';
 import 'package:my_wit_wallet/widgets/switch.dart';
 import 'package:my_wit_wallet/bloc/theme/theme_bloc.dart';
@@ -187,10 +188,10 @@ class GeneralConfigState extends State<GeneralConfig> {
         localization.lockYourWallet,
         style: theme.textTheme.titleMedium,
       ),
-      PaddedButton(
+      CustomButton(
           padding: EdgeInsets.only(bottom: 16, top: 16),
           text: localization.lockWalletLabel,
-          type: ButtonType.primary,
+          type: CustomBtnType.primary,
           enabled: true,
           onPressed: () => logout(context)),
       SizedBox(height: 16),

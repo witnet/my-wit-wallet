@@ -9,7 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/util/storage/scanned_content.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 import 'package:my_wit_wallet/widgets/input_slider.dart';
 import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
@@ -356,10 +356,10 @@ class RecipientStepState extends State<RecipientStep>
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                PaddedButton(
+                IconBtn(
+                  label: localization.addTimelockLabel,
                   padding: EdgeInsets.all(0),
                   text: localization.addTimelockLabel,
-                  boldText: false,
                   onPressed: () {
                     setState(() {
                       showAdvancedSettings = !showAdvancedSettings;
@@ -371,7 +371,7 @@ class RecipientStepState extends State<RecipientStep>
                           ? FontAwesomeIcons.minus
                           : FontAwesomeIcons.plus,
                       size: 15),
-                  type: ButtonType.horizontalIcon,
+                  iconBtnType: IconBtnType.horizontalText,
                 ),
               ],
             ),

@@ -6,7 +6,8 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
+import 'package:my_wit_wallet/widgets/buttons/text_btn.dart';
 
 class ReEstablishWalletBtn extends StatelessWidget {
   void resetWallet(BuildContext context) {
@@ -30,14 +31,13 @@ class ReEstablishWalletBtn extends StatelessWidget {
       SizedBox(height: 8),
       Container(
           width: 170,
-          child: PaddedButton(
-            fontSize: theme.textTheme.titleSmall!.fontSize,
+          child: TextBtn(
+            fontSize: theme.textTheme.titleSmall!.fontSize!,
             padding: EdgeInsets.all(0),
             boldText: false,
             color: extendedTheme.errorColor,
             onPressed: () => resetWallet(context),
             text: localization.reestablishWallet,
-            type: ButtonType.text,
           ))
     ]);
   }

@@ -6,7 +6,8 @@ import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:flutter/material.dart';
 
@@ -47,9 +48,9 @@ class SendReceiveButtons extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 32),
-          PaddedButton(
+          IconBtn(
             color: extendedTheme.mediumPanelText!.color,
-            boldText: true,
+            label: localization.receive,
             padding: EdgeInsets.only(left: 16, right: 16),
             text: localization.send,
             onPressed: currentRoute(context) != CreateVttScreen.route
@@ -58,14 +59,14 @@ class SendReceiveButtons extends StatelessWidget {
             icon: Container(
                 height: 40,
                 child: svgThemeImage(theme, name: 'send-icon', height: 18)),
-            type: ButtonType.horizontalIcon,
+            iconBtnType: IconBtnType.horizontalText,
             alignment: MainAxisAlignment.start,
             iconPosition: IconPosition.left,
           ),
           SizedBox(width: 16),
-          PaddedButton(
+          IconBtn(
+            label: localization.receive,
             color: extendedTheme.mediumPanelText!.color,
-            boldText: true,
             padding: EdgeInsets.only(left: 16, right: 16),
             text: localization.receive,
             onPressed: currentRoute != ReceiveTransactionScreen.route
@@ -74,8 +75,7 @@ class SendReceiveButtons extends StatelessWidget {
             icon: Container(
                 height: 40,
                 child: svgThemeImage(theme, name: 'receive-icon', height: 18)),
-            type: ButtonType.horizontalIcon,
-            alignment: MainAxisAlignment.start,
+            iconBtnType: IconBtnType.horizontalText,
             iconPosition: IconPosition.left,
           ),
         ]);

@@ -5,8 +5,9 @@ import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 
 void buildGeneralExceptionModal({
   required ThemeData theme,
@@ -22,10 +23,10 @@ void buildGeneralExceptionModal({
   return buildAlertDialog(
       context: context,
       actions: [
-        PaddedButton(
+        CustomButton(
             padding: EdgeInsets.all(8),
             text: localization.continueLabel,
-            type: ButtonType.primary,
+            type: CustomBtnType.primary,
             sizeCover: false,
             enabled: true,
             onPressed: () => {
@@ -61,12 +62,12 @@ void buildGeneralExceptionModal({
                                           fontSize: 12)))),
                       Flexible(
                           flex: 1,
-                          child: PaddedButton(
+                          child: IconBtn(
                               color: WitnetPallet.darkGrey,
                               padding: EdgeInsets.zero,
                               label: localization.copyAddressToClipboard,
                               text: localization.copyAddressToClipboard,
-                              type: ButtonType.iconButton,
+                              iconBtnType: IconBtnType.icon,
                               iconSize: 10,
                               onPressed: () async {
                                 await Clipboard.setData(

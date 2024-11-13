@@ -3,7 +3,8 @@ import 'package:my_wit_wallet/screens/preferences/delete_wallet.dart';
 import 'package:my_wit_wallet/screens/preferences/export_xprv.dart';
 import 'package:my_wit_wallet/screens/preferences/sign_message.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/custom_divider.dart';
 
 enum WalletConfigActions { exportXprv, signMsg, deleteWallet }
@@ -75,10 +76,10 @@ class WalletConfigState extends State<WalletConfig> {
       ),
       SizedBox(height: 8),
       Text(localization.walletConfig01, style: theme.textTheme.bodyMedium),
-      PaddedButton(
+      CustomButton(
           padding: EdgeInsets.only(bottom: 16, top: 16),
           text: localization.exportXprv,
-          type: ButtonType.primary,
+          type: CustomBtnType.primary,
           enabled: true,
           onPressed: () => _toggleSetting(WalletConfigActions.exportXprv)),
       CustomDivider(),
@@ -88,10 +89,10 @@ class WalletConfigState extends State<WalletConfig> {
       ),
       SizedBox(height: 8),
       Text(localization.messageSigning01, style: theme.textTheme.bodyMedium),
-      PaddedButton(
+      CustomButton(
           padding: EdgeInsets.only(bottom: 16, top: 16),
           text: localization.signMessage,
-          type: ButtonType.primary,
+          type: CustomBtnType.primary,
           enabled: true,
           onPressed: () => _toggleSetting(WalletConfigActions.signMsg)),
       SizedBox(height: 16),
@@ -102,10 +103,10 @@ class WalletConfigState extends State<WalletConfig> {
       ),
       SizedBox(height: 16),
       Text(localization.deleteWallet01, style: theme.textTheme.bodyMedium),
-      PaddedButton(
+      CustomButton(
           padding: EdgeInsets.only(bottom: 16, top: 16),
           text: localization.deleteWallet,
-          type: ButtonType.primary,
+          type: CustomBtnType.primary,
           enabled: true,
           onPressed: () => _toggleSetting(WalletConfigActions.deleteWallet)),
     ]);

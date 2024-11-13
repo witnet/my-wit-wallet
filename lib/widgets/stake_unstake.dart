@@ -11,7 +11,8 @@ import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/storage/database/balance_info.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/empty_stake_modal.dart';
@@ -66,9 +67,9 @@ class StakeUnstakeButtons extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 32),
-          PaddedButton(
+          IconBtn(
+            label: localization.stake,
             color: extendedTheme.mediumPanelText!.color,
-            boldText: true,
             padding: EdgeInsets.only(left: 16, right: 16),
             text: localization.stake,
             onPressed: currentRoute(context) != StakeScreen.route
@@ -77,14 +78,14 @@ class StakeUnstakeButtons extends StatelessWidget {
             icon: Container(
                 height: 40,
                 child: svgThemeImage(theme, name: 'stake-icon', height: 18)),
-            type: ButtonType.horizontalIcon,
+            iconBtnType: IconBtnType.horizontalText,
             alignment: MainAxisAlignment.start,
             iconPosition: IconPosition.left,
           ),
           SizedBox(width: 16),
-          PaddedButton(
+          IconBtn(
+            label: localization.unstake,
             color: extendedTheme.mediumPanelText!.color,
-            boldText: true,
             padding: EdgeInsets.only(left: 16, right: 16),
             text: localization.unstake,
             onPressed: currentRoute != UnstakeScreen.route
@@ -93,7 +94,7 @@ class StakeUnstakeButtons extends StatelessWidget {
             icon: Container(
                 height: 40,
                 child: svgThemeImage(theme, name: 'unstake-icon', height: 24)),
-            type: ButtonType.horizontalIcon,
+            iconBtnType: IconBtnType.horizontalText,
             alignment: MainAxisAlignment.start,
             iconPosition: IconPosition.left,
           ),

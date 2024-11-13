@@ -7,7 +7,8 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/closable_view.dart';
 import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/02_select_miner_fee.dart';
@@ -97,10 +98,10 @@ class SpeedUpVttState extends State<SpeedUpVtt> {
                         currentWallet: db.walletStorage.currentWallet,
                       ),
                 SizedBox(height: 16),
-                PaddedButton(
+                CustomButton(
                     padding: EdgeInsets.zero,
                     text: localization.continueLabel,
-                    type: ButtonType.primary,
+                    type: CustomBtnType.primary,
                     enabled: true,
                     onPressed: goNext)
               ]);

@@ -8,7 +8,7 @@ import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/is_active_route.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 import 'package:my_wit_wallet/widgets/identicon.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/navigation_button.dart';
@@ -50,11 +50,11 @@ class TopNavigation extends StatelessWidget {
           Stack(
             clipBehavior: Clip.none,
             children: [
-              PaddedButton(
+              IconBtn(
                   padding: EdgeInsets.zero,
                   label: '${localization.showWalletList} button',
                   text: localization.showWalletList,
-                  type: ButtonType.iconButton,
+                  iconBtnType: IconBtnType.icon,
                   color: WitnetPallet.black,
                   iconSize: 24,
                   icon: Container(
@@ -105,7 +105,7 @@ class TopNavigation extends StatelessWidget {
         ],
       ),
       NavigationButton(
-          button: PaddedButton(
+          button: IconBtn(
               padding: EdgeInsets.zero,
               label: localization.settings,
               text: localization.settings,
@@ -116,7 +116,7 @@ class TopNavigation extends StatelessWidget {
               onPressed: !isActiveRoute(context, [PreferencePage.route])
                   ? () => _goToSettings(context)
                   : () {},
-              type: ButtonType.iconButton),
+              iconBtnType: IconBtnType.icon),
           routesList: [PreferencePage.route])
     ];
   }

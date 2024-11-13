@@ -3,7 +3,8 @@ import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
+import 'package:my_wit_wallet/widgets/buttons/container_btn.dart';
 import 'package:my_wit_wallet/widgets/identicon.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/widgets/wallet_type_label.dart';
@@ -33,12 +34,10 @@ class SelectWalletBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    return PaddedButton(
+    return ContainerBtn(
       padding: EdgeInsets.zero,
       label: label,
       text: 'wallet',
-      type: ButtonType.boxButton,
-      darkBackground: true,
       container: Container(
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(

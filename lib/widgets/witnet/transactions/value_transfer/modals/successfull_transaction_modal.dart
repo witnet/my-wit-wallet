@@ -4,8 +4,8 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/info_element.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
@@ -31,11 +31,11 @@ void buildSuccessfullTransaction(
   return buildAlertDialog(
     context: context,
     actions: [
-      PaddedButton(
+      CustomButton(
           padding: EdgeInsets.zero,
           text: localization.close,
           sizeCover: false,
-          type: ButtonType.primary,
+          type: CustomBtnType.primary,
           enabled: true,
           onPressed: () => {
                 Navigator.popUntil(context, ModalRoute.withName(routeName)),

@@ -3,7 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 
 typedef void VoidCallback();
 
@@ -53,23 +54,23 @@ class TimelockInput extends StatelessWidget {
           children: [
             Flexible(
                 flex: timelockSet ? 8 : 9,
-                child: PaddedButton(
+                child: CustomButton(
                   padding: EdgeInsets.zero,
                   text:
                       '${timelockSet ? _formatTimeLock() : localization.setTimelock}',
                   onPressed: onSelectedDate,
                   attachedIcon: true,
                   icon: Icon(FontAwesomeIcons.calendar, size: 12),
-                  type: ButtonType.secondary,
+                  type: CustomBtnType.secondary,
                 )),
             timelockSet
                 ? Flexible(
                     flex: 1,
-                    child: PaddedButton(
+                    child: IconBtn(
                       padding: EdgeInsets.zero,
                       label: localization.clearTimelockLabel,
                       text: localization.clearTimelockLabel,
-                      type: ButtonType.iconButton,
+                      iconBtnType: IconBtnType.icon,
                       color: theme.inputDecorationTheme.errorStyle?.color,
                       iconSize: 12,
                       icon: Icon(

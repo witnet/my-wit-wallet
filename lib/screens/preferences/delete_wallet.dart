@@ -9,8 +9,10 @@ import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
+import 'package:my_wit_wallet/widgets/buttons/text_btn.dart';
 import 'package:my_wit_wallet/widgets/closable_view.dart';
 import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
 import 'package:my_wit_wallet/widgets/ordered_list_item.dart';
@@ -94,19 +96,19 @@ class DeleteSingleWalletState extends State<DeleteSingleWallet> {
         color: extendedTheme.errorColor,
         context: context,
         actions: [
-          PaddedButton(
+          CustomButton(
               color: theme.textTheme.bodyLarge!.color,
               padding: EdgeInsets.zero,
               text: localization.cancel,
-              type: ButtonType.secondary,
+              type: CustomBtnType.secondary,
               sizeCover: false,
               enabled: true,
               onPressed: () => {setState(() => closeModal())}),
-          PaddedButton(
+          CustomButton(
               color: extendedTheme.errorColor,
               padding: EdgeInsets.zero,
               text: localization.delete,
-              type: ButtonType.primary,
+              type: CustomBtnType.primary,
               sizeCover: false,
               enabled: true,
               onPressed: deleteStorageAndContinue)
@@ -124,11 +126,9 @@ class DeleteSingleWalletState extends State<DeleteSingleWallet> {
     return buildAlertDialog(
         context: context,
         actions: [
-          PaddedButton(
+          TextBtn(
               padding: EdgeInsets.all(8),
               text: localization.continueLabel,
-              type: ButtonType.text,
-              enabled: true,
               onPressed: () => logout(context))
         ],
         title: localization.deleteWalletSuccess,
@@ -178,10 +178,10 @@ class DeleteSingleWalletState extends State<DeleteSingleWallet> {
                 onChanged: toggleCheckBox,
               ),
               SizedBox(height: 16),
-              PaddedButton(
+              CustomButton(
                   padding: EdgeInsets.only(bottom: 0),
                   text: localization.delete,
-                  type: ButtonType.primary,
+                  type: CustomBtnType.primary,
                   isLoading: isLoading,
                   enabled: isNextAllow,
                   onPressed: () async {

@@ -11,7 +11,7 @@ import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 import 'package:my_wit_wallet/widgets/copy_button.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
@@ -89,13 +89,13 @@ class WalletInfoState extends State<WalletInfo> {
                                                       color:
                                                           WitnetPallet.black)),
                                           Flexible(
-                                            child: PaddedButton(
+                                            child: IconBtn(
                                                 padding: EdgeInsets.zero,
                                                 label: localization
                                                     .showBalanceDetails,
                                                 text: localization
                                                     .showBalanceDetails,
-                                                type: ButtonType.iconButton,
+                                                iconBtnType: IconBtnType.icon,
                                                 iconSize: 12,
                                                 onPressed:
                                                     widget.onShowBalanceDetails,

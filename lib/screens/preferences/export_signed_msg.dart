@@ -6,7 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/storage/path_provider_interface.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/dashed_rect.dart';
 import 'package:flutter_json_viewer/flutter_json_viewer.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
@@ -78,9 +79,9 @@ class ExportSignMessageState extends State<ExportSignMessage> {
                       })
                     }),
             SizedBox(height: 16),
-            PaddedButton(
+            CustomButton(
               text: localization.exportJson,
-              type: ButtonType.primary,
+              type: CustomBtnType.primary,
               isLoading: false,
               enabled: _isExportEnabled,
               padding: EdgeInsets.zero,
@@ -89,9 +90,9 @@ class ExportSignMessageState extends State<ExportSignMessage> {
               },
             ),
             SizedBox(height: 8),
-            PaddedButton(
+            CustomButton(
               text: localization.copyJson,
-              type: ButtonType.secondary,
+              type: CustomBtnType.secondary,
               isLoading: false,
               padding: EdgeInsets.zero,
               onPressed: () async {

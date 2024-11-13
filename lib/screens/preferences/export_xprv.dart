@@ -7,7 +7,8 @@ import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/closable_view.dart';
 import 'package:my_wit_wallet/widgets/dashed_rect.dart';
 import 'package:my_wit_wallet/widgets/generate_compatible_xprv.dart';
@@ -81,9 +82,9 @@ class ExportXprvState extends State<ExportXprv> {
                 })
               }),
       SizedBox(height: 16),
-      PaddedButton(
+      CustomButton(
         text: localization.copyXprvLabel,
-        type: ButtonType.primary,
+        type: CustomBtnType.primary,
         isLoading: isLoading,
         padding: EdgeInsets.zero,
         onPressed: () async {

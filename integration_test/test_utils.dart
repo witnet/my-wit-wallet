@@ -16,7 +16,8 @@ import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
 import 'package:my_wit_wallet/widgets/select.dart';
 import 'package:my_wit_wallet/main.dart' as myWitWallet;
@@ -87,7 +88,10 @@ Future<bool> tapButton(
     case IconData:
       finder = widgetByIcon(value);
       break;
-    case PaddedButton:
+    case CustomButton:
+      finder = widgetByType(value);
+      break;
+    case IconBtn:
       finder = widgetByType(value);
       break;
     case Select:

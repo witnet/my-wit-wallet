@@ -13,7 +13,8 @@ import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/select.dart';
 import 'package:my_wit_wallet/widgets/validations/message_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
@@ -203,11 +204,11 @@ class SignMessageFormState extends State<SignMessageForm> {
             SizedBox(height: 16),
             _buildMessageInput(selectedAddress),
             SizedBox(height: 16),
-            PaddedButton(
+            CustomButton(
                 padding: EdgeInsets.zero,
                 text: localization.signMessage,
                 isLoading: isLoading,
-                type: ButtonType.primary,
+                type: CustomBtnType.primary,
                 enabled: true,
                 onPressed: () async {
                   await _unlockKeychainAndSign(_message.value, selectedAddress);

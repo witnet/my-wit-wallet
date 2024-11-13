@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 
 void buildTxGeneralExceptionModal({
   required ThemeData theme,
@@ -13,10 +14,10 @@ void buildTxGeneralExceptionModal({
   return buildAlertDialog(
       context: context,
       actions: [
-        PaddedButton(
+        CustomButton(
             padding: EdgeInsets.all(8),
             text: localization.cancel,
-            type: ButtonType.secondary,
+            type: CustomBtnType.secondary,
             sizeCover: false,
             enabled: true,
             onPressed: () => {
@@ -24,11 +25,11 @@ void buildTxGeneralExceptionModal({
                   ScaffoldMessenger.of(context).clearSnackBars(),
                   Navigator.pushReplacementNamed(context, originRoute)
                 }),
-        PaddedButton(
+        CustomButton(
             padding: EdgeInsets.zero,
             sizeCover: false,
             text: localization.tryAgain,
-            type: ButtonType.primary,
+            type: CustomBtnType.primary,
             enabled: true,
             onPressed: () => {
                   Navigator.popUntil(context, ModalRoute.withName(originRoute)),

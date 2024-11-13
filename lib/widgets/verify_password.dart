@@ -2,7 +2,7 @@ import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/input_login.dart';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
@@ -129,11 +129,11 @@ class VerifyPasswordState extends State<VerifyPassword>
                 ),
               ),
               SizedBox(height: 16),
-              PaddedButton(
+              CustomButton(
                   padding: EdgeInsets.only(bottom: 8),
                   text: localization.verifyLabel,
                   isLoading: isLoading,
-                  type: ButtonType.primary,
+                  type: CustomBtnType.primary,
                   enabled: true,
                   onPressed: () async {
                     await _verify();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/step_bar_btn.dart';
 
 typedef void StringCallback(String? value);
 
@@ -19,13 +19,12 @@ class StepBar extends StatelessWidget {
 
   Widget _buildStepBarItem(String item, BuildContext context,
       ExtendedTheme extendedTheme, bool isItemActionable) {
-    return PaddedButton(
+    return StepBarBtn(
       padding: EdgeInsets.zero,
       enabled: isItemActionable,
       autofocus: item == selectedItem,
       label: item,
       text: item,
-      type: ButtonType.stepbar,
       onPressed: () => {
         if (isItemActionable) {onChanged(item)}
       },

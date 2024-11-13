@@ -75,9 +75,9 @@ Future<void> e2eExportHdXprvTest(WidgetTester tester) async {
   ClipboardData? data = await Clipboard.getData('text/plain');
 
   /// Dashboard
-  /// Tap on the first PaddedButton on the screen, which is the identicon
+  /// Tap on the first IconBtn on the screen, which is the identicon
   /// and brings up the wallet list.
-  await tapButton(tester, PaddedButton, index: 0);
+  await tapButton(tester, IconBtn, index: 0);
   await tapButton(tester, FontAwesomeIcons.circlePlus);
 
   /// Create or Import Wallet

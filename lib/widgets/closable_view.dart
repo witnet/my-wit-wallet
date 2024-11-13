@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/constants.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 
 typedef void VoidCallback();
 
@@ -31,11 +31,11 @@ class ClosableView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  PaddedButton(
+                  IconBtn(
                       padding: EdgeInsets.zero,
                       label: 'Go back',
                       text: 'Go back',
-                      type: ButtonType.iconButton,
+                      iconBtnType: IconBtnType.icon,
                       color: theme.textTheme.titleLarge!.color,
                       iconSize: theme.textTheme.titleLarge!.fontSize! - 4,
                       icon: Icon(

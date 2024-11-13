@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
+import 'package:my_wit_wallet/widgets/buttons/text_btn.dart';
 
 class InputAmount extends StatefulWidget {
   InputAmount({
@@ -83,13 +84,12 @@ class _InputAmountState extends State<InputAmount> {
                   padding: EdgeInsets.only(left: 8),
                   child: Semantics(
                     label: 'Max amount',
-                    child: PaddedButton(
-                        padding: EdgeInsets.zero,
-                        boldText: false,
-                        text: 'Max',
-                        sizeCover: false,
-                        onPressed: widget.onSuffixTap ?? () {},
-                        type: ButtonType.text),
+                    child: TextBtn(
+                      padding: EdgeInsets.zero,
+                      boldText: false,
+                      text: 'Max',
+                      onPressed: widget.onSuffixTap ?? () {},
+                    ),
                   ))
               : Container(),
         ]);

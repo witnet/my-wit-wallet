@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 
 void buildNewAddressModal({
   required ThemeData theme,
@@ -15,22 +16,22 @@ void buildNewAddressModal({
   return buildAlertDialog(
       context: context,
       actions: [
-        PaddedButton(
+        CustomButton(
             padding: EdgeInsets.zero,
             text: localization.cancel,
             sizeCover: false,
-            type: ButtonType.secondary,
+            type: CustomBtnType.secondary,
             enabled: true,
             onPressed: () => {
                   Navigator.popUntil(
                       context, ModalRoute.withName(originRouteName)),
                   ScaffoldMessenger.of(context).clearSnackBars(),
                 }),
-        PaddedButton(
+        CustomButton(
             padding: EdgeInsets.zero,
             text: localization.confirm,
             sizeCover: false,
-            type: ButtonType.primary,
+            type: CustomBtnType.primary,
             enabled: true,
             onPressed: onAction),
       ],

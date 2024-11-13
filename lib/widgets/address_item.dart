@@ -10,8 +10,8 @@ import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 
@@ -109,11 +109,11 @@ class AddreessItemState extends State<AddreessItem>
                   SizedBox(height: 8),
                   _syncSpinnerOrBalanceDisplay(widget.account, theme),
                 ])),
-            PaddedButton(
+            IconBtn(
               padding: EdgeInsets.zero,
               label: localization.copyAddressToClipboard,
               text: localization.copyAddressToClipboard,
-              type: ButtonType.iconButton,
+              iconBtnType: IconBtnType.icon,
               iconSize: 12,
               onPressed: () async {
                 if (!isAddressCopied) {

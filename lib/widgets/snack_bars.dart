@@ -1,12 +1,11 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 
 SnackBar buildCopiedSnackbar(ThemeData theme, String text) {
   final extendedTheme = theme.extension<ExtendedTheme>()!;
@@ -104,12 +103,12 @@ SnackBar buildErrorSnackbar(
                                     fontSize: 12)))),
                     Flexible(
                         flex: 1,
-                        child: PaddedButton(
+                        child: IconBtn(
                             color: WitnetPallet.darkGrey,
                             padding: EdgeInsets.zero,
                             label: localization.copyAddressToClipboard,
                             text: localization.copyAddressToClipboard,
-                            type: ButtonType.iconButton,
+                            iconBtnType: IconBtnType.icon,
                             iconSize: 10,
                             onPressed: () async {
                               await Clipboard.setData(ClipboardData(text: log));

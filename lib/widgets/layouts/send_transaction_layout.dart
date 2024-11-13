@@ -6,8 +6,8 @@ import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_cr
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
+import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/step_bar.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/01_recipient_step.dart';
@@ -163,14 +163,13 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
 
   List<Widget> _actions() {
     return [
-      PaddedButton(
+      CustomButton(
           padding: EdgeInsets.zero,
           text: nextAction != null
               ? nextAction().label
               : localization.continueLabel,
-          type: ButtonType.primary,
+          type: CustomBtnType.primary,
           enabled: true,
-          boldText: true,
           onPressed: () => {
                 if (nextAction != null)
                   {

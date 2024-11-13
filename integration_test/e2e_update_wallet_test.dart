@@ -44,9 +44,9 @@ Future<void> e2eUpdateCurrentWalletTest(WidgetTester tester) async {
       "wit1vzm7xrguwf5uzjx72l65stgj3npfn292tya50u");
 
   /// Dashboard
-  /// Tap on the first PaddedButton on the screen, which is the identicon
+  /// Tap on the first IconBtn on the screen, which is the identicon
   /// and brings up the wallet list.
-  await tapButton(tester, PaddedButton, index: 0);
+  await tapButton(tester, IconBtn, index: 0);
   await tapButton(tester, FontAwesomeIcons.circlePlus);
 
   /// Create or Import Wallet from mnemonics
@@ -80,9 +80,9 @@ Future<void> e2eUpdateCurrentWalletTest(WidgetTester tester) async {
 
   await tester.pumpAndSettle();
 
-  /// Tap on the first PaddedButton on the screen, which is the identicon
+  /// Tap on the first IconBtn on the screen, which is the identicon
   /// and brings up the wallet list.
-  await tapButton(tester, PaddedButton, index: 0);
+  await tapButton(tester, IconBtn, index: 0);
 
   await tester.pumpAndSettle();
 

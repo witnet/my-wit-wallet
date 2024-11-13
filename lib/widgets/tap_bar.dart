@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
-import 'package:my_wit_wallet/widgets/PaddedButton.dart';
+import 'package:my_wit_wallet/widgets/buttons/tap_bar_btn.dart';
 
 typedef void StringCallback(String? value);
 
@@ -16,17 +16,18 @@ class TapBar extends StatelessWidget {
     required this.onChanged,
   });
 
-  Widget _buildTapBarItem(String item, BuildContext context,
-      ExtendedTheme extendedTheme) {
+  Widget _buildTapBarItem(
+      String item, BuildContext context, ExtendedTheme extendedTheme) {
     return Container(
         padding: EdgeInsets.only(right: 4, left: 4),
         alignment: Alignment.center,
-        child: PaddedButton(
-            padding: EdgeInsets.zero,
-            text: item.fromPascalCaseToTitle(),
-            onPressed: () => {onChanged(item)},
-            active: item == selectedItem,
-            type: ButtonType.tapbar));
+        child: TapBarBtn(
+          label: item,
+          padding: EdgeInsets.zero,
+          text: item.fromPascalCaseToTitle(),
+          onPressed: () => {onChanged(item)},
+          active: item == selectedItem,
+        ));
   }
 
   Widget build(BuildContext context) {
@@ -37,8 +38,7 @@ class TapBar extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           itemCount: listItems.length,
           itemBuilder: (context, index) {
-            return _buildTapBarItem(
-                listItems[index], context, extendedTheme);
+            return _buildTapBarItem(listItems[index], context, extendedTheme);
           },
         ));
   }

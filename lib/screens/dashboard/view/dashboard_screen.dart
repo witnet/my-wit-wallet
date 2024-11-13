@@ -168,7 +168,6 @@ class DashboardScreenState extends State<DashboardScreen>
       TapBar(
           selectedItem: selectedItem,
           listItems: localizedDashboardSteps.values.toList(),
-          actionable: true,
           onChanged: (item) => {
                 scrollToTop(),
                 setState(
