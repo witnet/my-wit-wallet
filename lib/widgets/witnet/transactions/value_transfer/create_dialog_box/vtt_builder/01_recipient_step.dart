@@ -97,8 +97,6 @@ class RecipientStepState extends State<RecipientStep>
       widget.transactionType == TransactionType.Unstake;
   bool get showStakeAmountInput => isStakeTarnsaction || isUnstakeTransaction;
 
-
-
   ScannedContent scannedContent = ScannedContent();
   bool showAdvancedSettings = false;
   bool timelockSet = false;
@@ -115,7 +113,6 @@ class RecipientStepState extends State<RecipientStep>
     );
 
     _copyAddressFocusNode.addListener(_handleAddressFocus);
-    _addressFocusNode.addListener(_onFocusChangeAddress);
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => widget.nextAction(next),
     );
@@ -124,13 +121,6 @@ class RecipientStepState extends State<RecipientStep>
       DateTime date = DateTime.now();
       int weeksToAdd = 2;
       setMinimunTimelock(date.add(Duration(days: (7 * weeksToAdd).toInt())));
-    }
-  }
-  void _onFocusChangeAddress() {
-    if (!_addressFocusNode.hasFocus) {
-      int offset = _addressController.selection.baseOffset;
-      _addressController.selection = TextSelection.collapsed(
-          offset: offset, affinity: TextAffinity.upstream);
     }
   }
 
@@ -189,7 +179,7 @@ class RecipientStepState extends State<RecipientStep>
       _address = AddressInput.dirty(
           value: value,
           allowValidation:
-          validate ?? validationUtils.isFormUnFocus([_addressFocusNode]));
+              validate ?? validationUtils.isFormUnFocus([_addressFocusNode]));
     });
   }
 
@@ -396,9 +386,11 @@ class RecipientStepState extends State<RecipientStep>
             FocusManager.instance.primaryFocus?.unfocus();
             widget.goNext();
           },
-          onTapOutside:(PointerDownEvent? p) {
+          onTapOutside: (PointerDownEvent? p) {
             _amountFocusNode.unfocus();
-          }, amount: _amount,
+          },
+          amount: _amount,
+          route: widget.routeName,
         ),
       ),
     ];
@@ -438,7 +430,7 @@ class RecipientStepState extends State<RecipientStep>
             },
             onTapOutside: (PointerDownEvent event) {
               FocusManager.instance.primaryFocus?.unfocus();
-            } ,
+            },
           ))
     ];
   }
@@ -463,6 +455,7 @@ class RecipientStepState extends State<RecipientStep>
           ]),
       SizedBox(height: 8),
       InputAuthorization(
+        route: widget.routeName,
         keyboardType: TextInputType.text,
         focusNode: _authorizationFocusNode,
         styledTextController: _authorizationController,
@@ -488,6 +481,7 @@ class RecipientStepState extends State<RecipientStep>
       LabeledFormEntry(
           label: localization.withdrawalAddress,
           formEntry: InputAddress(
+            route: widget.routeName,
             errorText: _address.error,
             styledTextController: _addressController,
             focusNode: _addressFocusNode,
@@ -516,6 +510,7 @@ class RecipientStepState extends State<RecipientStep>
       LabeledFormEntry(
         label: localization.address,
         formEntry: InputAddress(
+          route: widget.routeName,
           errorText: _address.error,
           styledTextController: _addressController,
           focusNode: _addressFocusNode,

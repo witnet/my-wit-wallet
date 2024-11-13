@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/login/view/biometrics_autentication.dart';
 import 'package:my_wit_wallet/screens/login/view/re_establish_wallet_button.dart';
@@ -28,7 +29,13 @@ class LoginFormState extends State<LoginForm> with TickerProviderStateMixin {
   bool isLoading = false;
   String? _passwordInputErrorText;
   final _loginController = StyledTextController(obscureText: true);
-  final _loginFocusNode = FocusNode();
+  final _loginFocusNode =
+      FocusNode(onKeyEvent: (FocusNode node, KeyEvent event) {
+    if (event.character == LogicalKeyboardKey.enter) {
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  });
   final _showPasswordFocusNode = FocusNode();
   ValidationUtils validationUtils = ValidationUtils();
   Widget biometricsOrPassword = Container();

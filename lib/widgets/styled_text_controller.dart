@@ -40,9 +40,6 @@ class StyledTextController extends TextEditingController {
     normalStyle = normalStyle ?? theme.textTheme.bodyMedium;
     final List<InlineSpan> textSpanChildren = <InlineSpan>[];
 
-
-
-
     // Check if there is an active selection in the text.
     if (selection.start != selection.end) {
       // Add unselected text before the selection, if any.

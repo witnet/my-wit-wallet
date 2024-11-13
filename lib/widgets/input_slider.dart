@@ -51,32 +51,19 @@ class InputSlider extends InputText {
   _InputSliderState createState() => _InputSliderState();
 }
 
-typedef StringCallback = void Function(String);
-typedef BlankCallback = void Function();
-typedef PointerDownCallback = void Function(PointerDownEvent);
-
 class _InputSliderState extends State<InputSlider> {
   TextSelection? lastSelection;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    widget.focusNode.addListener(_onFocusChange);
+    widget.focusNode.addListener(widget.onFocusChange);
   }
 
-  void _onFocusChange() {
-    int offset = widget.styledTextController.selection.baseOffset;
-    TextSelection collapsed = TextSelection.collapsed(
-      offset: offset,
-      affinity: TextAffinity.upstream,
-    );
-    if (!widget.focusNode.hasFocus) {
-      lastSelection = widget.styledTextController.selection;
-      widget.styledTextController.selection = collapsed;
-    } else {
-      widget.styledTextController.selection = lastSelection ?? collapsed;
-    }
+  @override
+  void dispose() {
+    super.dispose();
+    widget.focusNode.removeListener(widget.onFocusChange);
   }
 
   Widget build(BuildContext context) {
@@ -96,15 +83,16 @@ class _InputSliderState extends State<InputSlider> {
     }
     return Column(children: [
       Container(
-        child: widget.buildInput(context: context,
-        decoration: InputDecoration(
-          hintText: widget.hint ?? localization.inputAmountHint,
-          errorText: widget.errorText,
-          prefixIcon:
-          widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
-          suffixText: WIT_UNIT[WitUnit.Wit],
-          suffixIconConstraints: BoxConstraints(minHeight: 44),
-        ),
+        child: widget.buildInput(
+          context: context,
+          decoration: InputDecoration(
+            hintText: widget.hint ?? localization.inputAmountHint,
+            errorText: widget.errorText,
+            prefixIcon:
+                widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
+            suffixText: WIT_UNIT[WitUnit.Wit],
+            suffixIconConstraints: BoxConstraints(minHeight: 44),
+          ),
         ),
       ),
       SizedBox(height: 8),
