@@ -15,7 +15,8 @@ enum ButtonType {
   iconButton,
   stepbar,
   boxButton,
-  sufix
+  sufix,
+  tapbar
 }
 
 enum IconPosition { left, right }
@@ -38,6 +39,7 @@ class PaddedButton extends StatelessWidget {
       required this.text,
       required this.onPressed,
       this.color,
+      this.active = false,
       this.sizeCover = true,
       this.fontSize = 16,
       this.boldText = false,
@@ -75,17 +77,18 @@ class PaddedButton extends StatelessWidget {
   final MainAxisAlignment alignment;
   final IconPosition iconPosition;
   final num? hoverPadding;
+  final bool active;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
 
-    Color overlayColor() {
+    Color overlayColor({Color? color = null}) {
       if (!enabled) {
         return theme.colorScheme.surface.withOpacity(0);
       }
-      return extendedTheme.focusBg!;
+      return color ?? extendedTheme.focusBg!;
     }
 
     Widget child = attachedIcon
@@ -217,16 +220,74 @@ class PaddedButton extends StatelessWidget {
       onPressed: onPressed,
     );
 
+    Widget tapBarButton = active
+        ? ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                splashFactory: NoSplash.splashFactory,
+                shadowColor: Colors.transparent,
+                elevation: 0,
+                overlayColor: overlayColor(
+                    color: extendedTheme.backgroundBox!.withOpacity(0.5)),
+                minimumSize: null,
+                textStyle: theme.textTheme.titleMedium),
+            child: child,
+            onPressed: enabled ? onPressed : null,
+          )
+        : ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: extendedTheme.backgroundBox,
+                foregroundColor: theme.textTheme.bodyMedium!.color,
+                splashFactory: NoSplash.splashFactory,
+                shadowColor: Colors.transparent,
+                elevation: 0,
+                overlayColor: overlayColor(
+                    color: extendedTheme.backgroundBox!.withOpacity(0.5)),
+                minimumSize: null,
+                textStyle: theme.textTheme.titleMedium),
+            child: child,
+            onPressed: enabled ? onPressed : null,
+          );
+
+    Color getStepTabColor() {
+      if (autofocus ?? false) {
+        return extendedTheme.stepBarActiveColor!;
+      }
+      if (enabled) {
+        return extendedTheme.stepBarActionableColor!;
+      } else {
+        return extendedTheme.stepBarColor!;
+      }
+    }
+
     Widget stepBarButton = TextButton(
-      style: theme.textButtonTheme.style!
-          .copyWith(overlayColor: WidgetStateProperty.all(overlayColor())),
-      child: Text(
-        text,
-        style: color != null
-            ? theme.textTheme.titleMedium?.copyWith(color: color)
-            : theme.textTheme.titleMedium,
-      ),
-      onPressed: !enabled ? null : onPressed,
+      autofocus: autofocus ?? false,
+      style: theme.textButtonTheme.style?.copyWith(
+          padding: WidgetStateProperty.all(EdgeInsets.zero),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          overlayColor: WidgetStateProperty.all(WitnetPallet.transparent)),
+      child: Semantics(
+          label: label,
+          excludeSemantics: true,
+          child: Container(
+            width: 110,
+            padding: EdgeInsets.only(top: 8, bottom: 8, left: 0, right: 0),
+            decoration: BoxDecoration(
+              color: WitnetPallet.transparent,
+              border: Border(
+                top: BorderSide(color: getStepTabColor(), width: 2),
+              ),
+            ),
+            margin: EdgeInsets.all(8),
+            child: Text(
+              text,
+              style: enabled
+                  ? theme.textTheme.titleMedium!
+                      .copyWith(color: getStepTabColor())
+                  : theme.textTheme.titleMedium!
+                      .copyWith(color: getStepTabColor()),
+            ),
+          )),
+      onPressed: enabled ? onPressed : null,
     );
 
     Widget containerButton = TextButton(
@@ -260,6 +321,8 @@ class PaddedButton extends StatelessWidget {
           return textButtonVerticalIcon;
         case ButtonType.boxButton:
           return containerButton;
+        case ButtonType.tapbar:
+          return tapBarButton;
         case ButtonType.stepbar:
           return stepBarButton;
         case ButtonType.sufix:

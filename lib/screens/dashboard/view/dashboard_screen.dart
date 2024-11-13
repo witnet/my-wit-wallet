@@ -7,7 +7,6 @@ import 'package:my_wit_wallet/screens/dashboard/view/transactions_view.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/widgets/balance_details.dart';
-import 'package:my_wit_wallet/widgets/step_bar.dart';
 import 'package:my_wit_wallet/bloc/explorer/explorer_bloc.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
@@ -15,6 +14,7 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
+import 'package:my_wit_wallet/widgets/tap_bar.dart';
 import 'package:my_wit_wallet/widgets/wallet_info.dart';
 
 enum DashboardViewSteps {
@@ -165,7 +165,7 @@ class DashboardScreenState extends State<DashboardScreen>
     return [
       ...dashboardInfo(),
       SizedBox(height: 8),
-      StepBar(
+      TapBar(
           selectedItem: selectedItem,
           listItems: localizedDashboardSteps.values.toList(),
           actionable: true,

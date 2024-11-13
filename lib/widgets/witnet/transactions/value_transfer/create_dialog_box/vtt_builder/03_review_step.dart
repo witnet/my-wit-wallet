@@ -169,9 +169,9 @@ class ReviewStepState extends State<ReviewStep>
                     children: [
                       Text(
                         localization.txnDetails,
-                        style: theme.textTheme.titleLarge,
+                        style: theme.textTheme.titleMedium,
                       ),
-                      SizedBox(height: 24),
+                      SizedBox(height: 16),
                       InfoCopy(
                           infoToCopy: address,
                           label: isVttTransaction

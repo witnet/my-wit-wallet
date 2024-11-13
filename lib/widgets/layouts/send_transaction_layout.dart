@@ -254,7 +254,7 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
                         .value;
                   }),
                 }),
-        SizedBox(height: 24),
+        SizedBox(height: 8),
         stepToBuild(),
         SizedBox(height: 24),
         ..._actions(),
