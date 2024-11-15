@@ -127,9 +127,7 @@ class InfoElement extends StatelessWidget {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     TextStyle? style = getStyle(theme, ElementType.content);
     if (isHashContent) {
-      style = isContentImportant
-          ? extendedTheme.monoMediumText
-          : extendedTheme.monoBoldText;
+      style = extendedTheme.monoMediumText;
     }
     Color? color = this.contentColor != null ? this.contentColor : style!.color;
     return style!.copyWith(color: color);

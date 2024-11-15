@@ -386,12 +386,12 @@ class ExtendedTheme extends ThemeExtension<ExtendedTheme> {
     monoMediumText: TextStyle(
         fontFamily: 'CourierPrime',
         fontWeight: FontWeight.w500,
-        color: WitnetPallet.darkGrey,
+        color: WitnetPallet.black,
         fontSize: 16),
     monoLargeText: TextStyle(
         fontFamily: 'CourierPrime',
         fontWeight: FontWeight.w500,
-        color: WitnetPallet.darkGrey,
+        color: WitnetPallet.black,
         fontSize: 18),
     monoBoldText: TextStyle(
         fontFamily: 'CourierPrime',

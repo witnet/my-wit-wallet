@@ -76,6 +76,7 @@ class SendReceiveButtons extends StatelessWidget {
                 height: 40,
                 child: svgThemeImage(theme, name: 'receive-icon', height: 18)),
             iconBtnType: IconBtnType.horizontalText,
+            alignment: MainAxisAlignment.start,
             iconPosition: IconPosition.left,
           ),
         ]);

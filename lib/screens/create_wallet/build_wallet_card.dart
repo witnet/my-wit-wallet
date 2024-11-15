@@ -293,7 +293,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
                               targetValue: nanoWitToWit(balance),
                               curve: Interval(0, .5, curve: Curves.easeOut),
                               controller: _balanceController,
-                              style: theme.textTheme.titleMedium!,
+                              style: theme.textTheme.labelLarge!,
                             ),
                             SizedBox(width: 4),
                             Text('WIT', style: theme.textTheme.titleMedium!)
@@ -311,7 +311,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
                             targetValue: currentTransactionCount,
                             curve: Interval(0, .5, curve: Curves.easeOut),
                             controller: _balanceController,
-                            style: theme.textTheme.titleMedium!)),
+                            style: theme.textTheme.labelLarge!)),
                     if (isHdWallet)
                       InfoElement(
                         isContentImportant: true,
@@ -324,7 +324,7 @@ class BuildWalletCardState extends State<BuildWalletCard>
                             targetValue: currentAddressCount,
                             curve: Interval(0, .5, curve: Curves.easeOut),
                             controller: _balanceController,
-                            style: theme.textTheme.titleMedium!),
+                            style: theme.textTheme.labelLarge!),
                       ),
                   ])),
             ],

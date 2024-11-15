@@ -181,9 +181,11 @@ class TransactionDetails extends StatelessWidget {
                     _isPendingTransaction(transaction.status)
                         ? Container()
                         : InfoElement(
+                            isContentImportant: true,
                             label: localization.timestamp,
                             text: transaction.txnTime.formatDate()),
                     InfoElement(
+                        isContentImportant: true,
                         label: localization.status,
                         text: transactionStatus(transaction.status),
                         contentColor: getStatusColor(transaction.status, theme),
@@ -199,6 +201,7 @@ class TransactionDetails extends StatelessWidget {
                       isVTT
                           ? InfoCopy(
                               isHashContent: true,
+                              isContentImportant: true,
                               infoToCopy: transactionUtils.getSenderAddress(),
                               label: localization.from,
                               customContent: Row(
@@ -219,10 +222,7 @@ class TransactionDetails extends StatelessWidget {
                                       transactionUtils
                                           .getSenderAddress()
                                           .cropAddress(12),
-                                      style: extendedTheme.monoRegularText
-                                          ?.copyWith(
-                                              color: theme
-                                                  .textTheme.bodyMedium?.color),
+                                      style: extendedTheme.monoMediumText,
                                     ),
                                   ]),
                             )
@@ -238,6 +238,7 @@ class TransactionDetails extends StatelessWidget {
                       SizedBox(height: 8),
                       InfoCopy(
                         isLastItem: true,
+                        isContentImportant: true,
                         isHashContent: true,
                         infoToCopy: transactionUtils.getRecipientAddress(),
                         label: localization.to,
@@ -256,8 +257,7 @@ class TransactionDetails extends StatelessWidget {
                                 transactionUtils
                                     .getRecipientAddress()
                                     .cropAddress(12),
-                                style: extendedTheme.monoRegularText?.copyWith(
-                                    color: theme.textTheme.bodyMedium?.color),
+                                style: extendedTheme.monoMediumText,
                               ),
                             ]),
                       ),
@@ -273,14 +273,14 @@ class TransactionDetails extends StatelessWidget {
                   InfoElement(
                       label: localization.amount,
                       text: transactionUtils.getTransactionValue().amount,
-                      isContentImportant: false),
+                      isContentImportant: true),
                   InfoElement(
                       label: isVTT
                           ? localization.feesPayed
                           : localization.feesCollected,
                       text:
                           '${transaction.fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
-                      isContentImportant: false),
+                      isContentImportant: true),
                   InfoElement(
                       label: localization.total,
                       text: transactionUtils.getTransactionValue().amount,
@@ -290,7 +290,7 @@ class TransactionDetails extends StatelessWidget {
                       ? InfoElement(
                           label: localization.timelock,
                           text: transactionUtils.timelock()!,
-                          isContentImportant: false,
+                          isContentImportant: true,
                           isLastItem: true)
                       : Container(),
                 ],
