@@ -4,7 +4,7 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
-import 'package:my_wit_wallet/widgets/input_address.dart';
+import 'package:my_wit_wallet/widgets/inputs/input_address.dart';
 import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 import 'bloc/create_wallet_bloc.dart';

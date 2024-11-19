@@ -1,50 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/constants.dart';
-import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
 import 'package:my_wit_wallet/widgets/buttons/text_btn.dart';
-import 'package:my_wit_wallet/widgets/input_text.dart';
-import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
+import 'package:my_wit_wallet/widgets/inputs/input_text.dart';
 import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
 
 
 class InputAmount extends InputText {
   InputAmount({
     required this.amount,
-    required FocusNode focusNode,
-    required StyledTextController styledTextController,
-    IconData? prefixIcon,
-    String? errorText,
-    String? Function(String?)? validator,
-    String? hint,
-    TextInputType? keyboardType,
-    bool obscureText = false,
+    required super.focusNode,
+    required super.styledTextController,
+    super.prefixIcon,
+    super.errorText,
+    super.validator,
+    super.hint,
+    super.keyboardType,
+    super.obscureText,
     this.route,
-    void Function(String)? onChanged,
-    void Function()? onEditingComplete,
-    void Function(String)? onFieldSubmitted,
-    void Function(PointerDownEvent)? onTapOutside,
-    void Function()? onTap,
-    void Function()? onSuffixTap,
-    List<TextInputFormatter>? inputFormatters,
-  }) : super(
-          prefixIcon: prefixIcon,
-          focusNode: focusNode,
-          errorText: errorText,
-          validator: validator,
-          hint: hint,
-          keyboardType: keyboardType,
-          styledTextController: styledTextController,
-          obscureText: obscureText,
-          inputFormatters: [WitValueFormatter()],
-          onChanged: onChanged,
-          onEditingComplete: onEditingComplete,
-          onFieldSubmitted: onFieldSubmitted,
-          onTapOutside: onTapOutside,
-          onTap: onTap,
-          onSuffixTap: onSuffixTap,
-        );
+    super.onChanged,
+    super.onEditingComplete,
+    super.onFieldSubmitted,
+    super.onTapOutside,
+    super.onTap,
+    super.onSuffixTap,
+    super.inputFormatters,
+  });
+
   final VttAmountInput amount;
   final String? route;
 

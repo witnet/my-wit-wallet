@@ -1,48 +1,33 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
 
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
+import '../../util/storage/scanned_content.dart';
 import 'input_text.dart';
 
 class InputAuthorization extends InputText {
   InputAuthorization({
-    required FocusNode focusNode,
-    required StyledTextController styledTextController,
-    IconData? prefixIcon,
-    String? errorText,
-    String? Function(String?)? validator,
-    String? hint,
-    TextInputType? keyboardType,
-    bool obscureText = false,
+    required super.focusNode,
+    required super.styledTextController,
+    super.prefixIcon,
+    super.errorText,
+    super.validator,
+    super.hint,
+    super.keyboardType,
+    super.obscureText = false,
     required this.route,
-    void Function(String)? onChanged,
-    void Function()? onEditingComplete,
-    void Function(String)? onFieldSubmitted,
-    void Function(PointerDownEvent)? onTapOutside,
-    void Function()? onTap,
-    void Function()? onSuffixTap,
-  }) : super(
-          prefixIcon: prefixIcon,
-          focusNode: focusNode,
-          errorText: errorText,
-          validator: validator,
-          hint: hint,
-          keyboardType: keyboardType,
-          styledTextController: styledTextController,
-          obscureText: obscureText,
-          onChanged: onChanged,
-          onEditingComplete: onEditingComplete,
-          onFieldSubmitted: onFieldSubmitted,
-          onTapOutside: onTapOutside,
-          onTap: onTap,
-          onSuffixTap: onSuffixTap,
-          maxLines: 3,
-        );
+    super.onChanged,
+    super.onEditingComplete,
+    super.onFieldSubmitted,
+    super.onTapOutside,
+    super.onTap,
+    super.onSuffixTap,
+    super.maxLines = 3,
+  });
 
   @override
   _InputAuthorizationState createState() => _InputAuthorizationState();
@@ -52,9 +37,14 @@ class InputAuthorization extends InputText {
 class _InputAuthorizationState extends State<InputAuthorization> {
   FocusNode _scanQrFocusNode = FocusNode();
   bool isScanQrFocused = false;
+  ScannedContent scannedContent = ScannedContent();
+  
   @override
   void initState() {
     super.initState();
+    if (scannedContent.scannedContent != null) {
+      _handleQrAddressResults(scannedContent.scannedContent!);
+    }
     widget.focusNode.addListener(widget.onFocusChange);
     _scanQrFocusNode.addListener(_handleQrFocus);
   }
@@ -64,6 +54,10 @@ class _InputAuthorizationState extends State<InputAuthorization> {
     super.dispose();
     widget.focusNode.removeListener(widget.onFocusChange);
     _scanQrFocusNode.removeListener(_handleQrFocus);
+  }
+
+  _handleQrAddressResults(String value) {
+    widget.styledTextController.text = value;
   }
 
   _handleQrFocus() {

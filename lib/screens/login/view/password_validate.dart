@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_wit_wallet/widgets/input_password.dart';
+import 'package:my_wit_wallet/widgets/inputs/input_password.dart';
 import 'package:my_wit_wallet/widgets/validations/password_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/widgets/styled_text_controller.dart';

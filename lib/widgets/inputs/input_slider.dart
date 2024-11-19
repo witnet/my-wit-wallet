@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/constants.dart';
-import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 
 import 'input_text.dart';
 
@@ -11,38 +9,22 @@ class InputSlider extends InputText {
     String? route,
     required this.maxAmount,
     required this.minAmount,
-    required FocusNode focusNode,
-    required StyledTextController styledTextController,
-    String? Function(String?)? validator,
-    IconData? prefixIcon,
-    String? errorText,
-    String? hint,
-    TextInputType? keyboardType,
-    bool obscureText = false,
-    void Function(String)? onChanged,
-    void Function()? onEditingComplete,
-    void Function(String)? onFieldSubmitted,
-    void Function(PointerDownEvent)? onTapOutside,
-    void Function()? onTap,
-    void Function()? onSuffixTap,
-    List<TextInputFormatter>? inputFormatters,
-  }) : super(
-          prefixIcon: prefixIcon,
-          focusNode: focusNode,
-          errorText: errorText,
-          validator: validator,
-          hint: hint,
-          keyboardType: keyboardType,
-          styledTextController: styledTextController,
-          obscureText: obscureText,
-          onChanged: onChanged,
-          onEditingComplete: onEditingComplete,
-          onFieldSubmitted: onFieldSubmitted,
-          onTapOutside: onTapOutside,
-          onTap: onTap,
-          onSuffixTap: onSuffixTap,
-          inputFormatters: inputFormatters,
-        );
+    required super.focusNode,
+    required super.styledTextController,
+    super.validator,
+    super.prefixIcon,
+    super.errorText,
+    super.hint,
+    super.keyboardType,
+    super.obscureText = false,
+    super.onChanged,
+    super.onEditingComplete,
+    super.onFieldSubmitted,
+    super.onTapOutside,
+    super.onTap,
+    super.onSuffixTap,
+    super.inputFormatters,
+  });
 
   final double maxAmount;
   final double minAmount;

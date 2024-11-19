@@ -7,7 +7,7 @@ import 'package:my_wit_wallet/util/allow_biometrics.dart';
 import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/layouts/layout.dart';
-import 'package:my_wit_wallet/widgets/input_password.dart';
+import 'package:my_wit_wallet/widgets/inputs/input_password.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
