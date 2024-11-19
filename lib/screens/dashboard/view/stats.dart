@@ -36,7 +36,7 @@ class BlockStatsState extends State<Stats> with TickerProviderStateMixin {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(height: 8),
+          SizedBox(height: 16),
           Text(localization.networkContribution,
               style: theme.textTheme.titleMedium),
           SizedBox(height: 8),

@@ -34,30 +34,38 @@ class AutoUpdateState extends State<AutoUpdate> {
 
   @override
   Widget build(BuildContext context) {
-    return UpdatWindowManager(
-      getLatestVersion: () async {
-        final data = await http.get(Uri.parse(
-          LATEST_RELEASE_URL,
-        ));
-
-        // Return the tag name, which is always a semantically versioned string.
-        return jsonDecode(data.body)["tag_name"];
+    return FutureBuilder(
+      future: http.get(Uri.parse(
+        LATEST_RELEASE_URL,
+      )),
+      builder: (context, snapshot) {
+        if (snapshot.toString().contains(SOCKET_EXCEPTION)) {
+          return widget.child;
+        }
+        return UpdatWindowManager(
+          getLatestVersion: () async {
+            if (snapshot.hasData) {
+              return jsonDecode(snapshot.data!.body)["tag_name"];
+            }
+            return VERSION_NUMBER;
+          },
+          getBinaryUrl: (version) async {
+            return "$DOWNLOAD_BASE_URL/$version/$fileName";
+          },
+          appName: "myWitWallet", // This is used to name the downloaded files.
+          getChangelog: (_, __) async {
+            if (snapshot.hasData) {
+              return jsonDecode(snapshot.data!.body)["body"];
+            }
+            return '';
+          },
+          updateDialogBuilder: customDialog,
+          updateChipBuilder: customChip,
+          currentVersion: VERSION_NUMBER,
+          callback: (status) {},
+          child: widget.child,
+        );
       },
-      getBinaryUrl: (version) async {
-        return "$DOWNLOAD_BASE_URL/$version/$fileName";
-      },
-      appName: "myWitWallet", // This is used to name the downloaded files.
-      getChangelog: (_, __) async {
-        final data = await http.get(Uri.parse(
-          LATEST_RELEASE_URL,
-        ));
-        return jsonDecode(data.body)["body"];
-      },
-      updateDialogBuilder: customDialog,
-      updateChipBuilder: customChip,
-      currentVersion: VERSION_NUMBER,
-      callback: (status) {},
-      child: widget.child,
     );
   }
 }

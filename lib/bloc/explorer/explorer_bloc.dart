@@ -313,6 +313,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           .setStats(walletId, savedStatsByAddress ?? statsByAddressToSave);
     } catch (err) {
       print('Error updating stats $err');
+      rethrow;
     }
   }
 
@@ -565,12 +566,16 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     } else if (wallet.walletType == WalletType.single) {
       List<Utxo> utxoList = await Locator.instance<ApiExplorer>()
           .utxos(address: wallet.masterAccount!.address);
-
-      await _updateDBStatsFromExplorer(
-          currentWallet: wallet, database: database);
-      await syncWalletStorage(
-          utxos: {wallet.masterAccount!.address: utxoList}, wallet: wallet);
-      _updateWalletList(storage: storage, wallet: wallet);
+      try {
+        await _updateDBStatsFromExplorer(
+            currentWallet: wallet, database: database);
+        await syncWalletStorage(
+            utxos: {wallet.masterAccount!.address: utxoList}, wallet: wallet);
+        _updateWalletList(storage: storage, wallet: wallet);
+      } catch (err) {
+        print('Error syncing node wallet $err');
+        rethrow;
+      }
     }
 
     for (int i = 0; i < unconfirmedVtts.length; i++) {

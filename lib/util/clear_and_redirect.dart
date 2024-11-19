@@ -6,7 +6,6 @@ import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 
 void clearAndRedirectToDashboard(BuildContext context) {
   BlocProvider.of<TransactionBloc>(context).add(ResetTransactionEvent());
-  ScaffoldMessenger.of(context).clearSnackBars();
   Navigator.push(
       context,
       CustomPageRoute(

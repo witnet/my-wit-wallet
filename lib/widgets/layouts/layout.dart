@@ -74,6 +74,12 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
     panel.setCloseState();
   }
 
+  String? getLogMessage(String? message) {
+    return (message != null && message.contains(SOCKET_EXCEPTION))
+        ? null
+        : message;
+  }
+
   BlocListener<TransactionBloc, TransactionState> _vttListener(Widget child) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
@@ -101,7 +107,7 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
               theme: theme,
               text: localization.connectionIssue,
-              log: state.message,
+              log: getLogMessage(state.message),
               color: theme.colorScheme.error));
         } else if (state.transactionStatus == TransactionStatus.exception) {
           ScaffoldMessenger.of(context).clearSnackBars();
@@ -141,15 +147,23 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             },
           ));
         }
+        print(
+            'CLEAR SNACKBARS?? ${currentState.status == ExplorerStatus.dataloaded && previousState.status != ExplorerStatus.error}');
+        if (currentState.status == ExplorerStatus.dataloaded &&
+            previousState.status != ExplorerStatus.error) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+        }
         return true;
       },
       listener: (context, state) {
+        print('state:: ${state}');
         if (state.status == ExplorerStatus.error) {
           ScaffoldMessenger.of(context).clearSnackBars();
+          print('*********** show snakcbar error*************');
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
               theme: theme,
               text: localization.connectionIssue,
-              log: state.errorMessage,
+              log: getLogMessage(state.errorMessage),
               color: theme.colorScheme.error));
         }
       },
