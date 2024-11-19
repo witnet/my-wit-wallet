@@ -175,12 +175,10 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   void setAddress(String value, {bool? validate}) {
-    setState(() {
-      _address = AddressInput.dirty(
-          value: value,
-          allowValidation:
-              validate ?? validationUtils.isFormUnFocus([_addressFocusNode]));
-    });
+    _address = AddressInput.dirty(
+        value: value,
+        allowValidation:
+            validate ?? validationUtils.isFormUnFocus([_addressFocusNode]));
   }
 
   void setAmount(String value, {bool? validate}) {
@@ -204,13 +202,11 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   void setAuthorization(String value, {bool? validate}) {
-    setState(() {
       _authorization = AuthorizationInput.dirty(
           withdrawerAddress: _address.value,
           allowValidation:
               validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
           value: value);
-    });
   }
 
   void _setSavedTxData() {
@@ -501,6 +497,7 @@ class RecipientStepState extends State<RecipientStep>
             onTapOutside: (event) {
               _addressFocusNode.unfocus();
             },
+            setAddressCallback: setAddress,
           ))
     ];
   }
@@ -528,6 +525,7 @@ class RecipientStepState extends State<RecipientStep>
           onTapOutside: (event) {
             _addressFocusNode.unfocus();
           },
+          setAddressCallback: setAddress,
         ),
       ),
     ];

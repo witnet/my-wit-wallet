@@ -7,10 +7,10 @@ import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/storage/scanned_content.dart';
-import 'package:my_wit_wallet/widgets/inputs/input_text.dart';
+import 'input_text.dart';
 
-class InputAuthorization extends InputText {
-  InputAuthorization({
+class InputXprv extends InputText {
+  InputXprv({
     required super.focusNode,
     required super.styledTextController,
     super.prefixIcon,
@@ -27,18 +27,20 @@ class InputAuthorization extends InputText {
     super.onTap,
     super.onSuffixTap,
     super.maxLines = 3,
+    this.setXprvCallback,
+    super.decoration,
   });
 
   @override
-  _InputAuthorizationState createState() => _InputAuthorizationState();
+  _InputXprvState createState() => _InputXprvState();
   final String route;
+  final void Function(String)? setXprvCallback;
 }
 
-class _InputAuthorizationState extends State<InputAuthorization> {
+class _InputXprvState extends State<InputXprv> {
   FocusNode _scanQrFocusNode = FocusNode();
   bool isScanQrFocused = false;
   ScannedContent scannedContent = ScannedContent();
-
   @override
   void initState() {
     super.initState();
@@ -49,21 +51,22 @@ class _InputAuthorizationState extends State<InputAuthorization> {
     _scanQrFocusNode.addListener(_handleQrFocus);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    widget.focusNode.removeListener(widget.onFocusChange);
-    _scanQrFocusNode.removeListener(_handleQrFocus);
-  }
-
   _handleQrAddressResults(String value) {
     widget.styledTextController.text = value;
+    widget.setXprvCallback!(value);
   }
 
   _handleQrFocus() {
     setState(() {
       isScanQrFocused = _scanQrFocusNode.hasFocus;
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.focusNode.removeListener(widget.onFocusChange);
+    _scanQrFocusNode.removeListener(_handleQrFocus);
   }
 
   Widget build(BuildContext context) {
@@ -84,7 +87,7 @@ class _InputAuthorizationState extends State<InputAuthorization> {
             context: context,
             decoration: widget.decoration ??
                 InputDecoration(
-                  hintStyle: extendedTheme.monoLargeText!
+                  hintStyle: extendedTheme.monoMediumText!
                       .copyWith(color: theme.textTheme.bodyMedium!.color),
                   hintText: localization.authorizationInputHint,
                   contentPadding: EdgeInsets.all(16),
@@ -96,12 +99,12 @@ class _InputAuthorizationState extends State<InputAuthorization> {
                             isFocus: isScanQrFocused,
                             icon: FontAwesomeIcons.qrcode,
                             onPressed: () => {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => QrScanner(
-                                          currentRoute: widget.route,
-                                          onChanged: (_value) => {})))
+                              {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => QrScanner(
+                                        currentRoute: widget.route,
+                                        onChanged: (_value) => {})))
+                              },
                             },
                           ))
                       : null,

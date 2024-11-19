@@ -29,9 +29,11 @@ class InputAddress extends InputText {
     super.inputFormatters,
     super.decoration,
     super.maxLines = 1,
+    this.setAddressCallback,
   });
 
   final String? route;
+  final void Function(String, {bool? validate})? setAddressCallback;
   @override
   _InputAddressState createState() => _InputAddressState();
 }
@@ -67,6 +69,7 @@ class _InputAddressState extends State<InputAddress> {
 
   _handleQrAddressResults(String value) {
     widget.styledTextController.text = value;
+    widget.setAddressCallback!(value);
   }
 
   Widget build(BuildContext context) {
@@ -74,9 +77,9 @@ class _InputAddressState extends State<InputAddress> {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
 
     widget.styledTextController.setStyle(
-      extendedTheme.monoMediumText!
+      extendedTheme.monoLargeText!
           .copyWith(color: theme.textTheme.bodyMedium!.color),
-      extendedTheme.monoMediumText!.copyWith(color: Colors.black),
+      extendedTheme.monoLargeText!.copyWith(color: Colors.black),
     );
 
     return Column(
@@ -87,7 +90,8 @@ class _InputAddressState extends State<InputAddress> {
               context: context,
               decoration: widget.decoration ??
                   InputDecoration(
-                    hintStyle: extendedTheme.monoMediumText,
+                    hintStyle: extendedTheme.monoLargeText!
+                        .copyWith(color: theme.textTheme.bodyMedium!.color),
                     hintText: localization.recipientAddress,
                     suffixIcon: !Platform.isWindows && !Platform.isLinux
                         ? Semantics(

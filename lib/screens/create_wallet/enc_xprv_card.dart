@@ -9,6 +9,7 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/widgets/inputs/input_xprv.dart';
 import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
 import 'package:my_wit_wallet/widgets/inputs/input_password.dart';
@@ -99,12 +100,10 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   }
 
   void setXprv(String value) {
-    setState(() {
       xprv = XprvInput.dirty(
           xprvType: _xprvType,
           allowValidation: validationUtils.isFormUnFocus(_formFocusElements),
           value: value);
-    });
   }
 
   void clearForm() {
@@ -134,7 +133,9 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   Widget _buildXprvInput() {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
-    return TextField(
+    return InputXprv(
+      setXprvCallback: setXprv,
+      route: CreateWalletScreen.route,
       decoration: InputDecoration(
         hintStyle: extendedTheme.monoLargeText!.copyWith(
             color: theme.textTheme.titleMedium!.color!.withOpacity(0.5)),
@@ -170,12 +171,10 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
         errorText: xprv.error,
       ),
       keyboardType: TextInputType.text,
-      textInputAction: TextInputAction.go,
       focusNode: _textFocusNode,
-      style: extendedTheme.monoLargeText,
       maxLines: 3,
-      controller: _textController,
-      onSubmitted: (value) async {
+      styledTextController: _textController,
+      onFieldSubmitted: (value) async {
         if (_xprvType == CreateWalletType.encryptedXprv) {
           _passFocusNode.requestFocus();
         } else {
