@@ -5,7 +5,7 @@ import 'package:my_wit_wallet/bloc/crypto/api_crypto.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
-import 'package:my_wit_wallet/widgets/input_password.dart';
+import 'package:my_wit_wallet/widgets/inputs/input_password.dart';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'package:my_wit_wallet/widgets/styled_text_controller.dart';

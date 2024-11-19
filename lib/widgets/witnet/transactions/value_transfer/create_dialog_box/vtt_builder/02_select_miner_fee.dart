@@ -12,7 +12,7 @@ import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/storage/database/balance_info.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/clickable_box.dart';
-import 'package:my_wit_wallet/widgets/input_amount.dart';
+import 'package:my_wit_wallet/widgets/inputs/input_amount.dart';
 import 'package:my_wit_wallet/widgets/toggle_switch.dart';
 import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

@@ -5,7 +5,7 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/api_create_wallet.dart'
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/widgets/input_mnemonic.dart';
+import 'package:my_wit_wallet/widgets/inputs/input_mnemonic.dart';
 import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 import 'package:witnet/crypto.dart';
 

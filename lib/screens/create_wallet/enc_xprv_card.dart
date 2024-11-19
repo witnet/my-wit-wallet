@@ -11,7 +11,7 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
-import 'package:my_wit_wallet/widgets/input_password.dart';
+import 'package:my_wit_wallet/widgets/inputs/input_password.dart';
 import 'package:my_wit_wallet/screens/create_wallet/nav_action.dart';
 import 'package:my_wit_wallet/widgets/select.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';

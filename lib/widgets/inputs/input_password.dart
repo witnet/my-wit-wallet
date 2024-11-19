@@ -1,47 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
-import 'package:my_wit_wallet/widgets/input_text.dart';
-import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
+import 'package:my_wit_wallet/widgets/inputs/input_text.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
 
 class InputPassword extends InputText {
-  InputPassword(
-      {required this.showPassFocusNode,
-      IconData? autoFocusIconData,
-      IconData? prefixIcon,
-      required FocusNode focusNode,
-      String? errorText,
-      String? Function(String?)? validator,
-      String? hint,
-      TextInputType? keyboardType,
-      required StyledTextController styledTextController,
-      bool obscureText = false,
-      void Function(String)? onChanged,
-      void Function()? onEditingComplete,
-      void Function(String)? onFieldSubmitted,
-      void Function(PointerDownEvent)? onTapOutside,
-      void Function()? onTap,
-      void Function()? onSuffixTap,
-      List<TextInputFormatter>? inputFormatters})
-      : super(
-          prefixIcon: prefixIcon,
-          focusNode: focusNode,
-          errorText: errorText,
-          validator: validator,
-          hint: hint,
-          keyboardType: keyboardType,
-          styledTextController: styledTextController,
-          obscureText: obscureText,
-          onChanged: onChanged,
-          onEditingComplete: onEditingComplete,
-          onFieldSubmitted: onFieldSubmitted,
-          onTapOutside: onTapOutside,
-          onTap: onTap,
-          onSuffixTap: onSuffixTap,
-          inputFormatters: inputFormatters,
-          maxLines: 1,
-        );
+  InputPassword({
+    required this.showPassFocusNode,
+    super.prefixIcon,
+    required super.focusNode,
+    super.errorText,
+    super.validator,
+    super.hint,
+    super.keyboardType,
+    required super.styledTextController,
+    super.obscureText = false,
+    super.onChanged,
+    super.onEditingComplete,
+    super.onFieldSubmitted,
+    super.onTapOutside,
+    super.onTap,
+    super.onSuffixTap,
+    super.inputFormatters,
+    maxLines = 1,
+  });
+
   final FocusNode? showPassFocusNode;
   @override
   _InputLoginState createState() => _InputLoginState();
