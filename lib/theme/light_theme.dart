@@ -336,4 +336,7 @@ ThemeData lightTheme = ThemeData(
     timePickerTheme: timePickerTheme,
     inputDecorationTheme: inputDecorationTheme,
     colorScheme: ColorScheme.light().copyWith(
-        surface: WitnetPallet.white, outline: WitnetPallet.transparent));
+      primary: primaryColor,
+      surface: WitnetPallet.white,
+      outline: WitnetPallet.transparent,
+    ));

@@ -5,11 +5,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/widgets/input_text.dart';
 import 'package:my_wit_wallet/widgets/styled_text_controller.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
-import 'package:my_wit_wallet/widgets/validations/address_input.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/qr_scanner.dart';
 
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
+import 'package:my_wit_wallet/util/storage/scanned_content.dart';
 
 class InputAddress extends InputText {
   InputAddress({
@@ -56,15 +56,17 @@ class InputAddress extends InputText {
 }
 
 class _InputAddressState extends State<InputAddress> {
-  AddressInput address = AddressInput.pure();
   FocusNode _scanQrFocusNode = FocusNode();
   bool isScanQrFocused = false;
-
+  ScannedContent scannedContent = ScannedContent();
   TextSelection? lastSelection;
 
   @override
   void initState() {
     super.initState();
+    if (scannedContent.scannedContent != null) {
+      _handleQrAddressResults(scannedContent.scannedContent!);
+    }
     widget.focusNode.addListener(widget.onFocusChange);
     _scanQrFocusNode.addListener(_handleQrFocus);
   }
@@ -80,6 +82,10 @@ class _InputAddressState extends State<InputAddress> {
     setState(() {
       isScanQrFocused = _scanQrFocusNode.hasFocus;
     });
+  }
+
+  _handleQrAddressResults(String value) {
+    widget.styledTextController.text = value;
   }
 
   Widget build(BuildContext context) {
