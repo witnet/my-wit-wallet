@@ -147,8 +147,6 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
             },
           ));
         }
-        print(
-            'CLEAR SNACKBARS?? ${currentState.status == ExplorerStatus.dataloaded && previousState.status != ExplorerStatus.error}');
         if (currentState.status == ExplorerStatus.dataloaded &&
             previousState.status != ExplorerStatus.error) {
           ScaffoldMessenger.of(context).clearSnackBars();
@@ -156,10 +154,8 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
         return true;
       },
       listener: (context, state) {
-        print('state:: ${state}');
         if (state.status == ExplorerStatus.error) {
           ScaffoldMessenger.of(context).clearSnackBars();
-          print('*********** show snakcbar error*************');
           ScaffoldMessenger.of(context).showSnackBar(buildErrorSnackbar(
               theme: theme,
               text: localization.connectionIssue,
