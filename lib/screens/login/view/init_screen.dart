@@ -51,6 +51,7 @@ class InitScreenState extends State<InitScreen> with TickerProviderStateMixin {
 
   Future<Widget> loadInitialScreen() async {
     ApiDatabase database = Locator.instance<ApiDatabase>();
+    await database.loadOptimizeDbFile();
     WalletStorage storage = await database.loadWalletsDatabase();
     if (storage.wallets.isNotEmpty) {
       // There are wallets stored
