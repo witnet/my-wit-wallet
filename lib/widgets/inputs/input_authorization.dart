@@ -42,8 +42,8 @@ class _InputAuthorizationState extends State<InputAuthorization> {
   @override
   void initState() {
     super.initState();
-    if (scannedContent.scannedContent != null) {
-      _handleQrAddressResults(scannedContent.scannedContent!);
+    if (scannedContent.scannedAuthorization != null) {
+      _handleQrAddressResults(scannedContent.scannedAuthorization!);
     }
     widget.focusNode.addListener(widget.onFocusChange);
     _scanQrFocusNode.addListener(_handleQrFocus);
@@ -100,8 +100,10 @@ class _InputAuthorizationState extends State<InputAuthorization> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => QrScanner(
-                                          currentRoute: widget.route,
-                                          onChanged: (_value) => {})))
+                                            currentRoute: widget.route,
+                                            onChanged: (_value) => {},
+                                            type: ScannedType.authorization,
+                                          )))
                             },
                           ))
                       : null,

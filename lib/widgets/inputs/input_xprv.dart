@@ -44,8 +44,8 @@ class _InputXprvState extends State<InputXprv> {
   @override
   void initState() {
     super.initState();
-    if (scannedContent.scannedContent != null) {
-      _handleQrAddressResults(scannedContent.scannedContent!);
+    if (scannedContent.scannedXprv != null) {
+      _handleQrAddressResults(scannedContent.scannedXprv!);
     }
     widget.focusNode.addListener(widget.onFocusChange);
     _scanQrFocusNode.addListener(_handleQrFocus);
@@ -102,8 +102,10 @@ class _InputXprvState extends State<InputXprv> {
                               {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => QrScanner(
-                                        currentRoute: widget.route,
-                                        onChanged: (_value) => {})))
+                                          currentRoute: widget.route,
+                                          onChanged: (_value) => {},
+                                          type: ScannedType.xprv,
+                                        )))
                               },
                             },
                           ))

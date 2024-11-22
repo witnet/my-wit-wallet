@@ -202,11 +202,11 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   void setAuthorization(String value, {bool? validate}) {
-      _authorization = AuthorizationInput.dirty(
-          withdrawerAddress: _address.value,
-          allowValidation:
-              validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
-          value: value);
+    _authorization = AuthorizationInput.dirty(
+        withdrawerAddress: _address.value,
+        allowValidation:
+            validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
+        value: value);
   }
 
   void _setSavedTxData() {

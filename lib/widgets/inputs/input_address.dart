@@ -47,8 +47,8 @@ class _InputAddressState extends State<InputAddress> {
   @override
   void initState() {
     super.initState();
-    if (scannedContent.scannedContent != null) {
-      _handleQrAddressResults(scannedContent.scannedContent!);
+    if (scannedContent.scannedAddress != null) {
+      _handleQrAddressResults(scannedContent.scannedAddress!);
     }
     widget.focusNode.addListener(widget.onFocusChange);
     _scanQrFocusNode.addListener(_handleQrFocus);
@@ -98,11 +98,14 @@ class _InputAddressState extends State<InputAddress> {
                             label: localization.scanQrCodeLabel,
                             child: SuffixIcon(
                                 onPressed: () => {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) => QrScanner(
-                                                  currentRoute: widget.route!,
-                                                  onChanged: (_value) => {})))
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (context) => QrScanner(
+                                          currentRoute: widget.route!,
+                                          onChanged: (_value) => {},
+                                          type: ScannedType.address,
+                                        ),
+                                      ))
                                     },
                                 icon: FontAwesomeIcons.qrcode,
                                 isFocus: isScanQrFocused,
