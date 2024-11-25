@@ -403,6 +403,7 @@ class RecipientStepState extends State<RecipientStep>
           formEntry: InputSlider(
             hint: localization.amount,
             minAmount: 0.0,
+            inputFormatters: [WitValueFormatter()],
             maxAmount: balance.standardizeWitUnits(truncate: -1).toDouble(),
             errorText: _stakeAmount.error,
             styledTextController: _stakeAmountController,
