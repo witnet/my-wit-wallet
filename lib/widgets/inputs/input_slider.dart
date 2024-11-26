@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 
 import 'input_text.dart';
 
@@ -49,6 +50,16 @@ class _InputSliderState extends State<InputSlider> {
     widget.focusNode.removeListener(widget.onFocusChange);
   }
 
+  double getSliderValue({maxAmount, value, minAmount}) {
+    if (value >= maxAmount) {
+      return maxAmount;
+    } else if (value <= minAmount) {
+      return minAmount;
+    } else {
+      return value;
+    }
+  }
+
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -62,7 +73,6 @@ class _InputSliderState extends State<InputSlider> {
     bool isSliderDisabled = widget.maxAmount < widget.minAmount;
     double maxAmount = isSliderDisabled ? 0 : widget.maxAmount;
     double minAmount = isSliderDisabled ? 0 : widget.minAmount;
-
     try {
       sliderValue = inputValue != '' ? double.parse(inputValue) : 0;
     } catch (err) {
@@ -85,8 +95,8 @@ class _InputSliderState extends State<InputSlider> {
       SizedBox(height: 8),
       Column(children: [
         Slider(
-          value:
-              sliderValue >= widget.maxAmount ? widget.maxAmount : sliderValue,
+          value: getSliderValue(
+              maxAmount: maxAmount, minAmount: minAmount, value: sliderValue),
           max: maxAmount,
           min: minAmount,
           label: sliderValue.toString(),
@@ -95,10 +105,12 @@ class _InputSliderState extends State<InputSlider> {
         ),
         Row(
           children: [
-            Text('Min ${widget.minAmount} ${WIT_UNIT[WitUnit.Wit]}',
+            Text(
+                'Min ${widget.minAmount.standardizeWitUnits(inputUnit: WitUnit.Wit, outputUnit: WitUnit.Wit)} ${WIT_UNIT[WitUnit.Wit]}',
                 style: theme.textTheme.bodySmall),
             Spacer(),
-            Text('Max ${widget.maxAmount} ${WIT_UNIT[WitUnit.Wit]}',
+            Text(
+                'Max ${widget.maxAmount.standardizeWitUnits(inputUnit: WitUnit.Wit, outputUnit: WitUnit.Wit)} ${WIT_UNIT[WitUnit.Wit]}',
                 style: theme.textTheme.bodySmall),
           ],
         )
