@@ -275,7 +275,6 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
               onEditingComplete: () {
                 _setAbsoluteFee();
               },
-              amount: _minerFeeWit,
             ),
             SizedBox(height: 16),
             Row(

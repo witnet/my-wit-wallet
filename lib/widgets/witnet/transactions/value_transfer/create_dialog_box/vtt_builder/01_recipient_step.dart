@@ -122,6 +122,11 @@ class RecipientStepState extends State<RecipientStep>
       int weeksToAdd = 2;
       setMinimunTimelock(date.add(Duration(days: (7 * weeksToAdd).toInt())));
     }
+    if (isStakeTarnsaction) {
+      _stakeAmountController.text = MIN_STAKING_AMOUNT_NANOWIT
+          .standardizeWitUnits()
+          .formatWithCommaSeparator();
+    }
   }
 
   @override
@@ -134,6 +139,8 @@ class RecipientStepState extends State<RecipientStep>
     _amountFocusNode.dispose();
     _authorizationController.dispose();
     _authorizationFocusNode.dispose();
+    _stakeAmountController.dispose();
+    _stakeAmountFocusNode.dispose();
     super.dispose();
   }
 
@@ -385,8 +392,6 @@ class RecipientStepState extends State<RecipientStep>
           onTapOutside: (PointerDownEvent? p) {
             _amountFocusNode.unfocus();
           },
-          amount: _amount,
-          route: widget.routeName,
         ),
       ),
     ];

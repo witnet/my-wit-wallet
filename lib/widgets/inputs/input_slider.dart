@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
+import 'package:my_wit_wallet/widgets/inputs/input_amount.dart';
 
 import 'input_text.dart';
 
 class InputSlider extends InputText {
   InputSlider({
-    String? route,
     required this.maxAmount,
     required this.minAmount,
     required super.focusNode,
@@ -80,16 +80,17 @@ class _InputSliderState extends State<InputSlider> {
     }
     return Column(children: [
       Container(
-        child: widget.buildInput(
-          context: context,
-          decoration: InputDecoration(
-            hintText: widget.hint ?? localization.inputAmountHint,
-            errorText: widget.errorText,
-            prefixIcon:
-                widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
-            suffixText: WIT_UNIT[WitUnit.Wit],
-            suffixIconConstraints: BoxConstraints(minHeight: 44),
-          ),
+        child: InputAmount(
+          hint: localization.amount,
+          validator: (String? amount) => widget.errorText ?? null,
+          errorText: widget.errorText,
+          styledTextController: widget.styledTextController,
+          focusNode: widget.focusNode,
+          keyboardType: TextInputType.number,
+          onChanged: widget.onChanged,
+          onTap: widget.onTap,
+          onFieldSubmitted: widget.onFieldSubmitted,
+          onEditingComplete: widget.onEditingComplete,
         ),
       ),
       SizedBox(height: 8),

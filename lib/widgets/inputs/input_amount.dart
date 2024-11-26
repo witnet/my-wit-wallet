@@ -3,11 +3,9 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/widgets/buttons/text_btn.dart';
 import 'package:my_wit_wallet/widgets/inputs/input_text.dart';
-import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
 
 class InputAmount extends InputText {
   InputAmount({
-    required this.amount,
     required super.focusNode,
     required super.styledTextController,
     super.prefixIcon,
@@ -16,7 +14,6 @@ class InputAmount extends InputText {
     super.hint,
     super.keyboardType,
     super.obscureText,
-    this.route,
     super.onChanged,
     super.onEditingComplete,
     super.onFieldSubmitted,
@@ -26,16 +23,11 @@ class InputAmount extends InputText {
     super.inputFormatters,
   });
 
-  final VttAmountInput amount;
-  final String? route;
-
   @override
   _InputAmountState createState() => _InputAmountState();
 }
 
 class _InputAmountState extends State<InputAmount> {
-  TextSelection? lastSelection;
-
   @override
   void initState() {
     super.initState();
