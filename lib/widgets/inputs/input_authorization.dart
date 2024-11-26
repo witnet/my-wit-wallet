@@ -27,7 +27,10 @@ class InputAuthorization extends InputText {
     super.onTap,
     super.onSuffixTap,
     super.maxLines = 3,
+    this.setAuthorizationCallback,
   });
+
+  final void Function(String, {bool? validate})? setAuthorizationCallback;
 
   @override
   _InputAuthorizationState createState() => _InputAuthorizationState();
@@ -43,7 +46,7 @@ class _InputAuthorizationState extends State<InputAuthorization> {
   void initState() {
     super.initState();
     if (scannedContent.scannedAuthorization != null) {
-      _handleQrAddressResults(scannedContent.scannedAuthorization!);
+      _handleQrAuthorizationResults(scannedContent.scannedAuthorization!);
     }
     widget.focusNode.addListener(widget.onFocusChange);
     _scanQrFocusNode.addListener(_handleQrFocus);
@@ -56,7 +59,8 @@ class _InputAuthorizationState extends State<InputAuthorization> {
     _scanQrFocusNode.removeListener(_handleQrFocus);
   }
 
-  _handleQrAddressResults(String value) {
+  _handleQrAuthorizationResults(String value) {
+    widget.setAuthorizationCallback!(value);
     widget.styledTextController.text = value;
   }
 

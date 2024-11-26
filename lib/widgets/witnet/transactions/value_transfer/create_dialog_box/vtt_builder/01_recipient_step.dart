@@ -456,6 +456,7 @@ class RecipientStepState extends State<RecipientStep>
         focusNode: _authorizationFocusNode,
         styledTextController: _authorizationController,
         errorText: _authorization.error,
+        setAuthorizationCallback: setAuthorization,
         onFieldSubmitted: (value) async {
           _amountFocusNode.requestFocus();
         },
