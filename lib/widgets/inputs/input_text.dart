@@ -30,6 +30,7 @@ abstract class InputText extends StatefulWidget {
     this.textInputAction,
     this.maxLines,
     this.minLines,
+    this.enabled = true,
   });
   final IconData? prefixIcon;
   final FocusNode focusNode;
@@ -52,11 +53,13 @@ abstract class InputText extends StatefulWidget {
   final int? maxLines;
   final int? minLines;
   final TextInputAction? textInputAction;
+  final bool enabled;
 
   Widget buildInput(
       {required BuildContext context, InputDecoration? decoration = null}) {
     return TextFormField(
       decoration: decoration ?? decoration,
+      enabled: enabled,
       minLines: minLines,
       maxLines: maxLines ?? 1,
       keyboardType: keyboardType,

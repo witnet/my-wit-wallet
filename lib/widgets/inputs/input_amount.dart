@@ -5,7 +5,6 @@ import 'package:my_wit_wallet/widgets/buttons/text_btn.dart';
 import 'package:my_wit_wallet/widgets/inputs/input_text.dart';
 import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
 
-
 class InputAmount extends InputText {
   InputAmount({
     required this.amount,

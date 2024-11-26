@@ -100,10 +100,10 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   }
 
   void setXprv(String value) {
-      xprv = XprvInput.dirty(
-          xprvType: _xprvType,
-          allowValidation: validationUtils.isFormUnFocus(_formFocusElements),
-          value: value);
+    xprv = XprvInput.dirty(
+        xprvType: _xprvType,
+        allowValidation: validationUtils.isFormUnFocus(_formFocusElements),
+        value: value);
   }
 
   void clearForm() {

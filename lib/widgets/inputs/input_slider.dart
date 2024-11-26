@@ -24,6 +24,7 @@ class InputSlider extends InputText {
     super.onTap,
     super.onSuffixTap,
     super.inputFormatters,
+    super.enabled,
   });
 
   final double maxAmount;
@@ -58,6 +59,10 @@ class _InputSliderState extends State<InputSlider> {
 
     String? inputValue = widget.styledTextController.text;
     double sliderValue = 0;
+    bool isSliderDisabled = widget.maxAmount < widget.minAmount;
+    double maxAmount = isSliderDisabled ? 0 : widget.maxAmount;
+    double minAmount = isSliderDisabled ? 0 : widget.minAmount;
+
     try {
       sliderValue = inputValue != '' ? double.parse(inputValue) : 0;
     } catch (err) {
@@ -82,8 +87,8 @@ class _InputSliderState extends State<InputSlider> {
         Slider(
           value:
               sliderValue >= widget.maxAmount ? widget.maxAmount : sliderValue,
-          max: widget.maxAmount,
-          min: widget.minAmount,
+          max: maxAmount,
+          min: minAmount,
           label: sliderValue.toString(),
           onChanged: (double value) =>
               {widget.onChanged!(value.toStringAsFixed(9))},

@@ -202,11 +202,11 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   void setAuthorization(String value, {bool? validate}) {
-      _authorization = AuthorizationInput.dirty(
-          withdrawerAddress: _address.value,
-          allowValidation:
-              validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
-          value: value);
+    _authorization = AuthorizationInput.dirty(
+        withdrawerAddress: _address.value,
+        allowValidation:
+            validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
+        value: value);
   }
 
   void _setSavedTxData() {
@@ -396,15 +396,21 @@ class RecipientStepState extends State<RecipientStep>
     int balance = isUnstakeTransaction
         ? stakeInfo.stakedNanoWit
         : balanceInfo.availableNanoWit;
+    double standardizedBalance =
+        balance.standardizeWitUnits(truncate: -1).toDouble();
+    double maxAmount = standardizedBalance > MAX_STAKING_AMOUNT
+        ? MAX_STAKING_AMOUNT
+        : standardizedBalance;
     return [
       SizedBox(height: 16),
       LabeledFormEntry(
           label: localization.amount,
           formEntry: InputSlider(
             hint: localization.amount,
-            minAmount: 0.0,
+            enabled: MIN_STAKING_AMOUNT < maxAmount,
+            minAmount: MIN_STAKING_AMOUNT,
             inputFormatters: [WitValueFormatter()],
-            maxAmount: balance.standardizeWitUnits(truncate: -1).toDouble(),
+            maxAmount: maxAmount,
             errorText: _stakeAmount.error,
             styledTextController: _stakeAmountController,
             focusNode: _stakeAmountFocusNode,

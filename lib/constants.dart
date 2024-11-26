@@ -193,3 +193,6 @@ const List<String> CUSTOM_ICON_NAMES = [
   'myWitWallet-title',
   'myWitWallet-title-dark'
 ];
+
+double MAX_STAKING_AMOUNT = 10000000;
+double MIN_STAKING_AMOUNT = 0;
