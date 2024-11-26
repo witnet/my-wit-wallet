@@ -355,5 +355,7 @@
 	"feesAndRewards": "Tasas y Recompensas",
 	"totalDataSynced": "Resumen de la sincronización",
 	"deleteWalletSettings": "Configuración: Eliminar wallet",
-	"welcomeBack": "Bienvenido de nuevo"
+	"welcomeBack": "Bienvenido de nuevo",
+	"disableStakeTitle": "No tienes suficiente balance para hacer Stake",
+	"disableStakeMessage": "La cantidad minima para hacer Stake es de 10.000 WIT"
 }

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/screens/stake/stake_screen.dart';
 import 'package:my_wit_wallet/screens/unstake/unstake_screen.dart';
@@ -15,6 +16,7 @@ import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/disable_stake_modal.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/empty_stake_modal.dart';
 
 typedef void VoidCallback();
@@ -30,15 +32,25 @@ class StakeUnstakeButtons extends StatelessWidget {
     late StakedBalanceInfo stakeInfo = currentWallet.stakedNanoWit();
 
     Future<void> _goToStakeScreen() async {
-      BlocProvider.of<TransactionBloc>(context).add(ResetTransactionEvent());
-      Navigator.push(
-          context,
-          CustomPageRoute(
-              builder: (BuildContext context) {
-                return StakeScreen();
-              },
-              maintainState: false,
-              settings: RouteSettings(name: StakeScreen.route)));
+      if (MIN_STAKING_AMOUNT_NANOWIT <
+          currentWallet.balanceNanoWit().availableNanoWit) {
+        BlocProvider.of<TransactionBloc>(context).add(ResetTransactionEvent());
+        Navigator.push(
+            context,
+            CustomPageRoute(
+                builder: (BuildContext context) {
+                  return StakeScreen();
+                },
+                maintainState: false,
+                settings: RouteSettings(name: StakeScreen.route)));
+      } else {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        buildDisableStakeModal(
+            theme: theme,
+            context: context,
+            originRouteName: DashboardScreen.route,
+            originRoute: DashboardScreen());
+      }
     }
 
     Future<void> _goToUnstakeScreen() async {

@@ -398,17 +398,20 @@ class RecipientStepState extends State<RecipientStep>
         : balanceInfo.availableNanoWit;
     double standardizedBalance =
         balance.standardizeWitUnits(truncate: -1).toDouble();
-    double maxAmount = standardizedBalance > MAX_STAKING_AMOUNT
-        ? MAX_STAKING_AMOUNT
-        : standardizedBalance;
+    double maxWitAmount =
+        MAX_STAKING_AMOUNT_NANOWIT.standardizeWitUnits(truncate: -1).toDouble();
+    double minWitAmount =
+        MIN_STAKING_AMOUNT_NANOWIT.standardizeWitUnits(truncate: -1).toDouble();
+    double maxAmount =
+        standardizedBalance > maxWitAmount ? maxWitAmount : standardizedBalance;
     return [
       SizedBox(height: 16),
       LabeledFormEntry(
           label: localization.amount,
           formEntry: InputSlider(
             hint: localization.amount,
-            enabled: MIN_STAKING_AMOUNT < maxAmount,
-            minAmount: MIN_STAKING_AMOUNT,
+            enabled: minWitAmount < maxAmount,
+            minAmount: minWitAmount,
             inputFormatters: [WitValueFormatter()],
             maxAmount: maxAmount,
             errorText: _stakeAmount.error,

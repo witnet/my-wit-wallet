@@ -355,5 +355,7 @@
 	"feesAndRewards": "Fees and rewards",
 	"totalDataSynced": "Scan summary",
 	"welcomeBack": "Welcome back",
-	"deleteWalletSettings": "Settings: Delete wallet"
+	"deleteWalletSettings": "Settings: Delete wallet",
+	"disableStakeTitle": "You don't have enough balance to stake",
+	"disableStakeMessage": "The minimun amount to stake is 10.000 WIT"
 }
