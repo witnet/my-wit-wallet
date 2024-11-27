@@ -122,6 +122,8 @@ class RecipientStepState extends State<RecipientStep>
       int weeksToAdd = 2;
       setMinimunTimelock(date.add(Duration(days: (7 * weeksToAdd).toInt())));
     }
+    _addressFocusNode.addListener(() => validateForm());
+    _amountFocusNode.addListener(() => validateForm());
   }
 
   @override
@@ -546,8 +548,6 @@ class RecipientStepState extends State<RecipientStep>
 
   _buildForm(BuildContext context, ThemeData theme) {
     final theme = Theme.of(context);
-    _addressFocusNode.addListener(() => validateForm());
-    _amountFocusNode.addListener(() => validateForm());
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.disabled,
