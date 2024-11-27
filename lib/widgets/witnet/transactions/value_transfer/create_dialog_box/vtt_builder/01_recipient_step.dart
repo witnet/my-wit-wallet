@@ -18,7 +18,7 @@ import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/widgets/validations/address_input.dart';
 import 'package:my_wit_wallet/widgets/validations/authorization_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
-import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
+import 'package:my_wit_wallet/widgets/validations/tx_amount_input.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/timelock_input.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/timelock_picker.dart';
 import 'package:witnet/schema.dart';
@@ -62,13 +62,10 @@ class RecipientStepState extends State<RecipientStep>
   late AnimationController _loadingController;
   final _formKey = GlobalKey<FormState>();
   AddressInput _address = AddressInput.pure();
-  VttAmountInput _amount = VttAmountInput.pure();
-  VttAmountInput _stakeAmount = VttAmountInput.pure();
+  TxAmountInput _amount = TxAmountInput.pure();
   AuthorizationInput _authorization = AuthorizationInput.pure();
   final _amountController = StyledTextController();
   final _amountFocusNode = FocusNode();
-  final _stakeAmountController = StyledTextController();
-  final _stakeAmountFocusNode = FocusNode();
   final _addressController = StyledTextController();
   final _addressFocusNode = FocusNode();
   final _authorizationController = StyledTextController();
@@ -122,11 +119,6 @@ class RecipientStepState extends State<RecipientStep>
       int weeksToAdd = 2;
       setMinimunTimelock(date.add(Duration(days: (7 * weeksToAdd).toInt())));
     }
-    if (isStakeTarnsaction) {
-      _stakeAmountController.text = MIN_STAKING_AMOUNT_NANOWIT
-          .standardizeWitUnits()
-          .formatWithCommaSeparator();
-    }
   }
 
   @override
@@ -139,8 +131,6 @@ class RecipientStepState extends State<RecipientStep>
     _amountFocusNode.dispose();
     _authorizationController.dispose();
     _authorizationFocusNode.dispose();
-    _stakeAmountController.dispose();
-    _stakeAmountFocusNode.dispose();
     super.dispose();
   }
 
@@ -190,10 +180,11 @@ class RecipientStepState extends State<RecipientStep>
 
   void setAmount(String value, {bool? validate}) {
     setState(() {
-      _amount = VttAmountInput.dirty(
+      _amount = TxAmountInput.dirty(
           availableNanoWit: isUnstakeTransaction
               ? stakeInfo.stakedNanoWit
               : balanceInfo.availableNanoWit,
+          isStakeAmount: isStakeTarnsaction,
           allowValidation:
               validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
           value: value);
@@ -217,6 +208,11 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   void _setSavedTxData() {
+    if (isStakeTarnsaction) {
+      _amountController.text =
+          MIN_STAKING_AMOUNT_NANOWIT.standardizeWitUnits().toString();
+      setAmount(_amountController.text, validate: false);
+    }
     if (vttBloc.state.transaction.hasOutput(widget.transactionType)) {
       String? savedAddress =
           vttBloc.state.transaction.get(widget.transactionType) != null
@@ -419,20 +415,20 @@ class RecipientStepState extends State<RecipientStep>
             minAmount: minWitAmount,
             inputFormatters: [WitValueFormatter()],
             maxAmount: maxAmount,
-            errorText: _stakeAmount.error,
-            styledTextController: _stakeAmountController,
-            focusNode: _stakeAmountFocusNode,
+            errorText: _amount.error,
+            styledTextController: _amountController,
+            focusNode: _amountFocusNode,
             keyboardType: TextInputType.number,
             onChanged: (String value) {
-              _stakeAmountController.text = value;
+              _amountController.text = value;
               setAmount(value);
             },
             onSuffixTap: () => {
+              _amountController.text = maxAmountWit,
               setAmount(maxAmountWit),
-              _stakeAmountController.text = maxAmountWit,
             },
             onTap: () {
-              _stakeAmountFocusNode.requestFocus();
+              _amountFocusNode.requestFocus();
             },
             onFieldSubmitted: (String value) {
               // hide keyboard

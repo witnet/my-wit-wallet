@@ -10,6 +10,7 @@ void buildEmptyStakeModal({
   required ThemeData theme,
   required BuildContext context,
   required String originRouteName,
+  bool allowStake = true,
   required Widget originRoute,
   String iconName = 'empty',
 }) {
@@ -20,30 +21,33 @@ void buildEmptyStakeModal({
             padding: EdgeInsets.zero,
             text: localization.close,
             sizeCover: false,
-            type: CustomBtnType.secondary,
+            type: allowStake ? CustomBtnType.secondary : CustomBtnType.primary,
             enabled: true,
             onPressed: () => {
                   Navigator.popUntil(
                       context, ModalRoute.withName(originRouteName)),
                   ScaffoldMessenger.of(context).clearSnackBars(),
                 }),
-        CustomButton(
-            padding: EdgeInsets.zero,
-            text: localization.stake,
-            sizeCover: false,
-            type: CustomBtnType.primary,
-            enabled: true,
-            onPressed: () => {
-                  Navigator.push(
-                      context,
-                      CustomPageRoute(
-                          builder: (BuildContext context) {
-                            return StakeScreen();
-                          },
-                          maintainState: false,
-                          settings: RouteSettings(name: StakeScreen.route))),
-                  ScaffoldMessenger.of(context).clearSnackBars(),
-                }),
+        allowStake
+            ? CustomButton(
+                padding: EdgeInsets.zero,
+                text: localization.stake,
+                sizeCover: false,
+                type: CustomBtnType.primary,
+                enabled: true,
+                onPressed: () => {
+                      Navigator.push(
+                          context,
+                          CustomPageRoute(
+                              builder: (BuildContext context) {
+                                return StakeScreen();
+                              },
+                              maintainState: false,
+                              settings:
+                                  RouteSettings(name: StakeScreen.route))),
+                      ScaffoldMessenger.of(context).clearSnackBars(),
+                    })
+            : Container(),
       ],
       image: Container(
           width: 100, height: 100, child: svgImage(name: iconName, height: 50)),

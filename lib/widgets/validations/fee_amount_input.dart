@@ -1,5 +1,5 @@
 import 'package:my_wit_wallet/constants.dart';
-import 'package:my_wit_wallet/widgets/validations/vtt_amount_input.dart';
+import 'package:my_wit_wallet/widgets/validations/tx_amount_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
@@ -10,7 +10,7 @@ Map<FeeInputError, String> errorMap = {
   FeeInputError.minFee: localization.validationMinFee,
 };
 
-class FeeAmountInput extends VttAmountInput {
+class FeeAmountInput extends TxAmountInput {
   final int availableNanoWit;
   final int? weightedAmount;
   final bool allowZero;
@@ -38,18 +38,28 @@ class FeeAmountInput extends VttAmountInput {
       this.allowZero = false,
       this.allowValidation = false})
       : super.dirty(
-            value: value,
-            allowZero: allowZero,
-            allowValidation: allowValidation,
-            availableNanoWit: availableNanoWit,
-            weightedAmount: weightedAmount);
+          value: value,
+          allowZero: allowZero,
+          allowValidation: allowValidation,
+          availableNanoWit: availableNanoWit,
+        );
 
   // Override notEnoughFunds to handle validating taking into account the vttAmount
   @override
   bool notEnoughFunds({bool avoidWeightedAmountCheck = false}) {
-    int nanoWitAmount = super
-        .getNanoWitAmount(avoidWeightedAmountCheck: avoidWeightedAmountCheck);
+    int nanoWitAmount =
+        getNanoWitAmount(avoidWeightedAmountCheck: avoidWeightedAmountCheck);
     return this.availableNanoWit < (nanoWitAmount + this.vttAmount);
+  }
+
+  int getNanoWitAmount({bool avoidWeightedAmountCheck = false}) {
+    int nanoWitAmount;
+    if (!avoidWeightedAmountCheck) {
+      nanoWitAmount = this.weightedAmount ?? witAmountToNanoWitNumber(value);
+    } else {
+      nanoWitAmount = witAmountToNanoWitNumber(value);
+    }
+    return nanoWitAmount;
   }
 
   // Override validator to handle validating a given input value.

@@ -11,6 +11,8 @@ enum AmountInputError {
   zero,
   decimals,
   invalidNumber,
+  lessThanMin,
+  greaterThanMax
 }
 
 Map<AmountInputError, String> errorMap = {
@@ -19,29 +21,32 @@ Map<AmountInputError, String> errorMap = {
   AmountInputError.zero: 'Amount cannot be zero',
   AmountInputError.invalid: 'Invalid amount',
   AmountInputError.decimals: 'Only 9 decimal digits supported',
+  AmountInputError.lessThanMin: 'The amount is less than the minimum required',
+  AmountInputError.greaterThanMax:
+      'The amount is greater than the maximum allowed'
 };
 
 // Extend FormzInput and provide the input type and error type.
-class VttAmountInput extends AmountInput {
+class TxAmountInput extends AmountInput {
   final int availableNanoWit;
-  final int? weightedAmount;
   final bool allowZero;
   final bool allowValidation;
+  final bool isStakeAmount;
 
   // Call super.pure to represent an unmodified form input.
-  VttAmountInput.pure()
+  TxAmountInput.pure()
       : availableNanoWit = 0,
         allowZero = false,
-        weightedAmount = null,
+        isStakeAmount = false,
         allowValidation = false,
         super.pure();
 
   // Call super.dirty to represent a modified form input.
-  VttAmountInput.dirty(
+  TxAmountInput.dirty(
       {required this.availableNanoWit,
       value = '',
-      this.weightedAmount,
       this.allowZero = false,
+      this.isStakeAmount = false,
       this.allowValidation = false})
       : super.dirty(
             value: value,
@@ -61,21 +66,19 @@ class VttAmountInput extends AmountInput {
     }
   }
 
-  int getNanoWitAmount({bool avoidWeightedAmountCheck = false}) {
-    int nanoWitAmount;
-    if (!avoidWeightedAmountCheck) {
-      nanoWitAmount = this.weightedAmount ?? witAmountToNanoWitNumber(value);
-    } else {
-      nanoWitAmount = witAmountToNanoWitNumber(value);
-    }
-    return nanoWitAmount;
+  int getNanoWitAmount() {
+    return witAmountToNanoWitNumber(value);
   }
 
   bool notEnoughFunds({bool avoidWeightedAmountCheck = false}) {
-    int nanoWitAmount =
-        getNanoWitAmount(avoidWeightedAmountCheck: avoidWeightedAmountCheck);
+    int nanoWitAmount = getNanoWitAmount();
     return this.availableNanoWit < nanoWitAmount;
   }
+
+  bool get lessThanMinimum =>
+      getNanoWitAmount() < MIN_STAKING_AMOUNT_NANOWIT.toInt();
+  bool get greaterThanMaximum =>
+      getNanoWitAmount() > MAX_STAKING_AMOUNT_NANOWIT.toInt();
 
   // Override validator to handle validating a given input value.
   @override
@@ -85,6 +88,13 @@ class VttAmountInput extends AmountInput {
         .validator(value, avoidWeightedAmountCheck: avoidWeightedAmountCheck);
     if (error != null) {
       return error;
+    }
+
+    if (isStakeAmount && greaterThanMaximum) {
+      return validationUtils.getErrorText(AmountInputError.greaterThanMax);
+    }
+    if (isStakeAmount && lessThanMinimum) {
+      return validationUtils.getErrorText(AmountInputError.lessThanMin);
     }
     if (notEnoughFunds(avoidWeightedAmountCheck: avoidWeightedAmountCheck))
       return validationUtils.getErrorText(AmountInputError.notEnough);

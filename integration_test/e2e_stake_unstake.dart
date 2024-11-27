@@ -48,8 +48,9 @@ Future<void> e2eStakeUnstakeTest(WidgetTester tester) async {
   await tester.pumpAndSettle();
   await tapButton(tester, localization.stakeUnstake, semantics: true);
   await tapButton(tester, localization.stake);
-  expect(widgetByText(localization.sendStakeTransaction), findsOneWidget);
-  await tapButton(tester, localization.stakeUnstake, semantics: true);
+  expect(widgetByText(localization.disableStakeTitle), findsOneWidget);
+  await tapButton(tester, localization.close);
+  await tester.pumpAndSettle();
   await tapButton(tester, localization.unstake);
   expect(widgetByText(localization.emptyStakeTitle), findsOneWidget);
 
