@@ -11,11 +11,13 @@ class QrScanner extends StatelessWidget {
   static final route = '/scan';
   final StringCallback onChanged;
   final String currentRoute;
-  const QrScanner({
-    Key? key,
-    required this.currentRoute,
-    required this.onChanged,
-  }) : super(key: key);
+  final ScannedType type;
+  const QrScanner(
+      {Key? key,
+      required this.currentRoute,
+      required this.onChanged,
+      required this.type})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,8 @@ class QrScanner extends StatelessWidget {
                 final List<Barcode> barcodes = capture.barcodes;
                 for (final barcode in barcodes) {
                   onChanged(barcode.rawValue ?? '');
-                  scannedContent.setScannedContent(barcode.rawValue ?? '');
+                  scannedContent.setScannedContent(
+                      value: barcode.rawValue ?? '', type: type);
                   Navigator.popUntil(
                       context, ModalRoute.withName(this.currentRoute));
                 }

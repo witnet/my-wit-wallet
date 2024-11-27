@@ -122,6 +122,8 @@ class RecipientStepState extends State<RecipientStep>
       int weeksToAdd = 2;
       setMinimunTimelock(date.add(Duration(days: (7 * weeksToAdd).toInt())));
     }
+    _addressFocusNode.addListener(() => validateForm());
+    _amountFocusNode.addListener(() => validateForm());
   }
 
   @override
@@ -202,11 +204,11 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   void setAuthorization(String value, {bool? validate}) {
-      _authorization = AuthorizationInput.dirty(
-          withdrawerAddress: _address.value,
-          allowValidation:
-              validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
-          value: value);
+    _authorization = AuthorizationInput.dirty(
+        withdrawerAddress: _address.value,
+        allowValidation:
+            validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
+        value: value);
   }
 
   void _setSavedTxData() {
@@ -456,6 +458,7 @@ class RecipientStepState extends State<RecipientStep>
         focusNode: _authorizationFocusNode,
         styledTextController: _authorizationController,
         errorText: _authorization.error,
+        setAuthorizationCallback: setAuthorization,
         onFieldSubmitted: (value) async {
           _amountFocusNode.requestFocus();
         },
@@ -545,8 +548,6 @@ class RecipientStepState extends State<RecipientStep>
 
   _buildForm(BuildContext context, ThemeData theme) {
     final theme = Theme.of(context);
-    _addressFocusNode.addListener(() => validateForm());
-    _amountFocusNode.addListener(() => validateForm());
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.disabled,

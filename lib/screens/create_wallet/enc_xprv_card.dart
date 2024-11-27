@@ -9,6 +9,7 @@ import 'package:my_wit_wallet/screens/create_wallet/bloc/create_wallet_bloc.dart
 import 'package:my_wit_wallet/screens/create_wallet/create_wallet_screen.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/util/storage/scanned_content.dart';
 import 'package:my_wit_wallet/widgets/inputs/input_xprv.dart';
 import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'package:my_wit_wallet/widgets/suffix_icon_button.dart';
@@ -100,10 +101,10 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
   }
 
   void setXprv(String value) {
-      xprv = XprvInput.dirty(
-          xprvType: _xprvType,
-          allowValidation: validationUtils.isFormUnFocus(_formFocusElements),
-          value: value);
+    xprv = XprvInput.dirty(
+        xprvType: _xprvType,
+        allowValidation: validationUtils.isFormUnFocus(_formFocusElements),
+        value: value);
   }
 
   void clearForm() {
@@ -152,19 +153,21 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
                         context,
                         MaterialPageRoute(
                             builder: (context) => QrScanner(
-                                currentRoute: CreateWalletScreen.route,
-                                onChanged: (String value) async {
-                                  _textController.text = value;
-                                  xprv = XprvInput.dirty(
-                                      xprvType: _xprvType,
-                                      allowValidation: false,
-                                      value: value);
-                                  if (_xprvType == CreateWalletType.xprv) {
-                                    validate(force: true);
-                                  } else {
-                                    _passFocusNode.requestFocus();
-                                  }
-                                })))
+                                  currentRoute: CreateWalletScreen.route,
+                                  onChanged: (String value) async {
+                                    _textController.text = value;
+                                    xprv = XprvInput.dirty(
+                                        xprvType: _xprvType,
+                                        allowValidation: false,
+                                        value: value);
+                                    if (_xprvType == CreateWalletType.xprv) {
+                                      validate(force: true);
+                                    } else {
+                                      _passFocusNode.requestFocus();
+                                    }
+                                  },
+                                  type: ScannedType.xprv,
+                                )))
                   },
                 ))
             : null,

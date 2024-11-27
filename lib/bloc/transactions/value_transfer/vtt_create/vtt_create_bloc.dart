@@ -852,7 +852,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   void _resetTransactionEvent(
       ResetTransactionEvent event, Emitter<TransactionState> emit) {
-    scannedContent.clearScannedContent();
+    scannedContent.clearScannedContent(type: ScannedType.address);
+    scannedContent.clearScannedContent(type: ScannedType.authorization);
     selectedUtxos.clear();
     inputs.clear();
     outputs.clear();
