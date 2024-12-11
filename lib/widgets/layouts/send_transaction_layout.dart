@@ -6,7 +6,6 @@ import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_cr
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
-import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
 import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 import 'package:my_wit_wallet/widgets/step_bar.dart';
@@ -261,37 +260,6 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
     );
   }
 
-  BlocListener _dashboardBlocListener() {
-    return BlocListener<DashboardBloc, DashboardState>(
-      listener: (BuildContext context, DashboardState state) {
-        BlocProvider.of<TransactionBloc>(context).add(ResetTransactionEvent());
-        Navigator.pushReplacement(
-            context,
-            CustomPageRoute(
-                builder: (BuildContext context) {
-                  return SendTransactionLayout(
-                    routeName: widget.routeName,
-                    transactionType: widget.transactionType,
-                  );
-                },
-                maintainState: false,
-                settings: RouteSettings(name: widget.routeName)));
-      },
-      child: _dashboardBlocBuilder(),
-    );
-  }
-
-  BlocBuilder _dashboardBlocBuilder() {
-    return BlocBuilder<DashboardBloc, DashboardState>(
-        builder: (BuildContext context, DashboardState state) {
-      return DashboardLayout(
-        scrollController: scrollController,
-        dashboardChild: _transactionBlocListener(),
-        actions: [],
-      );
-    });
-  }
-
   BlocListener _transactionBlocListener() {
     final theme = Theme.of(context);
     return BlocListener<TransactionBloc, TransactionState>(
@@ -328,7 +296,11 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
   Widget build(BuildContext context) {
     return BlocBuilder<TransactionBloc, TransactionState>(
         builder: (context, state) {
-      return _dashboardBlocListener();
+      return DashboardLayout(
+        scrollController: scrollController,
+        dashboardChild: _transactionBlocListener(),
+        actions: [],
+      );
     });
   }
 }

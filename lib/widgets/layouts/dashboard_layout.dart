@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/constants.dart';
+import 'package:my_wit_wallet/screens/dashboard/bloc/dashboard_bloc.dart';
+import 'package:my_wit_wallet/util/clear_and_redirect.dart';
 import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/screens/login/bloc/login_bloc.dart';
@@ -91,6 +93,22 @@ class DashboardLayoutState extends State<DashboardLayout>
             });
   }
 
+  Widget _buildDashboardListener(Widget content) {
+    return BlocListener<DashboardBloc, DashboardState>(
+        listenWhen: (previousState, currentState) {
+          if ((previousState.currentWalletId != DEFAULT_WALLET_ID) &&
+              (previousState.currentWalletId != currentState.currentWalletId)) {
+            clearAndRedirectToDashboard(context);
+          }
+          return true;
+        },
+        listener: (BuildContext context, DashboardState state) {},
+        child: BlocBuilder<DashboardBloc, DashboardState>(
+            builder: (BuildContext context, DashboardState state) {
+          return content;
+        }));
+  }
+
   Widget _authBuilder() {
     final theme = Theme.of(context);
     return BlocListener<LoginBloc, LoginState>(
@@ -155,7 +173,7 @@ class DashboardLayoutState extends State<DashboardLayout>
               .getNavigationActions(context),
           isDashboard: true,
           bottomNavigation: _buildBottomNavigation(),
-          widgetList: [_body, SizedBox(height: 16)],
+          widgetList: [_buildDashboardListener(_body), SizedBox(height: 16)],
           actions: [],
           slidingPanel: panelContent,
         );

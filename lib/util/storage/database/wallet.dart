@@ -48,7 +48,7 @@ class Wallet {
     required this.internalAccounts,
     this.lastSynced = -1,
   }) {
-    this.id = '00000000';
+    this.id = DEFAULT_WALLET_ID;
     this.externalAccounts.forEach((key, Account account) {
       account.balance;
     });

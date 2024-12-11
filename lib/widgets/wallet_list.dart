@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_wit_wallet/util/clear_and_redirect.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/constants.dart';
@@ -171,14 +170,10 @@ class WalletListState extends State<WalletList> {
             .formatWithCommaSeparator(),
         address: address ?? '',
         onChanged: (walletId) => {
-          setState(() {
-            selectedWallet = database.walletStorage.wallets[walletId]!;
-          }),
           BlocProvider.of<DashboardBloc>(context).add(
               DashboardUpdateWalletEvent(
-                  currentWallet: selectedWallet,
+                  currentWallet: database.walletStorage.wallets[walletId]!,
                   currentAddress: selectedAccount!.address)),
-          clearAndRedirectToDashboard(context),
         },
       );
     } else {
