@@ -33,48 +33,49 @@ class DashedRect extends StatelessWidget {
     TextStyle? textStyle =
         this.textStyle != null ? this.textStyle : theme.textTheme.titleLarge;
     return Container(
+        width: double.infinity,
         child: Padding(
-      padding: EdgeInsets.all(strokeWidth / 2),
-      child: CustomPaint(
-        painter:
-            DashRectPainter(color: color, strokeWidth: strokeWidth, gap: gap),
-        child: Column(children: [
-          Padding(
-              padding: EdgeInsets.all(16),
-              child: container != null
-                  ? container
-                  : Text(
-                      text,
-                      style: blur
-                          ? textStyle!.copyWith(
-                              foreground: Paint()
-                                ..style = PaintingStyle.fill
-                                ..color = textStyle.color!
-                                ..maskFilter =
-                                    MaskFilter.blur(BlurStyle.normal, 6))
-                          : textStyle,
-                    )),
-          showEye && container == null
-              ? Padding(
-                  padding: EdgeInsets.only(bottom: 16),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: IconBtn(
-                      label: 'Show or hide password',
-                      padding: EdgeInsets.all(0),
-                      color: extendedTheme.inputIconColor,
-                      text: '',
-                      onPressed: () => updateBlur!(),
-                      icon: !blur
-                          ? Icon(Icons.remove_red_eye)
-                          : Icon(Icons.visibility_off),
-                      iconBtnType: IconBtnType.icon,
-                    ),
-                  ))
-              : SizedBox(height: 0),
-        ]),
-      ),
-    ));
+          padding: EdgeInsets.all(strokeWidth / 2),
+          child: CustomPaint(
+            painter: DashRectPainter(
+                color: color, strokeWidth: strokeWidth, gap: gap),
+            child: Column(children: [
+              Padding(
+                  padding: EdgeInsets.all(16),
+                  child: container != null
+                      ? container
+                      : Text(
+                          text,
+                          style: blur
+                              ? textStyle!.copyWith(
+                                  foreground: Paint()
+                                    ..style = PaintingStyle.fill
+                                    ..color = textStyle.color!
+                                    ..maskFilter =
+                                        MaskFilter.blur(BlurStyle.normal, 6))
+                              : textStyle,
+                        )),
+              showEye && container == null
+                  ? Padding(
+                      padding: EdgeInsets.only(bottom: 16),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: IconBtn(
+                          label: 'Show or hide password',
+                          padding: EdgeInsets.all(0),
+                          color: extendedTheme.inputIconColor,
+                          text: '',
+                          onPressed: () => updateBlur!(),
+                          icon: !blur
+                              ? Icon(Icons.remove_red_eye)
+                              : Icon(Icons.visibility_off),
+                          iconBtnType: IconBtnType.icon,
+                        ),
+                      ))
+                  : SizedBox(height: 0),
+            ]),
+          ),
+        ));
   }
 }
 

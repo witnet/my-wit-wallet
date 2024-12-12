@@ -79,6 +79,11 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   isDense: true,
   isCollapsed: false,
   contentPadding: EdgeInsets.all(16),
+  disabledBorder: OutlineInputBorder(
+    borderSide: BorderSide(
+        color: WitnetPallet.darkGrey2, width: 1.0, style: BorderStyle.solid),
+    borderRadius: BorderRadius.circular(BORDER_RADIUS),
+  ),
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(
         color: WitnetPallet.darkGrey2, width: 1.0, style: BorderStyle.solid),

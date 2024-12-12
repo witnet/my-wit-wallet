@@ -14,12 +14,15 @@ import 'package:my_wit_wallet/widgets/inputs/input_authorization.dart';
 import 'package:my_wit_wallet/widgets/inputs/input_slider.dart';
 import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
+import 'package:my_wit_wallet/widgets/select.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/widgets/validations/address_input.dart';
 import 'package:my_wit_wallet/widgets/validations/authorization_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/widgets/validations/tx_amount_input.dart';
-import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/timelock_input.dart';
+import 'package:my_wit_wallet/widgets/withdrawal_address.dart';
+import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/timelock_input.dart'
+    as timelockInput;
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/create_dialog_box/vtt_builder/timelock_picker.dart';
 import 'package:witnet/schema.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
@@ -35,7 +38,7 @@ import 'package:my_wit_wallet/util/storage/database/account.dart';
 class RecipientStep extends StatefulWidget {
   final Function nextAction;
   final WalletStorage walletStorage;
-  final VoidCallback goNext;
+  final timelockInput.VoidCallback goNext;
   final TransactionType transactionType;
   final String routeName;
 
@@ -64,6 +67,7 @@ class RecipientStepState extends State<RecipientStep>
   AddressInput _address = AddressInput.pure();
   TxAmountInput _amount = TxAmountInput.pure();
   AuthorizationInput _authorization = AuthorizationInput.pure();
+  String _selectedValidator = 'validator1';
   final _amountController = StyledTextController();
   final _amountFocusNode = FocusNode();
   final _addressController = StyledTextController();
@@ -86,13 +90,13 @@ class RecipientStepState extends State<RecipientStep>
           : balanceInfo.availableNanoWit)
       .toString();
   bool get showTimelockInput => isVttTransaction;
-  bool get showAuthorization => isStakeTarnsaction;
-  bool get isStakeTarnsaction =>
+  bool get showAuthorization => isStakeTransaction;
+  bool get isStakeTransaction =>
       widget.transactionType == TransactionType.Stake;
   bool get isVttTransaction => widget.transactionType == TransactionType.Vtt;
   bool get isUnstakeTransaction =>
       widget.transactionType == TransactionType.Unstake;
-  bool get showStakeAmountInput => isStakeTarnsaction || isUnstakeTransaction;
+  bool get showStakeAmountInput => isStakeTransaction || isUnstakeTransaction;
 
   ScannedContent scannedContent = ScannedContent();
   bool showAdvancedSettings = false;
@@ -184,7 +188,7 @@ class RecipientStepState extends State<RecipientStep>
           availableNanoWit: isUnstakeTransaction
               ? stakeInfo.stakedNanoWit
               : balanceInfo.availableNanoWit,
-          isStakeAmount: isStakeTarnsaction,
+          isStakeAmount: isStakeTransaction,
           allowValidation:
               validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
           value: value);
@@ -208,7 +212,7 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   void _setSavedTxData() {
-    if (isStakeTarnsaction) {
+    if (isStakeTransaction) {
       _amountController.text =
           MIN_STAKING_AMOUNT_NANOWIT.standardizeWitUnits().toString();
       setAmount(_amountController.text, validate: false);
@@ -233,7 +237,7 @@ class RecipientStepState extends State<RecipientStep>
         setAmount(savedAmount, validate: false);
       }
 
-      if (isStakeTarnsaction) {
+      if (isStakeTransaction) {
         String? savedAuthorization =
             vttBloc.state.transaction.get(widget.transactionType) != null
                 ? vttBloc.authorizationString
@@ -348,7 +352,7 @@ class RecipientStepState extends State<RecipientStep>
             showAdvancedSettings
                 ? Padding(
                     padding: EdgeInsets.only(left: 8, right: 8),
-                    child: TimelockInput(
+                    child: timelockInput.TimelockInput(
                         timelockSet: timelockSet,
                         onSelectedDate: _setTimeLock,
                         onClearTimelock: _clearTimeLock,
@@ -484,32 +488,50 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   List<Widget> _buildWithdrawalAddressInput(ThemeData theme) {
+    _addressController.text = currentAccount.address;
+    setAddress(_addressController.text, validate: false);
     return [
-      LabeledFormEntry(
-          label: localization.withdrawalAddress,
-          formEntry: InputAddress(
-            route: widget.routeName,
-            errorText: _address.error,
-            styledTextController: _addressController,
-            focusNode: _addressFocusNode,
-            keyboardType: TextInputType.text,
-            inputFormatters: [WitAddressFormatter()],
-            onChanged: (String value) {
-              setAddress(value);
-            },
-            onFieldSubmitted: (String value) {
-              showAuthorization
-                  ? _authorizationFocusNode.requestFocus()
-                  : _amountFocusNode.requestFocus();
-            },
-            onTap: () {
-              _addressFocusNode.requestFocus();
-            },
-            onTapOutside: (event) {
-              _addressFocusNode.unfocus();
-            },
-            setAddressCallback: setAddress,
-          ))
+      Text(
+        localization.withdrawalAddress,
+        style: theme.textTheme.titleMedium,
+      ),
+      SizedBox(height: 8),
+      Text(
+          isStakeTransaction
+              ? localization.stakeWithdrawalAddressText
+              : localization.unstakeWithdrawalAddressText,
+          style: theme.textTheme.bodyMedium),
+      SizedBox(height: 16),
+      WithdrawerAddress(
+        address: _addressController.text,
+      ),
+      SizedBox(height: 4),
+    ];
+  }
+
+  //TODO(#542): get validator address list by queryStakes from withdrawer address
+  List<Widget> _buildValidatorAddressSelect(ThemeData theme) {
+    _addressController.text = currentAccount.address;
+    List<SelectItem> validatorAddressesUsedInStakes = [
+      SelectItem('validator1', 'validator1'),
+      SelectItem('validator2', 'validator2')
+    ];
+    return [
+      SizedBox(height: 8),
+      Text(
+        localization.validator,
+        style: theme.textTheme.titleMedium,
+      ),
+      SizedBox(height: 8),
+      Text(localization.validatorDescription,
+          style: theme.textTheme.bodyMedium),
+      SizedBox(height: 16),
+      Select(
+          selectedItem: _selectedValidator,
+          cropLabel: true,
+          listItems: validatorAddressesUsedInStakes,
+          onChanged: (String? label) =>
+              {if (label != null) setState(() => _selectedValidator = label)}),
     ];
   }
 
@@ -568,6 +590,8 @@ class RecipientStepState extends State<RecipientStep>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ..._buildAddressInput(theme),
+                if (isUnstakeTransaction)
+                  ..._buildValidatorAddressSelect(theme),
                 if (showAuthorization) ..._buildAuthorizationInput(theme),
                 ..._buildAmountInput(theme),
               ],

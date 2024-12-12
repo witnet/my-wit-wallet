@@ -45,7 +45,8 @@ class AuthorizationInput extends FormzInput<String, String?> {
           return validationUtils.getErrorText(AuthorizationError.empty);
         }
         try {
-          KeyedSignature.fromAuthorization(authorization: value, withdrawer: withdrawerAddress!);
+          KeyedSignature.fromAuthorization(
+              authorization: value, withdrawer: withdrawerAddress!);
           return null;
         } catch (err) {
           print('Error decoding authorization $err');
