@@ -357,5 +357,8 @@
 	"deleteWalletSettings": "Configuración: Eliminar wallet",
 	"welcomeBack": "Bienvenido de nuevo",
 	"disableStakeTitle": "No tienes suficiente balance para hacer Stake",
-	"disableStakeMessage": "La cantidad minima para hacer Stake es de 10.000 WIT"
+	"disableStakeMessage": "La cantidad minima para hacer Stake es de 10.000 WIT",
+	"withdrawalAddressDescription": "Esta es tu direción para realizar transaction de Stake. Un nodo de Witnet debe autorizar esta address para realizar transactiones de Stake",
+	"validator": "Validador",
+	"validatorDescription": "Dirección del validador que autorizó el staking."
 }

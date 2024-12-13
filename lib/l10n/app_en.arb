@@ -357,5 +357,9 @@
 	"welcomeBack": "Welcome back",
 	"deleteWalletSettings": "Settings: Delete wallet",
 	"disableStakeTitle": "You don't have enough balance to stake",
-	"disableStakeMessage": "The minimun amount to stake is 10,000 WIT"
+	"disableStakeMessage": "The minimun amount to stake is 10,000 WIT",
+	"stakeWithdrawalAddressText": "This is the address to create Stake transactions. Make sure this address is authorized to stake.",
+	"unstakeWithdrawalAddressText": "This is the address used to create Stake transactions.",
+	"validator": "Validator",
+	"validatorDescription": "Validator address that authorized staking."
 }
