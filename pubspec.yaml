@@ -11,6 +11,7 @@ environment:
 dev_dependencies:
   msix: ^3.16.1
   test: ^1.24.9
+  flutter_launcher_icons: ^0.13.1
 
 dependencies:
   flutter:
@@ -36,7 +37,6 @@ dependencies:
   sembast: ^3.7.5
   encrypt: ^5.0.3
   equatable: ^2.0.5
-  flutter_launcher_icons: ^0.13.1
   sliding_up_panel: ^2.0.0+1
   decimal: 3.0.2
   witnet: 
@@ -61,11 +61,13 @@ dependencies:
   updat: ^1.2.0+1
   logger: ^2.4.0
   pub_semver: ^2.1.4
+  flutter_native_splash: ^2.4.3
 
 flutter_launcher_icons:
   android: true
   adaptive_icon_foreground: "assets/icon/adaptive-foreground.png"
   adaptive_icon_background: "assets/icon/adaptive-background.png"
+  adaptive_icon_foreground_inset: 24
   ios: true
   image_path: "assets/icon/icon.png"
   remove_alpha_ios: true
@@ -81,6 +83,14 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: "assets/icon/icon.png"
+
+flutter_native_splash:
+  #general
+  color: "#232323"
+  image: assets/icon/splash_960x960.png
+  android_12:
+    image: assets/icon/splash_960x960.png
+    icon_background_color: "#232323"
 
 
 flutter:
