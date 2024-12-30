@@ -28,7 +28,7 @@ class TapBarBtn extends CustomButton {
                 elevation: 0,
                 overlayColor: super.overlayColor(
                     theme: theme,
-                    color: extendedTheme.backgroundBox!.withOpacity(0.5)),
+                    color: extendedTheme.backgroundBox!.withValues(alpha: 0.5)),
                 minimumSize: null,
                 textStyle: theme.textTheme.titleMedium),
             child: super.getIconTextOrText(),
@@ -43,7 +43,7 @@ class TapBarBtn extends CustomButton {
                 elevation: 0,
                 overlayColor: overlayColor(
                     theme: theme,
-                    color: extendedTheme.backgroundBox!.withOpacity(0.5)),
+                    color: extendedTheme.backgroundBox!.withValues(alpha: 0.5)),
                 minimumSize: null,
                 textStyle: theme.textTheme.titleMedium),
             child: getIconTextOrText(),

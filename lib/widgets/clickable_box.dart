@@ -32,9 +32,9 @@ class ClickableBox extends StatelessWidget {
   Map<ClickableBoxTheme, Color> disabledTheme(ExtendedTheme theme) {
     return {
       ClickableBoxTheme.BorderColor:
-          theme.inactiveClickableBoxBorderColor!.withOpacity(0.5),
+          theme.inactiveClickableBoxBorderColor!.withValues(alpha: 0.5),
       ClickableBoxTheme.BgColor:
-          theme.inactiveClickableBoxBgColor!.withOpacity(0.5),
+          theme.inactiveClickableBoxBgColor!.withValues(alpha: 0.5),
     };
   }
 

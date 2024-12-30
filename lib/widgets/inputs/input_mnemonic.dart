@@ -70,7 +70,7 @@ class _InputMnemonicState extends State<InputMnemonic> {
                   height: 8,
                 ),
                 hintStyle: theme.textTheme.titleLarge!.copyWith(
-                    color: theme.textTheme.titleLarge!.color!.withOpacity(0.5)),
+                    color: theme.textTheme.titleLarge!.color!.withValues(alpha: 0.5)),
                 hintText: 'recovery phrase',
                 errorText: widget.errorText,
               )),
