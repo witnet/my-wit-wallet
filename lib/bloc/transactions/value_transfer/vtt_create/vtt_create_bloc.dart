@@ -486,9 +486,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   _buildStakeOutput(AddStakeOutputEvent event) {
     try {
-      authorizationString = event.authorization;
       KeyedSignature validator = KeyedSignature.fromAuthorization(
-          event.authorization, event.withdrawer);
+          authorization: event.authorization, withdrawer: event.withdrawer);
       stakeOutput = StakeOutput(
         value: event.value,
         key: StakeKey.fromJson({
