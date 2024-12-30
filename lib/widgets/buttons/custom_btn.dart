@@ -124,8 +124,6 @@ class CustomButton extends StatelessWidget {
           return primaryButton;
         case CustomBtnType.secondary:
           return secondaryButton;
-        default:
-          return primaryButton;
       }
     }
 

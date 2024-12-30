@@ -19,8 +19,6 @@ class BuildTransaction {
         return this.stakeTransaction;
       case layout.TransactionType.Unstake:
         return this.unstakeTransaction;
-      default:
-        return this.vtTransaction;
     }
   }
 
@@ -37,9 +35,6 @@ class BuildTransaction {
         return this.unstakeTransaction != null &&
             this.unstakeTransaction!.body.withdrawal.pkh.address !=
                 'wit1q08n42';
-      default:
-        return this.vtTransaction != null &&
-            this.vtTransaction!.body.outputs.length > 0;
     }
   }
 
@@ -53,8 +48,6 @@ class BuildTransaction {
       case layout.TransactionType.Unstake:
         return TransactionBody(
             unstakeTransactionBody: this.unstakeTransaction?.body);
-      default:
-        return TransactionBody(vtTransactionBody: this.vtTransaction?.body);
     }
   }
 
@@ -66,8 +59,6 @@ class BuildTransaction {
         return 'stakeTransaction';
       case layout.TransactionType.Unstake:
         return 'unstakeTransaction';
-      default:
-        return 'vtTransaction';
     }
   }
 
@@ -79,8 +70,6 @@ class BuildTransaction {
         return this.stakeTransaction?.body.output.value.toInt() ?? 0;
       case layout.TransactionType.Unstake:
         return this.unstakeTransaction?.body.withdrawal.value.toInt() ?? 0;
-      default:
-        return this.vtTransaction?.body.outputs.first.value.toInt() ?? 0;
     }
   }
 
@@ -91,8 +80,6 @@ class BuildTransaction {
       case layout.TransactionType.Stake:
         return this.stakeTransaction?.body.output.authorization.toString();
       case layout.TransactionType.Unstake:
-        return null;
-      default:
         return null;
     }
   }
@@ -130,17 +117,6 @@ class BuildTransaction {
                 .standardizeWitUnits(truncate: -1)
                 .formatWithCommaSeparator() ??
             '';
-      default:
-        return this
-                .vtTransaction
-                ?.body
-                .outputs
-                .first
-                .value
-                .toInt()
-                .standardizeWitUnits(truncate: -1)
-                .formatWithCommaSeparator() ??
-            '';
     }
   }
 
@@ -152,8 +128,6 @@ class BuildTransaction {
         return this.stakeTransaction?.body.output.key.withdrawer.address;
       case layout.TransactionType.Unstake:
         return this.unstakeTransaction?.body.withdrawal.pkh.address;
-      default:
-        return this.vtTransaction?.body.outputs[0].pkh.address;
     }
   }
 
@@ -165,8 +139,6 @@ class BuildTransaction {
         return this.stakeTransaction?.weight ?? '';
       case layout.TransactionType.Unstake:
         return this.unstakeTransaction?.weight ?? '';
-      default:
-        return this.vtTransaction?.weight ?? '';
     }
   }
 
@@ -178,8 +150,6 @@ class BuildTransaction {
         return false;
       case layout.TransactionType.Unstake:
         return false;
-      default:
-        return this.vtTransaction?.body.outputs[0].timeLock != 0;
     }
   }
 
@@ -191,8 +161,6 @@ class BuildTransaction {
         return this.stakeTransaction?.transactionID ?? '';
       case layout.TransactionType.Unstake:
         return this.unstakeTransaction?.transactionID ?? '';
-      default:
-        return this.vtTransaction?.transactionID ?? '';
     }
   }
 }
