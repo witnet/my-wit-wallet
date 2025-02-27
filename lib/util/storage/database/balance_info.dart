@@ -1,27 +1,16 @@
 import 'dart:convert';
 import 'package:witnet/constants.dart';
 import 'package:witnet/data_structures.dart';
-import 'package:witnet/schema.dart';
 
 class StakedBalanceInfo {
   int stakedNanoWit;
-  List<StakeOutput> stakes;
 
   StakedBalanceInfo({
     int stakedNanoWit = 0,
-    required this.stakes,
   }) : this.stakedNanoWit = stakedNanoWit;
 
   factory StakedBalanceInfo.zero() {
-    return StakedBalanceInfo(stakes: []);
-  }
-
-  factory StakedBalanceInfo.fromStakesList(List<StakeOutput> stakes) {
-    int _stakedNanoWit = 0;
-    stakes.forEach((StakeOutput stake) {
-      _stakedNanoWit += stake.value.toInt();
-    });
-    return StakedBalanceInfo(stakedNanoWit: _stakedNanoWit, stakes: stakes);
+    return StakedBalanceInfo();
   }
 }
 

@@ -59,6 +59,10 @@ class TransactionDetails extends StatelessWidget {
         return localization.mintTxn;
       case TransactionType.data_request:
         return localization.dataRequestTxn;
+      case TransactionType.stake:
+        return localization.stake;
+      case TransactionType.unstake:
+        return localization.unstake;
     }
   }
 

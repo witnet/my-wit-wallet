@@ -210,30 +210,20 @@ class ApiExplorer {
     return mintEntry;
   }
 
-  // TODO(#542): use StakeInfo instead of BlockInfo
-  // TODO(#542): use StakeDetails instead of BlockDetails
-  Future<StakeEntry> getStake(BlockInfo stakeInfo) async {
-    String _hash = stakeInfo.hash;
-    var result = await Locator.instance.get<ApiExplorer>().hash(_hash);
+  Future<StakeEntry> getStake(String hash) async {
+    var result = await Locator.instance.get<ApiExplorer>().hash(hash);
 
-    BlockDetails stakeDetails = result as BlockDetails;
-    StakeEntry stakeEntry = StakeEntry.fromStakeInfo(
-      stakeInfo,
-      stakeDetails,
-    );
+    StakeInfo stakeInfo = result as StakeInfo;
+    StakeEntry stakeEntry = StakeEntry.fromStakeInfo(stakeInfo);
     return stakeEntry;
   }
 
-  // TODO(#542): use UnstakeInfo instead of BlockInfo
-  // TODO(#542): use UnstakeDetails instead of BlockDetails
-  Future<UnstakeEntry> getUnstake(BlockInfo unstakeInfo) async {
-    String _hash = unstakeInfo.hash;
-    var result = await Locator.instance.get<ApiExplorer>().hash(_hash);
+  Future<UnstakeEntry> getUnstake(String hash) async {
+    var result = await Locator.instance.get<ApiExplorer>().hash(hash);
 
-    BlockDetails unstakeDetails = result as BlockDetails;
+    UnstakeInfo unstakeInfo = result as UnstakeInfo;
     UnstakeEntry unstakeEntry = UnstakeEntry.fromUnstakeInfo(
       unstakeInfo,
-      unstakeDetails,
     );
     return unstakeEntry;
   }

@@ -81,7 +81,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     on<AddStakeOutputEvent>(_addOutputEvent);
     on<SetTimelockEvent>(_setTimeLockEvent);
     on<SignTransactionEvent>(_signTransactionEvent);
-    on<SendTransactionEvent>(_sendVttTransactionEvent);
+    on<SendTransactionEvent>(_sendTransactionEvent);
     on<UpdateFeeEvent>(_updateFeeEvent);
     on<SetBuildingEvent>(_setBuildingStatus);
     on<PrepareSpeedUpTxEvent>(_prepareSpeedUpTx);
@@ -690,7 +690,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   }
 
   /// send the transaction to the explorer
-  Future<void> _sendVttTransactionEvent(
+  Future<void> _sendTransactionEvent(
       SendTransactionEvent event, Emitter<TransactionState> emit) async {
     bool transactionAccepted = false;
     emit(state.copyWith(status: TransactionStatus.sending, message: null));
@@ -706,66 +706,50 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         transactionToSend = Transaction(unstake: transactionBuilt);
     }
     transactionAccepted = await _sendTransaction(transactionToSend);
-    // TODO(#542): save stake and unstake transaction in db
-    if (transactionAccepted && event.transaction.vtTransaction != null) {
-      /// Adds pending transaction
+    if (transactionAccepted) {
       List<InputUtxo> _inputUtxoList = _buildInputUtxoList();
-      ValueTransferInfo vti = ValueTransferInfo(
-          block: '0',
-          confirmed: false,
-          reverted: false,
-          inputsMerged: [],
-          timelocks: outputs.map((e) => e.timeLock.toInt()).toList(),
-          fee: feeNanoWit,
-          inputAddresses: _inputUtxoList.map((e) => e.address).toList(),
-          outputAddresses: outputs.map((e) => e.pkh.address).toList(),
-          inputUtxos: _inputUtxoList,
-          outputs: outputs,
-          outputValues: outputs.map((e) => e.value.toInt()).toList(),
-          priority: 1,
-          status: TxStatusLabel.pending,
-          value: outputs[0].value.toInt(),
-          epoch: -1,
-          utxos: [],
-          utxosMerged: [],
-          trueOutputAddresses: [],
-          changeOutputAddresses: [],
-          hash: event.transaction.getTransactionID(this.transactionType),
-          timestamp: DateTime.now().millisecondsSinceEpoch,
-          weight: event.transaction.vtTransaction!.weight);
 
-      /// add pending tx to database
-      await database.addVtt(vti);
+      /// Value Transfer
+      if (event.transaction.vtTransaction != null) {
+        /// Adds pending transaction
+        List<InputUtxo> _inputUtxoList = _buildInputUtxoList();
+        ValueTransferInfo vti = ValueTransferInfo(
+            block: '0',
+            confirmed: false,
+            reverted: false,
+            inputsMerged: [],
+            timelocks: outputs.map((e) => e.timeLock.toInt()).toList(),
+            fee: feeNanoWit,
+            inputAddresses: _inputUtxoList.map((e) => e.address).toList(),
+            outputAddresses: outputs.map((e) => e.pkh.address).toList(),
+            inputUtxos: _inputUtxoList,
+            outputs: outputs,
+            outputValues: outputs.map((e) => e.value.toInt()).toList(),
+            priority: 1,
+            status: TxStatusLabel.pending,
+            value: outputs[0].value.toInt(),
+            epoch: -1,
+            utxos: [],
+            utxosMerged: [],
+            trueOutputAddresses: [],
+            changeOutputAddresses: [],
+            hash: event.transaction.getTransactionID(this.transactionType),
+            timestamp: DateTime.now().millisecondsSinceEpoch,
+            weight: event.transaction.vtTransaction!.weight);
 
-      /// update the accounts transaction list
-      /// the inputs
+        /// add pending tx to database
+        await database.addVtt(vti);
 
-      List<String> accountUpdates = [];
+        /// update the accounts transaction list
+        /// the inputs
 
-      for (int i = 0; i < _inputUtxoList.length; i++) {
-        InputUtxo inputUtxo = _inputUtxoList[i];
-        if (!accountUpdates.contains(inputUtxo.address)) {
-          Account account = database.walletStorage.currentWallet
-              .accountByAddress(inputUtxo.address)!;
-          account.vttHashes
-              .add(event.transaction.getTransactionID(this.transactionType));
-          account.vtts.add(vti);
-          await database.walletStorage.currentWallet.updateAccount(
-            index: account.index,
-            keyType: account.keyType,
-            account: account,
-          );
-          accountUpdates.add(account.address);
-        }
-      }
+        List<String> accountUpdates = [];
 
-      /// check outputs for accounts and update them
-      for (int i = 0; i < outputs.length; i++) {
-        ValueTransferOutput output = outputs[i];
-        if (!accountUpdates.contains(output.pkh.address)) {
-          Account? account = database.walletStorage.currentWallet
-              .accountByAddress(output.pkh.address);
-          if (account != null) {
+        for (int i = 0; i < _inputUtxoList.length; i++) {
+          InputUtxo inputUtxo = _inputUtxoList[i];
+          if (!accountUpdates.contains(inputUtxo.address)) {
+            Account account = database.walletStorage.currentWallet
+                .accountByAddress(inputUtxo.address)!;
             account.vttHashes
                 .add(event.transaction.getTransactionID(this.transactionType));
             account.vtts.add(vti);
@@ -774,18 +758,160 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
               keyType: account.keyType,
               account: account,
             );
+            accountUpdates.add(account.address);
           }
         }
+
+        /// check outputs for accounts and update them
+        for (int i = 0; i < outputs.length; i++) {
+          ValueTransferOutput output = outputs[i];
+          if (!accountUpdates.contains(output.pkh.address)) {
+            Account? account = database.walletStorage.currentWallet
+                .accountByAddress(output.pkh.address);
+            if (account != null) {
+              account.vttHashes.add(
+                  event.transaction.getTransactionID(this.transactionType));
+              account.vtts.add(vti);
+              await database.walletStorage.currentWallet.updateAccount(
+                index: account.index,
+                keyType: account.keyType,
+                account: account,
+              );
+            }
+          }
+        }
+        if (event.speedUpTx != null) {
+          await deleteVtt(database.walletStorage.currentWallet,
+              event.speedUpTx!.toValueTransferInfo());
+        }
+        emit(state.copyWith(status: TransactionStatus.accepted, message: null));
+        await Locator.instance<ApiDatabase>().getWalletStorage(true);
+        await database.updateCurrentWallet();
+      } else if (event.transaction.stakeTransaction != null) {
+        StakeEntry stakeEntry = StakeEntry(
+          blockHash: '0',
+          fees: feeNanoWit,
+          epoch: -1,
+          inputs: _inputUtxoList
+              .map((e) => StakeInput(address: e.address, value: e.value))
+              .toList(),
+          timestamp: DateTime.now().millisecondsSinceEpoch,
+          status: TxStatusLabel.pending,
+          type: TransactionType.stake,
+          confirmed: false,
+          reverted: false,
+          validator: event
+              .transaction.stakeTransaction!.body.output.key.validator.address,
+          withdrawer: event
+              .transaction.stakeTransaction!.body.output.key.withdrawer.address,
+          value: event.transaction.stakeTransaction!.body.output.value.toInt(),
+        );
+        await database.addStake(stakeEntry);
+
+        List<String> accountUpdates = [];
+
+        for (int i = 0; i < _inputUtxoList.length; i++) {
+          InputUtxo inputUtxo = _inputUtxoList[i];
+          if (!accountUpdates.contains(inputUtxo.address)) {
+            Account account = database.walletStorage.currentWallet
+                .accountByAddress(inputUtxo.address)!;
+            account.stakeHashes
+                .add(event.transaction.getTransactionID(this.transactionType));
+            account.stakes.add(stakeEntry);
+            await database.walletStorage.currentWallet.updateAccount(
+              index: account.index,
+              keyType: account.keyType,
+              account: account,
+            );
+            accountUpdates.add(account.address);
+          }
+        }
+
+        /// check outputs for accounts and update them
+        for (int i = 0; i < outputs.length; i++) {
+          ValueTransferOutput output = outputs[i];
+          if (!accountUpdates.contains(output.pkh.address)) {
+            Account? account = database.walletStorage.currentWallet
+                .accountByAddress(output.pkh.address);
+            if (account != null) {
+              account.stakeHashes.add(
+                  event.transaction.getTransactionID(this.transactionType));
+              account.stakes.add(stakeEntry);
+              await database.walletStorage.currentWallet.updateAccount(
+                index: account.index,
+                keyType: account.keyType,
+                account: account,
+              );
+            }
+          }
+        }
+        emit(state.copyWith(status: TransactionStatus.accepted, message: null));
+        await Locator.instance<ApiDatabase>().getWalletStorage(true);
+        await database.updateCurrentWallet();
+      } else if (event.transaction.unstakeTransaction != null) {
+        UnstakeEntry unstakeEntry = UnstakeEntry(
+            blockHash: '0',
+            fees: feeNanoWit,
+            epoch: -1,
+            timestamp: DateTime.now().millisecondsSinceEpoch,
+            value: event.transaction.unstakeTransaction!.body.withdrawal.value
+                .toInt(),
+            status: TxStatusLabel.pending,
+            type: TransactionType.unstake,
+            confirmed: false,
+            reverted: false,
+            validator:
+                event.transaction.unstakeTransaction!.body.operator.address,
+            withdrawer: event
+                .transaction.unstakeTransaction!.body.withdrawal.pkh.address,
+            nonce: event.transaction.unstakeTransaction!.body.nonce.toInt());
+
+        await database.addUnstake(unstakeEntry);
+
+        List<String> accountUpdates = [];
+
+        for (int i = 0; i < _inputUtxoList.length; i++) {
+          InputUtxo inputUtxo = _inputUtxoList[i];
+          if (!accountUpdates.contains(inputUtxo.address)) {
+            Account account = database.walletStorage.currentWallet
+                .accountByAddress(inputUtxo.address)!;
+            account.unstakeHashes
+                .add(event.transaction.getTransactionID(this.transactionType));
+            account.unstakes.add(unstakeEntry);
+            await database.walletStorage.currentWallet.updateAccount(
+              index: account.index,
+              keyType: account.keyType,
+              account: account,
+            );
+            accountUpdates.add(account.address);
+          }
+        }
+
+        /// check outputs for accounts and update them
+        for (int i = 0; i < outputs.length; i++) {
+          ValueTransferOutput output = outputs[i];
+          if (!accountUpdates.contains(output.pkh.address)) {
+            Account? account = database.walletStorage.currentWallet
+                .accountByAddress(output.pkh.address);
+            if (account != null) {
+              account.unstakeHashes.add(
+                  event.transaction.getTransactionID(this.transactionType));
+              account.unstakes.add(unstakeEntry);
+              await database.walletStorage.currentWallet.updateAccount(
+                index: account.index,
+                keyType: account.keyType,
+                account: account,
+              );
+            }
+          }
+        }
+        emit(state.copyWith(status: TransactionStatus.accepted, message: null));
+        await Locator.instance<ApiDatabase>().getWalletStorage(true);
+        await database.updateCurrentWallet();
+      } else {
+        emit(
+            state.copyWith(status: TransactionStatus.discarded, message: null));
       }
-      if (event.speedUpTx != null) {
-        await deleteVtt(database.walletStorage.currentWallet,
-            event.speedUpTx!.toValueTransferInfo());
-      }
-      emit(state.copyWith(status: TransactionStatus.accepted, message: null));
-      await Locator.instance<ApiDatabase>().getWalletStorage(true);
-      await database.updateCurrentWallet();
-    } else {
-      emit(state.copyWith(status: TransactionStatus.discarded, message: null));
     }
   }
 

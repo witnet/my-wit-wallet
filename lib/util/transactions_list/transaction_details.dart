@@ -13,7 +13,6 @@ import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/transactions_list/get_transaction_label.dart';
 import 'package:my_wit_wallet/util/extensions/int_extensions.dart';
 import 'package:witnet/explorer.dart';
-import 'package:witnet/schema.dart';
 
 class TransactionValue {
   final String label;
@@ -97,28 +96,12 @@ class TransactionUtils {
       });
       return nanoWitvalue;
     } else if (vti.stake != null) {
-      // TODO(#542): get value and correct type for for stake transactions
-      vti.stake!.outputs.forEach((element) {
-        if ((externalAddresses.contains(element.pkh.address) ||
-            internalAddresses.contains(element.pkh.address))) {
-          nanoWitvalue += element.value.toInt();
-        } else if (singleAddressAccount != null &&
-            singleAddressAccount!.address == element.pkh.address) {
-          nanoWitvalue += element.value.toInt();
-        }
-      });
+      nanoWitvalue += vti.stake!.value;
+      return nanoWitvalue;
+    } else if (vti.unstake != null) {
+      nanoWitvalue += vti.unstake!.value;
       return nanoWitvalue;
     } else {
-      // TODO(#542): get value and correct type for unstake transactions
-      vti.unstake!.outputs.forEach((element) {
-        if ((externalAddresses.contains(element.pkh.address) ||
-            internalAddresses.contains(element.pkh.address))) {
-          nanoWitvalue += element.value.toInt();
-        } else if (singleAddressAccount != null &&
-            singleAddressAccount!.address == element.pkh.address) {
-          nanoWitvalue += element.value.toInt();
-        }
-      });
       return nanoWitvalue;
     }
   }
@@ -136,39 +119,36 @@ class TransactionUtils {
   }
 
   String getLabel() {
-    if (vti.type == TransactionType.value_transfer) {
-      return getTransactionLabel(
-          externalAddresses: externalAddresses,
-          internalAddresses: internalAddresses,
-          inputs: vti.vtt!.inputs,
-          singleAddressAccount: singleAddressAccount);
-    } else {
-      // TODO(#542): set stake and unstake transaction label when feature is supported
-      return localization.from;
-    }
+    return getTransactionLabel(
+      transaction: vti,
+      externalAddresses: externalAddresses,
+      internalAddresses: internalAddresses,
+      singleAddressAccount: singleAddressAccount,
+    );
   }
 
   String getOrigin() {
-    if (vti.type == TransactionType.value_transfer) {
-      return getTransactionAddress(
-          getLabel(), vti.vtt!.inputs, vti.vtt!.outputs);
-    } else {
-      // TODO(#542): set stake and unstake transaction label when feature is supported
-      return 'Mint';
-    }
-  }
-
-  String getTransactionAddress(
-      String label, List<InputUtxo> inputs, List<ValueTransferOutput> outputs) {
     String address = '';
-    if (inputs.length < 1)
-      return 'genesis';
-    else if (label == localization.from && inputs.length > 0) {
-      address = getSenderAddress().cropMiddle(18);
-    } else if (outputs.length > 0) {
-      address = getRecipientAddress().cropMiddle(18);
+    String label = getLabel();
+    switch (vti.type) {
+      case TransactionType.value_transfer:
+        if (vti.vtt != null && vti.vtt!.inputs.isEmpty) return 'genesis';
+        if (label == localization.from && vti.vtt!.inputs.length > 0) {
+          address = getSenderAddress().cropMiddle(18);
+        } else if (vti.vtt!.outputs.length > 0) {
+          address = getRecipientAddress().cropMiddle(18);
+        }
+        return address;
+      case TransactionType.data_request:
+      // TODO: Handle this case.
+      case TransactionType.mint:
+        return 'Mint';
+      case TransactionType.stake:
+        // TODO: Handle this case.
+        return 'Stake';
+      case TransactionType.unstake:
+        return 'unStake';
     }
-    return address;
   }
 
   String getSenderAddress() {

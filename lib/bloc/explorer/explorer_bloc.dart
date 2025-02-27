@@ -261,7 +261,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     }
   }
 
-  // TODO(#542): add stake and unstake stats to account stats
   Future<AccountStats> getAccountStats(Wallet currentWallet) async {
     String address = currentWallet.masterAccount!.address;
     AddressDataRequestsSolved? dataRequestsSolved =
@@ -278,12 +277,14 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     }
 
     return AccountStats(
-        walletId: currentWallet.id,
-        address: address,
-        totalBlocksMined: blocks.length,
-        totalFeesPayed: feesPayed ?? 0,
-        totalRewards: totalRewards ?? 0,
-        totalDrSolved: dataRequestsSolved?.dataRequestsSolved.length ?? 0);
+      walletId: currentWallet.id,
+      address: address,
+      totalBlocksMined: blocks.length,
+      totalFeesPayed: feesPayed ?? 0,
+      totalRewards: totalRewards ?? 0,
+      totalDrSolved: dataRequestsSolved?.dataRequestsSolved.length ?? 0,
+      totalStaked: currentWallet.stakedNanoWit().stakedNanoWit,
+    );
   }
 
   Future<void> _updateDBStatsFromExplorer(
@@ -353,42 +354,36 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
   }
 
   Future<Account> _syncAccountUnstakes(Account account) async {
-    // FIXME(#612): Adding AddressBlocks instead of Unstakes breaks node wallets that have mints.
     try {
-      // TODO(#542): use Unstakes instead of AddressBlocks
       /// retrieve all Block Hashes
-      AddressBlocks? unstakes = (await explorer.address(
+      AddressUnstakes? unstakes = (await explorer.address(
               value: account.address,
-              // TODO(#542): get paginated Unstakes from unstake tab instead of AddressBlocks
-              tab: 'blocks') as PaginatedRequest<AddressBlocks?>)
+              tab: 'unstakes') as PaginatedRequest<AddressUnstakes?>)
           .data;
 
       if (unstakes != null) {
         /// check if the list of transaction is already in the database
-        // TODO(#542): use .unstakes from instead of .blocks
-        for (int i = 0; i < unstakes.blocks.length; i++) {
-          String unstakeHash = unstakes.blocks[i].hash;
+        for (int i = 0; i < unstakes.unstakes.length; i++) {
+          String unstakeHash = unstakes.unstakes[i].hash;
           UnstakeEntry? unstakeEntry =
               database.walletStorage.getUnstake(unstakeHash);
-          // TODO(#542): use UnstakeInfo from instead of BlocInfo
-          BlockInfo unstakeInfo = unstakes.blocks.elementAt(i);
 
           if (unstakeEntry != null) {
             /// this mintEntry.status check for "confirmed" is in the local database
             if (unstakeEntry.status != TxStatusLabel.confirmed) {
               UnstakeEntry unstakeEntry =
-                  await explorer.getUnstake(unstakeInfo);
+                  await explorer.getUnstake(unstakeHash);
               await account.addUnstake(unstakeEntry);
             }
           } else {
-            UnstakeEntry unstakeEntry = await explorer.getUnstake(unstakeInfo);
+            UnstakeEntry unstakeEntry = await explorer.getUnstake(unstakeHash);
             await account.addUnstake(unstakeEntry);
           }
         }
 
         account.unstakeHashes.clear();
         account.unstakeHashes
-            .addAll(unstakes.blocks.map((unstake) => unstake.hash));
+            .addAll(unstakes.unstakes.map((unstake) => unstake.hash));
       }
       return account;
     } catch (e) {
@@ -400,37 +395,32 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
   Future<Account> _syncAccountStakes(Account account) async {
     // FIXME(#612): Adding AddressBlocks instead of Stakes breaks node wallets that have mints.
     try {
-      // TODO(#542): use Stakes instead of AddressBlocks
-      /// retrieve all Block Hashes
-      AddressBlocks? stakes = (await explorer.address(
+      /// retrieve all Stake Hashes
+      AddressStakes? stakes = (await explorer.address(
               value: account.address,
-              // TODO(#542): get paginated Stakes from 'stake' tab instead of AddressBlocks
-              tab: 'blocks') as PaginatedRequest<AddressBlocks?>)
+              tab: 'stakes') as PaginatedRequest<AddressStakes?>)
           .data;
 
       if (stakes != null) {
         /// check if the list of transaction is already in the database
-        // TODO(#542): use .stakes from instead of .blocks
-        for (int i = 0; i < stakes.blocks.length; i++) {
-          String stakeHash = stakes.blocks[i].hash;
-          StakeEntry? stakeEntry = database.walletStorage.getStake(stakeHash);
-          // TODO(#542): use StakeInfo from instead of BlocInfo
-          BlockInfo stakeInfo = stakes.blocks.elementAt(i);
 
+        for (int i = 0; i < stakes.stakes.length; i++) {
+          String stakeHash = stakes.stakes[i].hash;
+          StakeEntry? stakeEntry = database.walletStorage.getStake(stakeHash);
           if (stakeEntry != null) {
             /// this mintEntry.status check for "confirmed" is in the local database
             if (stakeEntry.status != TxStatusLabel.confirmed) {
-              StakeEntry stakeEntry = await explorer.getStake(stakeInfo);
+              StakeEntry stakeEntry = await explorer.getStake(stakeHash);
               await account.addStake(stakeEntry);
             }
           } else {
-            StakeEntry stakeEntry = await explorer.getStake(stakeInfo);
+            StakeEntry stakeEntry = await explorer.getStake(stakeHash);
             await account.addStake(stakeEntry);
           }
         }
 
         account.stakeHashes.clear();
-        account.stakeHashes.addAll(stakes.blocks.map((stake) => stake.hash));
+        account.stakeHashes.addAll(stakes.stakes.map((stake) => stake.hash));
       }
       return account;
     } catch (e) {

@@ -12,7 +12,6 @@ import 'package:witnet/constants.dart';
 import 'package:witnet/crypto.dart';
 import 'package:witnet/data_structures.dart';
 import 'package:witnet/explorer.dart';
-import 'package:witnet/schema.dart';
 import 'package:witnet/utils.dart';
 import 'package:witnet/witnet.dart';
 
@@ -430,17 +429,37 @@ class Wallet {
   }
 
   StakedBalanceInfo stakedNanoWit() {
-    List<StakeOutput> _stakes = [];
-    internalAccounts.forEach((address, account) {
-      // TODO(#542): get stakes by account
+    int totalStake = 0;
+    int totalUnstake = 0;
+    Map<String, Map<String, int>> stakePairs = {};
+
+    allAccounts().forEach((address, account) {
+      account.stakes.forEach((e) {
+        String withdrawer = e.withdrawer;
+        String validator = e.validator;
+        int value = e.value;
+
+        if (stakePairs.containsKey(withdrawer)) {
+          if (stakePairs[withdrawer]!.containsKey(validator)) {
+            int currentStake = stakePairs[withdrawer]![validator]!;
+            stakePairs[withdrawer]![validator] = currentStake + value;
+          }
+        } else {
+          stakePairs[withdrawer] = {validator: value};
+        }
+      });
+
+      stakePairs.forEach((_withdrawer, _stakeEntries) {
+        _stakeEntries.forEach((_validator, _value) {
+          totalStake += _value;
+        });
+      });
+
+      account.unstakes.forEach((e) {
+        totalUnstake += e.value;
+      });
     });
-    externalAccounts.forEach((address, account) {
-      // TODO(#542): get stakes by account
-    });
-    if (masterAccount != null) {
-      // TODO(#542): get stakes by account
-    }
-    return StakedBalanceInfo.fromStakesList(_stakes);
+    return StakedBalanceInfo(stakedNanoWit: totalStake - totalUnstake);
   }
 
   Future<Account> generateKey({
@@ -539,6 +558,18 @@ class Wallet {
       case KeyType.master:
         return {masterAccount!.address: masterAccount!.jsonMap()};
     }
+  }
+
+  List<String> stakesValidators() {
+    List<String> validators = [];
+    allAccounts().forEach((address, account) {
+      account.stakes.forEach((stakeEntry) {
+        if (!validators.contains(stakeEntry.validator)) {
+          validators.add(stakeEntry.validator);
+        }
+      });
+    });
+    return validators;
   }
 
   Map<String, dynamic> jsonMap() {

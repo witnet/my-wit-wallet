@@ -509,13 +509,12 @@ class RecipientStepState extends State<RecipientStep>
     ];
   }
 
-  //TODO(#542): get validator address list by queryStakes from withdrawer address
   List<Widget> _buildValidatorAddressSelect(ThemeData theme) {
     _addressController.text = currentAccount.address;
-    List<SelectItem> validatorAddressesUsedInStakes = [
-      SelectItem('validator1', 'validator1'),
-      SelectItem('validator2', 'validator2')
-    ];
+    List<SelectItem> validatorAddressesUsedInStakes = List<SelectItem>.from(
+        widget.walletStorage.currentWallet
+            .stakesValidators()
+            .map((e) => SelectItem(e, e)));
     return [
       SizedBox(height: 8),
       Text(

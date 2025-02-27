@@ -326,26 +326,18 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   }
 
   Future<Account> _syncStakes(Account account) async {
-    // TODO(#542): get StakeInfo info instead of BlockInfo and get stake from .data instead of blocks
     try {
       /// retrieve any Block Hashes
       final stakes = await apiExplorer.address(
           value: account.address,
-          // TODO: get correct tab 'stake'
-          tab: 'blocks') as PaginatedRequest<AddressBlocks?>;
+          tab: 'stakes') as PaginatedRequest<AddressStakes?>;
       if (stakes.data != null) {
         /// retrieve each block
-        for (int i = 0; i < stakes.data!.blocks.length; i++) {
-          BlockInfo stakeInfo = stakes.data!.blocks.elementAt(i);
-          String _hash = stakeInfo.hash;
-
-          /// Creates a MintEntry from the BlockInfo and MintInfo
-          BlockDetails blockDetails =
-              await apiExplorer.hash(_hash) as BlockDetails;
-          StakeEntry stakeEntry = StakeEntry.fromStakeInfo(
-            stakeInfo,
-            blockDetails,
-          );
+        for (int i = 0; i < stakes.data!.stakes.length; i++) {
+          AddressStake stake = stakes.data!.stakes.elementAt(i);
+          String _hash = stake.hash;
+          StakeInfo stakeInfo = await apiExplorer.hash(_hash) as StakeInfo;
+          StakeEntry stakeEntry = StakeEntry.fromStakeInfo(stakeInfo);
           account.stakeHashes.add(stakeEntry.blockHash);
           account.stakes.add(stakeEntry);
           await db.addStake(stakeEntry);
@@ -359,25 +351,22 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
   }
 
   Future<Account> _syncUnstakes(Account account) async {
-    // TODO(#542): get UnstakeInfo instead of BlockInfo and get unstake from .data instead of blocks
     try {
       /// retrieve any Block Hashes
       final unstakes = await apiExplorer.address(
           value: account.address,
-          // TODO: get correct tab 'unstake'
-          tab: 'blocks') as PaginatedRequest<AddressBlocks?>;
+          tab: 'unstakes') as PaginatedRequest<AddressUnstakes?>;
       if (unstakes.data != null) {
         /// retrieve each block
-        for (int i = 0; i < unstakes.data!.blocks.length; i++) {
-          BlockInfo unstakeInfo = unstakes.data!.blocks.elementAt(i);
-          String _hash = unstakeInfo.hash;
+        for (int i = 0; i < unstakes.data!.unstakes.length; i++) {
+          AddressUnstake addressUnstake = unstakes.data!.unstakes.elementAt(i);
+          String _hash = addressUnstake.hash;
 
           /// Creates a MintEntry from the BlockInfo and MintInfo
-          BlockDetails blockDetails =
-              await apiExplorer.hash(_hash) as BlockDetails;
+          UnstakeInfo unstakeInfo =
+              await apiExplorer.hash(_hash) as UnstakeInfo;
           UnstakeEntry unstakeEntry = UnstakeEntry.fromUnstakeInfo(
             unstakeInfo,
-            blockDetails,
           );
           account.unstakeHashes.add(unstakeEntry.blockHash);
           account.unstakes.add(unstakeEntry);

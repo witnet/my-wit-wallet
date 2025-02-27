@@ -17,14 +17,17 @@ class AccountStats extends Equatable {
   final int totalFeesPayed;
   final int totalRewards;
   final int totalDrSolved;
+  final int? totalStaked;
 
-  AccountStats(
-      {required this.address,
-      required this.walletId,
-      required this.totalBlocksMined,
-      required this.totalFeesPayed,
-      required this.totalRewards,
-      required this.totalDrSolved});
+  AccountStats({
+    required this.address,
+    required this.walletId,
+    required this.totalBlocksMined,
+    required this.totalFeesPayed,
+    required this.totalRewards,
+    required this.totalDrSolved,
+    required this.totalStaked,
+  });
 
   @override
   List<Object?> get props => [
@@ -38,13 +41,13 @@ class AccountStats extends Equatable {
 
   factory AccountStats.fromJson(Map<String, dynamic> data) {
     AccountStats account = AccountStats(
-      walletId: data['walletId'],
-      address: data['address'],
-      totalBlocksMined: data['totalBlocksMined'],
-      totalFeesPayed: data['totalFeesPayed'],
-      totalRewards: data['totalRewards'],
-      totalDrSolved: data['totalDrSolved'],
-    );
+        walletId: data['walletId'],
+        address: data['address'],
+        totalBlocksMined: data['totalBlocksMined'],
+        totalFeesPayed: data['totalFeesPayed'],
+        totalRewards: data['totalRewards'],
+        totalDrSolved: data['totalDrSolved'],
+        totalStaked: data['totalStaked'] ?? 0);
     return account;
   }
 
@@ -56,6 +59,7 @@ class AccountStats extends Equatable {
       'totalFeesPayed': totalFeesPayed,
       'totalRewards': totalRewards,
       'totalDrSolved': totalDrSolved,
+      'totalStaked': totalStaked,
     };
   }
 }
