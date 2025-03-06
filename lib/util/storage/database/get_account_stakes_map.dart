@@ -10,11 +10,6 @@ Map<String, List<StakeEntry>> getAccountStakesMap(List<StakeEntry> stakesList) {
     } else {
       accountStakeMap[stakesList[i].withdrawer] = [stakesList[i]];
     }
-    if (accountStakeMap.containsKey(stakesList[i].validator)) {
-      accountStakeMap[stakesList[i].validator]!.add(stakesList[i]);
-    } else {
-      accountStakeMap[stakesList[i].validator] = [stakesList[i]];
-    }
   }
   return accountStakeMap;
 }

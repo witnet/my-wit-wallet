@@ -144,7 +144,7 @@ class BuildTransaction {
     }
   }
 
-  dynamic getOrigin(layout.TransactionType txType) {
+  dynamic getRecipient(layout.TransactionType txType) {
     switch (txType) {
       case layout.TransactionType.Vtt:
         return this.vtTransaction?.body.outputs[0].pkh.address;
@@ -537,15 +537,16 @@ class StakeEntry {
 
   Map<String, dynamic> jsonMap() => {
         "block_hash": blockHash,
-        "outputs":
+        "inputs":
             List<Map<String, dynamic>>.from(inputs.map((x) => x.jsonMap())),
         "timestamp": timestamp,
         "epoch": epoch,
         "fees": fees,
-        'confirmed': confirmed,
-        'reverted': reverted,
         "status": status.toString(),
         "type": type.toString(),
+        'confirmed': confirmed,
+        'reverted': reverted,
+        "value": value,
         "validator": validator,
         "withdrawer": withdrawer,
         "change": change != null ? change!.jsonMap(asHex: true) : null
@@ -555,7 +556,7 @@ class StakeEntry {
     return StakeEntry(
       blockHash: data["block_hash"],
       inputs: List<StakeInput>.from(
-          data["outputs"].map((x) => StakeInput.fromJson(x))),
+          data["inputs"].map((x) => StakeInput.fromJson(x))),
       timestamp: data["timestamp"],
       epoch: data["epoch"],
       fees: data["fees"],
@@ -566,7 +567,7 @@ class StakeEntry {
       validator: data['validator'],
       withdrawer: data['withdrawer'],
       value: data['value'],
-      change: data.containsKey('change')
+      change: data['change'] != null
           ? ValueTransferOutput.fromJson(data['change'])
           : null,
     );
@@ -582,7 +583,7 @@ class StakeEntry {
           'confirmed': stakeInfo.confirmed,
           'reverted': stakeInfo.reverted
         }).status,
-        type: TransactionType.mint,
+        type: TransactionType.stake,
         confirmed: stakeInfo.confirmed,
         reverted: stakeInfo.reverted,
         validator: stakeInfo.validator,

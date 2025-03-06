@@ -38,46 +38,51 @@ void buildGeneralExceptionModal({
       ],
       image: svgThemeImage(theme, name: iconName, height: 100),
       title: error,
-      content: Column(mainAxisSize: MainAxisSize.min, children: [
-        Text(message, style: theme.textTheme.bodyLarge),
-        SizedBox(height: 16),
-        errorMessage != null
-            ? Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(extendedTheme.borderRadius!),
-                  color: WitnetPallet.lightGrey,
-                ),
-                padding: EdgeInsets.only(left: 8),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                          flex: 8,
-                          child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Text(errorMessage,
-                                  style: extendedTheme.monoRegularText!
-                                      .copyWith(
-                                          color: WitnetPallet.darkGrey,
-                                          fontSize: 12)))),
-                      Flexible(
-                          flex: 1,
-                          child: IconBtn(
-                              color: WitnetPallet.darkGrey,
-                              padding: EdgeInsets.zero,
-                              label: localization.copyAddressToClipboard,
-                              text: localization.copyAddressToClipboard,
-                              iconBtnType: IconBtnType.icon,
-                              iconSize: 10,
-                              onPressed: () async {
-                                await Clipboard.setData(
-                                    ClipboardData(text: errorMessage));
-                              },
-                              icon: Icon(
-                                FontAwesomeIcons.copy,
-                                size: 10,
-                              ))),
-                    ]))
-            : Container()
-      ]));
+      content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(message,
+                style: theme.textTheme.bodyLarge, textAlign: TextAlign.left),
+            SizedBox(height: 16),
+            errorMessage != null
+                ? Container(
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.all(extendedTheme.borderRadius!),
+                      color: WitnetPallet.lightGrey,
+                    ),
+                    padding: EdgeInsets.only(left: 8),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                              flex: 8,
+                              child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Text(errorMessage,
+                                      style: extendedTheme.monoRegularText!
+                                          .copyWith(
+                                              color: WitnetPallet.darkGrey,
+                                              fontSize: 12)))),
+                          Flexible(
+                              flex: 1,
+                              child: IconBtn(
+                                  color: WitnetPallet.darkGrey,
+                                  padding: EdgeInsets.zero,
+                                  label: localization.copyAddressToClipboard,
+                                  text: localization.copyAddressToClipboard,
+                                  iconBtnType: IconBtnType.icon,
+                                  iconSize: 10,
+                                  onPressed: () async {
+                                    await Clipboard.setData(
+                                        ClipboardData(text: errorMessage));
+                                  },
+                                  icon: Icon(
+                                    FontAwesomeIcons.copy,
+                                    size: 10,
+                                  ))),
+                        ]))
+                : Container()
+          ]));
 }

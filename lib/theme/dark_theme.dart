@@ -137,7 +137,8 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
     disabledBackgroundColor: WitnetPallet.darkGrey2,
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(BORDER_RADIUS)), // background color
-    textStyle: bodyRegular.copyWith(fontSize: 16),
+    textStyle: bodyRegular.copyWith(
+        fontSize: 16, color: WitnetPallet.black, fontWeight: FontWeight.w600),
   ),
 );
 OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
@@ -148,7 +149,10 @@ OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
       borderRadius: BorderRadius.circular(BORDER_RADIUS)),
   side: BorderSide(width: 1, color: WitnetPallet.white),
   padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
-  textStyle: bodyRegular.copyWith(fontSize: 16),
+  textStyle: bodyRegular.copyWith(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+  ),
 ));
 CardTheme cardTheme = CardTheme(
   elevation: 5.0,

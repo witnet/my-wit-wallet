@@ -10,27 +10,28 @@ import 'package:my_wit_wallet/util/storage/scanned_content.dart';
 import 'package:my_wit_wallet/widgets/inputs/input_text.dart';
 
 class InputAuthorization extends InputText {
-  InputAuthorization({
-    required super.focusNode,
-    required super.styledTextController,
-    super.prefixIcon,
-    super.errorText,
-    super.validator,
-    super.hint,
-    super.keyboardType,
-    super.obscureText = false,
-    required this.route,
-    super.onChanged,
-    super.onEditingComplete,
-    super.onFieldSubmitted,
-    super.onTapOutside,
-    super.onTap,
-    super.onSuffixTap,
-    super.maxLines = 3,
-  });
+  InputAuthorization(
+      {required super.focusNode,
+      required super.styledTextController,
+      super.prefixIcon,
+      super.errorText,
+      super.validator,
+      super.hint,
+      super.keyboardType,
+      super.obscureText = false,
+      required this.route,
+      super.onChanged,
+      super.onEditingComplete,
+      super.onFieldSubmitted,
+      super.onTapOutside,
+      super.onTap,
+      super.onSuffixTap,
+      super.maxLines = 3,
+      this.setAuthorizationCallback});
 
   @override
   _InputAuthorizationState createState() => _InputAuthorizationState();
+  final void Function(String, {bool? validate})? setAuthorizationCallback;
   final String route;
 }
 
@@ -58,6 +59,7 @@ class _InputAuthorizationState extends State<InputAuthorization> {
 
   _handleQrAddressResults(String value) {
     widget.styledTextController.text = value;
+    widget.setAuthorizationCallback!(value);
   }
 
   _handleQrFocus() {

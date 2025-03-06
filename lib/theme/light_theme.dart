@@ -128,8 +128,20 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(BORDER_RADIUS)), // background color
   textStyle: bodyRegular.copyWith(
+      fontSize: 16, color: WitnetPallet.white, fontWeight: FontWeight.w500),
+));
+OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+  backgroundColor: WitnetPallet.white,
+  foregroundColor: WitnetPallet.black,
+  disabledForegroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.38),
+  shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(BORDER_RADIUS)),
+  side: BorderSide(width: 1, color: WitnetPallet.black),
+  padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+  textStyle: bodyRegular.copyWith(
     fontSize: 16,
-    color: WitnetPallet.white,
+    fontWeight: FontWeight.w600,
   ),
 ));
 TextButtonThemeData textButtonTheme = TextButtonThemeData(
@@ -157,21 +169,7 @@ TooltipThemeData tooltipTheme = TooltipThemeData(
 
 ProgressIndicatorThemeData progressIndicatorTheme = ProgressIndicatorThemeData(
     refreshBackgroundColor: WitnetPallet.brightCyanOpacity1);
-OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
-    style: OutlinedButton.styleFrom(
-  backgroundColor: WitnetPallet.white,
-  foregroundColor: WitnetPallet.black,
-  disabledForegroundColor: Color.fromARGB(114, 2, 29, 48).withOpacity(0.38),
-  shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(BORDER_RADIUS)),
-  side: BorderSide(width: 1, color: WitnetPallet.black),
-  padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
-  textStyle: bodyRegular.copyWith(
-    fontSize: 16,
-    fontWeight: FontWeight.bold,
-    color: WitnetPallet.black,
-  ),
-));
+
 IconThemeData iconTheme = IconThemeData(
   color: WitnetPallet.black,
   size: 16,

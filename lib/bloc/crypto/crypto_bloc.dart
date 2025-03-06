@@ -281,8 +281,8 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     try {
       Account account = await _generateAccount(wallet, index, keyType);
       account = await _syncAccount(account);
-      account = await _syncStakes(account);
-      account = await _syncUnstakes(account);
+      account = await _syncStakes(account, emit);
+      account = await _syncUnstakes(account, emit);
       account = await _syncVtts(account, emit);
       if (account.keyType == KeyType.master) {
         account = await _syncMints(account);
@@ -325,7 +325,8 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
     }
   }
 
-  Future<Account> _syncStakes(Account account) async {
+  Future<Account> _syncStakes(
+      Account account, Emitter<CryptoState> emit) async {
     try {
       /// retrieve any Block Hashes
       final stakes = await apiExplorer.address(
@@ -341,16 +342,24 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
           account.stakeHashes.add(stakeEntry.blockHash);
           account.stakes.add(stakeEntry);
           await db.addStake(stakeEntry);
+          transactionCount += 1;
+          emit(CryptoInitializingWalletState(
+            message: '${account.address}',
+            balanceInfo: balance,
+            transactionCount: transactionCount,
+            addressCount: addressCount,
+          ));
         }
       }
       return account;
     } catch (e) {
-      add(CryptoExceptionEvent(message: 'Error syncing mints:: $e'));
+      add(CryptoExceptionEvent(message: 'Error syncing stakes:: $e'));
       rethrow;
     }
   }
 
-  Future<Account> _syncUnstakes(Account account) async {
+  Future<Account> _syncUnstakes(
+      Account account, Emitter<CryptoState> emit) async {
     try {
       /// retrieve any Block Hashes
       final unstakes = await apiExplorer.address(
@@ -371,11 +380,18 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
           account.unstakeHashes.add(unstakeEntry.blockHash);
           account.unstakes.add(unstakeEntry);
           await db.addUnstake(unstakeEntry);
+          transactionCount += 1;
+          emit(CryptoInitializingWalletState(
+            message: '${account.address}',
+            balanceInfo: balance,
+            transactionCount: transactionCount,
+            addressCount: addressCount,
+          ));
         }
       }
       return account;
     } catch (e) {
-      add(CryptoExceptionEvent(message: 'Error syncing mints:: $e'));
+      add(CryptoExceptionEvent(message: 'Error syncing unstakes:: $e'));
       rethrow;
     }
   }

@@ -74,7 +74,7 @@ class CustomButton extends StatelessWidget {
                 if (positionLeft) icon,
                 Padding(
                   padding: EdgeInsets.only(
-                      left: positionRight ? 8 : 0, right: positionLeft ? 8 : 0),
+                      left: positionLeft ? 8 : 0, right: positionRight ? 8 : 0),
                   child: Text(text),
                 ),
                 if (positionRight) icon,
@@ -96,10 +96,9 @@ class CustomButton extends StatelessWidget {
 
     Widget primaryButton = ElevatedButton(
       style: ElevatedButton.styleFrom(
-          minimumSize: sizeCover ? Size(double.infinity, 54) : null,
-          backgroundColor: color != null ? color : null,
-          textStyle: theme.textTheme.titleMedium
-              ?.copyWith(fontWeight: FontWeight.w600)),
+        minimumSize: sizeCover ? Size(double.infinity, 54) : null,
+        backgroundColor: color != null ? color : null,
+      ),
       child: isLoading
           ? buildCircularProgress(context, theme)
           : getIconTextOrText(),
@@ -109,8 +108,6 @@ class CustomButton extends StatelessWidget {
     Widget secondaryButton = OutlinedButton(
       style: ElevatedButton.styleFrom(
         minimumSize: sizeCover ? Size(double.infinity, 54) : null,
-        textStyle:
-            theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
       ),
       child: isLoading
           ? buildCircularProgress(context, theme)

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/transactions_list/get_transaction_label.dart';
 import 'package:test/test.dart';
-import 'package:witnet/explorer.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,24 +19,18 @@ void main() {
       walletName: 'walletName',
       address: 'wit1zl7ty0lwr7atp5fu34azkgewhtfx2fl4wv69cw',
       path: 'm');
-  List<InputUtxo> inputs = [
-    InputUtxo(
-        address: 'wit1zl7ty0lwr7atp5fu34azkgewhtfx2fl4wv69cw',
-        inputUtxo:
-            '59e4dc54077871e71875a4b840da67c23659d89d41eaad85cdb9a5d552254b5d:9',
-        value: 10180697116),
-  ];
+  List<String> inputs = ['wit1zl7ty0lwr7atp5fu34azkgewhtfx2fl4wv69cw'];
 
   String transactionFromLabel = getTransactionLabel(
       externalAddresses: externalAddresses,
       internalAddresses: internalAddresses,
-      inputs: inputs,
+      inputsAddresses: inputs,
       singleAddressAccount: null);
 
   String transactionToLabel = getTransactionLabel(
       externalAddresses: [],
       internalAddresses: [],
-      inputs: inputs,
+      inputsAddresses: inputs,
       singleAddressAccount: singleAddressAccount);
 
   group(

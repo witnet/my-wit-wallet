@@ -431,28 +431,11 @@ class Wallet {
   StakedBalanceInfo stakedNanoWit() {
     int totalStake = 0;
     int totalUnstake = 0;
-    Map<String, Map<String, int>> stakePairs = {};
 
+    List<StakeEntry> stakes = allStakes();
     allAccounts().forEach((address, account) {
-      account.stakes.forEach((e) {
-        String withdrawer = e.withdrawer;
-        String validator = e.validator;
-        int value = e.value;
-
-        if (stakePairs.containsKey(withdrawer)) {
-          if (stakePairs[withdrawer]!.containsKey(validator)) {
-            int currentStake = stakePairs[withdrawer]![validator]!;
-            stakePairs[withdrawer]![validator] = currentStake + value;
-          }
-        } else {
-          stakePairs[withdrawer] = {validator: value};
-        }
-      });
-
-      stakePairs.forEach((_withdrawer, _stakeEntries) {
-        _stakeEntries.forEach((_validator, _value) {
-          totalStake += _value;
-        });
+      stakes.forEach((StakeEntry e) {
+        totalStake += e.value;
       });
 
       account.unstakes.forEach((e) {

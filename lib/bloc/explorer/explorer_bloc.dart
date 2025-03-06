@@ -387,7 +387,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       }
       return account;
     } catch (e) {
-      print('Error syncing mints $e');
+      print('Error syncing unstakes $e');
       rethrow;
     }
   }
@@ -400,7 +400,6 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
               value: account.address,
               tab: 'stakes') as PaginatedRequest<AddressStakes?>)
           .data;
-
       if (stakes != null) {
         /// check if the list of transaction is already in the database
 
@@ -408,7 +407,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           String stakeHash = stakes.stakes[i].hash;
           StakeEntry? stakeEntry = database.walletStorage.getStake(stakeHash);
           if (stakeEntry != null) {
-            /// this mintEntry.status check for "confirmed" is in the local database
+            /// this stakeEntry.status check for "confirmed" is in the local database
             if (stakeEntry.status != TxStatusLabel.confirmed) {
               StakeEntry stakeEntry = await explorer.getStake(stakeHash);
               await account.addStake(stakeEntry);
@@ -424,7 +423,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       }
       return account;
     } catch (e) {
-      print('Error syncing mints $e');
+      print('Error syncing stakes $e');
       rethrow;
     }
   }

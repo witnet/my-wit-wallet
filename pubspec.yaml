@@ -41,8 +41,8 @@ dependencies:
   decimal: 3.0.2
   witnet: 
     git: 
-      url: 'https://github.com/witnet/witnet.dart'
-      ref: 'wit/2'
+      url: 'https://github.com/parodyBit/witnet.dart'
+      ref: 'stake_unstake'
   path_provider: ^2.0.8
   permission_handler: ^11.0.1
   open_file: ^3.3.2

@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
-import 'package:my_wit_wallet/util/transactions_list/transaction_details.dart';
+import 'package:my_wit_wallet/util/transactions_list/transaction_utils.dart';
 import 'package:my_wit_wallet/widgets/closable_view.dart';
 import 'package:my_wit_wallet/widgets/container_background.dart';
 import 'package:my_wit_wallet/widgets/identicon.dart';
@@ -85,8 +85,6 @@ class TransactionDetails extends StatelessWidget {
     return status == TxStatusLabel.pending;
   }
 
-  bool get isVTT => transaction.type == TransactionType.value_transfer;
-
   bool get isMint => transaction.type == TransactionType.mint;
 
   Widget buildSpeedUpBtn() {
@@ -111,47 +109,127 @@ class TransactionDetails extends StatelessWidget {
     }
   }
 
-  bool isFromCurrentWallet() {
-    if (currentWallet.walletType == WalletType.single) {
-      if (transaction.vtt!.inputAddresses
-          .contains(singleAddressAccount?.address)) {
-        return true;
-      }
+  bool isFromCurrentWallet(String address) {
+    if (currentWallet.walletType == WalletType.single &&
+        currentWallet.masterAccount!.address == address) {
+      return true;
     }
-    if (isVTT) {
-      for (int i = 0; i < transaction.vtt!.inputAddresses.length; i++) {
-        if (externalAddresses.contains(transaction.vtt!.inputAddresses[i])) {
-          return true;
-        }
-        if (internalAddresses.contains(transaction.vtt!.inputAddresses[i])) {
-          return true;
-        }
-      }
+    if (externalAddresses.contains(address)) {
+      return true;
+    }
+    if (internalAddresses.contains(address)) {
+      return true;
     }
     return false;
   }
 
-  bool isToCurrentWallet() {
-    if (currentWallet.walletType == WalletType.single) {
-      if (transaction.vtt?.outputAddresses[0] ==
-          singleAddressAccount?.address) {
-        return true;
-      }
+  Widget buildSpecificInfo(
+      {required BuildContext context,
+      required String label1,
+      required String address1,
+      required String label2,
+      required String address2}) {
+    final theme = Theme.of(context);
+    final extendedTheme = theme.extension<ExtendedTheme>()!;
+    return ContainerBackground(
+        padding: 22,
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            InfoCopy(
+              isHashContent: true,
+              isContentImportant: true,
+              infoToCopy: address1,
+              label: label1,
+              customContent: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    isFromCurrentWallet(address1)
+                        ? identiconContainer(
+                            extendedTheme,
+                            currentWallet.id,
+                          )
+                        : Container(),
+                    isFromCurrentWallet(address1)
+                        ? SizedBox(width: 8)
+                        : Container(),
+                    if (address1.length > 12)
+                      Text(
+                        address1.cropAddress(12),
+                        style: extendedTheme.monoMediumText,
+                      ),
+                  ]),
+            ),
+            Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(FontAwesomeIcons.circleArrowDown,
+                      color: theme.textTheme.bodyMedium?.color),
+                  SizedBox(width: 96),
+                ]),
+            SizedBox(height: 8),
+            InfoCopy(
+              isLastItem: true,
+              isContentImportant: true,
+              isHashContent: true,
+              infoToCopy: address2,
+              label: label2,
+              customContent: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    isFromCurrentWallet(address2)
+                        ? identiconContainer(
+                            extendedTheme,
+                            currentWallet.id,
+                          )
+                        : Container(),
+                    SizedBox(width: 8),
+                    if (address1.length > 12)
+                      Text(
+                        address2.cropAddress(12),
+                        style: extendedTheme.monoMediumText,
+                      ),
+                  ]),
+            ),
+          ],
+        ));
+  }
+
+  Widget buildOriginReceiverInfo(
+      {required TransactionType type,
+      required BuildContext context,
+      required TransactionUtils transactionUtils}) {
+    Widget stakeUnstakeInfo = buildSpecificInfo(
+        context: context,
+        label1: localization.validator,
+        address1: transactionUtils.getValidatorAddress(),
+        label2: localization.withdrawer,
+        address2: transactionUtils.getWithdrawalAddress());
+    switch (type) {
+      case TransactionType.value_transfer:
+        return buildSpecificInfo(
+            context: context,
+            label1: localization.from,
+            address1: transactionUtils.getSenderAddress(),
+            label2: localization.to,
+            address2: transactionUtils.getRecipientAddress());
+      case TransactionType.mint:
+        return Container();
+      case TransactionType.stake:
+        return stakeUnstakeInfo;
+      case TransactionType.unstake:
+        return stakeUnstakeInfo;
+      case TransactionType.data_request:
+        return Container();
     }
-    if (isVTT) {
-      if (externalAddresses.contains(transaction.vtt!.outputAddresses[0])) {
-        return true;
-      }
-      if (internalAddresses.contains(transaction.vtt!.inputAddresses[0])) {
-        return true;
-      }
-    }
-    return false;
   }
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final extendedTheme = theme.extension<ExtendedTheme>()!;
     TransactionUtils transactionUtils = TransactionUtils(vti: transaction);
     String label = transactionUtils.getLabel();
     String? timelock = transactionUtils.timelock();
@@ -195,79 +273,10 @@ class TransactionDetails extends StatelessWidget {
                         contentColor: getStatusColor(transaction.status, theme),
                         isLastItem: true),
                   ])),
-          isVTT
-              ? ContainerBackground(
-                  padding: 22,
-                  content: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      isVTT
-                          ? InfoCopy(
-                              isHashContent: true,
-                              isContentImportant: true,
-                              infoToCopy: transactionUtils.getSenderAddress(),
-                              label: localization.from,
-                              customContent: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    isFromCurrentWallet()
-                                        ? identiconContainer(
-                                            extendedTheme,
-                                            currentWallet.id,
-                                          )
-                                        : Container(),
-                                    isFromCurrentWallet()
-                                        ? SizedBox(width: 8)
-                                        : Container(),
-                                    Text(
-                                      transactionUtils
-                                          .getSenderAddress()
-                                          .cropAddress(12),
-                                      style: extendedTheme.monoMediumText,
-                                    ),
-                                  ]),
-                            )
-                          : Container(),
-                      Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Icon(FontAwesomeIcons.circleArrowDown,
-                                color: theme.textTheme.bodyMedium?.color),
-                            SizedBox(width: 96),
-                          ]),
-                      SizedBox(height: 8),
-                      InfoCopy(
-                        isLastItem: true,
-                        isContentImportant: true,
-                        isHashContent: true,
-                        infoToCopy: transactionUtils.getRecipientAddress(),
-                        label: localization.to,
-                        customContent: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              isToCurrentWallet()
-                                  ? identiconContainer(
-                                      extendedTheme,
-                                      currentWallet.id,
-                                    )
-                                  : Container(),
-                              SizedBox(width: 8),
-                              Text(
-                                transactionUtils
-                                    .getRecipientAddress()
-                                    .cropAddress(12),
-                                style: extendedTheme.monoMediumText,
-                              ),
-                            ]),
-                      ),
-                    ],
-                  ))
-              : Container(),
+          buildOriginReceiverInfo(
+              type: transaction.type,
+              context: context,
+              transactionUtils: transactionUtils),
           ContainerBackground(
               padding: 22,
               content: Column(
@@ -279,9 +288,9 @@ class TransactionDetails extends StatelessWidget {
                       text: transactionUtils.getTransactionValue().amount,
                       isContentImportant: true),
                   InfoElement(
-                      label: isVTT
-                          ? localization.feesPayed
-                          : localization.feesCollected,
+                      label: isMint
+                          ? localization.feesCollected
+                          : localization.feesPayed,
                       text:
                           '${transaction.fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
                       isContentImportant: true),

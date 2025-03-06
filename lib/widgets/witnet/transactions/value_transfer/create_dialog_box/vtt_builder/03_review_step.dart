@@ -161,7 +161,8 @@ class ReviewStepState extends State<ReviewStep>
           builder: (context, state) {
             bool hasTimelock =
                 state.transaction.hasTimelock(state.transactionType);
-            String address = state.transaction.getOrigin(state.transactionType);
+            String address =
+                state.transaction.getRecipient(state.transactionType);
             return Padding(
                 padding: EdgeInsets.only(left: 8, right: 8),
                 child: Column(
@@ -207,17 +208,16 @@ List<Widget> _buildTransactionFeeInfo(BuildContext context) {
 }
 
 Widget _timelock(TransactionState state) {
-  if (state.transaction.hasTimelock(state.transactionType)) {
+  if (state.transaction.hasTimelock(state.transactionType) &&
+      state.transaction.vtTransaction != null) {
     int timestamp =
-        state.transaction.vtTransaction?.body.outputs[0].timeLock.toInt() ??
-            0 * 1000;
+        state.transaction.vtTransaction!.body.outputs[0].timeLock.toInt() *
+            1000;
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
     return InfoElement(
         label: localization.timelock,
         isLastItem: true,
         text: '${DateFormat("h:mm a E, MMM dd yyyy ").format(dateTime)}');
   }
-  return SizedBox(
-    height: 0,
-  );
+  return Container();
 }

@@ -67,7 +67,7 @@ class RecipientStepState extends State<RecipientStep>
   AddressInput _address = AddressInput.pure();
   TxAmountInput _amount = TxAmountInput.pure();
   AuthorizationInput _authorization = AuthorizationInput.pure();
-  String _selectedValidator = 'validator1';
+  String _selectedValidator = '';
   final _amountController = StyledTextController();
   final _amountFocusNode = FocusNode();
   final _addressController = StyledTextController();
@@ -84,7 +84,8 @@ class RecipientStepState extends State<RecipientStep>
       ? [_addressFocusNode, _amountFocusNode]
       : [_addressFocusNode, _amountFocusNode, _authorizationFocusNode];
   ValueTransferOutput? ongoingOutput;
-  TransactionBloc get vttBloc => BlocProvider.of<TransactionBloc>(context);
+  TransactionBloc get transactionBloc =>
+      BlocProvider.of<TransactionBloc>(context);
   String get maxAmountWit => nanoWitToWit(isUnstakeTransaction
           ? stakeInfo.stakedNanoWit
           : balanceInfo.availableNanoWit)
@@ -205,26 +206,27 @@ class RecipientStepState extends State<RecipientStep>
 
   void setAuthorization(String value, {bool? validate}) {
     _authorization = AuthorizationInput.dirty(
-        withdrawerAddress: _address.value,
+        withdrawalAddress: _address.value,
         allowValidation:
             validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
         value: value);
   }
 
   void _setSavedTxData() {
-    if (isStakeTransaction) {
-      _amountController.text =
-          MIN_STAKING_AMOUNT_NANOWIT.standardizeWitUnits().toString();
-      setAmount(_amountController.text, validate: false);
-    }
-    if (vttBloc.state.transaction.hasOutput(widget.transactionType)) {
+    if (transactionBloc.state.transaction.hasOutput(widget.transactionType)) {
       String? savedAddress =
-          vttBloc.state.transaction.get(widget.transactionType) != null
-              ? vttBloc.state.transaction.getOrigin(widget.transactionType)
+          transactionBloc.state.transaction.get(widget.transactionType) != null
+              ? transactionBloc.state.transaction
+                  .getRecipient(widget.transactionType)
               : null;
       String? savedAmount =
-          vttBloc.state.transaction.get(widget.transactionType) != null
-              ? vttBloc.state.transaction.getAmount(widget.transactionType)
+          transactionBloc.state.transaction.get(widget.transactionType) != null
+              ? transactionBloc.state.transaction
+                  .getAmount(widget.transactionType)
+              : null;
+      String? savedAuthorization =
+          transactionBloc.state.transaction.get(widget.transactionType) != null
+              ? transactionBloc.authorizationString
               : null;
 
       if (savedAddress != null) {
@@ -237,16 +239,18 @@ class RecipientStepState extends State<RecipientStep>
         setAmount(savedAmount, validate: false);
       }
 
-      if (isStakeTransaction) {
-        String? savedAuthorization =
-            vttBloc.state.transaction.get(widget.transactionType) != null
-                ? vttBloc.authorizationString
-                : null;
-        _authorizationController.text = savedAuthorization ?? '';
-        setAuthorization(savedAuthorization ?? '');
+      if (isStakeTransaction && savedAuthorization != null) {
+        _authorizationController.text = savedAuthorization;
+        setAuthorization(savedAuthorization);
       }
 
-      vttBloc.add(ResetTransactionEvent());
+      transactionBloc.add(ResetTransactionEvent());
+    }
+
+    if (isStakeTransaction || isUnstakeTransaction) {
+      _amountController.text =
+          MIN_STAKING_AMOUNT_NANOWIT.standardizeWitUnits().toString();
+      setAmount(_amountController.text, validate: false);
     }
   }
 
@@ -264,7 +268,7 @@ class RecipientStepState extends State<RecipientStep>
     }
     if (validateForm(force: true)) {
       if (widget.transactionType == TransactionType.Stake) {
-        vttBloc.add(AddStakeOutputEvent(
+        transactionBloc.add(AddStakeOutputEvent(
           currentWallet: widget.walletStorage.currentWallet,
           withdrawer: _address.value,
           authorization: _authorization.value,
@@ -275,7 +279,10 @@ class RecipientStepState extends State<RecipientStep>
           merge: true,
         ));
       } else {
-        vttBloc.add(AddValueTransferOutputEvent(
+        print('Timelock set? ${timelockSet}');
+        print('Caledar value ${calendarValue}');
+        print('Caledar timelock ${dateTimeToTimelock(calendarValue)}');
+        transactionBloc.add(AddValueTransferOutputEvent(
             currentWallet: widget.walletStorage.currentWallet,
             output: ValueTransferOutput.fromJson({
               'pkh': _address.value,
@@ -483,6 +490,7 @@ class RecipientStepState extends State<RecipientStep>
         onTapOutside: (event) {
           _authorizationFocusNode.unfocus();
         },
+        setAuthorizationCallback: setAuthorization,
       )
     ];
   }
@@ -502,7 +510,7 @@ class RecipientStepState extends State<RecipientStep>
               : localization.unstakeWithdrawalAddressText,
           style: theme.textTheme.bodyMedium),
       SizedBox(height: 16),
-      WithdrawerAddress(
+      WithdrawalAddress(
         address: _addressController.text,
       ),
       SizedBox(height: 4),
@@ -515,6 +523,8 @@ class RecipientStepState extends State<RecipientStep>
         widget.walletStorage.currentWallet
             .stakesValidators()
             .map((e) => SelectItem(e, e)));
+    _selectedValidator = validatorAddressesUsedInStakes[0].label;
+
     return [
       SizedBox(height: 8),
       Text(

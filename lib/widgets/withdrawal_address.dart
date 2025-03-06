@@ -7,8 +7,8 @@ import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 
-class WithdrawerAddress extends StatefulWidget {
-  WithdrawerAddress({
+class WithdrawalAddress extends StatefulWidget {
+  WithdrawalAddress({
     required this.address,
   });
 
@@ -17,7 +17,7 @@ class WithdrawerAddress extends StatefulWidget {
   _WithdrawerAddressState createState() => _WithdrawerAddressState();
 }
 
-class _WithdrawerAddressState extends State<WithdrawerAddress> {
+class _WithdrawerAddressState extends State<WithdrawalAddress> {
   bool isLoading = false;
 
   @override

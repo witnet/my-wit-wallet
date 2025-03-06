@@ -3,7 +3,7 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
-import 'package:my_wit_wallet/util/transactions_list/transaction_details.dart';
+import 'package:my_wit_wallet/util/transactions_list/transaction_utils.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/extensions/int_extensions.dart';
@@ -36,7 +36,6 @@ class TransactionsItemState extends State<TransactionsItem> {
   @override
   void initState() {
     super.initState();
-    transactionUtils = TransactionUtils(vti: widget.transaction);
   }
 
   @override
@@ -110,9 +109,11 @@ class TransactionsItemState extends State<TransactionsItem> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final extendedTheme = theme.extension<ExtendedTheme>()!;
+    transactionUtils = TransactionUtils(vti: widget.transaction);
     String label = transactionUtils!.getLabel();
-    String address = transactionUtils!.getOrigin();
+    String mainTxInfo = transactionUtils!.getMainTxInfo();
     int _lockedWit = transactionUtils!.lockedValue();
+
     return Semantics(
         button: true,
         enabled: true,
@@ -157,7 +158,7 @@ class TransactionsItemState extends State<TransactionsItem> {
                                 style: theme.textTheme.labelLarge,
                               ),
                               SizedBox(height: 4),
-                              Text(address,
+                              Text(mainTxInfo,
                                   overflow: TextOverflow.fade,
                                   style: extendedTheme.monoSmallText)
                             ],

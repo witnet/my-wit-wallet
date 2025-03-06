@@ -582,12 +582,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     Wallet walletStorage = currentWallet;
     ApiCrypto apiCrypto = Locator.instance<ApiCrypto>();
     try {
-      _buildTransactionBody(
-        currentWallet,
-        speedUpTx: speedUpTx,
-      );
       switch (this.transactionType) {
         case layout.TransactionType.Vtt:
+          _buildTransactionBody(
+            currentWallet,
+            speedUpTx: speedUpTx,
+          );
           List<KeyedSignature> signatures = await apiCrypto.signTransaction(
             selectedUtxos,
             walletStorage,
@@ -599,6 +599,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
                   body: VTTransactionBody(inputs: inputs, outputs: outputs),
                   signatures: signatures));
         case layout.TransactionType.Stake:
+          _buildTransactionBody(
+            currentWallet,
+            speedUpTx: speedUpTx,
+          );
           List<KeyedSignature> signatures = await apiCrypto.signTransaction(
             selectedUtxos,
             walletStorage,
@@ -617,10 +621,16 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
                 .hash,
             unstakeOutput?.pkh.address ?? '',
           );
+          int nonce = await Locator.instance.get<ApiExplorer>().getNonce(
+              validator: unstakeOutput?.pkh.address ?? '',
+              withdrawer: unstakeOutput?.pkh.address ?? '');
+
           return BuildTransaction(
               unstakeTransaction: UnstakeTransaction(
                   body: UnstakeBody(
-                      operator: unstakeOutput?.pkh, withdrawal: unstakeOutput),
+                      operator: unstakeOutput?.pkh,
+                      withdrawal: unstakeOutput,
+                      nonce: nonce),
                   signature: signature));
       }
     } catch (e) {
@@ -705,7 +715,13 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       case layout.TransactionType.Unstake:
         transactionToSend = Transaction(unstake: transactionBuilt);
     }
-    transactionAccepted = await _sendTransaction(transactionToSend);
+    try {
+      transactionAccepted = await _sendTransaction(transactionToSend);
+    } catch (e) {
+      emit(state.copyWith(
+          status: TransactionStatus.explorerException,
+          message: 'Error sending the transaction ${e}'));
+    }
     if (transactionAccepted) {
       List<InputUtxo> _inputUtxoList = _buildInputUtxoList();
 
@@ -912,6 +928,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         emit(
             state.copyWith(status: TransactionStatus.discarded, message: null));
       }
+    } else {
+      emit(state.copyWith(
+          status: TransactionStatus.discarded,
+          message: 'Transaciton was not accepted'));
     }
   }
 

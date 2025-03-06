@@ -35,6 +35,7 @@ class _InputLoginState extends State<InputPassword> {
 
   void initState() {
     super.initState();
+    widget.styledTextController.obscureText = !showPassword;
     widget.focusNode.addListener(widget.onFocusChange);
     if (widget.showPassFocusNode != null && this.mounted)
       widget.showPassFocusNode!.addListener(widget.onFocusChange);

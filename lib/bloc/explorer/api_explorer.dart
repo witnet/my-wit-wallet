@@ -43,6 +43,16 @@ class ApiExplorer {
     }
   }
 
+  Future<dynamic> getNonce(
+      {required String validator, required String withdrawer}) async {
+    try {
+      await delay();
+      return await client.nonce(validator: validator, withdrawer: withdrawer);
+    } on ExplorerException {
+      rethrow;
+    }
+  }
+
   Future<Home> home() async {
     try {
       await delay();
@@ -55,7 +65,7 @@ class ApiExplorer {
   Future<String?> getVersion() async {
     try {
       await delay();
-      return await client.version();
+      return await client.explorerVersion();
     } on ExplorerException {
       rethrow;
     }
@@ -163,7 +173,6 @@ class ApiExplorer {
 
   /// Send a Generic Transaction
   Future<dynamic> sendTransaction(Transaction transaction) async {
-    print('...........Sending transaction..........');
     try {
       print('Transaction to send: ${transaction.jsonMap(asHex: true)}');
       await delay();
@@ -212,7 +221,6 @@ class ApiExplorer {
 
   Future<StakeEntry> getStake(String hash) async {
     var result = await Locator.instance.get<ApiExplorer>().hash(hash);
-
     StakeInfo stakeInfo = result as StakeInfo;
     StakeEntry stakeEntry = StakeEntry.fromStakeInfo(stakeInfo);
     return stakeEntry;

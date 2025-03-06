@@ -20,14 +20,14 @@ Map<AuthorizationError, String> errorMap = {
 
 class AuthorizationInput extends FormzInput<String, String?> {
   const AuthorizationInput.pure()
-      : withdrawerAddress = null,
+      : withdrawalAddress = null,
         allowValidation = false,
         super.pure('');
   const AuthorizationInput.dirty(
-      {String value = '', this.withdrawerAddress, this.allowValidation = false})
+      {String value = '', this.withdrawalAddress, this.allowValidation = false})
       : super.dirty(value);
 
-  final String? withdrawerAddress;
+  final String? withdrawalAddress;
   final bool allowValidation;
 
   @override
@@ -37,7 +37,7 @@ class AuthorizationInput extends FormzInput<String, String?> {
       return null;
     }
     try {
-      if (withdrawerAddress == null) {
+      if (withdrawalAddress == null) {
         return validationUtils.getErrorText(AuthorizationError.emptyWithdrawer);
       }
       if (value != null) {
@@ -46,7 +46,7 @@ class AuthorizationInput extends FormzInput<String, String?> {
         }
         try {
           KeyedSignature.fromAuthorization(
-              authorization: value, withdrawer: withdrawerAddress!);
+              authorization: value, withdrawer: withdrawalAddress!);
           return null;
         } catch (err) {
           print('Error decoding authorization $err');
