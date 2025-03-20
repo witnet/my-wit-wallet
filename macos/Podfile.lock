@@ -3,7 +3,7 @@ PODS:
   - local_auth_darwin (0.0.1):
     - Flutter
     - FlutterMacOS
-  - mobile_scanner (5.1.1):
+  - mobile_scanner (6.0.2):
     - FlutterMacOS
   - open_file_mac (0.0.1):
     - FlutterMacOS
@@ -53,15 +53,15 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
-  local_auth_darwin: 66e40372f1c29f383a314c738c7446e2f7fdadc3
-  mobile_scanner: 1efac1e53c294b24e3bb55bcc7f4deee0233a86b
-  open_file_mac: 0e554648e2a87ce59e9438e3e5ca3e552e90d89a
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  screen_retriever: 59634572a57080243dd1bf715e55b6c54f241a38
-  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
-  url_launcher_macos: c82c93949963e55b228a30115bd219499a6fe404
-  window_manager: 3a1844359a6295ab1e47659b1a777e36773cd6e8
+  local_auth_darwin: 553ce4f9b16d3fdfeafce9cf042e7c9f77c1c391
+  mobile_scanner: 0e365ed56cad24f28c0fd858ca04edefb40dfac3
+  open_file_mac: 01874b6d6a2c1485ac9b126d7105b99102dea2cf
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  screen_retriever: 4f97c103641aab8ce183fa5af3b87029df167936
+  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  url_launcher_macos: 0fba8ddabfc33ce0a9afe7c5fef5aab3d8d2d673
+  window_manager: 1d01fa7ac65a6e6f83b965471b1a7fdd3f06166c
 
 PODFILE CHECKSUM: 606eb75d47287ee01bd483c8d3f5c360f7bc334a
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

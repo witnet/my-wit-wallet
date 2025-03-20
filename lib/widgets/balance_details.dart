@@ -43,6 +43,12 @@ class BalanceDetails extends StatelessWidget {
                 text:
                     '${stakedBalance.stakedNanoWit.standardizeWitUnits().toString()} ${WIT_UNIT[WitUnit.Wit]}',
               ),
+              InfoElement(
+                isContentImportant: true,
+                label: localization.total,
+                text:
+                    '${(stakedBalance.stakedNanoWit.standardizeWitUnits() + balance.availableNanoWit.standardizeWitUnits() + balance.lockedNanoWit.standardizeWitUnits()).toString()} ${WIT_UNIT[WitUnit.Wit]}',
+              ),
             ]));
   }
 }

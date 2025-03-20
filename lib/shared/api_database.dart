@@ -329,7 +329,7 @@ class ApiDatabase {
         params: {'type': 'mint', 'value': transaction.jsonMap()});
   }
 
-  Future<ValueTransferInfo?> getStake(String hash) async {
+  Future<StakeEntry?> getStake(String hash) async {
     try {
       return await _processIsolate(method: 'getStake', params: {"hash": hash});
     } catch (err) {
@@ -338,7 +338,7 @@ class ApiDatabase {
     }
   }
 
-  Future<ValueTransferInfo?> getUnstake(String hash) async {
+  Future<UnstakeEntry?> getUnstake(String hash) async {
     try {
       return await _processIsolate(method: 'getStake', params: {"hash": hash});
     } catch (err) {
@@ -422,19 +422,25 @@ class ApiDatabase {
         method: 'update', params: {'type': 'mint', 'value': mint.jsonMap()});
   }
 
-  Future<bool> updateStake(String walletId, StakeEntry mint) async {
+  Future<bool> updateStake(String walletId, StakeEntry stake) async {
     return await _processIsolate(
-        method: 'update', params: {'type': 'stake', 'value': mint.jsonMap()});
+        method: 'update', params: {'type': 'stake', 'value': stake.jsonMap()});
   }
 
-  Future<bool> updateUnstake(String walletId, UnstakeEntry mint) async {
+  Future<bool> updateUnstake(String walletId, UnstakeEntry unstake) async {
     return await _processIsolate(
-        method: 'update', params: {'type': 'stake', 'value': mint.jsonMap()});
+        method: 'update',
+        params: {'type': 'unstake', 'value': unstake.jsonMap()});
   }
 
   Future<bool> deleteVtt(ValueTransferInfo vtt) async {
     return await _processIsolate(
         method: 'delete', params: {'value': vtt.jsonMap(), 'type': 'vtt'});
+  }
+
+  Future<bool> deleteStake(StakeEntry stake) async {
+    return await _processIsolate(
+        method: 'delete', params: {'type': 'stake', 'value': stake.jsonMap()});
   }
 
   Future<bool> updateAccount(Account account) async {

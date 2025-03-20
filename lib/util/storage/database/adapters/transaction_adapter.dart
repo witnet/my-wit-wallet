@@ -19,8 +19,6 @@ class BuildTransaction {
         return this.stakeTransaction;
       case layout.TransactionType.Unstake:
         return this.unstakeTransaction;
-      default:
-        return this.vtTransaction;
     }
   }
 
@@ -37,9 +35,6 @@ class BuildTransaction {
         return this.unstakeTransaction != null &&
             this.unstakeTransaction!.body.withdrawal.pkh.address !=
                 'wit1q08n42';
-      default:
-        return this.vtTransaction != null &&
-            this.vtTransaction!.body.outputs.length > 0;
     }
   }
 
@@ -53,8 +48,6 @@ class BuildTransaction {
       case layout.TransactionType.Unstake:
         return TransactionBody(
             unstakeTransactionBody: this.unstakeTransaction?.body);
-      default:
-        return TransactionBody(vtTransactionBody: this.vtTransaction?.body);
     }
   }
 
@@ -66,8 +59,6 @@ class BuildTransaction {
         return 'stakeTransaction';
       case layout.TransactionType.Unstake:
         return 'unstakeTransaction';
-      default:
-        return 'vtTransaction';
     }
   }
 
@@ -79,8 +70,6 @@ class BuildTransaction {
         return this.stakeTransaction?.body.output.value.toInt() ?? 0;
       case layout.TransactionType.Unstake:
         return this.unstakeTransaction?.body.withdrawal.value.toInt() ?? 0;
-      default:
-        return this.vtTransaction?.body.outputs.first.value.toInt() ?? 0;
     }
   }
 
@@ -91,8 +80,6 @@ class BuildTransaction {
       case layout.TransactionType.Stake:
         return this.stakeTransaction?.body.output.authorization.toString();
       case layout.TransactionType.Unstake:
-        return null;
-      default:
         return null;
     }
   }
@@ -130,17 +117,6 @@ class BuildTransaction {
                 .standardizeWitUnits(truncate: -1)
                 .formatWithCommaSeparator() ??
             '';
-      default:
-        return this
-                .vtTransaction
-                ?.body
-                .outputs
-                .first
-                .value
-                .toInt()
-                .standardizeWitUnits(truncate: -1)
-                .formatWithCommaSeparator() ??
-            '';
     }
   }
 
@@ -152,8 +128,6 @@ class BuildTransaction {
         return this.stakeTransaction?.body.output.key.withdrawer.address;
       case layout.TransactionType.Unstake:
         return this.unstakeTransaction?.body.withdrawal.pkh.address;
-      default:
-        return this.vtTransaction?.body.outputs[0].pkh.address;
     }
   }
 
@@ -165,8 +139,6 @@ class BuildTransaction {
         return this.stakeTransaction?.weight ?? '';
       case layout.TransactionType.Unstake:
         return this.unstakeTransaction?.weight ?? '';
-      default:
-        return this.vtTransaction?.weight ?? '';
     }
   }
 
@@ -178,8 +150,6 @@ class BuildTransaction {
         return false;
       case layout.TransactionType.Unstake:
         return false;
-      default:
-        return this.vtTransaction?.body.outputs[0].timeLock != 0;
     }
   }
 
@@ -191,8 +161,6 @@ class BuildTransaction {
         return this.stakeTransaction?.transactionID ?? '';
       case layout.TransactionType.Unstake:
         return this.unstakeTransaction?.transactionID ?? '';
-      default:
-        return this.vtTransaction?.transactionID ?? '';
     }
   }
 }
@@ -412,6 +380,7 @@ class GeneralTransaction extends HashInfo {
 
 class UnstakeEntry {
   UnstakeEntry({
+    required this.hash,
     required this.blockHash,
     required this.fees,
     required this.epoch,
@@ -426,6 +395,7 @@ class UnstakeEntry {
     required this.withdrawer,
     required this.nonce,
   });
+  final String hash;
   final String blockHash;
   final int timestamp;
   final int? epoch;
@@ -450,6 +420,7 @@ class UnstakeEntry {
       DateTime.now().millisecondsSinceEpoch;
 
   Map<String, dynamic> jsonMap() => {
+        "hash": hash,
         "block_hash": blockHash,
         "timestamp": timestamp,
         "epoch": epoch,
@@ -463,6 +434,7 @@ class UnstakeEntry {
 
   factory UnstakeEntry.fromJson(Map<String, dynamic> data) {
     return UnstakeEntry(
+      hash: data["hash"],
       blockHash: data["block_hash"],
       timestamp: data["timestamp"],
       epoch: data["epoch"],
@@ -479,6 +451,7 @@ class UnstakeEntry {
   }
 
   factory UnstakeEntry.fromUnstakeInfo(UnstakeInfo unstakeInfo) => UnstakeEntry(
+      hash: unstakeInfo.hash,
       blockHash: unstakeInfo.blockHash,
       timestamp: unstakeInfo.timestamp,
       epoch: unstakeInfo.epoch,
@@ -498,6 +471,7 @@ class UnstakeEntry {
 
 class StakeEntry {
   StakeEntry({
+    required this.hash,
     required this.blockHash,
     required this.fees,
     required this.epoch,
@@ -513,6 +487,7 @@ class StakeEntry {
     required this.value,
     this.change,
   });
+  final String hash;
   final String blockHash;
   final List<StakeInput> inputs;
   final int timestamp;
@@ -536,6 +511,7 @@ class StakeEntry {
   }
 
   Map<String, dynamic> jsonMap() => {
+        "hash": hash,
         "block_hash": blockHash,
         "inputs":
             List<Map<String, dynamic>>.from(inputs.map((x) => x.jsonMap())),
@@ -554,6 +530,7 @@ class StakeEntry {
 
   factory StakeEntry.fromJson(Map<String, dynamic> data) {
     return StakeEntry(
+      hash: data["hash"],
       blockHash: data["block_hash"],
       inputs: List<StakeInput>.from(
           data["inputs"].map((x) => StakeInput.fromJson(x))),
@@ -574,6 +551,7 @@ class StakeEntry {
   }
 
   factory StakeEntry.fromStakeInfo(StakeInfo stakeInfo) => StakeEntry(
+        hash: stakeInfo.hash,
         blockHash: stakeInfo.block,
         inputs: stakeInfo.inputs,
         timestamp: stakeInfo.timestamp,

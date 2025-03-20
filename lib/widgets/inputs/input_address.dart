@@ -90,8 +90,8 @@ class _InputAddressState extends State<InputAddress> {
               context: context,
               decoration: widget.decoration ??
                   InputDecoration(
-                    hintStyle: extendedTheme.monoLargeText!
-                        .copyWith(color: theme.textTheme.bodyMedium!.color),
+                    hintStyle: extendedTheme.monoLargeText!.copyWith(
+                        color: theme.inputDecorationTheme.hintStyle!.color),
                     hintText: localization.recipientAddress,
                     suffixIcon: !Platform.isWindows && !Platform.isLinux
                         ? Semantics(

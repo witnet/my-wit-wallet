@@ -286,7 +286,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   void _setSelectedUtxos(BuildVttInputsParams params) {
     // Remove utxos used in pending transactions
     List<Utxo> filteredUtxos = filterUsedUtxos(
-        utxoList: utxos, pendingVtts: params.wallet.pendingTransactions());
+        utxoList: utxos,
+        pendingVtts: params.wallet.pendingTransactions(),
+        pendingStakes: params.wallet.pendingStakes());
 
     // Update the utxo pool
     filteredUtxoPool.clear();
@@ -805,6 +807,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         await database.updateCurrentWallet();
       } else if (event.transaction.stakeTransaction != null) {
         StakeEntry stakeEntry = StakeEntry(
+          hash: event.transaction.getTransactionID(this.transactionType),
           blockHash: '0',
           fees: feeNanoWit,
           epoch: -1,
@@ -866,6 +869,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         await database.updateCurrentWallet();
       } else if (event.transaction.unstakeTransaction != null) {
         UnstakeEntry unstakeEntry = UnstakeEntry(
+            hash: event.transaction.getTransactionID(this.transactionType),
             blockHash: '0',
             fees: feeNanoWit,
             epoch: -1,

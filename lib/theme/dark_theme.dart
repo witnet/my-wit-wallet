@@ -72,7 +72,7 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   errorMaxLines: 1,
   hintStyle: bodyRegular
       .copyWith(fontSize: 16)
-      .copyWith(color: bodyMedium.color!.withOpacity(0.5)),
+      .copyWith(color: bodyMedium.color!..withValues(alpha: 0.5)),
   labelStyle: bodyRegular.copyWith(color: WitnetPallet.mediumGrey),
   hoverColor: const Color.fromARGB(9, 255, 255, 255),
   focusColor: WitnetPallet.brightCyanOpacity1,
@@ -144,7 +144,8 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
 OutlinedButtonThemeData outlinedButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
   foregroundColor: WitnetPallet.white,
-  disabledForegroundColor: Color.fromARGB(78, 240, 243, 245).withOpacity(0.38),
+  disabledForegroundColor:
+      Color.fromARGB(78, 240, 243, 245).withValues(alpha: 0.38),
   shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(BORDER_RADIUS)),
   side: BorderSide(width: 1, color: WitnetPallet.white),

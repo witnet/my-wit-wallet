@@ -41,9 +41,9 @@ const shades = {
 
 MaterialColor getMaterialColor(Color color) {
   return Colors.primaries.firstWhere(
-    (c) => c.value == color.value,
+    (c) => c.toARGB32() == color.toARGB32(),
     orElse: () => MaterialColor(
-      color.value,
+      color.toARGB32(),
       <int, Color>{
         shades[ColorShade.lightest]!: color,
         shades[ColorShade.secondLightest]!: color,

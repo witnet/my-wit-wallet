@@ -243,6 +243,18 @@ class Account extends _Account {
     return true;
   }
 
+  Future<bool> deleteStake(StakeEntry stake) async {
+    ApiDatabase database = Locator.instance<ApiDatabase>();
+    try {
+      stakeHashes.removeWhere((hash) => hash == stake.hash);
+      stakes.removeWhere((_vtt) => _vtt.hash == stake.hash);
+      await database.updateAccount(this);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Map<String, dynamic> jsonMap() {
     List<Map<String, dynamic>> _utxos = [];

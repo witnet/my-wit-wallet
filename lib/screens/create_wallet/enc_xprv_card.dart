@@ -138,7 +138,7 @@ class EnterXprvCardState extends State<EnterEncryptedXprvCard>
       route: CreateWalletScreen.route,
       decoration: InputDecoration(
         hintStyle: extendedTheme.monoLargeText!.copyWith(
-            color: theme.textTheme.titleMedium!.color!.withOpacity(0.5)),
+            color: theme.textTheme.titleMedium!.color!.withValues(alpha: 0.5)),
         hintText: localization.xprvInputHint,
         suffixIcon: !Platform.isWindows && !Platform.isLinux
             ? Semantics(

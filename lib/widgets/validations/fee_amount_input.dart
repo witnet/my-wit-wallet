@@ -38,11 +38,11 @@ class FeeAmountInput extends TxAmountInput {
       this.allowZero = false,
       this.allowValidation = false})
       : super.dirty(
-          value: value,
-          allowZero: allowZero,
-          allowValidation: allowValidation,
-          availableNanoWit: availableNanoWit,
-        );
+            value: value,
+            allowZero: allowZero,
+            allowValidation: allowValidation,
+            availableNanoWit: availableNanoWit,
+            stakedNanoWit: 0);
 
   // Override notEnoughFunds to handle validating taking into account the vttAmount
   @override

@@ -41,8 +41,8 @@ dependencies:
   decimal: 3.0.2
   witnet: 
     git: 
-      url: 'https://github.com/parodyBit/witnet.dart'
-      ref: 'stake_unstake'
+      url: 'https://github.com/witnet/witnet.dart'
+      ref: 'wit/2'
   path_provider: ^2.0.8
   permission_handler: ^11.0.1
   open_file: ^3.3.2
@@ -50,8 +50,7 @@ dependencies:
   window_manager: ^0.3.6
   url_launcher: ^6.1.14
   flutter_dotenv: ^5.1.0
-  qr_code_scanner: ^1.0.1
-  mobile_scanner: 5.1.1
+  mobile_scanner: 6.0.7
   formz: ^0.7.0
   flutter_hooks: ^0.20.2
   flutter_svg: ^2.0.7

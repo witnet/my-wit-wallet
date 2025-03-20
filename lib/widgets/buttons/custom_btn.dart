@@ -58,7 +58,7 @@ class CustomButton extends StatelessWidget {
   Color overlayColor({Color? color = null, required ThemeData theme}) {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     if (!enabled) {
-      return theme.colorScheme.surface.withOpacity(0);
+      return theme.colorScheme.surface.withValues(alpha: 0);
     }
     return color ?? extendedTheme.focusBg!;
   }
@@ -121,8 +121,6 @@ class CustomButton extends StatelessWidget {
           return primaryButton;
         case CustomBtnType.secondary:
           return secondaryButton;
-        default:
-          return primaryButton;
       }
     }
 

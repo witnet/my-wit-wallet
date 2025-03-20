@@ -125,6 +125,7 @@ class TransactionDetails extends StatelessWidget {
 
   Widget buildSpecificInfo(
       {required BuildContext context,
+      bool showArrow = false,
       required String label1,
       required String address1,
       required String label2,
@@ -162,14 +163,16 @@ class TransactionDetails extends StatelessWidget {
                       ),
                   ]),
             ),
-            Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(FontAwesomeIcons.circleArrowDown,
-                      color: theme.textTheme.bodyMedium?.color),
-                  SizedBox(width: 96),
-                ]),
+            showArrow
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                        Icon(FontAwesomeIcons.circleArrowDown,
+                            color: theme.textTheme.bodyMedium?.color),
+                        SizedBox(width: 96),
+                      ])
+                : Container(),
             SizedBox(height: 8),
             InfoCopy(
               isLastItem: true,
@@ -213,6 +216,7 @@ class TransactionDetails extends StatelessWidget {
       case TransactionType.value_transfer:
         return buildSpecificInfo(
             context: context,
+            showArrow: true,
             label1: localization.from,
             address1: transactionUtils.getSenderAddress(),
             label2: localization.to,

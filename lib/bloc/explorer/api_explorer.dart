@@ -219,10 +219,11 @@ class ApiExplorer {
     return mintEntry;
   }
 
-  Future<StakeEntry> getStake(String hash) async {
+  Future<StakeEntry?> getStake(String hash) async {
     var result = await Locator.instance.get<ApiExplorer>().hash(hash);
-    StakeInfo stakeInfo = result as StakeInfo;
-    StakeEntry stakeEntry = StakeEntry.fromStakeInfo(stakeInfo);
+    StakeInfo? stakeInfo = result as StakeInfo?;
+    StakeEntry? stakeEntry =
+        stakeInfo != null ? StakeEntry.fromStakeInfo(stakeInfo) : null;
     return stakeEntry;
   }
 

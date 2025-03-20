@@ -186,9 +186,9 @@ class RecipientStepState extends State<RecipientStep>
   void setAmount(String value, {bool? validate}) {
     setState(() {
       _amount = TxAmountInput.dirty(
-          availableNanoWit: isUnstakeTransaction
-              ? stakeInfo.stakedNanoWit
-              : balanceInfo.availableNanoWit,
+          availableNanoWit: balanceInfo.availableNanoWit,
+          stakedNanoWit: stakeInfo.stakedNanoWit,
+          isUnstakeAmount: isUnstakeTransaction,
           isStakeAmount: isStakeTransaction,
           allowValidation:
               validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
@@ -279,9 +279,6 @@ class RecipientStepState extends State<RecipientStep>
           merge: true,
         ));
       } else {
-        print('Timelock set? ${timelockSet}');
-        print('Caledar value ${calendarValue}');
-        print('Caledar timelock ${dateTimeToTimelock(calendarValue)}');
         transactionBloc.add(AddValueTransferOutputEvent(
             currentWallet: widget.walletStorage.currentWallet,
             output: ValueTransferOutput.fromJson({
@@ -414,6 +411,12 @@ class RecipientStepState extends State<RecipientStep>
         MAX_STAKING_AMOUNT_NANOWIT.standardizeWitUnits(truncate: -1).toDouble();
     double minWitAmount =
         MIN_STAKING_AMOUNT_NANOWIT.standardizeWitUnits(truncate: -1).toDouble();
+    double minUnstakeWitAmount =
+        stakeInfo.stakedNanoWit > MIN_STAKING_AMOUNT_NANOWIT
+            ? 0
+            : MIN_STAKING_AMOUNT_NANOWIT
+                .standardizeWitUnits(truncate: -1)
+                .toDouble();
     double maxAmount =
         standardizedBalance > maxWitAmount ? maxWitAmount : standardizedBalance;
     return [
@@ -423,7 +426,8 @@ class RecipientStepState extends State<RecipientStep>
           formEntry: InputSlider(
             hint: localization.amount,
             enabled: minWitAmount < maxAmount,
-            minAmount: minWitAmount,
+            minAmount:
+                isUnstakeTransaction ? minUnstakeWitAmount : minWitAmount,
             inputFormatters: [WitValueFormatter()],
             maxAmount: maxAmount,
             errorText: _amount.error,

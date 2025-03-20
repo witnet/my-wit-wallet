@@ -198,7 +198,7 @@ class UnstakeRepository extends _TransactionRepository {
     try {
       assert(transaction.runtimeType == UnstakeEntry);
       await _store
-          .record(transaction.blockHash)
+          .record(transaction.hash)
           .add(databaseClient, transaction.jsonMap());
       return true;
     } catch (e) {
@@ -213,7 +213,7 @@ class UnstakeRepository extends _TransactionRepository {
   ) async {
     try {
       assert(transaction.runtimeType == UnstakeEntry);
-      await _store.record(transaction.blockHash).update(
+      await _store.record(transaction.hash).update(
             databaseClient,
             transaction.jsonMap(),
           );
@@ -279,7 +279,7 @@ class StakeRepository extends _TransactionRepository {
     try {
       assert(transaction.runtimeType == StakeEntry);
       await _store
-          .record(transaction.blockHash)
+          .record(transaction.hash)
           .add(databaseClient, transaction.jsonMap());
       return true;
     } catch (e) {
@@ -294,7 +294,7 @@ class StakeRepository extends _TransactionRepository {
   ) async {
     try {
       assert(transaction.runtimeType == StakeEntry);
-      await _store.record(transaction.blockHash).update(
+      await _store.record(transaction.hash).update(
             databaseClient,
             transaction.jsonMap(),
           );

@@ -115,6 +115,16 @@ class Wallet {
     }
   }
 
+  Future<void> deleteStake(Wallet wallet, StakeEntry stake) async {
+    /// check the inputs for accounts in the wallet and remove the vtt
+    for (int i = 0; i < stake.inputs.length; i++) {
+      Account? account = wallet.accountByAddress(stake.inputs[i].address);
+      if (account != null) {
+        await account.deleteStake(stake);
+      }
+    }
+  }
+
   Map<int, Account> orderAccountsByIndex(Map<int, Account> accountMap) {
     return Map.fromEntries(accountMap.entries.toList()
       ..sort((e1, e2) => e2.key.compareTo(e1.key)));
@@ -229,6 +239,16 @@ class Wallet {
     return unconfirmedVtts;
   }
 
+  List<StakeEntry> unconfirmedStakes() {
+    List<StakeEntry> unconfirmedStakes = [];
+    allStakes().forEach((stake) {
+      if (stake.status != TxStatusLabel.confirmed) {
+        unconfirmedStakes.add(stake);
+      }
+    });
+    return unconfirmedStakes;
+  }
+
   List<ValueTransferInfo> pendingTransactions() {
     List<ValueTransferInfo> pendingVtts = [];
     allTransactions().forEach((vtt) {
@@ -237,6 +257,16 @@ class Wallet {
       }
     });
     return pendingVtts;
+  }
+
+  List<StakeEntry> pendingStakes() {
+    List<StakeEntry> pendingStakes = [];
+    allStakes().forEach((stake) {
+      if (stake.status == TxStatusLabel.pending) {
+        pendingStakes.add(stake);
+      }
+    });
+    return pendingStakes;
   }
 
   List<ValueTransferInfo> allTransactions() {
@@ -431,13 +461,11 @@ class Wallet {
   StakedBalanceInfo stakedNanoWit() {
     int totalStake = 0;
     int totalUnstake = 0;
-
     List<StakeEntry> stakes = allStakes();
+    stakes.forEach((StakeEntry e) {
+      totalStake += e.value;
+    });
     allAccounts().forEach((address, account) {
-      stakes.forEach((StakeEntry e) {
-        totalStake += e.value;
-      });
-
       account.unstakes.forEach((e) {
         totalUnstake += e.value;
       });

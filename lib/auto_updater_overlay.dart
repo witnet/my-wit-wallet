@@ -151,7 +151,7 @@ void customDialog({
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      backgroundColor: theme.dialogBackgroundColor,
+      backgroundColor: theme.dialogTheme.backgroundColor,
       surfaceTintColor: Colors.transparent,
       scrollable: true,
       shape: RoundedRectangleBorder(

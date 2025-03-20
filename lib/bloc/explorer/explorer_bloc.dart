@@ -409,12 +409,16 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           if (stakeEntry != null) {
             /// this stakeEntry.status check for "confirmed" is in the local database
             if (stakeEntry.status != TxStatusLabel.confirmed) {
-              StakeEntry stakeEntry = await explorer.getStake(stakeHash);
-              await account.addStake(stakeEntry);
+              StakeEntry? stakeEntry = await explorer.getStake(stakeHash);
+              if (stakeEntry != null) {
+                await account.addStake(stakeEntry);
+              }
             }
           } else {
-            StakeEntry stakeEntry = await explorer.getStake(stakeHash);
-            await account.addStake(stakeEntry);
+            StakeEntry? stakeEntry = await explorer.getStake(stakeHash);
+            if (stakeEntry != null) {
+              await account.addStake(stakeEntry);
+            }
           }
         }
 
@@ -517,6 +521,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
 
     /// get a list of any pending transactions
     List<ValueTransferInfo> unconfirmedVtts = wallet.unconfirmedTransactions();
+    List<StakeEntry> unconfirmedStakes = wallet.unconfirmedStakes();
     if (wallet.walletType == WalletType.hd) {
       /// maintain gap limit for BIP39
       await wallet.ensureGapLimit();
@@ -578,24 +583,35 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         /// If the getVtt method returns null we enter this catch
         /// and the vtt has an unknown hash
 
-        /// check the inputs for accounts in the wallet and remove the vtt
-        for (int i = 0; i < _vtt.inputAddresses.length; i++) {
-          Account? account = wallet.accountByAddress(_vtt.inputAddresses[i]);
-          if (account != null) {
-            await account.deleteVtt(_vtt);
-          }
-        }
+        /// check accounts in the wallet and remove the vtt
+        await wallet.deleteVtt(wallet, _vtt);
 
-        /// check the outputs for accounts in the wallet and remove the vtt
-        for (int i = 0; i < _vtt.outputAddresses.length; i++) {
-          Account? account = wallet.accountByAddress(_vtt.outputAddresses[i]);
+        /// delete the stale vtt from the database.
+        await database.deleteVtt(_vtt);
+      }
+    }
+    // TODO(#): fix pending stakes
+    for (int i = 0; i < unconfirmedStakes.length; i++) {
+      StakeEntry _stake = unconfirmedStakes[i];
+      try {
+        StakeEntry? stake = await explorer.getStake(_stake.hash);
+        if (stake != null && _stake.status != stake.status) {
+          await database.updateStake(wallet.id, stake);
+        }
+      } catch (e) {
+        /// If the getVtt method returns null we enter this catch
+        /// and the vtt has an unknown hash
+
+        /// check the inputs for accounts in the wallet and remove the vtt
+        for (int i = 0; i < _stake.inputs.length; i++) {
+          Account? account = wallet.accountByAddress(_stake.inputs[i].address);
           if (account != null) {
-            await account.deleteVtt(_vtt);
+            await account.deleteStake(_stake);
           }
         }
 
         /// delete the stale vtt from the database.
-        await database.deleteVtt(_vtt);
+        await database.deleteStake(_stake);
       }
     }
     await database.loadWalletsDatabase();

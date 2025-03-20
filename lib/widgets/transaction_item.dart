@@ -64,19 +64,19 @@ class TransactionsItemState extends State<TransactionsItem> {
       }
     }
 
-    return Row(
-      children: [
-        ...pendingStatus,
-        showTimeLabel
-            ? Text(
+    return showTimeLabel
+        ? Row(
+            children: [
+              ...pendingStatus,
+              Text(
                 transacionStatusCopy,
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.labelMedium,
               )
-            : Container(),
-      ],
-    );
+            ],
+          )
+        : Container();
   }
 
   Color? getAmountColor(String prefix) {

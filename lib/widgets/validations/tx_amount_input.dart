@@ -29,24 +29,30 @@ Map<AmountInputError, String> errorMap = {
 // Extend FormzInput and provide the input type and error type.
 class TxAmountInput extends AmountInput {
   final int availableNanoWit;
+  final int stakedNanoWit;
   final bool allowZero;
   final bool allowValidation;
   final bool isStakeAmount;
+  final bool isUnstakeAmount;
 
   // Call super.pure to represent an unmodified form input.
   TxAmountInput.pure()
       : availableNanoWit = 0,
+        stakedNanoWit = 0,
         allowZero = false,
         isStakeAmount = false,
+        isUnstakeAmount = false,
         allowValidation = false,
         super.pure();
 
   // Call super.dirty to represent a modified form input.
   TxAmountInput.dirty(
       {required this.availableNanoWit,
+      required this.stakedNanoWit,
       value = '',
       this.allowZero = false,
       this.isStakeAmount = false,
+      this.isUnstakeAmount = false,
       this.allowValidation = false})
       : super.dirty(
             value: value,
@@ -79,6 +85,10 @@ class TxAmountInput extends AmountInput {
       getNanoWitAmount() < MIN_STAKING_AMOUNT_NANOWIT.toInt();
   bool get greaterThanMaximum =>
       getNanoWitAmount() > MAX_STAKING_AMOUNT_NANOWIT.toInt();
+  double get minUnstakeWitAmount => this.stakedNanoWit >
+          MIN_STAKING_AMOUNT_NANOWIT
+      ? 0
+      : MIN_STAKING_AMOUNT_NANOWIT.standardizeWitUnits(truncate: -1).toDouble();
 
   // Override validator to handle validating a given input value.
   @override
@@ -94,6 +104,9 @@ class TxAmountInput extends AmountInput {
       return validationUtils.getErrorText(AmountInputError.greaterThanMax);
     }
     if (isStakeAmount && lessThanMinimum) {
+      return validationUtils.getErrorText(AmountInputError.lessThanMin);
+    }
+    if (isUnstakeAmount && getNanoWitAmount() < minUnstakeWitAmount) {
       return validationUtils.getErrorText(AmountInputError.lessThanMin);
     }
     if (notEnoughFunds(avoidWeightedAmountCheck: avoidWeightedAmountCheck))

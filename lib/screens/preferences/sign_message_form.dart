@@ -147,7 +147,7 @@ class SignMessageFormState extends State<SignMessageForm> {
     return TextField(
       decoration: InputDecoration(
         hintStyle: theme.textTheme.bodyLarge!.copyWith(
-            color: theme.textTheme.bodyLarge!.color!.withOpacity(0.5)),
+            color: theme.textTheme.bodyLarge!.color!..withValues(alpha: 0.5)),
         hintText: localization.yourMessage,
         errorText: _message.error,
       ),
