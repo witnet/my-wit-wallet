@@ -478,7 +478,6 @@ class StakeEntry {
     required this.blockHash,
     required this.fees,
     required this.epoch,
-    // specific to mint entry
     required this.inputs,
     required this.timestamp,
     required this.status,

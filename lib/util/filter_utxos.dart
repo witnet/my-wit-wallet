@@ -16,10 +16,10 @@ List<Utxo> filterUsedUtxos({
     });
   }
   for (int i = 0; i < pendingStakes.length; i++) {
-    pendingStakes[i].inputs.forEach((StakeInput input) {
-      // TODO(#): fix pending stakes
-      // outputPointers.add(input.inputUtxo);
-    });
+    final inputs = pendingStakes[i].inputs;
+    for (int j = 0; j < inputs.length; j++) {
+      outputPointers.add('${pendingStakes[i].hash}:${j}');
+    }
   }
 
   for (int i = 0; i < utxoList.length; i++) {
