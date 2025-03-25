@@ -66,6 +66,8 @@ class TransactionState extends Equatable {
               body: UnstakeBody(
                   operator: operator ??
                       this.transaction.unstakeTransaction?.body.operator,
+                  nonce:
+                      this.transaction.unstakeTransaction?.body.nonce.toInt(),
                   withdrawal: withdrawal ??
                       this.transaction.unstakeTransaction?.body.withdrawal),
               signature:

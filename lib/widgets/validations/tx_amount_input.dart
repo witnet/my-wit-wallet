@@ -1,5 +1,6 @@
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
+import 'package:my_wit_wallet/util/min_amount_unstake.dart';
 import 'package:my_wit_wallet/widgets/validations/amount_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 
@@ -78,17 +79,24 @@ class TxAmountInput extends AmountInput {
 
   bool notEnoughFunds({bool avoidWeightedAmountCheck = false}) {
     int nanoWitAmount = getNanoWitAmount();
-    return this.availableNanoWit < nanoWitAmount;
+    if (isUnstakeAmount) {
+      return this.stakedNanoWit < nanoWitAmount;
+    } else {
+      return this.availableNanoWit < nanoWitAmount;
+    }
   }
 
   bool get lessThanMinimum =>
-      getNanoWitAmount() < MIN_STAKING_AMOUNT_NANOWIT.toInt();
+      getNanoWitAmount() <
+      (isUnstakeAmount
+          ? getUnstakeMinAmount(this.stakedNanoWit)
+          : MIN_STAKING_AMOUNT_NANOWIT.toInt());
+
   bool get greaterThanMaximum =>
       getNanoWitAmount() > MAX_STAKING_AMOUNT_NANOWIT.toInt();
-  double get minUnstakeWitAmount => this.stakedNanoWit >
-          MIN_STAKING_AMOUNT_NANOWIT
-      ? 0
-      : MIN_STAKING_AMOUNT_NANOWIT.standardizeWitUnits(truncate: -1).toDouble();
+  bool get isStakeUnstakeTx => isStakeAmount || isUnstakeAmount;
+  bool get allStakedAmount => getNanoWitAmount() == stakedNanoWit;
+  double get limitForValidRange => stakedNanoWit - MIN_STAKING_AMOUNT_NANOWIT;
 
   // Override validator to handle validating a given input value.
   @override
@@ -100,15 +108,17 @@ class TxAmountInput extends AmountInput {
       return error;
     }
 
-    if (isStakeAmount && greaterThanMaximum) {
+    if (isStakeUnstakeTx && greaterThanMaximum) {
       return validationUtils.getErrorText(AmountInputError.greaterThanMax);
     }
-    if (isStakeAmount && lessThanMinimum) {
+    if (isStakeUnstakeTx && lessThanMinimum) {
       return validationUtils.getErrorText(AmountInputError.lessThanMin);
     }
-    if (isUnstakeAmount && getNanoWitAmount() < minUnstakeWitAmount) {
-      return validationUtils.getErrorText(AmountInputError.lessThanMin);
+    if (isUnstakeAmount &&
+        (getNanoWitAmount() > limitForValidRange && !allStakedAmount)) {
+      return validationUtils.getErrorText(AmountInputError.invalid);
     }
+
     if (notEnoughFunds(avoidWeightedAmountCheck: avoidWeightedAmountCheck))
       return validationUtils.getErrorText(AmountInputError.notEnough);
     return null;

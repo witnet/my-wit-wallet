@@ -371,7 +371,7 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
           AddressUnstake addressUnstake = unstakes.data!.unstakes.elementAt(i);
           String _hash = addressUnstake.hash;
 
-          /// Creates a MintEntry from the BlockInfo and MintInfo
+          /// Creates a UnstakeEntry from the BlockInfo and MintInfo
           UnstakeInfo unstakeInfo =
               await apiExplorer.hash(_hash) as UnstakeInfo;
           UnstakeEntry unstakeEntry = UnstakeEntry.fromUnstakeInfo(

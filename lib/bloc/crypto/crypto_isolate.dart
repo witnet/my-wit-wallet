@@ -218,8 +218,8 @@ Future<KeyedSignature> _signUnstakeBody(Map<String, dynamic> params) async {
     signer = masterXprv;
   }
 
-  KeyedSignature signature = signer.address
-      .signHash(bytesToHex(sha256(data: message)), signer.privateKey);
+  KeyedSignature signature =
+      signer.address.signHash(bytesToHex(message), signer.privateKey);
   return signature;
 }
 

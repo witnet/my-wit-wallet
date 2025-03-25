@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:formz/formz.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
@@ -5,6 +6,7 @@ import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_wit_wallet/util/min_amount_unstake.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/util/storage/scanned_content.dart';
@@ -59,14 +61,19 @@ class RecipientStepState extends State<RecipientStep>
     with SingleTickerProviderStateMixin {
   late BalanceInfo balanceInfo =
       widget.walletStorage.currentWallet.balanceNanoWit();
-  late StakedBalanceInfo stakeInfo =
-      widget.walletStorage.currentWallet.stakedNanoWit();
+  StakedBalanceInfo get stakeInfo => widget.walletStorage.currentWallet
+      .stakedNanoWitByValidator(validator: _selectedValidator);
   late Account currentAccount = widget.walletStorage.currentAccount;
   late AnimationController _loadingController;
   final _formKey = GlobalKey<FormState>();
   AddressInput _address = AddressInput.pure();
   TxAmountInput _amount = TxAmountInput.pure();
   AuthorizationInput _authorization = AuthorizationInput.pure();
+  List<SelectItem> get validatorAddressesUsedInStakes =>
+      List<SelectItem>.from(widget.walletStorage.currentWallet
+          .stakesValidators()
+          .map((e) => SelectItem(e, e)));
+  String get defaultSeletedValidator => validatorAddressesUsedInStakes[0].label;
   String _selectedValidator = '';
   final _amountController = StyledTextController();
   final _amountFocusNode = FocusNode();
@@ -108,6 +115,9 @@ class RecipientStepState extends State<RecipientStep>
   @override
   void initState() {
     super.initState();
+    if (isUnstakeTransaction) {
+      _selectedValidator = defaultSeletedValidator;
+    }
     _setSavedTxData();
     _loadingController = AnimationController(
       vsync: this,
@@ -247,11 +257,22 @@ class RecipientStepState extends State<RecipientStep>
       transactionBloc.add(ResetTransactionEvent());
     }
 
-    if (isStakeTransaction || isUnstakeTransaction) {
+    if (isStakeTransaction) {
       _amountController.text =
           MIN_STAKING_AMOUNT_NANOWIT.standardizeWitUnits().toString();
       setAmount(_amountController.text, validate: false);
     }
+
+    if (isUnstakeTransaction) {
+      setDefaultUnstakeMinAmount();
+    }
+  }
+
+  setDefaultUnstakeMinAmount() {
+    _amountController.text =
+        Decimal.parse(getUnstakeMinAmount(stakeInfo.stakedNanoWit).toString())
+            .toString();
+    setAmount(_amountController.text, validate: false);
   }
 
   void nextAction() {
@@ -277,6 +298,19 @@ class RecipientStepState extends State<RecipientStep>
                   inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)
               .toString()),
           merge: true,
+        ));
+      } else if (widget.transactionType == TransactionType.Unstake) {
+        transactionBloc.add(AddUnstakeOutputEvent(
+          currentWallet: widget.walletStorage.currentWallet,
+          validator: _selectedValidator,
+          output: ValueTransferOutput.fromJson({
+            'pkh': _address.value,
+            'value': int.parse(_amountToNumber()
+                .standardizeWitUnits(
+                    inputUnit: WitUnit.Wit, outputUnit: WitUnit.nanoWit)
+                .toString()),
+            'time_lock': timelockSet ? dateTimeToTimelock(calendarValue) : 0,
+          }),
         ));
       } else {
         transactionBloc.add(AddValueTransferOutputEvent(
@@ -411,12 +445,6 @@ class RecipientStepState extends State<RecipientStep>
         MAX_STAKING_AMOUNT_NANOWIT.standardizeWitUnits(truncate: -1).toDouble();
     double minWitAmount =
         MIN_STAKING_AMOUNT_NANOWIT.standardizeWitUnits(truncate: -1).toDouble();
-    double minUnstakeWitAmount =
-        stakeInfo.stakedNanoWit > MIN_STAKING_AMOUNT_NANOWIT
-            ? 0
-            : MIN_STAKING_AMOUNT_NANOWIT
-                .standardizeWitUnits(truncate: -1)
-                .toDouble();
     double maxAmount =
         standardizedBalance > maxWitAmount ? maxWitAmount : standardizedBalance;
     return [
@@ -426,8 +454,9 @@ class RecipientStepState extends State<RecipientStep>
           formEntry: InputSlider(
             hint: localization.amount,
             enabled: minWitAmount < maxAmount,
-            minAmount:
-                isUnstakeTransaction ? minUnstakeWitAmount : minWitAmount,
+            minAmount: isUnstakeTransaction
+                ? getUnstakeMinAmount(stakeInfo.stakedNanoWit)
+                : minWitAmount,
             inputFormatters: [WitValueFormatter()],
             maxAmount: maxAmount,
             errorText: _amount.error,
@@ -435,12 +464,15 @@ class RecipientStepState extends State<RecipientStep>
             focusNode: _amountFocusNode,
             keyboardType: TextInputType.number,
             onChanged: (String value) {
+              setAmount(value);
+            },
+            onSlideValueChanged: (String value) {
               _amountController.text = value;
               setAmount(value);
             },
             onSuffixTap: () => {
-              _amountController.text = maxAmountWit,
               setAmount(maxAmountWit),
+              _amountController.text = maxAmountWit,
             },
             onTap: () {
               _amountFocusNode.requestFocus();
@@ -523,11 +555,6 @@ class RecipientStepState extends State<RecipientStep>
 
   List<Widget> _buildValidatorAddressSelect(ThemeData theme) {
     _addressController.text = currentAccount.address;
-    List<SelectItem> validatorAddressesUsedInStakes = List<SelectItem>.from(
-        widget.walletStorage.currentWallet
-            .stakesValidators()
-            .map((e) => SelectItem(e, e)));
-    _selectedValidator = validatorAddressesUsedInStakes[0].label;
 
     return [
       SizedBox(height: 8),
@@ -543,8 +570,13 @@ class RecipientStepState extends State<RecipientStep>
           selectedItem: _selectedValidator,
           cropLabel: true,
           listItems: validatorAddressesUsedInStakes,
-          onChanged: (String? label) =>
-              {if (label != null) setState(() => _selectedValidator = label)}),
+          onChanged: (String? label) => {
+                if (label != null)
+                  {
+                    setState(() => _selectedValidator = label),
+                    setDefaultUnstakeMinAmount()
+                  }
+              }),
     ];
   }
 

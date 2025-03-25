@@ -249,6 +249,16 @@ class Wallet {
     return unconfirmedStakes;
   }
 
+  List<UnstakeEntry> unconfirmedUnstakes() {
+    List<UnstakeEntry> unconfirmedUnstakes = [];
+    allUnstakes().forEach((unstake) {
+      if (unstake.status != TxStatusLabel.confirmed) {
+        unconfirmedUnstakes.add(unstake);
+      }
+    });
+    return unconfirmedUnstakes;
+  }
+
   List<ValueTransferInfo> pendingTransactions() {
     List<ValueTransferInfo> pendingVtts = [];
     allTransactions().forEach((vtt) {
@@ -463,11 +473,34 @@ class Wallet {
     int totalUnstake = 0;
     List<StakeEntry> stakes = allStakes();
     stakes.forEach((StakeEntry e) {
-      totalStake += e.value;
+      if (e.confirmed) {
+        totalStake += e.value;
+      }
+    });
+    allAccounts().forEach((address, account) {
+      account.unstakes.forEach((UnstakeEntry e) {
+        if (e.confirmed) {
+          totalUnstake += e.value;
+        }
+      });
+    });
+    return StakedBalanceInfo(stakedNanoWit: totalStake - totalUnstake);
+  }
+
+  StakedBalanceInfo stakedNanoWitByValidator({required String validator}) {
+    int totalStake = 0;
+    int totalUnstake = 0;
+    List<StakeEntry> stakes = allStakes();
+    stakes.forEach((StakeEntry e) {
+      if (e.validator == validator && e.confirmed) {
+        totalStake += e.value;
+      }
     });
     allAccounts().forEach((address, account) {
       account.unstakes.forEach((e) {
-        totalUnstake += e.value;
+        if (e.validator == validator && e.confirmed) {
+          totalUnstake += e.value;
+        }
       });
     });
     return StakedBalanceInfo(stakedNanoWit: totalStake - totalUnstake);

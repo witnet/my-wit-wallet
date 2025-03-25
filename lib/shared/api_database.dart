@@ -443,6 +443,12 @@ class ApiDatabase {
         method: 'delete', params: {'type': 'stake', 'value': stake.jsonMap()});
   }
 
+  Future<bool> deleteUnstake(UnstakeEntry unstake) async {
+    return await _processIsolate(
+        method: 'delete',
+        params: {'type': 'unstake', 'value': unstake.jsonMap()});
+  }
+
   Future<bool> updateAccount(Account account) async {
     return await _processIsolate(
         method: 'update',

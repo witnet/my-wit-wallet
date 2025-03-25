@@ -313,7 +313,9 @@ class TransactionDetails extends StatelessWidget {
                 ],
               )),
           SizedBox(height: 8),
+          // TODO: Remove stake check when speed up stake transactions are supported
           transaction.status == TxStatusLabel.pending &&
+                  transaction.type != TransactionType.stake &&
                   label == localization.to
               ? buildSpeedUpBtn()
               : Container(),

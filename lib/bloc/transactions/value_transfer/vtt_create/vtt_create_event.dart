@@ -21,6 +21,19 @@ class AddValueTransferOutputEvent extends TransactionEvent {
   List<Object?> get props => [output, currentWallet, merge];
 }
 
+class AddUnstakeOutputEvent extends TransactionEvent {
+  final ValueTransferOutput output;
+  final String validator;
+  final Wallet currentWallet;
+  AddUnstakeOutputEvent({
+    required this.output,
+    required this.validator,
+    required this.currentWallet,
+  });
+  @override
+  List<Object?> get props => [output, currentWallet, validator];
+}
+
 class AddStakeOutputEvent extends TransactionEvent {
   final String withdrawer;
   final String authorization;

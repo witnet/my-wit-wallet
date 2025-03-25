@@ -371,13 +371,13 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           if (unstakeEntry != null) {
             /// this mintEntry.status check for "confirmed" is in the local database
             if (unstakeEntry.status != TxStatusLabel.confirmed) {
-              UnstakeEntry unstakeEntry =
+              UnstakeEntry? unstakeEntry =
                   await explorer.getUnstake(unstakeHash);
-              await account.addUnstake(unstakeEntry);
+              if (unstakeEntry != null) await account.addUnstake(unstakeEntry);
             }
           } else {
-            UnstakeEntry unstakeEntry = await explorer.getUnstake(unstakeHash);
-            await account.addUnstake(unstakeEntry);
+            UnstakeEntry? unstakeEntry = await explorer.getUnstake(unstakeHash);
+            if (unstakeEntry != null) await account.addUnstake(unstakeEntry);
           }
         }
 
@@ -522,6 +522,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
     /// get a list of any pending transactions
     List<ValueTransferInfo> unconfirmedVtts = wallet.unconfirmedTransactions();
     List<StakeEntry> unconfirmedStakes = wallet.unconfirmedStakes();
+    List<UnstakeEntry> unconfirmedUnstakes = wallet.unconfirmedUnstakes();
     if (wallet.walletType == WalletType.hd) {
       /// maintain gap limit for BIP39
       await wallet.ensureGapLimit();
@@ -590,7 +591,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
         await database.deleteVtt(_vtt);
       }
     }
-    // TODO(#): fix pending stakes
+
     for (int i = 0; i < unconfirmedStakes.length; i++) {
       StakeEntry _stake = unconfirmedStakes[i];
       try {
@@ -599,8 +600,8 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           await database.updateStake(wallet.id, stake);
         }
       } catch (e) {
-        /// If the getVtt method returns null we enter this catch
-        /// and the vtt has an unknown hash
+        /// If the getStake method returns null we enter this catch
+        /// and the stake has an unknown hash
 
         /// check the inputs for accounts in the wallet and remove the vtt
         for (int i = 0; i < _stake.inputs.length; i++) {
@@ -610,8 +611,31 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
           }
         }
 
-        /// delete the stale vtt from the database.
+        /// delete the stale stake from the database.
         await database.deleteStake(_stake);
+      }
+    }
+
+    for (int i = 0; i < unconfirmedUnstakes.length; i++) {
+      UnstakeEntry _unstake = unconfirmedUnstakes[i];
+      try {
+        UnstakeEntry? unstake = await explorer.getUnstake(_unstake.hash);
+        if (unstake != null && _unstake.status != unstake.status) {
+          await database.updateUnstake(wallet.id, unstake);
+        }
+      } catch (e) {
+        /// If the getUnstake method returns null we enter this catch
+        /// and the unstake has an unknown hash
+
+        /// check the inputs for accounts in the wallet and remove the vtt
+
+        Account? account = wallet.accountByAddress(_unstake.withdrawer);
+        if (account != null) {
+          await account.deleteUnstake(_unstake);
+        }
+
+        /// delete the stale unstake from the database.
+        await database.deleteUnstake(_unstake);
       }
     }
     await database.loadWalletsDatabase();

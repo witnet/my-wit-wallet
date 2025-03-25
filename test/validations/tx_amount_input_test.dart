@@ -8,7 +8,10 @@ void main() async {
   test('Decimal number has more than 9 digits', () async {
     String amount = '0.00000000001';
     TxAmountInput _amount = TxAmountInput.dirty(
-        value: amount, availableNanoWit: 1000, allowValidation: true);
+        value: amount,
+        availableNanoWit: 1000,
+        stakedNanoWit: 0,
+        allowValidation: true);
 
     expect(_amount.validator(amount, avoidWeightedAmountCheck: true),
         errorMap[AmountInputError.decimals]);
@@ -16,7 +19,10 @@ void main() async {
   test('Not enough Funds', () async {
     String amount = '0.000000001';
     TxAmountInput _amount = TxAmountInput.dirty(
-        value: amount, availableNanoWit: 0, allowValidation: true);
+        value: amount,
+        availableNanoWit: 0,
+        stakedNanoWit: 0,
+        allowValidation: true);
 
     expect(_amount.validator(amount, avoidWeightedAmountCheck: true),
         errorMap[AmountInputError.notEnough]);
@@ -24,7 +30,10 @@ void main() async {
   test('Amount cannot be zero', () async {
     String amount = '0';
     TxAmountInput _amount = TxAmountInput.dirty(
-        value: amount, availableNanoWit: 0, allowValidation: true);
+        value: amount,
+        availableNanoWit: 0,
+        stakedNanoWit: 0,
+        allowValidation: true);
 
     expect(_amount.validator(amount, avoidWeightedAmountCheck: true),
         errorMap[AmountInputError.zero]);
@@ -34,6 +43,7 @@ void main() async {
     TxAmountInput _amount = TxAmountInput.dirty(
         value: amount,
         availableNanoWit: 0,
+        stakedNanoWit: 0,
         allowValidation: true,
         allowZero: true);
 
@@ -43,6 +53,7 @@ void main() async {
     String amount = '0.';
     TxAmountInput _amount = TxAmountInput.dirty(
         value: amount,
+        stakedNanoWit: 0,
         availableNanoWit: 0,
         allowValidation: true,
         allowZero: true);
@@ -54,6 +65,7 @@ void main() async {
     String amount = '0.2';
     TxAmountInput _amount = TxAmountInput.dirty(
         value: amount,
+        stakedNanoWit: 0,
         availableNanoWit: 0,
         allowValidation: true,
         isStakeAmount: true);
@@ -65,6 +77,7 @@ void main() async {
     String amount = '20000000';
     TxAmountInput _amount = TxAmountInput.dirty(
         value: amount,
+        stakedNanoWit: 0,
         availableNanoWit: 200000000000000000,
         allowValidation: true,
         isStakeAmount: true);

@@ -78,6 +78,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           ),
         ) {
     on<AddValueTransferOutputEvent>(_addOutputEvent);
+    on<AddUnstakeOutputEvent>(_addOutputEvent);
     on<AddStakeOutputEvent>(_addOutputEvent);
     on<SetTimelockEvent>(_setTimeLockEvent);
     on<SignTransactionEvent>(_signTransactionEvent);
@@ -104,6 +105,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ValueTransferOutput? change = null;
   ValueTransferOutput? unstakeOutput = null;
   StakeOutput? stakeOutput = null;
+  String validator = '';
   List<String> receivers = [];
   List<Input> inputs = [];
   List<Utxo> utxos = [];
@@ -503,8 +505,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     }
   }
 
-  _buildUnstakeOutput(AddValueTransferOutputEvent event) {
+  _buildUnstakeOutput(AddUnstakeOutputEvent event) {
     unstakeOutput = event.output;
+    validator = event.validator;
   }
 
   void _buildTransactionOutputs(
@@ -549,7 +552,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           inputs: inputs,
           stakeOutput: stakeOutput,
           change: change,
-          operator: unstakeOutput?.pkh,
+          operator: this.transactionType == layout.TransactionType.Unstake
+              ? Address.fromAddress(validator).publicKeyHash
+              : PublicKeyHash(),
           withdrawal: unstakeOutput,
           status: TransactionStatus.building,
           message: null),
@@ -618,22 +623,21 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
                       inputs: inputs, output: stakeOutput, change: change),
                   signatures: signatures));
         case layout.TransactionType.Unstake:
+          int nonce = await Locator.instance.get<ApiExplorer>().getNonce(
+              validator: validator,
+              withdrawer: unstakeOutput?.pkh.address ?? '');
+          UnstakeBody body = UnstakeBody(
+              operator: Address.fromAddress(validator).publicKeyHash,
+              withdrawal: unstakeOutput,
+              nonce: nonce);
           KeyedSignature signature = await apiCrypto.signUnstakeBody(
-            UnstakeBody(operator: unstakeOutput?.pkh, withdrawal: unstakeOutput)
-                .hash,
+            body.hash,
             unstakeOutput?.pkh.address ?? '',
           );
-          int nonce = await Locator.instance.get<ApiExplorer>().getNonce(
-              validator: unstakeOutput?.pkh.address ?? '',
-              withdrawer: unstakeOutput?.pkh.address ?? '');
 
           return BuildTransaction(
-              unstakeTransaction: UnstakeTransaction(
-                  body: UnstakeBody(
-                      operator: unstakeOutput?.pkh,
-                      withdrawal: unstakeOutput,
-                      nonce: nonce),
-                  signature: signature));
+              unstakeTransaction:
+                  UnstakeTransaction(body: body, signature: signature));
       }
     } catch (e) {
       print('Error signing transaction $e');

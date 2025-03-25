@@ -187,6 +187,12 @@ Future<void> _deleteRecord(
       value = await dbService
           .delete(ValueTransferAdapter.fromJson(params['value']));
       break;
+    case 'stake':
+      value = await dbService.delete(StakeEntry.fromJson(params['value']));
+      break;
+    case 'unstake':
+      value = await dbService.delete(UnstakeEntry.fromJson(params['value']));
+      break;
     case 'account':
       value = await dbService.delete(Account.fromJson(params['value']));
       break;

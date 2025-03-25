@@ -282,7 +282,7 @@ class GeneralTransaction extends HashInfo {
           blockHash: stakeEntry.blockHash,
           epoch: stakeEntry.epoch,
           fee: stakeEntry.fees,
-          hash: stakeEntry.blockHash,
+          hash: stakeEntry.hash,
           status: stakeEntry.status,
           time: stakeEntry.timestamp,
           type: stakeEntry.type,
@@ -300,7 +300,7 @@ class GeneralTransaction extends HashInfo {
           blockHash: unstakeEntry.blockHash,
           epoch: unstakeEntry.epoch,
           fee: unstakeEntry.fees,
-          hash: unstakeEntry.blockHash,
+          hash: unstakeEntry.hash,
           status: unstakeEntry.status,
           time: unstakeEntry.timestamp,
           type: unstakeEntry.type,
@@ -430,6 +430,9 @@ class UnstakeEntry {
         'reverted': reverted,
         "status": status.toString(),
         "type": type.toString(),
+        "validator": validator,
+        "withdrawer": withdrawer,
+        "nonce": nonce
       };
 
   factory UnstakeEntry.fromJson(Map<String, dynamic> data) {

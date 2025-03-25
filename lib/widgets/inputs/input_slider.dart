@@ -9,6 +9,7 @@ import 'input_text.dart';
 class InputSlider extends InputText {
   InputSlider({
     required this.maxAmount,
+    required this.onSlideValueChanged,
     required this.minAmount,
     required super.focusNode,
     required super.styledTextController,
@@ -30,6 +31,7 @@ class InputSlider extends InputText {
 
   final double maxAmount;
   final double minAmount;
+  final Function(String) onSlideValueChanged;
 
   @override
   _InputSliderState createState() => _InputSliderState();
@@ -103,7 +105,7 @@ class _InputSliderState extends State<InputSlider> {
           min: minAmount,
           label: sliderValue.toString(),
           onChanged: (double value) =>
-              {widget.onChanged!(value.toStringAsFixed(9))},
+              {widget.onSlideValueChanged(value.toStringAsFixed(9))},
         ),
         Row(
           children: [

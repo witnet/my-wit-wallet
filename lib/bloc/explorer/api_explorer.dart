@@ -227,13 +227,15 @@ class ApiExplorer {
     return stakeEntry;
   }
 
-  Future<UnstakeEntry> getUnstake(String hash) async {
+  Future<UnstakeEntry?> getUnstake(String hash) async {
     var result = await Locator.instance.get<ApiExplorer>().hash(hash);
 
-    UnstakeInfo unstakeInfo = result as UnstakeInfo;
-    UnstakeEntry unstakeEntry = UnstakeEntry.fromUnstakeInfo(
-      unstakeInfo,
-    );
+    UnstakeInfo? unstakeInfo = result as UnstakeInfo?;
+    UnstakeEntry? unstakeEntry = unstakeInfo != null
+        ? UnstakeEntry.fromUnstakeInfo(
+            unstakeInfo,
+          )
+        : null;
     return unstakeEntry;
   }
 }
