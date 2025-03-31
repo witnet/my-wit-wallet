@@ -1,0 +1,2 @@
+/Users/gabaldon/Witnet/witnet_wallet/android/app/.cxx/Debug/1v4v2g3d/x86_64/CMakeFiles/edit_cache.dir
+/Users/gabaldon/Witnet/witnet_wallet/android/app/.cxx/Debug/1v4v2g3d/x86_64/CMakeFiles/rebuild_cache.dir
