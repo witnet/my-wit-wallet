@@ -375,10 +375,6 @@ jobs:
       - name: Binary(ipa)
         run: flutter build ipa --release --export-options-plist=./ios/export_options.plist
 
-      - name: Release on App-Store
-        working-directory: ios
-        run: if [[ "${{github.ref_name}}" == *"dev"* ]]; then bundle exec fastlane beta; else bundle exec fastlane production; fi;
-
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
