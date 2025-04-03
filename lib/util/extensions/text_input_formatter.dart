@@ -35,10 +35,11 @@ class WitValueFormatter extends TextInputFormatter {
       rightPart = rightPart.length > 9 ? rightPart.substring(0, 9) : rightPart;
       value = leftPart + "." + rightPart;
     }
+    int difference = value.length - newValue.text.length;
     return TextEditingValue(
         text: value,
-        selection:
-            TextSelection.fromPosition(TextPosition(offset: value.length)));
+        selection: TextSelection.fromPosition(
+            TextPosition(offset: newValue.selection.end + difference)));
   }
 }
 
