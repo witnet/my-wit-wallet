@@ -54,9 +54,8 @@ class _InputMnemonicState extends State<InputMnemonic> {
     final theme = Theme.of(context);
 
     widget.styledTextController.setStyle(
-      theme.textTheme.titleLarge!
-          .copyWith(color: theme.textTheme.titleLarge!.color),
-      theme.textTheme.titleLarge!.copyWith(color: Colors.black),
+      theme.textTheme.titleLarge!,
+      theme.textTheme.titleLarge!,
     );
 
     return Column(
@@ -69,9 +68,9 @@ class _InputMnemonicState extends State<InputMnemonic> {
                 suffix: SizedBox(
                   height: 8,
                 ),
-                hintStyle: theme.textTheme.titleLarge!.copyWith(
-                    color: theme.textTheme.titleLarge!.color!
-                      ..withValues(alpha: 0.5)),
+                hintStyle: theme.inputDecorationTheme.hintStyle!.copyWith(
+                    fontSize: theme.textTheme.titleLarge!.fontSize,
+                    fontFamily: theme.textTheme.titleLarge!.fontFamily),
                 hintText: 'recovery phrase',
                 errorText: widget.errorText,
               )),

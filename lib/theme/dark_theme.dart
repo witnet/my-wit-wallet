@@ -72,7 +72,7 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   errorMaxLines: 1,
   hintStyle: bodyRegular
       .copyWith(fontSize: 16)
-      .copyWith(color: bodyMedium.color!..withValues(alpha: 0.5)),
+      .copyWith(color: bodyMedium.color!.withValues(alpha: 0.5)),
   labelStyle: bodyRegular.copyWith(color: WitnetPallet.mediumGrey),
   hoverColor: const Color.fromARGB(9, 255, 255, 255),
   focusColor: WitnetPallet.brightCyanOpacity1,
