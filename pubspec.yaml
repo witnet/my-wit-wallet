@@ -41,7 +41,7 @@ dependencies:
   decimal: 3.0.2
   witnet: 0.4.4
   path_provider: ^2.0.8
-  permission_handler: ^11.0.1
+  permission_handler: ^12.0.0
   open_file: ^3.3.2
   qr_flutter: ^4.1.0
   window_manager: ^0.3.6
