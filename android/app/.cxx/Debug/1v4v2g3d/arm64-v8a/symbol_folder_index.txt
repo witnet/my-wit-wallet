@@ -1,1 +1,0 @@
-/Users/gabaldon/Witnet/witnet_wallet/build/app/intermediates/cxx/Debug/1v4v2g3d/obj/arm64-v8a
