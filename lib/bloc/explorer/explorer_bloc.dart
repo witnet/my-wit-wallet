@@ -283,7 +283,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       totalFeesPayed: feesPayed ?? 0,
       totalRewards: totalRewards ?? 0,
       totalDrSolved: dataRequestsSolved?.dataRequestsSolved.length ?? 0,
-      totalStaked: currentWallet.stakedNanoWit().stakedNanoWit,
+      totalStaked: (await currentWallet.stakedNanoWit()).stakedNanoWit,
     );
   }
 

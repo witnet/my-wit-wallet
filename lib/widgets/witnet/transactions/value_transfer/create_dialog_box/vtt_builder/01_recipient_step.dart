@@ -61,8 +61,7 @@ class RecipientStepState extends State<RecipientStep>
     with SingleTickerProviderStateMixin {
   late BalanceInfo balanceInfo =
       widget.walletStorage.currentWallet.balanceNanoWit();
-  StakedBalanceInfo get stakeInfo => widget.walletStorage.currentWallet
-      .stakedNanoWitByValidator(validator: _selectedValidator);
+  int stakedByValidator = 0;
   late Account currentAccount = widget.walletStorage.currentAccount;
   late AnimationController _loadingController;
   final _formKey = GlobalKey<FormState>();
@@ -94,7 +93,7 @@ class RecipientStepState extends State<RecipientStep>
   TransactionBloc get transactionBloc =>
       BlocProvider.of<TransactionBloc>(context);
   String get maxAmountWit => nanoWitToWit(isUnstakeTransaction
-          ? stakeInfo.stakedNanoWit
+          ? stakedByValidator
           : balanceInfo.availableNanoWit)
       .toString();
   bool get showTimelockInput => isVttTransaction;
@@ -112,6 +111,7 @@ class RecipientStepState extends State<RecipientStep>
   int _currIndex = 0;
   DateTime currentTime = DateTime.now();
   DateTime? calendarValue;
+  bool ftu = true;
   @override
   void initState() {
     super.initState();
@@ -147,6 +147,12 @@ class RecipientStepState extends State<RecipientStep>
     _authorizationController.dispose();
     _authorizationFocusNode.dispose();
     super.dispose();
+  }
+
+  Future<int> getStakedBalance() async {
+    return (await widget.walletStorage.currentWallet
+            .stakedNanoWit(validator: _selectedValidator))
+        .stakedNanoWit;
   }
 
   _handleAddressFocus() {
@@ -197,7 +203,7 @@ class RecipientStepState extends State<RecipientStep>
     setState(() {
       _amount = TxAmountInput.dirty(
           availableNanoWit: balanceInfo.availableNanoWit,
-          stakedNanoWit: stakeInfo.stakedNanoWit,
+          stakedNanoWit: stakedByValidator,
           isUnstakeAmount: isUnstakeTransaction,
           isStakeAmount: isStakeTransaction,
           allowValidation:
@@ -269,9 +275,7 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   setDefaultUnstakeMinAmount() {
-    _amountController.text =
-        Decimal.parse(getUnstakeMinAmount(stakeInfo.stakedNanoWit).toString())
-            .toString();
+    _amountController.text = getUnstakeMinAmount(stakedByValidator).toString();
     setAmount(_amountController.text, validate: false);
   }
 
@@ -436,9 +440,8 @@ class RecipientStepState extends State<RecipientStep>
   }
 
   List<Widget> _buildStakeInputAmount(ThemeData theme) {
-    int balance = isUnstakeTransaction
-        ? stakeInfo.stakedNanoWit
-        : balanceInfo.availableNanoWit;
+    int balance =
+        isUnstakeTransaction ? stakedByValidator : balanceInfo.availableNanoWit;
     double standardizedBalance =
         balance.standardizeWitUnits(truncate: -1).toDouble();
     double maxWitAmount =
@@ -455,7 +458,7 @@ class RecipientStepState extends State<RecipientStep>
             hint: localization.amount,
             enabled: minWitAmount < maxAmount,
             minAmount: isUnstakeTransaction
-                ? getUnstakeMinAmount(stakeInfo.stakedNanoWit)
+                ? getUnstakeMinAmount(stakedByValidator).toDouble()
                 : minWitAmount,
             inputFormatters: [WitValueFormatter()],
             maxAmount: maxAmount,
@@ -570,13 +573,18 @@ class RecipientStepState extends State<RecipientStep>
           selectedItem: _selectedValidator,
           cropLabel: true,
           listItems: validatorAddressesUsedInStakes,
-          onChanged: (String? label) => {
-                if (label != null)
-                  {
-                    setState(() => _selectedValidator = label),
-                    setDefaultUnstakeMinAmount()
-                  }
-              }),
+          onChanged: (String? label) async {
+            if (label != null) {
+              setState(() {
+                _selectedValidator = label;
+              });
+              int stakeByNewValidator = await getStakedBalance();
+              setState(() {
+                stakedByValidator = stakeByNewValidator;
+              });
+              setDefaultUnstakeMinAmount();
+            }
+          }),
     ];
   }
 
@@ -656,26 +664,39 @@ class RecipientStepState extends State<RecipientStep>
     final theme = Theme.of(context);
 
     return BlocListener<TransactionBloc, TransactionState>(
-      listenWhen: (previousState, currentState) {
-        if (showTxConnectionReEstablish(
-            previousState.transactionStatus, currentState.transactionStatus)) {
-          setState(() {
-            _connectionError = false;
-            errorMessage = null;
-          });
-        }
-        return true;
-      },
-      listener: (context, state) {
-        if (state.transactionStatus == TransactionStatus.exception ||
-            state.transactionStatus == TransactionStatus.explorerException) {
-          setState(() {
-            _connectionError = true;
-            errorMessage = state.message;
-          });
-        }
-      },
-      child: _buildForm(context, theme),
-    );
+        listenWhen: (previousState, currentState) {
+          if (showTxConnectionReEstablish(previousState.transactionStatus,
+              currentState.transactionStatus)) {
+            setState(() {
+              _connectionError = false;
+              errorMessage = null;
+            });
+          }
+          return true;
+        },
+        listener: (context, state) {
+          if (state.transactionStatus == TransactionStatus.exception ||
+              state.transactionStatus == TransactionStatus.explorerException) {
+            setState(() {
+              _connectionError = true;
+              errorMessage = state.message;
+            });
+          }
+        },
+        child: FutureBuilder<int>(
+            future: getStakedBalance(),
+            builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+              if (snapshot.hasData) {
+                stakedByValidator = snapshot.data ?? 0;
+                if (isUnstakeTransaction && ftu) {
+                  _amountController.text =
+                      getUnstakeMinAmount(stakedByValidator).toString();
+                }
+                ftu = false;
+                return _buildForm(context, theme);
+              } else {
+                return Container();
+              }
+            }));
   }
 }

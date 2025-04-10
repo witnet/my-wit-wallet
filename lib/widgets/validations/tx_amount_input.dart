@@ -89,7 +89,7 @@ class TxAmountInput extends AmountInput {
   bool get lessThanMinimum =>
       getNanoWitAmount() <
       (isUnstakeAmount
-          ? getUnstakeMinAmount(this.stakedNanoWit)
+          ? getUnstakeMinAmount(this.stakedNanoWit).toDouble()
           : MIN_STAKING_AMOUNT_NANOWIT.toInt());
 
   bool get greaterThanMaximum =>

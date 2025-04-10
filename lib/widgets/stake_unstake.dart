@@ -29,7 +29,6 @@ class StakeUnstakeButtons extends StatelessWidget {
     final extendedTheme = theme.extension<ExtendedTheme>()!;
     ApiDatabase db = Locator.instance.get<ApiDatabase>();
     Wallet currentWallet = db.walletStorage.currentWallet;
-    late StakedBalanceInfo stakeInfo = currentWallet.stakedNanoWit();
     bool allowStake = MIN_STAKING_AMOUNT_NANOWIT <=
         currentWallet.balanceNanoWit().availableNanoWit;
 
@@ -56,6 +55,7 @@ class StakeUnstakeButtons extends StatelessWidget {
 
     Future<void> _goToUnstakeScreen() async {
       BlocProvider.of<TransactionBloc>(context).add(ResetTransactionEvent());
+      StakedBalanceInfo stakeInfo = await currentWallet.stakedNanoWit();
       if (stakeInfo.stakedNanoWit > 0) {
         Navigator.push(
             context,

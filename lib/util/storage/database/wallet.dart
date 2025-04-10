@@ -1,6 +1,7 @@
 import 'dart:core';
 
 import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
+import 'package:my_wit_wallet/bloc/explorer/api_explorer.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/screens/dashboard/view/dashboard_screen.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
@@ -25,6 +26,12 @@ class PaginatedData {
   final List<GeneralTransaction> data;
 
   PaginatedData({required this.totalPages, required this.data});
+}
+
+class AccountStakedBalance {
+  final String address;
+  final int totalStaked;
+  AccountStakedBalance({required this.address, required this.totalStaked});
 }
 
 enum WalletType {
@@ -468,42 +475,51 @@ class Wallet {
     return BalanceInfo.fromUtxoList(_utxos);
   }
 
-  StakedBalanceInfo stakedNanoWit() {
+  Future<StakedBalanceInfo> stakedNanoWit({String? validator}) async {
     int totalStake = 0;
-    int totalUnstake = 0;
     List<StakeEntry> stakes = allStakes();
-    stakes.forEach((StakeEntry e) {
-      if (e.confirmed) {
-        totalStake += e.value;
-      }
-    });
-    allAccounts().forEach((address, account) {
-      account.unstakes.forEach((UnstakeEntry e) {
-        if (e.confirmed) {
-          totalUnstake += e.value;
+    String? stakeAddressSynced;
+    for (int i = 0; i < stakes.length; i++) {
+      StakeEntry stake = stakes[i];
+      if (validator != null) {
+        if (stake.validator == validator && stake.confirmed) {
+          AccountStakedBalance accountStakedBalance = await getStakedBalance(
+              stake: stake,
+              stakeAddressSynced: stakeAddressSynced,
+              validator: validator,
+              totalStake: totalStake);
+          totalStake = accountStakedBalance.totalStaked;
+          stakeAddressSynced = accountStakedBalance.address;
         }
-      });
-    });
-    return StakedBalanceInfo(stakedNanoWit: totalStake - totalUnstake);
+      } else if (stake.confirmed) {
+        AccountStakedBalance accountStakedBalance = await getStakedBalance(
+            stake: stake,
+            stakeAddressSynced: stakeAddressSynced,
+            totalStake: totalStake);
+        totalStake = accountStakedBalance.totalStaked;
+        stakeAddressSynced = accountStakedBalance.address;
+      }
+    }
+    return StakedBalanceInfo(stakedNanoWit: totalStake);
   }
 
-  StakedBalanceInfo stakedNanoWitByValidator({required String validator}) {
-    int totalStake = 0;
-    int totalUnstake = 0;
-    List<StakeEntry> stakes = allStakes();
-    stakes.forEach((StakeEntry e) {
-      if (e.validator == validator && e.confirmed) {
-        totalStake += e.value;
-      }
-    });
-    allAccounts().forEach((address, account) {
-      account.unstakes.forEach((e) {
-        if (e.validator == validator && e.confirmed) {
-          totalUnstake += e.value;
+  Future<AccountStakedBalance> getStakedBalance(
+      {required StakeEntry stake,
+      required String? stakeAddressSynced,
+      String? validator,
+      required int totalStake}) async {
+    if (stakeAddressSynced != stake.withdrawer) {
+      List<StakeRewardsInfo?> stakeInfo = await Locator.instance
+          .get<ApiExplorer>()
+          .stakes(withdrawer: stake.withdrawer, validator: validator);
+      stakeInfo.forEach((StakeRewardsInfo? stake) {
+        if (stake != null) {
+          totalStake += stake.currentStake;
         }
       });
-    });
-    return StakedBalanceInfo(stakedNanoWit: totalStake - totalUnstake);
+    }
+    return AccountStakedBalance(
+        address: stake.withdrawer, totalStaked: totalStake);
   }
 
   Future<Account> generateKey({

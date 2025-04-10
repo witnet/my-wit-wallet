@@ -43,6 +43,16 @@ class ApiExplorer {
     }
   }
 
+  Future<List<StakeRewardsInfo?>> stakes(
+      {String? validator, String? withdrawer}) async {
+    try {
+      await delay();
+      return await client.stakes(validator: validator, withdrawer: withdrawer);
+    } on ExplorerException {
+      rethrow;
+    }
+  }
+
   Future<dynamic> getNonce(
       {required String validator, required String withdrawer}) async {
     try {
