@@ -13,6 +13,7 @@ Decimal getUnstakeMinAmount(int stakedNanoWit) {
     }
     return Decimal.parse('0.000000001');
   } else {
+    // This case is unreachable, you can't have less than 10_000 WIT staked
     return MIN_STAKING_AMOUNT_NANOWIT.standardizeWitUnits(truncate: -1);
   }
 }
