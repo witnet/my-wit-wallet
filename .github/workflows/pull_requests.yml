@@ -48,7 +48,7 @@ jobs:
         run: dart analyze .
         
   Windows:
-    runs-on: windows-2022
+    runs-on: windows-latest
     steps:
       - name: Clone
         uses: actions/checkout@v4
