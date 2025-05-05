@@ -61,7 +61,7 @@ jobs:
         with:
           channel: 'stable'
           architecture: x64
-          flutter-version: '3.29.1'
+          flutter-version: '3.29.2'
           cache: true
 
       - name: Install Project Dependencies
