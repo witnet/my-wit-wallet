@@ -124,7 +124,7 @@ jobs:
         run: ldd build/linux/x64/release/bundle/myWitWallet
 
   MacOs:
-    runs-on: macos-latest
+    runs-on: macos-15
     steps:
       - name: Clone
         uses: actions/checkout@v4
@@ -202,7 +202,7 @@ jobs:
           subdirectory: 'android'
 
   IOS:
-    runs-on: macos-latest
+    runs-on: macos-15
     steps:
       - name: Clone
         uses: actions/checkout@v4
