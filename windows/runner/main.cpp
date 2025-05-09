@@ -3,7 +3,6 @@
 #include <windows.h>
 #include "window_configuration.h"
 #include "flutter_window.h"
-#include "run_loop.h"
 #include "utils.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
@@ -18,8 +17,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   // plugins.
   ::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 
-  RunLoop run_loop;
-
   flutter::DartProject project(L"data");
 
   std::vector<std::string> command_line_arguments =
@@ -31,7 +28,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   int xOffset = offset[0];
   int yOffset = offset[1];
 
-  FlutterWindow window(&run_loop, project);
+  FlutterWindow window(project);
   Win32Window::Point origin(xOffset, yOffset);
   Win32Window::Size size(kFlutterWindowWidth, kFlutterWindowHeight);
   if (!window.CreateAndShow(kFlutterWindowTitle, origin, size)) {
@@ -39,7 +36,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   }
   window.SetQuitOnClose(true);
 
-  run_loop.Run();
+  ::MSG msg;
+  while (::GetMessage(&msg, nullptr, 0, 0)) {
+    ::TranslateMessage(&msg);
+    ::DispatchMessage(&msg);
+  }
 
   ::CoUninitialize();
   return EXIT_SUCCESS;
