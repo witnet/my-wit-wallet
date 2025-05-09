@@ -167,7 +167,7 @@ class Account extends _Account {
       if (await database.getStake(stakeEntry.blockHash) == null) {
         await database.addStake(stakeEntry);
       } else {
-        await database.updateStake(this.walletId, stakeEntry);
+        await database.updateStake(stakeEntry);
       }
       await database.updateAccount(this);
       return true;
@@ -184,7 +184,7 @@ class Account extends _Account {
       if (await database.getUnstake(unstakeEntry.blockHash) == null) {
         await database.addUnstake(unstakeEntry);
       } else {
-        await database.updateUnstake(this.walletId, unstakeEntry);
+        await database.updateUnstake(unstakeEntry);
       }
       await database.updateAccount(this);
       return true;
@@ -201,7 +201,7 @@ class Account extends _Account {
       if (await database.getMint(mintEntry.blockHash) == null) {
         await database.addMint(mintEntry);
       } else {
-        await database.updateMint(this.walletId, mintEntry);
+        await database.updateMint(mintEntry);
       }
       await database.updateAccount(this);
       return true;
