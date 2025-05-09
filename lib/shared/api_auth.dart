@@ -47,8 +47,6 @@ class ApiAuth {
     try {
       final tmp = Locator.instance.get<ApiDatabase>();
       return {'result': tmp};
-    } on DBException catch (e) {
-      throw AuthException(code: e.code, message: e.message);
     } on DatabaseException catch (e) {
       throw AuthException(code: e.code, message: e.message);
     }

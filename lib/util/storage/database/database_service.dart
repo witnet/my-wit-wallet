@@ -37,13 +37,10 @@ class _DBConfiguration {
   }
 }
 
-class DBException {
+class DatabaseException {
+  DatabaseException({required this.code, required this.message});
   final int code;
   final String message;
-  DBException({
-    required this.code,
-    required this.message,
-  });
 }
 
 class DatabaseService {
@@ -64,7 +61,7 @@ class DatabaseService {
 
   KeyChain keyChain = KeyChain();
 
-  late Database _database;
+  late Database database;
 
   String? passwordHash;
 
@@ -73,11 +70,11 @@ class DatabaseService {
   bool unlocked = false;
 
   void dispose() {
-    _database.close();
+    database.close();
     _dbConfig = null;
   }
 
-  Future<void> configure(
+  Future<bool> configure(
       String path, bool fileExists, String? apiVersion) async {
     if (_dbConfig == null) {
       _dbConfig = _DBConfiguration(
@@ -98,53 +95,44 @@ class DatabaseService {
     bool allowDBMigration = checkVersionCompatibility(
         apiVersion: apiVersion, compatibleVersion: COMPATIBLE_API_VERSION);
 
-    _dbService._database = await dbFactory.openDatabase(
-        _dbService._dbConfig!.path,
-        version: allowDBMigration ? DB_VERSION : DB_PREV_VERSION,
-        mode: mode, onVersionChanged: (db, oldVersion, newVersion) async {
-      if (newVersion == DB_VERSION_TO_MIGRATE) {
-        await migrateDB(db);
-      }
-    });
-  }
-
-  Future<bool> add(dynamic item) async {
     try {
-      switch (item.runtimeType) {
-        case Wallet:
-          await walletRepository.insertWallet(item, _database);
-          break;
-        case ValueTransferInfo:
-          await vttRepository.insertTransaction(item, _database);
-          break;
-        case Account:
-          await accountRepository.insertAccount(item, _database);
-          break;
-        case MintEntry:
-          await mintRepository.insertTransaction(item, _database);
-          break;
-        case StakeEntry:
-          await stakeRepository.insertTransaction(item, _database);
-          break;
-        case UnstakeEntry:
-          await unstakeRepository.insertTransaction(item, _database);
-          break;
-        case AccountStats:
-          await statsRepository.insertStats(item, _database);
-          break;
-        default:
-          return false;
-      }
+      _dbService.database = await dbFactory.openDatabase(
+          _dbService._dbConfig!.path,
+          version: allowDBMigration ? DB_VERSION : DB_PREV_VERSION,
+          mode: mode, onVersionChanged: (db, oldVersion, newVersion) async {
+        if (newVersion == DB_VERSION_TO_MIGRATE) {
+          await migrateDB(db);
+        }
+      });
+      return true;
     } catch (e) {
       return false;
     }
-    return true;
+  }
+
+  Future<bool> add(String key, dynamic item) async {
+    Map<Type, dynamic> repoMap = {
+      Wallet: walletRepository.insertWallet,
+      ValueTransferInfo: vttRepository.insertTransaction,
+      Account: accountRepository.insertAccount,
+      MintEntry: mintRepository.insertTransaction,
+      StakeEntry: stakeRepository.insertTransaction,
+      UnstakeEntry: unstakeRepository.insertTransaction,
+      AccountStats: statsRepository.insertStats,
+    };
+    if (repoMap.keys.contains(item.runtimeType)) {
+      var k = await repoMap[item.runtimeType](item, database);
+      print(k);
+      return await repoMap[item.runtimeType](item, database);
+    } else {
+      return false;
+    }
   }
 
   Future<bool> deleteDatabase() async {
     try {
       if (_dbConfig != null) {
-        await _database.close();
+        await database.close();
         await dbFactory.deleteDatabase(_dbConfig!.path);
         _dbConfig = null;
       }
@@ -155,75 +143,60 @@ class DatabaseService {
     }
   }
 
-  Future<bool> delete(dynamic item) async {
-    try {
-      switch (item.runtimeType) {
-        case Wallet:
-          await walletRepository.deleteWallet(item.id, _database);
-          break;
-        case ValueTransferInfo:
-          await vttRepository.deleteTransaction(item.hash, _database);
-          break;
-        case Account:
-          await accountRepository.deleteAccount(item.address, _database);
-          break;
-        case MintEntry:
-          await mintRepository.deleteTransaction(item.hash, _database);
-          break;
-        case StakeEntry:
-          await stakeRepository.deleteTransaction(item.hash, _database);
-          break;
-        case UnstakeEntry:
-          await unstakeRepository.deleteTransaction(item.hash, _database);
-          break;
-        case AccountStats:
-          await statsRepository.deleteStats(item.address, _database);
-          break;
-        default:
-          return false;
-      }
-    } catch (e) {
+  Future<bool> delete(String key, dynamic item) async {
+    Map<Type, dynamic> repoMap = {
+      Wallet: walletRepository.deleteWallet,
+      ValueTransferInfo: vttRepository.deleteTransaction,
+      Account: accountRepository.deleteAccount,
+      MintEntry: mintRepository.deleteTransaction,
+      StakeEntry: stakeRepository.deleteTransaction,
+      UnstakeEntry: unstakeRepository.deleteTransaction,
+      AccountStats: statsRepository.deleteStats,
+    };
+    if (repoMap.keys.contains(item.runtimeType)) {
+      return await repoMap[item.runtimeType](key, database);
+    } else {
       return false;
     }
-    return true;
   }
 
-  Future<bool> update(dynamic item) async {
-    try {
-      switch (item.runtimeType) {
-        case Wallet:
-          await walletRepository.updateWallet(item.id, _database);
-          break;
-        case ValueTransferInfo:
-          await vttRepository.updateTransaction(item, _database);
-          break;
-        case Account:
-          await accountRepository.updateAccount(item, _database);
-          break;
-        case MintEntry:
-          await mintRepository.updateTransaction(item, _database);
-          break;
-        case StakeEntry:
-          await stakeRepository.updateTransaction(item, _database);
-          break;
-        case UnstakeEntry:
-          await unstakeRepository.updateTransaction(item, _database);
-          break;
-        case AccountStats:
-          await statsRepository.updateStats(item, _database);
-          break;
-        default:
-          return false;
-      }
-    } catch (e) {
+  Future<bool> update(String key, dynamic item) async {
+    Map<Type, dynamic> repoMap = {
+      Wallet: walletRepository.updateWallet,
+      ValueTransferInfo: vttRepository.updateTransaction,
+      Account: accountRepository.updateAccount,
+      MintEntry: mintRepository.updateTransaction,
+      StakeEntry: stakeRepository.updateTransaction,
+      UnstakeEntry: unstakeRepository.updateTransaction,
+      AccountStats: statsRepository.updateStats,
+    };
+    if (repoMap.keys.contains(item.runtimeType)) {
+      return await repoMap[item.runtimeType](key, item, database);
+    } else {
       return false;
     }
-    return true;
+  }
+
+  Future<dynamic> get(Type type, String key) async {
+    Map<Type, dynamic> repoMap = {
+      Wallet: walletRepository.getWallet,
+      ValueTransferInfo: vttRepository.getTransaction,
+      Account: accountRepository.getAccount,
+      MintEntry: mintRepository.getTransaction,
+      StakeEntry: stakeRepository.getTransaction,
+      UnstakeEntry: unstakeRepository.getTransaction,
+      AccountStats: statsRepository.getStatsByAddress,
+    };
+    if (repoMap.keys.contains(type.runtimeType)) {
+      return await repoMap[type](key, database);
+    } else {
+      return false;
+    }
   }
 
   Future<AccountStats?> getStatsByAddress(String address) async {
     try {
-      return await statsRepository.getStatsByAddress(_database, address);
+      return await statsRepository.getStatsByAddress(database, address);
     } catch (err) {
       print('Error getting stats from address $address :: $err');
       return null;
@@ -231,7 +204,7 @@ class DatabaseService {
   }
 
   Future<bool> masterKeySet() async {
-    bool keyExists = await keyChain.keyExists(_database);
+    bool keyExists = await keyChain.keyExists();
     return keyExists;
   }
 
@@ -242,7 +215,7 @@ class DatabaseService {
         return false;
       }
 
-      String? key = await keyChain.getKey(_database);
+      String? key = await keyChain.getKey();
       bool valid = await keyChain.validatePassword(key, password);
       if (valid) {
         unlocked = true;
@@ -254,13 +227,9 @@ class DatabaseService {
     }
   }
 
-  Future<bool> setPassword(
-      {required String oldPassword, required String newPassword}) async {
+  Future<bool> setPassword(String newPassword, String? oldPassword) async {
     try {
-      bool success = await keyChain.setKey(
-          oldPassword: oldPassword,
-          newPassword: newPassword,
-          databaseClient: _database);
+      bool success = await keyChain.setKey(newPassword, oldPassword);
       return success;
     } catch (e) {
       return false;
@@ -269,12 +238,12 @@ class DatabaseService {
 
   Future<dynamic> migrateDB(db) async {
     /// Get all Transactions
-    final List<ValueTransferInfo> transactions =
-        await vttRepository.getAllTransactions(db);
+    final List<ValueTransferInfo> vtts =
+        await vttRepository.getAllTransactions(database);
 
-    for (int i = 0; i < transactions.length; i++) {
-      ValueTransferInfo _vtt = transactions[i];
-      await vttRepository.updateTransaction(_vtt, db);
+    for (int i = 0; i < vtts.length; i++) {
+      ValueTransferInfo _vtt = vtts[i];
+      await vttRepository.updateTransaction(_vtt, database);
     }
   }
 
@@ -282,21 +251,21 @@ class DatabaseService {
     /// Get all Wallets
 
     try {
-      final List<Wallet> wallets = await walletRepository.getWallets(_database);
+      final List<Wallet> wallets = await walletRepository.getWallets(database);
 
       /// Get all Accounts
       final List<Account> accounts =
-          await accountRepository.getAccounts(_database);
+          await accountRepository.getAccounts(database);
 
       /// Get all Transactions
-      final List<ValueTransferInfo> transactions =
-          await vttRepository.getAllTransactions(_database);
+      final List<ValueTransferInfo> vtts =
+          await vttRepository.getAllTransactions(database);
       final List<MintEntry> mints =
-          await mintRepository.getAllTransactions(_database);
+          await mintRepository.getAllTransactions(database);
       final List<StakeEntry> stakes =
-          await stakeRepository.getAllTransactions(_database);
+          await stakeRepository.getAllTransactions(database);
       final List<UnstakeEntry> unstakes =
-          await unstakeRepository.getAllTransactions(_database);
+          await unstakeRepository.getAllTransactions(database);
 
       /// Create a map of the Wallets with the wallet.id as the key.
       Map<String, Wallet> walletMap = {};
@@ -311,7 +280,7 @@ class DatabaseService {
 
       if (wallets.isNotEmpty) {
         Map<String, List<ValueTransferInfo>> accountVttMap =
-            getAccountVttsMap(transactions);
+            getAccountVttsMap(vtts);
         Map<String, List<MintEntry>> accountMintMap = getAccountMintsMap(mints);
         Map<String, List<StakeEntry>> accountStakesMap =
             getAccountStakesMap(stakes);
@@ -341,13 +310,13 @@ class DatabaseService {
             try {
               // Load saved node account stats
               final AccountStats? accountStats = await statsRepository
-                  .getStatsByAddress(_database, accounts[i].address);
+                  .getStatsByAddress(database, accounts[i].address);
               if (accountStats != null) {
                 walletMap[accounts[i].walletId]!
                     .setMasterAccountStats(accountStats);
               }
             } catch (e) {
-              return DBException(code: e.hashCode, message: '$e');
+              return DatabaseException(code: e.hashCode, message: '$e');
             }
           }
 
@@ -359,7 +328,7 @@ class DatabaseService {
         accounts.forEach((account) {
           accountMap[account.address] = account;
         });
-        transactions.forEach((vtt) {
+        vtts.forEach((vtt) {
           vttMap[vtt.hash] = vtt;
         });
         mints.forEach((mint) {
@@ -382,13 +351,13 @@ class DatabaseService {
       _walletStorage.setUnstakes(unstakeMap);
       return _walletStorage;
     } catch (e) {
-      return DBException(code: e.hashCode, message: '$e');
+      return DatabaseException(code: e.hashCode, message: '$e');
     }
   }
 
   Future<String?> getKey() async {
     if (unlocked) {
-      return keyChain.getKey(_database);
+      return keyChain.getKey();
     } else {
       return null;
     }
@@ -401,23 +370,23 @@ class DatabaseService {
     return true;
   }
 
-  Future<ValueTransferInfo?> getVtt(params) async {
-    return await vttRepository.getTransaction(params["hash"], _database);
+  Future<ValueTransferInfo?> getVtt(String h) async {
+    return await get(ValueTransferInfo, h);
   }
 
-  Future<MintEntry?> getMint(params) async {
-    return await mintRepository.getTransaction(params["hash"], _database);
+  Future<MintEntry?> getMint(String h) async {
+    return await get(MintEntry, h);
   }
 
-  Future<StakeEntry?> getStake(params) async {
-    return await stakeRepository.getTransaction(params["hash"], _database);
+  Future<StakeEntry?> getStake(String h) async {
+    return await get(StakeEntry, h);
   }
 
-  Future<UnstakeEntry?> getUnstake(params) async {
-    return await unstakeRepository.getTransaction(params["hash"], _database);
+  Future<UnstakeEntry?> getUnstake(String h) async {
+    return await get(UnstakeEntry, h);
   }
 
-  Future<Account?> getAccount(params) async {
-    return await accountRepository.getAccount(params["address"], _database);
+  Future<Account?> getAccount(String a) async {
+    return await get(Address, a);
   }
 }

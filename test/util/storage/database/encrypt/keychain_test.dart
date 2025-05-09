@@ -1,5 +1,4 @@
 import 'package:test/test.dart';
-import 'package:witnet/utils.dart';
 import 'package:my_wit_wallet/util/storage/database/encrypt/keychain.dart';
 
 void main() async {
@@ -8,7 +7,7 @@ void main() async {
     final String password = 'Witnet';
     final String incorrectPassword = 'Witnet1';
 
-    var encoded = bytesToHex(keyChain.encode(password));
+    var encoded = await keyChain.encode(password);
 
     expect(await keyChain.validatePassword(encoded, password), true);
     expect(await keyChain.validatePassword(encoded, incorrectPassword), false);

@@ -1,11 +1,9 @@
-import 'dart:isolate';
 import 'package:my_wit_wallet/bloc/explorer/api_explorer.dart';
 import 'package:my_wit_wallet/util/account_preferences.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:my_wit_wallet/util/storage/log.dart';
 import 'package:witnet/explorer.dart';
-import 'package:my_wit_wallet/util/storage/database/database_isolate.dart';
 import 'package:my_wit_wallet/util/storage/database/database_service.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/path_provider_interface.dart';
@@ -15,62 +13,25 @@ import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'locator.dart';
 
-class DatabaseException {
-  DatabaseException({required this.code, required this.message});
-  final int code;
-  final String message;
-}
-
 enum WalletPreferences { walletId, addressIndex, addressList }
 
 /// [ApiDatabase] is used to communicate between the database isolate and the
 /// rest of the application.
 class ApiDatabase {
   late String path;
-  Map<String, Wallet> _wallets = {};
   bool initialized = false;
   bool unlocked = false;
 
   late WalletStorage walletStorage;
   bool walletsLoaded = false;
 
-  DatabaseIsolate get databaseIsolate => Locator.instance<DatabaseIsolate>();
+  DatabaseService get db => Locator.instance<DatabaseService>();
   DebugLogger get logger => Locator.instance<DebugLogger>();
   ApiExplorer get explorer => Locator.instance<ApiExplorer>();
   PathProviderInterface interface = PathProviderInterface();
 
-  Future<dynamic> _processIsolate(
-      {required String method, Map<String, dynamic>? params}) async {
-    if (!databaseIsolate.initialized && !databaseIsolate.loading) {
-      await databaseIsolate.init();
-    } else {
-      do {
-        await Future.delayed(Duration(milliseconds: 1));
-      } while (databaseIsolate.loading);
-    }
-
-    final ReceivePort response = ReceivePort();
-    databaseIsolate.send(
-        method: method, params: params ?? {}, port: response.sendPort);
-    return await response.first.then((value) {
-      if (value.runtimeType == DBException) {
-        DBException exception = value;
-        logger.log('Error in $method: ${exception.message}');
-      }
-      return value;
-    });
-  }
-
   Future<bool> masterKeySet() async {
-    try {
-      var value = await _processIsolate(
-        method: 'masterKeySet',
-        params: {},
-      );
-      return value;
-    } catch (e) {
-      return false;
-    }
+    return await db.masterKeySet();
   }
 
   Future<void> updateCurrentWallet(
@@ -89,7 +50,7 @@ class ApiDatabase {
 
     // If localStorage is deleted, it resets preferences of the wallet to default values
     if (currentWalletNotSaved) {
-      await setWalletAndAccountInLocalStorage(
+      await setPreferences(
           currentWalletId,
           AddressEntry(
               walletId: currentWalletId,
@@ -120,7 +81,7 @@ class ApiDatabase {
 
     // set new current wallet and account in local storage
     if (isNewWallet || isUpdatedWallet && currentWalletId != null) {
-      await setWalletAndAccountInLocalStorage(
+      await setPreferences(
           walletIdToSet,
           AddressEntry(
               walletId: walletIdToSet,
@@ -131,37 +92,21 @@ class ApiDatabase {
               keyType: isHdWallet ? '0' : 'm'));
     }
     // set account in storage
-    setCurrentAddressInStorage(
+    setCurrentAddress(
         walletIdToSet,
         accountPreferences[AccountPreferences.address],
         accountPreferences[AccountPreferences.addressList]);
   }
 
   Future<Map<WalletPreferences, dynamic>?> getCurrentWalletPreferences() async {
-    String? walletId = await ApiPreferences.getCurrentWallet();
-    String? addressIndex =
-        await ApiPreferences.getCurrentAddress(walletId ?? '');
-    Map<String, dynamic>? addressList =
-        await ApiPreferences.getCurrentAddressList();
-    bool hasSavedPrefs = walletId != null &&
-        addressIndex != null &&
-        addressList != null &&
-        addressList.length > 0;
-    final prefs = {
-      WalletPreferences.walletId: walletId,
-      WalletPreferences.addressIndex: addressIndex,
-      WalletPreferences.addressList: addressList
-    };
-    return hasSavedPrefs ? prefs : null;
+    return await ApiPreferences.getCurrentWalletPreferences();
   }
 
-  Future<void> setWalletAndAccountInLocalStorage(
-      walletId, AddressEntry address) async {
-    await ApiPreferences.setCurrentWallet(walletId);
-    await ApiPreferences.setCurrentAddress(address);
+  Future<void> setPreferences(walletId, AddressEntry entry) async {
+    await ApiPreferences.setWalletAndAccountInPreferences(walletId, entry);
   }
 
-  void setCurrentAddressInStorage(
+  void setCurrentAddress(
       walletId, address, Map<String, dynamic> addressList) async {
     walletStorage.setCurrentAccount(address);
     walletStorage.setCurrentAddressList(addressList);
@@ -169,10 +114,7 @@ class ApiDatabase {
 
   Future<bool> verifyPassword(String password) async {
     try {
-      bool isValidPasssword = await await _processIsolate(
-        method: 'verifyPassword',
-        params: {'password': password},
-      );
+      bool isValidPasssword = await db.verifyPassword(password);
       if (isValidPasssword) {
         unlocked = true;
       }
@@ -185,8 +127,7 @@ class ApiDatabase {
   // Check if can login
   Future<bool> verifyLogin(String password) async {
     try {
-      ApiDatabase db = Locator.instance<ApiDatabase>();
-      String key = await db.getKeychain();
+      String? key = await getKeychain();
       var value = await verifyPassword(password);
       // Avoid validating the password when importing a new wallet and a keychain is already unlocked
       return key != '' ? true : value;
@@ -195,15 +136,10 @@ class ApiDatabase {
     }
   }
 
-  Future<String> getKeychain() async {
+  Future<String?> getKeychain() async {
     try {
       if (unlocked) {
-        var value = await _processIsolate(
-          method: 'getKeychain',
-          params: {},
-        );
-        // master key
-        return value;
+        return await db.getKey();
       } else {
         throw Exception('Database locked');
       }
@@ -212,172 +148,103 @@ class ApiDatabase {
     }
   }
 
-  Future<bool> setPassword(
-      {String? oldPassword, required String newPassword}) async {
-    await _processIsolate(
-      method: 'setPassword',
-      params: {
-        'oldPassword': oldPassword ?? '',
-        'newPassword': newPassword,
-      },
-    );
-    unlocked = true;
-    return true;
+  Future<bool> setPassword(String newPassword,
+      [String? oldPassword = null]) async {
+    return await db.setPassword(newPassword, oldPassword);
   }
 
   Future<bool> openDatabase() async {
-    await interface.init();
-    String? version;
-    var fileExists = await interface.fileExists(interface.getDbWalletsPath());
     try {
+      await interface.init();
+      String? version;
+      bool fileExists =
+          await interface.fileExists(interface.getDbWalletsPath());
       version = await explorer.getVersion();
-    } catch (err) {
-      print('Error getting api version $err');
-    }
-    try {
-      var response = await _processIsolate(
-        method: 'configure',
-        params: {
-          'path': interface.getDbWalletsPath(),
-          'apiVersion': version,
-          'fileExists': fileExists
-        },
+      return await db.configure(
+        interface.getDbWalletsPath(),
+        fileExists,
+        version,
       );
-      assert(response != null);
-      return true;
-    } on DBException {
-      return false;
-    }
-  }
-
-  Future<bool> lockDatabase() async {
-    try {
-      var response = await _processIsolate(
-        method: 'lock',
-        params: {},
-      );
-      return response;
     } catch (e) {
       return false;
     }
   }
 
+  Future<bool> lockDatabase() async {
+    return await db.lock();
+  }
+
   Future<bool> addStats(AccountStats accountStats) async {
-    return await _processIsolate(
-        method: 'add',
-        params: {'type': 'stats', 'value': accountStats.jsonMap()});
+    return await db.add(accountStats.address, accountStats);
   }
 
   Future<bool> deleteStats(AccountStats accountStats) async {
-    return await _processIsolate(
-        method: 'delete',
-        params: {'type': 'stats', 'value': accountStats.jsonMap()});
+    return await db.delete(accountStats.address, accountStats);
   }
 
   Future<bool> updateStats(AccountStats accountStats) async {
-    return await _processIsolate(
-        method: 'update',
-        params: {'type': 'stats', 'value': accountStats.jsonMap()});
+    return await db.update(accountStats.address, accountStats);
   }
 
   Future<AccountStats?> getStatsByAddress(String address) async {
-    return await _processIsolate(
-        method: 'getStatsByAddress', params: {'address': address});
+    return await db.getStatsByAddress(address);
   }
 
   Future<bool> addWallet(Wallet wallet) async {
-    _wallets[wallet.name] = wallet;
-    return await _processIsolate(
-        method: 'add', params: {'type': 'wallet', 'value': wallet.jsonMap()});
+    return await db.add(wallet.id, wallet);
   }
 
   Future<bool> deleteWallet(Wallet wallet) async {
-    return await _processIsolate(
-        method: 'delete',
-        params: {'type': 'wallet', 'value': wallet.jsonMap()});
+    return await db.delete(wallet.id, wallet);
   }
 
   Future<bool> deleteAllWallets() async {
-    return await _processIsolate(method: 'deleteDatabase');
+    return await db.deleteDatabase();
   }
 
   Future<bool> addAccount(Account account) async {
-    return await _processIsolate(
-        method: 'add', params: {'type': 'account', 'value': account.jsonMap()});
+    return await db.add(account.address, account);
   }
 
   Future<bool> addVtt(ValueTransferInfo transaction) async {
-    return await _processIsolate(
-        method: 'add', params: {'type': 'vtt', 'value': transaction.jsonMap()});
+    return await db.add(transaction.hash, transaction);
   }
 
   Future<bool> addStake(StakeEntry transaction) async {
-    return await _processIsolate(
-        method: 'add',
-        params: {'type': 'stake', 'value': transaction.jsonMap()});
+    return await db.add(transaction.hash, transaction);
   }
 
   Future<bool> addUnstake(UnstakeEntry transaction) async {
-    return await _processIsolate(
-        method: 'add',
-        params: {'type': 'unstake', 'value': transaction.jsonMap()});
+    return await db.add(transaction.hash, transaction);
   }
 
-  Future<bool> addMint(MintEntry transaction) async {
-    return await _processIsolate(
-        method: 'add',
-        params: {'type': 'mint', 'value': transaction.jsonMap()});
+  Future<bool> addMint(MintEntry entry) async {
+    return await db.add(entry.blockHash, entry);
   }
 
-  Future<StakeEntry?> getStake(String hash) async {
-    try {
-      return await _processIsolate(method: 'getStake', params: {"hash": hash});
-    } catch (err) {
-      print('Error getting vtt:: $err');
-      return null;
-    }
+  Future<StakeEntry?> getStake(String h) async {
+    return await db.getStake(h);
   }
 
-  Future<UnstakeEntry?> getUnstake(String hash) async {
-    try {
-      return await _processIsolate(method: 'getStake', params: {"hash": hash});
-    } catch (err) {
-      print('Error getting vtt:: $err');
-      return null;
-    }
+  Future<UnstakeEntry?> getUnstake(String h) async {
+    return await db.getUnstake(h);
   }
 
-  Future<ValueTransferInfo?> getVtt(String hash) async {
-    try {
-      return await _processIsolate(method: 'getVtt', params: {"hash": hash});
-    } catch (err) {
-      print('Error getting vtt:: $err');
-      return null;
-    }
+  Future<ValueTransferInfo?> getVtt(String h) async {
+    return await db.getVtt(h);
   }
 
-  Future<Account?> getAccount(String hash) async {
-    try {
-      return await _processIsolate(
-          method: 'getAccount', params: {"hash": hash});
-    } catch (err) {
-      print('Error getting account info:: $err');
-      return null;
-    }
+  Future<Account?> getAccount(String h) async {
+    return await db.getAccount(h);
   }
 
-  Future<MintEntry?> getMint(String hash) async {
-    try {
-      return await _processIsolate(method: 'getMint', params: {"hash": hash});
-    } catch (err) {
-      print('Error getting mint:: $err');
-      return null;
-    }
+  Future<MintEntry?> getMint(String h) async {
+    return await db.getMint(h);
   }
 
   Future getAllVtts() async {
     try {
-      return await _processIsolate(method: 'getAllVtts', params: {});
+      return await db.vttRepository.getAllTransactions(db.database);
     } catch (err) {
       print('Error getting vtts:: $err');
     }
@@ -385,13 +252,14 @@ class ApiDatabase {
 
   Future<WalletStorage> loadWalletsDatabase() async {
     /// Get all Wallets
-    final result = await _processIsolate(method: 'loadWallets');
+    final result = await db.loadWallets();
     if (result.runtimeType == WalletStorage) {
       WalletStorage storage = result;
       walletStorage = storage;
     } else {
       // db isolate can return a DBException
-      logger.log('There was a DBException loading the wallets');
+      logger
+          .log('There was a DBException loading the wallets ${result.message}');
       walletStorage = WalletStorage(wallets: {});
     }
     return walletStorage;
@@ -399,60 +267,47 @@ class ApiDatabase {
 
   Future<bool> updateWallet(Wallet wallet) async {
     walletStorage.wallets[wallet.id] = wallet;
-    return await _processIsolate(
-        method: 'update',
-        params: {'type': 'wallet', 'value': wallet.jsonMap()});
+    return await db.update(wallet.id, wallet);
   }
 
-  Future<bool> updateVtt(String walletId, ValueTransferInfo vtt) async {
-    return await _processIsolate(
-        method: 'update', params: {'type': 'vtt', 'value': vtt.jsonMap()});
+  Future<bool> updateVtt(ValueTransferInfo vtt) async {
+    return await db.update(vtt.hash, vtt);
   }
 
   Future<void> addOrUpdateVttInDB(ValueTransferInfo vtt) async {
     if (await getVtt(vtt.hash) == null) {
       await addVtt(vtt);
     } else {
-      await updateVtt(walletStorage.currentWallet.id, vtt);
+      await updateVtt(vtt);
     }
   }
 
-  Future<bool> updateMint(String walletId, MintEntry mint) async {
-    return await _processIsolate(
-        method: 'update', params: {'type': 'mint', 'value': mint.jsonMap()});
+  Future<bool> updateMint(MintEntry mint) async {
+    return await db.update(mint.blockHash, mint);
   }
 
-  Future<bool> updateStake(String walletId, StakeEntry stake) async {
-    return await _processIsolate(
-        method: 'update', params: {'type': 'stake', 'value': stake.jsonMap()});
+  Future<bool> updateStake(StakeEntry stake) async {
+    return await db.update(stake.hash, stake);
   }
 
-  Future<bool> updateUnstake(String walletId, UnstakeEntry unstake) async {
-    return await _processIsolate(
-        method: 'update',
-        params: {'type': 'unstake', 'value': unstake.jsonMap()});
+  Future<bool> updateUnstake(UnstakeEntry unstake) async {
+    return await db.update(unstake.hash, unstake);
   }
 
   Future<bool> deleteVtt(ValueTransferInfo vtt) async {
-    return await _processIsolate(
-        method: 'delete', params: {'value': vtt.jsonMap(), 'type': 'vtt'});
+    return await db.delete(vtt.hash, vtt);
   }
 
   Future<bool> deleteStake(StakeEntry stake) async {
-    return await _processIsolate(
-        method: 'delete', params: {'type': 'stake', 'value': stake.jsonMap()});
+    return await db.delete(stake.hash, stake);
   }
 
   Future<bool> deleteUnstake(UnstakeEntry unstake) async {
-    return await _processIsolate(
-        method: 'delete',
-        params: {'type': 'unstake', 'value': unstake.jsonMap()});
+    return await db.delete(unstake.hash, unstake);
   }
 
   Future<bool> updateAccount(Account account) async {
-    return await _processIsolate(
-        method: 'update',
-        params: {'type': 'account', 'value': account.jsonMap()});
+    return await db.update(account.address, account);
   }
 
   Future<WalletStorage> getWalletStorage([bool reload = false]) async {
