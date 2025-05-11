@@ -54,8 +54,7 @@ class EncryptWalletCardState extends State<EncryptWalletCard>
           .addPostFrameCallback((_) => widget.nextAction(null));
       // set masterKey
       Locator.instance<ApiCreateWallet>().setPassword(_password.value);
-      await Locator.instance<ApiDatabase>()
-          .setPassword(newPassword: _password.value);
+      await Locator.instance<ApiDatabase>().setPassword(_password.value);
       CreateWalletType type =
           BlocProvider.of<CreateWalletBloc>(context).state.createWalletType;
       BlocProvider.of<CreateWalletBloc>(context)

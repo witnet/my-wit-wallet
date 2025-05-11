@@ -35,6 +35,19 @@ class WalletRepository extends _WalletRepository {
     }
   }
 
+  Future<Wallet?> getWallet(
+      String walletId, DatabaseClient databaseClient) async {
+    try {
+      dynamic vttJson = await _store.record(walletId).get(databaseClient);
+
+      Wallet wallet = Wallet.fromJson(vttJson);
+
+      return wallet;
+    } catch (e) {
+      return null;
+    }
+  }
+
   @override
   Future<List<Wallet>> getWallets(DatabaseClient databaseClient) async {
     final List<RecordSnapshot<dynamic, dynamic>> snapshots =

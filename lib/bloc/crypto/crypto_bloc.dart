@@ -236,14 +236,14 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       {required CryptoInitializeWalletEvent event}) async {
     ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
     ApiDatabase db = Locator.instance<ApiDatabase>();
-    String key = await db.getKeychain();
+    String? key = await db.getKeychain();
     final masterKey = key != '' ? key : event.password;
 
     apiCrypto.setInitialWalletData(
       event.walletName,
       event.keyData,
       event.seedSource,
-      masterKey,
+      masterKey!,
       event.walletType,
     );
 
