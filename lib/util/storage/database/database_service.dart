@@ -208,7 +208,7 @@ class DatabaseService {
     return keyExists;
   }
 
-  Future<bool> verifyPassword(String password) async {
+  Future<bool> verifyPassword(String xprv, String password) async {
     try {
       bool keyExists = await masterKeySet();
       if (!keyExists) {
@@ -216,7 +216,7 @@ class DatabaseService {
       }
 
       String? key = await keyChain.getKey();
-      bool valid = await keyChain.validatePassword(key, password);
+      bool valid = await keyChain.validatePassword(xprv, key, password);
       if (valid) {
         unlocked = true;
       }
@@ -227,9 +227,10 @@ class DatabaseService {
     }
   }
 
-  Future<bool> setPassword(String newPassword, String? oldPassword) async {
+  Future<bool> setPassword(
+      String xprv, String newPassword, String? oldPassword) async {
     try {
-      bool success = await keyChain.setKey(newPassword, oldPassword);
+      bool success = await keyChain.setKey(xprv, newPassword, oldPassword);
       return success;
     } catch (e) {
       return false;

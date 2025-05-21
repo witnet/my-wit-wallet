@@ -112,9 +112,9 @@ class ApiDatabase {
     walletStorage.setCurrentAddressList(addressList);
   }
 
-  Future<bool> verifyPassword(String password) async {
+  Future<bool> verifyPassword(String xprv, String password) async {
     try {
-      bool isValidPasssword = await db.verifyPassword(password);
+      bool isValidPasssword = await db.verifyPassword(xprv, password);
       if (isValidPasssword) {
         unlocked = true;
       }
@@ -128,7 +128,8 @@ class ApiDatabase {
   Future<bool> verifyLogin(String password) async {
     try {
       String? key = await getKeychain();
-      var value = await verifyPassword(password);
+      List<Wallet> w = await db.walletRepository.getWallets(db.database);
+      var value = await verifyPassword(w[0].xprv!, password);
       // Avoid validating the password when importing a new wallet and a keychain is already unlocked
       return key != '' ? true : value;
     } catch (e) {
@@ -150,7 +151,8 @@ class ApiDatabase {
 
   Future<bool> setPassword(String newPassword,
       [String? oldPassword = null]) async {
-    return await db.setPassword(newPassword, oldPassword);
+    List<Wallet> w = await db.walletRepository.getWallets(db.database);
+    return await db.setPassword(w[0].xprv!, newPassword, oldPassword);
   }
 
   Future<bool> openDatabase() async {

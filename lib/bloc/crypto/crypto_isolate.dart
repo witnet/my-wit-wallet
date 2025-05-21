@@ -309,6 +309,7 @@ String _encodeKeychain(Map<String, dynamic> params) {
 String? _decodeKeychain(Map<String, dynamic> params) {
   String encoded = params['encoded'];
   String password = params['password'];
+  String xprv = params['xprv'];
   Uint8List dat = Uint8List.fromList(hexToBytes(encoded));
   Uint8List iv = dat.sublist(0, 16);
   Uint8List salt = dat.sublist(16, 48);
@@ -320,7 +321,9 @@ String? _decodeKeychain(Map<String, dynamic> params) {
   String plainText;
   try {
     plainText = utf8.decode(decoded).trim();
-    return plainText;
+    Xprv _xprv = Xprv.fromEncryptedXprv(xprv, json.decode(plainText)['WITNET']);
+    String address = _xprv.address.address;
+    return json.decode(plainText)['WITNET'];
   } catch (e) {
     return null;
   }

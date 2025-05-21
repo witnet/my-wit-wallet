@@ -163,12 +163,16 @@ class ApiCrypto {
   }
 
   Future<String?> decodeKeychain(
-      {required String encoded, required String password}) async {
+      {required String xprv,
+      required String encoded,
+      required String password}) async {
     CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
-    return await cryptoIsolate.send(method: 'decodeKeychain', params: {
+    var resp = await cryptoIsolate.send(method: 'decodeKeychain', params: {
+      'xprv': xprv,
       'encoded': encoded,
       'password': password,
     });
+    return resp;
   }
 
   Future<String> encryptXprv(
