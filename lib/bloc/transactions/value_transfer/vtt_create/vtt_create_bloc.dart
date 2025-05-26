@@ -152,18 +152,15 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   void _setEstimatedWeightedFees() {
     if (prioritiesEstimate != null) {
       minerFeeOptions[EstimatedFeeOptions.Stinky] =
-          calculatedWeightedFee(prioritiesEstimate!.vttStinky.priority)
-              .toString();
+          calculatedWeightedFee(prioritiesEstimate!.stinky.priority).toString();
       minerFeeOptions[EstimatedFeeOptions.Low] =
-          calculatedWeightedFee(prioritiesEstimate!.vttLow.priority).toString();
+          calculatedWeightedFee(prioritiesEstimate!.low.priority).toString();
       minerFeeOptions[EstimatedFeeOptions.Medium] =
-          calculatedWeightedFee(prioritiesEstimate!.vttMedium.priority)
-              .toString();
+          calculatedWeightedFee(prioritiesEstimate!.medium.priority).toString();
       minerFeeOptions[EstimatedFeeOptions.High] =
-          calculatedWeightedFee(prioritiesEstimate!.vttHigh.priority)
-              .toString();
+          calculatedWeightedFee(prioritiesEstimate!.high.priority).toString();
       minerFeeOptions[EstimatedFeeOptions.Opulent] =
-          calculatedWeightedFee(prioritiesEstimate!.vttOpulent.priority)
+          calculatedWeightedFee(prioritiesEstimate!.opulent.priority)
               .toString();
     }
   }
@@ -962,7 +959,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   Future<void> _prepareSpeedUpTx(
       PrepareSpeedUpTxEvent event, Emitter<TransactionState> emit) async {
     _resetTransactionEvent(ResetTransactionEvent(), emit);
-    await _setPriorityEstimations(SetPriorityEstimationsEvent(), emit);
+    await _setPriorityEstimations(
+        SetPriorityEstimationsEvent(priority: event.priority), emit);
     await _addSourceWalletsEvent(
         AddSourceWalletsEvent(currentWallet: event.currentWallet), emit);
     _addOutputEvent(
@@ -991,7 +989,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       isPrioritiesLoading = true;
       try {
         prioritiesEstimate =
-            await Locator.instance.get<ApiExplorer>().priority();
+            await Locator.instance.get<ApiExplorer>().priority(event.priority);
         isPrioritiesLoading = false;
       } catch (e) {
         print('Error getting priority estimations $e');

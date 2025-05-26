@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/bloc/explorer/api_explorer.dart';
 import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
@@ -141,8 +142,10 @@ class SendTransactionLayoutState extends State<SendTransactionLayout>
   }
 
   void _getPriorityEstimations() {
-    BlocProvider.of<TransactionBloc>(context)
-        .add(SetPriorityEstimationsEvent());
+    BlocProvider.of<TransactionBloc>(context).add(SetPriorityEstimationsEvent(
+        priority: widget.transactionType == TransactionType.Stake
+            ? Priority.st
+            : Priority.vtt));
   }
 
   bool _isNextStepAllow() {

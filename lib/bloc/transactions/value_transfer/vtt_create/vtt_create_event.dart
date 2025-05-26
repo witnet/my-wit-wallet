@@ -59,11 +59,13 @@ class PrepareSpeedUpTxEvent extends TransactionEvent {
   final bool merge;
   final GeneralTransaction? speedUpTx;
   final bool filteredUtxos;
+  final Priority priority;
   PrepareSpeedUpTxEvent(
       {required this.output,
       required this.currentWallet,
       required this.merge,
       this.speedUpTx,
+      this.priority = Priority.vtt,
       this.filteredUtxos = true});
   @override
   List<Object?> get props => [output, currentWallet, merge];
@@ -115,9 +117,10 @@ class AddSourceWalletsEvent extends TransactionEvent {
 }
 
 class SetPriorityEstimationsEvent extends TransactionEvent {
-  SetPriorityEstimationsEvent();
+  final Priority priority;
+  SetPriorityEstimationsEvent({required this.priority});
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [priority];
 }
 
 class SetTransactionTypeEvent extends TransactionEvent {

@@ -24,6 +24,8 @@ enum ExplorerQuery {
   sendTransaction,
 }
 
+enum Priority { st, vtt }
+
 class ApiExplorer {
   late ExplorerClient client;
   late Status status;
@@ -192,9 +194,14 @@ class ApiExplorer {
     }
   }
 
-  Future<PrioritiesEstimate> priority() async {
+  Future<PrioritiesEstimate> priority(Priority priority) async {
     try {
-      return await client.valueTransferPriority();
+      switch (priority) {
+        case Priority.st:
+          return await client.stakingPriority();
+        case Priority.vtt:
+          return client.valueTransferPriority();
+      }
     } catch (e) {
       rethrow;
     }
