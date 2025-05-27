@@ -323,6 +323,7 @@ String? _decodeKeychain(Map<String, dynamic> params) {
     plainText = utf8.decode(decoded).trim();
     Xprv _xprv = Xprv.fromEncryptedXprv(xprv, json.decode(plainText)['WITNET']);
     String address = _xprv.address.address;
+    assert(address.isNotEmpty);
     return json.decode(plainText)['WITNET'];
   } catch (e) {
     return null;
