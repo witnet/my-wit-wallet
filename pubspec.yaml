@@ -51,7 +51,7 @@ dependencies:
   formz: ^0.7.0
   flutter_hooks: ^0.20.2
   flutter_svg: ^2.0.7
-  number_paginator: ^0.4.0
+  number_paginator: ^1.1.0
   local_auth: ^2.3.0
   flutter_json_viewer: ^1.0.1
   updat: ^1.2.0+1
