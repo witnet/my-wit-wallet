@@ -39,10 +39,7 @@ dependencies:
   equatable: ^2.0.5
   sliding_up_panel: ^2.0.0+1
   decimal: 3.2.1
-  witnet: 
-    git:
-      url: https://github.com/gabaldon/witnet.dart.git
-      ref: feat/staking-fee-estimation
+  witnet: 0.5.0
   path_provider: ^2.0.8
   permission_handler: ^11.0.1
   open_file: ^3.3.2
