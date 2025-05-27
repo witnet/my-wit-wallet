@@ -112,7 +112,7 @@ InputDecorationTheme inputDecorationTheme = InputDecorationTheme(
   ),
   alignLabelWithHint: true,
 );
-CardTheme cardTheme = CardTheme(
+CardThemeData cardTheme = CardThemeData(
   elevation: 5.0,
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.0)),
   color: WitnetPallet.black,
