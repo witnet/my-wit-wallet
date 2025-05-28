@@ -18,16 +18,16 @@ class KeyChain {
     return await apiCrypto.encodeKeychain(password: password);
   }
 
-  Future<String?> decode(String xprv, String encoded, String password) async {
+  Future<String?> decode(String encoded, String password) async {
     String encoded = await encode(password);
-    String? decoded = await apiCrypto.decodeKeychain(
-        xprv: xprv, encoded: encoded, password: password);
+    String? decoded =
+        await apiCrypto.decodeKeychain(encoded: encoded, password: password);
     return decoded;
   }
 
   Future<bool> validatePassword(
       String xprv, String encoded, String password) async {
-    String? valid = await decode(xprv, encoded, password);
+    String? valid = await decode(encoded, password);
     unlocked = valid != null ? true : false;
     return unlocked;
   }
