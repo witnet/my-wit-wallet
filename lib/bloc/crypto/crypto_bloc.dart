@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:isolate';
 import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
@@ -236,14 +237,14 @@ class CryptoBloc extends Bloc<CryptoEvent, CryptoState> {
       {required CryptoInitializeWalletEvent event}) async {
     ApiCrypto apiCrypto = Locator.instance.get<ApiCrypto>();
     ApiDatabase db = Locator.instance<ApiDatabase>();
-    String key = await db.getKeychain();
+    String? key = await db.getKeychain();
     final masterKey = key != '' ? key : event.password;
 
     apiCrypto.setInitialWalletData(
       event.walletName,
       event.keyData,
       event.seedSource,
-      masterKey,
+      masterKey!,
       event.walletType,
     );
 
