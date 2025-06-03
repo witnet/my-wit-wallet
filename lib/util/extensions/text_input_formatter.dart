@@ -21,6 +21,14 @@ class WitAddressFormatter extends TextInputFormatter {
 }
 
 class WitValueFormatter extends TextInputFormatter {
+  String formatDecimalNumber(String value, String separator) {
+    if (value.startsWith(separator)) value = '0$value';
+    String leftPart = value.split(separator)[0];
+    String rightPart = value.split(separator)[1];
+    rightPart = rightPart.length > 9 ? rightPart.substring(0, 9) : rightPart;
+    return leftPart + '.' + rightPart;
+  }
+
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
@@ -29,11 +37,9 @@ class WitValueFormatter extends TextInputFormatter {
     }
     String value = newValue.text;
     if (value.contains('.')) {
-      if (value.startsWith('.')) value = '0$value';
-      String leftPart = value.split('.')[0];
-      String rightPart = value.split('.')[1];
-      rightPart = rightPart.length > 9 ? rightPart.substring(0, 9) : rightPart;
-      value = leftPart + "." + rightPart;
+      value = formatDecimalNumber(value, '.');
+    } else if (value.contains(',')) {
+      value = formatDecimalNumber(value, ',');
     }
     int difference = value.length - newValue.text.length;
     return TextEditingValue(

@@ -414,7 +414,7 @@ class RecipientStepState extends State<RecipientStep>
           styledTextController: _amountController,
           focusNode: _amountFocusNode,
           inputFormatters: [WitValueFormatter()],
-          keyboardType: TextInputType.number,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
           onChanged: (String value) {
             setAmount(value);
           },
@@ -464,7 +464,7 @@ class RecipientStepState extends State<RecipientStep>
             errorText: _amount.error,
             styledTextController: _amountController,
             focusNode: _amountFocusNode,
-            keyboardType: TextInputType.number,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
             onChanged: (String value) {
               setAmount(value);
             },
