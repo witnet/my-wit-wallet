@@ -171,7 +171,7 @@ class DatabaseService {
       AccountStats: statsRepository.updateStats,
     };
     if (repoMap.keys.contains(item.runtimeType)) {
-      return await repoMap[item.runtimeType](key, item, database);
+      return await repoMap[item.runtimeType](item, database);
     } else {
       return false;
     }
@@ -208,7 +208,7 @@ class DatabaseService {
     return keyExists;
   }
 
-  Future<bool> verifyPassword(String xprv, String password) async {
+  Future<bool> verifyPassword(String password) async {
     try {
       bool keyExists = await masterKeySet();
       if (!keyExists) {
@@ -216,21 +216,16 @@ class DatabaseService {
       }
 
       String? key = await keyChain.getKey();
-      bool valid = await keyChain.validatePassword(xprv, key, password);
-      if (valid) {
-        unlocked = true;
-      }
-
-      return valid;
+      unlocked = await keyChain.validatePassword(key, password);
+      return unlocked;
     } catch (e) {
       return false;
     }
   }
 
-  Future<bool> setPassword(
-      String xprv, String newPassword, String? oldPassword) async {
+  Future<bool> setPassword(String newPassword, String? oldPassword) async {
     try {
-      bool success = await keyChain.setKey(xprv, newPassword, oldPassword);
+      bool success = await keyChain.setKey(newPassword, oldPassword);
       return success;
     } catch (e) {
       return false;
@@ -365,8 +360,6 @@ class DatabaseService {
   }
 
   Future<bool> lock() async {
-    keyChain.keyHash = null;
-    keyChain.unlocked = false;
     unlocked = false;
     return true;
   }

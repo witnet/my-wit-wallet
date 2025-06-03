@@ -39,9 +39,7 @@ Future<String?> unlockKeychainModal(
                 _password = password;
                 try {
                   if (validate) {
-                    bool valid = await apiDatabase.verifyPassword(
-                        apiDatabase.walletStorage.currentWallet.xprv!,
-                        password);
+                    bool valid = await apiDatabase.verifyPassword(password);
                     if (!valid) {
                       setState(() => _passwordInputErrorText =
                           localization.invalidPassword);

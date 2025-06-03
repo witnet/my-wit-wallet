@@ -10,8 +10,6 @@ DatabaseClient databaseClient =
 
 class KeyChain {
   final StoreRef _store = StoreRef<String, String>("keychain");
-  String? keyHash;
-  bool unlocked = false;
 
   KeyChain();
   Future<String> encode(String password, [bool debug = false]) async {
@@ -19,17 +17,15 @@ class KeyChain {
   }
 
   Future<String?> decode(String encoded, String password) async {
-    String encoded = await encode(password);
     String? decoded =
         await apiCrypto.decodeKeychain(encoded: encoded, password: password);
     return decoded;
   }
 
-  Future<bool> validatePassword(
-      String xprv, String encoded, String password) async {
-    String? valid = await decode(encoded, password);
-    unlocked = valid != null ? true : false;
-    return unlocked;
+  Future<bool> validatePassword(String encoded, String password) async {
+    String? decoded = await decode(encoded, password);
+
+    return decoded != null ? true : false;
   }
 
   Future<bool> keyExists() async {
@@ -55,13 +51,12 @@ class KeyChain {
     }
   }
 
-  Future<bool> setKey(
-      String xprv, String newPassword, String? oldPassword) async {
+  Future<bool> setKey(String newPassword, String? oldPassword) async {
     bool exists = await keyExists();
     String encodedKey = await encode(newPassword);
     if (exists) {
       String key = await getKey();
-      bool valid = await validatePassword(xprv, key, oldPassword!);
+      bool valid = await validatePassword(key, oldPassword!);
       if (!valid) {
         return false;
       }
