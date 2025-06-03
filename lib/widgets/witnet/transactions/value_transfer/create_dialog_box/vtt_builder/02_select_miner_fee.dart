@@ -2,6 +2,7 @@ import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/util/extensions/num_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/widgets/validations/fee_amount_input.dart';
@@ -261,7 +262,9 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
               errorText: _minerFeeWit.error ?? null,
               styledTextController: _minerFeeController,
               focusNode: _minerFeeFocusNode,
-              keyboardType: TextInputType.number,
+              inputFormatters: [WitValueFormatter()],
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
               onChanged: (String value) {
                 setMinerFeeValue(value);
               },

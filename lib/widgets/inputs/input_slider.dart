@@ -88,7 +88,7 @@ class _InputSliderState extends State<InputSlider> {
           errorText: widget.errorText,
           styledTextController: widget.styledTextController,
           focusNode: widget.focusNode,
-          keyboardType: TextInputType.number,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
           onChanged: widget.onChanged,
           onTap: widget.onTap,
           inputFormatters: widget.inputFormatters,
