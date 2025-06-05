@@ -97,7 +97,7 @@ class ApiCrypto {
   ) async {
     Map<String, List<String>> _signers = {};
     // get master key
-    String key = await db.getKeychain();
+    String? key = await db.getKeychain();
 
     /// loop through utxos
     for (int i = 0; i < utxos.length; i++) {
@@ -155,6 +155,23 @@ class ApiCrypto {
     });
   }
 
+  Future<String> encodeKeychain({required String password}) async {
+    CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
+    return await cryptoIsolate.send(method: 'encodeKeychain', params: {
+      'password': password,
+    });
+  }
+
+  Future<String?> decodeKeychain(
+      {required String encoded, required String password}) async {
+    CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
+    var resp = await cryptoIsolate.send(method: 'decodeKeychain', params: {
+      'encoded': encoded,
+      'password': password,
+    });
+    return resp;
+  }
+
   Future<String> encryptXprv(
       {required String xprv, required String password}) async {
     CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
@@ -203,7 +220,7 @@ class ApiCrypto {
   }
 
   Future<dynamic> signUnstakeBody(Uint8List unstakeBody, String address) async {
-    String key = await db.getKeychain();
+    String? key = await db.getKeychain();
 
     Wallet currentWallet = db.walletStorage.currentWallet;
     Account? _account = currentWallet.allAccounts()[address];
@@ -224,7 +241,7 @@ class ApiCrypto {
 
   Future<Map<String, dynamic>> signMessage(
       String message, String address) async {
-    String key = await db.getKeychain();
+    String? key = await db.getKeychain();
 
     Wallet currentWallet = db.walletStorage.currentWallet;
     Account? _account = currentWallet.allAccounts()[address];
