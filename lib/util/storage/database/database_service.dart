@@ -235,11 +235,11 @@ class DatabaseService {
   Future<dynamic> migrateDB(db) async {
     /// Get all Transactions
     final List<ValueTransferInfo> vtts =
-        await vttRepository.getAllTransactions(database);
+        await vttRepository.getAllTransactions(db);
 
     for (int i = 0; i < vtts.length; i++) {
       ValueTransferInfo _vtt = vtts[i];
-      await vttRepository.updateTransaction(_vtt, database);
+      await vttRepository.updateTransaction(_vtt, db);
     }
   }
 
