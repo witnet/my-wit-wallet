@@ -25,6 +25,6 @@ void main() async {
     expect(Password.verify(password, decoded02!), true);
 
     /// verify when decoding an incorrect password it is rejected
-    expect(Password.verify(password, nDecode!), false);
+    expect(nDecode, null);
   });
 }
