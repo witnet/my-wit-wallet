@@ -11,6 +11,7 @@ import 'package:my_wit_wallet/util/storage/path_provider_interface.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
+import '../util/storage/database/encrypt/keychain.dart';
 import 'locator.dart';
 
 enum WalletPreferences { walletId, addressIndex, addressList }
@@ -143,6 +144,10 @@ class ApiDatabase {
     } catch (e) {
       return '';
     }
+  }
+
+  KeyChain keychain() {
+    return db.keyChain;
   }
 
   Future<bool> setPassword(String newPassword,

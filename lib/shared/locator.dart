@@ -39,8 +39,8 @@ class Locator {
     }
   }
 
-  Future<bool> initialize() async {
-    await Locator.instance<DatabaseService>();
+  static Future<bool> initialize() async {
+    await Locator.instance<ApiDatabase>().openDatabase();
 
     return true;
   }

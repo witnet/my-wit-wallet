@@ -131,6 +131,8 @@ Future<dynamic> _signTransaction(Map<String, dynamic> params) async {
 
   Map<String, KeyedSignature> _sigMap = {};
   signers.forEach((encryptedXprv, paths) {
+    print(encryptedXprv);
+    print(password);
     Xprv masterXprv = Xprv.fromEncryptedXprv(encryptedXprv, password);
 
     paths.forEach((path) {
@@ -307,14 +309,14 @@ String _encodeKeychain(Map<String, dynamic> params) {
 }
 
 String? _decodeKeychain(Map<String, dynamic> params) {
-  String encoded = params['encoded'];
-  String password = params['password'];
-  Uint8List dat = Uint8List.fromList(hexToBytes(encoded));
+  String _encoded = params['encoded'];
+  String _password = params['password'];
+  Uint8List dat = Uint8List.fromList(hexToBytes(_encoded));
   Uint8List iv = dat.sublist(0, 16);
   Uint8List salt = dat.sublist(16, 48);
   Uint8List data = dat.sublist(48);
 
-  CodecAES codec = getCodecAES(password, salt: salt, iv: iv);
+  CodecAES codec = getCodecAES(_password, salt: salt, iv: iv);
   Uint8List decoded = codec.decode(bytesToHex(data)) as Uint8List;
 
   try {

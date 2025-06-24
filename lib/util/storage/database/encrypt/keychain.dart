@@ -10,6 +10,7 @@ DatabaseClient databaseClient =
 
 class KeyChain {
   final StoreRef _store = StoreRef<String, String>("keychain");
+  String? keychain;
 
   KeyChain();
   Future<String> encode(String password, [bool debug = false]) async {
@@ -19,6 +20,7 @@ class KeyChain {
   Future<String?> decode(String encoded, String password) async {
     String? decoded =
         await apiCrypto.decodeKeychain(encoded: encoded, password: password);
+    keychain = decoded;
     return decoded;
   }
 
