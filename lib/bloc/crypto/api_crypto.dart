@@ -97,7 +97,7 @@ class ApiCrypto {
   ) async {
     Map<String, List<String>> _signers = {};
     // get master key
-    String key = await db.getKeychain();
+    String? keychain = await db.keychain().keychain;
 
     /// loop through utxos
     for (int i = 0; i < utxos.length; i++) {
@@ -141,7 +141,7 @@ class ApiCrypto {
     List<KeyedSignature> signatures = await cryptoIsolate.send(
         method: 'signTransaction',
         params: {
-          'password': key,
+          'password': keychain,
           'signers': _signers,
           'transaction_id': transactionId
         });
@@ -153,6 +153,23 @@ class ApiCrypto {
     return await cryptoIsolate.send(method: 'hashPassword', params: {
       'password': password,
     });
+  }
+
+  Future<String> encodeKeychain({required String password}) async {
+    CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
+    return await cryptoIsolate.send(method: 'encodeKeychain', params: {
+      'password': password,
+    });
+  }
+
+  Future<String?> decodeKeychain(
+      {required String encoded, required String password}) async {
+    CryptoIsolate cryptoIsolate = Locator.instance.get<CryptoIsolate>();
+    var resp = await cryptoIsolate.send(method: 'decodeKeychain', params: {
+      'encoded': encoded,
+      'password': password,
+    });
+    return resp;
   }
 
   Future<String> encryptXprv(
@@ -203,7 +220,7 @@ class ApiCrypto {
   }
 
   Future<dynamic> signUnstakeBody(Uint8List unstakeBody, String address) async {
-    String key = await db.getKeychain();
+    String? key = await db.getKeychain();
 
     Wallet currentWallet = db.walletStorage.currentWallet;
     Account? _account = currentWallet.allAccounts()[address];
@@ -224,7 +241,7 @@ class ApiCrypto {
 
   Future<Map<String, dynamic>> signMessage(
       String message, String address) async {
-    String key = await db.getKeychain();
+    String? key = await db.keychain().keychain;
 
     Wallet currentWallet = db.walletStorage.currentWallet;
     Account? _account = currentWallet.allAccounts()[address];

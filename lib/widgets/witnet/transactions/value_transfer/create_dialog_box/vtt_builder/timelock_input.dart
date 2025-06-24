@@ -38,8 +38,8 @@ class TimelockInput extends StatelessWidget {
               Text(localization.timelock, style: theme.textTheme.labelLarge),
               SizedBox(width: 8),
               Tooltip(
-                  height: 60,
                   message: localization.timelockTooltip,
+                  constraints: BoxConstraints(minHeight: 60),
                   child: MouseRegion(
                       cursor: SystemMouseCursors.click,
                       child: Icon(FontAwesomeIcons.circleQuestion,

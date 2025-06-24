@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:my_wit_wallet/screens/preferences/general_config.dart';
+import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -98,5 +99,28 @@ class ApiPreferences {
     } else {
       return null;
     }
+  }
+
+  static Future<void> setWalletAndAccountInPreferences(
+      walletId, AddressEntry address) async {
+    await setCurrentWallet(walletId);
+    await setCurrentAddress(address);
+  }
+
+  static Future<Map<WalletPreferences, dynamic>?>
+      getCurrentWalletPreferences() async {
+    String? walletId = await ApiPreferences.getCurrentWallet();
+    String? addressIndex = await getCurrentAddress(walletId ?? '');
+    Map<String, dynamic>? addressList = await getCurrentAddressList();
+    bool hasSavedPrefs = walletId != null &&
+        addressIndex != null &&
+        addressList != null &&
+        addressList.length > 0;
+    final prefs = {
+      WalletPreferences.walletId: walletId,
+      WalletPreferences.addressIndex: addressIndex,
+      WalletPreferences.addressList: addressList
+    };
+    return hasSavedPrefs ? prefs : null;
   }
 }

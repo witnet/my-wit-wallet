@@ -35,6 +35,8 @@ Map<String, Function(Map<String, dynamic>)> _methodMap = {
   'signUnstakeBody': _signUnstakeBody,
   'signMessage': _signMessage,
   'hashPassword': _hashPassword,
+  'encodeKeychain': _encodeKeychain,
+  'decodeKeychain': _decodeKeychain,
   'encryptXprv': _encryptXprv,
   'decryptXprv': _decryptXprv,
   'verifySheikahXprv': _verifySheikahXprv,
@@ -129,6 +131,8 @@ Future<dynamic> _signTransaction(Map<String, dynamic> params) async {
 
   Map<String, KeyedSignature> _sigMap = {};
   signers.forEach((encryptedXprv, paths) {
+    print(encryptedXprv);
+    print(password);
     Xprv masterXprv = Xprv.fromEncryptedXprv(encryptedXprv, password);
 
     paths.forEach((path) {
@@ -277,6 +281,49 @@ Future<Map<String, dynamic>> _signMessage(Map<String, dynamic> params) async {
 
 String _hashPassword(Map<String, dynamic> params) {
   return Password.hash(params['password']);
+}
+
+Uint8List _formatData(Uint8List data, [int length = 128, int padByte = 11]) {
+  Uint8List _data = Uint8List(length);
+  int padLength = _data.length - data.length;
+  Uint8List padding = Uint8List(padLength);
+  for (int i = 0; i < padLength; i++) {
+    padding[i] = padByte;
+  }
+  _data.setRange(0, data.length, data);
+  _data.setRange(data.length, _data.length, padding);
+  return _data;
+}
+
+String _encodeKeychain(Map<String, dynamic> params) {
+  String password = params['password'];
+  Uint8List data =
+      Uint8List.fromList('{"WITNET":"${Password.hash(password)}"}'.codeUnits);
+  Uint8List dat = _formatData(data);
+  Uint8List _iv = generateIV();
+  Uint8List _salt = generateSalt();
+  CodecAES codec = getCodecAES(password, salt: _salt, iv: _iv);
+  Uint8List encoded = hexToBytes(codec.encode(dat));
+  Uint8List encodedData = concatBytes([_iv, _salt, encoded]);
+  return bytesToHex(encodedData);
+}
+
+String? _decodeKeychain(Map<String, dynamic> params) {
+  String _encoded = params['encoded'];
+  String _password = params['password'];
+  Uint8List dat = Uint8List.fromList(hexToBytes(_encoded));
+  Uint8List iv = dat.sublist(0, 16);
+  Uint8List salt = dat.sublist(16, 48);
+  Uint8List data = dat.sublist(48);
+
+  CodecAES codec = getCodecAES(_password, salt: salt, iv: iv);
+  Uint8List decoded = codec.decode(bytesToHex(data)) as Uint8List;
+
+  try {
+    return json.decode(utf8.decode(decoded).trim())['WITNET'];
+  } catch (e) {
+    return null;
+  }
 }
 
 String _encryptXprv(Map<String, dynamic> params) {

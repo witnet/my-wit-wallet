@@ -5,7 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
-
+import 'package:path/path.dart' show dirname;
 import 'package:open_file/open_file.dart';
 
 enum Platforms { Linux, Macos, Windows, IOS, Android }
@@ -63,6 +63,12 @@ class PathProviderInterface {
   }
 
   String getFilePath(String name, String extension) {
+    String _path =
+        '$applicationSupportPath${io.Platform.pathSeparator}$name.$extension';
+    final Directory dir = Directory(dirname(_path));
+    if (!dir.existsSync()) {
+      dir.createSync(recursive: true);
+    }
     return '$applicationSupportPath${io.Platform.pathSeparator}$name.$extension';
   }
 

@@ -16,12 +16,14 @@ import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
+import 'package:my_wit_wallet/util/storage/path_provider_interface.dart';
 import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 import 'package:my_wit_wallet/widgets/labeled_checkbox.dart';
 import 'package:my_wit_wallet/widgets/select.dart';
 import 'package:my_wit_wallet/main.dart' as myWitWallet;
 import 'package:my_wit_wallet/globals.dart' as globals;
+import 'package:integration_test/integration_test.dart';
 part 'e2e_auth_preferences_test.dart';
 part 'e2e_export_node_xprv_test.dart';
 part 'e2e_export_hd_xprv_test.dart';
@@ -62,10 +64,21 @@ Finder widgetByIcon(IconData icon) => find.byIcon(icon);
 Finder widgetByLabel(String label) => find.bySemanticsLabel(label);
 
 Future<void> initializeTest(WidgetTester tester) async {
+  WidgetsFlutterBinding.ensureInitialized();
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+  String deleteStorageFlag = dotenv.env['DELETE_TEST_STORAGE'] ?? 'false';
+
+  Locator.setup();
+  await Locator.initialize();
+
+  globals.testingDeleteStorage = deleteStorageFlag.toBoolean();
+  if (globals.testingDeleteStorage) {
+    await deleteDB();
+  }
+
   myWitWallet.main();
   await tester.pumpAndSettle();
-  String deleteStorageFlag = dotenv.env['DELETE_TEST_STORAGE'] ?? 'false';
-  globals.testingDeleteStorage = deleteStorageFlag.toBoolean();
   await tester.pumpAndSettle(Duration(seconds: initializeDelay));
 }
 
@@ -233,15 +246,28 @@ Future<bool> scrollUntilVisible(
   return true;
 }
 
+Future<void> deleteDB() async {
+  ApiDatabase apiDatabase = Locator.instance<ApiDatabase>();
+
+  PathProviderInterface interface = PathProviderInterface();
+  // 💣 Delete old DB before running tests
+  final dbFilePath = interface.getDbWalletsPath();
+  final dbFile = File(dbFilePath);
+  if (dbFile.existsSync()) {
+    await dbFile.delete();
+  }
+  bool isDeleted = await apiDatabase.deleteAllWallets();
+  if (isDeleted) {
+    await apiDatabase.openDatabase();
+    globals.firstRun = false;
+  }
+}
+
 Future<bool> teardownTest() async {
   ApiDatabase apiDatabase = Locator.instance<ApiDatabase>();
   if (globals.testingActive) {
     if (globals.testingDeleteStorage) {
-      bool isDeleted = await apiDatabase.deleteAllWallets();
-      if (isDeleted) {
-        await apiDatabase.openDatabase();
-        globals.firstRun = false;
-      }
+      await deleteDB();
     }
     await apiDatabase.lockDatabase();
   }

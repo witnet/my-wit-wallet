@@ -578,7 +578,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       try {
         ValueTransferInfo? vtt = await explorer.getVtt(_vtt.txnHash);
         if (vtt != null && _vtt.status != vtt.status) {
-          await database.updateVtt(wallet.id, vtt);
+          await database.updateVtt(vtt);
         }
       } catch (e) {
         /// If the getVtt method returns null we enter this catch
@@ -597,7 +597,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       try {
         StakeEntry? stake = await explorer.getStake(_stake.hash);
         if (stake != null && _stake.status != stake.status) {
-          await database.updateStake(wallet.id, stake);
+          await database.updateStake(stake);
         }
       } catch (e) {
         /// If the getStake method returns null we enter this catch
@@ -621,7 +621,7 @@ class ExplorerBloc extends Bloc<ExplorerEvent, ExplorerState> {
       try {
         UnstakeEntry? unstake = await explorer.getUnstake(_unstake.hash);
         if (unstake != null && _unstake.status != unstake.status) {
-          await database.updateUnstake(wallet.id, unstake);
+          await database.updateUnstake(unstake);
         }
       } catch (e) {
         /// If the getUnstake method returns null we enter this catch

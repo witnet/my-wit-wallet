@@ -5,10 +5,10 @@ import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/cache/implementations/vtt_get_through_block_explorer.dart';
-import 'package:my_wit_wallet/util/storage/database/database_isolate.dart';
 import 'package:my_wit_wallet/bloc/explorer/api_explorer.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/api_theme.dart';
+import 'package:my_wit_wallet/util/storage/database/database_service.dart';
 import 'package:my_wit_wallet/util/storage/log.dart';
 
 class Locator {
@@ -22,6 +22,7 @@ class Locator {
     /// if they are already registered it is because of end-to-end testing.
     register(ApiTheme.instance());
     register(DebugLogger());
+    register(DatabaseService.instance());
     register(ApiDatabase());
     register(ApiExplorer());
     register(PanelUtils());
@@ -29,7 +30,6 @@ class Locator {
     register(ApiCreateWallet());
     register(ApiCrypto());
     register(CryptoIsolate.instance());
-    register(DatabaseIsolate.instance());
     register(VttGetThroughBlockExplorer());
   }
 
@@ -39,8 +39,8 @@ class Locator {
     }
   }
 
-  Future<bool> initialize() async {
-    await Locator.instance<DatabaseIsolate>().init();
+  static Future<bool> initialize() async {
+    await Locator.instance<ApiDatabase>().openDatabase();
 
     return true;
   }
