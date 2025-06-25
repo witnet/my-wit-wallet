@@ -24,10 +24,12 @@ class PanelUtils {
   }
 
   Future<void> toggle() async {
-    if (panelController.isPanelClosed) {
-      await open();
-    } else {
-      await close();
+    if (isAttached()) {
+      if (panelController.isPanelClosed) {
+        await open();
+      } else {
+        await close();
+      }
     }
   }
 
@@ -57,7 +59,7 @@ class PanelUtils {
   }
 
   Future<void> close() async {
-    if (isAttached() && panelController.isPanelOpen) {
+    if (isAttached() && isOpen()) {
       Widget defaultContent = Text('');
       setContent(defaultContent);
       await panelController.close();
