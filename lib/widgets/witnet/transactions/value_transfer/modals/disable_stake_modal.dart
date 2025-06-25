@@ -3,6 +3,7 @@ import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/widgets/alert_dialog.dart';
 import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
+import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
 
 void buildDisableStakeModal({
   required ThemeData theme,
@@ -21,9 +22,15 @@ void buildDisableStakeModal({
             type: CustomBtnType.primary,
             enabled: true,
             onPressed: () => {
-                  Navigator.popUntil(
-                      context, ModalRoute.withName(originRouteName)),
                   ScaffoldMessenger.of(context).clearSnackBars(),
+                  Navigator.push(
+                      context,
+                      CustomPageRoute(
+                          builder: (BuildContext context) {
+                            return originRoute;
+                          },
+                          maintainState: false,
+                          settings: RouteSettings(name: originRouteName)))
                 }),
       ],
       image: Container(

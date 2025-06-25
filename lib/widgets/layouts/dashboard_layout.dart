@@ -82,14 +82,18 @@ class DashboardLayoutState extends State<DashboardLayout>
     return BottomNavigation(
         currentScreen: currentRoute(context),
         onSendReceiveAction: () async => {
-              panel.setHeight(actionsHeight),
-              setState(() => panel.setContent(SendReceiveButtons())),
-              await panel.toggle(),
+              setState(() {
+                panel.setHeight(actionsHeight);
+                panel.setContent(SendReceiveButtons());
+              }),
+              await panel.toggle()
             },
         onStakeUnstakeAction: () async => {
-              panel.setHeight(actionsHeight),
-              setState(() => panel.setContent(StakeUnstakeButtons())),
-              await panel.toggle(),
+              setState(() {
+                panel.setHeight(actionsHeight);
+                panel.setContent(StakeUnstakeButtons());
+              }),
+              await panel.toggle()
             });
   }
 
@@ -161,11 +165,13 @@ class DashboardLayoutState extends State<DashboardLayout>
           scrollController: widget.scrollController,
           topNavigation: TopNavigation(
                   onShowWalletList: () async => {
-                        // Sets panel height that shows the wallet list
-                        panel.setHeight(walletListSize > maxSize
-                            ? maxSize
-                            : walletListSize),
-                        setState(() => panel.setContent(WalletList())),
+                        setState(() {
+                          // Sets panel height that shows the wallet list
+                          panel.setHeight(walletListSize > maxSize
+                              ? maxSize
+                              : walletListSize);
+                          panel.setContent(WalletList());
+                        }),
                         await panel.toggle(),
                       },
                   currentScreen: currentRoute(context),
