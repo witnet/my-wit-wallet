@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Clone
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Create .env
         run: cp ./.env.example ./.env
@@ -51,7 +51,7 @@ jobs:
     runs-on: windows-2022
     steps:
       - name: Clone
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Create .env
         run: Copy-Item ".\.env.example" -Destination ".\.env"
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Clone
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Create .env
         run: | 
@@ -127,7 +127,7 @@ jobs:
     runs-on: macos-15
     steps:
       - name: Clone
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Create .env
         run: cp ./.env.example ./.env
@@ -156,7 +156,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Clone
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Create .env
         run: cp ./.env.example ./.env
@@ -205,7 +205,7 @@ jobs:
     runs-on: macos-15
     steps:
       - name: Clone
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Create .env
         run: cp ./.env.example ./.env
