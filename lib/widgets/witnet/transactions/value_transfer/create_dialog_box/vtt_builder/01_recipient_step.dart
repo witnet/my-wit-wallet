@@ -12,6 +12,7 @@ import 'package:my_wit_wallet/util/storage/scanned_content.dart';
 import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 import 'package:my_wit_wallet/widgets/inputs/input_address.dart';
 import 'package:my_wit_wallet/widgets/inputs/input_authorization.dart';
+import 'package:my_wit_wallet/widgets/inputs/input_metadata.dart';
 import 'package:my_wit_wallet/widgets/inputs/input_slider.dart';
 import 'package:my_wit_wallet/widgets/labeled_form_entry.dart';
 import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
@@ -19,6 +20,7 @@ import 'package:my_wit_wallet/widgets/select.dart';
 import 'package:my_wit_wallet/widgets/snack_bars.dart';
 import 'package:my_wit_wallet/widgets/validations/address_input.dart';
 import 'package:my_wit_wallet/widgets/validations/authorization_input.dart';
+import 'package:my_wit_wallet/widgets/validations/metadata_input.dart';
 import 'package:my_wit_wallet/widgets/validations/validation_utils.dart';
 import 'package:my_wit_wallet/widgets/validations/tx_amount_input.dart';
 import 'package:my_wit_wallet/widgets/withdrawal_address.dart';
@@ -35,6 +37,7 @@ import 'package:my_wit_wallet/util/extensions/text_input_formatter.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
 import 'package:witnet/utils.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
+import 'package:witnet/data_structures.dart';
 
 class RecipientStep extends StatefulWidget {
   final Function nextAction;
@@ -67,6 +70,7 @@ class RecipientStepState extends State<RecipientStep>
   AddressInput _address = AddressInput.pure();
   TxAmountInput _amount = TxAmountInput.pure();
   AuthorizationInput _authorization = AuthorizationInput.pure();
+  MetadataInput _metadata = MetadataInput.pure();
   List<SelectItem> get validatorAddressesUsedInStakes =>
       List<SelectItem>.from(widget.walletStorage.currentWallet
           .stakesValidators()
@@ -79,6 +83,9 @@ class RecipientStepState extends State<RecipientStep>
   final _addressFocusNode = FocusNode();
   final _authorizationController = StyledTextController();
   final _authorizationFocusNode = FocusNode();
+  final _metadataController = StyledTextController();
+  final _metadataFocusNode = FocusNode();
+
   bool _connectionError = false;
   String? errorMessage;
 
@@ -86,7 +93,7 @@ class RecipientStepState extends State<RecipientStep>
   bool isCopyAddressFocused = false;
   ValidationUtils validationUtils = ValidationUtils();
   List<FocusNode> _formFocusElements() => isVttTransaction
-      ? [_addressFocusNode, _amountFocusNode]
+      ? [_addressFocusNode, _amountFocusNode, _metadataFocusNode]
       : [_addressFocusNode, _amountFocusNode, _authorizationFocusNode];
   ValueTransferOutput? ongoingOutput;
   TransactionBloc get transactionBloc =>
@@ -145,6 +152,8 @@ class RecipientStepState extends State<RecipientStep>
     _amountFocusNode.dispose();
     _authorizationController.dispose();
     _authorizationFocusNode.dispose();
+    _metadataController.dispose();
+    _metadataFocusNode.dispose();
     super.dispose();
   }
 
@@ -184,6 +193,11 @@ class RecipientStepState extends State<RecipientStep>
     if (force) {
       setAddress(_address.value, validate: true);
       setAmount(_amount.value, validate: true);
+
+      if (_metadata.value.isNotEmpty) {
+        setMetadata(_metadata.value, validate: true);
+      }
+      setMetadata(_metadata.value, validate: true);
       if (showAuthorization) {
         setAuthorization(_authorization.value, validate: true);
       }
@@ -278,6 +292,14 @@ class RecipientStepState extends State<RecipientStep>
     setAmount(_amountController.text, validate: false);
   }
 
+  setMetadata(String value, {bool? validate}) {
+    _metadata = MetadataInput.dirty(
+      value: _metadata.value,
+      allowValidation:
+          validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
+    );
+  }
+
   void nextAction() {
     final theme = Theme.of(context);
     if (_connectionError) {
@@ -327,6 +349,14 @@ class RecipientStepState extends State<RecipientStep>
               'time_lock': timelockSet ? dateTimeToTimelock(calendarValue) : 0,
             }),
             merge: true));
+
+        if (_metadata.value.isNotEmpty) {
+          transactionBloc.add(AddValueTransferOutputEvent(
+            merge: false,
+            currentWallet: widget.walletStorage.currentWallet,
+            output: createMetadataOutput(_metadata.value),
+          ));
+        }
       }
     }
   }
@@ -372,9 +402,9 @@ class RecipientStepState extends State<RecipientStep>
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 IconBtn(
-                  label: localization.addTimelockLabel,
+                  label: localization.addAdvancedSettings,
                   padding: EdgeInsets.all(0),
-                  text: localization.addTimelockLabel,
+                  text: localization.addAdvancedSettings,
                   onPressed: () {
                     setState(() {
                       showAdvancedSettings = !showAdvancedSettings;
@@ -391,13 +421,25 @@ class RecipientStepState extends State<RecipientStep>
               ],
             ),
             showAdvancedSettings
-                ? Padding(
-                    padding: EdgeInsets.only(left: 8, right: 8),
-                    child: timelockInput.TimelockInput(
-                        timelockSet: timelockSet,
-                        onSelectedDate: _setTimeLock,
-                        onClearTimelock: _clearTimeLock,
-                        calendarValue: calendarValue))
+                ? Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 8, right: 8),
+                        child: timelockInput.TimelockInput(
+                          timelockSet: timelockSet,
+                          onSelectedDate: _setTimeLock,
+                          onClearTimelock: _clearTimeLock,
+                          calendarValue: calendarValue,
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          Padding(padding: EdgeInsets.only(top: 16)),
+                          ..._buildMetadataInput(theme),
+                        ],
+                      ),
+                    ],
+                  )
                 : Container()
           ],
         ));
@@ -626,6 +668,35 @@ class RecipientStepState extends State<RecipientStep>
     return showStakeAmountInput
         ? _buildWithdrawalAddressInput(theme)
         : _buildReceiverAddressInput(theme);
+  }
+
+  List<Widget> _buildMetadataInput(ThemeData theme) {
+    return [
+      LabeledFormEntry(
+        label: localization.metadata,
+        formEntry: InputMetadata(
+          route: widget.routeName,
+          errorText: _metadata.error,
+          styledTextController: _metadataController,
+          focusNode: _metadataFocusNode,
+          keyboardType: TextInputType.text,
+          inputFormatters: [],
+          onChanged: (String value) {
+            setMetadata(value);
+          },
+          onFieldSubmitted: (String value) {
+            _metadataFocusNode.requestFocus();
+          },
+          onTap: () {
+            _metadataFocusNode.requestFocus();
+          },
+          onTapOutside: (event) {
+            _metadataFocusNode.unfocus();
+          },
+          setMetadataCallback: setMetadata,
+        ),
+      ),
+    ];
   }
 
   _buildForm(BuildContext context, ThemeData theme) {
