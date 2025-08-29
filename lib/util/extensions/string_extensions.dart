@@ -30,4 +30,14 @@ extension StringExtension on String {
       .join(' ');
 
   bool toBoolean() => this == 'true' || this == 'True';
+
+  bool isHexString() {
+    final hexRegex = RegExp(r'^[a-fA-F0-9]+$');
+
+    if (this.startsWith("0x")) {
+      return hexRegex.hasMatch(this.substring(2));
+    } else {
+      return hexRegex.hasMatch(this);
+    }
+  }
 }
