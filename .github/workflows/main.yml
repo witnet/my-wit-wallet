@@ -60,7 +60,7 @@ jobs:
         run: msstore publish -i .\build\windows\x64\runner\Release -v || true
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: windows
           path: .\myWitWallet-windows.zip
@@ -106,7 +106,7 @@ jobs:
           tar czvf myWitWallet-linux.tar.gz ./myWitWallet
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: linux
           path: ./myWitWallet-linux.tar.gz
@@ -208,7 +208,7 @@ jobs:
           xcrun stapler validate ./myWitWallet.dmg
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: macos
           path: ./myWitWallet.dmg
@@ -295,7 +295,7 @@ jobs:
         run: mv ./build/app/outputs/flutter-apk/app-release.apk ./myWitWallet.apk
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: android
           path: ./myWitWallet.apk
@@ -380,7 +380,7 @@ jobs:
         run: if [[ "${{github.ref_name}}" == *"dev"* ]]; then bundle exec fastlane beta; else bundle exec fastlane production; fi;
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ios
           path: ./build/ios/ipa/myWitWallet.ipa
