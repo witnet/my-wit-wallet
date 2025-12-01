@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:isolate';
 
 import 'package:my_wit_wallet/util/storage/database/stats.dart';
@@ -31,30 +30,23 @@ Map<String, Function(DatabaseService, SendPort, Map<String, dynamic>)>
   'verifyPassword': _verifyPassword,
 };
 
-class DatabaseIsolate {
-  static final DatabaseIsolate _databaseIsolate = DatabaseIsolate._internal();
-  DatabaseIsolate._internal();
+class DatabaseManager {
+  static final DatabaseManager _databaseManager = DatabaseManager._internal();
+  DatabaseManager._internal();
 
-  late Isolate isolate;
   late SendPort sendPort;
-  late ReceivePort receivePort;
   bool initialized = false;
   bool loading = false;
 
-  factory DatabaseIsolate.instance() => _databaseIsolate;
+  factory DatabaseManager.instance() => _databaseManager;
 
   Future<void> init() async {
     loading = true;
-    if (initialized == false) {
-      _databaseIsolate.receivePort = ReceivePort();
-      _databaseIsolate.isolate = await Isolate.spawn(
-          _dbIsolate, _databaseIsolate.receivePort.sendPort);
-      _databaseIsolate.sendPort =
-          await _databaseIsolate.receivePort.first as SendPort;
-
+    if (!initialized) {
+      DatabaseService.instance();
       initialized = true;
-      loading = false;
     }
+    loading = false;
   }
 
   void send({
@@ -62,30 +54,9 @@ class DatabaseIsolate {
     required Map<String, dynamic> params,
     required SendPort port,
   }) {
-    _databaseIsolate.sendPort.send(['$method?${json.encode(params)}', port]);
+    final dbService = DatabaseService.instance();
+    methodMap[method]!(dbService, port, params);
   }
-}
-
-void _dbIsolate(SendPort sendPort) async {
-  // open our receive port
-  try {
-    DatabaseService dbService = DatabaseService.instance();
-
-    ReceivePort receivePort = ReceivePort();
-
-    // tell whoever created us what port they can reach us
-    sendPort.send(receivePort.sendPort);
-
-    // listen for messages
-    await for (var msg in receivePort) {
-      var data = msg[0] as String;
-      SendPort port = msg[1];
-      var method = data.split('?')[0];
-      var params = json.decode(data.split('?')[1]);
-      await methodMap[method]!(dbService, port, params);
-    }
-    receivePort.close();
-  } catch (e) {}
 }
 
 Future<void> _lock(
@@ -122,7 +93,9 @@ Future<void> _setPassword(
   Map<String, dynamic> params,
 ) async {
   bool exists = await dbService.setPassword(
-      oldPassword: params['oldPassword'], newPassword: params['newPassword']);
+    oldPassword: params['oldPassword'],
+    newPassword: params['newPassword'],
+  );
 
   port.send(exists);
 }
@@ -133,7 +106,10 @@ Future<void> _configure(
   Map<String, dynamic> params,
 ) async {
   await dbService.configure(
-      params['path'], params['fileExists'], params['apiVersion']);
+    params['path'],
+    params['fileExists'],
+    params['apiVersion'],
+  );
   port.send({'unlocked': true});
 }
 
@@ -206,8 +182,11 @@ Future<void> _deleteRecord(
   port.send(value);
 }
 
-Future<void> _deleteDatabase(DatabaseService dbService, SendPort port,
-    Map<String, dynamic> params) async {
+Future<void> _deleteDatabase(
+  DatabaseService dbService,
+  SendPort port,
+  Map<String, dynamic> params,
+) async {
   bool databaseDeleted = await dbService.deleteDatabase();
   port.send(databaseDeleted);
 }
@@ -248,8 +227,11 @@ Future<void> _updateRecord(
   port.send(value);
 }
 
-Future<void> _getStatsByAddress(DatabaseService dbService, SendPort port,
-    Map<String, dynamic> params) async {
+Future<void> _getStatsByAddress(
+  DatabaseService dbService,
+  SendPort port,
+  Map<String, dynamic> params,
+) async {
   AccountStats? accountStats =
       await dbService.getStatsByAddress(params['address']);
   port.send(accountStats);

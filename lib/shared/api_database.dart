@@ -5,7 +5,7 @@ import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/database/stats.dart';
 import 'package:my_wit_wallet/util/storage/log.dart';
 import 'package:witnet/explorer.dart';
-import 'package:my_wit_wallet/util/storage/database/database_isolate.dart';
+import 'package:my_wit_wallet/util/storage/database/database_manager.dart';
 import 'package:my_wit_wallet/util/storage/database/database_service.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/util/storage/path_provider_interface.dart';
@@ -34,23 +34,22 @@ class ApiDatabase {
   late WalletStorage walletStorage;
   bool walletsLoaded = false;
 
-  DatabaseIsolate get databaseIsolate => Locator.instance<DatabaseIsolate>();
+  DatabaseManager get databaseManager => Locator.instance<DatabaseManager>();
   DebugLogger get logger => Locator.instance<DebugLogger>();
   ApiExplorer get explorer => Locator.instance<ApiExplorer>();
   PathProviderInterface interface = PathProviderInterface();
 
-  Future<dynamic> _processIsolate(
+  Future<dynamic> _processDbRequest(
       {required String method, Map<String, dynamic>? params}) async {
-    if (!databaseIsolate.initialized && !databaseIsolate.loading) {
-      await databaseIsolate.init();
+    if (!databaseManager.initialized && !databaseManager.loading) {
+      await databaseManager.init();
     } else {
       do {
         await Future.delayed(Duration(milliseconds: 1));
-      } while (databaseIsolate.loading);
+      } while (databaseManager.loading);
     }
-
     final ReceivePort response = ReceivePort();
-    databaseIsolate.send(
+    databaseManager.send(
         method: method, params: params ?? {}, port: response.sendPort);
     return await response.first.then((value) {
       if (value.runtimeType == DBException) {
@@ -63,7 +62,7 @@ class ApiDatabase {
 
   Future<bool> masterKeySet() async {
     try {
-      var value = await _processIsolate(
+      var value = await _processDbRequest(
         method: 'masterKeySet',
         params: {},
       );
@@ -169,7 +168,7 @@ class ApiDatabase {
 
   Future<bool> verifyPassword(String password) async {
     try {
-      bool isValidPasssword = await await _processIsolate(
+      bool isValidPasssword = await await _processDbRequest(
         method: 'verifyPassword',
         params: {'password': password},
       );
@@ -198,7 +197,7 @@ class ApiDatabase {
   Future<String> getKeychain() async {
     try {
       if (unlocked) {
-        var value = await _processIsolate(
+        var value = await _processDbRequest(
           method: 'getKeychain',
           params: {},
         );
@@ -214,7 +213,7 @@ class ApiDatabase {
 
   Future<bool> setPassword(
       {String? oldPassword, required String newPassword}) async {
-    await _processIsolate(
+    await _processDbRequest(
       method: 'setPassword',
       params: {
         'oldPassword': oldPassword ?? '',
@@ -235,7 +234,7 @@ class ApiDatabase {
       print('Error getting api version $err');
     }
     try {
-      var response = await _processIsolate(
+      var response = await _processDbRequest(
         method: 'configure',
         params: {
           'path': interface.getDbWalletsPath(),
@@ -252,7 +251,7 @@ class ApiDatabase {
 
   Future<bool> lockDatabase() async {
     try {
-      var response = await _processIsolate(
+      var response = await _processDbRequest(
         method: 'lock',
         params: {},
       );
@@ -263,75 +262,76 @@ class ApiDatabase {
   }
 
   Future<bool> addStats(AccountStats accountStats) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'add',
         params: {'type': 'stats', 'value': accountStats.jsonMap()});
   }
 
   Future<bool> deleteStats(AccountStats accountStats) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'delete',
         params: {'type': 'stats', 'value': accountStats.jsonMap()});
   }
 
   Future<bool> updateStats(AccountStats accountStats) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'update',
         params: {'type': 'stats', 'value': accountStats.jsonMap()});
   }
 
   Future<AccountStats?> getStatsByAddress(String address) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'getStatsByAddress', params: {'address': address});
   }
 
   Future<bool> addWallet(Wallet wallet) async {
     _wallets[wallet.name] = wallet;
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'add', params: {'type': 'wallet', 'value': wallet.jsonMap()});
   }
 
   Future<bool> deleteWallet(Wallet wallet) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'delete',
         params: {'type': 'wallet', 'value': wallet.jsonMap()});
   }
 
   Future<bool> deleteAllWallets() async {
-    return await _processIsolate(method: 'deleteDatabase');
+    return await _processDbRequest(method: 'deleteDatabase');
   }
 
   Future<bool> addAccount(Account account) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'add', params: {'type': 'account', 'value': account.jsonMap()});
   }
 
   Future<bool> addVtt(ValueTransferInfo transaction) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'add', params: {'type': 'vtt', 'value': transaction.jsonMap()});
   }
 
   Future<bool> addStake(StakeEntry transaction) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'add',
         params: {'type': 'stake', 'value': transaction.jsonMap()});
   }
 
   Future<bool> addUnstake(UnstakeEntry transaction) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'add',
         params: {'type': 'unstake', 'value': transaction.jsonMap()});
   }
 
   Future<bool> addMint(MintEntry transaction) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'add',
         params: {'type': 'mint', 'value': transaction.jsonMap()});
   }
 
   Future<StakeEntry?> getStake(String hash) async {
     try {
-      return await _processIsolate(method: 'getStake', params: {"hash": hash});
+      return await _processDbRequest(
+          method: 'getStake', params: {"hash": hash});
     } catch (err) {
       print('Error getting vtt:: $err');
       return null;
@@ -340,7 +340,8 @@ class ApiDatabase {
 
   Future<UnstakeEntry?> getUnstake(String hash) async {
     try {
-      return await _processIsolate(method: 'getStake', params: {"hash": hash});
+      return await _processDbRequest(
+          method: 'getStake', params: {"hash": hash});
     } catch (err) {
       print('Error getting vtt:: $err');
       return null;
@@ -349,7 +350,7 @@ class ApiDatabase {
 
   Future<ValueTransferInfo?> getVtt(String hash) async {
     try {
-      return await _processIsolate(method: 'getVtt', params: {"hash": hash});
+      return await _processDbRequest(method: 'getVtt', params: {"hash": hash});
     } catch (err) {
       print('Error getting vtt:: $err');
       return null;
@@ -358,7 +359,7 @@ class ApiDatabase {
 
   Future<Account?> getAccount(String hash) async {
     try {
-      return await _processIsolate(
+      return await _processDbRequest(
           method: 'getAccount', params: {"hash": hash});
     } catch (err) {
       print('Error getting account info:: $err');
@@ -368,7 +369,7 @@ class ApiDatabase {
 
   Future<MintEntry?> getMint(String hash) async {
     try {
-      return await _processIsolate(method: 'getMint', params: {"hash": hash});
+      return await _processDbRequest(method: 'getMint', params: {"hash": hash});
     } catch (err) {
       print('Error getting mint:: $err');
       return null;
@@ -377,7 +378,7 @@ class ApiDatabase {
 
   Future getAllVtts() async {
     try {
-      return await _processIsolate(method: 'getAllVtts', params: {});
+      return await _processDbRequest(method: 'getAllVtts', params: {});
     } catch (err) {
       print('Error getting vtts:: $err');
     }
@@ -385,7 +386,7 @@ class ApiDatabase {
 
   Future<WalletStorage> loadWalletsDatabase() async {
     /// Get all Wallets
-    final result = await _processIsolate(method: 'loadWallets');
+    final result = await _processDbRequest(method: 'loadWallets');
     if (result.runtimeType == WalletStorage) {
       WalletStorage storage = result;
       walletStorage = storage;
@@ -399,13 +400,13 @@ class ApiDatabase {
 
   Future<bool> updateWallet(Wallet wallet) async {
     walletStorage.wallets[wallet.id] = wallet;
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'update',
         params: {'type': 'wallet', 'value': wallet.jsonMap()});
   }
 
   Future<bool> updateVtt(String walletId, ValueTransferInfo vtt) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'update', params: {'type': 'vtt', 'value': vtt.jsonMap()});
   }
 
@@ -418,39 +419,39 @@ class ApiDatabase {
   }
 
   Future<bool> updateMint(String walletId, MintEntry mint) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'update', params: {'type': 'mint', 'value': mint.jsonMap()});
   }
 
   Future<bool> updateStake(String walletId, StakeEntry stake) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'update', params: {'type': 'stake', 'value': stake.jsonMap()});
   }
 
   Future<bool> updateUnstake(String walletId, UnstakeEntry unstake) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'update',
         params: {'type': 'unstake', 'value': unstake.jsonMap()});
   }
 
   Future<bool> deleteVtt(ValueTransferInfo vtt) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'delete', params: {'value': vtt.jsonMap(), 'type': 'vtt'});
   }
 
   Future<bool> deleteStake(StakeEntry stake) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'delete', params: {'type': 'stake', 'value': stake.jsonMap()});
   }
 
   Future<bool> deleteUnstake(UnstakeEntry unstake) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'delete',
         params: {'type': 'unstake', 'value': unstake.jsonMap()});
   }
 
   Future<bool> updateAccount(Account account) async {
-    return await _processIsolate(
+    return await _processDbRequest(
         method: 'update',
         params: {'type': 'account', 'value': account.jsonMap()});
   }
