@@ -5,7 +5,7 @@ import 'package:my_wit_wallet/bloc/crypto/crypto_bloc.dart';
 import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/util/preferences.dart';
 import 'package:my_wit_wallet/util/storage/cache/implementations/vtt_get_through_block_explorer.dart';
-import 'package:my_wit_wallet/util/storage/database/database_isolate.dart';
+import 'package:my_wit_wallet/util/storage/database/database_manager.dart';
 import 'package:my_wit_wallet/bloc/explorer/api_explorer.dart';
 import 'package:my_wit_wallet/shared/api_database.dart';
 import 'package:my_wit_wallet/shared/api_theme.dart';
@@ -29,7 +29,7 @@ class Locator {
     register(ApiCreateWallet());
     register(ApiCrypto());
     register(CryptoIsolate.instance());
-    register(DatabaseIsolate.instance());
+    register(DatabaseManager.instance());
     register(VttGetThroughBlockExplorer());
   }
 
@@ -40,7 +40,7 @@ class Locator {
   }
 
   Future<bool> initialize() async {
-    await Locator.instance<DatabaseIsolate>().init();
+    await Locator.instance<DatabaseManager>().init();
 
     return true;
   }
