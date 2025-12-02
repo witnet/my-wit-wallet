@@ -17,6 +17,11 @@ configurations.all {
             details.useVersion "1.8.0"
             details.because("Avoid androidx.browser 1.9.0 which requires AGP 8.9.1 while Flutter pins 8.6.x")
         }
+        if (details.requested.group == "net.bytebuddy"
+                && details.requested.name == "byte-buddy") {
+            details.useVersion "1.14.10"
+            details.because("Avoid byte-buddy 1.17.6 which Jetifier cannot transform (unsupported class file major version 68)")
+        }
     }
 }
 def localProperties = new Properties()
