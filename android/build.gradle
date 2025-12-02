@@ -15,6 +15,11 @@ subprojects {
                 }
             }
         }
+        if (project.name == "url_launcher_android") {
+            project.tasks.withType(Test).configureEach {
+                enabled = false
+            }
+        }
     }
     project.buildDir = "${rootProject.buildDir}/${project.name}"
     project.evaluationDependsOn(':app')
