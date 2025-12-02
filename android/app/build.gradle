@@ -1,9 +1,19 @@
 plugins {
     id "com.android.application"
-    id "kotlin-android"
+    id "org.jetbrains.kotlin.android"
     id "dev.flutter.flutter-gradle-plugin"
 }
-
+// Force older AndroidX core libs so they work with AGP 8.6.x
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == "androidx.core"
+                && (details.requested.name == "core" || details.requested.name == "core-ktx")) {
+            // 1.13.1 is pre 1.15/1.17 AAR-metadata strictness
+            details.useVersion "1.13.1"
+            details.because("Flutter 3.38 uses AGP 8.6.x, so we avoid androidx.core 1.17.0 which requires AGP 8.9.1")
+        }
+    }
+}
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -34,10 +44,10 @@ def keystoreProperties = new Properties()
    }
 
 android {
-    compileSdkVersion 35
+    compileSdkVersion 36
     namespace "io.witnet.myWitWallet"
     testNamespace "io.witnet.myWitWalletTest"
-    ndkVersion = "26.3.11579264"
+    ndkVersion = "29.0.14206865"
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -51,8 +61,8 @@ android {
 
     defaultConfig {
         applicationId "io.witnet.myWitWallet"
-        minSdk 21
-        targetSdk 34
+        minSdkVersion flutter.minSdkVersion
+        targetSdk 36
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -79,5 +89,5 @@ flutter {
 }
 
 dependencies {
-    implementation "com.android.support:multidex:1.0.3"
+    implementation "com.android.support:multidex:2.0.1"
 }
