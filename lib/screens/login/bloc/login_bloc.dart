@@ -45,10 +45,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         bool authenticated = await auth.authenticate(
           localizedReason:
               'Scan your fingerprint (or face or whatever) to authenticate',
-          options: const AuthenticationOptions(
-            stickyAuth: true,
-            biometricOnly: true,
-          ),
+          persistAcrossBackgrounding: true,
+          biometricOnly: true,
         );
         if (authenticated) {
           status = BiometricsStatus.autenticated;
