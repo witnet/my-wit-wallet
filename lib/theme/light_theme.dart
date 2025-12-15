@@ -310,7 +310,7 @@ DatePickerThemeData datePickerTheme = DatePickerThemeData(
   confirmButtonStyle: textButtonTheme.style,
 );
 SliderThemeData sliderTheme = SliderThemeData(
-  showValueIndicator: ShowValueIndicator.always,
+  showValueIndicator: ShowValueIndicator.onDrag,
   valueIndicatorColor: WitnetPallet.brightCyan,
   thumbColor: WitnetPallet.brightCyan,
   activeTrackColor: WitnetPallet.brightCyan,

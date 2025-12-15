@@ -287,8 +287,8 @@ class SelectMinerFeeStepState extends State<SelectMinerFeeStep>
                 Padding(
                   padding: EdgeInsets.only(right: 8),
                   child: Tooltip(
-                      height: 100,
                       message: localization.minerFeeHint,
+                      constraints: BoxConstraints(minHeight: 100),
                       child: MouseRegion(
                           cursor: SystemMouseCursors.click,
                           child: Icon(FontAwesomeIcons.circleQuestion,
