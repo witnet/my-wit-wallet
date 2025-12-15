@@ -303,7 +303,7 @@ DatePickerThemeData datePickerTheme = DatePickerThemeData(
 );
 
 SliderThemeData sliderTheme = SliderThemeData(
-  showValueIndicator: ShowValueIndicator.always,
+  showValueIndicator: ShowValueIndicator.onDrag,
   valueIndicatorColor: WitnetPallet.brightCyan,
   thumbColor: WitnetPallet.brightCyan,
   activeTrackColor: WitnetPallet.brightCyan,

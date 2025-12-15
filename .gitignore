@@ -32,9 +32,9 @@
 /build/
 # Web related
 lib/generated_plugin_registrant.dart
-lib/I18n/app_localizations.dart
-lib/I18n/app_localizations_es.dart
-lib/I18n/app_localizations_en.dart
+lib/l10n/app_localizations.dart
+lib/l10n/app_localizations_es.dart
+lib/l10n/app_localizations_en.dart
 
 # Symbolication related
 app.*.symbols
