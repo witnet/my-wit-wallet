@@ -5,6 +5,7 @@ import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/theme/colors.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
+import 'package:my_wit_wallet/util/metadata_utils.dart';
 import 'package:my_wit_wallet/util/storage/database/account.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
@@ -306,6 +307,14 @@ class TransactionUtils {
             '${sendValue().standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}',
       );
     }
+  }
+
+  String? metadata() {
+    if (vti.type != TransactionType.value_transfer || vti.vtt == null) {
+      return null;
+    }
+
+    return metadataFromOutputs(vti.vtt!.outputs);
   }
 
   Widget buildTransactionValue(label, context) {

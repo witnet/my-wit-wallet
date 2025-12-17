@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_wit_wallet/util/min_amount_unstake.dart';
 import 'package:my_wit_wallet/util/showTxConnectionError.dart';
+import 'package:my_wit_wallet/util/metadata_utils.dart';
+import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet_storage.dart';
 import 'package:my_wit_wallet/util/storage/scanned_content.dart';
 import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
@@ -257,6 +259,9 @@ class RecipientStepState extends State<RecipientStep>
           transactionBloc.state.transaction.get(widget.transactionType) != null
               ? transactionBloc.authorizationString
               : null;
+      String? savedMetadata = isVttTransaction
+          ? _getSavedMetadata(transactionBloc.state.transaction)
+          : null;
 
       if (savedAddress != null) {
         _addressController.text = savedAddress;
@@ -271,6 +276,12 @@ class RecipientStepState extends State<RecipientStep>
       if (isStakeTransaction && savedAuthorization != null) {
         _authorizationController.text = savedAuthorization;
         setAuthorization(savedAuthorization);
+      }
+
+      if (savedMetadata != null) {
+        _metadataController.text = savedMetadata;
+        setMetadata(savedMetadata, validate: false);
+        showAdvancedSettings = true;
       }
 
       transactionBloc.add(ResetTransactionEvent());
@@ -294,10 +305,19 @@ class RecipientStepState extends State<RecipientStep>
 
   setMetadata(String value, {bool? validate}) {
     _metadata = MetadataInput.dirty(
-      value: _metadata.value,
+      value: value,
       allowValidation:
           validate ?? validationUtils.isFormUnFocus(_formFocusElements()),
     );
+  }
+
+  String? _getSavedMetadata(BuildTransaction transaction) {
+    final vtTransaction = transaction.vtTransaction;
+    if (vtTransaction == null) {
+      return null;
+    }
+
+    return metadataFromOutputs(vtTransaction.body.outputs);
   }
 
   void nextAction() {

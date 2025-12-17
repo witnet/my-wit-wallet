@@ -237,6 +237,7 @@ class TransactionDetails extends StatelessWidget {
     TransactionUtils transactionUtils = TransactionUtils(vti: transaction);
     String label = transactionUtils.getLabel();
     String? timelock = transactionUtils.timelock();
+    String? metadata = transactionUtils.metadata();
 
     return ClosableView(
         closeSetting: goToList,
@@ -302,7 +303,14 @@ class TransactionDetails extends StatelessWidget {
                       label: localization.total,
                       text: transactionUtils.getTransactionValue().amount,
                       isContentImportant: true,
-                      isLastItem: timelock == null),
+                      isLastItem: timelock == null && metadata == null),
+                  if (metadata != null)
+                    InfoCopy(
+                        label: localization.metadata,
+                        text: metadata.cropMiddle(18),
+                        infoToCopy: metadata,
+                        isContentImportant: true,
+                        isLastItem: timelock == null),
                   timelock != null
                       ? InfoElement(
                           label: localization.timelock,

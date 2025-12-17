@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:my_wit_wallet/util/allow_biometrics.dart';
 import 'package:my_wit_wallet/util/extensions/string_extensions.dart';
+import 'package:my_wit_wallet/util/metadata_utils.dart';
 import 'package:my_wit_wallet/util/storage/database/adapters/transaction_adapter.dart';
 import 'package:my_wit_wallet/widgets/layouts/send_transaction_layout.dart';
 import 'package:my_wit_wallet/widgets/witnet/transactions/value_transfer/modals/general_error_tx_modal.dart';
@@ -102,6 +103,18 @@ class ReviewStepState extends State<ReviewStep>
     return '${state.transaction.getAmount(state.transactionType)} ${WIT_UNIT[WitUnit.Wit]}';
   }
 
+  String? _getMetadata(TransactionState state) {
+    if (!isVttTransaction) {
+      return null;
+    }
+    final vtTransaction = state.transaction.vtTransaction;
+    if (vtTransaction == null) {
+      return null;
+    }
+
+    return metadataFromOutputs(vtTransaction.body.outputs);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -163,6 +176,7 @@ class ReviewStepState extends State<ReviewStep>
                 state.transaction.hasTimelock(state.transactionType);
             String address =
                 state.transaction.getRecipient(state.transactionType);
+            String? metadata = _getMetadata(state);
             return Padding(
                 padding: EdgeInsets.only(left: 8, right: 8),
                 child: Column(
@@ -188,22 +202,32 @@ class ReviewStepState extends State<ReviewStep>
                         SizedBox(
                           height: 16,
                         ),
-                      if (showFeeInfo) ..._buildTransactionFeeInfo(context),
+                      if (showFeeInfo)
+                        ..._buildTransactionFeeInfo(context,
+                            addBottomSpacing: metadata == null),
+                      if (metadata != null)
+                        InfoCopy(
+                            infoToCopy: metadata,
+                            label: localization.metadata,
+                            text: metadata.cropMiddle(18),
+                            isLastItem: true),
+                      if (metadata != null) SizedBox(height: 16),
                     ]));
           },
         ));
   }
 }
 
-List<Widget> _buildTransactionFeeInfo(BuildContext context) {
+List<Widget> _buildTransactionFeeInfo(BuildContext context,
+    {bool addBottomSpacing = true}) {
   int fee = BlocProvider.of<TransactionBloc>(context).getFee();
   return [
     InfoElement(
         label: localization.fee,
-        isLastItem: true,
+        isLastItem: addBottomSpacing,
         text:
             '${fee.standardizeWitUnits().formatWithCommaSeparator()} ${WIT_UNIT[WitUnit.Wit]}'),
-    SizedBox(height: 16),
+    if (addBottomSpacing) SizedBox(height: 16),
   ];
 }
 
