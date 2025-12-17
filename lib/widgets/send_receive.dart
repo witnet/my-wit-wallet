@@ -2,10 +2,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wit_wallet/bloc/transactions/value_transfer/vtt_create/vtt_create_bloc.dart';
 import 'package:my_wit_wallet/screens/receive_transaction/receive_tx_screen.dart';
 import 'package:my_wit_wallet/screens/send_transaction/send_vtt_screen.dart';
+import 'package:my_wit_wallet/shared/locator.dart';
 import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
+import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
 import 'package:my_wit_wallet/widgets/buttons/icon_btn.dart';
 import 'package:my_wit_wallet/widgets/layouts/dashboard_layout.dart';
@@ -15,6 +17,7 @@ typedef void VoidCallback();
 
 class SendReceiveButtons extends StatelessWidget {
   SendReceiveButtons({Key? key}) : super(key: key);
+  final PanelUtils panel = Locator.instance.get<PanelUtils>();
 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -55,7 +58,9 @@ class SendReceiveButtons extends StatelessWidget {
             text: localization.send,
             onPressed: currentRoute(context) != CreateVttScreen.route
                 ? _showCreateVTTDialog
-                : () {},
+                : () {
+                    panel.close();
+                  },
             icon: Container(
                 height: 40,
                 child: svgThemeImage(theme, name: 'send-icon', height: 18)),
@@ -69,9 +74,11 @@ class SendReceiveButtons extends StatelessWidget {
             color: extendedTheme.mediumPanelText!.color,
             padding: EdgeInsets.only(left: 16, right: 16),
             text: localization.receive,
-            onPressed: currentRoute != ReceiveTransactionScreen.route
+            onPressed: currentRoute(context) != ReceiveTransactionScreen.route
                 ? _showReceiveDialog
-                : () {},
+                : () {
+                    panel.close();
+                  },
             icon: Container(
                 height: 40,
                 child: svgThemeImage(theme, name: 'receive-icon', height: 18)),
