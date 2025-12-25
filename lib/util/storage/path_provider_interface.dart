@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io' as io;
+import 'package:my_wit_wallet/constants.dart';
 import 'package:my_wit_wallet/globals.dart' as globals;
 import 'package:path_provider/path_provider.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
@@ -71,6 +72,9 @@ class PathProviderInterface {
   }
 
   String getDbWalletsPath() {
+    if (USE_MOCK_WALLETS_FILE){
+      return getFilePath('mock-wallets', 'wit');
+    }
     return getFilePath(
         globals.testingActive ? 'test-wallets' : 'wallets', 'wit');
   }
