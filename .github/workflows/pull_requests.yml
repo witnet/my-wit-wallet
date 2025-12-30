@@ -183,6 +183,15 @@ jobs:
           bundler-cache: true
           working-directory: 'android'
 
+      - name: Clean up disk space
+        run: |
+          echo "Disk space before cleanup:"
+          df -h
+          sudo rm -rf /usr/share/dotnet /opt/ghc || true
+          rm -rf ~/.dart_tool ~/.pub-cache || true
+          echo "Disk space after cleanup:"
+          df -h
+
       - name: Install Project Dependencies
         run: flutter pub get
 
