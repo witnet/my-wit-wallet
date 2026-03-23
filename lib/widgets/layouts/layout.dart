@@ -225,8 +225,12 @@ class LayoutState extends State<Layout> with TickerProviderStateMixin {
                   ),
                   child: widget.slidingPanel)),
           onPanelClosed: () => {
-                Timer(Duration(milliseconds: 300),
-                    () => setState(() => panel.setCloseState()))
+                Timer(Duration(milliseconds: 300), () {
+                  if (mounted) {
+                    setState(() => panel.setCloseState());
+                  }
+                  ;
+                })
               },
           body: GestureDetector(
               excludeFromSemantics: true,

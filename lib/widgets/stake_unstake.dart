@@ -10,6 +10,7 @@ import 'package:my_wit_wallet/theme/extended_theme.dart';
 import 'package:my_wit_wallet/theme/wallet_theme.dart';
 import 'package:my_wit_wallet/util/current_route.dart';
 import 'package:my_wit_wallet/util/get_localization.dart';
+import 'package:my_wit_wallet/util/panel.dart';
 import 'package:my_wit_wallet/util/storage/database/balance_info.dart';
 import 'package:my_wit_wallet/util/storage/database/wallet.dart';
 import 'package:my_wit_wallet/widgets/buttons/custom_btn.dart';
@@ -31,6 +32,7 @@ class StakeUnstakeButtons extends StatelessWidget {
     Wallet currentWallet = db.walletStorage.currentWallet;
     bool allowStake = MIN_STAKING_AMOUNT_NANOWIT <=
         currentWallet.balanceNanoWit().availableNanoWit;
+    final PanelUtils panel = Locator.instance.get<PanelUtils>();
 
     Future<void> _goToStakeScreen() async {
       if (allowStake) {
@@ -88,7 +90,9 @@ class StakeUnstakeButtons extends StatelessWidget {
             text: localization.stake,
             onPressed: currentRoute(context) != StakeScreen.route
                 ? _goToStakeScreen
-                : () {},
+                : () {
+                    panel.close();
+                  },
             icon: Container(
                 height: 40,
                 child: svgThemeImage(theme, name: 'stake-icon', height: 18)),
@@ -102,9 +106,11 @@ class StakeUnstakeButtons extends StatelessWidget {
             color: extendedTheme.mediumPanelText!.color,
             padding: EdgeInsets.only(left: 16, right: 16),
             text: localization.unstake,
-            onPressed: currentRoute != UnstakeScreen.route
+            onPressed: currentRoute(context) != UnstakeScreen.route
                 ? _goToUnstakeScreen
-                : () {},
+                : () {
+                    panel.close();
+                  },
             icon: Container(
                 height: 40,
                 child: svgThemeImage(theme, name: 'unstake-icon', height: 24)),

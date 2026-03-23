@@ -24,9 +24,15 @@ void buildEmptyStakeModal({
             type: allowStake ? CustomBtnType.secondary : CustomBtnType.primary,
             enabled: true,
             onPressed: () => {
-                  Navigator.popUntil(
-                      context, ModalRoute.withName(originRouteName)),
                   ScaffoldMessenger.of(context).clearSnackBars(),
+                  Navigator.push(
+                      context,
+                      CustomPageRoute(
+                          builder: (BuildContext context) {
+                            return originRoute;
+                          },
+                          maintainState: false,
+                          settings: RouteSettings(name: originRouteName)))
                 }),
         allowStake
             ? CustomButton(
